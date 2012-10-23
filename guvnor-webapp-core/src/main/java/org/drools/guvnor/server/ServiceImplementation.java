@@ -66,8 +66,6 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
-import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.guvnor.server.util.DateUtil;
@@ -78,7 +76,6 @@ import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
@@ -89,7 +86,6 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
@@ -99,6 +95,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import org.uberfire.security.annotations.Roles;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -118,9 +115,6 @@ public class ServiceImplementation
     private RulesRepository            rulesRepository;
 
     @Inject
-    private ServiceSecurity            serviceSecurity;
-
-    @Inject
     private RepositoryAssetOperations  repositoryAssetOperations;
 
     @Inject
@@ -132,9 +126,6 @@ public class ServiceImplementation
     @Inject
     private Backchannel                backchannel;
 
-    @Inject
-    private Identity                   identity;
-
     @WebRemote
     @LoggedIn
     public String[] listWorkspaces() {
@@ -144,7 +135,7 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public void createWorkspace(String workspace) {
-        rulesRepository.createWorkspace( workspace );
+        rulesRepository.createWorkspace(workspace);
     }
 
     @WebRemote
@@ -179,14 +170,11 @@ public class ServiceImplementation
      */
     @WebRemote
     @LoggedIn
-    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
     public String createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
-
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
         try {
@@ -235,8 +223,6 @@ public class ServiceImplementation
         String packageName = configuration.getPackageName();
         String format = configuration.getFormat();
 
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
-
         return createNewRule( assetName,
                               description,
                               initialCategory,
@@ -259,14 +245,12 @@ public class ServiceImplementation
         final String format = configuration.getFormat();
         final PortableObject content = configuration.getContent();
 
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
-
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + assetName + "] in package [" + packageName + "]" );
 
         try {
 
             //Create new Asset
-            ModuleItem pkg = rulesRepository.loadModule( packageName );
+            ModuleItem pkg = rulesRepository.loadModule(packageName);
             AssetItem assetItem = pkg.addAsset( assetName,
                                                 description,
                                                 initialCategory,
@@ -308,8 +292,6 @@ public class ServiceImplementation
     @LoggedIn
     public String createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
-
         log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
@@ -333,9 +315,7 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public void deleteUncheckedRule(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdminWithAdminType();
-
-        AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
 
         ModuleItem packageItem = asset.getModule();
         packageItem.updateBinaryUpToDate( false );
@@ -357,15 +337,11 @@ public class ServiceImplementation
                                                 int numRows,
                                                 String tableConfig) throws SerializationException {
 
-        // TODO: May need to use a filter that acts on both package based and
-        // category based.
-        RepositoryFilter filter = new AssetItemFilter( identity );
         AssetItemPageResult result = rulesRepository.findAssetsByState( stateName,
                                                                              false,
                                                                              skip,
-                                                                             numRows,
-                                                                             filter );
-        return new TableDisplayHandler( tableConfig ).loadRuleListTable( result );
+                                                                             numRows);
+        return new TableDisplayHandler( tableConfig ).loadRuleListTable(result);
     }
 
     /**
@@ -422,30 +398,17 @@ public class ServiceImplementation
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
-        RepositoryFilter packageFilter = new ModuleFilter( identity );
-        RepositoryFilter categoryFilter = new CategoryFilter( identity );
+        RepositoryFilter categoryFilter = new CategoryFilter();
 
         while ( it.hasNext() ) {
             AssetItem ai = it.next();
-            if ( checkPackagePermissionHelper( packageFilter,
-                                               ai,
-                                               RoleType.PACKAGE_READONLY.getName() ) || checkCategoryPermissionHelper( categoryFilter,
-                                                                                                                       ai,
-                                                                                                                       RoleType.ANALYST_READ.getName() ) ) {
-                resultList.add( ai );
-            }
+
+            resultList.add(ai);
         }
 
         return new TableDisplayHandler( "searchresults" ).loadRuleListTable( resultList,
                                                                              skip,
                                                                              numRows );
-    }
-
-    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
-                                                 AssetItem item,
-                                                 String roleType) {
-        return filter.accept( getConfigDataHelper( item.getModule().getUUID() ),
-                              roleType );
     }
 
     private Module getConfigDataHelper(String uuidStr) {
@@ -500,9 +463,8 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public void clearRulesRepository() {
-        serviceSecurity.checkSecurityIsAdmin();
-
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( rulesRepository.getSession() );
         admin.clearRulesRepository();
     }
@@ -516,28 +478,26 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
-        return repositoryModuleOperations.listRulesInPackage( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listRulesInPackage(RulesRepository.GLOBAL_AREA);
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.GLOBAL_AREA );
-        return repositoryModuleOperations.listImagesInModule( RulesRepository.GLOBAL_AREA );
+        return repositoryModuleOperations.listImagesInModule(RulesRepository.GLOBAL_AREA);
     }
 
     /**
      * @deprecated in favour of {@link #showLog(PageRequest)}
      */
     @WebRemote
+    @Roles({"ADMIN"})
     public LogEntry[] showLog() {
-        serviceSecurity.checkSecurityIsAdmin();
-
         return LoggingHelper.getMessages();
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public PageResponse<LogPageRow> showLog(PageRequest request) {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -546,15 +506,12 @@ public class ServiceImplementation
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        serviceSecurity.checkSecurityIsAdmin();
-
         long start = System.currentTimeMillis();
         LogEntry[] logEntries = LoggingHelper.getMessages();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         List<LogPageRow> rowList = new LogPageRowBuilder()
                                        .withPageRequest( request )
-                                        .withIdentity( identity )
                                        .withContent( logEntries )
                                            .build();
 
@@ -571,9 +528,8 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public void cleanLog() {
-        serviceSecurity.checkSecurityIsAdmin();
-
         LoggingHelper.cleanLog();
     }
 
@@ -616,12 +572,13 @@ public class ServiceImplementation
      * @deprecated in favour of {@link #listUserPermissions(PageRequest)}
      */
     @LoggedIn
+    @Roles({"ADMIN"})
     public Map<String, List<String>> listUserPermissions() {
-        serviceSecurity.checkSecurityIsAdmin();
         return new PermissionManager( rulesRepository ).listUsers();
     }
 
     @LoggedIn
+    @Roles({"ADMIN"})
     public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -630,8 +587,6 @@ public class ServiceImplementation
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        serviceSecurity.checkSecurityIsAdmin();
-
         long start = System.currentTimeMillis();
         Map<String, List<String>> permissions = new PermissionManager( rulesRepository ).listUsers();
 
@@ -639,7 +594,6 @@ public class ServiceImplementation
 
         List<PermissionsPageRow> rowList = new PermissionPageRowBuilder()
                                                 .withPageRequest( request )
-                                                .withIdentity( identity )
                                                 .withContent( permissions )
                                                     .build();
 
@@ -656,42 +610,23 @@ public class ServiceImplementation
     }
 
     @LoggedIn
+    @Roles({"ADMIN"})
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
-        serviceSecurity.checkSecurityIsAdmin();
 
         PermissionManager pm = new PermissionManager( rulesRepository );
         return pm.retrieveUserPermissions( userName );
     }
 
     @LoggedIn
+    @Roles({"ADMIN"})
     public void updateUserPermissions(String userName,
                                       Map<String, List<String>> perms) {
-        serviceSecurity.checkSecurityIsAdmin();
-
         PermissionManager pm = new PermissionManager( rulesRepository );
 
         log.info( "Updating user permissions for userName [" + userName + "] to [" + perms + "]" );
         pm.updateUserPermissions( userName,
                                   perms );
         rulesRepository.save();
-    }
-
-    @Deprecated
-    @LoggedIn
-    public String[] listAvailablePermissionTypes() {
-        serviceSecurity.checkSecurityIsAdmin();
-        return RoleTypes.listAvailableTypes();
-    }
-
-    @LoggedIn
-    public List<String> listAvailablePermissionRoleTypes() {
-        serviceSecurity.checkSecurityIsAdmin();
-        RoleType[] roleTypes = RoleType.values();
-        List<String> values = new ArrayList<String>();
-        for ( RoleType roleType : roleTypes ) {
-            values.add( roleType.getName() );
-        }
-        return values;
     }
 
     @LoggedIn
@@ -765,8 +700,7 @@ public class ServiceImplementation
 
             Iterator<InboxEntry> iterator = entries.iterator();
             List<InboxPageRow> rowList = new InboxPageRowBuilder()
-                                            .withPageRequest( request )
-                                            .withIdentity( identity )
+                                            .withPageRequest(request)
                                             .withContent( iterator )
                                                 .build();
 
@@ -844,8 +778,7 @@ public class ServiceImplementation
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder()
-                                            .withPageRequest( request )
-                                            .withIdentity( identity )
+                                            .withPageRequest(request)
                                             .withContent( iterator )
                                                 .build();
         boolean bHasMoreRows = iterator.hasNext();
@@ -882,8 +815,7 @@ public class ServiceImplementation
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder()
-                                            .withPageRequest( request )
-                                            .withIdentity( identity )
+                                            .withPageRequest(request)
                                             .withContent( iterator )
                                             .build();
         boolean bHasMoreRows = iterator.hasNext();
@@ -941,16 +873,14 @@ public class ServiceImplementation
         AssetItemPageResult result = rulesRepository.findAssetsByState( request.getStateName(),
                                                                              false,
                                                                              request.getStartRowIndex(),
-                                                                             numRowsToReturn,
-                                                                             new AssetItemFilter( identity ) );
+                                                                             numRowsToReturn );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
 
         List<StatePageRow> rowList = new StatePageRowBuilder()
-                                            .withPageRequest( request )
-                                            .withIdentity( identity )
+                                            .withPageRequest(request)
                                             .withContent( result.assets.iterator() )
                                                 .build();
 
@@ -963,20 +893,6 @@ public class ServiceImplementation
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
         return response;
-    }
-
-    private boolean checkCategoryPermissionHelper(RepositoryFilter filter,
-                                                  AssetItem item,
-                                                  String roleType) {
-        List<CategoryItem> tempCateList = item.getCategories();
-        for ( CategoryItem categoryItem : tempCateList ) {
-            if ( filter.accept( categoryItem.getName(),
-                                roleType ) ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -1008,8 +924,6 @@ public class ServiceImplementation
     @LoggedIn
     public boolean doesAssetExistInModule(String assetName,
                                            String moduleName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
-
         try {
 
             ModuleItem moduleItem = rulesRepository.loadModule( moduleName );

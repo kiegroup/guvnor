@@ -78,9 +78,6 @@ public class TestScenarioServiceImplementation
     private RulesRepository rulesRepository;
 
     @Inject
-    private ServiceSecurity serviceSecurity;
-
-    @Inject
     private RepositoryAssetOperations repositoryAssetOperations;
 
     @Inject
@@ -96,8 +93,6 @@ public class TestScenarioServiceImplementation
     @LoggedIn
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(packageName);
-
         return runScenario(packageName,
                 scenario,
                 null);
@@ -377,7 +372,6 @@ public class TestScenarioServiceImplementation
     @WebRemote
     @LoggedIn
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(packageUUID);
         ModuleItem item = rulesRepository.loadModuleByUUID(packageUUID);
         return runScenariosInPackage(item);
     }

@@ -16,16 +16,13 @@
 
 package org.drools.guvnor.server.files;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.WebDavServletBean;
 
 /**
@@ -36,9 +33,6 @@ import net.sf.webdav.WebDavServletBean;
 public class WebdavServlet extends WebDavServletBean {
 
     private static final long serialVersionUID = 510l;
-
-    @Inject
-    protected AuthorizationHeaderChecker authorizationHeaderChecker;
 
     @Inject
     protected WebDAVImpl webDAV;
@@ -65,14 +59,8 @@ public class WebdavServlet extends WebDavServletBean {
                            HttpServletResponse resp) throws ServletException,
                                                     IOException {
         String auth = req.getHeader( "Authorization" );
-        if ( !authorizationHeaderChecker.loginByHeader(auth) ) {
-            resp.setHeader( "WWW-Authenticate",
-                            "BASIC realm=\"users\"" );
-            resp.sendError( HttpServletResponse.SC_UNAUTHORIZED );
-        } else {
-            super.service( req,
-                           resp );
-        }
+        super.service( req,
+                       resp );
     }
 
 }

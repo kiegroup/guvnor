@@ -47,6 +47,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import org.drools.guvnor.shared.security.AppRoles;
 
 
 public class PermissionsPagedTablePresenter implements Presenter {
@@ -293,15 +294,12 @@ public class PermissionsPagedTablePresenter implements Presenter {
                 pop.addAttribute( ConstantsCore.INSTANCE.PermissionType(),
                                   hp );
 
-                repositoryService.listAvailablePermissionRoleTypes( new GenericCallback<List<String>>() {
-                    public void onSuccess(List<String> items) {
-                        permTypeBox.clear();
-                        permTypeBox.addItem( ConstantsCore.INSTANCE.pleaseChoose1() );
-                        for ( String roleType : items ) {
-                            permTypeBox.addItem( roleType );
-                        }
-                    }
-                } );
+
+                permTypeBox.clear();
+                permTypeBox.addItem(ConstantsCore.INSTANCE.pleaseChoose1());
+                for (AppRoles role : AppRoles.values()) {
+                    permTypeBox.addItem(role.getName());
+                }
 
                 permTypeBox.addChangeHandler( createChangeHandlerForPermTypeBox( perms,
                                                                                  vp,

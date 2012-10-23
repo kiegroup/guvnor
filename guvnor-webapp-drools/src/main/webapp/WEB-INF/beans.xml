@@ -38,9 +38,6 @@
   <security:IdentityImpl>
     <s:modifies/>
 
-    <!-- No real authentication: demo authentication for demo purposes -->
-    <security:authenticatorClass>org.drools.guvnor.server.security.DemoAuthenticator</security:authenticatorClass>
-
     <!-- JAAS based authentication -->
     <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
 

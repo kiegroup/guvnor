@@ -262,8 +262,7 @@ public class RepositoryPackageOperationsTest {
                 packageItem);
         doNothing().when(localRepositoryPackageOperations).handleArchivedForSaveModule(packageConfigData,
                 packageItem);
-        ServiceSecurity serviceSecurity = mock(ServiceSecurity.class);
-        DroolsServiceImplementation droolsServiceImplementation = spy(new DroolsServiceImplementation(rulesRepository, serviceSecurity));
+        DroolsServiceImplementation droolsServiceImplementation = spy(new DroolsServiceImplementation(rulesRepository));
         initSpyingAndMockingOnSuggestionCompletionLoader(droolsServiceImplementation);
         droolsServiceImplementation.validateModule(packageConfigData);
         verify(packageItem, never()).updateExternalURI("");

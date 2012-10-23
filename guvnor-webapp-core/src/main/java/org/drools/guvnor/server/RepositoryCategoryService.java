@@ -33,6 +33,7 @@ import org.jboss.seam.remoting.annotations.WebRemote;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.jboss.seam.security.annotations.LoggedIn;
+import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
 @Named("org.drools.guvnor.client.rpc.CategoryService")
@@ -41,9 +42,6 @@ public class RepositoryCategoryService
     CategoryService {
 
     private static final long            serialVersionUID             = 12365;
-
-    @Inject
-    private ServiceSecurity serviceSecurity;
 
     @Inject
     private RepositoryCategoryOperations repositoryCategoryOperations;
@@ -55,10 +53,10 @@ public class RepositoryCategoryService
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
-        serviceSecurity.checkSecurityIsAdmin();
         return repositoryCategoryOperations.createCategory( path,
                                                             name,
                                                             description );
@@ -101,19 +99,6 @@ public class RepositoryCategoryService
         }
         if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        // Role-based Authorization check: This method only returns rules that
-        // the user has permission to access. The user is considered to has
-        // permission to access the particular category when: The user has
-        // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( !serviceSecurity.isSecurityIsAnalystReadWithTargetObject( new CategoryPathType( request.getCategoryPath() ) ) ) {
-            List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
-            return new PageResponseBuilder<CategoryPageRow>()
-                    .withStartRowIndex(request.getStartRowIndex())
-                    .withPageRowList(rowList)
-                    .withLastPage(true)
-                    .buildWithTotalRowCount(0);
         }
 
         return repositoryCategoryOperations.loadRuleListForCategories( request );

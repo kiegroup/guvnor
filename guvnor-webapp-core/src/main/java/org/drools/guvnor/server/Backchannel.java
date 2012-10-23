@@ -17,16 +17,14 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
-import org.jboss.seam.security.Credentials;
 import org.jboss.solder.servlet.http.HttpSessionStatus;
-import org.jboss.seam.security.Identity;
+import org.uberfire.security.Identity;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 /**
@@ -43,7 +41,7 @@ public class Backchannel {
     private final Timer timer = new Timer(true);
 
     @Inject
-    private Credentials credentials;
+    Identity identity;
 
     @Inject
     private HttpSessionStatus sessionStatus;
@@ -67,7 +65,7 @@ public class Backchannel {
     public List<PushResponse> subscribe() {
         if (sessionStatus.isActive()) {
             try {
-                return await(credentials.getUsername());
+                return await(identity.getName());
             } catch (InterruptedException e) {
                 return new ArrayList<PushResponse>();
             }

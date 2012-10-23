@@ -50,7 +50,6 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.Preferred;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -59,10 +58,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
-import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -82,9 +79,6 @@ public class RepositoryModuleOperations {
     @Inject @Preferred
     private RulesRepository rulesRepository;
 
-    @Inject
-    private Identity identity;
-
     @Deprecated
     public void setRulesRepositoryForTest(RulesRepository repository) {
         // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
@@ -92,13 +86,11 @@ public class RepositoryModuleOperations {
     }
 
     protected Module[] listModules(boolean archive,
-                                               String workspace,
-                                               RepositoryFilter filter) {
+                                               String workspace) {
         List<Module> result = new ArrayList<Module>();
         ModuleIterator modules = rulesRepository.listModules();
         handleIterateModules( archive,
                 workspace,
-                filter,
                 result,
                 modules );
 
@@ -108,7 +100,6 @@ public class RepositoryModuleOperations {
 
     private void handleIterateModules(boolean archive,
                                        String workspace,
-                                       RepositoryFilter filter,
                                        List<Module> result,
                                        ModuleIterator modules) {
         modules.setArchivedIterator( archive );
@@ -122,27 +113,23 @@ public class RepositoryModuleOperations {
             data.setWorkspaces( packageItem.getWorkspaces() );
             handleIsModuleListed( archive,
                     workspace,
-                    filter,
                     result,
                     data );
 
             data.subModules = listSubModules( packageItem,
                     archive,
-                    null,
-                    filter );
+                    null );
 
         }
     }
 
     private Module[] listSubModules(ModuleItem parentModule,
                                                 boolean archive,
-                                                String workspace,
-                                                RepositoryFilter filter) {
+                                                String workspace) {
         List<Module> children = new LinkedList<Module>();
 
         handleIterateModules( archive,
                 workspace,
-                filter,
                 children,
                 parentModule.listSubModules() );
 
@@ -164,15 +151,12 @@ public class RepositoryModuleOperations {
 
     private void handleIsModuleListed(boolean archive,
                                         String workspace,
-                                        RepositoryFilter filter,
                                         List<Module> result,
                                         Module data) {
-        if ( !archive && (filter == null || filter.accept( data,
-                RoleType.PACKAGE_READONLY.getName() )) && (workspace == null || isWorkspace( workspace,
+        if ( !archive &&  (workspace == null || isWorkspace( workspace,
                 data.getWorkspaces() )) ) {
             result.add( data );
-        } else if ( archive && data.isArchived() && (filter == null || filter.accept( data,
-                RoleType.PACKAGE_READONLY.getName() )) && (workspace == null || isWorkspace( workspace,
+        } else if ( archive && data.isArchived() && (workspace == null || isWorkspace( workspace,
                 data.getWorkspaces() )) ) {
             result.add( data );
         }
@@ -778,7 +762,6 @@ public class RepositoryModuleOperations {
 
         List<SnapshotComparisonPageRow> rowList = new SnapshotComparisonPageRowBuilder()
                 .withPageRequest( request )
-                .withIdentity(identity)
                 .withContent( diffs )
                 .build();
 

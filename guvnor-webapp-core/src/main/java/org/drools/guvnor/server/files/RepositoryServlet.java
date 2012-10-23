@@ -39,9 +39,6 @@ public class RepositoryServlet extends HttpServlet {
     @Inject @Preferred
     protected RulesRepository rulesRepository;
 
-    @Inject
-    protected AuthorizationHeaderChecker authorizationHeaderChecker;
-
     /**
      * Here we perform the action in the appropriate security context.
      */
@@ -50,23 +47,18 @@ public class RepositoryServlet extends HttpServlet {
                             Command action) throws IOException {
         String auth = req.getHeader("Authorization");
 
-        if (!authorizationHeaderChecker.loginByHeader(auth)) {
-            res.setHeader("WWW-Authenticate",
-                    "BASIC realm=\"users\"");
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            try {
-                action.execute();
-            } catch (RuntimeException e) {
-                log.error(e.getMessage(),
-                        e);
-                throw e;
-            } catch (Exception e) {
-                log.error(e.getMessage(),
-                        e);
-                throw new RuntimeException(e);
-            }
+        try {
+            action.execute();
+        } catch (RuntimeException e) {
+            log.error(e.getMessage(),
+                    e);
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(),
+                    e);
+            throw new RuntimeException(e);
         }
+
     }
 
     static interface Command {

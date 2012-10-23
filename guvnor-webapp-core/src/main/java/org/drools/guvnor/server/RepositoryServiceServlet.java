@@ -283,14 +283,6 @@ public class RepositoryServiceServlet
                 p1 );
     }
 
-    public java.lang.String[] listAvailablePermissionTypes() {
-        return serviceImplementation.listAvailablePermissionTypes();
-    }
-
-    public List<String> listAvailablePermissionRoleTypes() {
-        return serviceImplementation.listAvailablePermissionRoleTypes();
-    }
-
     public boolean isDoNotInstallSample() {
         Module[] modules = moduleService.listModules();
 

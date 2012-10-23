@@ -1108,42 +1108,22 @@ public class RulesRepository {
      * provided category. Only the latest versions of each RuleItem will be
      * returned (you will have to delve into the assets deepest darkest history
      * yourself... mahahahaha).
+     * <p/>
+     * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1
+     * should you want it all.
+     *
      */
     public AssetItemPageResult findAssetsByCategory(String categoryTag,
                                                     boolean seekArchivedAsset,
                                                     int skip,
                                                     int numRowsToReturn) throws RulesRepositoryException {
-        return findAssetsByCategory(categoryTag,
-                seekArchivedAsset,
-                skip,
-                numRowsToReturn,
-                null);
-    }
-
-    /**
-     * This will retrieve a list of RuleItem objects - that are allocated to the
-     * provided category. Only the latest versions of each RuleItem will be
-     * returned (you will have to delve into the assets deepest darkest history
-     * yourself... mahahahaha).
-     * <p/>
-     * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1
-     * should you want it all.
-     *
-     * @param filter an AssetItem filter
-     */
-    public AssetItemPageResult findAssetsByCategory(String categoryTag,
-                                                    boolean seekArchivedAsset,
-                                                    int skip,
-                                                    int numRowsToReturn,
-                                                    RepositoryFilter filter) throws RulesRepositoryException {
         CategoryItem item = this.loadCategory(categoryTag);
 
         try {
             return loadLinkedAssets(seekArchivedAsset,
                     skip,
                     numRowsToReturn,
-                    item.getNode(),
-                    filter);
+                    item.getNode());
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
@@ -1152,36 +1132,18 @@ public class RulesRepository {
     /**
      * Finds the AssetItem's linked to the requested state. Similar to finding
      * by category.
+     *
      */
     public AssetItemPageResult findAssetsByState(String stateName,
                                                  boolean seekArchivedAsset,
                                                  int skip,
                                                  int numRowsToReturn) throws RulesRepositoryException {
-        return findAssetsByState(stateName,
-                seekArchivedAsset,
-                skip,
-                numRowsToReturn,
-                null);
-    }
-
-    /**
-     * Finds the AssetItem's linked to the requested state. Similar to finding
-     * by category.
-     *
-     * @param filter an AssetItem filter
-     */
-    public AssetItemPageResult findAssetsByState(String stateName,
-                                                 boolean seekArchivedAsset,
-                                                 int skip,
-                                                 int numRowsToReturn,
-                                                 RepositoryFilter filter) throws RulesRepositoryException {
         StateItem item = this.getState(stateName);
         try {
             return loadLinkedAssets(seekArchivedAsset,
                     skip,
                     numRowsToReturn,
-                    item.getNode(),
-                    filter);
+                    item.getNode());
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
@@ -1190,8 +1152,7 @@ public class RulesRepository {
     private AssetItemPageResult loadLinkedAssets(boolean seekArchivedAsset,
                                                  int skip,
                                                  int numRowsToReturn,
-                                                 Node n,
-                                                 RepositoryFilter filter) throws RepositoryException {
+                                                 Node n) throws RepositoryException {
         int rows = 0;
         boolean hasNext = false;
         long currentPosition = 0;
@@ -1209,22 +1170,19 @@ public class RulesRepository {
                 if (seekArchivedAsset || !parentNode.getProperty(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
                     AssetItem ai = new AssetItem(this,
                             parentNode);
-                    if (filter == null || filter.accept(ai,
-                            "package.readonly")) {
 
-                        //If the current row returned by the iterator is greater than the number of rows
-                        //being skipped add it to the results collection (but only if we have not already
-                        //constructed a full "page" of data - we look ahead one additional row to check
-                        //whether there is are additional pages of data)
-                        rows++;
-                        int numRowsInPage = rows - skip;
-                        if (numRowsInPage > 0) {
-                            if (numRowsInPage <= numRowsToReturn || numRowsToReturn == -1) {
-                                results.add(ai);
-                                currentPosition = rows;
-                            }
-                            hasNext = (numRowsInPage > numRowsToReturn && numRowsToReturn != -1);
+                    //If the current row returned by the iterator is greater than the number of rows
+                    //being skipped add it to the results collection (but only if we have not already
+                    //constructed a full "page" of data - we look ahead one additional row to check
+                    //whether there is are additional pages of data)
+                    rows++;
+                    int numRowsInPage = rows - skip;
+                    if (numRowsInPage > 0) {
+                        if (numRowsInPage <= numRowsToReturn || numRowsToReturn == -1) {
+                            results.add(ai);
+                            currentPosition = rows;
                         }
+                        hasNext = (numRowsInPage > numRowsToReturn && numRowsToReturn != -1);
                     }
                 }
             }

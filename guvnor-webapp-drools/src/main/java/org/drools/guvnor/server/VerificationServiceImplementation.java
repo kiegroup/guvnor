@@ -51,10 +51,7 @@ public class VerificationServiceImplementation
     private static final LoggingHelper log = LoggingHelper.getLogger(VerificationService.class);
 
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
-    
-    @Inject
-    protected ServiceSecurity serviceSecurity;
-    
+
     @Inject @Preferred
     protected RulesRepository rulesRepository;
     
@@ -64,8 +61,6 @@ public class VerificationServiceImplementation
     @WebRemote
     @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
                 rulesRepository.loadModuleByUUID(packageUUID)
@@ -80,8 +75,6 @@ public class VerificationServiceImplementation
     @LoggedIn
     public AnalysisReport verifyAsset(Asset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
-        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
-
         return verify(
                 asset,
                 VerifierConfigurationFactory.getDefaultConfigurationWithWorkingSetConstraints(
@@ -92,9 +85,7 @@ public class VerificationServiceImplementation
     @LoggedIn
     public AnalysisReport verifyAssetWithoutVerifiersRules(Asset asset,
        Set<WorkingSetConfigData> activeWorkingSets) throws SerializationException {
-        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
-
-        return verify(
+       return verify(
                 asset,
                 VerifierConfigurationFactory.getPlainWorkingSetVerifierConfiguration(
                         activeWorkingSets));

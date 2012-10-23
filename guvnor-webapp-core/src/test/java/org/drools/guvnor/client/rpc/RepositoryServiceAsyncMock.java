@@ -161,13 +161,6 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
         
     }
 
-    public void listAvailablePermissionTypes(AsyncCallback<String[]> cb) {
-        
-    }
-
-    public void listAvailablePermissionRoleTypes(AsyncCallback<List<String>> callback) {
-    }
-    
     public void isDoNotInstallSample(AsyncCallback<Boolean> callback) {
         
     }

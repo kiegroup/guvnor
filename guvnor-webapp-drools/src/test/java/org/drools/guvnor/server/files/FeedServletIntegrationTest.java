@@ -150,7 +150,6 @@ public class FeedServletIntegrationTest extends GuvnorIntegrationTest {
         assertNotNull( r );
         assertTrue( r.indexOf( "asset1" ) > -1 );
 
-        identity.logout();
         credentials.clear();
     }
 

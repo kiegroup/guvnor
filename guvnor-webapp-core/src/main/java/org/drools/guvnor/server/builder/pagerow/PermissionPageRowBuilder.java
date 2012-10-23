@@ -22,14 +22,12 @@ import java.util.Map;
 
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
-import org.jboss.seam.security.Identity;
 
 public class PermissionPageRowBuilder
     implements
     PageRowBuilder<PageRequest, Map<String, List<String>>> {
     private PageRequest               pageRequest;
     private Map<String, List<String>> permissions;
-    private Identity identity;
 
     public List<PermissionsPageRow> build() {
         validate();
@@ -67,11 +65,6 @@ public class PermissionPageRowBuilder
 
     public PermissionPageRowBuilder withPageRequest(PageRequest pageRequest) {
         this.pageRequest = pageRequest;
-        return this;
-    }
-
-    public PermissionPageRowBuilder withIdentity(Identity identity) {
-        this.identity = identity;
         return this;
     }
 

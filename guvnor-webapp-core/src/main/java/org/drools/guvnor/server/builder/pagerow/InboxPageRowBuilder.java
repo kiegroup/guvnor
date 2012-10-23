@@ -26,7 +26,6 @@ import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.repository.UserInfo.InboxEntry;
-import org.jboss.seam.security.Identity;
 
 public class InboxPageRowBuilder
     implements
@@ -34,7 +33,6 @@ public class InboxPageRowBuilder
 
     private InboxPageRequest     pageRequest;
     private Iterator<InboxEntry> iterator;
-    private Identity identity;
 
     public List<InboxPageRow> build() {
         validate();
@@ -92,11 +90,6 @@ public class InboxPageRowBuilder
 
     public InboxPageRowBuilder withPageRequest(InboxPageRequest pageRequest) {
         this.pageRequest = pageRequest;
-        return this;
-    }
-
-    public InboxPageRowBuilder withIdentity(Identity identity) {
-        this.identity = identity;
         return this;
     }
 

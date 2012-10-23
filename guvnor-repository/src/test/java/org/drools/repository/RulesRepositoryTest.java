@@ -637,19 +637,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         AssetItemPageResult apl = repo.findAssetsByState( "Draft",
                                                     false,
                                                     0,
-                                                    -1,
-                                                    new RepositoryFilter() {
-                                                        public boolean accept(Object artifact,
-                                                                              String action) {
-                                                            if ( !(artifact instanceof AssetItem) ) return false;
-
-                                                            if ( ((AssetItem) artifact).getName().equalsIgnoreCase( "testCat1" ) ) {
-                                                                return true;
-                                                            } else {
-                                                                return false;
-                                                            }
-                                                        }
-                                                    } );
+                                                    -1);
 
         assertEquals( 1,
                       apl.assets.size() );
@@ -685,19 +673,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         AssetItemPageResult apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat",
                                                        false,
                                                        0,
-                                                       -1,
-                                                       new RepositoryFilter() {
-                                                           public boolean accept(Object artifact,
-                                                                                 String action) {
-                                                               if ( !(artifact instanceof AssetItem) ) return false;
-
-                                                               if ( ((AssetItem) artifact).getName().equalsIgnoreCase( "testCat1" ) ) {
-                                                                   return true;
-                                                               } else {
-                                                                   return false;
-                                                               }
-                                                           }
-                                                       } );
+                                                       -1 );
 
         assertEquals( 1,
                       apl.assets.size() );

@@ -22,10 +22,9 @@ import org.drools.repository.RulesRepository;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import org.jboss.seam.security.Identity;
-import org.picketlink.idm.api.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.security.Identity;
 
 /**
  * Request scoped bean that produces the RulesRepository
@@ -64,16 +63,15 @@ public class RulesRepositoryManager {
 
     @Produces @Preferred @RequestScoped 
     public RulesRepository getRulesRepository(RepositoryStartupService repositoryStartupService, Identity identity) {
-       	 User user = identity.getUser();
-         String username;
+       	 String username;
          // TODO user should never be null, weld messes up the identity proxy?
-         if (user == null) {
+         if (identity == null) {
              log.warn("Creating RulesRepository with default username.");
              // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
              // with limited privileges. In Guvnor, access control is done in a higher level.
              username = DEFAULT_USERNAME;
          } else {
-             username = user.getId();
+             username = identity.getName();
          }
          doSecurityContextAssociation();
          RulesRepository rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));

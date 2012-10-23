@@ -23,11 +23,14 @@ import javax.enterprise.inject.Specializes;
 import javax.jcr.Repository;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.guvnor.server.security.RoleBasedPermission;
-import org.drools.guvnor.server.security.RoleBasedPermissionStore;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepository;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Specializes;
+import javax.jcr.Repository;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
@@ -53,16 +56,8 @@ public class TestRepositoryStartupService extends ProductionRepositoryStartupSer
         }
         // Automated tests writes in the target dir, so "mvn clean" cleans it
         guvnorBootstrapConfiguration.getProperties().put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
-                            repositoryDir.getAbsolutePath());
+                repositoryDir.getAbsolutePath());
         return super.getRepositoryInstance();
-    }
-
-    @PostConstruct
-    private void insertTestData() {
-        RulesRepository rulesRepository = new RulesRepository(sessionForSetup);
-        RoleBasedPermissionStore adminStore = new RoleBasedPermissionStore(rulesRepository);
-        adminStore.addRoleBasedPermissionForTesting("admin",
-                new RoleBasedPermission("admin", RoleType.ADMIN.getName(), null, null));
     }
 
 }

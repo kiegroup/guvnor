@@ -283,21 +283,6 @@ public interface RepositoryService
     public void updateUserPermissions(String userName,
                                       Map<String, List<String>> perms);
 
-    /**
-     * List the available permission types.
-     * 
-     * @deprecated in favour of {@link listAvailablePermissionRoleTypes()}
-     * @return
-     */
-    public String[] listAvailablePermissionTypes();
-
-    /**
-     * List the available permission types.
-     * 
-     * @return
-     */
-    public List<String> listAvailablePermissionRoleTypes();
-    
     public boolean isDoNotInstallSample();
 
     public void setDoNotInstallSample();

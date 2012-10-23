@@ -21,14 +21,12 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
-import org.jboss.seam.security.Identity;
 
 public class LogPageRowBuilder
     implements
     PageRowBuilder<PageRequest, LogEntry[]> {
     private PageRequest pageRequest;
     private LogEntry[]  logEntries;
-    private Identity identity;
 
     public List<LogPageRow> build() {
         validate();
@@ -57,11 +55,6 @@ public class LogPageRowBuilder
 
     public LogPageRowBuilder withContent(LogEntry[] logEntries) {
         this.logEntries = logEntries;
-        return this;
-    }
-
-    public LogPageRowBuilder withIdentity(Identity identity) {
-        this.identity = identity;
         return this;
     }
 

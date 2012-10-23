@@ -47,8 +47,6 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.FileUploadedEvent;
 import org.drools.guvnor.server.repository.Preferred;
-import org.drools.guvnor.server.security.AdminType;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -61,7 +59,7 @@ import org.drools.repository.RulesRepositoryException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.jboss.seam.security.Identity;
+import org.uberfire.security.annotations.Roles;
 
 /**
  * This assists the file manager servlets.
@@ -72,9 +70,6 @@ public class FileManagerService {
 
     @Inject @Preferred
     private RulesRepository repository;
-
-    @Inject
-    private Identity identity;
 
     @Inject
     @Any
@@ -258,9 +253,8 @@ public class FileManagerService {
     }
 
     @LoggedIn
+    @Roles({"ADMIN"})
     public void importRulesRepository(InputStream in) {
-        identity.checkPermission( new AdminType(),
-                                                 RoleType.ADMIN.getName() );
         repository.importRulesRepositoryFromStream( in );
 
         fileUploadedEventEvent.fire(new FileUploadedEvent());

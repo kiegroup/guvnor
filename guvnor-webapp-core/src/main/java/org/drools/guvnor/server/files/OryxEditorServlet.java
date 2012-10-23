@@ -3,13 +3,11 @@ package org.drools.guvnor.server.files;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
 import javax.inject.Inject;
-import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

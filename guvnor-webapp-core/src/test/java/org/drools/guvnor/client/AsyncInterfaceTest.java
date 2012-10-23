@@ -23,8 +23,6 @@ import java.lang.reflect.Method;
 
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.SecurityService;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,7 +37,6 @@ public class AsyncInterfaceTest {
     public void testService() throws Exception {
         try {
             checkService( RepositoryService.class, RepositoryServiceAsync.class );
-            checkService( SecurityService.class, SecurityServiceAsync.class );
         } catch (Exception e) {
             fail("Async interface is not in sync with service interface. For RepositoryService you can run AsyncInterfaceGenerator.");
         }

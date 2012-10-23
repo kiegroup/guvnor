@@ -40,7 +40,6 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.decisiontable.DecisionTableResources;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;

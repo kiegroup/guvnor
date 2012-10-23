@@ -16,41 +16,20 @@
 
 package org.drools.guvnor.server;
 
-import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {
 
-    private final Identity identity;
-
-    public CategoryFilter(Identity identity) {
-        this.identity = identity;
-    }
-
     public boolean accept(Object artifact, String action) {
-        if ( !(artifact instanceof String) ){
+        if (!(artifact instanceof String)) {
             return false;
         }
-        if (identity == null) {
-            // TODO for tests only ... Behaves like the pre-seam3 code: tests should be fixed to not require this!
-            return true;
-        }
-        return identity.hasPermission( new CategoryPathType( (String) artifact ), action );
 
-    }
-
-    public boolean acceptNavigate(String parentPath, String child) {
-        if (identity == null) {
-            // TODO for tests only ... Behaves like the pre-seam3 code: tests should be fixed to not require this!
-            return true;
-        }
-        return identity.hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
-
+        return true;
     }
 
     String makePath(String parentPath, String child) {
-        return (parentPath == null || parentPath.equals( "/" ) || parentPath.equals( "" )) ? child : parentPath + "/" + child;
+        return (parentPath == null || parentPath.equals("/") || parentPath.equals("")) ? child : parentPath + "/" + child;
     }
 
 }

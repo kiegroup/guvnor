@@ -30,7 +30,6 @@ import org.drools.repository.utils.IOUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -199,9 +198,6 @@ public abstract class GuvnorIntegrationTest {
     protected RepositoryCategoryService repositoryCategoryService;
 
     @Inject
-    protected Identity identity;
-
-    @Inject
     protected Credentials credentials;
 
     @Inject
@@ -236,11 +232,11 @@ public abstract class GuvnorIntegrationTest {
     protected void loginAs(String username) {
         credentials.setUsername(username);
         credentials.setCredential(new PasswordCredential(username));
-        identity.login();
+//        identity.login();
     }
 
     protected void logoutAs(String username) {
-        identity.logout();
+//        identity.logout();
         credentials.clear();
     }
 

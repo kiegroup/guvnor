@@ -21,40 +21,30 @@ import java.util.List;
 
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
-import org.drools.guvnor.server.AssetItemFilter;
 import org.drools.repository.AssetItem;
-import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.security.Identity;
 
 public class ArchivedAssetPageRowBuilder
     implements PageRowBuilder<PageRequest, Iterator<AssetItem>> {
 
     private PageRequest         pageRequest;
     private Iterator<AssetItem> iterator;
-    private Identity identity;
 
     public List<AdminArchivedPageRow> build() {
         validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
-        RepositoryFilter filter = new AssetItemFilter(identity);
         List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>();
         while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
             AssetItem archivedAssetItem = iterator.next();
 
-            // Filter surplus assets
-            if ( filter.accept( archivedAssetItem,
-                                "read" ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( makeAdminArchivedPageRow( archivedAssetItem ) );
-                }
-                skipped++;
+            // Cannot use AssetItemIterator.skip() as it skips non-filtered
+            // assets whereas startRowIndex is the index of the
+            // first displayed asset (i.e. filtered)
+            if (skipped >= startRowIndex) {
+                rowList.add(makeAdminArchivedPageRow(archivedAssetItem));
             }
+            skipped++;
 
         }
         return rowList;
@@ -84,11 +74,6 @@ public class ArchivedAssetPageRowBuilder
 
     public ArchivedAssetPageRowBuilder withPageRequest(PageRequest pageRequest) {
         this.pageRequest = pageRequest;
-        return this;
-    }
-
-    public ArchivedAssetPageRowBuilder withIdentity(Identity identity) {
-        this.identity = identity;
         return this;
     }
 

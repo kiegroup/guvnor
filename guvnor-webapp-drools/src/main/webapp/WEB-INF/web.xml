@@ -19,7 +19,7 @@
   </context-param>
   <context-param>
     <param-name>resteasy.providers</param-name>
-    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider,org.drools.guvnor.server.security.BasicAuthentication</param-value>
+    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider</param-value>
   </context-param>
 
   <context-param>
@@ -115,10 +115,6 @@
   <servlet>
     <servlet-name>guvnorAPI</servlet-name>
     <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>securityService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>moduleService</servlet-name>
@@ -309,10 +305,6 @@
   <servlet-mapping>
     <servlet-name>verificationService</servlet-name>
     <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>securityService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>moduleService</servlet-name>

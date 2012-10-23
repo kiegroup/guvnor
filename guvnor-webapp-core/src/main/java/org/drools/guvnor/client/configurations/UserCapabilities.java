@@ -29,31 +29,27 @@ public class UserCapabilities {
 
     public static boolean canCreateNewAsset(Identity identity) {
         return identity.hasRole(AppRoles.ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
+                || identity.hasRole(AppRoles.REPOSITORY_EDITOR);
     }
 
     public static boolean canSeeModulesTree(Identity identity) {
         return identity.hasRole(AppRoles.ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER)
-                || identity.hasRole(AppRoles.PACKAGE_READONLY);
+                || identity.hasRole(AppRoles.REPOSITORY_EDITOR)
+                || identity.hasRole(AppRoles.REPOSITORY_VIEWER);
     }
 
     public static boolean canSeeStatuses(Identity identity) {
         return identity.hasRole(AppRoles.ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
+                || identity.hasRole(AppRoles.REPOSITORY_EDITOR);
     }
 
     public static boolean canSeeQA(Identity identity) {
         return identity.hasRole(AppRoles.ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_DEVELOPER);
+                || identity.hasRole(AppRoles.REPOSITORY_EDITOR);
     }
 
     public static boolean canSeeDeploymentTree(Identity identity) {
         return identity.hasRole(AppRoles.ADMIN)
-                || identity.hasRole(AppRoles.PACKAGE_ADMIN);
+                || identity.hasRole(AppRoles.REPOSITORY_EDITOR);
     }
 }

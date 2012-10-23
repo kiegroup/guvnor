@@ -21,15 +21,11 @@ import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
 import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.server.repository.Preferred;
-import org.drools.guvnor.server.security.AdminType;
-import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.drools.repository.utils.AssetValidator;
-import org.jboss.seam.security.Identity;
 
 import java.io.*;
 import java.security.Principal;
@@ -58,9 +54,6 @@ public class WebDAVImpl
     protected RulesRepository                rulesRepository;
 
     @Inject
-    protected Identity                       identity;
-
-    @Inject
     protected AssetValidator                 assetValidator;
 
     public ITransaction begin(final Principal principal) {
@@ -82,7 +75,7 @@ public class WebDAVImpl
     public void createFolder(ITransaction iTransaction,
                              String uri) {
         String[] path = getPath( uri );
-        if ( isPackages( path ) && isAdmin() ) {
+        if ( isPackages( path ) ) {
             if ( path.length > 2 ) {
                 throw new UnsupportedOperationException( "Can't nest packages." );
             }
@@ -104,8 +97,7 @@ public class WebDAVImpl
         //for mac OSX, ignore these annoying things
         if ( uri.endsWith( ".DS_Store" ) ) return;
         String[] path = getPath( uri );
-        if ( isPackages( path ) && checkPackagePermission( path[1],
-                                                           RoleType.PACKAGE_ADMIN.getName() ) ) {
+        if ( isPackages( path ) ) {
             if ( path.length > 3 ) {
                 throw new UnsupportedOperationException( "Can't do nested packages." );
             }
@@ -169,7 +161,7 @@ public class WebDAVImpl
             if ( path.length == 1 ) {
                 listPackages( rulesRepository,
                               result );
-            } else if ( checkPackagePermissionIfReadOnly( path ) ) {
+            } else {
                 handleReadOnlyPackages( rulesRepository,
                                         path,
                                         result );
@@ -262,8 +254,7 @@ public class WebDAVImpl
         while ( it.hasNext() ) {
             ModuleItem pkg = it.next();
             String packageName = pkg.getName();
-            if ( !pkg.isArchived() && checkPackagePermission( packageName,
-                                                              RoleType.PACKAGE_READONLY.getName() ) ) {
+            if ( !pkg.isArchived() ) {
                 result.add( packageName );
             }
         }
@@ -276,12 +267,12 @@ public class WebDAVImpl
             return new Date();
         }
 
-        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isPackages( path ) ) {
             return getCreationDateForPackage( rulesRepository,
                                               path );
         }
 
-        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isSnaphosts( path ) ) {
             return getCreationTimeForSnapshotPackage( rulesRepository,
                                                       path );
         }
@@ -333,12 +324,12 @@ public class WebDAVImpl
         if ( path.length < 2 ) {
             return new Date();
         }
-        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isPackages( path ) ) {
             return getLastModifiedForPackage( rulesRepository,
                                               path );
         }
 
-        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isSnaphosts( path ) ) {
             return getLastModifiedForSnaphotPackage( rulesRepository,
                                                      path );
         }
@@ -405,13 +396,13 @@ public class WebDAVImpl
             return createStoredObject( uri );
         }
 
-        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isPackages( path ) ) {
             return getStoredObjectForReadOnlyPackages( uri,
                                                        rulesRepository,
                                                        path );
         }
 
-        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isSnaphosts( path ) ) {
             return getStoredObjectForReadOnlySnapshots( uri,
                                                         rulesRepository,
                                                         path );
@@ -536,11 +527,11 @@ public class WebDAVImpl
 
     private InputStream getContent(String uri) {
         String[] path = getPath( uri );
-        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isPackages( path ) ) {
             return getAssetData( loadAssetItemFromPackage( path ) );
         }
 
-        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isSnaphosts( path ) ) {
             return getAssetData( loadAssetItemFromPackageSnaphot( path ) );
         }
 
@@ -563,7 +554,7 @@ public class WebDAVImpl
                                   String uri) {
         String[] path = getPath( uri );
         try {
-            if ( path.length == 3 && isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            if ( path.length == 3 && isPackages( path ) ) {
                 return loadAssetItemFromPackage( path ).getContentLength();
             }
 
@@ -571,7 +562,7 @@ public class WebDAVImpl
                 return loadAssetItemFromPackage( path ).getContentLength();
             }
 
-            if ( path.length == 4 && isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            if ( path.length == 4 && isSnaphosts( path ) ) {
                 return loadAssetItemFromPackageSnaphot( path ).getContentLength();
             }
 
@@ -711,7 +702,7 @@ public class WebDAVImpl
         if ( path.length == 0 || path.length == 1 ) {
             throw new IllegalArgumentException();
         }
-        if ( isPackages( path ) && checkPackagePermissionIfDeveloper( path ) ) {
+        if ( isPackages( path ) ) {
             ModuleItem packageItem = loadPackageFromRepository( path[1] );
             if ( path.length == 3 ) {
                 //delete asset
@@ -758,7 +749,7 @@ public class WebDAVImpl
             return 0;
         }
         String[] path = getPath( uri );
-        if ( isPackages( path ) && checkPackagePermissionIfDeveloper( path ) ) {
+        if ( isPackages( path ) ) {
             if ( path.length != 3 ) {
                 throw new IllegalArgumentException( "Not a valid resource path " + uri );
             }
@@ -870,17 +861,6 @@ public class WebDAVImpl
         return uri.substring( 1 ).split( "/" );
     }
 
-    private boolean isAdmin() {
-        return identity.hasPermission( new AdminType(),
-                                       RoleType.ADMIN.getName() );
-    }
-
-    private boolean checkPackagePermission(String packageName,
-                                           String type) {
-        return identity.hasPermission( new WebDavPackageNameType( packageName ),
-                                       type );
-    }
-
     private AssetItem loadAssetItemFromPackage(String[] path) {
         return loadAssetItemFromPackageItem( loadPackageFromRepository(
                                              path[1] ),
@@ -923,17 +903,7 @@ public class WebDAVImpl
 
     private boolean isPermission(String[] path,
                                  int pathIndex) {
-        return path.length == pathIndex && checkPackagePermissionIfReadOnly( path );
-    }
-
-    private boolean checkPackagePermissionIfReadOnly(String[] path) {
-        return checkPackagePermission( path[1],
-                                       RoleType.PACKAGE_READONLY.getName() );
-    }
-
-    private boolean checkPackagePermissionIfDeveloper(String[] path) {
-        return checkPackagePermission( path[1],
-                                       RoleType.PACKAGE_DEVELOPER.getName() );
+        return path.length == pathIndex;
     }
 
     private boolean isPackages(String[] path) {

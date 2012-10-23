@@ -27,11 +27,9 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +42,6 @@ public class RepositoryCategoryOperations {
     @Inject @Preferred
     private RulesRepository rulesRepository;
 
-    @Inject
-    private ServiceSecurity serviceSecurity;
-
-    @Inject
-    private Identity identity;
 
     @Deprecated
     public void setRulesRepositoryForTest(RulesRepository repository) {
@@ -59,16 +52,12 @@ public class RepositoryCategoryOperations {
     @SuppressWarnings("rawtypes")
     protected String[] loadChildCategories(String categoryPath) {
         List<String> resultList = new ArrayList<String>();
-        CategoryFilter filter = new CategoryFilter(identity);
 
         CategoryItem item = rulesRepository.loadCategory(categoryPath);
         List children = item.getChildTags();
         for (Object aChildren : children) {
             String childCategoryName = ((CategoryItem) aChildren).getName();
-            if (filter.acceptNavigate(categoryPath,
-                    childCategoryName)) {
-                resultList.add(childCategoryName);
-            }
+            resultList.add(childCategoryName);
         }
 
         return resultList.toArray(new String[resultList.size()]);
@@ -107,13 +96,6 @@ public class RepositoryCategoryOperations {
                                                         int numRows,
                                                         String tableConfig) throws SerializationException {
 
-        // First check the user has permission to access this categoryPath.
-        if (!serviceSecurity.hasPermissionAnalystReadWithCategoryPathType(categoryPath)) {
-            TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
-            return handler.loadRuleListTable(new AssetItemPageResult());
-
-        }
-
         AssetItemPageResult result = rulesRepository.findAssetsByCategory(categoryPath,
                 false,
                 skip,
@@ -141,7 +123,6 @@ public class RepositoryCategoryOperations {
 
         List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
                 .withPageRequest(request)
-                .withIdentity(identity)
                 .withContent(result.assets.iterator())
                 .build();
 

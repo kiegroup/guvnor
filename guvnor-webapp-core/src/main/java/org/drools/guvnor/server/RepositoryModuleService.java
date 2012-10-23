@@ -43,7 +43,6 @@ import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
-import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -52,15 +51,14 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
 public class RepositoryModuleService
@@ -73,12 +71,6 @@ public class RepositoryModuleService
 
     @Inject @Preferred
     private RulesRepository            rulesRepository;
-
-    @Inject
-    private ServiceSecurity            serviceSecurity;
-
-    @Inject
-    private Identity                   identity;
 
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
@@ -104,10 +96,8 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public Module[] listModules(String workspace) {
-        RepositoryFilter pf = new ModuleFilter( identity );
         return repositoryModuleOperations.listModules( false,
-                                                       workspace,
-                                                       pf );
+                                                       workspace );
     }
 
     @WebRemote
@@ -121,8 +111,7 @@ public class RepositoryModuleService
     public Module[] listArchivedModules(String workspace) {
         return repositoryModuleOperations.listModules(
                                                        true,
-                                                       workspace,
-                                                       new ModuleFilter( identity ) );
+                                                       workspace );
     }
 
     public Module loadGlobalModule() {
@@ -164,14 +153,13 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public String buildModuleSource(String moduleUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( moduleUUID );
         return repositoryModuleOperations.buildModuleSource( moduleUUID );
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public String copyModule(String sourceModuleName,
                              String destModuleName) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.copyModules( sourceModuleName,
                                                        destModuleName );
     }
@@ -179,7 +167,6 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public void removeModule(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
         repositoryModuleOperations.removeModule( uuid );
     }
 
@@ -187,8 +174,6 @@ public class RepositoryModuleService
     @LoggedIn
     public String renameModule(String uuid,
                                String newName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
-
         return repositoryModuleOperations.renameModule( uuid,
                                                         newName );
     }
@@ -196,7 +181,6 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public byte[] exportModules(String moduleName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
         return repositoryModuleOperations.exportModules( moduleName );
     }
 
@@ -218,11 +202,11 @@ public class RepositoryModuleService
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public String createModule(String name,
                                String description,
                                String format,
                                String[] workspace) throws RulesRepositoryException {
-        serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.createModule( name,
                                                         description,
                                                         format,
@@ -242,10 +226,10 @@ public class RepositoryModuleService
      * return createPackage( name, description, new String[]{} ); }
      */
     @WebRemote
+    @Roles({"ADMIN"})
     public String createSubModule(String name,
                                   String description,
                                   String parentNode) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
         return repositoryModuleOperations.createSubModule( name,
                                                            description,
                                                            parentNode );
@@ -255,17 +239,12 @@ public class RepositoryModuleService
     @LoggedIn
     public Module loadModule(String uuid) {
         ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
-        // the uuid passed in is the uuid of that deployment bundle, not the
-        // module uudi.
-        // we have to figure out the module name.
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleItem.getName() );
         return repositoryModuleOperations.loadModule( moduleItem );
     }
 
     @WebRemote
     @LoggedIn
     public void saveModule(Module data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         repositoryModuleOperations.saveModule( data );
     }
 
@@ -297,7 +276,6 @@ public class RepositoryModuleService
                                       String category,
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         return repositoryModuleOperations.buildModule( packageUUID,
                                                        force,
                                                        buildMode,
@@ -313,7 +291,6 @@ public class RepositoryModuleService
 	public void createModuleSnapshot(String moduleName, String snapshotName,
 			boolean replaceExisting, String comment)
 			throws SerializationException {
-		serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
 		repositoryModuleOperations.createModuleSnapshot(moduleName,
 				snapshotName, replaceExisting, comment, false);
 
@@ -324,7 +301,6 @@ public class RepositoryModuleService
 	public void createModuleSnapshot(String moduleName, String snapshotName,
 			boolean replaceExisting, String comment,
 			boolean checkIsBinaryUpToDate) throws SerializationException {
-		serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
 		repositoryModuleOperations.createModuleSnapshot(moduleName,
 				snapshotName, replaceExisting, comment, checkIsBinaryUpToDate);
 	}
@@ -335,7 +311,6 @@ public class RepositoryModuleService
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( moduleName );
         repositoryModuleOperations.copyOrRemoveSnapshot( moduleName,
                                                          snapshotName,
                                                          delete,
@@ -345,20 +320,18 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public String[] listRulesInPackage(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         return repositoryModuleOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
     @LoggedIn
     public String[] listImagesInModule(String moduleName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleName );
         return repositoryModuleOperations.listImagesInModule( moduleName );
     }
 
     @WebRemote
+    @Roles({"ADMIN"})
     public void rebuildSnapshots() throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
 
         Iterator<ModuleItem> pkit = rulesRepository.listModules();
         while ( pkit.hasNext() ) {
@@ -381,8 +354,6 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public SnapshotInfo[] listSnapshots(String moduleName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( moduleName );
-
         String[] snaps = rulesRepository.listModuleSnapshots( moduleName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
         for ( int i = 0; i < snaps.length; i++ ) {
@@ -397,8 +368,6 @@ public class RepositoryModuleService
     @LoggedIn
     public SnapshotInfo loadSnapshotInfo(String packageName,
                                          String snapshotName) {
-        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
-
         return moduleItemToSnapshotItem( snapshotName,
                                          rulesRepository.loadModuleSnapshot( packageName,
                                                                              snapshotName ) );
@@ -416,7 +385,6 @@ public class RepositoryModuleService
     @WebRemote
     @LoggedIn
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid( packageUUID );
 
         ModuleItem pkg = this.rulesRepository.loadModuleByUUID( packageUUID );
         List<String> res = new ArrayList<String>();

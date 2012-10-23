@@ -57,7 +57,6 @@ import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.Preferred;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.util.AssetFormatHelper;
@@ -70,14 +69,12 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.ModuleItem;
-import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.drools.repository.utils.AssetValidator;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.uberfire.security.Identity;
 
 /**
  * Handles operations for Assets
@@ -95,9 +92,6 @@ public class RepositoryAssetOperations {
 
     @Inject
     private Identity identity;
-
-    @Inject
-    private Credentials credentials;
 
     @Inject
     private MailboxService mailboxService;
@@ -281,20 +275,17 @@ public class RepositoryAssetOperations {
     protected TableDataResult loadArchivedAssets(int skip,
             int numRows) {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
-        RepositoryFilter filter = new AssetItemFilter(identity);
 
         AssetItemIterator it = rulesRepository.findArchivedAssets();
         it.skip(skip);
         int count = 0;
         while (it.hasNext()) {
 
-            AssetItem archived = (AssetItem) it.next();
+            AssetItem archived = it.next();
 
-            if (filter.accept(archived,
-                    "read")) {
-                result.add(createArchivedRow(archived));
-                count++;
-            }
+            result.add(createArchivedRow(archived));
+            count++;
+
             if (count == numRows) {
                 break;
             }
@@ -338,7 +329,6 @@ public class RepositoryAssetOperations {
 
         List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder()
                 .withPageRequest(request)
-                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -413,14 +403,9 @@ public class RepositoryAssetOperations {
                 searchArchived);
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
-        RepositoryFilter filter = new AssetItemFilter(identity);
-
         while (it.hasNext()) {
             AssetItem ai = it.next();
-            if (filter.accept(ai,
-                    RoleType.PACKAGE_READONLY.getName())) {
-                resultList.add(ai);
-            }
+            resultList.add(ai);
         }
 
         TableDisplayHandler handler = new TableDisplayHandler("searchresults");
@@ -444,7 +429,6 @@ public class RepositoryAssetOperations {
             int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new ModuleFilter(identity);
 
         AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
@@ -452,10 +436,7 @@ public class RepositoryAssetOperations {
             AssetItem assetItem = assetItemIterator.next();
             Module data = new Module();
             data.setUuid(assetItem.getModule().getUUID());
-            if (filter.accept(data,
-                    RoleType.PACKAGE_READONLY.getName())) {
-                resultList.add(assetItem);
-            }
+            resultList.add(assetItem);
         }
 
         TableDisplayHandler handler = new TableDisplayHandler("searchresults");
@@ -510,7 +491,6 @@ public class RepositoryAssetOperations {
 
         List<AssetPageRow> rowList = new AssetPageRowBuilder()
                 .withPageRequest(request)
-                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -547,7 +527,6 @@ public class RepositoryAssetOperations {
         // Populate response
         List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
                 .withPageRequest(request)
-                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -564,7 +543,7 @@ public class RepositoryAssetOperations {
     }
 
     protected void lockAsset(String uuid) {
-        String userName = credentials.getUsername();
+        String userName = identity.getName();
 
         log.info("Locking asset uuid=" + uuid + " for user [" + userName + "]");
 

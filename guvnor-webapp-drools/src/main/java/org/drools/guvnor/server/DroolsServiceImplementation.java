@@ -43,17 +43,13 @@ public class DroolsServiceImplementation
 
     private RulesRepository            rulesRepository;
 
-    private ServiceSecurity            serviceSecurity;
-
     public DroolsServiceImplementation() {
         // Never used, just here because the CDI spec says there has to be an empty constructor
     }
 
     @Inject
-    public DroolsServiceImplementation(@Preferred RulesRepository rulesRepository,
-                                       ServiceSecurity serviceSecurity) {
+    public DroolsServiceImplementation(@Preferred RulesRepository rulesRepository) {
         this.rulesRepository = rulesRepository;
-        this.serviceSecurity = serviceSecurity;
     }
 
     @WebRemote

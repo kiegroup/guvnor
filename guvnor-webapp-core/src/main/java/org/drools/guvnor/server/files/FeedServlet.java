@@ -19,9 +19,6 @@ package org.drools.guvnor.server.files;
 import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.repository.Preferred;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.ModuleNameType;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.repository.AssetItem;
@@ -29,7 +26,6 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.Identity;
 import org.mvel2.templates.TemplateRuntime;
 
 import javax.inject.Inject;
@@ -46,9 +42,6 @@ public class FeedServlet extends RepositoryServlet {
 
     @Inject @Preferred
     private RulesRepository rulesRepository;
-
-    @Inject
-    private Identity identity;
 
     @Override
     protected void doGet(final HttpServletRequest request,
@@ -97,7 +90,6 @@ public class FeedServlet extends RepositoryServlet {
         String assetName = request.getParameter("assetName");
         String packageName = request.getParameter("package");
         AssetItem asset = rulesRepository.loadModule(packageName).loadAsset(assetName);
-        checkPackageReadPermission(asset.getModuleName());
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         entries.add(new AtomFeed.AtomEntry(request,
@@ -123,7 +115,6 @@ public class FeedServlet extends RepositoryServlet {
                                 HttpServletResponse response) throws IOException {
         String cat = request.getParameter("name");
         String status = request.getParameter("status");
-        checkCategoryPermission(cat);
         AssetItemPageResult pg = rulesRepository.findAssetsByCategory(cat,
                 false,
                 0,
@@ -145,15 +136,9 @@ public class FeedServlet extends RepositoryServlet {
         response.getWriter().print(feed.getAtom());
     }
 
-    void checkCategoryPermission(String cat) {
-        identity.checkPermission(new CategoryPathType(cat),
-                RoleType.ANALYST_READ.getName());
-    }
-
     private void doPackageFeed(HttpServletRequest request,
                                HttpServletResponse response) throws IOException {
         String packageName = request.getParameter("name");
-        checkPackageReadPermission(packageName);
 
         ModuleItem pkg = rulesRepository.loadModule(packageName);
 
@@ -188,11 +173,6 @@ public class FeedServlet extends RepositoryServlet {
                 }
             }
         }
-    }
-
-    void checkPackageReadPermission(String packageName) {
-        identity.checkPermission(new ModuleNameType(packageName),
-                RoleType.PACKAGE_READONLY.getName());
     }
 
     public static class AtomFeed {
