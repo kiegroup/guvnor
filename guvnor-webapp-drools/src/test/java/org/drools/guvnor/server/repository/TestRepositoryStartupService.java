@@ -19,8 +19,6 @@ package org.drools.guvnor.server.repository;
 import java.io.File;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Specializes;
 import javax.jcr.Repository;
 
@@ -30,7 +28,6 @@ import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepository;
-import org.jboss.solder.core.Veto;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
