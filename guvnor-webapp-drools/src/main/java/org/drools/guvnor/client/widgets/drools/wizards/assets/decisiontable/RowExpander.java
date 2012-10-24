@@ -81,9 +81,9 @@ public class RowExpander {
     }
 
     private void addRowNumberColumn() {
-        ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUE,
-                                            new DTCellValue52() );
+        ColumnValues cv = new RowNumberColumnValues( columns,
+                                                     EMPTY_VALUE,
+                                                     new DTCellValue52() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getRowNumberCol(),
                                   cv );
@@ -91,9 +91,9 @@ public class RowExpander {
     }
 
     private void addRowDescriptionColumn() {
-        ColumnValues cv = new ColumnValues( columns,
-                                            EMPTY_VALUE,
-                                            new DTCellValue52() );
+        ColumnValues cv = new RowDescriptionColumnValues( columns,
+                                                          EMPTY_VALUE,
+                                                          new DTCellValue52() );
         cv.setExpandColumn( false );
         this.expandedColumns.put( dtable.getDescriptionCol(),
                                   cv );
@@ -510,6 +510,48 @@ public class RowExpander {
                     columns.get( myIndex - 1 ).advanceColumnValue();
                 }
             }
+        }
+
+    }
+
+    /**
+     * Container for Row Number column values
+     */
+    static class RowNumberColumnValues extends ColumnValues {
+
+        RowNumberColumnValues(List<ColumnValues> columns,
+                              List<DTCellValue52> values,
+                              DTCellValue52 defaultValue) {
+            super( columns,
+                   values,
+                   defaultValue );
+        }
+
+        @Override
+        DTCellValue52 getCurrentValue() {
+            //GUVNOR-1960: Always return a new instance
+            return new DTCellValue52();
+        }
+
+    }
+
+    /**
+     * Container for Row Description column values
+     */
+    static class RowDescriptionColumnValues extends ColumnValues {
+
+        RowDescriptionColumnValues(List<ColumnValues> columns,
+                                   List<DTCellValue52> values,
+                                   DTCellValue52 defaultValue) {
+            super( columns,
+                   values,
+                   defaultValue );
+        }
+
+        @Override
+        DTCellValue52 getCurrentValue() {
+            //GUVNOR-1960: Always return a new instance
+            return new DTCellValue52();
         }
 
     }

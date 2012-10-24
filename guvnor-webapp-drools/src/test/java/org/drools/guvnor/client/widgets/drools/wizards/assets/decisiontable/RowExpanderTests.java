@@ -2197,4 +2197,79 @@ public class RowExpanderTests {
 
     }
 
+    @Test
+    //GUVNOR-1960
+    public void testExpansionObjectUniqueness() {
+        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+
+        String pkg = "package org.test\n"
+                     + "declare Driver\n"
+                     + "gender: String\n"
+                     + "end\n";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List<String> enums = new ArrayList<String>();
+
+        enums.add( "'Driver.gender' : ['M', 'F']" );
+
+        SuggestionCompletionEngine sce = loader.getSuggestionEngine( pkg,
+                                                                     new ArrayList<JarInputStream>(),
+                                                                     new ArrayList<DSLTokenizedMappingFile>(),
+                                                                     enums );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "gender" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c1 );
+        dtable.getConditions().add( p1 );
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        List<ColumnValues> columns = re.getColumns();
+        assertEquals( 3,
+                      columns.size() );
+
+        assertEquals( 1,
+                      columns.get( 0 ).values.size() );
+        assertEquals( 1,
+                      columns.get( 1 ).values.size() );
+        assertEquals( 2,
+                      columns.get( 2 ).values.size() );
+
+        RowIterator ri = re.iterator();
+        assertTrue( ri.hasNext() );
+
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
+        while ( ri.hasNext() ) {
+            List<DTCellValue52> row = ri.next();
+            rows.add( row );
+        }
+
+        assertEquals( 2,
+                      rows.size() );
+
+        assertEquals( "",
+                      rows.get( 0 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 0 ).get( 1 ).getStringValue() );
+        assertEquals( "M",
+                      rows.get( 0 ).get( 2 ).getStringValue() );
+
+        assertEquals( "",
+                      rows.get( 1 ).get( 0 ).getStringValue() );
+        assertEquals( "",
+                      rows.get( 1 ).get( 1 ).getStringValue() );
+        assertEquals( "F",
+                      rows.get( 1 ).get( 2 ).getStringValue() );
+
+        assertTrue( rows.get( 0 ).get( 0 ) != rows.get( 1 ).get( 0 ) );
+        assertTrue( rows.get( 0 ).get( 1 ) != rows.get( 1 ).get( 1 ) );
+    }
+
 }
