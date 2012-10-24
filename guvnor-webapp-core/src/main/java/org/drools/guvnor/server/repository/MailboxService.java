@@ -30,6 +30,8 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.GuvnorBootstrapConfiguration;
+import org.drools.repository.RepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
 import org.drools.repository.UserInfo.InboxEntry;
