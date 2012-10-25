@@ -29,7 +29,6 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.ModuleAssembler;
 import org.drools.guvnor.server.builder.ModuleAssemblerManager;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -38,9 +37,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleHistoryIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
-import org.jboss.seam.security.annotations.LoggedIn;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -98,7 +94,6 @@ import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
 @Path("/packages")
 @RequestScoped
 @Named
-@LoggedIn
 @GZIP
 public class PackageResource extends Resource {
     private HttpHeaders headers;

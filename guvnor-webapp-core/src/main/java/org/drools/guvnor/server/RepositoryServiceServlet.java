@@ -18,25 +18,16 @@ package org.drools.guvnor.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.guvnor.client.rpc.AssetService;
-import org.drools.guvnor.client.rpc.CategoryService;
-import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.NotLoggedInException;
 
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.jboss.solder.core.Veto;
 
@@ -62,31 +53,10 @@ public class RepositoryServiceServlet
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
-        if ( e.getCause() instanceof AuthorizationException ) {
-            HttpServletResponse response = getThreadLocalResponse();
-            PrintWriter writer = null;
-            try {
-                writer = response.getWriter();
-                log.error( e.getMessage(),
-                        e.getCause() );
-                e.printStackTrace();
-                response.setContentType( "text/plain" );
-                response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
-                writer.write( "Sorry, insufficient permissions to perform this action." );
-            } catch (IOException ex) {
-                getServletContext().log( "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-                        ex );
-            } finally {
-                close( writer );
-            }
-        } else if ( e.getCause() instanceof RulesRepositoryException ) {
+        if ( e.getCause() instanceof RulesRepositoryException ) {
             log.error( e.getMessage(),
                        e.getCause() );
             sendErrorMessage( e.getCause().getMessage() );
-        } else if ( e.getCause() instanceof NotLoggedInException ) {
-            log.error( e.getMessage(),
-                       e.getCause() );
-            sendErrorMessage( "You are not logged in. Please refresh your browser and try again." );
         } else {
             if ( e.getCause() != null ) {
                 log.error( e.getMessage(),

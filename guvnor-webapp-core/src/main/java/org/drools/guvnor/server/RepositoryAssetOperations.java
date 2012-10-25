@@ -74,7 +74,7 @@ import org.drools.repository.VersionableItem;
 import org.drools.repository.utils.AssetValidator;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 /**
  * Handles operations for Assets
@@ -91,7 +91,7 @@ public class RepositoryAssetOperations {
     private Backchannel backchannel;
 
     @Inject
-    private Identity identity;
+    private Subject subject;
 
     @Inject
     private MailboxService mailboxService;
@@ -543,7 +543,7 @@ public class RepositoryAssetOperations {
     }
 
     protected void lockAsset(String uuid) {
-        String userName = identity.getName();
+        String userName = subject.getName();
 
         log.info("Locking asset uuid=" + uuid + " for user [" + userName + "]");
 

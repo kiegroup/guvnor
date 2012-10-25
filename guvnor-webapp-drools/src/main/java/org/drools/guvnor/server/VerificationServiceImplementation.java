@@ -33,8 +33,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 import java.util.Set;
 import javax.inject.Inject;
@@ -58,8 +56,6 @@ public class VerificationServiceImplementation
     @Inject
     protected RepositoryAssetService repositoryAssetService;
 
-    @WebRemote
-    @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
@@ -71,8 +67,6 @@ public class VerificationServiceImplementation
         return report;
     }
 
-    @WebRemote
-    @LoggedIn
     public AnalysisReport verifyAsset(Asset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
         return verify(
@@ -81,8 +75,6 @@ public class VerificationServiceImplementation
                         loadWorkingSets(activeWorkingSetIds)));
     }
 
-    @WebRemote
-    @LoggedIn
     public AnalysisReport verifyAssetWithoutVerifiersRules(Asset asset,
        Set<WorkingSetConfigData> activeWorkingSets) throws SerializationException {
        return verify(

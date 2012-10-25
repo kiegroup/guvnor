@@ -15,24 +15,17 @@
  */
 package org.drools.guvnor.server;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.CategoryService;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.server.builder.PageResponseBuilder;
-import org.drools.guvnor.server.security.CategoryPathType;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.remoting.annotations.WebRemote;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.jboss.seam.security.annotations.LoggedIn;
 import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
@@ -46,13 +39,10 @@ public class RepositoryCategoryService
     @Inject
     private RepositoryCategoryOperations repositoryCategoryOperations;
 
-    @WebRemote
-    @LoggedIn
     public String[] loadChildCategories(String categoryPath) {
         return repositoryCategoryOperations.loadChildCategories( categoryPath );
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public Boolean createCategory(String path,
                                   String name,
@@ -62,8 +52,6 @@ public class RepositoryCategoryService
                                                             description );
     }
 
-    @WebRemote
-    @LoggedIn
     public void renameCategory(String fullPathAndName,
                                String newName) {
         repositoryCategoryOperations.renameCategory( fullPathAndName,
@@ -79,8 +67,6 @@ public class RepositoryCategoryService
      * 
      * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
                                                      int numRows,
@@ -91,8 +77,6 @@ public class RepositoryCategoryService
                                                                        tableConfig );
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -104,8 +88,6 @@ public class RepositoryCategoryService
         return repositoryCategoryOperations.loadRuleListForCategories( request );
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeCategory(String categoryPath) throws SerializationException {
         repositoryCategoryOperations.removeCategory( categoryPath );
     }

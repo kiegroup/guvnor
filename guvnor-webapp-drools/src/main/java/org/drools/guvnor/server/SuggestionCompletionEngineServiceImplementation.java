@@ -24,8 +24,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 import javax.inject.Inject;
 
@@ -37,8 +35,6 @@ public class SuggestionCompletionEngineServiceImplementation
     @Inject @Preferred
     private RulesRepository rulesRepository;
 
-    @WebRemote
-    @LoggedIn
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
         //No need to check role based permission here. Package auto completion suggestion should be available to everybody.
         //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );

@@ -85,8 +85,6 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -126,20 +124,14 @@ public class ServiceImplementation
     @Inject
     private Backchannel                backchannel;
 
-    @WebRemote
-    @LoggedIn
     public String[] listWorkspaces() {
         return rulesRepository.listWorkspaces();
     }
 
-    @WebRemote
-    @LoggedIn
     public void createWorkspace(String workspace) {
         rulesRepository.createWorkspace(workspace);
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeWorkspace(String workspace) {
         rulesRepository.removeWorkspace( workspace );
     }
@@ -147,8 +139,6 @@ public class ServiceImplementation
     /**
      * For the time being, module == package
      */
-    @WebRemote
-    @LoggedIn
     public void updateWorkspace(String workspace,
                                 String[] selectedModules,
                                 String[] unselectedModules) {
@@ -168,8 +158,6 @@ public class ServiceImplementation
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
      */
-    @WebRemote
-    @LoggedIn
     public String createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
@@ -213,8 +201,6 @@ public class ServiceImplementation
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
      */
-    @WebRemote
-    @LoggedIn
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException {
 
         String assetName = configuration.getAssetName();
@@ -234,8 +220,6 @@ public class ServiceImplementation
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
      */
-    @WebRemote
-    @LoggedIn
     public String createNewRule(NewAssetWithContentConfiguration< ? extends PortableObject> configuration) throws SerializationException {
 
         final String assetName = configuration.getAssetName();
@@ -288,8 +272,6 @@ public class ServiceImplementation
     /**
      * This will create a new asset which refers to an existing asset
      */
-    @WebRemote
-    @LoggedIn
     public String createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
         log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
@@ -312,8 +294,6 @@ public class ServiceImplementation
 
     }
 
-    @WebRemote
-    @LoggedIn
     public void deleteUncheckedRule(String uuid) {
         AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
 
@@ -330,8 +310,6 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #loadRuleListForState(StatePageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult loadRuleListForState(String stateName,
                                                 int skip,
                                                 int numRows,
@@ -347,8 +325,6 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link AbstractPagedTable}
      */
-    @WebRemote
-    @LoggedIn
     public TableConfig loadTableConfig(String listName) {
         TableDisplayHandler handler = new TableDisplayHandler( listName );
         return handler.loadTableConfig();
@@ -357,8 +333,6 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #queryMetaData(QueryMetadataPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
                                          Date createdAfter,
                                          Date createdBefore,
@@ -417,8 +391,6 @@ public class ServiceImplementation
         return data;
     }
 
-    @WebRemote
-    @LoggedIn
     public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         name = HtmlCleaner.cleanHTML( name );
@@ -426,8 +398,6 @@ public class ServiceImplementation
         return stateName;
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " REMOVING state: [" + name + "]" );
 
@@ -441,8 +411,6 @@ public class ServiceImplementation
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public void renameState(String oldName,
                             String newName) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
@@ -451,8 +419,6 @@ public class ServiceImplementation
 
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listStates() throws SerializationException {
         StateItem[] states = rulesRepository.listStates();
         String[] result = new String[states.length];
@@ -462,27 +428,20 @@ public class ServiceImplementation
         return result;
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public void clearRulesRepository() {
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( rulesRepository.getSession() );
         admin.clearRulesRepository();
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] getCustomSelectors() throws SerializationException {
         return SelectorManager.getInstance().getCustomSelectors();
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
         return repositoryModuleOperations.listRulesInPackage(RulesRepository.GLOBAL_AREA);
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
         return repositoryModuleOperations.listImagesInModule(RulesRepository.GLOBAL_AREA);
     }
@@ -490,13 +449,11 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #showLog(PageRequest)}
      */
-    @WebRemote
     @Roles({"ADMIN"})
     public LogEntry[] showLog() {
         return LoggingHelper.getMessages();
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public PageResponse<LogPageRow> showLog(PageRequest request) {
         if ( request == null ) {
@@ -527,14 +484,11 @@ public class ServiceImplementation
         return response;
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public void cleanLog() {
         LoggingHelper.cleanLog();
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] loadDropDownExpression(String[] valuePairs,
                                            String expression) {
         Map<String, String> context = new HashMap<String, String>();
@@ -571,13 +525,11 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #listUserPermissions(PageRequest)}
      */
-    @LoggedIn
     @Roles({"ADMIN"})
     public Map<String, List<String>> listUserPermissions() {
         return new PermissionManager( rulesRepository ).listUsers();
     }
 
-    @LoggedIn
     @Roles({"ADMIN"})
     public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
         if ( request == null ) {
@@ -609,7 +561,6 @@ public class ServiceImplementation
         return response;
     }
 
-    @LoggedIn
     @Roles({"ADMIN"})
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
 
@@ -617,7 +568,6 @@ public class ServiceImplementation
         return pm.retrieveUserPermissions( userName );
     }
 
-    @LoggedIn
     @Roles({"ADMIN"})
     public void updateUserPermissions(String userName,
                                       Map<String, List<String>> perms) {
@@ -629,17 +579,14 @@ public class ServiceImplementation
         rulesRepository.save();
     }
 
-    @LoggedIn
     public boolean isDoNotInstallSample() {
         return rulesRepository.isDoNotInstallSample();
     }
 
-    @LoggedIn
     public void setDoNotInstallSample() {
         rulesRepository.setDoNotInstallSample();
     }
 
-    @LoggedIn
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( rulesRepository );
@@ -647,7 +594,6 @@ public class ServiceImplementation
         rulesRepository.save();
     }
 
-    @LoggedIn
     public void createUser(String userName) {
         log.info( "Creating user permissions, user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( rulesRepository );
@@ -658,7 +604,6 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #loadInbox(InboxPageRequest)}
      */
-    @LoggedIn
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
             UserInbox ib = new UserInbox( rulesRepository );
@@ -679,7 +624,6 @@ public class ServiceImplementation
         }
     }
 
-    @LoggedIn
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -762,8 +706,6 @@ public class ServiceImplementation
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -793,8 +735,6 @@ public class ServiceImplementation
         return response;
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -854,8 +794,6 @@ public class ServiceImplementation
         return dates;
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<StatePageRow> loadRuleListForState(StatePageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -920,8 +858,6 @@ public class ServiceImplementation
      * @return True if the asset already exists in the module
      * @throws SerializationException
      */
-    @WebRemote
-    @LoggedIn
     public boolean doesAssetExistInModule(String assetName,
                                            String moduleName) throws SerializationException {
         try {

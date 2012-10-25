@@ -55,8 +55,6 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.VersionableItem;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.uberfire.security.annotations.Roles;
@@ -98,8 +96,6 @@ public class RepositoryAssetService
      * higher (i.e., package.admin, package.developer) and this role has
      * permission to access the package which the asset belongs to.
      */
-    @WebRemote
-    @LoggedIn
     public Asset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
@@ -135,21 +131,14 @@ public class RepositoryAssetService
         return packageItem;
     }
 
-    @WebRemote
-    @LoggedIn
     public Asset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets( Arrays.asList( uuids ) );
     }
 
-    @WebRemote
-    @LoggedIn
     public String checkinVersion(Asset asset) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] " );
         return repositoryAssetOperations.checkinVersion( asset );
     }
-
-    @WebRemote
-    @LoggedIn
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
@@ -158,8 +147,6 @@ public class RepositoryAssetService
                                                   comment );
     }
 
-    @WebRemote
-    @LoggedIn
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {
         //VersionableItem assetItem = rulesRepository.loadAssetByUUID( uuid );
         VersionableItem assetItem = rulesRepository.loadItemByUUID( uuid );
@@ -171,8 +158,6 @@ public class RepositoryAssetService
     /**
      * @deprecated in favour of {@link #loadArchivedAssets(PageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult loadAssetHistory(String packageUUID,
                                             String assetName) throws SerializationException {
         ModuleItem pi = rulesRepository.loadModuleByUUID( packageUUID );
@@ -181,8 +166,6 @@ public class RepositoryAssetService
         return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
-    @WebRemote
-    @LoggedIn
     @Deprecated
     public TableDataResult loadArchivedAssets(int skip,
                                               int numRows) throws SerializationException {
@@ -190,8 +173,6 @@ public class RepositoryAssetService
                                                              numRows );
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -206,8 +187,6 @@ public class RepositoryAssetService
     /**
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult listAssetsWithPackageName(String packageName,
                                                      String formats[],
                                                      int skip,
@@ -224,8 +203,6 @@ public class RepositoryAssetService
     /**
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult listAssets(String packageUuid,
                                       String formats[],
                                       int skip,
@@ -243,8 +220,6 @@ public class RepositoryAssetService
                                                      tableConfig );
     }
 
-    @WebRemote
-    @LoggedIn
     public String copyAsset(String assetUUID,
                             String newPackage,
                             String newName) {
@@ -254,8 +229,6 @@ public class RepositoryAssetService
                                           newName );
     }
 
-    @WebRemote
-    @LoggedIn
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
@@ -274,8 +247,6 @@ public class RepositoryAssetService
 
     }
 
-    @WebRemote
-    @LoggedIn
     public void promoteAssetToGlobalArea(String uuid) {
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );
 
@@ -292,14 +263,10 @@ public class RepositoryAssetService
 
     }
 
-    @WebRemote
-    @LoggedIn
     public String buildAssetSource(Asset asset) throws SerializationException {
         return repositoryAssetOperations.buildAssetSource( asset );
     }
 
-    @WebRemote
-    @LoggedIn
     public String renameAsset(String uuid,
                               String newName) {
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );
@@ -308,15 +275,11 @@ public class RepositoryAssetService
                                                       newName );
     }
 
-    @WebRemote
-    @LoggedIn
     public void archiveAsset(String uuid) {
         archiveOrUnarchiveAsset( uuid,
                                  true );
     }
 
-    @WebRemote
-    @LoggedIn
     public BuilderResult validateAsset(Asset asset) throws SerializationException {
         return repositoryAssetOperations.validateAsset( asset );
     }
@@ -326,8 +289,6 @@ public class RepositoryAssetService
                                  false );
     }
 
-    @WebRemote
-    @LoggedIn
     public void archiveAssets(String[] uuids,
                               boolean value) {
         for ( String uuid : uuids ) {
@@ -336,8 +297,6 @@ public class RepositoryAssetService
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeAsset(String uuid) {
         try {
             AssetItem item = rulesRepository.loadAssetByUUID( uuid );
@@ -351,16 +310,12 @@ public class RepositoryAssetService
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeAssets(String[] uuids) {
         for ( String uuid : uuids ) {
             removeAsset( uuid );
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -372,8 +327,6 @@ public class RepositoryAssetService
         return repositoryAssetOperations.findAssetPage( request );
     }
 
-    @WebRemote
-    @LoggedIn
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -388,8 +341,6 @@ public class RepositoryAssetService
     /**
      * @deprecated in favour of {@link #quickFindAsset(QueryPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
                                           int skip,
@@ -406,7 +357,6 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
      * )
      */
-    @LoggedIn
     public void lockAsset(String uuid) {
         repositoryAssetOperations.lockAsset( uuid );
     }
@@ -417,7 +367,6 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
      * String)
      */
-    @LoggedIn
     public void unLockAsset(String uuid) {
         repositoryAssetOperations.unLockAsset( uuid );
     }
@@ -426,8 +375,6 @@ public class RepositoryAssetService
      * @deprecated in favour of
      *             {@link ServiceImplementation#queryFullText(QueryPageRequest)}
      */
-    @WebRemote
-    @LoggedIn
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
                                          int skip,
@@ -484,20 +431,17 @@ public class RepositoryAssetService
                 pkg.getName() );
     }
 
-    @LoggedIn
     public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                           String comment) {
         return repositoryAssetOperations.addToDiscussionForAsset( assetId,
                                                                   comment );
     }
 
-    @LoggedIn
     @Roles({"ADMIN"})
     public void clearAllDiscussionsForAsset(final String assetId) {
         repositoryAssetOperations.clearAllDiscussionsForAsset( assetId );
     }
 
-    @LoggedIn
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
         return new Discussion().fromString( rulesRepository.loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
     }
@@ -510,8 +454,6 @@ public class RepositoryAssetService
      * this role has permission to access the package which the asset belongs
      * to.
      */
-    @WebRemote
-    @LoggedIn
     public void changeState(String uuid,
                             String newState) {
         AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
@@ -531,8 +473,6 @@ public class RepositoryAssetService
         rulesRepository.save();
     }
 
-    @WebRemote
-    @LoggedIn
     public void changePackageState(String uuid,
                                    String newState) {
         ModuleItem pkg = rulesRepository.loadModuleByUUID( uuid );
@@ -548,12 +488,10 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
      * (java.lang.String)
      */
-    @LoggedIn
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
 
-    @LoggedIn
     public long getAssetCount(AssetPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -605,7 +543,6 @@ public class RepositoryAssetService
         }
     }
 
-    @LoggedIn
     public ConversionResult convertAsset(String uuid,
                                          String targetFormat) throws SerializationException {
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );

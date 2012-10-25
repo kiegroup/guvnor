@@ -18,7 +18,7 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.jboss.solder.servlet.http.HttpSessionStatus;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -41,7 +41,7 @@ public class Backchannel {
     private final Timer timer = new Timer(true);
 
     @Inject
-    Identity identity;
+    private Subject subject;
 
     @Inject
     private HttpSessionStatus sessionStatus;
@@ -65,7 +65,7 @@ public class Backchannel {
     public List<PushResponse> subscribe() {
         if (sessionStatus.isActive()) {
             try {
-                return await(identity.getName());
+                return await(subject.getName());
             } catch (InterruptedException e) {
                 return new ArrayList<PushResponse>();
             }

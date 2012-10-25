@@ -4,8 +4,6 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -17,12 +15,6 @@ import java.io.IOException;
 public class OryxEditorServlet extends HttpServlet {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(OryxEditorServlet.class);
-
-    @Inject
-    private Credentials credentials;
-
-    @Inject
-    private Identity identity;
 
     @Inject
     private RepositoryAssetService repositoryAssetService;
@@ -48,13 +40,14 @@ public class OryxEditorServlet extends HttpServlet {
         } */
 
         // log in
-        credentials.setUsername(usr);
-        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
+//        credentials.setUsername(usr);
+//        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
 
-        identity.login();
-        if ( !identity.isLoggedIn() ) {
-            throw new ServletException(new IllegalArgumentException("Unable to authenticate user."));
-        }
+//      TODO How to do this with Uberfire? -Rikkola-
+//        identity.login();
+//        if ( !identity.isLoggedIn() ) {
+//            throw new ServletException(new IllegalArgumentException("Unable to authenticate user."));
+//        }
         log.debug("Successful login");
 
         try {

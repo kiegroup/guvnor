@@ -63,8 +63,6 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.util.CompositeClassLoader;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -89,8 +87,6 @@ public class TestScenarioServiceImplementation
     @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
 
-    @WebRemote
-    @LoggedIn
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
         return runScenario(packageName,
@@ -369,8 +365,6 @@ public class TestScenarioServiceImplementation
         return rulebase;
     }
 
-    @WebRemote
-    @LoggedIn
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
         ModuleItem item = rulesRepository.loadModuleByUUID(packageUUID);
         return runScenariosInPackage(item);

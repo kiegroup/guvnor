@@ -28,7 +28,6 @@ import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.*;
-import org.jboss.seam.security.annotations.LoggedIn;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 
 import javax.inject.Inject;
@@ -76,7 +75,6 @@ public class WorkItemServiceImplementation
      * @throws org.drools.guvnor.client.rpc.DetailedSerializationException
      *
      */
-    @LoggedIn
     public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
         Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
         //Load WorkDefinitions from different sources

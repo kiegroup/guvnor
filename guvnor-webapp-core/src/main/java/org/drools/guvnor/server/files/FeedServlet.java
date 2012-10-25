@@ -25,7 +25,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.security.AuthorizationException;
 import org.mvel2.templates.TemplateRuntime;
 
 import javax.inject.Inject;
@@ -40,49 +39,43 @@ public class FeedServlet extends RepositoryServlet {
 
     private static final String VIEW_URL = "viewUrl";
 
-    @Inject @Preferred
+    @Inject
+    @Preferred
     private RulesRepository rulesRepository;
 
     @Override
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response) throws ServletException,
             IOException {
-        try {
-            String url = request.getRequestURI();
-            if (url.contains("feed/package")) {
-                doAuthorizedAction(request,
-                        response,
-                        new Command() {
-                            public void execute() throws Exception {
-                                doPackageFeed(request,
-                                        response);
-                            }
-                        });
-            } else if (url.contains("feed/category")) {
-                doAuthorizedAction(request,
-                        response,
-                        new Command() {
-                            public void execute() throws Exception {
-                                doCategoryFeed(request,
-                                        response);
-                            }
-                        });
-            } else if (url.contains("feed/discussion")) {
-                doAuthorizedAction(request,
-                        response,
-                        new Command() {
-                            public void execute() throws Exception {
-                                doDiscussionFeed(request,
-                                        response);
-                            }
-                        });
-            }
-        } catch (AuthorizationException e) {
-            response.setHeader("WWW-Authenticate",
-                    "BASIC realm=\"users\"");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        String url = request.getRequestURI();
+        if (url.contains("feed/package")) {
+            doAuthorizedAction(request,
+                    response,
+                    new Command() {
+                        public void execute() throws Exception {
+                            doPackageFeed(request,
+                                    response);
+                        }
+                    });
+        } else if (url.contains("feed/category")) {
+            doAuthorizedAction(request,
+                    response,
+                    new Command() {
+                        public void execute() throws Exception {
+                            doCategoryFeed(request,
+                                    response);
+                        }
+                    });
+        } else if (url.contains("feed/discussion")) {
+            doAuthorizedAction(request,
+                    response,
+                    new Command() {
+                        public void execute() throws Exception {
+                            doDiscussionFeed(request,
+                                    response);
+                        }
+                    });
         }
-
     }
 
     private void doDiscussionFeed(HttpServletRequest request,

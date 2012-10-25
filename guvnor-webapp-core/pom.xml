@@ -225,15 +225,6 @@
       <groupId>org.jboss.solder</groupId>
       <artifactId>solder-impl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.seam.security</groupId>
-      <artifactId>seam-security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.security</groupId>
-      <artifactId>jboss-security-spi</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>

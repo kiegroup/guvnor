@@ -24,12 +24,9 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
-import org.jboss.seam.security.AuthorizationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.inject.Inject;
 
 import static org.junit.Assert.*;
 
@@ -84,16 +81,12 @@ public class ServiceImplSecurityIntegrationTest extends GuvnorIntegrationTest {
                 "this is a cat");
 
 
-        try {
-            serviceImplementation.createNewRule("testCreateNewRuleName22",
-                    "an initial desc",
-                    "testSecurityCreateNewRule",
-                    "testSecurityCreateNewRule",
-                    AssetFormats.DSL_TEMPLATE_RULE);
-            fail("not allowed");
-        } catch (AuthorizationException e) {
-            assertNotNull(e.getMessage());
-        }
+        serviceImplementation.createNewRule("testCreateNewRuleName22",
+                "an initial desc",
+                "testSecurityCreateNewRule",
+                "testSecurityCreateNewRule",
+                AssetFormats.DSL_TEMPLATE_RULE);
+        fail("not allowed");
         // TODO leave roleBasedAuthorization enabled and add RoleType.PACKAGE_DEVELOPER permission
         serviceImplementation.createNewRule("testCreateNewRuleName22",
                 "an initial desc",

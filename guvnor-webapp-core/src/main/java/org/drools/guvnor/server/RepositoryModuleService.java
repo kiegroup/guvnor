@@ -53,8 +53,6 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -87,27 +85,19 @@ public class RepositoryModuleService
      * particular module when: The user has a package.readonly role or higher
      * (i.e., package.admin, package.developer) to this module.
      */
-    @WebRemote
-    @LoggedIn
     public Module[] listModules() {
         return listModules( null );
     }
 
-    @WebRemote
-    @LoggedIn
     public Module[] listModules(String workspace) {
         return repositoryModuleOperations.listModules( false,
                                                        workspace );
     }
 
-    @WebRemote
-    @LoggedIn
     public Module[] listArchivedModules() {
         return listArchivedModules( null );
     }
 
-    @WebRemote
-    @LoggedIn
     public Module[] listArchivedModules(String workspace) {
         return repositoryModuleOperations.listModules(
                                                        true,
@@ -118,8 +108,6 @@ public class RepositoryModuleService
         return repositoryModuleOperations.loadGlobalModule();
     }
 
-    @WebRemote
-    @LoggedIn
     public void rebuildPackages() throws SerializationException {
         Iterator<ModuleItem> pkit = rulesRepository.listModules();
         StringBuilder errs = new StringBuilder();
@@ -150,13 +138,10 @@ public class RepositoryModuleService
         return buf;
     }
 
-    @WebRemote
-    @LoggedIn
     public String buildModuleSource(String moduleUUID) throws SerializationException {
         return repositoryModuleOperations.buildModuleSource( moduleUUID );
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public String copyModule(String sourceModuleName,
                              String destModuleName) throws SerializationException {
@@ -164,35 +149,26 @@ public class RepositoryModuleService
                                                        destModuleName );
     }
 
-    @WebRemote
-    @LoggedIn
     public void removeModule(String uuid) {
         repositoryModuleOperations.removeModule( uuid );
     }
 
-    @WebRemote
-    @LoggedIn
     public String renameModule(String uuid,
                                String newName) {
         return repositoryModuleOperations.renameModule( uuid,
                                                         newName );
     }
 
-    @WebRemote
-    @LoggedIn
     public byte[] exportModules(String moduleName) {
         return repositoryModuleOperations.exportModules( moduleName );
     }
 
-    @WebRemote
-    @LoggedIn
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
         repositoryModuleOperations.importPackages( byteArray,
                                                    importAsNew );
     }
 
-    @WebRemote
     public String createModule(String name,
                                String description,
                                String format) throws RulesRepositoryException {
@@ -201,7 +177,6 @@ public class RepositoryModuleService
                                                         format );
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public String createModule(String name,
                                String description,
@@ -225,7 +200,6 @@ public class RepositoryModuleService
      * String format, String[] workspace) throws RulesRepositoryException {
      * return createPackage( name, description, new String[]{} ); }
      */
-    @WebRemote
     @Roles({"ADMIN"})
     public String createSubModule(String name,
                                   String description,
@@ -235,21 +209,15 @@ public class RepositoryModuleService
                                                            parentNode );
     }
 
-    @WebRemote
-    @LoggedIn
     public Module loadModule(String uuid) {
         ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
         return repositoryModuleOperations.loadModule( moduleItem );
     }
 
-    @WebRemote
-    @LoggedIn
     public void saveModule(Module data) throws SerializationException {
         repositoryModuleOperations.saveModule( data );
     }
 
-    @WebRemote
-    @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force) throws SerializationException {
         return buildPackage( packageUUID,
@@ -264,8 +232,6 @@ public class RepositoryModuleService
                              null );
     }
 
-    @WebRemote
-    @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force,
                                       String buildMode,
@@ -296,8 +262,6 @@ public class RepositoryModuleService
 
 	}
 
-	@WebRemote
-	@LoggedIn
 	public void createModuleSnapshot(String moduleName, String snapshotName,
 			boolean replaceExisting, String comment,
 			boolean checkIsBinaryUpToDate) throws SerializationException {
@@ -305,8 +269,6 @@ public class RepositoryModuleService
 				snapshotName, replaceExisting, comment, checkIsBinaryUpToDate);
 	}
 
-    @WebRemote
-    @LoggedIn
     public void copyOrRemoveSnapshot(String moduleName,
                                      String snapshotName,
                                      boolean delete,
@@ -317,19 +279,14 @@ public class RepositoryModuleService
                                                          newSnapshotName );
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listRulesInPackage(String packageName) throws SerializationException {
         return repositoryModuleOperations.listRulesInPackage( packageName );
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listImagesInModule(String moduleName) throws SerializationException {
         return repositoryModuleOperations.listImagesInModule( moduleName );
     }
 
-    @WebRemote
     @Roles({"ADMIN"})
     public void rebuildSnapshots() throws SerializationException {
 
@@ -351,8 +308,6 @@ public class RepositoryModuleService
         }
     }
 
-    @WebRemote
-    @LoggedIn
     public SnapshotInfo[] listSnapshots(String moduleName) {
         String[] snaps = rulesRepository.listModuleSnapshots( moduleName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
@@ -365,7 +320,6 @@ public class RepositoryModuleService
         return snapshotInfos;
     }
 
-    @LoggedIn
     public SnapshotInfo loadSnapshotInfo(String packageName,
                                          String snapshotName) {
         return moduleItemToSnapshotItem( snapshotName,
@@ -382,8 +336,6 @@ public class RepositoryModuleService
         return snapshotInfo;
     }
 
-    @WebRemote
-    @LoggedIn
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
 
         ModuleItem pkg = this.rulesRepository.loadModuleByUUID( packageUUID );
@@ -418,8 +370,6 @@ public class RepositoryModuleService
 
     }
 
-    @WebRemote
-    @LoggedIn
     public void updateDependency(String uuid,
                                  String dependencyPath) {
         ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
@@ -470,7 +420,6 @@ public class RepositoryModuleService
         }
     }
 
-    @LoggedIn
     public void installSampleRepository() throws SerializationException {
         rulesRepository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();

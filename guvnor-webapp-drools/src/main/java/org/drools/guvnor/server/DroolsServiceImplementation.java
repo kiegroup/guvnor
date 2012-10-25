@@ -29,8 +29,6 @@ import org.drools.guvnor.server.repository.Preferred;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -52,8 +50,6 @@ public class DroolsServiceImplementation
         this.rulesRepository = rulesRepository;
     }
 
-    @WebRemote
-    @LoggedIn
     public ValidatedResponse validateModule(Module data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         log.info("ValidateModule module [" + data.getName() + "]" );

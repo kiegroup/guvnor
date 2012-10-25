@@ -25,6 +25,7 @@ import javax.enterprise.inject.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 /**
  * Request scoped bean that produces the RulesRepository
@@ -62,16 +63,16 @@ public class RulesRepositoryManager {
     }
 
     @Produces @Preferred @RequestScoped 
-    public RulesRepository getRulesRepository(RepositoryStartupService repositoryStartupService, Identity identity) {
+    public RulesRepository getRulesRepository(RepositoryStartupService repositoryStartupService, Subject subject) {
        	 String username;
-         // TODO user should never be null, weld messes up the identity proxy?
-         if (identity == null) {
+         // TODO user should never be null, weld messes up the subject proxy?
+         if (subject == null) {
              log.warn("Creating RulesRepository with default username.");
              // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
              // with limited privileges. In Guvnor, access control is done in a higher level.
              username = DEFAULT_USERNAME;
          } else {
-             username = identity.getName();
+             username = subject.getName();
          }
          doSecurityContextAssociation();
          RulesRepository rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));

@@ -29,7 +29,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.utils.IOUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.seam.security.Credentials;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -198,9 +197,6 @@ public abstract class GuvnorIntegrationTest {
     protected RepositoryCategoryService repositoryCategoryService;
 
     @Inject
-    protected Credentials credentials;
-
-    @Inject
     protected DroolsServiceImplementation droolsServiceImplementation;
 
     protected boolean autoLoginAsAdmin = true;
@@ -230,14 +226,15 @@ public abstract class GuvnorIntegrationTest {
     }
 
     protected void loginAs(String username) {
-        credentials.setUsername(username);
-        credentials.setCredential(new PasswordCredential(username));
+        // TODO needs to be done in Uberfire way -Rikkola-
+//        credentials.setUsername(username);
+//        credentials.setCredential(new PasswordCredential(username));
 //        identity.login();
     }
 
     protected void logoutAs(String username) {
 //        identity.logout();
-        credentials.clear();
+//        credentials.clear();
     }
 
     // ************************************************************************

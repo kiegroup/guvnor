@@ -58,7 +58,6 @@ import org.drools.repository.RulesRepositoryException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.security.annotations.LoggedIn;
 import org.uberfire.security.annotations.Roles;
 
 /**
@@ -78,7 +77,6 @@ public class FileManagerService {
     /**
      * This attach a file to an asset.
      */
-    @LoggedIn
     public void attachFile(FormData uploadItem) throws IOException {
 
         String uuid = uploadItem.getUuid();
@@ -96,7 +94,6 @@ public class FileManagerService {
      * This utility method attaches a file to an asset.
      * @throws IOException
      */
-    @LoggedIn
     public void attachFileToAsset(String uuid,
                                   InputStream fileData,
                                   String fileName) throws IOException {
@@ -125,7 +122,6 @@ public class FileManagerService {
     /**
      * The get returns files based on UUID of an asset.
      */
-    @LoggedIn
     public String loadFileAttachmentByUUID(String uuid,
                                            OutputStream out) throws IOException {
 
@@ -252,7 +248,6 @@ public class FileManagerService {
         this.repository.exportRepositoryToStream( out );
     }
 
-    @LoggedIn
     @Roles({"ADMIN"})
     public void importRulesRepository(InputStream in) {
         repository.importRulesRepositoryFromStream( in );
@@ -260,7 +255,6 @@ public class FileManagerService {
         fileUploadedEventEvent.fire(new FileUploadedEvent());
     }
 
-    @LoggedIn
     public void importPackageToRepository(byte[] data,
                                           boolean importAsNew) {
         repository.importPackageToRepository(data,
@@ -281,7 +275,6 @@ public class FileManagerService {
      * @param drlInputStream will be closed after it's read
      * @param packageName Name for this package. Overrides the one in the DRL.
      */
-    @LoggedIn
     public String importClassicDRL(InputStream drlInputStream,
                                    String packageName) {
         ClassicDRLImporter imp;
