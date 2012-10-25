@@ -149,8 +149,6 @@ public class FeedServletIntegrationTest extends GuvnorIntegrationTest {
         r = res.extractContent();
         assertNotNull( r );
         assertTrue( r.indexOf( "asset1" ) > -1 );
-
-        credentials.clear();
     }
 
     @Test

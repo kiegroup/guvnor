@@ -40,7 +40,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.picketlink.idm.impl.api.PasswordCredential;
 
 import javax.inject.Inject;
 import java.io.File;
