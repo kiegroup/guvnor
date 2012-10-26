@@ -26,8 +26,8 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.*;
-import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetService;
@@ -208,38 +208,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final Asset asset) {
-        eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getModuleName(),
-                new Command() {
 
-                    public void execute() {
-
-                        RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
-                        ruleViewerSettings.setDocoVisible(false);
-                        ruleViewerSettings.setMetaVisible(false);
-                        ruleViewerSettings.setStandalone(true);
-                        Command closeCommand = new Command() {
-                            public void execute() {
-                                // TODO: No handle for this -Rikkola-
-                                ruleViews.remove(row.getUuid());
-                                rows.remove(row);
-                                doViews();
-                            }
-                        };
-                        final RuleViewer ruleViewer = new RuleViewer(asset,
-                                clientFactory,
-                                eventBus,
-                                ruleViewerSettings);
-                        //ruleViewer.setDocoVisible( showDescription );
-                        //ruleViewer.setMetaVisible( showMetadata );
-
-                        content.add(ruleViewer);
-                        ruleViewer.setWidth("100%");
-                        ruleViewer.setHeight("100%");
-                        ruleViews.put(row.getUuid(),
-                                ruleViewer);
-
-                    }
-                }));
     }
 
     public void checkin(final boolean closeAfter) {
@@ -317,10 +286,6 @@ public class MultiViewEditor extends GuvnorEditor {
                         LoadingPopup.close();
                         saved[0] = true;
 
-                        //showInfoMessage( constants.SavedOK() );
-                        if (!closeAfter) {
-                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), uuid));
-                        }
 
                         //fire after check-in event
                         eventBus.fireEvent(new AfterAssetEditorCheckInEvent(uuid, MultiViewEditor.this));
@@ -334,25 +299,11 @@ public class MultiViewEditor extends GuvnorEditor {
      * editor though.
      */
     public void flushSuggestionCompletionCache(final String packageName, Asset asset) {
-        if (AssetFormats.isPackageDependency(asset.getFormat())) {
-            LoadingPopup.showMessage(constants.RefreshingContentAssistance());
-            eventBus.fireEvent(new RefreshModuleDataModelEvent(packageName,
-                    new Command() {
-                        public void execute() {
-                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
-                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
-                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
-                            LoadingPopup.close();
-                        }
-                    }));
-        }
+
     }
 
     public void close() {
-        eventBus.fireEvent(new ClosePlaceEvent(new MultiAssetPlace(rows)));
-        if (closeCommand != null) {
-            closeCommand.execute();
-        }
+
     }
 
     @Override

@@ -111,7 +111,6 @@ public class BrowseTree implements Presenter {
     }
 
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
-<<<<<<< HEAD
         if (states.contains(selectedItem)) {
             clientFactory.getPlaceManager().goTo(new DefaultPlaceRequest("stateScreen").addParameter("state", title));
         } else if (categories.containsKey(selectedItem)) {
@@ -123,7 +122,7 @@ public class BrowseTree implements Presenter {
         } else if (selectedItem.equals(inboxRecentlyViewedTreeItem)) {
             goTo(new InboxPlace(ExplorerNodeConfig.RECENT_VIEWED_ID));
         } else if (selectedItem.equals(findRootTreeItem)) {
-            clientFactory.getPlaceManager().goTo(new PlaceRequest("search"));
+            clientFactory.getPlaceManager().goTo("search");
         }
     }
 

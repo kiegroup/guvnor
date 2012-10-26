@@ -51,7 +51,6 @@ public class DroolsServiceImplementation
     }
 
     public ValidatedResponse validateModule(Module data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         log.info("ValidateModule module [" + data.getName() + "]" );
 
         RuleBaseCache.getInstance().remove( data.getUuid() );

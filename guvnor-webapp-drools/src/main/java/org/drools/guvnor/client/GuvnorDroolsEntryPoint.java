@@ -60,7 +60,7 @@ public class GuvnorDroolsEntryPoint {
             }
         });
 
-        menubar.addMenuItem(new DefaultMenuItemCommand("Guvnor", new org.uberfire.client.mvp.Command() {
+        menubar.addWorkbenchItem(new DefaultMenuItemCommand("Guvnor", new org.uberfire.client.mvp.Command() {
             @Override
             public void execute() {
 

@@ -49,26 +49,10 @@ public class ClientFactoryImpl
     Event<NotificationEvent> notifications;
 
     @Inject
-    PlaceManager placeManager;
+    Identity identity;
 
-    @Inject
-    Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
 
-    @Inject
-    Event<NotificationEvent> notifications;
 
-    @Inject
-    PlaceManager placeManager;
-
-    @Inject
-    PlaceManager placeManager;
-
-    @Inject
-    private Event<RefreshAssetEditorEvent> refreshAssetEditorEvents;
-
-    @Inject
-    private Event<NotificationEvent> notifications;
-    
     @Inject
     public ClientFactoryImpl(GuvnorEventBus eventBus) {
         super(eventBus);

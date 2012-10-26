@@ -764,6 +764,6 @@ public class AssetEditorActionToolbar extends Composite {
                                   String newAssetUUID) {
         Window.alert( Constants.INSTANCE.CreatedANewItemSuccess( name,
                 pkg ) );
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 }
