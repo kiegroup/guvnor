@@ -19,14 +19,14 @@ package org.drools.guvnor.client.explorer.navigation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 
-public class NavigationPanelViewImpl extends Composite implements NavigationPanelView {
+public class NavigationPanelViewImpl extends Composite implements NavigationPanelView, RequiresResize {
 
     private StackLayoutPanel layout = new StackLayoutPanel(Style.Unit.EM);
 
     public NavigationPanelViewImpl() {
-        layout.setHeight("700px");
         initWidget(layout);
     }
 
@@ -40,5 +40,10 @@ public class NavigationPanelViewImpl extends Composite implements NavigationPane
 
     public void clear() {
         layout.clear();
+    }
+
+    @Override
+    public void onResize() {
+        layout.setHeight(getParent().getOffsetHeight() + "px");
     }
 }
