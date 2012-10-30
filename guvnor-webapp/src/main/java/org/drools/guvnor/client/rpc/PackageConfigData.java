@@ -126,7 +126,7 @@ public class PackageConfigData extends Artifact {
     
 
     public boolean isGlobal() {
-        return "global".equals(super.getName()); // TODO kills i18n
+        return "globalArea".equals(super.getName()); // TODO kills i18n
     }
 
 }

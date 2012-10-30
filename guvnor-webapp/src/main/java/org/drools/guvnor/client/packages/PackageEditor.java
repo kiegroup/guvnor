@@ -39,6 +39,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.ruleeditor.toolbar.GlobalAreaActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
 
 import java.util.HashMap;
@@ -611,7 +612,11 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private ActionToolbarButtonsConfigurationProvider getConfiguration() {
-        return new PackageActionToolbarButtonsConfigurationProvider();
+    	if(packageConfigData.isGlobal()) {
+    		return new GlobalAreaActionToolbarButtonsConfigurationProvider();
+    	} else {
+            return new PackageActionToolbarButtonsConfigurationProvider();
+    	}
     }
 
     private void doArchive() {
