@@ -123,10 +123,8 @@ public class Module extends Artifact {
         return this;
     }
 
-    
-
     public boolean isGlobal() {
-        return "global".equals(super.getName()); // TODO kills i18n
+        return "globalArea".equals(super.getName()); // TODO kills i18n
     }
 
 }

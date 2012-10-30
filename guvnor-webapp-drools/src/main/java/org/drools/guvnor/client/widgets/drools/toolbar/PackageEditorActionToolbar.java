@@ -103,7 +103,7 @@ public class PackageEditorActionToolbar extends Composite {
     
     private ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
 
-    private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider = new PackageActionToolbarButtonsConfigurationProvider();
+    private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
     private Module packageConfigData;
     private final EventBus eventBus;
     private final ClientFactory clientFactory;
@@ -120,6 +120,12 @@ public class PackageEditorActionToolbar extends Composite {
         this.clientFactory = clientFactory;
         this.readOnly = readOnly;
         this.refreshCommand =  refreshCommand;
+        
+        if(data.isGlobal()) {
+        	actionToolbarButtonsConfigurationProvider = new GlobalAreaActionToolbarButtonsConfigurationProvider();
+        } else {
+        	actionToolbarButtonsConfigurationProvider = new PackageActionToolbarButtonsConfigurationProvider();
+        }
         
         initWidget(uiBinder.createAndBindUi(this));
 
