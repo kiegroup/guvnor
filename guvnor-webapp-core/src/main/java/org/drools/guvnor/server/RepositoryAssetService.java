@@ -57,6 +57,9 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.VersionableItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
@@ -96,11 +99,11 @@ public class RepositoryAssetService
      * higher (i.e., package.admin, package.developer) and this role has
      * permission to access the package which the asset belongs to.
      */
-    public Asset loadRuleAsset(String uuid) throws SerializationException {
+    public Asset loadRuleAsset(Path path) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( path.getUUID() );
         Asset asset = new AssetPopulator().populateFrom( item );
 
         asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
@@ -131,8 +134,8 @@ public class RepositoryAssetService
         return packageItem;
     }
 
-    public Asset[] loadRuleAssets(String[] uuids) throws SerializationException {
-        return loadRuleAssets( Arrays.asList( uuids ) );
+    public Asset[] loadRuleAssets(Path[] paths) throws SerializationException {
+        return loadRuleAssets( Arrays.asList( paths ) );
     }
 
     public String checkinVersion(Asset asset) throws SerializationException {
@@ -147,9 +150,9 @@ public class RepositoryAssetService
                                                   comment );
     }
 
-    public TableDataResult loadItemHistory(String uuid) throws SerializationException {
+    public TableDataResult loadItemHistory(Path uuid) throws SerializationException {
         //VersionableItem assetItem = rulesRepository.loadAssetByUUID( uuid );
-        VersionableItem assetItem = rulesRepository.loadItemByUUID( uuid );
+        VersionableItem assetItem = rulesRepository.loadItemByUUID( uuid.getUUID() );
 
         //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory( assetItem );
@@ -220,26 +223,29 @@ public class RepositoryAssetService
                                                      tableConfig );
     }
 
-    public String copyAsset(String assetUUID,
+    public Path copyAsset(Path assetUUID,
                             String newPackage,
                             String newName) {
         log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
-        return rulesRepository.copyAsset( assetUUID,
+        String copiedAssetUUID = rulesRepository.copyAsset( assetUUID.getUUID(),
                                           newPackage,
                                           newName );
+        Path path = new PathImpl();
+        path.setUUID(copiedAssetUUID);
+        return path;
     }
 
-    public void changeAssetPackage(String uuid,
+    public void changeAssetPackage(Path uuid,
                                    String newPackage,
                                    String comment) {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid.getUUID() );
 
         //Perform house-keeping for when an Asset is removed from a package
         attachmentRemoved( item );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         rulesRepository.moveRuleItemModule( newPackage,
-                                            uuid,
+                                            uuid.getUUID(),
                                             comment );
 
         //Perform house-keeping for when an Asset is added to a package
@@ -275,8 +281,8 @@ public class RepositoryAssetService
                                                       newName );
     }
 
-    public void archiveAsset(String uuid) {
-        archiveOrUnarchiveAsset( uuid,
+    public void archiveAsset(Path path) {
+        archiveOrUnarchiveAsset( path,
                                  true );
     }
 
@@ -284,22 +290,22 @@ public class RepositoryAssetService
         return repositoryAssetOperations.validateAsset( asset );
     }
 
-    public void unArchiveAsset(String uuid) {
-        archiveOrUnarchiveAsset( uuid,
+    public void unArchiveAsset(Path path) {
+        archiveOrUnarchiveAsset( path,
                                  false );
     }
 
-    public void archiveAssets(String[] uuids,
+    public void archiveAssets(Path[] paths,
                               boolean value) {
-        for ( String uuid : uuids ) {
+        for ( Path uuid : paths ) {
             archiveOrUnarchiveAsset( uuid,
                                      value );
         }
     }
 
-    public void removeAsset(String uuid) {
+    public void removeAsset(Path path) {
         try {
-            AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+            AssetItem item = rulesRepository.loadAssetByUUID( path.getUUID() );
 
             item.remove();
             rulesRepository.save();
@@ -310,9 +316,9 @@ public class RepositoryAssetService
         }
     }
 
-    public void removeAssets(String[] uuids) {
-        for ( String uuid : uuids ) {
-            removeAsset( uuid );
+    public void removeAssets(Path[] paths) {
+        for ( Path path : paths ) {
+            removeAsset( path );
         }
     }
 
@@ -389,22 +395,22 @@ public class RepositoryAssetService
                                                         numRows );
     }
 
-    Asset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
-        if ( uuids == null ) {
+    Asset[] loadRuleAssets(Collection<Path> paths) throws SerializationException {
+        if ( paths == null ) {
             return null;
         }
         Collection<Asset> assets = new HashSet<Asset>();
 
-        for ( String uuid : uuids ) {
-            assets.add( loadRuleAsset( uuid ) );
+        for ( Path path : paths ) {
+            assets.add( loadRuleAsset( path ) );
         }
 
         return assets.toArray( new Asset[assets.size()] );
     }
 
-    private void archiveOrUnarchiveAsset(String uuid,
+    private void archiveOrUnarchiveAsset(Path path,
                                          boolean archive) {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( path.getUUID() );
         if ( item.getModule().isArchived() ) {
             throw new RulesRepositoryException( "The package [" + item.getModuleName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
         }
@@ -454,9 +460,9 @@ public class RepositoryAssetService
      * this role has permission to access the package which the asset belongs
      * to.
      */
-    public void changeState(String uuid,
+    public void changeState(Path path,
                             String newState) {
-        AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem asset = rulesRepository.loadAssetByUUID( path.getUUID() );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
         String oldState = asset.getStateDescription();

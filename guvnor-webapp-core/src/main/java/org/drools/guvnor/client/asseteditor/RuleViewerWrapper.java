@@ -24,6 +24,8 @@ import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -117,7 +119,9 @@ public class RuleViewerWrapper extends GuvnorEditor {
         if ((refreshAssetEditorEvent.getAssetUUID() == null && asset.getMetaData().getModuleName().equals(refreshAssetEditorEvent.getModuleName())) || asset.getUuid().equals( refreshAssetEditorEvent.getAssetUUID() ) ) {
             LoadingPopup.showMessage( ConstantsCore.INSTANCE.RefreshingItem() );
             AssetServiceAsync assetService = GWT.create(AssetService.class);
-            assetService.loadRuleAsset( asset.getUuid(),
+        	Path path = new PathImpl();
+        	path.setUUID(asset.getUuid());
+            assetService.loadRuleAsset( path,
                                                                       new GenericCallback<Asset>() {
                                                                           public void onSuccess(Asset a) {
                                                                               asset = a;

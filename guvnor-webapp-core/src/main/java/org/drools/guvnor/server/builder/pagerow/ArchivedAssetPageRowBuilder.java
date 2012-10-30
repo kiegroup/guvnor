@@ -22,6 +22,8 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.repository.AssetItem;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class ArchivedAssetPageRowBuilder
     implements PageRowBuilder<PageRequest, Iterator<AssetItem>> {
@@ -52,7 +54,10 @@ public class ArchivedAssetPageRowBuilder
 
     private AdminArchivedPageRow makeAdminArchivedPageRow(AssetItem assetItem) {
         AdminArchivedPageRow row = new AdminArchivedPageRow();
-        row.setUuid( assetItem.getUUID() );
+        //REVISIT: get a Path instance from drools-repository-vfs
+        Path path = new PathImpl();
+        path.setUUID(assetItem.getUUID());
+        row.setPath( path );
         row.setFormat( assetItem.getFormat() );
         row.setName( assetItem.getName() );
         row.setPackageName( assetItem.getModuleName() );

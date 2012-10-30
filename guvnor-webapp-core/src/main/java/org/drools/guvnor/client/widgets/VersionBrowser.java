@@ -38,6 +38,8 @@ import org.drools.guvnor.client.rpc.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * This widget shows a list of versions for packages or assets
@@ -127,7 +129,9 @@ public class VersionBrowser extends Composite {
     protected void loadHistoryData() {
 
         AssetServiceAsync assetService = GWT.create(AssetService.class);
-        assetService.loadItemHistory( this.uuid,
+    	Path path = new PathImpl();
+    	path.setUUID(this.uuid);
+        assetService.loadItemHistory( path,
                 new GenericCallback<TableDataResult>() {
 
                     public void onSuccess( TableDataResult table ) {
@@ -233,7 +237,9 @@ public class VersionBrowser extends Composite {
                     } );
         } else {
             AssetServiceAsync assetService = GWT.create(AssetService.class);
-            assetService.loadRuleAsset( versionUUID,
+        	Path path = new PathImpl();
+        	path.setUUID(versionUUID);
+            assetService.loadRuleAsset( path,
                     new GenericCallback<Asset>() {
 
                         public void onSuccess(final Asset asset ) {

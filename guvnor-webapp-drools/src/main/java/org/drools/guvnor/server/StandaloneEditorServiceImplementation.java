@@ -40,6 +40,8 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * All the needed Services in order to get Guvnor's Editors running as standalone
@@ -118,7 +120,14 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             
             //for UUIDs, we need to get them from repository
             if (wsUUID != null && wsUUID.length > 0){
-                Asset[] workingSetRuleAssets = repositoryAssetService.loadRuleAssets(wsUUID);
+            	//TODO: refactor jBPM editors to use Path (to sned the request using Path as parameter) instead of UUID            	
+            	Path[] paths = new PathImpl[wsUUID.length];
+            	for(int i = 0; i < wsUUID.length; i++) {
+            		Path path = new PathImpl();
+            		path.setUUID(wsUUID[i]);
+            		paths[i] = path;
+            	}
+                Asset[] workingSetRuleAssets = repositoryAssetService.loadRuleAssets(paths);
                 result.addAll(Arrays.asList(workingSetRuleAssets));
             }
             

@@ -4,6 +4,8 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -51,7 +53,10 @@ public class OryxEditorServlet extends HttpServlet {
         log.debug("Successful login");
 
         try {
-            Asset asset = repositoryAssetService.loadRuleAsset(uuid);
+        	//TODO: refactor OryxEditor to use Path (to sned the request using Path as parameter) instead of UUID          	
+    		Path path = new PathImpl();
+    		path.setUUID(uuid);
+            Asset asset = repositoryAssetService.loadRuleAsset(path);
             if (asset.getContent() != null) {
                 response.setContentType("application/xml");
                 response.setCharacterEncoding("UTF-8");

@@ -27,6 +27,7 @@ import org.drools.repository.ModuleItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
@@ -59,7 +60,7 @@ public class ServiceImplSecurityIntegrationTest extends GuvnorIntegrationTest {
                 "testLoadRuleAssetNoCategoryCat1",
                 "this is a cat");
 
-        String uuid = serviceImplementation.createNewRule("testLoadRuleAssetNoCategoryRule1",
+        Path uuid = serviceImplementation.createNewRule("testLoadRuleAssetNoCategoryRule1",
                 "description",
                 null,
                 "testLoadRuleAssetNoCategoryPack1",
@@ -111,7 +112,7 @@ public class ServiceImplSecurityIntegrationTest extends GuvnorIntegrationTest {
                 category11Name,
                 "this is a dock");
         @SuppressWarnings("unused")
-        String uuid11 = serviceImplementation.createNewRule(rule11Name,
+        Path uuid11 = serviceImplementation.createNewRule(rule11Name,
                 "DisplayHandlerDescription11",
                 category11Name,
                 package11Name,
@@ -127,7 +128,7 @@ public class ServiceImplSecurityIntegrationTest extends GuvnorIntegrationTest {
                 category12Name,
                 "this is a sparrow");
         @SuppressWarnings("unused")
-        String uuid12 = serviceImplementation.createNewRule(rule12Name,
+        Path uuid12 = serviceImplementation.createNewRule(rule12Name,
                 "DisplayHandlerDescription12",
                 category12Name,
                 package12Name,

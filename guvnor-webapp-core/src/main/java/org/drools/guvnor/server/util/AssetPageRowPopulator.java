@@ -18,11 +18,16 @@ package org.drools.guvnor.server.util;
 import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class AssetPageRowPopulator {
     public AssetPageRow populateFrom(AssetItem assetItem) {
         AssetPageRow row = new AssetPageRow();
-        row.setUuid( assetItem.getUUID() );
+        //REVISIT: get a Path instance from drools-repository-vfs
+        Path path = new PathImpl();
+        path.setUUID(assetItem.getUUID());
+        row.setPath( path );
         row.setFormat( assetItem.getFormat() );
         row.setName( assetItem.getName() );
         row.setDescription( assetItem.getDescription() );

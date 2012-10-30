@@ -28,6 +28,8 @@ import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * MailboxService tests in their own Arquillian managed environment to ensure
@@ -63,7 +65,7 @@ public class ServiceImplementationMailboxService1IntegrationTest extends GuvnorI
                                                   "testTrackRecentOpenedChanged",
                                                   "this is a cat" );
 
-        String id = serviceImplementation.createNewRule( "myrule",
+        Path id = serviceImplementation.createNewRule( "myrule",
                                                          "desc",
                                                          "testTrackRecentOpenedChanged",
                                                          "testTrackRecentOpenedChanged",
@@ -83,7 +85,9 @@ public class ServiceImplementationMailboxService1IntegrationTest extends GuvnorI
 
         ib.clearAll();
 
-        repositoryAssetService.loadRuleAsset( ass.getUuid() );
+        Path path1 = new PathImpl();
+        path1.setUUID(ass.getUuid());
+        repositoryAssetService.loadRuleAsset( path1 );
         es = ib.loadRecentEdited();
         assertEquals( 0,
                       es.size() );

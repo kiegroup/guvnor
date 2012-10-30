@@ -41,6 +41,8 @@ import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -110,12 +112,12 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Return an array of selected UUIDs. API is maintained for backwards
+     * Return an array of selected Paths. API is maintained for backwards
      * compatibility of legacy code with AssetItemGrid's implementation
      *
      * @return
      */
-    public String[] getSelectedRowUUIDs() {
+    public Path[] getSelectedRowUUIDs() {
         Set<T> selectedRows = selectionModel.getSelectedSet();
 
         // Compatibility with existing API
@@ -123,12 +125,9 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             return null;
         }
 
-        // Create the array of UUIDs
-        String[] uuids = new String[selectedRows.size()];
-        int rowCount = 0;
-        for (T row : selectedRows) {
-            uuids[rowCount++] = row.getUuid();
-        }
+        // Create the array of Paths
+        Path[] uuids = new PathImpl[selectedRows.size()];
+        uuids = selectedRows.toArray(uuids);
         return uuids;
     }
 
@@ -162,7 +161,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         for (T selected : selectedSet) {
             multiViewRowList.add(
                     new MultiViewRow(
-                            selected.getUuid(),
+                            selected.getPath().getUUID(),
                             selected.getName(),
                             selected.getFormat() ) );
         }
@@ -189,7 +188,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
         ProvidesKey<T> providesKey = new ProvidesKey<T>() {
             public Object getKey(T row) {
-                return row.getUuid();
+                return row.getPath();
             }
         };
 
@@ -203,7 +202,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
         final TextColumn<T> uuidNumberColumn = new TextColumn<T>() {
             public String getValue(T row) {
-                return row.getUuid();
+                return row.getPath().getUUID();
             }
         };
         columnPicker.addColumn( uuidNumberColumn,
@@ -227,7 +226,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             public void update(int index,
                                T row,
                                String value) {
-                clientFactory.getPlaceManager().goTo( new AssetEditorPlace( row.getUuid() ) );
+                clientFactory.getPlaceManager().goTo( new AssetEditorPlace( row.getPath().getUUID() ) );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -289,7 +288,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     void openSelected(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for (T selected : selectedSet) {
-            clientFactory.getPlaceManager().goTo( new AssetEditorPlace( selected.getUuid() ) );
+            clientFactory.getPlaceManager().goTo( new AssetEditorPlace( selected.getPath().getUUID() ) );
         }
     }
 

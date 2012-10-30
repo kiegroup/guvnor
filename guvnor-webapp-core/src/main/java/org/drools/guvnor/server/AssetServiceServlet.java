@@ -21,6 +21,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.jboss.solder.core.Veto;
+import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
 
@@ -68,25 +69,25 @@ public class AssetServiceServlet
         assetService.unLockAsset(p0);
     }
 
-    public void archiveAsset(java.lang.String p0) {
+    public void archiveAsset(Path p0) {
         assetService.archiveAsset(p0);
     }
 
-    public void unArchiveAsset(java.lang.String p0) {
+    public void unArchiveAsset(Path p0) {
         assetService.unArchiveAsset(p0);
     }
 
-    public void archiveAssets(java.lang.String[] p0,
+    public void archiveAssets(Path[] p0,
                               boolean p1) {
         assetService.archiveAssets(p0,
                 p1);
     }
 
-    public void removeAsset(java.lang.String p0) {
+    public void removeAsset(Path p0) {
         assetService.removeAsset(p0);
     }
 
-    public void removeAssets(java.lang.String[] p0) {
+    public void removeAssets(Path[] p0) {
         assetService.removeAssets(p0);
     }
 
@@ -104,11 +105,11 @@ public class AssetServiceServlet
                 p1);
     }
 
-    public org.drools.guvnor.client.rpc.Asset loadRuleAsset(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public org.drools.guvnor.client.rpc.Asset loadRuleAsset(Path p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return assetService.loadRuleAsset(p0);
     }
 
-    public org.drools.guvnor.client.rpc.Asset[] loadRuleAssets(java.lang.String[] p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public org.drools.guvnor.client.rpc.Asset[] loadRuleAssets(Path[] p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return assetService.loadRuleAssets(p0);
     }
 
@@ -118,7 +119,7 @@ public class AssetServiceServlet
                 p1);
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(Path p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return assetService.loadItemHistory(p0);
     }
 
@@ -160,7 +161,7 @@ public class AssetServiceServlet
                 p4);
     }
 
-    public java.lang.String copyAsset(java.lang.String p0,
+    public Path copyAsset(Path p0,
                                       java.lang.String p1,
                                       java.lang.String p2) {
         return assetService.copyAsset(p0,
@@ -172,7 +173,7 @@ public class AssetServiceServlet
         assetService.promoteAssetToGlobalArea(p0);
     }
 
-    public void changeAssetPackage(java.lang.String p0,
+    public void changeAssetPackage(Path p0,
                                    java.lang.String p1,
                                    java.lang.String p2) {
         assetService.changeAssetPackage(p0,
@@ -180,7 +181,7 @@ public class AssetServiceServlet
                 p2);
     }
 
-    public void changeState(java.lang.String p0,
+    public void changeState(Path p0,
                             java.lang.String p1) {
         assetService.changeState(p0,
                 p1);

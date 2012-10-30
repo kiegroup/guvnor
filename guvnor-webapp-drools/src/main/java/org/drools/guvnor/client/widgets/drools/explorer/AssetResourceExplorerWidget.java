@@ -37,6 +37,7 @@ import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
+import org.uberfire.backend.vfs.Path;
 
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.PackageDisplayMode.*;
@@ -242,7 +243,7 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
 
     public void processSelectedResources(final ResourceElementReadyCommand command) {
         //source is mandatory!
-        final String[] selectedRowUUIDs = this.assetsTable.getSelectedRowUUIDs();
+        final Path[] selectedRowUUIDs = this.assetsTable.getSelectedRowUUIDs();
         if (selectedRowUUIDs == null || selectedRowUUIDs.length == 0) {
             throw new IllegalStateException(Constants.INSTANCE.NoPackageSeleced());
         }

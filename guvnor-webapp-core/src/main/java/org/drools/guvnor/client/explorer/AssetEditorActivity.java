@@ -28,6 +28,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Asset;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -90,7 +92,9 @@ public class AssetEditorActivity {
 
 
     private void loadRuleAsset(String uuid) {
-        clientFactory.getAssetService().loadRuleAsset(uuid,
+    	Path path = new PathImpl();
+    	path.setUUID(uuid);
+        clientFactory.getAssetService().loadRuleAsset(path,
                 createGenericCallback(loadingTimer()));
     }
 

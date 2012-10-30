@@ -30,6 +30,7 @@ import org.drools.repository.RulesRepositoryException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.jboss.solder.core.Veto;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
@@ -115,7 +116,7 @@ public class RepositoryServiceServlet
         return serviceImplementation.loadTableConfig( p0 );
     }
 
-    public java.lang.String createNewRule(java.lang.String p0,
+    public Path createNewRule(java.lang.String p0,
                                           java.lang.String p1,
                                           java.lang.String p2,
                                           java.lang.String p3,
@@ -127,15 +128,15 @@ public class RepositoryServiceServlet
                 p4 );
     }
 
-    public String createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public Path createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewRule( p0 );
     }
     
-    public String createNewRule(org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public Path createNewRule(org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewRule( p0 );
     }
 
-    public java.lang.String createNewImportedRule(java.lang.String p0,
+    public Path createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewImportedRule( p0,
                 p1 );

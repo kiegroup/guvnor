@@ -34,6 +34,8 @@ import org.drools.repository.RepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * MailboxService tests in their own Arquillian managed environment to ensure
@@ -71,7 +73,9 @@ public class ServiceImplementationMailboxService2IntegrationTest extends GuvnorI
         AssetItem as = rulesRepository.loadDefaultModule().addAsset( "testLoadInbox",
                                                                                 "" );
         as.checkin( "" );
-        Asset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
+        Path path1 = new PathImpl();
+        path1.setUUID(as.getUUID());
+        Asset ras = repositoryAssetService.loadRuleAsset( path1 );
 
         TableDataResult res = serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
         boolean found = false;
@@ -140,7 +144,9 @@ public class ServiceImplementationMailboxService2IntegrationTest extends GuvnorI
         assertTrue( found );
 
         //now lets open it with first user, and check that it disappears from the incoming...
-        repositoryAssetService.loadRuleAsset( as.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(as.getUUID());
+        repositoryAssetService.loadRuleAsset( path2 );
         found = false;
         res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
         for ( TableDataRow row : res.data ) {

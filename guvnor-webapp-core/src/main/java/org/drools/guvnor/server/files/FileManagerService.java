@@ -58,6 +58,9 @@ import org.drools.repository.RulesRepositoryException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.security.annotations.Roles;
 
 /**
@@ -83,7 +86,10 @@ public class FileManagerService {
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
 
-        attachFileToAsset(uuid,
+        //TODO: use Path as parameter instead of uuid
+        Path path = new PathImpl();
+        path.setUUID(uuid);
+        attachFileToAsset(path,
                 fileData,
                 fileName);
         uploadItem.getFile().getInputStream().close();
@@ -94,13 +100,14 @@ public class FileManagerService {
      * This utility method attaches a file to an asset.
      * @throws IOException
      */
-    public void attachFileToAsset(String uuid,
+    public void attachFileToAsset(Path path,
                                   InputStream fileData,
                                   String fileName) throws IOException {
 
         //here we should mark the binary data as invalid on the package (which means moving something into repo modle)
 
-        AssetItem item = repository.loadAssetByUUID( uuid );
+    	//TODO: replace RulesRepository with drools-repository-vfs
+        AssetItem item = repository.loadAssetByUUID( path.getUUID() );
 
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );

@@ -24,6 +24,7 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,10 @@ public class BRLRuleAssetProvider
         } catch (Exception e) {
             //if something failed, delete the generated assets
             for (Asset ruleAsset : assets) {
-                repositoryAssetService.removeAsset(ruleAsset.getUuid());
+                //TODO: Use path to identify an asset 
+                org.uberfire.backend.vfs.Path path = new PathImpl();
+                path.setUUID(ruleAsset.getUuid());
+                repositoryAssetService.removeAsset(path);
             }
 
             if (e instanceof DetailedSerializationException) {

@@ -34,6 +34,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * Well this one should be pretty obvious what it does.
@@ -110,7 +112,9 @@ public class StatusChangePopup extends FormStylePopup {
                                              newStatus,
                                              createGenericCallbackForChaneState() );
         } else {
-            assetService.changeState( uuid,
+        	Path path = new PathImpl();
+        	path.setUUID(uuid);
+            assetService.changeState( path,
                                       newStatus,
                                       createGenericCallbackForChaneState() );
         }

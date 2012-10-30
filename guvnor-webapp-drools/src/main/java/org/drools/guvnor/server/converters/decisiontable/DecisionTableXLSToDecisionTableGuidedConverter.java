@@ -48,6 +48,7 @@ import org.drools.repository.AssetItem;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
+import org.uberfire.backend.vfs.Path;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -344,26 +345,22 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
                                   final NewAssetWithContentConfiguration< ? extends PortableObject> config,
                                   final ConversionResult result) throws SerializationException {
 
-        //Create new asset
-        String uuid = serviceImplementation.createNewRule( config );
-
-        //If there was an error creating the asset return
-        if ( uuid.startsWith( "DUPLICATE" ) ) {
-            result.addMessage( uuid,
-                               ConversionMessageType.ERROR );
-            return;
-        }
-
-        //If there was an error checking-in new asset return
-        if ( uuid.startsWith( "ERR" ) ) {
-            result.addMessage( uuid,
-                               ConversionMessageType.ERROR );
-            return;
-        }
-
-        result.addNewAsset( new ConversionAsset( uuid,
-                                                 config.getFormat() ) );
-
+    	try {
+            //Create new asset
+    	    Path uuid = serviceImplementation.createNewRule( config );
+            result.addNewAsset( new ConversionAsset( uuid.getUUID(),
+                    config.getFormat() ) );
+    	} catch (SerializationException e) {
+    		if(e.getMessage().startsWith( "DUPLICATE" )) {
+                result.addMessage( e.getMessage(),
+                        ConversionMessageType.ERROR );    			
+    		} else {
+    			result.addMessage( e.getMessage(),
+                        ConversionMessageType.ERROR );
+    		}
+    		
+    		throw e;
+    	}
     }
 
 }

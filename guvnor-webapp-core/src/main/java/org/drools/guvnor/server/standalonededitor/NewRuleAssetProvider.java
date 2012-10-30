@@ -22,6 +22,7 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Creates a new RuleAsset.
@@ -50,8 +51,8 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
         try {
             //creates a new empty asset with the given name and format in the
             //given package.
-            String ruleUUID = serviceImplementation.createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
-            Asset newRule = repositoryAssetService.loadRuleAsset(ruleUUID);
+            Path rulePath = serviceImplementation.createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
+            Asset newRule = repositoryAssetService.loadRuleAsset(rulePath);
 
             return new Asset[]{newRule};
         } catch (SerializationException ex) {

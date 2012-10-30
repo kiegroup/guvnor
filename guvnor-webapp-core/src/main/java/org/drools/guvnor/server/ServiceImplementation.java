@@ -93,6 +93,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.security.annotations.Roles;
 
 /**
@@ -156,9 +159,9 @@ public class ServiceImplementation
 
     /**
      * This will create a new asset. It will be saved, but not checked in. The
-     * initial state will be the draft state. Returns the UUID of the asset.
+     * initial state will be the draft state. Returns the {@link Path} of the asset.
      */
-    public String createNewRule(String ruleName,
+    public Path createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
                                 String initialPackage,
@@ -183,12 +186,18 @@ public class ServiceImplementation
             push( "packageChange",
                   pkg.getName() );
 
-            return asset.getUUID();
+            //TODO: return Path 
+    		Path path = new PathImpl();
+    		path.setUUID(asset.getUUID());
+            return path;
         } catch ( RulesRepositoryException e ) {
         	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
 /*            if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
             }*/
+            if ( e.getCause().getClass().toString().contains("javax.jcr.ItemExistsException") ) {
+            	throw new SerializationException( "DUPLICATE ASSET" );
+            }
             log.error( "An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: ",
                        e );
             throw new SerializationException( e.getMessage() );
@@ -201,7 +210,7 @@ public class ServiceImplementation
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
      */
-    public String createNewRule(NewAssetConfiguration configuration) throws SerializationException {
+    public Path createNewRule(NewAssetConfiguration configuration) throws SerializationException {
 
         String assetName = configuration.getAssetName();
         String description = configuration.getDescription();
@@ -220,7 +229,7 @@ public class ServiceImplementation
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
      */
-    public String createNewRule(NewAssetWithContentConfiguration< ? extends PortableObject> configuration) throws SerializationException {
+    public Path createNewRule(NewAssetWithContentConfiguration< ? extends PortableObject> configuration) throws SerializationException {
 
         final String assetName = configuration.getAssetName();
         final String description = configuration.getDescription();
@@ -255,7 +264,10 @@ public class ServiceImplementation
             push( "packageChange",
                   pkg.getName() );
 
-            return assetItem.getUUID();
+            //TODO: return Path 
+    		Path path = new PathImpl();
+    		path.setUUID(assetItem.getUUID());
+            return path;
 
         } catch ( RulesRepositoryException e ) {
         	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
@@ -264,6 +276,9 @@ public class ServiceImplementation
             }*/
             log.error( "An error occurred creating new asset [" + assetName + "] in package [" + packageName + "]: ",
                        e );
+            if ( e.getCause().getClass().toString().contains("javax.jcr.ItemExistsException") ) {
+            	throw new SerializationException( "DUPLICATE ASSET" );
+            }
             throw new SerializationException( e.getMessage() );
         }
 
@@ -272,7 +287,7 @@ public class ServiceImplementation
     /**
      * This will create a new asset which refers to an existing asset
      */
-    public String createNewImportedRule(String sharedAssetName,
+    public Path createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
         log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
@@ -281,7 +296,9 @@ public class ServiceImplementation
             AssetItem asset = packageItem.addAssetImportedFromGlobalArea( sharedAssetName );
             rulesRepository.save();
 
-            return asset.getUUID();
+            Path path = new PathImpl();
+            path.setUUID(asset.getUUID());
+            return path;
         } catch ( RulesRepositoryException e ) {
         	//If we want to display an explicit error message of "duplicate asset", we can achieve this in client error handler.
 /*            if ( e.getCause() instanceof ItemExistsException ) {
@@ -289,6 +306,9 @@ public class ServiceImplementation
             }*/
             log.error( "An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: ",
                        e );
+            if ( e.getCause().getClass().toString().contains("javax.jcr.ItemExistsException") ) {
+            	throw new SerializationException( "DUPLICATE ASSET" );
+            }
             throw new SerializationException( e.getMessage() );
         }
 

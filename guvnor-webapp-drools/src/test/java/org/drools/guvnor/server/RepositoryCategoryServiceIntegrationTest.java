@@ -22,6 +22,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
 
@@ -64,26 +65,26 @@ public class RepositoryCategoryServiceIntegrationTest extends GuvnorIntegrationT
                 "testAddCategoriesCat2",
                 "this is a cat");
 
-        String uuid = serviceImplementation.createNewRule("testCreateNewRuleName",
+        Path uuid = serviceImplementation.createNewRule("testCreateNewRuleName",
                 "an initial desc",
                 "testAddCategoriesCat1",
                 "testAddCategoriesPackage",
                 AssetFormats.DSL_TEMPLATE_RULE);
 
-        AssetItem dtItem = rulesRepository.loadAssetByUUID(uuid);
+        AssetItem dtItem = rulesRepository.loadAssetByUUID(uuid.getUUID());
         dtItem.addCategory("testAddCategoriesCat1");
         rulesRepository.save();
 
-        AssetItem dtItem1 = rulesRepository.loadAssetByUUID(uuid);
+        AssetItem dtItem1 = rulesRepository.loadAssetByUUID(uuid.getUUID());
         assertEquals(1,
                 dtItem1.getCategories().size());
         assertTrue(dtItem1.getCategorySummary().contains("testAddCategoriesCat1"));
 
-        AssetItem dtItem2 = rulesRepository.loadAssetByUUID(uuid);
+        AssetItem dtItem2 = rulesRepository.loadAssetByUUID(uuid.getUUID());
         dtItem2.addCategory("testAddCategoriesCat2");
         rulesRepository.save();
 
-        AssetItem dtItem3 = rulesRepository.loadAssetByUUID(uuid);
+        AssetItem dtItem3 = rulesRepository.loadAssetByUUID(uuid.getUUID());
         assertEquals(2,
                 dtItem3.getCategories().size());
         assertTrue(dtItem3.getCategorySummary().contains("testAddCategoriesCat2"));

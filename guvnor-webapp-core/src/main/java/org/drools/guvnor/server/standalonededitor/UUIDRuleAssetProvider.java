@@ -20,6 +20,8 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * Creates a new RuleAsset.
@@ -44,7 +46,10 @@ public class UUIDRuleAssetProvider
 
             for (int i = 0; i < assetsUUIDs.length; i++) {
                 String uuid = assetsUUIDs[i];
-                assets[i] = repositoryAssetService.loadRuleAsset(uuid);
+            	//TODO: refactor standalone editors to use Path (to sned the request using Path as parameter) instead of UUID          	
+        		Path path = new PathImpl();
+        		path.setUUID(uuid);
+                assets[i] = repositoryAssetService.loadRuleAsset(path);
             }
 
             return assets;

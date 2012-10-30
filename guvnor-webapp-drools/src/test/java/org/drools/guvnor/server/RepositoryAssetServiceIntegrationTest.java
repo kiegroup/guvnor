@@ -52,6 +52,8 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest {
 
@@ -68,7 +70,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "this is a cat" );
 
         //Create the shared asset.
-        String uuid = serviceImplementation.createNewRule( "testCreateLinkedAssetItemRule",
+        Path uuid = serviceImplementation.createNewRule( "testCreateLinkedAssetItemRule",
                                           "an initial desc",
                                           "testCreateNewRuleAsLinkCat1",
                                           "globalArea",
@@ -76,19 +78,19 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertNotNull( uuid );
         assertFalse( "".equals( uuid ) );
 
-        AssetItem dtItem = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem dtItem = rulesRepository.loadAssetByUUID( uuid.getUUID() );
         assertEquals( dtItem.getDescription(),
                       "an initial desc" );
 
         //create an asset which is imported from global area. 
-        String uuidLink = serviceImplementation.createNewImportedRule( "testCreateLinkedAssetItemRule",
+        Path uuidLink = serviceImplementation.createNewImportedRule( "testCreateLinkedAssetItemRule",
                                                       "testCreateNewRuleAsLinkPackage1" );
         assertNotNull( uuidLink );
         assertFalse( "".equals( uuidLink ) );
         assertTrue( uuidLink.equals( uuid ) );
 
         //now verify the linked asset.
-        AssetItem itemLink = rulesRepository.loadAssetByUUID( uuidLink );
+        AssetItem itemLink = rulesRepository.loadAssetByUUID( uuidLink.getUUID() );
         assertEquals( itemLink.getName(),
                       "testCreateLinkedAssetItemRule" );
         assertEquals( itemLink.getDescription(),
@@ -105,7 +107,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertTrue( itemLink.getCategorySummary().contains( "testCreateNewRuleAsLinkCat1" ) );
 
         //now verify the original asset.
-        AssetItem referredItem = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem referredItem = rulesRepository.loadAssetByUUID( uuid.getUUID() );
         assertEquals( referredItem.getName(),
                       "testCreateLinkedAssetItemRule" );
         assertEquals( referredItem.getDescription(),
@@ -152,14 +154,14 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "this is a cat" );
 
         //Create the shared asset in global area.
-        String uuid = serviceImplementation.createNewRule( "testLinkedAssetItemHistoryRelatedRule",
+        Path uuid = serviceImplementation.createNewRule( "testLinkedAssetItemHistoryRelatedRule",
                                           "an initial desc",
                                           "testLinkedAssetItemHistoryRelatedCat",
                                           "globalArea",
                                           AssetFormats.DSL_TEMPLATE_RULE );
 
         //create an asset which refers to the shared assets.
-        String uuidLink = serviceImplementation.createNewImportedRule( "testLinkedAssetItemHistoryRelatedRule",
+        Path uuidLink = serviceImplementation.createNewImportedRule( "testLinkedAssetItemHistoryRelatedRule",
                                                       "testLinkedAssetItemHistoryRelatedPack" );
         assertTrue( uuidLink.equals( uuid ) );
 
@@ -196,9 +198,15 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertFalse( rows[1].id.equals( uuidLink ) );
         assertFalse( rows[2].id.equals( uuidLink ) );
 
-        Asset version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
-        Asset version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
-        Asset version3 = repositoryAssetService.loadRuleAsset( rows[2].id );
+        Path path1 = new PathImpl();
+        path1.setUUID(rows[0].id);
+        Asset version1 = repositoryAssetService.loadRuleAsset( path1 );
+        Path path2 = new PathImpl();
+        path2.setUUID(rows[1].id);
+        Asset version2 = repositoryAssetService.loadRuleAsset( path2 );
+        Path path3 = new PathImpl();
+        path3.setUUID(rows[2].id);
+        Asset version3 = repositoryAssetService.loadRuleAsset( path3 );
         Asset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
         assertFalse( version1.getVersionNumber() == version2.getVersionNumber() );
         assertFalse( version1.getVersionNumber() == versionHead.getVersionNumber() );
@@ -220,8 +228,12 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertFalse( rows[0].id.equals( uuid ) );
         assertFalse( rows[1].id.equals( uuid ) );
 
-        version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
-        version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
+        Path path4 = new PathImpl();
+        path4.setUUID(rows[0].id);
+        version1 = repositoryAssetService.loadRuleAsset( path4 );
+        Path path5 = new PathImpl();
+        path5.setUUID(rows[1].id);
+        version2 = repositoryAssetService.loadRuleAsset( path5 );
         versionHead = repositoryAssetService.loadRuleAsset( uuid );
         assertFalse( version1.getVersionNumber() == version2.getVersionNumber() );
         assertFalse( version1.getVersionNumber() == versionHead.getVersionNumber() );
@@ -268,8 +280,10 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
 
         TableDataRow row = res.data[0];
         String uuid = row.id;
+        Path path = new PathImpl();
+        path.setUUID(uuid);
 
-        Asset asset = repositoryAssetService.loadRuleAsset( uuid );
+        Asset asset = repositoryAssetService.loadRuleAsset( path );
         assertNotNull( asset );
 
         assertEquals( uuid,
@@ -299,27 +313,27 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         rulesRepository.createState("whee");
         rule.updateState("whee");
         rule.checkin("changed state");
-        asset = repositoryAssetService.loadRuleAsset( uuid );
+        asset = repositoryAssetService.loadRuleAsset( path );
 
         assertEquals( "whee",
                       asset.getState() );
         assertEquals( "changed state",
                       asset.getCheckinComment() );
 
-        uuid = serviceImplementation.createNewRule( "testBRLFormatSugComp",
+        path = serviceImplementation.createNewRule( "testBRLFormatSugComp",
                                    "description",
                                    "testLoadRuleAsset",
                                    "testLoadRuleAsset",
                                    AssetFormats.BUSINESS_RULE );
-        asset = repositoryAssetService.loadRuleAsset( uuid );
+        asset = repositoryAssetService.loadRuleAsset( path );
         assertTrue(asset.getContent() instanceof RuleModel);
 
-        uuid = serviceImplementation.createNewRule( "testLoadRuleAssetBRL",
+        path = serviceImplementation.createNewRule( "testLoadRuleAssetBRL",
                                    "description",
                                    "testLoadRuleAsset",
                                    "testLoadRuleAsset",
                                    AssetFormats.DSL_TEMPLATE_RULE );
-        asset = repositoryAssetService.loadRuleAsset( uuid );
+        asset = repositoryAssetService.loadRuleAsset( path );
         assertTrue( asset.getContent() instanceof RuleContentText );
     }
 
@@ -394,7 +408,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "testLoadArchivedAssetsCat",
                                                   "this is a cat" );
 
-        String uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssets1",
+        Path uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssets1",
                                            "description",
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
@@ -402,28 +416,28 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
 
         repositoryAssetService.archiveAsset(uuid1);
 
-        String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssets2",
+        Path uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssets2",
                 "description",
                 "testLoadArchivedAssetsCat",
                 "testLoadArchivedAssetsPackage",
                 AssetFormats.DRL);
         repositoryAssetService.archiveAsset( uuid2 );
 
-        String uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssets3",
+        Path uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssets3",
                                            "description",
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
                                            AssetFormats.DRL );
         repositoryAssetService.archiveAsset(uuid3);
 
-        String uuid4 = serviceImplementation.createNewRule( "testLoadArchivedAssets4",
+        Path uuid4 = serviceImplementation.createNewRule( "testLoadArchivedAssets4",
                                            "description",
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
                                            AssetFormats.DRL );
         repositoryAssetService.archiveAsset( uuid4 );
 
-        String uuid5 = serviceImplementation.createNewRule( "testLoadArchivedAssets5",
+        Path uuid5 = serviceImplementation.createNewRule( "testLoadArchivedAssets5",
                                            "description",
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
@@ -491,7 +505,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
 
         long nowTime2 = System.currentTimeMillis();
         System.out.println( "CreateCategory: " + (nowTime2 - nowTime1) );
-        String uuid = serviceImplementation.createNewRule( "testLoadAssetHistory",
+        Path uuid = serviceImplementation.createNewRule( "testLoadAssetHistory",
                                           "description",
                                           "testLoadAssetHistory",
                                           "testLoadAssetHistory",
@@ -520,8 +534,12 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertFalse( rows[0].id.equals( uuid ) );
         assertFalse( rows[1].id.equals( uuid ) );
 
-        Asset old = repositoryAssetService.loadRuleAsset( rows[0].id );
-        Asset newer = repositoryAssetService.loadRuleAsset( rows[1].id );
+        Path path1 = new PathImpl();
+        path1.setUUID(rows[0].id);
+        Asset old = repositoryAssetService.loadRuleAsset( path1 );
+        Path path2 = new PathImpl();
+        path2.setUUID(rows[1].id);
+        Asset newer = repositoryAssetService.loadRuleAsset( path2 );
         assertFalse( old.getVersionNumber() == newer.getVersionNumber() );
 
         Asset head = repositoryAssetService.loadRuleAsset( uuid );
@@ -545,13 +563,13 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         repositoryCategoryService.createCategory( "/",
                                                   "templates",
                                                   "ya" );
-        String uuid = serviceImplementation.createNewRule( "testCopyAsset",
+        Path uuid = serviceImplementation.createNewRule( "testCopyAsset",
                                           "",
                                           "templates",
                                           RulesRepository.DEFAULT_PACKAGE,
                                           AssetFormats.DRL );
 
-        String uuid2 = repositoryAssetService.copyAsset( uuid,
+        Path uuid2 = repositoryAssetService.copyAsset( uuid,
                                                          RulesRepository.DEFAULT_PACKAGE,
                                                          "testCopyAsset2" );
         assertNotSame( uuid,
@@ -575,24 +593,24 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
-        String uuid = serviceImplementation.createNewRule( "testRemoveAsset",
+        Path uuid = serviceImplementation.createNewRule( "testRemoveAsset",
                                           "x",
                                           cat,
                                           "testRemoveAsset",
                                           "testRemoveAsset" );
         @SuppressWarnings("unused")
-        String uuid2 = serviceImplementation.createNewRule( "testRemoveAsset2",
+        Path uuid2 = serviceImplementation.createNewRule( "testRemoveAsset2",
                                            "x",
                                            cat,
                                            "testRemoveAsset",
                                            "testRemoveAsset" );
         @SuppressWarnings("unused")
-        String uuid3 = serviceImplementation.createNewRule( "testRemoveAsset3",
+        Path uuid3 = serviceImplementation.createNewRule( "testRemoveAsset3",
                                            "x",
                                            cat,
                                            "testRemoveAsset",
                                            "testRemoveAsset" );
-        String uuid4 = serviceImplementation.createNewRule( "testRemoveAsset4",
+        Path uuid4 = serviceImplementation.createNewRule( "testRemoveAsset4",
                                            "x",
                                            cat,
                                            "testRemoveAsset",
@@ -628,24 +646,24 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
-        String uuid = serviceImplementation.createNewRule( "testArchiveAsset",
+        Path uuid = serviceImplementation.createNewRule( "testArchiveAsset",
                                           "x",
                                           cat,
                                           "testArchiveAsset",
                                           "testArchiveAsset" );
         @SuppressWarnings("unused")
-        String uuid2 = serviceImplementation.createNewRule( "testArchiveAsset2",
+        Path uuid2 = serviceImplementation.createNewRule( "testArchiveAsset2",
                                            "x",
                                            cat,
                                            "testArchiveAsset",
                                            "testArchiveAsset" );
         @SuppressWarnings("unused")
-        String uuid3 = serviceImplementation.createNewRule( "testArchiveAsset3",
+        Path uuid3 = serviceImplementation.createNewRule( "testArchiveAsset3",
                                            "x",
                                            cat,
                                            "testArchiveAsset",
                                            "testArchiveAsset" );
-        String uuid4 = serviceImplementation.createNewRule( "testArchiveAsset4",
+        Path uuid4 = serviceImplementation.createNewRule( "testArchiveAsset4",
                                            "x",
                                            cat,
                                            "testArchiveAsset",
@@ -704,24 +722,24 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
-        String uuid = serviceImplementation.createNewRule( packageName,
+        Path uuid = serviceImplementation.createNewRule( packageName,
                                           "x",
                                           cat,
                                           packageName,
                                           packageName );
         @SuppressWarnings("unused")
-        String uuid2 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived2",
+        Path uuid2 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived2",
                                            "x",
                                            cat,
                                            packageName,
                                            packageName );
         @SuppressWarnings("unused")
-        String uuid3 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived3",
+        Path uuid3 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived3",
                                            "x",
                                            cat,
                                            packageName,
                                            packageName );
-        String uuid4 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived4",
+        Path uuid4 = serviceImplementation.createNewRule( "testArchiveAssetWhenParentPackageArchived4",
                                            "x",
                                            cat,
                                            packageName,
@@ -803,7 +821,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.checkin( "" );
         repo.save();
 
-        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        Asset rule = repositoryAssetService.loadRuleAsset( path );
 
         BuilderResult result = repositoryAssetService.validateAsset( rule );
         assertNotNull( result );
@@ -836,7 +856,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.checkin( "" );
         repo.save();
 
-        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        Asset rule = repositoryAssetService.loadRuleAsset( path );
 
         // check its all OK
         BuilderResult result = repositoryAssetService.validateAsset( rule );
@@ -868,7 +890,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         dslRule.updateContent( "when \n There is a person \n then \n print out 42" );
         dslRule.checkin( "" );
 
-        rule = repositoryAssetService.loadRuleAsset( dslRule.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(dslRule.getUUID());
+        rule = repositoryAssetService.loadRuleAsset( path2 );
 
         result = repositoryAssetService.validateAsset( rule );
         assertTrue(result.getLines().isEmpty());
@@ -878,7 +902,10 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.updateFormat( AssetFormats.ENUMERATION );
         asset.updateContent( "goober boy" );
         asset.checkin( "" );
-        result = repositoryAssetService.validateAsset( repositoryAssetService.loadRuleAsset( asset.getUUID() ) );
+        
+        Path path3 = new PathImpl();
+        path3.setUUID(asset.getUUID());
+        result = repositoryAssetService.validateAsset( repositoryAssetService.loadRuleAsset( path3 ) );
         assertFalse( result.getLines().size() == 0 );
 
     }
@@ -893,7 +920,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "funkytest",
                                                   "" );
 
-        String uuidt1 = serviceImplementation.createNewRule( "t1",
+        Path uuidt1 = serviceImplementation.createNewRule( "t1",
                                             "",
                                             "funkytest",
                                             "testBuildAssetMultipleFunctionsCallingEachOther",
@@ -907,7 +934,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         t1.setContent( t1Content );
         repositoryAssetService.checkinVersion(t1);
 
-        String uuidt2 = serviceImplementation.createNewRule( "t2",
+        Path uuidt2 = serviceImplementation.createNewRule( "t2",
                                             "",
                                             "funkytest",
                                             "testBuildAssetMultipleFunctionsCallingEachOther",
@@ -945,7 +972,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                 "brl",
                 "");
 
-        String uuid = serviceImplementation.createNewRule( "testBRL",
+        Path uuid = serviceImplementation.createNewRule( "testBRL",
                                           "",
                                           "brl",
                                           "testBuildAssetBRL",
@@ -988,7 +1015,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertEquals( 3,
                       assets.size() );
         // now lets copy...
-        String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(rule.getUuid());
+        Path newUUID = repositoryAssetService.copyAsset( path,
                                                            rule.getMetaData().getModuleName(),
                                                            "ruleName2" );
 
@@ -1031,7 +1060,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.checkin( "" );
         repo.save();
 
-        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path1 = new PathImpl();
+        path1.setUUID(asset.getUUID());
+        Asset rule = repositoryAssetService.loadRuleAsset( path1 );
         String drl = repositoryAssetService.buildAssetSource( rule );
         assertEquals( "rule 'n' \n when Foo() then bar(); \n end",
                       drl );
@@ -1042,7 +1073,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
         asset.checkin( "" );
 
-        rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(asset.getUUID());
+        rule = repositoryAssetService.loadRuleAsset( path2 );
         drl = repositoryAssetService.buildAssetSource( rule );
         assertNotNull( drl );
         assertTrue( drl.indexOf( "rule" ) > -1 );
@@ -1060,7 +1093,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
 
-        rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path3 = new PathImpl();
+        path3.setUUID(asset.getUUID());
+        rule = repositoryAssetService.loadRuleAsset( path3 );
         drl = repositoryAssetService.buildAssetSource( rule );
         assertNotNull( drl );
         assertTrue( drl.indexOf( "This is foo" ) == -1 );
@@ -1068,9 +1103,16 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertTrue( drl.indexOf( "bar()" ) > -1 );
         assertTrue( drl.indexOf( "yeahMan();" ) > -1 );
 
-        rule = repositoryAssetService.loadRuleAsset( repo.copyAsset( asset.getUUID(),
-                                                                     "testAssetSource",
-                                                                     "newRuleName" ) );
+        Path path4 = new PathImpl();
+        path4.setUUID(asset.getUUID());
+        
+        String newUUID = repo.copyAsset( path4.getUUID(),
+                "testAssetSource",
+                "newRuleName" );
+                
+        Path path5 = new PathImpl();
+        path5.setUUID(newUUID);
+        rule = repositoryAssetService.loadRuleAsset(path5);
         // System.err.println(((RuleContentText)rule.content).content);
         drl = repositoryAssetService.buildAssetSource( rule );
         assertNotNull( drl );
@@ -1099,7 +1141,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         asset.checkin( "" );
         repo.save();
 
-        Asset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
+        Path path1 = new PathImpl();
+        path1.setUUID(asset.getUUID());
+        Asset rule = repositoryAssetService.loadRuleAsset(path1);
 
         // check its all OK
         BuilderResult result = repositoryAssetService.validateAsset( rule );
@@ -1133,7 +1177,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "testLoadArchivedAssetsPagedResultsCat",
                                                   "this is a cat" );
 
-        String uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssetsPagedResults1",
+        Path uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssetsPagedResults1",
                                            "description",
                                            "testLoadArchivedAssetsPagedResultsCat",
                                            "testLoadArchivedAssetsPagedResultsPackage",
@@ -1141,14 +1185,14 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
 
         repositoryAssetService.archiveAsset(uuid1);
 
-        String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssetsPagedResults2",
+        Path uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssetsPagedResults2",
                 "description",
                 "testLoadArchivedAssetsPagedResultsCat",
                 "testLoadArchivedAssetsPagedResultsPackage",
                 AssetFormats.DRL);
         repositoryAssetService.archiveAsset( uuid2 );
 
-        String uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssetsPagedResults3",
+        Path uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssetsPagedResults3",
                                            "description",
                                            "testLoadArchivedAssetsPagedResultsCat",
                                            "testLoadArchivedAssetsPagedResultsPackage",
@@ -1184,7 +1228,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                                                   "testLoadArchivedAssetsFullResultsCat",
                                                   "this is a cat" );
 
-        String uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssetsFullResults1",
+        Path uuid1 = serviceImplementation.createNewRule( "testLoadArchivedAssetsFullResults1",
                                            "description",
                                            "testLoadArchivedAssetsFullResultsCat",
                                            "testLoadArchivedAssetsFullResultsPackage",
@@ -1192,14 +1236,14 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
 
         repositoryAssetService.archiveAsset(uuid1);
 
-        String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssetsFullResults2",
+        Path uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssetsFullResults2",
                 "description",
                 "testLoadArchivedAssetsFullResultsCat",
                 "testLoadArchivedAssetsFullResultsPackage",
                 AssetFormats.DRL);
         repositoryAssetService.archiveAsset( uuid2 );
 
-        String uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssetsFullResults3",
+        Path uuid3 = serviceImplementation.createNewRule( "testLoadArchivedAssetsFullResults3",
                                            "description",
                                            "testLoadArchivedAssetsFullResultsCat",
                                            "testLoadArchivedAssetsFullResultsPackage",

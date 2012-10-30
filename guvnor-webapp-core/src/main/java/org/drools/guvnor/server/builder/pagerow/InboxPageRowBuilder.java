@@ -26,6 +26,8 @@ import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.repository.UserInfo.InboxEntry;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class InboxPageRowBuilder
     implements
@@ -57,7 +59,10 @@ public class InboxPageRowBuilder
         InboxPageRow row = null;
         if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
-            tr.setUuid( inboxEntry.assetUUID );
+            //REVISIT: get a Path instance from drools-repository-vfs
+            Path path = new PathImpl();
+            path.setUUID(inboxEntry.assetUUID);
+            tr.setPath( path );
             tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
             tr.setName( inboxEntry.note );
@@ -67,7 +72,10 @@ public class InboxPageRowBuilder
 
         } else {
             InboxPageRow tr = new InboxPageRow();
-            tr.setUuid( inboxEntry.assetUUID );
+            //REVISIT: get a Path instance from drools-repository-vfs
+            Path path = new PathImpl();
+            path.setUUID(inboxEntry.assetUUID);
+            tr.setPath( path );
             tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
             tr.setName( inboxEntry.note );

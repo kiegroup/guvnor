@@ -57,6 +57,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import org.drools.guvnor.shared.api.Valid;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -529,7 +531,9 @@ public class AssetEditorActionToolbar extends Composite {
     }
 
     private void doArchive() {
-        assetService.archiveAsset( asset.getUuid(),
+    	Path path = new PathImpl();
+    	path.setUUID(asset.getUuid());
+        assetService.archiveAsset( path,
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
@@ -663,7 +667,9 @@ public class AssetEditorActionToolbar extends Composite {
                     return;
                 }
                 String name = newName.getText().trim();
-                assetService.copyAsset( asset.getUuid(),
+            	Path path = new PathImpl();
+            	path.setUUID(asset.getUuid());
+                assetService.copyAsset( path,
                         sel.getSelectedPackage(),
                         name,
                         new GenericCallback<String>() {

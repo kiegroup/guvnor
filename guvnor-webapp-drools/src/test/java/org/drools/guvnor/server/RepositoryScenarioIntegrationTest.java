@@ -44,6 +44,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 
@@ -143,7 +144,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
                 "sc",
                 "");
 
-        String scenarioId = serviceImplementation.createNewRule( "sc1",
+        Path scenarioId = serviceImplementation.createNewRule( "sc1",
                                                 "s",
                                                 "sc",
                                                 pkg.getName(),

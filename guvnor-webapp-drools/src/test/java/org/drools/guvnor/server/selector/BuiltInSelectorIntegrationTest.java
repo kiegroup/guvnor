@@ -23,6 +23,7 @@ import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 public class BuiltInSelectorIntegrationTest extends GuvnorIntegrationTest {
 
@@ -40,33 +41,33 @@ public class BuiltInSelectorIntegrationTest extends GuvnorIntegrationTest {
         cat.addCategory( "testBuiltInSelectorCat2",
                          "yeah" );
 
-        String uuid1 = serviceImplementation.createNewRule( "test AddRule1",
+        Path uuid1 = serviceImplementation.createNewRule( "test AddRule1",
                                            "a description",
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item1 = rulesRepository.loadAssetByUUID( uuid1 );
+        AssetItem item1 = rulesRepository.loadAssetByUUID( uuid1.getUUID() );
         item1.updateState( "Dev" );
-        String uuid2 = serviceImplementation.createNewRule( "test AddRule2",
+        Path uuid2 = serviceImplementation.createNewRule( "test AddRule2",
                                            "a description",
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item2 = rulesRepository.loadAssetByUUID( uuid2 );
+        AssetItem item2 = rulesRepository.loadAssetByUUID( uuid2.getUUID() );
         item2.updateState( "QA" );
-        String uuid3 = serviceImplementation.createNewRule( "test AddRule3",
+        Path uuid3 = serviceImplementation.createNewRule( "test AddRule3",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item3 = rulesRepository.loadAssetByUUID( uuid3 );
+        AssetItem item3 = rulesRepository.loadAssetByUUID( uuid3.getUUID() );
         item3.updateState( "Dev" );
-        String uuid4 = serviceImplementation.createNewRule( "test AddRule4",
+        Path uuid4 = serviceImplementation.createNewRule( "test AddRule4",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item4 = rulesRepository.loadAssetByUUID( uuid4 );
+        AssetItem item4 = rulesRepository.loadAssetByUUID( uuid4.getUUID() );
         item4.updateState( "QA" );
 
         //Select asset using "category =" 
@@ -187,21 +188,21 @@ public class BuiltInSelectorIntegrationTest extends GuvnorIntegrationTest {
                 "yeah" );
         
         //rule1 in cat1 and cat3
-        String uuid1 = serviceImplementation.createNewRule( "test AddRule1",
+        Path uuid1 = serviceImplementation.createNewRule( "test AddRule1",
                                            "a description",
                                            "testBuiltInSelectorWithAssetCategoryCat1",
                                            "testBuiltInSelectorWithAssetCategoryPackage",
                                            "txt" );
-        AssetItem item1 = rulesRepository.loadAssetByUUID( uuid1 );
+        AssetItem item1 = rulesRepository.loadAssetByUUID( uuid1.getUUID() );
         item1.addCategory("testBuiltInSelectorWithAssetCategoryCat2/testBuiltInSelectorWithAssetCategoryCat3");
         
         //rule2 in no category
-        String uuid2 = serviceImplementation.createNewRule( "test AddRule2",
+        Path uuid2 = serviceImplementation.createNewRule( "test AddRule2",
                                            "a description",
                                            null,
                                            "testBuiltInSelectorWithAssetCategoryPackage",
                                            "txt" );
-        AssetItem item2 = rulesRepository.loadAssetByUUID( uuid2 );
+        AssetItem item2 = rulesRepository.loadAssetByUUID( uuid2.getUUID() );
 
 
         //build a package with rules NOT in cat3:

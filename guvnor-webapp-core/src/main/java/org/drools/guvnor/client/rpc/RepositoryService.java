@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.shared.api.PortableObject;
+import org.uberfire.backend.vfs.Path;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -66,11 +67,11 @@ public interface RepositoryService
     public TableConfig loadTableConfig(String listName);
 
     /**
-     * Creates a brand new rule with the initial category. Return the UUID of
+     * Creates a brand new rule with the initial category. Return the {@link Path} of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
-    public String createNewRule(String ruleName,
+    public Path createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
                                 String initialPackage,
@@ -78,18 +79,18 @@ public interface RepositoryService
 
 
     /**
-     * Creates a brand new rule with the initial category. Return the UUID of
+     * Creates a brand new rule with the initial category. Return the {@link Path} of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
-    public String createNewRule(NewAssetConfiguration configuration) throws SerializationException;
+    public Path createNewRule(NewAssetConfiguration configuration) throws SerializationException;
 
     /**
-     * Creates a brand new rule with the initial category. Return the UUID of
+     * Creates a brand new rule with the initial category. Return the {@link Path} of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
-    public String createNewRule(NewAssetWithContentConfiguration<? extends PortableObject> configuration) throws SerializationException;
+    public Path createNewRule(NewAssetWithContentConfiguration<? extends PortableObject> configuration) throws SerializationException;
 
     /**
      * Check whether an asset exists in a package
@@ -103,11 +104,11 @@ public interface RepositoryService
                                           String packageName) throws SerializationException;
 
     /**
-     * Creates a new rule which is imported from global area. Return the UUID of
+     * Creates a new rule which is imported from global area. Return the {@link Path} of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
-    public String createNewImportedRule(String sharedAssetName,
+    public Path createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException;
 
     /**

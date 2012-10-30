@@ -17,6 +17,8 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
+import org.uberfire.backend.vfs.Path;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -82,31 +84,31 @@ public interface AssetService
      */
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
 
-    public void archiveAsset(String uuid);
+    public void archiveAsset(Path path);
 
-    public void unArchiveAsset(String uuid);
+    public void unArchiveAsset(Path path);
 
     /**
-     * Archive assets based on uuid
+     * Archive assets based on Path
      * 
      * @param uuids
      */
-    public void archiveAssets(String[] uuids,
+    public void archiveAssets(Path[] paths,
                               boolean value);
 
     /**
      * Remove an asset based on uuid
      * 
-     * @param uuid
+     * @param Path path
      */
-    public void removeAsset(String uuid);
+    public void removeAsset(Path uuid);
 
     /**
-     * Remove assets based on uuid
+     * Remove assets based on Path
      * 
-     * @param uuids
+     * @param Path paths
      */
-    public void removeAssets(String[] uuids);
+    public void removeAssets(Path[] uuids);
 
     /**
      * This will return the effective source for an asset (in DRL). Used as an
@@ -131,9 +133,9 @@ public interface AssetService
      * This loads up all the stuff for a rule asset based on the UUID (always
      * latest and editable version).
      */
-    public Asset loadRuleAsset(String UUID) throws SerializationException;
+    public Asset loadRuleAsset(Path path) throws SerializationException;
 
-    public Asset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
+    public Asset[] loadRuleAssets(Path[] paths) throws SerializationException;
 
     /**
      * This checks in a new version of an asset.
@@ -155,7 +157,7 @@ public interface AssetService
      * This will load the history of the given asset or package, in a summary
      * format suitable for display in a table.
      */
-    public TableDataResult loadItemHistory(String uuid) throws SerializationException;
+    public TableDataResult loadItemHistory(Path uuid) throws SerializationException;
 
     /**
      * This will load the history of the given asset, in a summary format
@@ -237,8 +239,8 @@ public interface AssetService
     /**
      * Copies an asset into a new destination package.
      * 
-     * @param assetUUID
-     *            The source assetID.
+     * @param assetPath
+     *            The source asset path.
      * @param newPackage
      *            The destination package (may be the same as the current source
      *            package, but in that case the asset has to have a different
@@ -246,7 +248,7 @@ public interface AssetService
      * @param newName
      *            The new name of the asset.
      */
-    public String copyAsset(String assetUUID,
+    public Path copyAsset(Path assetPath,
                             String newPackage,
                             String newName);
 
@@ -261,7 +263,7 @@ public interface AssetService
     /**
      * This moves an asset to the given target package.
      */
-    public void changeAssetPackage(String uuid,
+    public void changeAssetPackage(Path path,
                                    String newPackage,
                                    String comment);
 
@@ -282,12 +284,12 @@ public interface AssetService
     /**
      * This will change the state of an asset.
      * 
-     * @param uuid
-     *            The UUID of the asset we are tweaking.
+     * @param Path
+     *            The Path of the asset we are tweaking.
      * @param newState
      *            The new state to set. It must be valid in the repo.
      */
-    public void changeState(String uuid,
+    public void changeState(Path path,
                             String newState);
 
     /**

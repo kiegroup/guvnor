@@ -55,6 +55,8 @@ import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -84,7 +86,10 @@ public class GuvnorAPIServlet extends HttpServlet {
             ServletOutputStream outputStream = response.getOutputStream();
 
             try {
-                Asset asset = repositoryAssetService.loadRuleAsset( uuid );
+            	//TODO:
+        		Path path = new PathImpl();
+        		path.setUUID(uuid);
+                Asset asset = repositoryAssetService.loadRuleAsset( path );
                 if ( asset.getContent() != null ) {
                     response.setContentType( "application/json" );
                     String content = null;

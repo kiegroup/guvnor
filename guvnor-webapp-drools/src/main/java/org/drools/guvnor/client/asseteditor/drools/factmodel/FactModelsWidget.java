@@ -29,6 +29,8 @@ import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -127,8 +129,10 @@ public class FactModelsWidget extends Composite
                     addEditorToContainer();
                 } else {
                     for ( AssetPageRow otherAsset : assets ) {
-                        if ( !otherAsset.getUuid().equals( asset.getUuid() ) ) {
-                            clientFactory.getAssetService().loadRuleAsset( otherAsset.getUuid(),
+                        if ( !otherAsset.getPath().getUUID().equals( asset.getUuid() ) ) {
+                        	Path path = new PathImpl();
+                        	path.setUUID(otherAsset.getPath().getUUID());
+                            clientFactory.getAssetService().loadRuleAsset( path,
                                                                            makeLoadFactModelsCallback( s ) );
                         }
                     }

@@ -35,6 +35,8 @@ import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class WorkingSetManager {
 
@@ -62,7 +64,13 @@ public class WorkingSetManager {
      */
     public void applyWorkingSets(final String packageName, final String[] wsUUIDs, final Command done) {
         AssetServiceAsync assetService = GWT.create(AssetService.class);
-        assetService.loadRuleAssets(wsUUIDs, new GenericCallback<Asset[]>() {
+        Path[] paths = new PathImpl[wsUUIDs.length];
+        for(int i=0;i<wsUUIDs.length;i++) {
+        	Path path = new PathImpl();
+        	path.setUUID(wsUUIDs[i]);
+        	paths[i] = path;
+        }
+        assetService.loadRuleAssets(paths, new GenericCallback<Asset[]>() {
 
             public void onSuccess(Asset[] result) {
                 final Set<Asset> wss = new HashSet<Asset>();

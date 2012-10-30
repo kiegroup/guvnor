@@ -42,6 +42,8 @@ import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
 
@@ -88,7 +90,9 @@ public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
         assertEquals("",
                 DroolsHeader.getDroolsHeader(pkg));
 
-        fileManagerService.attachFileToAsset(asset.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        fileManagerService.attachFileToAsset(path,
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
 
@@ -103,7 +107,8 @@ public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
                 pkg);
         pkg.checkin("");
 
-        fileManagerService.attachFileToAsset(asset.getUUID(),
+        path.setUUID(asset.getUUID());
+        fileManagerService.attachFileToAsset(path,
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
         pkg = rulesRepository.loadModule( "testAttachModelImports" );

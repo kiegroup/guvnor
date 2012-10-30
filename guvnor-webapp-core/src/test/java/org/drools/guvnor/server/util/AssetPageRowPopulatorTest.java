@@ -50,7 +50,7 @@ public class AssetPageRowPopulatorTest {
             when( assetItem.getExternalSource() ).thenReturn( "externalsource" );
             AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
             AssetPageRow makeAssetPageRow = assetPageRowPopulator.populateFrom( assetItem );
-            assertEquals( makeAssetPageRow.getUuid(),
+            assertEquals( makeAssetPageRow.getPath(),
                           assetItem.getUUID() );
             assertEquals( makeAssetPageRow.getFormat(),
                           assetItem.getFormat() );

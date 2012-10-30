@@ -39,6 +39,8 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.verification.TemporalBRLAssetVerifier;
 import org.drools.repository.ModuleItem;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 public class VerificationServiceImplementation
         extends RemoteServiceServlet
@@ -87,7 +89,15 @@ public class VerificationServiceImplementation
         if (activeWorkingSets == null) {
             return new Asset[0];
         } else {
-            return repositoryAssetService.loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
+        	//TODO: refactor working set to use asset Path instead
+        	Path[] paths = new PathImpl[activeWorkingSets.size()];
+        	int i = 0;
+        	java.util.Iterator<String> it = activeWorkingSets.iterator();
+        	while(it.hasNext()) {
+        		paths[i] = new PathImpl();
+        		paths[i].setUUID(it.next());
+        	}
+            return repositoryAssetService.loadRuleAssets(activeWorkingSets.toArray(paths));
         }
     }
 

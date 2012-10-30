@@ -71,6 +71,8 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -89,28 +91,28 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         assertNotNull( packageUuid );
 
         // Create two rules
-        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
+        Path archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                                       "",
                                                                       "snapshotDiffTesting",
                                                                       "testSnapshotDiff",
                                                                       AssetFormats.DRL );
-        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
+        Path modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                                        "",
                                                                        "snapshotDiffTesting",
                                                                        "testSnapshotDiff",
                                                                        AssetFormats.DRL );
-        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
+        Path deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                                       "",
                                                                       "snapshotDiffTesting",
                                                                       "testSnapshotDiff",
                                                                       AssetFormats.DRL );
-        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
+        Path restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                                        "",
                                                                        "snapshotDiffTesting",
                                                                        "testSnapshotDiff",
                                                                        AssetFormats.DRL );
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
+        Path noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                                         "",
                                                                         "snapshotDiffTesting",
                                                                         "testSnapshotDiff",
@@ -137,7 +139,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryAssetService.archiveAsset( archiveRuleUuid );
 
         @SuppressWarnings("unused")
-        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
+        Path addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                                     "",
                                                                     "snapshotDiffTesting",
                                                                     "testSnapshotDiff",
@@ -333,7 +335,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         String cat = repositoryCategoryService.loadChildCategories( "/" )[0];
 
-        String uuid = serviceImplementation.createNewRule( "testMovePackage",
+        Path uuid = serviceImplementation.createNewRule( "testMovePackage",
                                                            "desc",
                                                            cat,
                                                            "sourcePackage",
@@ -379,7 +381,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                                                "d",
                                                "package" );
         @SuppressWarnings("unused")
-        String uuid = serviceImplementation.createNewRule( "testSnapshotRule",
+        Path uuid = serviceImplementation.createNewRule( "testSnapshotRule",
                                                            "",
                                                            "snapshotTesting",
                                                            "testSnapshot",
@@ -553,13 +555,13 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         ModuleItem p = rulesRepository.createModule( "testExportPackage",
                                                      "" );
 
-        String uuid1 = serviceImplementation.createNewRule( "testExportPackageAsset1",
+        Path uuid1 = serviceImplementation.createNewRule( "testExportPackageAsset1",
                                                             "desc",
                                                             "testExportPackageCat1",
                                                             "testExportPackage",
                                                             "dsl" );
 
-        String uuid2 = serviceImplementation.createNewRule( "testExportPackageAsset2",
+        Path uuid2 = serviceImplementation.createNewRule( "testExportPackageAsset2",
                                                             "desc",
                                                             "testExportPackageCat2",
                                                             "testExportPackage",
@@ -824,22 +826,22 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         assertNotNull( packageUuid );
 
         // Create some rules
-        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
+        Path archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                                       "testRuleArchivedDescription",
                                                                       "testSnapshotDiffPagedResultsCategory",
                                                                       "testSnapshotDiffPagedResultsPackage",
                                                                       AssetFormats.DRL );
-        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
+        Path modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                                        "testRuleModifiedDescription",
                                                                        "testSnapshotDiffPagedResultsCategory",
                                                                        "testSnapshotDiffPagedResultsPackage",
                                                                        AssetFormats.DRL );
-        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
+        Path deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                                       "testRuleDeletedDescription",
                                                                       "testSnapshotDiffPagedResultsCategory",
                                                                       "testSnapshotDiffPagedResultsPackage",
                                                                       AssetFormats.DRL );
-        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
+        Path restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                                        "testRuleRestoredDescription",
                                                                        "testSnapshotDiffPagedResultsCategory",
                                                                        "testSnapshotDiffPagedResultsPackage",
@@ -848,7 +850,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
+        Path noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                                         "testRuleNoChangesDescription",
                                                                         "testSnapshotDiffPagedResultsCategory",
                                                                         "testSnapshotDiffPagedResultsPackage",
@@ -877,7 +879,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         //...create a new one...
         @SuppressWarnings("unused")
-        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
+        Path addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                                     "testRuleAddedDescription",
                                                                     "testSnapshotDiffPagedResultsCategory",
                                                                     "testSnapshotDiffPagedResultsPackage",
@@ -948,22 +950,22 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         assertNotNull( packageUuid );
 
         // Create some rules
-        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
+        Path archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                                       "testRuleArchivedDescription",
                                                                       "testSnapshotDiffFullResultsCategory",
                                                                       "testSnapshotDiffFullResultsPackage",
                                                                       AssetFormats.DRL );
-        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
+        Path modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                                        "testRuleModifiedDescription",
                                                                        "testSnapshotDiffFullResultsCategory",
                                                                        "testSnapshotDiffFullResultsPackage",
                                                                        AssetFormats.DRL );
-        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
+        Path deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                                       "testRuleDeletedDescription",
                                                                       "testSnapshotDiffFullResultsCategory",
                                                                       "testSnapshotDiffFullResultsPackage",
                                                                       AssetFormats.DRL );
-        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
+        Path restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                                        "testRuleRestoredDescription",
                                                                        "testSnapshotDiffFullResultsCategory",
                                                                        "testSnapshotDiffFullResultsPackage",
@@ -972,7 +974,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
+        Path noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                                         "testRuleNoChangesDescription",
                                                                         "testSnapshotDiffFullResultsCategory",
                                                                         "testSnapshotDiffFullResultsPackage",
@@ -1001,7 +1003,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         //...create a new one...
         @SuppressWarnings("unused")
-        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
+        Path addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                                     "testRuleAddedDescription",
                                                                     "testSnapshotDiffFullResultsCategory",
                                                                     "testSnapshotDiffFullResultsPackage",
@@ -1275,12 +1277,16 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         RuleModel model2 = new RuleModel();
         assertNull( model2.name );
 
-        Asset asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
+        Path path1 = new PathImpl();
+        path1.setUUID(asset2.getUUID());
+        Asset asset = repositoryAssetService.loadRuleAsset( path1 );
         asset.setContent( (PortableObject) model2 );
 
         repositoryAssetService.checkinVersion( asset );
 
-        asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(asset2.getUUID());
+        asset = repositoryAssetService.loadRuleAsset( path2 );
 
         model2 = (RuleModel) asset.getContent();
         assertNotNull( model2 );

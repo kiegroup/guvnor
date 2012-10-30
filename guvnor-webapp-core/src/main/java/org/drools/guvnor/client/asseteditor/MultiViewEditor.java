@@ -36,6 +36,8 @@ import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import java.util.*;
 
@@ -178,7 +180,9 @@ public class MultiViewEditor extends GuvnorEditor {
                                         assets.get(row.getUuid()));
                             } else {
                                 AssetServiceAsync assetService = GWT.create(AssetService.class);
-                                assetService.loadRuleAsset(row.getUuid(),
+                            	Path path = new PathImpl();
+                            	path.setUUID(row.getUuid());
+                                assetService.loadRuleAsset(path,
                                         new GenericCallback<Asset>() {
 
                                             public void onSuccess(final Asset asset) {

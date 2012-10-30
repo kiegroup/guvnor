@@ -38,6 +38,8 @@ import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.PathImpl;
 
 import java.util.Date;
 
@@ -291,7 +293,10 @@ public class MetaDataWidget extends Composite {
                     return;
                 }
                 AssetServiceAsync assetService = GWT.create(AssetService.class);
-                assetService.changeAssetPackage(uuid,
+                //TODO: refactor the constructor, replace uuid with Path
+            	Path path = new PathImpl();
+            	path.setUUID(uuid);
+                assetService.changeAssetPackage(path,
                         sel.getSelectedPackage(),
                         constants.MovedFromPackage(pkg),
                         new GenericCallback<java.lang.Void>() {

@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.rpc;
 
+import org.uberfire.backend.vfs.Path;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -25,12 +27,12 @@ public abstract class AbstractAssetPageRow extends AbstractPageRow
     implements
     IsSerializable {
 
-    private String uuid;
+    private Path path;
     private String format; // TODO should be an enum
     private String name;
 
     public int compareTo(AbstractAssetPageRow other) {
-        return uuid.compareTo( other.uuid );
+        return path.compareTo( other.path );
     }
 
     // ************************************************************************
@@ -45,8 +47,8 @@ public abstract class AbstractAssetPageRow extends AbstractPageRow
         return name;
     }
 
-    public String getUuid() {
-        return uuid;
+    public Path getPath() {
+        return path;
     }
 
     public void setFormat(String format) {
@@ -57,8 +59,8 @@ public abstract class AbstractAssetPageRow extends AbstractPageRow
         this.name = name;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setPath(Path path) {
+        this.path = path;
     }
 
 }

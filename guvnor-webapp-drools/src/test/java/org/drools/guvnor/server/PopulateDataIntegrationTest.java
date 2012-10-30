@@ -26,6 +26,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
 import java.io.InputStream;
@@ -65,7 +66,7 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
     }
 
     private void createModel() throws Exception {
-        String uuid = serviceImplementation.createNewRule("DomainModel",
+    	Path path = serviceImplementation.createNewRule("DomainModel",
                 "This is the business object model",
                 null,
                 "com.billasurf.manufacturing.plant",
@@ -73,11 +74,12 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
         InputStream file = this.getClass().getResourceAsStream("/billasurf.jar");
         assertNotNull(file);
 
-        fileManagerService.attachFileToAsset(uuid,
+        fileManagerService.attachFileToAsset(path,
                 file,
                 "billasurf.jar");
 
-        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
+        //TODO: Replace RulesRepository with drools-repository-vfs
+        AssetItem item = rulesRepository.loadAssetByUUID(path.getUUID());
         assertNotNull(item.getBinaryContentAsBytes());
         assertEquals(item.getBinaryContentAttachmentFileName(),
                 "billasurf.jar");
@@ -125,31 +127,31 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
     }
 
     private void createSomeRules() throws SerializationException {
-        String uuid = serviceImplementation.createNewRule("Surfboard_Colour_Combination",
+    	Path path = serviceImplementation.createNewRule("Surfboard_Colour_Combination",
                 "allowable combinations for basic boards.",
                 "Manufacturing/Boards",
                 "com.billasurf.manufacturing",
                 AssetFormats.BUSINESS_RULE);
-        repositoryAssetService.changeState(uuid,
+        repositoryAssetService.changeState(path,
                 "Pending");
-        uuid = serviceImplementation.createNewRule("Premium_Colour_Combinations",
+        path = serviceImplementation.createNewRule("Premium_Colour_Combinations",
                 "This defines XXX.",
                 "Manufacturing/Boards",
                 "com.billasurf.manufacturing",
                 AssetFormats.BUSINESS_RULE);
-        repositoryAssetService.changeState(uuid,
+        repositoryAssetService.changeState(path,
                 "Approved");
-        uuid = serviceImplementation.createNewRule("Fibreglass supplier selection",
+        path = serviceImplementation.createNewRule("Fibreglass supplier selection",
                 "This defines XXX.",
                 "Manufacturing/Boards",
                 "com.billasurf.manufacturing",
                 AssetFormats.BUSINESS_RULE);
-        uuid = serviceImplementation.createNewRule("Recommended wax",
+        path = serviceImplementation.createNewRule("Recommended wax",
                 "This defines XXX.",
                 "Manufacturing/Boards",
                 "com.billasurf.manufacturing",
                 AssetFormats.BUSINESS_RULE);
-        uuid = serviceImplementation.createNewRule("SomeDSL",
+        path = serviceImplementation.createNewRule("SomeDSL",
                 "Ignore me.",
                 "Manufacturing/Boards",
                 "com.billasurf.manufacturing",
