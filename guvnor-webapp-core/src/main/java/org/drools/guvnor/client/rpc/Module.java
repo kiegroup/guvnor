@@ -121,12 +121,10 @@ public class Module extends Artifact {
     public Module setSubModules(Module[] subModules) {
         this.subModules = subModules;
         return this;
-    }
-
-    
+    }   
 
     public boolean isGlobal() {
-        return "global".equals(super.getName()); // TODO kills i18n
+        return "globalArea".equals(super.getName()); // TODO kills i18n
     }
 
 }
