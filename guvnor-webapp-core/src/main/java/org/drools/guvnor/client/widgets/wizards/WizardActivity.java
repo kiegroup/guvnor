@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.widgets.wizards;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.GuvnorEventBus;
@@ -32,7 +33,7 @@ import javax.inject.Inject;
  * different pages of the Wizard.
  */
 @Dependent
-@WorkbenchPopup(identifier = "wizardPopup")
+@WorkbenchScreen(identifier = "wizardPopup")
 public class WizardActivity
         implements
         WizardActivityView.Presenter,
@@ -101,7 +102,7 @@ public class WizardActivity
     }
 
     @WorkbenchPartView
-    public PopupPanel asWidget() {
+    public IsWidget asWidget() {
 
         //Wire-up the events
         eventBus.addHandler(WizardPageStatusChangeEvent.TYPE,
@@ -115,7 +116,7 @@ public class WizardActivity
         view.setPreferredWidth(wizard.getPreferredWidth());
         view.setPageTitles(wizard.getPages());
 
-        return (PopupPanel) view;
+        return view;
     }
 
     @OnReveal

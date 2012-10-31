@@ -2,21 +2,30 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.ConstantsCore;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.common.FormStyleLayout;
 
-@WorkbenchPopup(identifier = "aboutPopup")
+@WorkbenchScreen(identifier = "aboutPopup")
 public class AboutPopup {
 
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ConstantsCore.INSTANCE.About();
+    }
+
     @WorkbenchPartView
-    public PopupPanel getView() {
+    public IsWidget getView() {
         Frame aboutInfoFrame = new Frame("../AboutInfo.html"); // NON-NLS
 
-        FormStylePopup aboutPop = new FormStylePopup();
+
+        FormStyleLayout aboutPop = new FormStyleLayout();
         aboutPop.setWidth(600 + "px");
         aboutPop.setTitle(ConstantsCore.INSTANCE.About());
         String hhurl = GWT.getModuleBaseURL()
