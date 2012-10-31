@@ -22,7 +22,7 @@
   
   <properties>
     <jetty.version>6.1.25</jetty.version>
-    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+    <uberfire.version>0.2-SNAPSHOT</uberfire.version>
   </properties>
 
   <repositories>
