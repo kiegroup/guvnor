@@ -127,7 +127,11 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
         // Create the array of Paths
         Path[] uuids = new PathImpl[selectedRows.size()];
-        uuids = selectedRows.toArray(uuids);
+        int rowCount = 0;
+        for (T row : selectedRows) {
+            uuids[rowCount++] = row.getPath();
+        }
+
         return uuids;
     }
 

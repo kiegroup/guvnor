@@ -44,6 +44,7 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardCont
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a
@@ -508,11 +509,11 @@ public class NewAssetWizard extends FormStylePopup {
                                                  createGenericCallbackForImportOk() );
     }
 
-    private GenericCallback<String> createGenericCallbackForOk() {
-        GenericCallback<String> cb = new GenericCallback<String>() {
-            public void onSuccess(String uuid) {
+    private GenericCallback<Path> createGenericCallbackForOk() {
+        GenericCallback<Path> cb = new GenericCallback<Path>() {
+            public void onSuccess(Path uuid) {
                 LoadingPopup.close();
-                if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
+                if ( uuid.getUUID().startsWith( "DUPLICATE" ) ) { // NON-NLS
                     Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
                     eventBus.fireEvent( new RefreshModuleEditorEvent( packageSelector.getSelectedPackageUUID() ) );
@@ -524,10 +525,10 @@ public class NewAssetWizard extends FormStylePopup {
         return cb;
     }
 
-    private GenericCallback<String> createGenericCallbackForImportOk() {
-        GenericCallback<String> cb = new GenericCallback<String>() {
-            public void onSuccess(String uuid) {
-                if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
+    private GenericCallback<Path> createGenericCallbackForImportOk() {
+        GenericCallback<Path> cb = new GenericCallback<Path>() {
+            public void onSuccess(Path uuid) {
+                if ( uuid.getUUID().startsWith( "DUPLICATE" ) ) { // NON-NLS
                     LoadingPopup.close();
                     Window.alert( Constants.INSTANCE.AssetNameAlreadyExistsPickAnother() );
                 } else {
@@ -588,8 +589,8 @@ public class NewAssetWizard extends FormStylePopup {
      * 
      * @param uuid
      */
-    protected void openEditor(String uuid) {
-        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid ) );
+    protected void openEditor(Path uuid) {
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid.getUUID() ) );
     }
 
 }

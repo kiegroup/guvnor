@@ -24,6 +24,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.shared.api.PortableObject;
+import org.uberfire.backend.vfs.Path;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -63,20 +64,20 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * @param content
      * @return
      */
-    protected GenericCallback<String> createCreateAssetCallback(final T content) {
-        GenericCallback<String> cb = new GenericCallback<String>() {
-            public void onSuccess(String uuid) {
+    protected GenericCallback<Path> createCreateAssetCallback(final T content) {
+        GenericCallback<Path> cb = new GenericCallback<Path>() {
+            public void onSuccess(Path uuid) {
                 presenter.hideSavingIndicator();
                 if ( uuid == null ) {
                     presenter.showUnspecifiedCheckinError();
                     return;
                 }
-                if ( uuid.startsWith( "DUPLICATE" ) ) {
+                if ( uuid.getUUID().startsWith( "DUPLICATE" ) ) {
                     presenter.showDuplicateAssetNameError();
                     return;
                 }
-                if ( uuid.startsWith( "ERR" ) ) {
-                    presenter.showCheckinError( uuid.substring( 5 ) );
+                if ( uuid.getUUID().startsWith( "ERR" ) ) {
+                    presenter.showCheckinError( uuid.getUUID().substring( 5 ) );
                     return;
                 }
                 presenter.hide();
@@ -91,8 +92,8 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * 
      * @param uuid
      */
-    protected void openEditor(String uuid) {
-        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid ) );
+    protected void openEditor(Path uuid) {
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( uuid.getUUID() ) );
     }
 
 }

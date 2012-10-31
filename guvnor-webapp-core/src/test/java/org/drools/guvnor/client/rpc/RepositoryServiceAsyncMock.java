@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.backend.vfs.Path;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -43,14 +45,14 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     }
     
     public void createNewRule(NewAssetConfiguration p0,
-                              AsyncCallback<String> cb) {
+                              AsyncCallback<Path> cb) {
     }
 
-    public void createNewRule(NewAssetWithContentConfiguration p0, AsyncCallback<String> cb) {
+    public void createNewRule(NewAssetWithContentConfiguration p0, AsyncCallback<Path> cb) {
         
     }
 
-    public void createNewImportedRule(String p0, String p1, AsyncCallback<String> cb) {
+    public void createNewImportedRule(String p0, String p1, AsyncCallback<Path> cb) {
         
     }
 
