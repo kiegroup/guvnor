@@ -101,6 +101,8 @@ public class RepositoryAssetService
      */
     public Asset loadRuleAsset(Path path) throws SerializationException {
 
+    	System.out.println("--------------loadRuleAsset(Path path): " + path.getUUID());
+    	
         long time = System.currentTimeMillis();
 
         AssetItem item = rulesRepository.loadAssetByUUID( path.getUUID() );
