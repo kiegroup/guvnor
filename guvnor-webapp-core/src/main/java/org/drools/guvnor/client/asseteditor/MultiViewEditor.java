@@ -239,7 +239,6 @@ public class MultiViewEditor extends GuvnorEditor {
 
                 @Override
                 public void cancel() {
-                    //TODO: -Rikkola-
                 }
             });
         } else {
