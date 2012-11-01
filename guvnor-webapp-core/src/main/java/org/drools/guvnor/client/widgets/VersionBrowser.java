@@ -211,7 +211,9 @@ public class VersionBrowser extends Composite {
 
         if ( isPackage ) {
             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-            moduleService.loadModule( versionUUID,
+            Path path = new PathImpl();
+            path.setUUID(versionUUID);
+            moduleService.loadModule( path,
                     new GenericCallback<Module>() {
                         public void onSuccess( Module conf ) {
                             Image image = new Image(images.snapshot());

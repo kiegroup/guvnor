@@ -23,6 +23,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -55,7 +57,9 @@ public class ModuleEditorActivity {
 
     @OnStart
     public void init() {
-        clientFactory.getModuleService().loadModule(placeManager.getCurrentPlaceRequest().getParameters().get("uuid"),
+        Path path = new PathImpl();
+        path.setUUID(placeManager.getCurrentPlaceRequest().getParameters().get("uuid"));
+        clientFactory.getModuleService().loadModule(path,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module packageConfigData) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();

@@ -46,7 +46,7 @@ public interface AssetServiceAsync {
     public void loadArchivedAssets(int p0, int p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.AdminArchivedPageRow>> cb);
     public void findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.AssetPageRow>> cb);
-    public void listAssets(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
+    public void listAssets(Path p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void listAssetsWithPackageName(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void copyAsset(Path p0, java.lang.String p1, java.lang.String p2, AsyncCallback<Path> cb);
     public void promoteAssetToGlobalArea(Path p0, AsyncCallback cb);

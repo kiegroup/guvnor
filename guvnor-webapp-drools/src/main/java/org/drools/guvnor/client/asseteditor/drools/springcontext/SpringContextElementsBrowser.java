@@ -186,7 +186,9 @@ public class SpringContextElementsBrowser extends Composite {
                                     for (int j = 0; j < result.length; j++) {
                                         final SnapshotInfo snapshotInfo = result[j];
                                         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-                                        moduleService.loadModule(snapshotInfo.getUuid(), new AsyncCallback<Module>() {
+                                        Path path = new PathImpl();
+                                        path.setUUID(snapshotInfo.getUuid()); 
+                                        moduleService.loadModule(path, new AsyncCallback<Module>() {
 
                                             public void onFailure(Throwable caught) {
                                                 ErrorPopup.showMessage("Error listing snapshots information!");

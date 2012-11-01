@@ -379,8 +379,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                 "testListAssetsCat",
                 "testListAssetsPackage",
                 AssetFormats.BUSINESS_RULE);
-
-        TableDataResult res = repositoryAssetService.listAssets( pacakgeItem.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pacakgeItem.getUUID());
+        TableDataResult res = repositoryAssetService.listAssets( path,
                                                                  new String[]{AssetFormats.BUSINESS_RULE},
                                                                  0,
                                                                  2,
@@ -391,8 +392,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertTrue( 5 == res.total );
         assertTrue( res.currentPosition == 2 );
         assertTrue( res.hasNext );
-
-        res = repositoryAssetService.listAssets( pacakgeItem.getUUID(),
+        res = repositoryAssetService.listAssets( path,
                                                  new String[]{AssetFormats.BUSINESS_RULE},
                                                  2,
                                                  2,
@@ -485,8 +485,10 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                            "" );
         as.updateFormat( "something_silly" );
         as.checkin( "" );
-
-        TableDataResult res = repositoryAssetService.listAssets( pkg.getUUID(),
+        
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        TableDataResult res = repositoryAssetService.listAssets( path,
                                                                  new String[0],
                                                                  0,
                                                                  40,
@@ -597,7 +599,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createModule( "testRemoveAsset",
+        Path pkgUUID = repositoryPackageService.createModule( "testRemoveAsset",
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -650,7 +652,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createModule( "testArchiveAsset",
+        Path pkgUUID = repositoryPackageService.createModule( "testArchiveAsset",
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -726,7 +728,7 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createModule( packageName,
+        Path pkgUUID = repositoryPackageService.createModule( packageName,
                                                                  "",
                                                                  "package" );
         @SuppressWarnings("unused")
@@ -1034,7 +1036,9 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
                       assets.size() ); //we have 4 due to the drools.package file.
         Asset asset = repositoryAssetService.loadRuleAsset( newUUID );
 
-        String pkgSource = repositoryPackageService.buildModuleSource( pkg.getUUID() );
+        Path modulePath = new PathImpl();
+        modulePath.setUUID(pkg.getUUID());     
+        String pkgSource = repositoryPackageService.buildModuleSource( modulePath );
 
         assertTrue( pkgSource.indexOf( "ruleName2" ) > 0 );
         assertTrue( repositoryAssetService.buildAssetSource( asset ).indexOf( "ruleName2" ) > 0 );

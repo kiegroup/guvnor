@@ -34,6 +34,7 @@ import org.drools.guvnor.client.moduleeditor.ModuleNameValidator;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
+import org.drools.guvnor.client.rpc.Path;
 
 /**
  * This is the wizard used when creating new packages or importing them.
@@ -148,8 +149,8 @@ public class NewPackageWizard extends FormStylePopup {
         LoadingPopup.showMessage(Constants.INSTANCE.CreatingPackagePleaseWait());
         clientFactory.getModuleService().createModule(name,
                                     descr, "package",
-                                    new GenericCallback<java.lang.String>() {
-                                        public void onSuccess(String uuid) {
+                                    new GenericCallback<Path>() {
+                                        public void onSuccess(Path uuid) {
                                             RulePackageSelector.currentlySelectedPackage = name;
                                             LoadingPopup.close();
                                             eventBus.fireEvent(new RefreshModuleListEvent());

@@ -458,7 +458,9 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package does not exist
             ModuleItem p = rulesRepository.loadModule(packageName);
-            repositoryPackageService.removeModule(p.getUUID());
+            org.drools.guvnor.client.rpc.Path path = new PathImpl();
+            path.setUUID(p.getUUID());
+            repositoryPackageService.removeModule(path);
         } catch (RuntimeException e) {
             // catch RulesRepositoryException and other exceptions.
             throw new WebApplicationException(e);

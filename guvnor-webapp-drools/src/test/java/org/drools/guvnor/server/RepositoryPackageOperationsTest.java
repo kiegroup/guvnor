@@ -3,6 +3,8 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.server.builder.PackageAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -112,7 +114,9 @@ public class RepositoryPackageOperationsTest {
         initSession();
         ModuleItem packageItem = mock(ModuleItem.class);
         when(this.rulesRepository.loadModuleByUUID("uuid")).thenReturn(packageItem);
-        this.repositoryPackageOperations.removeModule("uuid");
+        Path path = new PathImpl();
+        path.setUUID("uuid");        
+        this.repositoryPackageOperations.removeModule(path);
         verify(packageItem).remove();
         verify(rulesRepository).save();
     }
@@ -128,8 +132,9 @@ public class RepositoryPackageOperationsTest {
         when( mockModule.listAssetsByFormat( Mockito.anyString(),
                                              Mockito.anyString(),
                                              Mockito.anyString() ) ).thenReturn( assetIterator );
-        
-        this.repositoryPackageOperations.renameModule( "old",
+        Path path = new PathImpl();
+        path.setUUID("old");        
+        this.repositoryPackageOperations.renameModule( path,
                                                         "new" );
         verify( this.rulesRepository ).renameModule( "old",
                                                       "new" );

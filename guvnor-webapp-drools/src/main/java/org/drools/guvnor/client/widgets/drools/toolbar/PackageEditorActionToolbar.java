@@ -33,6 +33,8 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 import com.google.gwt.core.client.GWT;
@@ -296,10 +298,12 @@ public class PackageEditorActionToolbar extends Composite {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                moduleService.renameModule( packageConfigData.getUuid(),
+                Path path = new PathImpl();
+                path.setUUID(packageConfigData.getUuid());            	
+                moduleService.renameModule( path,
                         name.getText(),
-                        new GenericCallback<String>() {
-                            public void onSuccess(String data) {
+                        new GenericCallback<Path>() {
+                            public void onSuccess(Path data) {
                                 completedRenaming( data );
                                 pop.hide();
                             }
@@ -310,17 +314,17 @@ public class PackageEditorActionToolbar extends Composite {
         pop.show();
     }
 
-    private void completedRenaming(String newAssetUUID) {
+    private void completedRenaming(Path newAssetUUID) {
         Window.alert( Constants.INSTANCE.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getPlaceManager().closePlace(  new ModuleEditorPlace( newAssetUUID ) );
+        clientFactory.getPlaceManager().closePlace(  new ModuleEditorPlace( newAssetUUID.getUUID() ) );
 
         openModule( newAssetUUID );
     }
 
-    private void openModule(String newAssetUUID) {
-        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( newAssetUUID ) );
+    private void openModule(Path newModulePath) {
+        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( newModulePath.getUUID() ) );
     }
 
     /**
@@ -347,8 +351,8 @@ public class PackageEditorActionToolbar extends Composite {
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
                 moduleService.copyModule( packageConfigData.getName(),
                         name.getText(),
-                        new GenericCallback<String>() {
-                            public void onSuccess(String uuid) {
+                        new GenericCallback<Path>() {
+                            public void onSuccess(Path uuid) {
                                 completedCopying( uuid );
                                 pop.hide();
                             }
@@ -359,7 +363,7 @@ public class PackageEditorActionToolbar extends Composite {
         pop.show();
     }
 
-    private void completedCopying(String newAssetUUID) {
+    private void completedCopying(Path newAssetUUID) {
         Window.alert( Constants.INSTANCE.PackageCopiedSuccessfully() );
         refreshPackageList();
 

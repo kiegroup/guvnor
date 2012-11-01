@@ -195,7 +195,9 @@ public class RepositoryAssetService
                                                      int numRows,
                                                      String tableConfig) throws SerializationException {
         ModuleItem pkg = rulesRepository.loadModule( packageName );
-        return listAssets( pkg.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        return listAssets( path,
                            formats,
                            skip,
                            numRows,
@@ -205,17 +207,17 @@ public class RepositoryAssetService
     /**
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
      */
-    public TableDataResult listAssets(String packageUuid,
+    public TableDataResult listAssets(Path modulePath,
                                       String formats[],
                                       int skip,
                                       int numRows,
                                       String tableConfig) throws SerializationException {
-        log.debug( "Loading asset list for [" + packageUuid + "]" );
+        log.debug( "Loading asset list for [" + modulePath + "]" );
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)",
                                                       "probably have the parameters around the wrong way, sigh..." );
         }
-        return repositoryAssetOperations.listAssets( packageUuid,
+        return repositoryAssetOperations.listAssets( modulePath,
                                                      formats,
                                                      skip,
                                                      numRows,

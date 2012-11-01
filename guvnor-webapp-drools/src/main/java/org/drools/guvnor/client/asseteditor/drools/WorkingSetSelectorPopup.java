@@ -47,7 +47,9 @@ public class WorkingSetSelectorPopup {
         pop.setTitle(Constants.INSTANCE.SelectWorkingSets());
         Grid g = buildDoubleList(null);
         AssetServiceAsync assetService = GWT.create(AssetService.class);
-        assetService.listAssets(asset.getMetaData().getModuleUUID(),
+        Path path = new PathImpl();
+        path.setUUID(asset.getMetaData().getModuleUUID());        
+        assetService.listAssets(path,
                 new String[]{AssetFormats.WORKING_SET}, 0, -1, "workingsetList",
                 new GenericCallback<TableDataResult>() {
 

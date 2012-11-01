@@ -38,6 +38,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
@@ -138,23 +139,23 @@ public class RepositoryModuleService
         return buf;
     }
 
-    public String buildModuleSource(String moduleUUID) throws SerializationException {
-        return repositoryModuleOperations.buildModuleSource( moduleUUID );
+    public String buildModuleSource(Path modulePath) throws SerializationException {
+        return repositoryModuleOperations.buildModuleSource( modulePath );
     }
 
     @Roles({"ADMIN"})
-    public String copyModule(String sourceModuleName,
-                             String destModuleName) throws SerializationException {
+    public Path copyModule(String sourceModuleName,
+                           String destModuleName) throws SerializationException {
         return repositoryModuleOperations.copyModules( sourceModuleName,
                                                        destModuleName );
     }
 
-    public void removeModule(String uuid) {
+    public void removeModule(Path uuid) {
         repositoryModuleOperations.removeModule( uuid );
     }
 
-    public String renameModule(String uuid,
-                               String newName) {
+    public Path renameModule(Path uuid,
+                             String newName) {
         return repositoryModuleOperations.renameModule( uuid,
                                                         newName );
     }
@@ -169,7 +170,7 @@ public class RepositoryModuleService
                                                    importAsNew );
     }
 
-    public String createModule(String name,
+    public Path createModule(String name,
                                String description,
                                String format) throws RulesRepositoryException {
         return repositoryModuleOperations.createModule( name,
@@ -178,7 +179,7 @@ public class RepositoryModuleService
     }
 
     @Roles({"ADMIN"})
-    public String createModule(String name,
+    public Path createModule(String name,
                                String description,
                                String format,
                                String[] workspace) throws RulesRepositoryException {
@@ -201,7 +202,7 @@ public class RepositoryModuleService
      * return createPackage( name, description, new String[]{} ); }
      */
     @Roles({"ADMIN"})
-    public String createSubModule(String name,
+    public Path createSubModule(String name,
                                   String description,
                                   String parentNode) throws SerializationException {
         return repositoryModuleOperations.createSubModule( name,
@@ -209,8 +210,8 @@ public class RepositoryModuleService
                                                            parentNode );
     }
 
-    public Module loadModule(String uuid) {
-        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
+    public Module loadModule(Path modulePath) {
+        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         return repositoryModuleOperations.loadModule( moduleItem );
     }
 

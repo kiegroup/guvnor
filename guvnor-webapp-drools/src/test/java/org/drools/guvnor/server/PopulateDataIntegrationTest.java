@@ -159,7 +159,7 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
     }
 
     private void createPackages() throws SerializationException {
-        String uuid = repositoryPackageService.createModule("com.billasurf.manufacturing",
+        Path uuid = repositoryPackageService.createModule("com.billasurf.manufacturing",
                 "Rules for manufacturing.",
                 "package");
 

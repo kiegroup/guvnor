@@ -27,6 +27,8 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.event.shared.EventBus;
@@ -60,7 +62,9 @@ public class AssetViewerActivity extends Activity
         // title is not used.
         acceptTabItem.add( null,
                            view );
-        clientFactory.getModuleService().loadModule( uuid,
+        Path path = new PathImpl();
+        path.setUUID(uuid);
+        clientFactory.getModuleService().loadModule( path,
                                                              new GenericCallback<Module>() {
                                                                  public void onSuccess(Module conf) {
                                                                      packageConfigData = conf;

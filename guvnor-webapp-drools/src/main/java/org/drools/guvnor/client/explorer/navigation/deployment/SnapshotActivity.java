@@ -12,6 +12,8 @@ import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -70,7 +72,9 @@ public class SnapshotActivity {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingSnapshot());
 
         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        moduleService.loadModule(snapshotInfo.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(snapshotInfo.getUuid());
+        moduleService.loadModule(path,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module module) {
                         simplePanel.add(

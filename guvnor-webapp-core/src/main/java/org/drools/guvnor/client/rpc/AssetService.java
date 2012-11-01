@@ -196,8 +196,8 @@ public interface AssetService
      * Given a format, this will return assets that match. It can also be used
      * for "pagination" by passing in start and finish row numbers.
      * 
-     * @param packageUUID
-     *            The package uuid to search inside.
+     * @param modulePath
+     *            The package Path to search inside.
      * @param format
      *            The format to filter on. If this is empty - it will look for
      *            all non "known" asset types (ie "misc" stuff).
@@ -208,7 +208,7 @@ public interface AssetService
      *            is ignored.
      * @deprecated by {@link #findAssetPage(AssetPageRequest)}
      */
-    public TableDataResult listAssets(String packageUUID,
+    public TableDataResult listAssets(Path modulePath,
                                       String formats[],
                                       int skip,
                                       int numRows,

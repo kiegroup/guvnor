@@ -51,18 +51,18 @@ public interface ModuleService
     /**
      * This creates a module of the given name, and checks it in.
      *
-     * @return UUID of the created item.
+     * @return Path of the created item.
      */
-    public String createModule(String name,
+    public Path createModule(String name,
                                 String description,
                                 String format) throws SerializationException;
 
     /**
      * This creates a module of the given name, and checks it in.
      *
-     * @return UUID of the created item.
+     * @return Path of the created item.
      */
-    public String createSubModule(String name,
+    public Path createSubModule(String name,
                                    String description,
                                    String parentPackage) throws SerializationException;
 
@@ -72,7 +72,7 @@ public interface ModuleService
      * @return Well, its pretty obvious if you think about it for a minute.
      *         Really.
      */
-    public Module loadModule(String uuid);
+    public Module loadModule(Path modulePath);
 
     /**
      * Saves the module in place (does not create a new version of
@@ -151,7 +151,7 @@ public interface ModuleService
      *
      * @throws SerializationException
      */
-    public String buildModuleSource(String packageUUID) throws SerializationException;
+    public String buildModuleSource(Path modulePath) throws SerializationException;
 
     /**
      * Copy the module (everything).
@@ -159,21 +159,21 @@ public interface ModuleService
      * @param sourceModuleName
      * @param destModuleName
      */
-    public String copyModule(String sourceModuleName,
-                              String destModuleName) throws SerializationException;
+    public Path copyModule(String sourceModuleName,
+                           String destModuleName) throws SerializationException;
 
     /**
      * Permanently remove a module (delete it).
      *
-     * @param uuid of the module.
+     * @param Path of the module.
      */
-    public void removeModule(String uuid);
+    public void removeModule(Path modulePath);
 
     /**
      * Rename a module.
      */
-    public String renameModule(String uuid,
-                                String newName);
+    public Path renameModule(Path modulePath,
+                             String newName);
 
     /**
      * This will force a rebuild of all snapshots binary data. No errors are

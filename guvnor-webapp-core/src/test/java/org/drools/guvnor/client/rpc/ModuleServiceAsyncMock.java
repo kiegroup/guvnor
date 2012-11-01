@@ -35,10 +35,10 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
     public void loadGlobalModule(AsyncCallback<Module> cb) {
     }
 
-    public void createModule(String p0, String p1, String p2, AsyncCallback<String> cb) {
+    public void createModule(String p0, String p1, String p2, AsyncCallback<Path> cb) {
     }
 
-    public void createSubModule(String p0, String p1, String p2, AsyncCallback<String> cb) {
+    public void createSubModule(String p0, String p1, String p2, AsyncCallback<Path> cb) {
     }
 
     public void loadModule(String p0, AsyncCallback<Module> cb) {
@@ -59,7 +59,7 @@ public abstract class ModuleServiceAsyncMock implements ModuleServiceAsync {
     public void buildModuleSource(String p0, AsyncCallback<String> cb) {
     }
 
-    public void copyModule(String p0, String p1, AsyncCallback<String> cb) {
+    public void copyModule(String p0, String p1, AsyncCallback<Path> cb) {
     }
 
     public void removeModule(String p0, AsyncCallback cb) {

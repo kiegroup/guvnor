@@ -84,7 +84,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryCategoryService.createCategory( "/",
                                                   "snapshotDiffTesting",
                                                   "y" );
-        String packageUuid = repositoryPackageService.createModule( "testSnapshotDiff",
+        Path packageUuid = repositoryPackageService.createModule( "testSnapshotDiff",
                                                                     "d",
                                                                     "package" );
 
@@ -326,10 +326,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                                                       "la",
                                                       "d" );
         }
-        String sourcePkgId = repositoryPackageService.createModule( "sourcePackage",
+        Path sourcePkgId = repositoryPackageService.createModule( "sourcePackage",
                                                                     "description",
                                                                     "package" );
-        String destPkgId = repositoryPackageService.createModule( "targetPackage",
+        Path destPkgId = repositoryPackageService.createModule( "targetPackage",
                                                                   "description",
                                                                   "package" );
 
@@ -399,7 +399,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         assertEquals( "ya",
                       snaps[0].getComment() );
         assertNotNull( snaps[0].getUuid() );
-        Module confSnap = repositoryPackageService.loadModule( snaps[0].getUuid() );
+        
+        Path path = new PathImpl();
+        path.setUUID(snaps[0].getUuid());
+        Module confSnap = repositoryPackageService.loadModule( path );
         assertEquals( "testSnapshot",
                       confSnap.getName() );
 
@@ -621,7 +624,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
     @Test
     public void testCreatePackage() throws Exception {
         Module[] pkgs = repositoryPackageService.listModules();
-        String uuid = repositoryPackageService.createModule( "testCreatePackage",
+        Path uuid = repositoryPackageService.createModule( "testCreatePackage",
                                                              "this is a new package",
                                                              "package" );
         assertNotNull( uuid );
@@ -664,7 +667,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                                          it );
         rulesRepository.save();
 
-        Module data = repositoryPackageService.loadModule( uuid );
+        Path path = new PathImpl();
+        path.setUUID(uuid);
+        Module data = repositoryPackageService.loadModule( path );
         assertNotNull( data );
 
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
@@ -688,8 +693,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                                                        "ya" );
         ModuleItem loaded = rulesRepository.loadModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                 "TEST SNAP 2.0" );
-
-        data = repositoryPackageService.loadModule( loaded.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(loaded.getUUID());
+        data = repositoryPackageService.loadModule( path2 );
         assertTrue( data.isSnapshot() );
         assertEquals( "TEST SNAP 2.0",
                       data.getSnapshotName() );
@@ -700,11 +706,11 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
     @Test
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
-        String uuid = repositoryPackageService.createModule( "testArchiveAndUnarchivePackageAndHeader",
+        Path uuid = repositoryPackageService.createModule( "testArchiveAndUnarchivePackageAndHeader",
                                                              "a desc",
                                                              "package" );
         Module data = repositoryPackageService.loadModule( uuid );
-        ModuleItem it = rulesRepository.loadModuleByUUID( uuid );
+        ModuleItem it = rulesRepository.loadModuleByUUID( uuid.getUUID() );
         data.setArchived( true );
 
         AssetItem rule1 = it.addAsset( "rule_1",
@@ -745,7 +751,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
     @Test
     public void testPackageConfSave() throws Exception {
 
-        String uuid = repositoryPackageService.createModule( "testPackageConfSave",
+        Path uuid = repositoryPackageService.createModule( "testPackageConfSave",
                                                              "a desc",
                                                              "package" );
         Module data = repositoryPackageService.loadModule( uuid );
@@ -782,7 +788,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
     @Test
     public void testUpdateModuleFormat() throws Exception {
-        String uuid = repositoryPackageService.createModule( "testUpdateModuleFormat",
+        Path uuid = repositoryPackageService.createModule( "testUpdateModuleFormat",
                                                              "a desc",
                                                              "package" );
         Module data = repositoryPackageService.loadModule( uuid );
@@ -804,9 +810,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         int n = repositoryPackageService.listModules().length;
         ModuleItem p = rulesRepository.createModule( "testRemovePackage",
                                                      "" );
-        assertNotNull( repositoryPackageService.loadModule( p.getUUID() ) );
-
-        repositoryPackageService.removeModule( p.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(p.getUUID());
+        assertNotNull( repositoryPackageService.loadModule( path ) );
+        repositoryPackageService.removeModule( path );
         assertEquals( n,
                       repositoryPackageService.listModules().length );
     }
@@ -820,7 +827,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryCategoryService.createCategory( "/",
                                                   "testSnapshotDiffPagedResultsCategory",
                                                   "testSnapshotDiffPagedResultsCategoryDescription" );
-        String packageUuid = repositoryPackageService.createModule( "testSnapshotDiffPagedResultsPackage",
+        Path packageUuid = repositoryPackageService.createModule( "testSnapshotDiffPagedResultsPackage",
                                                                     "testSnapshotDiffPagedResultsPackageDescription",
                                                                     "package" );
         assertNotNull( packageUuid );
@@ -944,7 +951,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryCategoryService.createCategory( "/",
                                                   "testSnapshotDiffFullResultsCategory",
                                                   "testSnapshotDiffFullResultsCategoryDescription" );
-        String packageUuid = repositoryPackageService.createModule( "testSnapshotDiffFullResultsPackage",
+        Path packageUuid = repositoryPackageService.createModule( "testSnapshotDiffFullResultsPackage",
                                                                     "testSnapshotDiffFullResultsPackageDescription",
                                                                     "package" );
         assertNotNull( packageUuid );
@@ -1398,7 +1405,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         func.updateContent( "this is a func" );
         func.checkin( "" );
 
-        String drl = repositoryPackageService.buildModuleSource( pkg.getUUID() );
+        Path modulePath = new PathImpl();
+        modulePath.setUUID(pkg.getUUID());    
+        String drl = repositoryPackageService.buildModuleSource( modulePath );
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );
@@ -1421,7 +1430,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
 
-        drl = repositoryPackageService.buildModuleSource( pkg.getUUID() );
+        drl = repositoryPackageService.buildModuleSource( modulePath );
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );

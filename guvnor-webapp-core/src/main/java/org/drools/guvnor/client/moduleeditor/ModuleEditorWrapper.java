@@ -31,6 +31,8 @@ import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 /**
  * This is the module editor.
@@ -118,7 +120,9 @@ public class ModuleEditorWrapper extends Composite {
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingPackageData());
         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        moduleService.loadModule(this.packageConfigData.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(this.packageConfigData.getUuid());
+        moduleService.loadModule(path,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module data) {
                         LoadingPopup.close();

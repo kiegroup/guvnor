@@ -397,7 +397,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "ya" );
-        String pkgUUID = repositoryPackageService.createModule( "testListByFormat",
+        Path pkgUUID = repositoryPackageService.createModule( "testListByFormat",
                                                                  "used for listing by format.",
                                                                  "package" );
 
@@ -653,7 +653,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         assertEquals( 2,
                       match );
 
-        String packagUUID = repositoryPackageService.createModule( "testStatus",
+        Path packagUUID = repositoryPackageService.createModule( "testStatus",
                                                                     "description",
                                                                     "package" );
         Path ruleUUID = serviceImplementation.createNewRule( "testStatus",
@@ -681,7 +681,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
                       asset.getState() );
 
         serviceImplementation.createState( "testState2" );
-        repositoryAssetService.changePackageState( packagUUID,
+        repositoryAssetService.changePackageState( packagUUID.getUUID(),
                                                    "testState2" );
 
         Module pkg = repositoryPackageService.loadModule( packagUUID );
@@ -870,7 +870,9 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
-        Module config = repositoryPackageService.loadModule( pkg.getUUID() );
+        Path path2 = new PathImpl();
+        path2.setUUID(pkg.getUUID());        
+        Module config = repositoryPackageService.loadModule( path2 );
         repositoryPackageService.saveModule( config );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
@@ -1571,7 +1573,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
                                                   "testLoadingWorkDefinitionsFromPackageAssetsCategory",
                                                   "testLoadingWorkDefinitionsFromPackageAssetsCategory" );
 
-        String packageUUID = repositoryPackageService.createModule( "testLoadingWorkDefinitionsFromPackageAssets",
+        Path packageUUID = repositoryPackageService.createModule( "testLoadingWorkDefinitionsFromPackageAssets",
                                                                      "testLoadingWorkDefinitionsFromPackageAssets",
                                                                      "package" );
 
@@ -1658,7 +1660,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
         try {
             AssetWorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService,
-                                                                                packageUUID );
+                                                                                packageUUID.getUUID() );
             Map<String, WorkDefinition> wids = loader.getWorkDefinitions();
 
             assertNotNull( wids );

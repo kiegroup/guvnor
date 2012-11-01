@@ -137,7 +137,7 @@ public class AssetServiceServlet
         return assetService.findAssetPage(p0);
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult listAssets(java.lang.String p0,
+    public org.drools.guvnor.client.rpc.TableDataResult listAssets(Path p0,
                                                                    java.lang.String[] p1,
                                                                    int p2,
                                                                    int p3,

@@ -6,6 +6,8 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -41,9 +43,10 @@ public class VerifierActivity {
 
     @WorkbenchPartView
     public Widget asWidget() {
-
+        Path path = new PathImpl();
+        path.setUUID(moduleUuid);
         clientFactory.getModuleService().loadModule(
-                moduleUuid,
+        		path,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module packageConfigData) {
                         simplePanel.add(

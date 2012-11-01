@@ -36,6 +36,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewRuleContentTextAssetConfiguration;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -193,7 +194,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
 
         //Load Module header and globals and imports
         String moduleUUID = item.getModule().getUUID();
-        Module module = repositoryModuleService.loadModule( moduleUUID );
+        Path path = new PathImpl();
+        path.setUUID(moduleUUID);        
+        Module module = repositoryModuleService.loadModule( path );
         ModuleHeader mh = ModuleHeaderHelper.parseHeader( module.header );
 
         //Make collections of existing items so we don't duplicate them when adding the new

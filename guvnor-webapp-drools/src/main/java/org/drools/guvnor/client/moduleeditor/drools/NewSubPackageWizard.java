@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
 
 /**
  * This is the wizard used when creating new packages or importing them.
@@ -145,8 +146,8 @@ public class NewSubPackageWizard extends FormStylePopup {
         moduleService.createSubModule(name,
                                     descr,
                                     parentPackage,
-                                    new GenericCallback<String>() {
-                                        public void onSuccess(String data) {
+                                    new GenericCallback<Path>() {
+                                        public void onSuccess(Path data) {
                                             RulePackageSelector.currentlySelectedPackage = name;
                                             LoadingPopup.close();
                                             refresh.execute();

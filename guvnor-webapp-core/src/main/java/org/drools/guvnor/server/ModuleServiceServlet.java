@@ -3,6 +3,7 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.jboss.solder.core.Veto;
 
@@ -42,7 +43,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public java.lang.String createModule(java.lang.String p0,
+    public Path createModule(java.lang.String p0,
                                          java.lang.String p1,
                                          java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.createModule(p0,
@@ -50,7 +51,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public java.lang.String createSubModule(java.lang.String p0,
+    public Path createSubModule(java.lang.String p0,
                                             java.lang.String p1,
                                             java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.createSubModule(p0,
@@ -59,7 +60,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public org.drools.guvnor.client.rpc.Module loadModule(java.lang.String p0) {
+    public org.drools.guvnor.client.rpc.Module loadModule(Path p0) {
         return moduleService.loadModule(p0);
     }
 
@@ -114,25 +115,25 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public java.lang.String buildModuleSource(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public java.lang.String buildModuleSource(Path p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.buildModuleSource(p0);
     }
 
     @Override
-    public String copyModule(java.lang.String p0,
+    public Path copyModule(java.lang.String p0,
                              java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.copyModule(p0,
                 p1);
     }
 
     @Override
-    public void removeModule(java.lang.String p0) {
+    public void removeModule(Path p0) {
         moduleService.removeModule(p0);
     }
 
     @Override
-    public java.lang.String renameModule(java.lang.String p0,
-                                         java.lang.String p1) {
+    public Path renameModule(Path p0,
+                             java.lang.String p1) {
         return moduleService.renameModule(p0,
                 p1);
     }

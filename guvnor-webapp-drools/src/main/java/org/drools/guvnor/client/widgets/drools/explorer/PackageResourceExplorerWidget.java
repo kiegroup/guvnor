@@ -32,6 +32,8 @@ import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
@@ -129,7 +131,9 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                 }
             });
         } else {
-            this.packageService.loadModule(this.packageUUID,
+            Path path = new PathImpl();
+            path.setUUID(this.packageUUID);   
+            this.packageService.loadModule(path,
                     new AsyncCallback<Module>() {
 
                         public void onFailure(Throwable caught) {
@@ -165,7 +169,9 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                         for (int j = 0; j < result.length; j++) {
                             final SnapshotInfo snapshotInfo = result[j];
                             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-                            moduleService.loadModule(snapshotInfo.getUuid(),
+                            Path path = new PathImpl();
+                            path.setUUID(snapshotInfo.getUuid());    
+                            moduleService.loadModule(path,
                                     new AsyncCallback<Module>() {
 
                                         public void onFailure(Throwable caught) {

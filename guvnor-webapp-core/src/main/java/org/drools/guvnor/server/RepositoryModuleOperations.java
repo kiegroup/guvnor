@@ -36,6 +36,8 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
@@ -185,17 +187,19 @@ public class RepositoryModuleOperations {
         return data;
     }
 
-    protected String copyModules(String sourceModuleName,
-                                 String destModuleName) throws SerializationException {
+    protected Path copyModules(String sourceModuleName,
+                               String destModuleName) throws SerializationException {
 
         try {
             log.info( "COPYING module [" + sourceModuleName + "] to  module [" + destModuleName + "]" );
 
             final String newModuleUUID = rulesRepository.copyModule( sourceModuleName,
                                                                      destModuleName );
-            fixProcessPackageNames( newModuleUUID );
-            return newModuleUUID;
+            Path path = new PathImpl();
+            path.setUUID(newModuleUUID);            
+            fixProcessPackageNames( path );
 
+            return path;
         } catch ( RulesRepositoryException e ) {
             log.error( "Unable to copy module.",
                        e );
@@ -204,8 +208,8 @@ public class RepositoryModuleOperations {
     }
 
     //Ensure all Processes (RuleFlow, BPMN, BPMN2) have their package name updated to that of the containing Guvnor package
-    private void fixProcessPackageNames(final String moduleUUID) {
-        final ModuleItem newModule = rulesRepository.loadModuleByUUID( moduleUUID );
+    private void fixProcessPackageNames(final Path modulePath) {
+        final ModuleItem newModule = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         final AssetItemIterator assetIterator = newModule.listAssetsByFormat( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
 
         while ( assetIterator.hasNext() ) {
@@ -224,10 +228,10 @@ public class RepositoryModuleOperations {
         }
     }
 
-    protected void removeModule(String uuid) {
+    protected void removeModule(Path modulePath) {
 
         try {
-            ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
+            ModuleItem item = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
             log.info( "REMOVEING module [" + item.getName() + "]" );
             item.remove();
             rulesRepository.save();
@@ -238,11 +242,11 @@ public class RepositoryModuleOperations {
         }
     }
 
-    protected String renameModule(String uuid,
+    protected Path renameModule(Path uuid,
                                   String newName) {
         log.info( "RENAMING module [UUID: " + uuid + "] to module [" + newName + "]" );
 
-        rulesRepository.renameModule( uuid,
+        rulesRepository.renameModule( uuid.getUUID(),
                                       newName );
 
         fixProcessPackageNames( uuid );
@@ -263,7 +267,7 @@ public class RepositoryModuleOperations {
                 importAsNew );
     }
 
-    protected String createModule(String name, String description,
+    protected Path createModule(String name, String description,
             String format) throws RulesRepositoryException {
 
         log.info("CREATING module [" + name
@@ -271,10 +275,12 @@ public class RepositoryModuleOperations {
         ModuleItem item = rulesRepository.createModule(name,
                 description, format);
 
-        return item.getUUID();
+        Path path = new PathImpl();
+        path.setUUID(item.getUUID());
+        return path;
     }
     
-    protected String createModule(String name,
+    protected Path createModule(String name,
                                    String description,
                                    String format,
                                    String[] workspace) throws RulesRepositoryException {
@@ -286,17 +292,21 @@ public class RepositoryModuleOperations {
                 workspace,
                 "Initial");
 
-        return item.getUUID();
+        Path path = new PathImpl();
+        path.setUUID(item.getUUID());
+        return path;
     }
     
-    protected String createSubModule(String name,
+    protected Path createSubModule(String name,
                                       String description,
                                       String parentNode) throws SerializationException {
         log.info("CREATING subModule [" + name + "], parent [" + parentNode + "]" );
         ModuleItem item = rulesRepository.createSubModule( name,
                 description,
                 parentNode );
-        return item.getUUID();
+        Path path = new PathImpl();
+        path.setUUID(item.getUUID());
+        return path;
     }
 
     protected Module loadModule(ModuleItem packageItem) {
@@ -565,8 +575,8 @@ public class RepositoryModuleOperations {
                         null ) );
     }
 
-    protected String buildModuleSource(String moduleUUID) throws SerializationException {
-        ModuleItem item = rulesRepository.loadModuleByUUID( moduleUUID );
+    protected String buildModuleSource(Path modulePath) throws SerializationException {
+        ModuleItem item = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, null);
         return moduleAssembler.getCompiledSource();
     }

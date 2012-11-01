@@ -348,7 +348,7 @@ public class RepositoryAssetOperations {
     }
 
     /**
-     * @param packageUuid
+     * @param modulePath
      * @param formats
      * @param skip
      * @param numRows
@@ -357,13 +357,13 @@ public class RepositoryAssetOperations {
      * @throws SerializationException
      * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
      */
-    protected TableDataResult listAssets(String packageUuid,
+    protected TableDataResult listAssets(Path modulePath,
             String formats[],
             int skip,
             int numRows,
             String tableConfig) {
         long start = System.currentTimeMillis();
-        ModuleItem pkg = rulesRepository.loadModuleByUUID(packageUuid);
+        ModuleItem pkg = rulesRepository.loadModuleByUUID(modulePath.getUUID());
         AssetItemIterator it;
         if (formats.length > 0) {
             it = pkg.listAssetsByFormat(formats);

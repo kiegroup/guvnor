@@ -36,6 +36,7 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 import org.drools.guvnor.client.rpc.Path;
 
@@ -160,7 +161,9 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
                 }
             });
         } else {
-            this.packageService.loadModule(this.packageUUID,
+            Path path = new PathImpl();
+            path.setUUID(this.packageUUID);        	
+            this.packageService.loadModule(path,
                     new AsyncCallback<Module>() {
 
                         public void onFailure(Throwable caught) {

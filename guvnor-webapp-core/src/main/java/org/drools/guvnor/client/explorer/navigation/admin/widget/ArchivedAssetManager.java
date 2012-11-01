@@ -122,7 +122,9 @@ public class ArchivedAssetManager extends Composite {
                     Window.alert(ConstantsCore.INSTANCE.PleaseSelectAnItemToRestore());
                     return;
                 }
-                restorePackage(packages.getValue(packages.getSelectedIndex()));
+                Path path = new PathImpl();
+                path.setUUID(packages.getValue(packages.getSelectedIndex()));
+                restorePackage(path);
             }
 
         });
@@ -137,7 +139,9 @@ public class ArchivedAssetManager extends Composite {
                     return;
                 }
                 if (Window.confirm(ConstantsCore.INSTANCE.AreYouSurePackageDelete())) {
-                    deletePackage(packages.getValue(packages.getSelectedIndex()));
+                    Path path = new PathImpl();
+                    path.setUUID(packages.getValue(packages.getSelectedIndex()));                	
+                    deletePackage(path);
                 }
             }
 
@@ -156,8 +160,8 @@ public class ArchivedAssetManager extends Composite {
         initWidget(pf);
     }
 
-    private void deletePackage(final String uuid) {
-        moduleService.removeModule(uuid,
+    private void deletePackage(final Path modulePath) {
+        moduleService.removeModule(modulePath,
                 new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void data) {
                         Window.alert(ConstantsCore.INSTANCE.PackageDeleted());
@@ -167,8 +171,8 @@ public class ArchivedAssetManager extends Composite {
                 });
     }
 
-    private void restorePackage(String uuid) {
-        moduleService.loadModule(uuid,
+    private void restorePackage(Path modulePath) {
+        moduleService.loadModule(modulePath,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module cf) {
                         cf.setArchived(false);
