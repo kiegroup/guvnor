@@ -672,8 +672,8 @@ public class AssetEditorActionToolbar extends Composite {
                 assetService.copyAsset( path,
                         sel.getSelectedPackage(),
                         name,
-                        new GenericCallback<String>() {
-                            public void onSuccess(String data) {
+                        new GenericCallback<Path>() {
+                            public void onSuccess(Path data) {
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 flushSuggestionCompletionCache(sel.getSelectedPackage(), null);
                                 completedCopying( newName.getText(),
@@ -767,9 +767,9 @@ public class AssetEditorActionToolbar extends Composite {
 
     private void completedCopying(String name,
                                   String pkg,
-                                  String newAssetUUID) {
+                                  Path newAssetPath) {
         Window.alert( Constants.INSTANCE.CreatedANewItemSuccess( name,
                 pkg ) );
-        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( newAssetUUID ) );
+        clientFactory.getPlaceManager().goTo( new AssetEditorPlace( newAssetPath.getUUID() ) );
     }
 }
