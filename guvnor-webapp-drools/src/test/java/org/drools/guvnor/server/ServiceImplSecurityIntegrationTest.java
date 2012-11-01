@@ -27,7 +27,7 @@ import org.drools.repository.ModuleItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import static org.junit.Assert.*;
 

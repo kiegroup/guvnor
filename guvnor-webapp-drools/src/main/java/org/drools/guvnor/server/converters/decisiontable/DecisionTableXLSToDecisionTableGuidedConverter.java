@@ -48,7 +48,7 @@ import org.drools.repository.AssetItem;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

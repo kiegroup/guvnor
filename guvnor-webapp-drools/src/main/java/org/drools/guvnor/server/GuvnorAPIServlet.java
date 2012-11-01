@@ -55,8 +55,8 @@ import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

@@ -71,8 +71,8 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

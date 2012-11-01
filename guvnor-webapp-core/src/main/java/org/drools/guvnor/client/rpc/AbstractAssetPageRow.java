@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.rpc;
 
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

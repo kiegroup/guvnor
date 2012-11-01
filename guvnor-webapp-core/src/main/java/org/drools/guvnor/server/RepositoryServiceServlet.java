@@ -30,7 +30,7 @@ import org.drools.repository.RulesRepositoryException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.jboss.solder.core.Veto;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.

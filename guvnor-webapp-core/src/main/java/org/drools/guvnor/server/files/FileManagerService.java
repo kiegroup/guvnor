@@ -59,8 +59,8 @@ import org.drools.repository.RulesRepositoryException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.uberfire.security.annotations.Roles;
 
 /**

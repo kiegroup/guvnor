@@ -23,7 +23,7 @@ import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 public class BuiltInSelectorIntegrationTest extends GuvnorIntegrationTest {
 

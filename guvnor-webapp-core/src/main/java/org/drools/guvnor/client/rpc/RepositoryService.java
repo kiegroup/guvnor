@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

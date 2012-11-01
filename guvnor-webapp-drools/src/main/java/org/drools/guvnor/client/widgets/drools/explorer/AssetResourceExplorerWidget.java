@@ -37,7 +37,7 @@ import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import static org.drools.guvnor.client.widgets.drools.explorer.ExplorerRenderMode.*;
 import static org.drools.guvnor.client.widgets.drools.explorer.PackageDisplayMode.*;

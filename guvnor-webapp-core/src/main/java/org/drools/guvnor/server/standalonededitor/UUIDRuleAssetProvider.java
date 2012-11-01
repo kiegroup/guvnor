@@ -20,8 +20,8 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 /**
  * Creates a new RuleAsset.

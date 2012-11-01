@@ -22,8 +22,8 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.repository.AssetItem;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 public class ArchivedAssetPageRowBuilder
     implements PageRowBuilder<PageRequest, Iterator<AssetItem>> {

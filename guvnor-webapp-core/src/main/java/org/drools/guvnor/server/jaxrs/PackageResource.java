@@ -24,7 +24,7 @@ import org.drools.guvnor.server.jaxrs.providers.atom.Feed;
 import org.drools.guvnor.server.jaxrs.providers.atom.Link;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -808,7 +808,7 @@ public class PackageResource extends Resource {
             ModuleItem module = ai.getModule();
             // assetService.archiveAsset(ai.getUUID());
             //TODO: Use path to identify an asset 
-            org.uberfire.backend.vfs.Path path = new PathImpl();
+            org.drools.guvnor.client.rpc.Path path = new PathImpl();
             path.setUUID(ai.getUUID());
             repositoryAssetService.removeAsset(path);
             module.updateBinaryUpToDate(false);

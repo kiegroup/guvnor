@@ -21,7 +21,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.jboss.solder.core.Veto;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import javax.inject.Inject;
 

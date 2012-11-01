@@ -18,8 +18,8 @@ package org.drools.guvnor.server.util;
 import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.repository.AssetItem;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 public class QueryPageRowCreator {
     public static QueryPageRow makeQueryPageRow(AssetItem assetItem) {

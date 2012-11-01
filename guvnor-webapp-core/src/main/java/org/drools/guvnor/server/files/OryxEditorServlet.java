@@ -4,8 +4,8 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;

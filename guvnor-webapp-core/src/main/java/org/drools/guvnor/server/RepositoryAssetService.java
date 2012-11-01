@@ -58,8 +58,8 @@ import org.drools.repository.VersionableItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped

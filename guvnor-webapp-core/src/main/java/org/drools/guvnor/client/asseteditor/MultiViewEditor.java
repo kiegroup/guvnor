@@ -36,8 +36,8 @@ import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 import java.util.*;
 

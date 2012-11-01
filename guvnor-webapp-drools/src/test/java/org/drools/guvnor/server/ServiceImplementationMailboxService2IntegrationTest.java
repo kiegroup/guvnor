@@ -34,8 +34,8 @@ import org.drools.repository.RepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 /**
  * MailboxService tests in their own Arquillian managed environment to ensure

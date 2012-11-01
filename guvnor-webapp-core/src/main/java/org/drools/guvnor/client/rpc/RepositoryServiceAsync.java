@@ -18,7 +18,7 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

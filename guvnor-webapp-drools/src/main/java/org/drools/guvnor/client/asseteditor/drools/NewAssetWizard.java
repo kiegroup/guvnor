@@ -44,7 +44,7 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardCont
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a

@@ -24,7 +24,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

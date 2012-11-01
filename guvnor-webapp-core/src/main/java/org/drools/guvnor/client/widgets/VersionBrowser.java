@@ -38,8 +38,8 @@ import org.drools.guvnor.client.rpc.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import org.drools.guvnor.client.asseteditor.AfterAssetEditorCheckInEvent;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 /**
  * This widget shows a list of versions for packages or assets

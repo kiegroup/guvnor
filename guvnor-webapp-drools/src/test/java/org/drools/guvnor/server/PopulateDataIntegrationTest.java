@@ -26,7 +26,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import javax.inject.Inject;
 import java.io.InputStream;

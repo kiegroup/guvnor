@@ -22,7 +22,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 import javax.inject.Inject;
 

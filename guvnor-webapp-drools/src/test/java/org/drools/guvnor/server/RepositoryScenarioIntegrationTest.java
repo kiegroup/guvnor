@@ -44,7 +44,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
+import org.drools.guvnor.client.rpc.Path;
 
 public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
 

@@ -24,8 +24,8 @@ import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

@@ -40,8 +40,8 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 /**
  * All the needed Services in order to get Guvnor's Editors running as standalone

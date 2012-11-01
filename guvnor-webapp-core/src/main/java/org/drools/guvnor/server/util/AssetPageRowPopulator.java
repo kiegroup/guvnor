@@ -18,8 +18,8 @@ package org.drools.guvnor.server.util;
 import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 public class AssetPageRowPopulator {
     public AssetPageRow populateFrom(AssetItem assetItem) {

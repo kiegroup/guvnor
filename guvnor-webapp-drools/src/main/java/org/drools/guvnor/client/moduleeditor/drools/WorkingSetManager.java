@@ -35,8 +35,8 @@ import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 
 public class WorkingSetManager {
 
