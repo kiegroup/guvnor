@@ -57,24 +57,24 @@ public interface AssetService
     /**
      * Returns the lockers user name
      * 
-     * @param uuid
+     * @param assetPath
      * @return Lockers user name or null if there is no lock.
      */
-    public String getAssetLockerUserName(String uuid);
+    public String getAssetLockerUserName(Path assetPath);
 
     /**
      * Locks the asset, if a lock already exists this over writes it.
      * 
-     * @param uuid
+     * @param assetPath
      */
-    public void lockAsset(String uuid);
+    public void lockAsset(Path assetPath);
 
     /**
      * Unlocks the asset.
      * 
-     * @param uuid
+     * @param assetPath
      */
-    public void unLockAsset(String uuid);
+    public void unLockAsset(Path assetPath);
 
     /**
      * This will quickly return a list of assets
@@ -84,31 +84,31 @@ public interface AssetService
      */
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
 
-    public void archiveAsset(Path path);
+    public void archiveAsset(Path assetPath);
 
-    public void unArchiveAsset(Path path);
+    public void unArchiveAsset(Path assetPath);
 
     /**
      * Archive assets based on Path
      * 
      * @param uuids
      */
-    public void archiveAssets(Path[] paths,
+    public void archiveAssets(Path[] assetPaths,
                               boolean value);
 
     /**
-     * Remove an asset based on uuid
+     * Remove an asset based on Path
      * 
      * @param Path path
      */
-    public void removeAsset(Path uuid);
+    public void removeAsset(Path assetPath);
 
     /**
      * Remove assets based on Path
      * 
      * @param Path paths
      */
-    public void removeAssets(Path[] uuids);
+    public void removeAssets(Path[] assetPaths);
 
     /**
      * This will return the effective source for an asset (in DRL). Used as an
@@ -135,7 +135,7 @@ public interface AssetService
      */
     public Asset loadRuleAsset(Path assetPath) throws SerializationException;
 
-    public Asset[] loadRuleAssets(Path[] paths) throws SerializationException;
+    public Asset[] loadRuleAssets(Path[] assetPaths) throws SerializationException;
 
     /**
      * This checks in a new version of an asset.
@@ -149,8 +149,8 @@ public interface AssetService
      * This will restore the specified version in the repository, saving, and
      * creating a new version (with all the restored content).
      */
-    public void restoreVersion(String versionUUID,
-                               String assetUUID,
+    public void restoreVersion(Path versionPath,
+    		                   Path assetPath,
                                String comment);
 
     /**
@@ -262,23 +262,23 @@ public interface AssetService
     /**
      * This moves an asset to the given target package.
      */
-    public void changeAssetPackage(Path path,
+    public void changeAssetPackage(Path assetPath,
                                    String newPackage,
                                    String comment);
 
     /**
      * Return a list of discussion items for a given asset...
      */
-    public List<DiscussionRecord> loadDiscussionForAsset(String assetId);
+    public List<DiscussionRecord> loadDiscussionForAsset(Path assetPath);
 
     /**
      * Append a discussion item for the current user.
      */
-    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+    public List<DiscussionRecord> addToDiscussionForAsset(Path assetPath,
                                                           String comment);
 
     /** Only for admins, they can nuke it from orbit to clear it out */
-    public void clearAllDiscussionsForAsset(String assetId);
+    public void clearAllDiscussionsForAsset(Path assetPath);
 
     /**
      * This will change the state of an asset.
@@ -288,7 +288,7 @@ public interface AssetService
      * @param newState
      *            The new state to set. It must be valid in the repo.
      */
-    public void changeState(Path path,
+    public void changeState(Path assetPath,
                             String newState);
 
     /**
@@ -313,11 +313,11 @@ public interface AssetService
     /**
      * Convert an Asset to a target asset format
      * 
-     * @param uuid
+     * @param assetPath
      * @param targetFormat
      * @return
      */
-    public ConversionResult convertAsset(String uuid,
+    public ConversionResult convertAsset(Path assetPath,
                                          String targetFormat) throws SerializationException;
 
 }

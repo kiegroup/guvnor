@@ -101,7 +101,9 @@ public class DiscussionWidget extends Composite {
      * Hit up the server
      */
     public void refreshDiscussion() {
-        assetService.loadDiscussionForAsset( artifact.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(artifact.getUuid());
+        assetService.loadDiscussionForAsset( path,
                                                                       new GenericCallback<List<DiscussionRecord>>() {
                                                                           public void onSuccess(List<DiscussionRecord> result) {
                                                                               updateCommentList( result );
@@ -164,7 +166,9 @@ public class DiscussionWidget extends Composite {
             adminClearAll.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
-                        assetService.clearAllDiscussionsForAsset( artifact.getUuid(),
+                        Path path = new PathImpl();
+                        path.setUUID(artifact.getUuid());
+                        assetService.clearAllDiscussionsForAsset( path,
                                                                                            new GenericCallback<java.lang.Void>() {
                                                                                                public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
@@ -230,7 +234,9 @@ public class DiscussionWidget extends Composite {
     private void sendNewComment(String text) {
         newCommentLayout.clear();
         newCommentLayout.add( new Image( images.spinner() ) );
-        assetService.addToDiscussionForAsset( artifact.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(artifact.getUuid());
+        assetService.addToDiscussionForAsset( path,
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {
                                                                            public void onSuccess(List<DiscussionRecord> result) {

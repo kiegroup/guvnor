@@ -207,11 +207,11 @@ public class RepositoryAssetOperations {
         return asset.getLastModified().before(repoAsset.getLastModified().getTime());
     }
 
-    public void restoreVersion(String versionUUID,
-            String assetUUID,
+    public void restoreVersion(Path versionPath,
+    		Path assetPath,
             String comment) {
-        AssetItem old = rulesRepository.loadAssetByUUID(versionUUID);
-        AssetItem head = rulesRepository.loadAssetByUUID(assetUUID);
+        AssetItem old = rulesRepository.loadAssetByUUID(versionPath.getUUID());
+        AssetItem head = rulesRepository.loadAssetByUUID(assetPath.getUUID());
 
         log.info("USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber());
 
@@ -546,23 +546,23 @@ public class RepositoryAssetOperations {
         return response;
     }
 
-    protected void lockAsset(String uuid) {
+    protected void lockAsset(Path assetPath) {
         String userName = identity.getName();
 
-        log.info("Locking asset uuid=" + uuid + " for user [" + userName + "]");
+        log.info("Locking asset uuid=" + assetPath + " for user [" + userName + "]");
 
-        assetLockManager.lockAsset(uuid,
+        assetLockManager.lockAsset(assetPath.getUUID(),
                 userName);
     }
 
-    protected void unLockAsset(String uuid) {
-        log.info("Unlocking asset [" + uuid + "]");
-        assetLockManager.unLockAsset(uuid);
+    protected void unLockAsset(Path assetPath) {
+        log.info("Unlocking asset [" + assetPath + "]");
+        assetLockManager.unLockAsset(assetPath.getUUID());
     }
 
-    protected String getAssetLockerUserName(String uuid) {
+    protected String getAssetLockerUserName(Path assetPath) {
 
-        String userName = assetLockManager.getAssetLockerUserName(uuid);
+        String userName = assetLockManager.getAssetLockerUserName(assetPath.getUUID());
 
         log.info("Asset locked by [" + userName + "]");
 
@@ -641,9 +641,9 @@ public class RepositoryAssetOperations {
         return createdDate.getTime();
     }
 
-    protected void clearAllDiscussionsForAsset(final String assetId) {
+    protected void clearAllDiscussionsForAsset(final Path assetPath) {
         RulesRepository repo = rulesRepository;
-        AssetItem asset = repo.loadAssetByUUID(assetId);
+        AssetItem asset = repo.loadAssetByUUID(assetPath.getUUID());
         
         //Don't update the Last Modified Date as it means the Asset to which the Discussion relates
         //needs to be re-loaded to prevent an Optimistic Lock Exception in isAssetUpdatedInRepository().
@@ -654,12 +654,12 @@ public class RepositoryAssetOperations {
         repo.save();
 
         push("discussion",
-                assetId);
+        		assetPath.getUUID());
     }
 
-    protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+    protected List<DiscussionRecord> addToDiscussionForAsset(Path assetPath,
                                                              String comment) {
-        AssetItem asset = rulesRepository.loadAssetByUUID(assetId);
+        AssetItem asset = rulesRepository.loadAssetByUUID(assetPath.getUUID());
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
         discussion.add(new DiscussionRecord(rulesRepository.getSession().getUserID(),
@@ -673,7 +673,7 @@ public class RepositoryAssetOperations {
         rulesRepository.save();
 
         push("discussion",
-                assetId);
+                assetPath.getUUID());
 
         mailboxService.recordItemUpdated(asset);
 

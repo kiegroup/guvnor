@@ -242,8 +242,12 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         assertTrue( versionHead.getDescription().equals( "version head" ) );
 
         //test restore
-        repositoryAssetService.restoreVersion( version1.getUuid(),
-                                               versionHead.getUuid(),
+        Path assetPath = new PathImpl();
+        assetPath.setUUID(versionHead.getUuid());
+        Path versionPath = new PathImpl();
+        versionPath.setUUID(version1.getUuid());
+        repositoryAssetService.restoreVersion( versionPath,
+        		                               assetPath,
                                                "this was cause of a mistake" );
 
         Asset newHead = repositoryAssetService.loadRuleAsset( uuid );
@@ -547,8 +551,12 @@ public class RepositoryAssetServiceIntegrationTest extends GuvnorIntegrationTest
         long oldVersion = old.getVersionNumber();
         assertFalse( oldVersion == head.getVersionNumber() );
 
-        repositoryAssetService.restoreVersion( old.getUuid(),
-                                               head.getUuid(),
+        Path assetPath = new PathImpl();
+        assetPath.setUUID(head.getUuid());
+        Path versionPath = new PathImpl();
+        versionPath.setUUID(old.getUuid());
+        repositoryAssetService.restoreVersion( versionPath,
+        		                               assetPath,
                                                "this was cause of a mistake" );
 
         Asset newHead = repositoryAssetService.loadRuleAsset( uuid );

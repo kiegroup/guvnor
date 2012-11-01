@@ -141,11 +141,11 @@ public class RepositoryAssetService
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] " );
         return repositoryAssetOperations.checkinVersion( asset );
     }
-    public void restoreVersion(String versionUUID,
-                               String assetUUID,
+    public void restoreVersion(Path versionPath,
+                               Path assetPath,
                                String comment) {
-        repositoryAssetOperations.restoreVersion( versionUUID,
-                                                  assetUUID,
+        repositoryAssetOperations.restoreVersion( versionPath,
+        		                                  assetPath,
                                                   comment );
     }
 
@@ -362,8 +362,8 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
      * )
      */
-    public void lockAsset(String uuid) {
-        repositoryAssetOperations.lockAsset( uuid );
+    public void lockAsset(Path assetPath) {
+        repositoryAssetOperations.lockAsset( assetPath );
     }
 
     /*
@@ -372,8 +372,8 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
      * String)
      */
-    public void unLockAsset(String uuid) {
-        repositoryAssetOperations.unLockAsset( uuid );
+    public void unLockAsset(Path assetPath) {
+        repositoryAssetOperations.unLockAsset( assetPath );
     }
 
     /**
@@ -436,19 +436,19 @@ public class RepositoryAssetService
                 pkg.getName() );
     }
 
-    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+    public List<DiscussionRecord> addToDiscussionForAsset(Path assetId,
                                                           String comment) {
         return repositoryAssetOperations.addToDiscussionForAsset( assetId,
                                                                   comment );
     }
 
     @Roles({"ADMIN"})
-    public void clearAllDiscussionsForAsset(final String assetId) {
+    public void clearAllDiscussionsForAsset(final Path assetId) {
         repositoryAssetOperations.clearAllDiscussionsForAsset( assetId );
     }
 
-    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
-        return new Discussion().fromString( rulesRepository.loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+    public List<DiscussionRecord> loadDiscussionForAsset(Path assetPath) {
+        return new Discussion().fromString( rulesRepository.loadAssetByUUID( assetPath.getUUID() ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
     }
 
     /**
@@ -459,9 +459,9 @@ public class RepositoryAssetService
      * this role has permission to access the package which the asset belongs
      * to.
      */
-    public void changeState(Path path,
+    public void changeState(Path assetPath,
                             String newState) {
-        AssetItem asset = rulesRepository.loadAssetByUUID( path.getUUID() );
+        AssetItem asset = rulesRepository.loadAssetByUUID( assetPath.getUUID() );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
         String oldState = asset.getStateDescription();
@@ -472,7 +472,9 @@ public class RepositoryAssetService
         push( "statusChange",
                 newState );
 
-        addToDiscussionForAsset( asset.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        addToDiscussionForAsset( path,
                                  oldState + " -> " + newState );
 
         rulesRepository.save();
@@ -493,8 +495,8 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
      * (java.lang.String)
      */
-    public String getAssetLockerUserName(String uuid) {
-        return repositoryAssetOperations.getAssetLockerUserName( uuid );
+    public String getAssetLockerUserName(Path assetPath) {
+        return repositoryAssetOperations.getAssetLockerUserName( assetPath );
     }
 
     public long getAssetCount(AssetPageRequest request) throws SerializationException {
@@ -548,9 +550,9 @@ public class RepositoryAssetService
         }
     }
 
-    public ConversionResult convertAsset(String uuid,
+    public ConversionResult convertAsset(Path convertAsset,
                                          String targetFormat) throws SerializationException {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( convertAsset.getUUID() );
         return conversionService.convert( item,
                                           targetFormat );
     }

@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
@@ -222,9 +224,11 @@ public class FeedServletIntegrationTest extends GuvnorIntegrationTest {
                                         "desc" );
         asset.updateFormat( "drl" );
         asset.checkin( "" );
-        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        repositoryAssetService.addToDiscussionForAsset( path,
                                                         "This is a comment" );
-        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+        repositoryAssetService.addToDiscussionForAsset( path,
                                                         "This is another comment" );
 
         Map<String, String> headers = new HashMap<String, String>() {
@@ -259,9 +263,11 @@ public class FeedServletIntegrationTest extends GuvnorIntegrationTest {
                                         "desc" );
         asset.updateFormat( "drl" );
         asset.checkin( "" );
-        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(asset.getUUID());
+        repositoryAssetService.addToDiscussionForAsset( path,
                                                         "This is a comment" );
-        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+        repositoryAssetService.addToDiscussionForAsset( path,
                                                         "This is another comment" );
 
         Map<String, String> headers = new HashMap<String, String>() {

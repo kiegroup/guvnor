@@ -57,15 +57,15 @@ public class AssetServiceServlet
                 p3);
     }
 
-    public java.lang.String getAssetLockerUserName(java.lang.String p0) {
+    public java.lang.String getAssetLockerUserName(Path p0) {
         return assetService.getAssetLockerUserName(p0);
     }
 
-    public void lockAsset(java.lang.String p0) {
+    public void lockAsset(Path p0) {
         assetService.lockAsset(p0);
     }
 
-    public void unLockAsset(java.lang.String p0) {
+    public void unLockAsset(Path p0) {
         assetService.unLockAsset(p0);
     }
 
@@ -193,17 +193,17 @@ public class AssetServiceServlet
                 p1);
     }
 
-    public java.util.List loadDiscussionForAsset(java.lang.String p0) {
+    public java.util.List loadDiscussionForAsset(Path p0) {
         return assetService.loadDiscussionForAsset(p0);
     }
 
-    public java.util.List addToDiscussionForAsset(java.lang.String p0,
+    public java.util.List addToDiscussionForAsset(Path p0,
                                                   java.lang.String p1) {
         return assetService.addToDiscussionForAsset(p0,
                 p1);
     }
 
-    public void clearAllDiscussionsForAsset(java.lang.String p0) {
+    public void clearAllDiscussionsForAsset(Path p0) {
         assetService.clearAllDiscussionsForAsset(p0);
     }
 
@@ -211,9 +211,9 @@ public class AssetServiceServlet
         return assetService.findAssetPage(p0).getTotalRowSize();
     }
 
-    public ConversionResult convertAsset(String uuid,
+    public ConversionResult convertAsset(Path assetPath,
                                          String targetFormat) throws SerializationException {
-        return assetService.convertAsset(uuid,
+        return assetService.convertAsset(assetPath,
                 targetFormat);
     }
 
@@ -221,8 +221,8 @@ public class AssetServiceServlet
         return assetService.checkinVersion(p0);
     }
 
-    public void restoreVersion(java.lang.String p0,
-                               java.lang.String p1,
+    public void restoreVersion(Path p0,
+    		                   Path p1,
                                java.lang.String p2) {
         assetService.restoreVersion(p0,
                 p1,

@@ -294,8 +294,12 @@ public class VersionBrowser extends Composite {
         pop.setCommand( new Command() {
             public void execute() {
                 AssetServiceAsync assetService = GWT.create(AssetService.class);
-                assetService.restoreVersion( versionUUID,
-                        uuid,
+                Path assetPath = new PathImpl();
+                assetPath.setUUID(uuid);
+                Path versionPath = new PathImpl();
+                versionPath.setUUID(versionUUID);
+                assetService.restoreVersion( versionPath,
+                		assetPath,
                         pop.getCheckinComment(),
                         new GenericCallback<Void>() {
                             public void onSuccess( Void v ) {

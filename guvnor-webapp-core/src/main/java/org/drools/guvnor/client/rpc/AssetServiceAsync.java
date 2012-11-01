@@ -26,9 +26,9 @@ public interface AssetServiceAsync {
     public void quickFindAsset(org.drools.guvnor.client.rpc.QueryPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
     public void quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void queryFullText(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
-    public void getAssetLockerUserName(java.lang.String p0, AsyncCallback<java.lang.String> cb);
-    public void lockAsset(java.lang.String p0, AsyncCallback cb);
-    public void unLockAsset(java.lang.String p0, AsyncCallback cb);
+    public void getAssetLockerUserName(Path p0, AsyncCallback<java.lang.String> cb);
+    public void lockAsset(Path p0, AsyncCallback cb);
+    public void unLockAsset(Path p0, AsyncCallback cb);
     public void archiveAsset(Path p0, AsyncCallback cb);
     public void unArchiveAsset(Path p0, AsyncCallback cb);
     public void archiveAssets(Path[] p0, boolean p1, AsyncCallback cb);
@@ -40,7 +40,7 @@ public interface AssetServiceAsync {
     public void loadRuleAsset(Path p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset> cb);
     public void loadRuleAssets(Path[] p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset[]> cb);
     public void checkinVersion(Asset asset, AsyncCallback<java.lang.String> cb);
-    public void restoreVersion(String versionUUID, String assetUUID, String comment, AsyncCallback<Void> callback);
+    public void restoreVersion(Path versionPath, Path assetPath, String comment, AsyncCallback<Void> callback);
     public void loadItemHistory(Path p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadAssetHistory(java.lang.String p0, java.lang.String p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(int p0, int p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
@@ -51,12 +51,12 @@ public interface AssetServiceAsync {
     public void copyAsset(Path p0, java.lang.String p1, java.lang.String p2, AsyncCallback<Path> cb);
     public void promoteAssetToGlobalArea(Path p0, AsyncCallback cb);
     public void changeAssetPackage(Path uuid, String newPackage, String comment, AsyncCallback<Void> callback);
-    public void loadDiscussionForAsset(java.lang.String p0, AsyncCallback cb);
-    public void addToDiscussionForAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-    public void clearAllDiscussionsForAsset(java.lang.String p0, AsyncCallback cb);
+    public void loadDiscussionForAsset(Path p0, AsyncCallback cb);
+    public void addToDiscussionForAsset(Path p0, java.lang.String p1, AsyncCallback cb);
+    public void clearAllDiscussionsForAsset(Path p0, AsyncCallback cb);
     public void changeState(Path p0, java.lang.String p1, AsyncCallback cb);
     public void changePackageState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0, AsyncCallback<java.lang.Long> cb);
-    public void convertAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<ConversionResult> cb);
+    public void convertAsset(Path p0, java.lang.String p1, AsyncCallback<ConversionResult> cb);
     
 }

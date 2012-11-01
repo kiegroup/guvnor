@@ -29,6 +29,8 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessage;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.widgets.PopupListWidget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,7 +74,9 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
             public void onClick(ClickEvent event) {
                 LoadingPopup.showMessage( Constants.INSTANCE.SavingPleaseWait() );
-                clientFactory.getAssetService().convertAsset( asset.getUuid(),
+                Path path = new PathImpl();
+                path.setUUID(asset.getUuid());
+                clientFactory.getAssetService().convertAsset( path,
                                                               AssetFormats.DECISION_TABLE_GUIDED,
                                                               new GenericCallback<ConversionResult>() {
 
