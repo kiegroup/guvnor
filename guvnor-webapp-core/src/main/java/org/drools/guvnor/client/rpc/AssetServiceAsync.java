@@ -36,7 +36,7 @@ public interface AssetServiceAsync {
     public void removeAssets(Path[] p0, AsyncCallback cb);
     public void buildAssetSource(org.drools.guvnor.client.rpc.Asset p0, AsyncCallback<java.lang.String> cb);
     public void validateAsset(org.drools.guvnor.client.rpc.Asset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
-    public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
+    public void renameAsset(Path p0, java.lang.String p1, AsyncCallback<Path> cb);
     public void loadRuleAsset(Path p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset> cb);
     public void loadRuleAssets(Path[] p0, AsyncCallback<org.drools.guvnor.client.rpc.Asset[]> cb);
     public void checkinVersion(Asset asset, AsyncCallback<java.lang.String> cb);
@@ -49,7 +49,7 @@ public interface AssetServiceAsync {
     public void listAssets(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void listAssetsWithPackageName(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void copyAsset(Path p0, java.lang.String p1, java.lang.String p2, AsyncCallback<Path> cb);
-    public void promoteAssetToGlobalArea(java.lang.String p0, AsyncCallback cb);
+    public void promoteAssetToGlobalArea(Path p0, AsyncCallback cb);
     public void changeAssetPackage(Path uuid, String newPackage, String comment, AsyncCallback<Void> callback);
     public void loadDiscussionForAsset(java.lang.String p0, AsyncCallback cb);
     public void addToDiscussionForAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);

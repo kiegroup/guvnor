@@ -29,6 +29,8 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
@@ -54,9 +56,11 @@ public class RepositoryAssetOperationsTest {
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         when( rulesRepository.renameAsset( "uuid",
                                            "newname" ) ).thenReturn( "uuid" );
-        assertEquals( repositoryAssetOperations.renameAsset( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        assertEquals( repositoryAssetOperations.renameAsset( path,
                                                              "newname" ),
-                      "uuid" );
+                      path );
     }
 
     @Test

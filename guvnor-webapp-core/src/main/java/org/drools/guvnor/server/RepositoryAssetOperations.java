@@ -38,6 +38,8 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
@@ -121,10 +123,12 @@ public class RepositoryAssetOperations {
         this.rulesRepository = repository;
     }
 
-    public String renameAsset(String uuid,
+    public Path renameAsset(Path assetPath,
             String newName) {
-        return rulesRepository.renameAsset(uuid,
-                newName);
+        String uuid = rulesRepository.renameAsset(assetPath.getUUID(), newName);
+        Path path = new PathImpl();
+        path.setUUID(uuid);
+        return path;
     }
 
     protected BuilderResult validateAsset(Asset asset) {

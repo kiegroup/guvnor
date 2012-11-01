@@ -126,14 +126,14 @@ public interface AssetService
     /**
      * Rename an asset.
      */
-    public String renameAsset(String uuid,
+    public Path renameAsset(Path assetPath,
                               String newName);
 
     /**
-     * This loads up all the stuff for a rule asset based on the UUID (always
+     * This loads up all the stuff for a rule asset based on the Path (always
      * latest and editable version).
      */
-    public Asset loadRuleAsset(Path path) throws SerializationException;
+    public Asset loadRuleAsset(Path assetPath) throws SerializationException;
 
     public Asset[] loadRuleAssets(Path[] paths) throws SerializationException;
 
@@ -255,10 +255,9 @@ public interface AssetService
     /**
      * Prompt an asset into Global area.
      * 
-     * @param assetUUID
-     *            The source assetID.
+     * @param assetPath The source asset Path.
      */
-    public void promoteAssetToGlobalArea(String assetUUID);
+    public void promoteAssetToGlobalArea(Path assetPath);
 
     /**
      * This moves an asset to the given target package.

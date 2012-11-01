@@ -715,10 +715,12 @@ public class AssetEditorActionToolbar extends Composite {
                 ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                assetService.renameAsset( asset.getUuid(),
+            	Path path = new PathImpl();
+            	path.setUUID(asset.getUuid());
+                assetService.renameAsset( path,
                         box.getText(),
-                        new GenericCallback<java.lang.String>() {
-                            public void onSuccess(String data) {
+                        new GenericCallback<Path>() {
+                            public void onSuccess(Path path) {
                                 Window.alert( Constants.INSTANCE.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );
                                 clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
@@ -746,7 +748,9 @@ public class AssetEditorActionToolbar extends Composite {
             return;
         }
         if ( Window.confirm( Constants.INSTANCE.PromoteAreYouSure() ) ) {
-            assetService.promoteAssetToGlobalArea( asset.getUuid(),
+        	Path path = new PathImpl();
+        	path.setUUID(asset.getUuid());
+            assetService.promoteAssetToGlobalArea( path,
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             Window.alert( Constants.INSTANCE.Promoted() );

@@ -99,13 +99,10 @@ public class RepositoryAssetService
      * higher (i.e., package.admin, package.developer) and this role has
      * permission to access the package which the asset belongs to.
      */
-    public Asset loadRuleAsset(Path path) throws SerializationException {
-
-    	System.out.println("--------------loadRuleAsset(Path path): " + path.getUUID());
-    	
+    public Asset loadRuleAsset(Path assetPath) throws SerializationException {    	
         long time = System.currentTimeMillis();
 
-        AssetItem item = rulesRepository.loadAssetByUUID( path.getUUID() );
+        AssetItem item = rulesRepository.loadAssetByUUID( assetPath.getUUID() );
         Asset asset = new AssetPopulator().populateFrom( item );
 
         asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
@@ -136,8 +133,8 @@ public class RepositoryAssetService
         return packageItem;
     }
 
-    public Asset[] loadRuleAssets(Path[] paths) throws SerializationException {
-        return loadRuleAssets( Arrays.asList( paths ) );
+    public Asset[] loadRuleAssets(Path[] assetPaths) throws SerializationException {
+        return loadRuleAssets( Arrays.asList( assetPaths ) );
     }
 
     public String checkinVersion(Asset asset) throws SerializationException {
@@ -152,9 +149,9 @@ public class RepositoryAssetService
                                                   comment );
     }
 
-    public TableDataResult loadItemHistory(Path uuid) throws SerializationException {
+    public TableDataResult loadItemHistory(Path path) throws SerializationException {
         //VersionableItem assetItem = rulesRepository.loadAssetByUUID( uuid );
-        VersionableItem assetItem = rulesRepository.loadItemByUUID( uuid.getUUID() );
+        VersionableItem assetItem = rulesRepository.loadItemByUUID( path.getUUID() );
 
         //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory( assetItem );
@@ -225,11 +222,11 @@ public class RepositoryAssetService
                                                      tableConfig );
     }
 
-    public Path copyAsset(Path assetUUID,
+    public Path copyAsset(Path assetPath,
                             String newPackage,
                             String newName) {
-        log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
-        String copiedAssetUUID = rulesRepository.copyAsset( assetUUID.getUUID(),
+        log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetPath + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
+        String copiedAssetUUID = rulesRepository.copyAsset( assetPath.getUUID(),
                                           newPackage,
                                           newName );
         Path path = new PathImpl();
@@ -237,17 +234,17 @@ public class RepositoryAssetService
         return path;
     }
 
-    public void changeAssetPackage(Path uuid,
+    public void changeAssetPackage(Path assetPath,
                                    String newPackage,
                                    String comment) {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid.getUUID() );
+        AssetItem item = rulesRepository.loadAssetByUUID( assetPath.getUUID() );
 
         //Perform house-keeping for when an Asset is removed from a package
         attachmentRemoved( item );
 
-        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + assetPath + "] to [" + newPackage + "]" );
         rulesRepository.moveRuleItemModule( newPackage,
-                                            uuid.getUUID(),
+                                            assetPath.getUUID(),
                                             comment );
 
         //Perform house-keeping for when an Asset is added to a package
@@ -255,15 +252,15 @@ public class RepositoryAssetService
 
     }
 
-    public void promoteAssetToGlobalArea(String uuid) {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+    public void promoteAssetToGlobalArea(Path assetPath) {
+        AssetItem item = rulesRepository.loadAssetByUUID( assetPath.getUUID() );
 
         //Perform house-keeping for when an Asset is removed from a module
         attachmentRemoved( item );
 
-        log.info( "USER:" + getCurrentUserName() + " CHANGING MODULE OF asset: [" + uuid + "] to [ globalArea ]" );
+        log.info( "USER:" + getCurrentUserName() + " CHANGING MODULE OF asset: [" + assetPath + "] to [ globalArea ]" );
         rulesRepository.moveRuleItemModule( RulesRepository.GLOBAL_AREA,
-                                            uuid,
+                                            assetPath.getUUID(),
                                             "promote asset to globalArea" );
 
         //Perform house-keeping for when an Asset is added to a module
@@ -275,9 +272,9 @@ public class RepositoryAssetService
         return repositoryAssetOperations.buildAssetSource( asset );
     }
 
-    public String renameAsset(String uuid,
+    public Path renameAsset(Path uuid,
                               String newName) {
-        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid.getUUID() );
 
         return repositoryAssetOperations.renameAsset( uuid,
                                                       newName );

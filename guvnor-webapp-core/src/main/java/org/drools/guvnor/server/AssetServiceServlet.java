@@ -99,7 +99,7 @@ public class AssetServiceServlet
         return assetService.validateAsset(p0);
     }
 
-    public java.lang.String renameAsset(java.lang.String p0,
+    public Path renameAsset(Path p0,
                                         java.lang.String p1) {
         return assetService.renameAsset(p0,
                 p1);
@@ -169,7 +169,7 @@ public class AssetServiceServlet
                 p2);
     }
 
-    public void promoteAssetToGlobalArea(java.lang.String p0) {
+    public void promoteAssetToGlobalArea(Path p0) {
         assetService.promoteAssetToGlobalArea(p0);
     }
 
