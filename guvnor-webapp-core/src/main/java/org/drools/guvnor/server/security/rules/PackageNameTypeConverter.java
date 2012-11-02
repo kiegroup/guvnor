@@ -19,10 +19,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.server.security.ModuleNameType;
 
+import java.io.Serializable;
+
 @ApplicationScoped
 public class PackageNameTypeConverter
     implements
-    PermissionRuleObjectConverter {
+    PermissionRuleObjectConverter, Serializable {
 
     public Object convert(Object target) {
         return ((ModuleNameType) target).getModuleName();
