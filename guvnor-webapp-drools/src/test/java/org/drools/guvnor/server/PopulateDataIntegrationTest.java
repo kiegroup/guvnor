@@ -19,6 +19,7 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -61,7 +62,9 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
 
 
         ModuleItem pkg = rulesRepository.loadModule("com.billasurf.manufacturing.plant");
-        repositoryPackageService.buildPackage(pkg.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        repositoryPackageService.buildPackage(path,
                 true);
     }
 

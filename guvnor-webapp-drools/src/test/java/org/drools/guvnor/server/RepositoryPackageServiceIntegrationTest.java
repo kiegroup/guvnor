@@ -220,7 +220,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         //Need to commit change to Module for it to be visible to subsequent retrieval
         packageItem.checkin( "" );
 
-        serviceImplementation.deleteUncheckedRule( assetItem.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(assetItem.getUUID());        
+        serviceImplementation.deleteUncheckedRule( path );
 
         //Subsequent retrieval
         ModuleItem reloadedPackage = rulesRepository.loadModule( packageItem.getName() );
@@ -472,8 +474,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         item.updateFormat( AssetFormats.DRL );
         item.updateContent( " rule abc \n when \n then \n System.out.println(42); \n end" );
         item.checkin( "" );
-
-        BuilderResult builderResult = repositoryPackageService.buildPackage( pkg.getUUID(),
+        
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult builderResult = repositoryPackageService.buildPackage( path,
                                                                              true );
         assertFalse( builderResult.hasLines() );
 
@@ -1103,7 +1107,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         rule1.checkin( "" );
         repo.save();
 
-        BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult result = repositoryPackageService.buildPackage( path,
                                                                       true );
 
         List<BuilderResultLine> lines = result.getLines();
@@ -1147,7 +1153,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
 
-        result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        result = repositoryPackageService.buildPackage( path,
                                                         true );
         assertNotNull( result );
         assertEquals( 1,
@@ -1162,7 +1168,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         pkg = repo.loadModuleSnapshot( "testBinaryPackageCompile",
                                        "SNAP1" );
-        result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        result = repositoryPackageService.buildPackage( path,
                                                         true );
         assertFalse( result.hasLines() );
 
@@ -1209,8 +1215,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
         repo.save();
-
-        BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult result = repositoryPackageService.buildPackage( path,
                                                                       true );
         if ( result != null ) {
             for ( int i = 0; i < result.getLines().size(); i++ ) {
@@ -1256,7 +1264,8 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 
-        result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        path.setUUID(pkg.getUUID());
+        result = repositoryPackageService.buildPackage( path,
                                                         true );
         assertNotNull( result );
         assertTrue( result.getLines().size() > 0 );
@@ -1271,7 +1280,8 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         pkg = repo.loadModuleSnapshot( "testBinaryPackageCompileBRL",
                                        "SNAP1" );
-        result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        path.setUUID(pkg.getUUID());
+        result = repositoryPackageService.buildPackage( path,
                                                         true );
         assertFalse( result.hasLines() );
 
@@ -1339,8 +1349,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         rule.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule.checkin( "" );
         repo.save();
-
-        BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
+        
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult result = repositoryPackageService.buildPackage( path,
                                                                       true );
         if ( result != null ) {
             for ( int i = 0; i < result.getLines().size(); i++ ) {

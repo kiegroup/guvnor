@@ -521,7 +521,9 @@ public class AssetEditorActionToolbar extends Composite {
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceAsync repositoryService = GWT.create(RepositoryService.class);
-        repositoryService.deleteUncheckedRule( this.asset.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(this.asset.getUuid());        
+        repositoryService.deleteUncheckedRule( path,
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
                         eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getModuleUUID() ) );

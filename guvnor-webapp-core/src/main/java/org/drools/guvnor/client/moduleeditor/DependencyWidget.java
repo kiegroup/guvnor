@@ -36,6 +36,8 @@ import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.widgets.VersionChooser;
 import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
@@ -155,8 +157,10 @@ public class DependencyWidget extends Composite {
                 }
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion + " as dependency?")) {
                     ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+                    Path path = new PathImpl();
+                    path.setUUID(conf.getUuid());
                     moduleService.updateDependency(
-                            conf.getUuid(),
+                    		path,
                             encodeDependencyPath(DependencyWidget
                                     .decodeDependencyPath(dependencyPath)[0],
                                     selectedVersion),

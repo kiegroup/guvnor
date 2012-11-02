@@ -269,7 +269,9 @@ public class PackageBuilderWidget extends Composite {
         scheduler.scheduleDeferred(new Command() {
             public void execute() {
                 ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-                moduleService.buildPackage(conf.getUuid(),
+                Path path = new PathImpl();
+                path.setUUID(conf.getUuid());                
+                moduleService.buildPackage(path,
                         true,
                         buildMode,
                         statusOperator,

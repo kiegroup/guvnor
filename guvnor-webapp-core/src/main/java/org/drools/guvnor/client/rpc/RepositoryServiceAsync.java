@@ -43,7 +43,7 @@ public interface RepositoryServiceAsync {
     public void createNewRule(org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration p0, AsyncCallback<Path> cb);
     public void doesAssetExistInModule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.Boolean> cb);
     public void createNewImportedRule(java.lang.String p0, java.lang.String p1, AsyncCallback<Path> cb);
-    public void deleteUncheckedRule(java.lang.String p0, AsyncCallback cb);
+    public void deleteUncheckedRule(Path p0, AsyncCallback cb);
     public void clearRulesRepository(AsyncCallback cb);
     public void listWorkspaces(AsyncCallback<java.lang.String[]> cb);
     public void createWorkspace(java.lang.String p0, AsyncCallback cb);

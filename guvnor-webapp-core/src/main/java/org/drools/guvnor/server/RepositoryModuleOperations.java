@@ -485,7 +485,7 @@ public class RepositoryModuleOperations {
 
     //This builds a module. The build result is a deployment bundle. This is taken care by module specific Assembler. 
     //In the case of Drools, the build result is a Drools package binary. 
-    public BuilderResult buildModule(String moduleUUID,
+    public BuilderResult buildModule(Path modulePath,
                                       boolean force,
                                       String buildMode,
                                       String statusOperator,
@@ -496,7 +496,7 @@ public class RepositoryModuleOperations {
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
 
-        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( moduleUUID );
+        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         try {
             return buildModule( moduleItem,
                                  force,

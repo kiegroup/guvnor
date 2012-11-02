@@ -119,9 +119,6 @@ public class ServiceImplementation
     private RepositoryAssetOperations  repositoryAssetOperations;
 
     @Inject
-    private RepositoryAssetService     repositoryAssetService;
-
-    @Inject
     private RepositoryModuleOperations repositoryModuleOperations;
 
     @Inject
@@ -314,8 +311,8 @@ public class ServiceImplementation
 
     }
 
-    public void deleteUncheckedRule(String uuid) {
-        AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
+    public void deleteUncheckedRule(Path assetPath) {
+        AssetItem asset = rulesRepository.loadAssetByUUID(assetPath.getUUID());
 
         ModuleItem packageItem = asset.getModule();
         packageItem.updateBinaryUpToDate( false );

@@ -142,7 +142,7 @@ public class RepositoryServiceServlet
                 p1 );
     }
 
-    public void deleteUncheckedRule(java.lang.String p0) {
+    public void deleteUncheckedRule(Path p0) {
         serviceImplementation.deleteUncheckedRule( p0 );
     }
 

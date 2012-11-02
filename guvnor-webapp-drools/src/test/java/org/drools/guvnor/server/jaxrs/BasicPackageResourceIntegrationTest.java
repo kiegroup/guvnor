@@ -22,6 +22,8 @@ import org.apache.abdera.protocol.Response.ResponseType;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
@@ -127,10 +129,12 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         ModuleItem pkg2 = rulesRepository.createModule( "restPackage2",
                 "this is package restPackage2" );   
         pkg2.checkout();
-        repositoryPackageService.buildPackage(pkg2.getUUID(), true);        
+        Path path = new PathImpl();
+        path.setUUID(pkg2.getUUID());
+        repositoryPackageService.buildPackage(path, true);        
         pkg2.checkin("version2");
         pkg2.checkout();
-        repositoryPackageService.buildPackage(pkg2.getUUID(), true);       
+        repositoryPackageService.buildPackage(path, true);       
         pkg2.checkin("version3");
 
         ModuleItem pkg3 = rulesRepository.createModule( "restPackageCompilationFailure",

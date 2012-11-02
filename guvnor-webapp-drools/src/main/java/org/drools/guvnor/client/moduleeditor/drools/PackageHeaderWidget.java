@@ -28,6 +28,8 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.shared.modules.ModuleHeader;
 import org.drools.guvnor.shared.modules.ModuleHeader.Global;
 import org.drools.guvnor.shared.modules.ModuleHeader.Import;
@@ -296,7 +298,9 @@ public class PackageHeaderWidget extends Composite {
         factList.addItem( Constants.INSTANCE.loadingList() );
 
         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        moduleService.listTypesInPackage( this.conf.getUuid(),
+        Path path = new PathImpl();
+        path.setUUID(this.conf.getUuid());        
+        moduleService.listTypesInPackage( path,
                                                                          createGenericCallbackForListTypesInPackage( global,
                                                                                                                      factList ) );
 

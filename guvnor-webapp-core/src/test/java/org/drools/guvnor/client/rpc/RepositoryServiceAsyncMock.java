@@ -56,7 +56,7 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
         
     }
 
-    public void deleteUncheckedRule(String p0, AsyncCallback cb) {
+    public void deleteUncheckedRule(Path p0, AsyncCallback cb) {
     }
 
     public void deleteUncheckedRule(String p0, String p1, AsyncCallback cb) {

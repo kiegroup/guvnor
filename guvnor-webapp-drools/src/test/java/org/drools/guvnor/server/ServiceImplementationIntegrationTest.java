@@ -843,7 +843,9 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
         RuleBaseCache.getInstance().remove( "XXX" );
 
-        BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult results = repositoryPackageService.buildPackage( path,
                                                                        true );
         assertFalse( results.hasLines() );
 
@@ -856,28 +858,30 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         assertTrue( pkg.isBinaryUpToDate() );
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
-        Path path = new PathImpl();
-        path.setUUID(rule1.getUUID());
-        Asset asset = repositoryAssetService.loadRuleAsset( path );
+        Path path2 = new PathImpl();
+        path2.setUUID(rule1.getUUID());
+        Asset asset = repositoryAssetService.loadRuleAsset( path2 );
         repositoryAssetService.checkinVersion( asset );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
-        repositoryPackageService.buildPackage( pkg.getUUID(),
+        path.setUUID(pkg.getUUID());
+        repositoryPackageService.buildPackage( path,
                                                false );
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
-        Path path2 = new PathImpl();
-        path2.setUUID(pkg.getUUID());        
-        Module config = repositoryPackageService.loadModule( path2 );
+        Path path3 = new PathImpl();
+        path3.setUUID(pkg.getUUID());        
+        Module config = repositoryPackageService.loadModule( path3 );
         repositoryPackageService.saveModule( config );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( pkg.isBinaryUpToDate() );
-        repositoryPackageService.buildPackage( pkg.getUUID(),
+        path.setUUID(pkg.getUUID());
+        repositoryPackageService.buildPackage( path,
                                                false );
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
@@ -895,7 +899,9 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         model.checkin( "" );
         rulesRepository.save();
 
-        String[] s = repositoryPackageService.listTypesInPackage( pkg.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());   
+        String[] s = repositoryPackageService.listTypesInPackage( path );
         assertNotNull( s );
         assertEquals( 2,
                       s.length );
@@ -910,7 +916,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         asset.updateContent( "declare Whee\n name: String \n end" );
         asset.checkin( "" );
 
-        s = repositoryPackageService.listTypesInPackage( pkg.getUUID() );
+        s = repositoryPackageService.listTypesInPackage( path );
         assertEquals( 3,
                       s.length );
         assertEquals( "Whee",
@@ -968,7 +974,9 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         ass.setContent( dt );
         repositoryAssetService.checkinVersion( ass );
 
-        BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(pkg.getUUID());
+        BuilderResult results = repositoryPackageService.buildPackage( path,
                                                                        true );
         for ( BuilderResultLine line : results.getLines() ) {
             System.out.println( line.getMessage() );

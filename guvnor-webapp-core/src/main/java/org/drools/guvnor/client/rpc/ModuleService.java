@@ -130,7 +130,7 @@ public interface ModuleService
      * configured in the systems selectors.properties file. This will then apply
      * the filter to the package being built.
      */
-    public BuilderResult buildPackage(String packageUUID,
+    public BuilderResult buildPackage(Path modulePath,
                                       boolean force,
                                       String buildMode,
                                       String operator,
@@ -216,7 +216,7 @@ public interface ModuleService
      * specifically scoped to the package (eg in jars that have been uploaded to
      * it as an asset).
      */
-    public String[] listTypesInPackage(String packageUUID) throws SerializationException;
+    public String[] listTypesInPackage(Path modulePath) throws SerializationException;
 
     /**
      * Installs the sample repository, wiping out what was already there.
@@ -237,9 +237,9 @@ public interface ModuleService
 
 
 
-    public void updateDependency(String uuid, String dependencyPath);
+    public void updateDependency(Path modulePath, String dependencyPath);
 
-    public String[] getDependencies(String uuid);
+    public String[] getDependencies(Path modulePath);
 
 
 }

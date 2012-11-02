@@ -39,6 +39,7 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
@@ -115,7 +116,9 @@ public class RepositoryModuleService
         while ( pkit.hasNext() ) {
             ModuleItem pkg = pkit.next();
             try {
-                BuilderResult builderResult = this.buildPackage( pkg.getUUID(),
+                Path path = new PathImpl();
+                path.setUUID(pkg.getUUID());
+                BuilderResult builderResult = this.buildPackage( path,
                                                                  true );
                 if ( builderResult != null ) {
                     errs.append( "Unable to build package name [" ).append( pkg.getName() ).append( "]\n" );
@@ -219,9 +222,9 @@ public class RepositoryModuleService
         repositoryModuleOperations.saveModule( data );
     }
 
-    public BuilderResult buildPackage(String packageUUID,
+    public BuilderResult buildPackage(Path modulePath,
                                       boolean force) throws SerializationException {
-        return buildPackage( packageUUID,
+        return buildPackage( modulePath,
                              force,
                              null,
                              null,
@@ -233,7 +236,7 @@ public class RepositoryModuleService
                              null );
     }
 
-    public BuilderResult buildPackage(String packageUUID,
+    public BuilderResult buildPackage(Path modulePath,
                                       boolean force,
                                       String buildMode,
                                       String statusOperator,
@@ -243,7 +246,7 @@ public class RepositoryModuleService
                                       String category,
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
-        return repositoryModuleOperations.buildModule( packageUUID,
+        return repositoryModuleOperations.buildModule( modulePath,
                                                        force,
                                                        buildMode,
                                                        statusOperator,
@@ -298,7 +301,9 @@ public class RepositoryModuleService
             for ( String snapName : snaps ) {
                 ModuleItem snap = rulesRepository.loadModuleSnapshot( pkg.getName(),
                                                                       snapName );
-                BuilderResult builderResult = this.buildPackage( snap.getUUID(),
+                Path path = new PathImpl();
+                path.setUUID(snap.getUUID());                
+                BuilderResult builderResult = this.buildPackage( path,
                                                                  true );
                 if ( builderResult.hasLines() ) {
                     StringBuilder stringBuilder = createStringBuilderFrom( builderResult );
@@ -337,9 +342,9 @@ public class RepositoryModuleService
         return snapshotInfo;
     }
 
-    public String[] listTypesInPackage(String packageUUID) throws SerializationException {
+    public String[] listTypesInPackage(Path modulePath) throws SerializationException {
 
-        ModuleItem pkg = this.rulesRepository.loadModuleByUUID( packageUUID );
+        ModuleItem pkg = this.rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         List<String> res = new ArrayList<String>();
         AssetItemIterator it = pkg.listAssetsByFormat( AssetFormats.MODEL,
                                                        AssetFormats.DRL_MODEL );
@@ -371,15 +376,15 @@ public class RepositoryModuleService
 
     }
 
-    public void updateDependency(String uuid,
+    public void updateDependency(Path modulePath,
                                  String dependencyPath) {
-        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
+        ModuleItem item = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
         item.updateDependency( dependencyPath );
         item.checkin( "Update dependency" );
     }
 
-    public String[] getDependencies(String uuid) {
-        ModuleItem item = rulesRepository.loadModuleByUUID( uuid );
+    public String[] getDependencies(Path modulePath) {
+        ModuleItem item = rulesRepository.loadModuleByUUID( modulePath.getUUID());
         return item.getDependencies();
     }
 

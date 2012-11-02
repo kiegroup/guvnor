@@ -297,7 +297,9 @@ public class PackageResource extends Resource {
         if (p.isBinaryUpToDate()) {
             return p;
         } else {
-            BuilderResult builderResult = repositoryPackageService.buildPackage(p.getUUID(), true);
+        	org.drools.guvnor.client.rpc.Path path = new PathImpl();
+            path.setUUID(p.getUUID());
+            BuilderResult builderResult = repositoryPackageService.buildPackage(path, true);
             if (builderResult != null && !builderResult.getLines().isEmpty()) {
                 StringBuilder errs = new StringBuilder();
                 errs.append("Unable to build package name [").append(packageName).append("]\n");

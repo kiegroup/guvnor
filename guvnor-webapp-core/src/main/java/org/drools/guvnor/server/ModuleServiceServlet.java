@@ -92,7 +92,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public org.drools.guvnor.client.rpc.BuilderResult buildPackage(java.lang.String p0,
+    public org.drools.guvnor.client.rpc.BuilderResult buildPackage(Path p0,
                                                                    boolean p1,
                                                                    java.lang.String p2,
                                                                    java.lang.String p3,
@@ -164,7 +164,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public java.lang.String[] listTypesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+    public java.lang.String[] listTypesInPackage(Path p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.listTypesInPackage(p0);
     }
 
@@ -188,14 +188,14 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public void updateDependency(java.lang.String p0,
+    public void updateDependency(Path p0,
                                  java.lang.String p1) {
         moduleService.updateDependency(p0,
                 p1);
     }
 
     @Override
-    public java.lang.String[] getDependencies(java.lang.String p0) {
+    public java.lang.String[] getDependencies(Path p0) {
         return moduleService.getDependencies(p0);
     }
 

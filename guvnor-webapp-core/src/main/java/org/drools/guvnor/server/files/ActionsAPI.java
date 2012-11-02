@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server.files;
 
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
@@ -80,7 +82,9 @@ public class ActionsAPI {
                         ModuleItem p = iter.next();
                         if (p.getName().equals(packageName)) {
                             String uuid = p.getUUID();
-                            service.buildPackage(uuid,
+                            Path path = new PathImpl();
+                            path.setUUID(uuid);                            
+                            service.buildPackage(path,
                                     true);
                             break;
                         }
