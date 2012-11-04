@@ -17,12 +17,17 @@ package org.drools.guvnor.server.contenthandler.drools;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.ide.common.client.modeldriven.scorecards.ScorecardModel;
 import org.drools.ide.common.server.util.ScorecardsXMLPersistence;
@@ -34,13 +39,12 @@ import org.drools.scorecards.pmml.PMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScorecardsContentHandler extends ContentHandler
         implements
-        IRuleAsset {
+        IRuleAsset, IHasCustomValidator {
 
     public void retrieveAssetContent(Asset asset, AssetItem item) throws SerializationException {
         ScorecardModel model = ScorecardsXMLPersistence.getInstance().unmarshall(item.getContent());
@@ -54,25 +58,42 @@ public class ScorecardsContentHandler extends ContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder, AssetItem assetItem, StringBuilder stringBuilder) {
         ScorecardModel model = ScorecardsXMLPersistence.getInstance().unmarshall(assetItem.getContent());
-        String drl = getDrlFromScorecardModel(model);
-        stringBuilder.append(drl);
+        BuilderResult validationResult = validateScorecard(model);
+        if ( !validationResult.hasLines() ) {
+            String drl = getDrlFromScorecardModel(model);
+            stringBuilder.append(drl);
+        }
     }
 
     public void assembleDRL(BRMSPackageBuilder builder, Asset asset, StringBuilder stringBuilder) {
+        //called by View Source
         ScorecardModel model = (ScorecardModel) asset.getContent();
+        BuilderResult validationResult = validateScorecard(model);
+        if ( validationResult.hasLines() ) {
+            if (StringUtils.isBlank(model.getName())) {
+                stringBuilder.append("//Guided Scorecard has errors, Click on Source->Validate to view exact errors!");
+            } else {
+                stringBuilder.append("//Guided Scorecard ('"+model.getName()+"') has errors, Click on Source->Validate to view exact errors!");
+            }
+            return;
+        }
         String drl = getDrlFromScorecardModel(model);
         stringBuilder.append(drl);
     }
 
     public String getRawDRL(AssetItem assetItem) {
         ScorecardModel model = ScorecardsXMLPersistence.getInstance().unmarshall(assetItem.getContent());
-        return getDrlFromScorecardModel(model);
+        BuilderResult validationResult = validateScorecard(model);
+        if ( !validationResult.hasLines() ) {
+            return getDrlFromScorecardModel(model);
+        } else {
+            return "";
+        }
     }
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, AssemblyErrorLogger logger) throws DroolsParserException, IOException {
-        String drl = getRawDRL( asset );
-        if ( drl.equals( "" ) ) return;
-        builder.addPackageFromDrl(new StringReader(drl));
+        //should never get called as we implement IHasCustomValidator
+        System.out.println(">>>compile() method called!");
     }
 
     protected String getDrlFromScorecardModel(ScorecardModel model) {
@@ -146,6 +167,8 @@ public class ScorecardsContentHandler extends ContentHandler
                 extension.setValue(XLSKeywords.DATATYPE_NUMBER);
             } else if ("boolean".equalsIgnoreCase(characteristic.getDataType())) {
                 extension.setValue(XLSKeywords.DATATYPE_BOOLEAN);
+            } else {
+                System.out.println(">>>> Found unknown data type :: "+characteristic.getDataType());
             }
             _characteristic.getExtensions().add(extension);
 
@@ -226,5 +249,86 @@ public class ScorecardsContentHandler extends ContentHandler
         }
         modelName = sb.toString();
         return modelName;
+    }
+
+    public BuilderResult validateAsset(AssetItem assetItem) {
+        System.out.println(">>> validateAsset() method.");
+        ScorecardModel model = ScorecardsXMLPersistence.getInstance().unmarshall(assetItem.getContent());
+        BuilderResult builderResult = validateScorecard(model);
+        return builderResult;
+    }
+
+    private BuilderResult validateScorecard(ScorecardModel model) {
+        BuilderResult builderResult = new BuilderResult();
+        if ( StringUtils.isBlank(model.getFactName())){
+            builderResult.addLine(createBuilderResultLine("Fact Name is empty.", "Setup Parameters"));
+        }
+        if ( StringUtils.isBlank(model.getFieldName())){
+            builderResult.addLine(createBuilderResultLine("Resultant Score Field is empty.", "Setup Parameters"));
+        }
+        if (model.getCharacteristics().size() == 0 ) {
+            builderResult.addLine(createBuilderResultLine("No Characteristics Found.", "Characteristics"));
+        }
+        int ctr = 1;
+        for (org.drools.ide.common.client.modeldriven.scorecards.Characteristic c : model.getCharacteristics()) {
+            String characteristicName = "Characteristic ('#"+ctr+"')";
+            if (StringUtils.isBlank(c.getName())){
+                builderResult.addLine(createBuilderResultLine("Name is empty.", characteristicName));
+            } else {
+                characteristicName = "Characteristic ('"+c.getName()+"')";
+            }
+            if ( StringUtils.isBlank(c.getFact())){
+                builderResult.addLine(createBuilderResultLine("Fact is empty.", characteristicName));
+            }
+            if ( StringUtils.isBlank(c.getField())){
+                builderResult.addLine(createBuilderResultLine("Characteristic Field is empty.", characteristicName));
+            } else  if ( StringUtils.isBlank(c.getDataType())){
+                builderResult.addLine(createBuilderResultLine("Internal Error (missing datatype).", characteristicName));
+            }
+            if (c.getAttributes().size() == 0 ) {
+                builderResult.addLine(createBuilderResultLine("No Attributes Found.", characteristicName));
+            }
+            if (model.isUseReasonCodes()){
+                if (StringUtils.isBlank(model.getReasonCodeField())){
+                    builderResult.addLine(createBuilderResultLine("Resultant Reason Codes Field is empty.", characteristicName));
+                }
+                if (!"none".equalsIgnoreCase(model.getReasonCodesAlgorithm())){
+                    builderResult.addLine(createBuilderResultLine("Baseline Score is not specified.", characteristicName));
+                }
+            }
+            int attrCtr = 1;
+            for (org.drools.ide.common.client.modeldriven.scorecards.Attribute attribute : c.getAttributes()){
+                String attributeName = "Attribute ('#"+attrCtr+"')";
+                if (StringUtils.isBlank(attribute.getOperator())){
+                    builderResult.addLine(createBuilderResultLine("Attribute Operator is empty.", attributeName));
+                }
+                if (StringUtils.isBlank(attribute.getValue())){
+                    builderResult.addLine(createBuilderResultLine("Attribute Value is empty.", attributeName));
+                }
+                if (model.isUseReasonCodes()){
+                    if (StringUtils.isBlank(c.getReasonCode())){
+                        if (StringUtils.isBlank(attribute.getReasonCode())){
+                            builderResult.addLine(createBuilderResultLine("Reasoncode must be set at either attribute or characteristic.", attributeName));
+                        }
+                    }
+                }
+                attrCtr++;
+            }
+            ctr++;
+        }
+        return builderResult;
+    }
+
+    public boolean validate(AssetItem assetItem) {
+        System.out.println(">>> validate() method;");
+        return true;
+    }
+
+    public BuilderResultLine createBuilderResultLine(String msg, String name){
+        return new BuilderResultLine().setMessage(msg).setAssetFormat(getFormat()).setAssetName(name);
+    }
+
+    public String getFormat() {
+        return AssetFormats.SCORECARD_GUIDED;
     }
 }
