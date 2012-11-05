@@ -130,7 +130,7 @@ public class RulesRepository {
 
     private final Session session;
 
-    boolean initialized = false;
+    static boolean initialized = false;
 
     //NOTE: DO NOT call this constructor. This is a hack to keep CDI happy - proxyable. 
     public RulesRepository() {
@@ -144,7 +144,7 @@ public class RulesRepository {
         checkForDataMigration(this);
     }
 
-    private synchronized void checkForDataMigration(RulesRepository self) {
+    private static synchronized void checkForDataMigration(RulesRepository self) {
         if (initialized) {
             return;
         }
