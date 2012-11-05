@@ -168,7 +168,7 @@ public class RepositoryPackageOperationsTest {
         assertEquals(this.repositoryPackageOperations.createModule("name",
                 "description",
                 "package",
-                new String[]{"workspace"}),
+                new String[]{"workspace"}).getUUID(),
                 "uuid");
         verify(this.rulesRepository).createModule("name",
                 "description",
@@ -188,7 +188,7 @@ public class RepositoryPackageOperationsTest {
                 "parentNode")).thenReturn(packageItem);
         assertEquals(this.repositoryPackageOperations.createSubModule("name",
                 "description",
-                "parentNode"),
+                "parentNode").getUUID(),
                 "uuid");
         verify(this.rulesRepository).createSubModule("name",
                 "description",

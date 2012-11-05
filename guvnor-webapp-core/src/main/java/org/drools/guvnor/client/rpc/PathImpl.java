@@ -86,12 +86,16 @@ public class PathImpl implements Path, IsSerializable {
 
 	public boolean equals(Path another) {
 		//TODO:
-		return this.getUUID().equals(another);
+		if(another instanceof PathImpl) {
+			return this.getUUID().equals(((PathImpl)another).getUUID());
+		}
+		return false;
 	}
 	
 	@Override
     public String toString() {
         return "PathImpl{" +
+                "uuid='" + uuid + '\'' +
                 "uri='" + uri + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", attrs=" + attributes +
