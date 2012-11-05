@@ -17,9 +17,11 @@ package org.drools.guvnor.server.security.rules;
 
 import org.drools.guvnor.server.security.PackageNameType;
 
+import java.io.Serializable;
+
 public class PackageNameTypeConverter
     implements
-    PermissionRuleObjectConverter {
+    PermissionRuleObjectConverter, Serializable {
 
     public Object convert(Object target) {
         return ((PackageNameType) target).getPackageName();
