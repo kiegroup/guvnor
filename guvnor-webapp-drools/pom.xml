@@ -535,8 +535,8 @@
       <artifactId>guvnor-repository</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>weld-core</artifactId>
           <groupId>org.jboss.weld</groupId>
+          <artifactId>weld-core</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
