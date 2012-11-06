@@ -240,12 +240,6 @@
         <artifactId>errai-weld-integration</artifactId>
         <version>${errai.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
-        <version>${weld.version}</version>
-      </dependency>
       
     </dependencies>
     
