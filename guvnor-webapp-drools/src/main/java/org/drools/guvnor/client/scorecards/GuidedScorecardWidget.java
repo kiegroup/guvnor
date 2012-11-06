@@ -110,9 +110,13 @@ public class GuidedScorecardWidget extends Composite
             }
 
             enumDropDown = (EnumDropDown) scorecardPropertiesGrid.getWidget(1, 1);
-            String fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
-            fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
-            scorecardModel.setFieldName(fieldName);
+            if (enumDropDown.getSelectedIndex() > -1) {
+                String fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+                fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
+                scorecardModel.setFieldName(fieldName);
+            } else {
+                scorecardModel.setFieldName("");
+            }
 
             if (ddReasonCodeField.getSelectedIndex() > -1) {
                 String rcField = ddReasonCodeField.getValue(ddReasonCodeField.getSelectedIndex());
@@ -137,9 +141,13 @@ public class GuidedScorecardWidget extends Composite
                     }
                 }
                 enumDropDown = (EnumDropDown) flexTable.getWidget(2, 1);
-                fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
-                fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
-                characteristic.setField(fieldName);
+                if (enumDropDown.getSelectedIndex() > -1) {
+                    String fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+                    fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
+                    characteristic.setField(fieldName);
+                } else {
+                    characteristic.setField("");
+                }
 
                 characteristic.setReasonCode(((TextBox) flexTable.getWidget(2, 3)).getValue());
 
@@ -152,6 +160,7 @@ public class GuidedScorecardWidget extends Composite
 
                 scorecardModel.getCharacteristics().add(characteristic);
                 characteristic.setDataType(getDataTypeForField(simpleFactName, characteristic.getField()));
+                System.out.println(">>>SetDataType -->"+simpleFactName+"<-->"+characteristic.getField()+"<-->"+characteristic.getDataType()+"<--");
                 characteristic.getAttributes().clear();
                 characteristic.getAttributes().addAll(characteristicsAttrMap.get(flexTable).getList());
             }
@@ -629,6 +638,10 @@ public class GuidedScorecardWidget extends Composite
                         String type = field.getClassName();
                         if (type.endsWith("String")) {
                             type = "String";
+                        } else if ( type.endsWith("Double")) {
+                            type = "Double";
+                        } else if (type.endsWith("Integer")) {
+                            type = "int";
                         }
                         return type;
                     }
