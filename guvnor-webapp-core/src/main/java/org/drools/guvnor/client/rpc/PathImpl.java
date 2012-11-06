@@ -84,7 +84,7 @@ public class PathImpl implements Path, IsSerializable {
 		return -1;
 	}
 
-	public boolean equals(Path another) {
+	public boolean equals(org.uberfire.backend.vfs.Path another) {
 		//TODO:
 		if(another instanceof PathImpl) {
 			return this.getUUID().equals(((PathImpl)another).getUUID());
@@ -96,7 +96,7 @@ public class PathImpl implements Path, IsSerializable {
     public String toString() {
         return "PathImpl{" +
                 "uuid='" + uuid + '\'' +
-                "uri='" + uri + '\'' +
+                ", uri='" + uri + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", attrs=" + attributes +
                 '}';
