@@ -16,6 +16,8 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.repository.ModuleItem;
 
 public class ModuleFactory {
@@ -31,6 +33,9 @@ public class ModuleFactory {
 
     private static Module create(ModuleItem item) {
         Module data = new Module();
+        Path path = new PathImpl();
+        path.setUUID(item.getUUID());
+        data.setPath(path);
         data.setUuid(item.getUUID());
         data.setHeader(DroolsHeader.getDroolsHeader(item));
         data.setExternalURI(item.getExternalURI());

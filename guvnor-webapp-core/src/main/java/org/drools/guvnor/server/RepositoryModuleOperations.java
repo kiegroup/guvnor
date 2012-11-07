@@ -109,6 +109,9 @@ public class RepositoryModuleOperations {
             ModuleItem packageItem = modules.next();
 
             Module data = new Module();
+            Path path = new PathImpl();
+            path.setUUID(packageItem.getUUID());
+            data.setPath(path);;
             data.setUuid( packageItem.getUUID() );
             data.setName( packageItem.getName() );
             data.setArchived( packageItem.isArchived() );

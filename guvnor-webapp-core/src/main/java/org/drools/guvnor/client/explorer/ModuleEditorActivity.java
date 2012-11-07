@@ -57,8 +57,7 @@ public class ModuleEditorActivity {
 
     @OnStart
     public void init() {
-        Path path = new PathImpl();
-        path.setUUID(placeManager.getCurrentPlaceRequest().getParameterString("uuid", null));
+        Path path = (Path)placeManager.getCurrentPlaceRequest().getParameter("path", null);
         clientFactory.getModuleService().loadModule(path,
                 new GenericCallback<Module>() {
                     public void onSuccess(Module packageConfigData) {
