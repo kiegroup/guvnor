@@ -8,6 +8,7 @@ public class Artifact
     implements
     IsSerializable {
 
+	private org.uberfire.backend.vfs.Path path;
     private String  uuid;
     private String  name;
     private String  description;
@@ -21,7 +22,15 @@ public class Artifact
     private boolean isArchived = false;
     private String  format     = "";
 
-    public String getUuid() {
+    public org.uberfire.backend.vfs.Path getPath() {
+		return path;
+	}
+
+	public void setPath(org.uberfire.backend.vfs.Path path) {
+		this.path = path;
+	}
+
+	public String getUuid() {
         return uuid;
     }
 
