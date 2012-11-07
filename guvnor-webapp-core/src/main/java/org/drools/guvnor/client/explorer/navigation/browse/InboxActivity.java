@@ -29,7 +29,7 @@ public class InboxActivity {
 
     @OnStart
     public void init() {
-        inboxType = placeManager.getCurrentPlaceRequest().getParameters().get("inboxType");
+        inboxType = placeManager.getCurrentPlaceRequest().getParameterString("inboxType", null);
     }
 
     @WorkbenchPartView

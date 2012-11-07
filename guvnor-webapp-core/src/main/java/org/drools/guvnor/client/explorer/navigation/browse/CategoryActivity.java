@@ -36,7 +36,7 @@ public class CategoryActivity {
 
     @OnStart
     public void init() {
-        categoryPath = placeManager.getCurrentPlaceRequest().getParameters().get("category");
+        categoryPath = placeManager.getCurrentPlaceRequest().getParameterString("category", null);
     }
 
 

@@ -78,7 +78,7 @@ public class AssetViewerActivity extends Activity
     }
 
     public void viewPackageDetail(Module packageConfigData) {
-        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
+        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( packageConfigData.getPath() ) );
     }
 
     private void fillModuleItemStructure() {

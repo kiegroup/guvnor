@@ -75,7 +75,7 @@ public interface ClientFactory {
 
     Event<NotificationEvent> getNotificationEvents();
 
-    WizardContext makeContext(Map<String, String> context);
+    WizardContext makeContext(Map<String, Object> context);
 
     Identity getIdentity();
 }

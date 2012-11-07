@@ -28,7 +28,7 @@ public class WizardPlace<T extends WizardContext>
     public WizardPlace(T context) {
         super("wizardPopup");
 
-        for (Map.Entry<String, String> parameter : context.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> parameter : context.getParameters().entrySet()) {
             addParameter(parameter.getKey(), parameter.getValue());
         }
     }

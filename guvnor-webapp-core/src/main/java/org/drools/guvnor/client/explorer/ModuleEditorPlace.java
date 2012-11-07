@@ -15,13 +15,14 @@
  */
 package org.drools.guvnor.client.explorer;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 public class ModuleEditorPlace extends DefaultPlaceRequest {
 
-    public ModuleEditorPlace(String uuid) {
+    public ModuleEditorPlace(Path path) {
         super("moduleEditor");
-        addParameter("uuid", uuid);
+        addParameter("path", path);
     }
 
 }

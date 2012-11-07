@@ -22,5 +22,5 @@ import java.util.Map;
  */
 public interface WizardContext {
 
-    Map<String,String> getParameters();
+    Map<String,Object> getParameters();
 }

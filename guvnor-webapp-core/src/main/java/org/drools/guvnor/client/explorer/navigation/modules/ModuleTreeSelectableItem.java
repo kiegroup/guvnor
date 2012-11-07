@@ -28,7 +28,7 @@ public class ModuleTreeSelectableItem extends ModuleTreeItem {
             IsTreeItem treeItem,
             Module packageConfigData) {
         super(navigationViewFactory, treeItem);
-        this.view.setRootUserObject(new ModuleEditorPlace(packageConfigData.getUuid()));
+        this.view.setRootUserObject(new ModuleEditorPlace(packageConfigData.getPath()));
     }
 
 }

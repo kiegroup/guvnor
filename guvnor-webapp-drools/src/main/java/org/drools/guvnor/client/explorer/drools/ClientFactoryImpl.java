@@ -93,13 +93,13 @@ public class ClientFactoryImpl
     }
 
     @Override
-    public WizardContext makeContext(final Map<String, String> parameters) {
+    public WizardContext makeContext(final Map<String, Object> parameters) {
         if (NewGuidedDecisionTableAssetWizardContext.isInstance(parameters)) {
             return NewGuidedDecisionTableAssetWizardContext.create(parameters);
         } else {
             return new WizardContext() {
                 @Override
-                public Map<String, String> getParameters() {
+                public Map<String, Object> getParameters() {
                     return parameters;
                 }
             };

@@ -33,7 +33,7 @@ public class TestScenarioListActivity {
 
     @OnStart
     public void init(final PlaceRequest place) {
-        moduleUuid = place.getParameters().get("moduleUuid");
+        moduleUuid = place.getParameterString("moduleUuid", null);
     }
 
 

@@ -36,7 +36,7 @@ public class StateActivity {
 
     @OnStart
     public void init(){
-        stateName = placeManager.getCurrentPlaceRequest().getParameters().get("state");
+        stateName = placeManager.getCurrentPlaceRequest().getParameterString("state", null);
     }
 
     @WorkbenchPartView

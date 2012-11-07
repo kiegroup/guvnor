@@ -44,8 +44,8 @@ public class SnapshotActivity {
 
     @OnStart
     public void init(final PlaceRequest place) {
-        moduleName = place.getParameters().get("moduleName");
-        snapshotName = place.getParameters().get("snapshotName");
+        moduleName = place.getParameterString("moduleName", null);
+        snapshotName = place.getParameterString("snapshotName", null);
     }
 
     @WorkbenchPartTitle

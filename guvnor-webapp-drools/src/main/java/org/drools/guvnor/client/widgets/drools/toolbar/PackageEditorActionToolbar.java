@@ -318,13 +318,13 @@ public class PackageEditorActionToolbar extends Composite {
         Window.alert( Constants.INSTANCE.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getPlaceManager().closePlace(  new ModuleEditorPlace( newAssetUUID.getUUID() ) );
+        clientFactory.getPlaceManager().closePlace(  new ModuleEditorPlace( newAssetUUID ) );
 
         openModule( newAssetUUID );
     }
 
     private void openModule(Path newModulePath) {
-        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( newModulePath.getUUID() ) );
+        clientFactory.getPlaceManager().goTo( new ModuleEditorPlace( newModulePath ) );
     }
 
     /**
@@ -396,7 +396,7 @@ public class PackageEditorActionToolbar extends Composite {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                clientFactory.getPlaceManager().closePlace( new ModuleEditorPlace( packageConfigData.getUuid() ) );
+                clientFactory.getPlaceManager().closePlace( new ModuleEditorPlace( packageConfigData.getPath() ) );
                 refreshPackageList();
             }
         };

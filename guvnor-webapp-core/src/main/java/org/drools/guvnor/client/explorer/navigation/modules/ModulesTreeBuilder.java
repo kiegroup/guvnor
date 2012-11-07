@@ -43,7 +43,7 @@ public class ModulesTreeBuilder extends NavigationItemBuilder {
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.canSeeModulesTree(identity);
+        return true;
     }
 
     @Override

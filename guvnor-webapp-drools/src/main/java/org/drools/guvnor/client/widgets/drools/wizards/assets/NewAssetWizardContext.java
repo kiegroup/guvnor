@@ -28,7 +28,7 @@ public abstract class NewAssetWizardContext extends Place
         implements
         WizardContext {
 
-    private final Map<String,String> parameters = new HashMap<String, String>();
+    private final Map<String,Object> parameters = new HashMap<String, Object>();
 
     public NewAssetWizardContext(String assetName,
                                  String packageName,
@@ -45,31 +45,31 @@ public abstract class NewAssetWizardContext extends Place
     }
 
     public String getAssetName() {
-        return parameters.get("ASSET_NAME");
+        return (String)parameters.get("ASSET_NAME");
     }
 
     public String getPackageName() {
-        return parameters.get("PACKAGE_NAME");
+        return (String)parameters.get("PACKAGE_NAME");
     }
 
     public String getPackageUUID() {
-        return parameters.get("PACKAGE_UUID");
+        return (String)parameters.get("PACKAGE_UUID");
     }
 
     public String getFormat() {
-        return parameters.get("FORMAT");
+        return (String)parameters.get("FORMAT");
     }
 
     public String getDescription() {
-        return parameters.get("DESCRIPTION");
+        return (String)parameters.get("DESCRIPTION");
     }
 
     public String getInitialCategory() {
-        return parameters.get("CATEGORY");
+        return (String)parameters.get("CATEGORY");
     }
 
     @Override
-    public Map<String, String> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 

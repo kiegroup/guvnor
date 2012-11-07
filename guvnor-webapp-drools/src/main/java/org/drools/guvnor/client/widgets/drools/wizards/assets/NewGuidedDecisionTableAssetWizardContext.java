@@ -45,26 +45,26 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        Map<String, String> parameters = super.getParameters();
+    public Map<String, Object> getParameters() {
+        Map<String, Object> parameters = super.getParameters();
         parameters.put("TABLE_FORMAT", getTableFormat().toString());
         return parameters;
     }
 
-    public static boolean isInstance(Map<String,String> parameters) {
+    public static boolean isInstance(Map<String,Object> parameters) {
         return parameters.containsKey("TABLE_FORMAT");
     }
 
-    public static WizardContext create(Map<String,String> parameters) {
+    public static WizardContext create(Map<String,Object> parameters) {
         final GuidedDecisionTable52 content = new GuidedDecisionTable52();
-        content.setTableFormat(TableFormat.valueOf(parameters.get("TABLE_FORMAT")));
+        content.setTableFormat(TableFormat.valueOf((String)parameters.get("TABLE_FORMAT")));
         NewGuidedDecisionTableAssetConfiguration configuration = new NewGuidedDecisionTableAssetConfiguration(
-                parameters.get("ASSET_NAME"),
-                parameters.get("PACKAGE_NAME"),
-                parameters.get("PACKAGE_UUID"),
-                parameters.get("DESCRIPTION"),
-                parameters.get("CATEGORY"),
-                parameters.get("FORMAT"),
+        		(String)parameters.get("ASSET_NAME"),
+        		(String)parameters.get("PACKAGE_NAME"),
+        		(String)parameters.get("PACKAGE_UUID"),
+        		(String)parameters.get("DESCRIPTION"),
+        		(String)parameters.get("CATEGORY"),
+        		(String)parameters.get("FORMAT"),
                 content
         );
 

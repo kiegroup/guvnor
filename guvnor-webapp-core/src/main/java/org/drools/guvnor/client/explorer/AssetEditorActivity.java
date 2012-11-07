@@ -62,7 +62,7 @@ public class AssetEditorActivity {
 
     @OnStart
     public void init() {
-        loadRuleAsset(placeManager.getCurrentPlaceRequest().getParameters().get("uuid"));
+        loadRuleAsset(placeManager.getCurrentPlaceRequest().getParameterString("uuid", null));
     }
 
     @WorkbenchPartView
