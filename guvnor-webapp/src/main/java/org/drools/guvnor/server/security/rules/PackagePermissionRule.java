@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.security.rules;
 
+import java.io.Serializable;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class PackagePermissionRule
         implements
-        PermissionRule {
+        PermissionRule, Serializable {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(PackagePermissionRule.class);
 

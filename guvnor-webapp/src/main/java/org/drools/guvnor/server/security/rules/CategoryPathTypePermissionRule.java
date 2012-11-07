@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.security.rules;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.drools.guvnor.server.security.CategoryPathType;
@@ -25,7 +26,7 @@ import org.drools.guvnor.server.util.LoggingHelper;
 
 public class CategoryPathTypePermissionRule
     implements
-    PermissionRule {
+    PermissionRule, Serializable {
 
     private static final LoggingHelper log = LoggingHelper.getLogger( CategoryPathTypePermissionRule.class );
 

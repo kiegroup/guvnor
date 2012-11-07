@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.security.rules;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.drools.guvnor.server.ServiceImplementation;
@@ -26,7 +27,7 @@ import org.jboss.seam.Component;
 
 public class PackageUUIDTypePermissionRule
     implements
-    PermissionRule {
+    PermissionRule, Serializable {
 
     public boolean hasPermission(Object requestedObject,
                                  String requestedPermission,
