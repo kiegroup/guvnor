@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.server.security.rules;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.ModuleUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.repository.RulesRepository;
@@ -29,7 +29,7 @@ import org.drools.repository.RulesRepositoryException;
 @ApplicationScoped
 public class PackageUUIDTypePermissionRule
     implements
-    PermissionRule {
+    PermissionRule, Serializable {
 
     @Inject
     private RulesRepository rulesRepository;
