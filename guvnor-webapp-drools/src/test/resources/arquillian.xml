@@ -30,7 +30,7 @@
 
       <!--Increase PermGen and Max Heap to prevent Hudson from barfing-->
       <property name="javaVmArguments">-XX:MaxPermSize=256m -Xmx512m -Dorg.jboss.as.client.connect.timeout=10000</property>
-            
+
      </configuration>
   </container>
 
