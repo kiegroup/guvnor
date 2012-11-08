@@ -338,7 +338,9 @@ public class RepositoryModuleService
         SnapshotInfo snapshotInfo = new SnapshotInfo();
         snapshotInfo.setComment( packageItem.getCheckinComment() );
         snapshotInfo.setName( snapshotName );
-        snapshotInfo.setUuid( packageItem.getUUID() );
+        Path path = new PathImpl();
+        path.setUUID(packageItem.getUUID());
+        snapshotInfo.setPath(path);
         return snapshotInfo;
     }
 

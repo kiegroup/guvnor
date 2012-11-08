@@ -86,7 +86,7 @@ public class ModuleEditorWrapper extends Composite {
         Widget actionToolBar = clientFactory.getPerspectiveFactory().getModuleEditorActionToolbar(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
         layout.add(actionToolBar);
 
-        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.getUuid(),
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.getPath(),
                 clientFactory);
         assetViewerActivity.start(new AcceptItem() {
                     public void add(String tabTitle, IsWidget widget) {
@@ -120,9 +120,8 @@ public class ModuleEditorWrapper extends Composite {
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingPackageData());
         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        Path path = new PathImpl();
-        path.setUUID(this.packageConfigData.getUuid());
-        moduleService.loadModule(path,
+
+        moduleService.loadModule(this.packageConfigData.getPath(),
                 new GenericCallback<Module>() {
                     public void onSuccess(Module data) {
                         LoadingPopup.close();

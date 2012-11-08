@@ -400,11 +400,9 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
                       snaps[0].getName() );
         assertEquals( "ya",
                       snaps[0].getComment() );
-        assertNotNull( snaps[0].getUuid() );
+        assertNotNull( snaps[0].getPath() );
         
-        Path path = new PathImpl();
-        path.setUUID(snaps[0].getUuid());
-        Module confSnap = repositoryPackageService.loadModule( path );
+        Module confSnap = repositoryPackageService.loadModule( snaps[0].getPath() );
         assertEquals( "testSnapshot",
                       confSnap.getName() );
 

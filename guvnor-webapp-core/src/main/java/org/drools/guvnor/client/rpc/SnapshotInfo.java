@@ -27,7 +27,7 @@ public class SnapshotInfo
 
     private String name;
     private String comment;
-    private String uuid;
+    private Path path;
 
 
     public String getName() {
@@ -46,11 +46,13 @@ public class SnapshotInfo
         this.comment = comment;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
+	public Path getPath() {
+		return path;
+	}
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+	public void setPath(Path path) {
+		this.path = path;
+	}
+    
+    
 }

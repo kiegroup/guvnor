@@ -72,9 +72,8 @@ public class SnapshotActivity {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingSnapshot());
 
         ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-        Path path = new PathImpl();
-        path.setUUID(snapshotInfo.getUuid());
-        moduleService.loadModule(path,
+
+        moduleService.loadModule(snapshotInfo.getPath(),
                 new GenericCallback<Module>() {
                     public void onSuccess(Module module) {
                         simplePanel.add(

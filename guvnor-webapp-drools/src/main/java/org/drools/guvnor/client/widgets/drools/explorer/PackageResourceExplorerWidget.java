@@ -169,9 +169,8 @@ public class PackageResourceExplorerWidget extends AbstractPackageDefinitionExpl
                         for (int j = 0; j < result.length; j++) {
                             final SnapshotInfo snapshotInfo = result[j];
                             ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
-                            Path path = new PathImpl();
-                            path.setUUID(snapshotInfo.getUuid());    
-                            moduleService.loadModule(path,
+
+                            moduleService.loadModule(snapshotInfo.getPath(),
                                     new AsyncCallback<Module>() {
 
                                         public void onFailure(Throwable caught) {
