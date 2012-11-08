@@ -146,6 +146,7 @@ public class RepositorySessionUtil {
 
     public static void shutdown() {
         RulesRepositoryConfigurator.getInstance( null ).shutdown();
+        RulesRepository.initialized = false;
         session = null;
         repo.set( null );
         multiThreadedRepository = null;
