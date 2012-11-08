@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server;
 
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.WorkItemService;
 import org.drools.guvnor.server.ruleeditor.workitem.AssetWorkDefinitionsLoader;
@@ -44,7 +45,7 @@ public class WorkItemServiceImplementation
     private static final LoggingHelper log = LoggingHelper.getLogger(WorkItemService.class);
 
     @Inject
-    private RepositoryAssetService repositoryAssetService;
+    private AssetService repositoryAssetService;
 
 
     /**

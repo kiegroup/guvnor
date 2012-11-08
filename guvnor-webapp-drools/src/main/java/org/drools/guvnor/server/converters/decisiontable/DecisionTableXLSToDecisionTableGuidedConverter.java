@@ -33,6 +33,7 @@ import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionAsset;
 import org.drools.guvnor.client.rpc.ConversionResult.ConversionMessageType;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewRuleContentTextAssetConfiguration;
@@ -65,7 +66,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter extends AbstractConv
     private ServiceImplementation   serviceImplementation;
 
     @Inject
-    private RepositoryModuleService repositoryModuleService;
+    private ModuleService repositoryModuleService;
 
     public DecisionTableXLSToDecisionTableGuidedConverter() {
         super( FORMAT );

@@ -30,7 +30,7 @@ public class AssetPageRequest extends PageRequest
     IsSerializable {
 
     // Filter properties: null properties are ignored for filtering
-    private String       packageUuid        = null;
+    private Path       modulePath        = null;
     private List<String> formatInList       = null;
     private Boolean      formatIsRegistered = null;
 
@@ -38,24 +38,24 @@ public class AssetPageRequest extends PageRequest
     public AssetPageRequest() {
     }
 
-    public AssetPageRequest(String packageUuid,
+    public AssetPageRequest(Path modulePath,
                             List<String> formatInList,
                             Boolean formatIsRegistered,
                             int startRowIndex,
                             Integer pageSize) {
         super( startRowIndex,
                pageSize );
-        this.packageUuid = packageUuid;
+        this.modulePath = modulePath;
         this.formatInList = formatInList;
         this.formatIsRegistered = formatIsRegistered;
     }
 
-    public AssetPageRequest(String packageUuid,
+    public AssetPageRequest(Path modulePath,
                             List<String> formatInList,
                             Boolean formatIsRegistered) {
         super( 0,
                null );
-        this.packageUuid = packageUuid;
+        this.modulePath = modulePath;
         this.formatInList = formatInList;
         this.formatIsRegistered = formatIsRegistered;
     }
@@ -72,8 +72,8 @@ public class AssetPageRequest extends PageRequest
         return formatIsRegistered;
     }
 
-    public String getPackageUuid() {
-        return packageUuid;
+    public Path getModulePath() {
+        return modulePath;
     }
 
     public void setFormatInList(List<String> formatInList) {
@@ -84,8 +84,8 @@ public class AssetPageRequest extends PageRequest
         this.formatIsRegistered = formatIsRegistered;
     }
 
-    public void setPackageUuid(String packageUuid) {
-        this.packageUuid = packageUuid;
+    public void setModulePath(Path modulePath) {
+        this.modulePath = modulePath;
     }
 
 }

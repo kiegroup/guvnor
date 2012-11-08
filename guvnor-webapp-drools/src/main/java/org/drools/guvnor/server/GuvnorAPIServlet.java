@@ -41,6 +41,7 @@ import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.drools.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -71,7 +72,7 @@ public class GuvnorAPIServlet extends HttpServlet {
     private static final LoggingHelper log     = LoggingHelper.getLogger( GuvnorAPIServlet.class );
 
     @Inject
-    private RepositoryAssetService repositoryAssetService;
+    private AssetService repositoryAssetService;
 
     public void service(HttpServletRequest request,
                         HttpServletResponse response) throws ServletException,

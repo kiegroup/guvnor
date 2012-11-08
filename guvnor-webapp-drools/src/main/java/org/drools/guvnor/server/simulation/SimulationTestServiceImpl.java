@@ -23,6 +23,8 @@ import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
 import org.drools.fluent.simulation.SimulationFluent;
 import org.drools.fluent.simulation.impl.DefaultSimulationFluent;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.server.RepositoryModuleOperations;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.shared.simulation.SimulationModel;
 import org.drools.guvnor.shared.simulation.SimulationPathModel;
@@ -46,11 +48,16 @@ public class SimulationTestServiceImpl implements SimulationTestService {
     private RulesRepository rulesRepository;
 
     @Inject
-    private RepositoryModuleService repositoryModuleService;
+    private ModuleService repositoryModuleService;
+    
+    @Inject
+    private RepositoryModuleOperations repositoryModuleOperations;
 
     public void runSimulation(String moduleName, SimulationModel simulation) throws DetailedSerializationException {
         ModuleItem moduleItem = rulesRepository.loadModule(moduleName);
-        repositoryModuleService.ensureBinaryUpToDate(moduleItem);
+        if (!moduleItem.isBinaryUpToDate()) {
+            repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
+        }
 //        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, classLoader));
 
         SimulationFluent simulationFluent = new DefaultSimulationFluent();

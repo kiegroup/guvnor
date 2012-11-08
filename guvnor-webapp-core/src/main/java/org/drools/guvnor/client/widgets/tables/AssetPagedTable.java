@@ -34,6 +34,7 @@ import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import java.util.Date;
@@ -47,18 +48,18 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     private static final int PAGE_SIZE = 10;
     private ClientFactory    clientFactory;
 
-    public AssetPagedTable(String packageUuid,
+    public AssetPagedTable(Path modulePath,
                             List<String> formatInList,
                             Boolean formatIsRegistered,
                             ClientFactory clientFactory) {
-        this( packageUuid,
+        this( modulePath,
                 formatInList,
                 formatIsRegistered,
                 null,
                 clientFactory );
     }
 
-    public AssetPagedTable(final String packageUuid,
+    public AssetPagedTable(final Path modulePath,
                             final List<String> formatInList,
                             final Boolean formatIsRegistered,
                             String feedURL,
@@ -70,7 +71,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 
         setDataProvider( new AsyncDataProvider<AssetPageRow>() {
             protected void onRangeChanged(HasData<AssetPageRow> display) {
-                AssetPageRequest request = new AssetPageRequest( packageUuid,
+                AssetPageRequest request = new AssetPageRequest( modulePath,
                                                                  formatInList,
                                                                  formatIsRegistered,
                                                                  pager.getPageStart(),

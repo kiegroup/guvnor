@@ -16,6 +16,8 @@
 package org.drools.guvnor.server.standalonededitor;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
@@ -32,9 +34,9 @@ public class UUIDRuleAssetProvider
 
     private final String[] assetsUUIDs;
 
-    private final RepositoryAssetService repositoryAssetService;
+    private final AssetService repositoryAssetService;
 
-    public UUIDRuleAssetProvider(String[] assetsUUIDs, RepositoryAssetService repositoryAssetService) {
+    public UUIDRuleAssetProvider(String[] assetsUUIDs, AssetService repositoryAssetService) {
         this.assetsUUIDs = assetsUUIDs;
         this.repositoryAssetService = repositoryAssetService;
     }

@@ -22,8 +22,11 @@ import java.util.List;
 
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 
@@ -34,11 +37,11 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
 
-    private RepositoryAssetService repositoryAssetService;
+    private AssetService repositoryAssetService;
 
     private String                 packageUUID;
 
-    public AssetWorkDefinitionsLoader(RepositoryAssetService repositoryAssetService,
+    public AssetWorkDefinitionsLoader(AssetService repositoryAssetService,
                                       String packageUUID) {
         this.repositoryAssetService = repositoryAssetService;
         this.packageUUID = packageUUID;
@@ -47,7 +50,9 @@ public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
     public List<String> loadWorkDefinitions() throws SerializationException {
 
         //Load assets from package
-        AssetPageRequest workDefinitionAssetRequest = new AssetPageRequest( packageUUID,
+        Path path = new PathImpl();
+        path.setUUID(packageUUID);
+        AssetPageRequest workDefinitionAssetRequest = new AssetPageRequest( path,
                                                                             Arrays.asList( new String[]{"wid"} ),
                                                                             null,
                                                                             0,

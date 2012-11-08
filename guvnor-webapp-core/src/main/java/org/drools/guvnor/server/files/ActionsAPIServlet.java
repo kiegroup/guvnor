@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.files;
 
+import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.repository.RulesRepository;
@@ -39,7 +40,7 @@ public class ActionsAPIServlet extends RepositoryServlet {
             ActionsAPIServlet.class);
 
     @Inject
-    protected RepositoryModuleService packageService;
+    protected ModuleService packageService;
 
     @Override
     protected void doPost(final HttpServletRequest req,

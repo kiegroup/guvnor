@@ -16,8 +16,10 @@
 package org.drools.guvnor.server.builder.pagerow;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
@@ -29,19 +31,35 @@ public class AssetPageRowBuilder
     PageRowBuilder<PageRequest, AssetItemIterator> {
     private PageRequest       pageRequest;
     private AssetItemIterator iterator;
-
+    List<Asset> assets;
+    
     public List<AssetPageRow> build() {
         validate();
-        Integer pageSize = pageRequest.getPageSize();
-        iterator.skip( pageRequest.getStartRowIndex() );
-        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
+        
+        if(iterator != null) {
+        	//TODO: remove this part once we fully migrate to git-based repository
+            Integer pageSize = pageRequest.getPageSize();
+            iterator.skip( pageRequest.getStartRowIndex() );
+            List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
 
-        while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = iterator.next();
-            AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
-            rowList.add( assetPageRowPopulator.populateFrom( assetItem ) );
+            while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+                AssetItem assetItem = iterator.next();
+                AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
+                rowList.add( assetPageRowPopulator.populateFrom( assetItem ) );
+            }
+            return rowList;
+        } else {
+            Integer pageSize = pageRequest.getPageSize();
+            List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
+
+            Iterator<Asset> it = assets.iterator();
+            while (it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+            	Asset asset = it.next();
+                AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
+                rowList.add( assetPageRowPopulator.populateFrom( asset ) );
+            }
+            return rowList;        	
         }
-        return rowList;
     }
 
     public void validate() {
@@ -49,7 +67,7 @@ public class AssetPageRowBuilder
             throw new IllegalArgumentException( "PageRequest cannot be null" );
         }
 
-        if ( iterator == null ) {
+        if ( iterator == null && assets == null) {
             throw new IllegalArgumentException( "Content cannot be null" );
         }
 
@@ -62,6 +80,11 @@ public class AssetPageRowBuilder
 
     public AssetPageRowBuilder withContent(AssetItemIterator iterator) {
         this.iterator = iterator;
+        return this;
+    }
+    
+    public AssetPageRowBuilder withContent(List<Asset> assets) {
+    	this.assets = assets;
         return this;
     }
 }

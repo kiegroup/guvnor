@@ -4,6 +4,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
@@ -66,8 +68,11 @@ public class ModuleFormatsGridPlace extends Activity {
                 + "&viewUrl="
                 + Util.getSelfURL()
                 + "&status=*";
+        
+        Path path = new PathImpl();
+        path.setUUID(packageUuid);        
         final AssetPagedTable table = new AssetPagedTable(
-                packageUuid,
+        		path,
                 formatInList,
                 formatIsRegistered,
                 feedUrl,

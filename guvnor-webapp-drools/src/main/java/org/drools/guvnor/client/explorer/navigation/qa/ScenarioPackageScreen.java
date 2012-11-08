@@ -33,6 +33,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.TestScenarioService;
 import org.drools.guvnor.client.rpc.TestScenarioServiceAsync;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
@@ -55,7 +57,9 @@ public class ScenarioPackageScreen
                                  String packageName,
                                  ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
-        this.table = new AssetPagedTable( packageUUID,
+        Path path = new PathImpl();
+        path.setUUID(packageUUID);  
+        this.table = new AssetPagedTable( path,
                 Arrays.asList( new String[]{AssetFormats.TEST_SCENARIO} ),
                 null,
                 clientFactory );

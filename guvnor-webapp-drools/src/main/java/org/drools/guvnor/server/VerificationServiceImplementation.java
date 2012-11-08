@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -56,7 +57,7 @@ public class VerificationServiceImplementation
     protected RulesRepository rulesRepository;
     
     @Inject
-    protected RepositoryAssetService repositoryAssetService;
+    protected AssetService repositoryAssetService;
 
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         AnalysisReport report = new PackageVerifier(
@@ -140,7 +141,7 @@ public class VerificationServiceImplementation
     
     private TemporalBRLAssetVerifier getTemporalBRLAssetVerifier(VerifierConfiguration verifierConfiguration, Asset ruleAsset) throws SerializationException {
         
-        ModuleItem pkg = repositoryAssetService.getRulesRepository().loadModule(ruleAsset.getMetaData().moduleName);
+        ModuleItem pkg = rulesRepository.loadModule(ruleAsset.getMetaData().moduleName);
         
         return new TemporalBRLAssetVerifier(
                 VerifierBuilderFactory.newVerifierBuilder().newVerifier(verifierConfiguration),

@@ -18,13 +18,19 @@ package org.drools.guvnor.server;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.RuleBase;
@@ -47,23 +53,34 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.Preferred;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.ModuleFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
+import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.solder.core.Veto;
 
 
 import com.google.gwt.user.client.rpc.SerializationException;
+
+import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.VFSTempUtil;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.security.annotations.Roles;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
-/*@Veto*/
-public class RepositoryModuleService
+@Veto
+public class RepositoryModuleServiceVFS
         implements
     ModuleService {
 
@@ -83,21 +100,48 @@ public class RepositoryModuleService
     @Inject
     private ServiceImplementation      serviceImplementation;
 
+    @Inject
+    private RulesRepositoryVFS rulesRepositoryVFS;
+    
+    
     /**
      * Role-based Authorization check: This method only returns modules that the
      * user has permission to access. User has permission to access the
      * particular module when: The user has a package.readonly role or higher
      * (i.e., package.admin, package.developer) to this module.
      */
-    public Module[] listModules() {
-        return listModules( null );
+    public Module[] listModules() {    
+    	List<Module> result =  rulesRepositoryVFS.listModules();
+    	for(Module m : result) {
+    		//Exclude the "globalArea" 
+    		if("globalArea".equals(m.getName())) {
+    			result.remove(m);
+    		}
+    	}
+    	
+        sortModules( result );
+        
+        return result.toArray( new Module[result.size()] );
     }
+    
+    void sortModules(List<Module> result) {
+        Collections.sort( result,
+                new Comparator<Module>() {
 
+                    public int compare(final Module d1,
+                                       final Module d2) {
+                        return d1.getName().compareTo( d2.getName() );
+                    }
+
+                } );
+    }
+    
+    //TODO: no more workspace
     public Module[] listModules(String workspace) {
-        return repositoryModuleOperations.listModules( false,
-                                                       workspace );
+        return listModules();
     }
-
+    
+    
     public Module[] listArchivedModules() {
         return listArchivedModules( null );
     }
@@ -107,9 +151,18 @@ public class RepositoryModuleService
                                                        true,
                                                        workspace );
     }
-
+    
+    //TODO: In jcr repository, the global area is created during jcr repo initialization phase. shall we create global area folder when 
+    //we clone git repo (if "globalAra" does not exist in the cloned git repo)?
     public Module loadGlobalModule() {
-        return repositoryModuleOperations.loadGlobalModule();
+    	List<Module> result = rulesRepositoryVFS.listModules();
+    	for(Module m : result) {
+    		if("globalArea".equals(m.getName())) {
+    			return rulesRepositoryVFS.loadModule(m.getPath());
+    		}    	
+    	}
+    	
+    	return null;
     }
 
     public void rebuildPackages() throws SerializationException {
@@ -151,8 +204,9 @@ public class RepositoryModuleService
     @Roles({"ADMIN"})
     public Path copyModule(String sourceModuleName,
                            String destModuleName) throws SerializationException {
-        return repositoryModuleOperations.copyModules( sourceModuleName,
-                                                       destModuleName );
+    	//TODO: change "String sourceModuleName" to "Path sourceModulePath"
+        //return rulesRepositoryVFS.copyModule(sourceModulePath, destModuleName);
+    	return null;
     }
 
     public void removeModule(Path uuid) {
@@ -216,8 +270,7 @@ public class RepositoryModuleService
     }
 
     public Module loadModule(Path modulePath) {
-        ModuleItem moduleItem = rulesRepository.loadModuleByUUID( modulePath.getUUID() );
-        return repositoryModuleOperations.loadModule( moduleItem );
+    	return rulesRepositoryVFS.loadModule(modulePath);
     }
 
     public void saveModule(Module data) throws SerializationException {
@@ -457,6 +510,12 @@ public class RepositoryModuleService
         }
 
         return repositoryModuleOperations.compareSnapshots( request );
+    }
+
+    public void ensureBinaryUpToDate(ModuleItem moduleItem) throws DetailedSerializationException {
+        if (!moduleItem.isBinaryUpToDate()) {
+            repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
+        }
     }
 
     private ClassLoaderBuilder createClassLoaderBuilder(ModuleItem packageItem) {

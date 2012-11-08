@@ -215,7 +215,9 @@ public class AssetResourceExplorerWidget extends AbstractResourceDefinitionExplo
         List<String> selectedFormats = new ArrayList<String>();
         selectedFormats.add(lstFormat.getValue(lstFormat.getSelectedIndex()));
 
-        this.assetsTable = new AssetPagedTable(selectedPackageUUID,
+        Path path = new PathImpl();
+        path.setUUID(selectedPackageUUID);  
+        this.assetsTable = new AssetPagedTable(path,
                 selectedFormats,
                 null,
                 this.clientFactory);

@@ -16,11 +16,13 @@
 package org.drools.guvnor.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,12 +36,16 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.ConversionResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.builder.PageResponseBuilder;
+import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -50,7 +56,9 @@ import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.shared.api.Valid;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -61,18 +69,22 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
 import org.jboss.solder.core.Veto;
+import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.security.annotations.Roles;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
 //@Named("org.drools.guvnor.client.rpc.AssetService")
-/*@Veto*/
-public class RepositoryAssetService
+@Veto
+public class RepositoryAssetServiceVFS
         implements
         AssetService {
 
     private static final long           serialVersionUID = 90111;
 
-    private static final LoggingHelper  log              = LoggingHelper.getLogger( RepositoryAssetService.class );
+    private static final LoggingHelper  log              = LoggingHelper.getLogger( RepositoryAssetServiceVFS.class );
 
     @Inject @Preferred
     protected RulesRepository           rulesRepository;
@@ -81,11 +93,18 @@ public class RepositoryAssetService
     protected RepositoryAssetOperations repositoryAssetOperations;
 
     @Inject
+    private RepositoryModuleServiceVFS repositoryModuleService;
+    
+    @Inject
     protected Backchannel               backchannel;
 
     @Inject
     private ConversionService           conversionService;
 
+    @Inject
+    private RulesRepositoryVFS rulesRepositoryVFS;
+
+    
     public RulesRepository getRulesRepository() {
         return rulesRepository;
     }
@@ -326,14 +345,57 @@ public class RepositoryAssetService
     }
 
     public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
-        if ( request == null ) {
+    	if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
         if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
+        
+        long start = System.currentTimeMillis();
+        
+        Module module = repositoryModuleService.loadModule(request.getModulePath());
+        //ModuleItem packageItem = loadModule(request.getPackageUuid());
 
-        return repositoryAssetOperations.findAssetPage( request );
+        List<Asset> result = new ArrayList<Asset>();
+        int totalCount = 0;
+        
+        if (request.getFormatInList() != null) {
+            if (request.getFormatIsRegistered() != null) {
+                throw new IllegalArgumentException("Combining formatInList and formatIsRegistered is not yet supported.");
+            }
+            result = rulesRepositoryVFS.listAssetsByFormat(module, request.getFormatInList(), request.getStartRowIndex(), request.getPageSize());
+            totalCount = rulesRepositoryVFS.listAssetsByFormatCount(module, request.getFormatInList());
+            //iterator = packageItem.listAssetsByFormat(request.getFormatInList());
+
+        } else {
+            if (request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals(Boolean.FALSE)) {
+                result = rulesRepositoryVFS.listAssetsNotOfFormat(module, request.getFormatInList(), request.getStartRowIndex(), request.getPageSize());
+                totalCount = rulesRepositoryVFS.listAssetsNotOfFormatCount(module, request.getFormatInList());
+
+                //iterator = packageItem.listAssetsNotOfFormat(registeredFormats);
+            } else {
+                //iterator = packageItem.queryAssets("");
+            }
+        }
+        
+        // Populate response
+        List<AssetPageRow> rowList = new AssetPageRowBuilder()
+                .withPageRequest(request)
+                .withContent(result)
+                .build();
+
+        PageResponse<AssetPageRow> response = new PageResponseBuilder<AssetPageRow>()
+                .withStartRowIndex(request.getStartRowIndex())
+                .withPageRowList(rowList)
+                //TODO
+                .withLastPage(false)
+                .buildWithTotalRowCount(result.size());
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug("Found asset page of packageUuid ("
+                + request.getModulePath() + ") in " + methodDuration + " ms.");
+        return response;
     }
 
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) throws SerializationException {
@@ -346,7 +408,7 @@ public class RepositoryAssetService
 
         return repositoryAssetOperations.quickFindAsset( request );
     }
-
+    
     /**
      * @deprecated in favour of {@link #quickFindAsset(QueryPageRequest)}
      */

@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.files;
 
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -19,7 +20,7 @@ public class OryxEditorServlet extends HttpServlet {
     private static final LoggingHelper log = LoggingHelper.getLogger(OryxEditorServlet.class);
 
     @Inject
-    private RepositoryAssetService repositoryAssetService;
+    private AssetService repositoryAssetService;
 
     public void service(HttpServletRequest request,
                         HttpServletResponse response)

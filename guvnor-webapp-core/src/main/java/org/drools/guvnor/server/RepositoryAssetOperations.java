@@ -485,7 +485,7 @@ public class RepositoryAssetOperations {
 
     protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) {
         log.debug("Finding asset page of packageUuid ("
-                + request.getPackageUuid() + ")");
+                + request.getModulePath() + ")");
         long start = System.currentTimeMillis();
 
         AssetItemIterator iterator = getAssetIterator(request);
@@ -506,7 +506,7 @@ public class RepositoryAssetOperations {
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Found asset page of packageUuid ("
-                + request.getPackageUuid() + ") in " + methodDuration + " ms.");
+                + request.getModulePath() + ") in " + methodDuration + " ms.");
         return response;
     }
 
@@ -681,19 +681,19 @@ public class RepositoryAssetOperations {
     }
 
     protected long getAssetCount(AssetPageRequest request) {
-        log.debug("Counting assets in packageUuid (" + request.getPackageUuid() + ")");
+        log.debug("Counting assets in packageUuid (" + request.getModulePath() + ")");
         long start = System.currentTimeMillis();
 
         AssetItemIterator iterator = getAssetIterator(request);
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Counted assets in packageUuid ("
-                + request.getPackageUuid() + ") in " + methodDuration + " ms.");
+                + request.getModulePath() + ") in " + methodDuration + " ms.");
         return iterator.getSize();
     }
 
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
-        ModuleItem packageItem = rulesRepository.loadModuleByUUID(request.getPackageUuid());
+        ModuleItem packageItem = rulesRepository.loadModuleByUUID(request.getModulePath().getUUID());
 
         AssetItemIterator iterator;
         if (request.getFormatInList() != null) {

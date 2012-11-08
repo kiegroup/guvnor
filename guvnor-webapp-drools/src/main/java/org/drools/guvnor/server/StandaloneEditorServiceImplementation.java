@@ -62,7 +62,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     private ServiceImplementation serviceImplementation;
     
     @Inject
-    private RepositoryAssetService repositoryAssetService;
+    private AssetService repositoryAssetService;
     
 
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {

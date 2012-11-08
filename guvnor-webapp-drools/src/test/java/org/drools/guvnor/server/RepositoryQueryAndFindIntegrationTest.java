@@ -402,7 +402,9 @@ public class RepositoryQueryAndFindIntegrationTest extends GuvnorIntegrationTest
 
         List<String> formats = new ArrayList<String>();
         formats.add(AssetFormats.BUSINESS_RULE);
-        AssetPageRequest request = new AssetPageRequest(packageItem.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(packageItem.getUUID());
+        AssetPageRequest request = new AssetPageRequest(path,
                 formats,
                 null,
                 0,
@@ -466,7 +468,9 @@ public class RepositoryQueryAndFindIntegrationTest extends GuvnorIntegrationTest
 
         List<String> formats = new ArrayList<String>();
         formats.add(AssetFormats.BUSINESS_RULE);
-        AssetPageRequest request = new AssetPageRequest(packageItem.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(packageItem.getUUID());
+        AssetPageRequest request = new AssetPageRequest(path,
                 formats,
                 null,
                 0,
@@ -505,7 +509,9 @@ public class RepositoryQueryAndFindIntegrationTest extends GuvnorIntegrationTest
 
         List<String> formats = new ArrayList<String>();
         formats.add(AssetFormats.DRL);
-        AssetPageRequest request = new AssetPageRequest(packageItem.getUUID(),
+        Path path = new PathImpl();
+        path.setUUID(packageItem.getUUID());
+        AssetPageRequest request = new AssetPageRequest(path,
                 formats,
                 null,
                 0,

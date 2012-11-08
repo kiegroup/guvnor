@@ -124,7 +124,7 @@ public class AssetViewerActivity extends Activity
             final Boolean formatIsRegistered = getFormatIsRegistered( formatList );
 
             //Check if there are any assets for the group
-            AssetPageRequest request = new AssetPageRequest( packageConfigData.getUuid(),
+            AssetPageRequest request = new AssetPageRequest( packageConfigData.getPath(),
                                                              formatsInList,
                                                              formatIsRegistered );
             clientFactory.getAssetService().getAssetCount( request,

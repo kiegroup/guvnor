@@ -38,8 +38,10 @@ import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -183,7 +185,7 @@ public class PackageEditor
         final int rowNumber = addAttribute( Constants.INSTANCE.SpringContext() + ":",
                 springContextTree );
 
-        GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
+/*        GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
 
             public void onSuccess(TableDataResult resultTable) {
 
@@ -199,15 +201,40 @@ public class PackageEditor
                     rootItem.addItem( html );
                 }
             }
-        };
+        };*/
 
         AssetServiceAsync assetService = GWT.create(AssetService.class);
+        
+        List<String> formatsInList = new ArrayList<String>();
+        formatsInList.add(AssetFormats.SPRING_CONTEXT);
+        AssetPageRequest request = new AssetPageRequest( packageConfigData.getPath(),
+        		formatsInList,
+                null );// null returns all pages
+        
+		assetService.findAssetPage(request,
+				new GenericCallback<PageResponse<AssetPageRow>>() {
+					public void onSuccess(PageResponse<AssetPageRow> response) {
+		                if ( response.getPageRowList().size() == 0 ) {
+		                    removeRow( rowNumber );
+		                }
+
+		                for (AssetPageRow row : response.getPageRowList()) {
+
+		                    String url = getSpringContextDownload( packageConfigData,
+		                    		row.getName() );
+		                    HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
+		                    rootItem.addItem( html );
+		                }						
+
+					}
+				});
+/*        
         assetService.listAssetsWithPackageName( this.packageConfigData.getName(),
                 new String[]{AssetFormats.SPRING_CONTEXT},
                 0,
                 -1,
                 ExplorerNodeConfig.RULE_LIST_TABLE_ID,
-                callBack );
+                callBack );*/
 
         endSection();
     }

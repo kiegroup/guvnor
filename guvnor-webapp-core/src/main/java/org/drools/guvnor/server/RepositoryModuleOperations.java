@@ -554,7 +554,7 @@ public class RepositoryModuleOperations {
         return moduleAssemblerConfiguration;
     }
 
-    protected void buildModuleWithoutErrors(ModuleItem moduleItem, boolean force)
+    public void buildModuleWithoutErrors(ModuleItem moduleItem, boolean force)
             throws DetailedSerializationException {
         BuilderResult result = buildModule(moduleItem, false);
         if (result != null && result.getLines().size() != 0) {

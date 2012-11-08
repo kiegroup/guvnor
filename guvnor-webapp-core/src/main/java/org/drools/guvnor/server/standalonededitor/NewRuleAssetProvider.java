@@ -17,6 +17,7 @@ package org.drools.guvnor.server.standalonededitor;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
@@ -35,10 +36,10 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
     private final String assetFormat;
 
     private final ServiceImplementation serviceImplementation;
-    private final RepositoryAssetService repositoryAssetService;
+    private final AssetService repositoryAssetService;
 
     public NewRuleAssetProvider(String packageName, String categoryName, String assetName, String assetFormat,
-            ServiceImplementation serviceImplementation, RepositoryAssetService repositoryAssetService) {
+            ServiceImplementation serviceImplementation, AssetService repositoryAssetService) {
         this.packageName = packageName;
         this.categoryName = categoryName;
         this.assetName = assetName;

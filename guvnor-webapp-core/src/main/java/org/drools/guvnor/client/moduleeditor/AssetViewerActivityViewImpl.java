@@ -106,7 +106,7 @@ public class AssetViewerActivityViewImpl extends Composite
                                       final ClientFactory clientFactory) {
 
         //Asset table
-        final AssetPagedTable table = new AssetPagedTable( packageConfigData.getUuid(),
+        final AssetPagedTable table = new AssetPagedTable( packageConfigData.getPath(),
                                                            formatsInList,
                                                            formatIsRegistered,
                                                            getFeedUrl( packageConfigData.getName() ),

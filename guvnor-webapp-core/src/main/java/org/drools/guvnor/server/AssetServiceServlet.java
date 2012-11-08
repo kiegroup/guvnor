@@ -29,10 +29,11 @@ import javax.inject.Inject;
 public class AssetServiceServlet
         extends RemoteServiceServlet
         implements AssetService {
-
+    
     @Inject
-    private RepositoryAssetService assetService;
-
+    private AssetService assetService;
+    
+    
     public org.drools.guvnor.client.rpc.PageResponse quickFindAsset(org.drools.guvnor.client.rpc.QueryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return assetService.quickFindAsset(p0);
     }

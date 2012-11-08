@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.rpc;
 
+import org.drools.repository.ModuleItem;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -121,6 +123,9 @@ public interface ModuleService
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException;
 
+    public BuilderResult buildPackage(Path modulePath,
+            boolean force) throws SerializationException;
+    
     /**
      * Build the package (may be a snapshot) and return the result.
      * <p/>
@@ -241,5 +246,6 @@ public interface ModuleService
 
     public String[] getDependencies(Path modulePath);
 
+/*    public void ensureBinaryUpToDate(ModuleItem moduleItem) throws DetailedSerializationException;*/
 
 }

@@ -206,7 +206,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   true,
                                                                   0,
@@ -219,7 +221,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
                                                                   1,
@@ -245,7 +249,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
                                                                   1,
@@ -282,7 +288,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   null,
                                                                   false,
                                                                   1,
@@ -333,7 +341,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   true );
         repositoryAssetOperations.getAssetCount( assetPageRequest );
@@ -344,7 +354,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
         ModuleItem packageItem = mock( ModuleItem.class );
@@ -366,7 +378,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
         ModuleItem packageItem = mock( ModuleItem.class );
@@ -394,7 +408,9 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+        Path path = new PathImpl();
+        path.setUUID("uuid");
+        AssetPageRequest assetPageRequest = new AssetPageRequest( path,
                                                                   null,
                                                                   false );
         ModuleItem packageItem = mock( ModuleItem.class );

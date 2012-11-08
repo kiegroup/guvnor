@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
@@ -35,9 +37,13 @@ public class SnapshotAssetListActivity extends Activity {
                 + Constants.INSTANCE.SnapshotListingFor()
                 + place.getSnapshotName()
                 + "</small></i>" ) );
+        
+        Path path = new PathImpl();
+        path.setUUID(place.getModuleUuid());
+        
         verticalPanel.add(
                 new AssetPagedTable(
-                        place.getModuleUuid(),
+                		path,
                         Arrays.asList( place.getAssetTypes() ),
                         null,
                         clientFactory ) );

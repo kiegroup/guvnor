@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.standalonededitor;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Asset;
@@ -42,10 +43,10 @@ public class BRLRuleAssetProvider
     private final String packageName;
     private final String[] initialBRLs;
 
-    private final RepositoryAssetService repositoryAssetService;
+    private final AssetService repositoryAssetService;
 
     public BRLRuleAssetProvider(String packageName,
-                                String[] initialBRLs, RepositoryAssetService repositoryAssetService) {
+                                String[] initialBRLs, AssetService repositoryAssetService) {
         this.packageName = packageName;
         this.initialBRLs = initialBRLs;
         this.repositoryAssetService = repositoryAssetService;

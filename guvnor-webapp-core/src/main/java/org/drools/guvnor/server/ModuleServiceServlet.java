@@ -15,8 +15,8 @@ public class ModuleServiceServlet
         implements ModuleService {
 
     @Inject
-    private RepositoryModuleService moduleService;
-
+    private ModuleService moduleService;
+    
     @Override
     public org.drools.guvnor.client.rpc.Module[] listModules(java.lang.String p0) {
         return moduleService.listModules(p0);
@@ -90,7 +90,14 @@ public class ModuleServiceServlet
                 p2,
                 p3);
     }
-
+    
+    @Override
+    public org.drools.guvnor.client.rpc.BuilderResult buildPackage(Path p0,
+                                                                   boolean p1) throws com.google.gwt.user.client.rpc.SerializationException {
+        return moduleService.buildPackage(p0,
+                p1);
+    }
+    
     @Override
     public org.drools.guvnor.client.rpc.BuilderResult buildPackage(Path p0,
                                                                    boolean p1,

@@ -18,6 +18,7 @@ package org.drools.guvnor.server.util;
 import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
+import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
 
@@ -43,4 +44,23 @@ public class AssetPageRowPopulator {
         row.setValid(assetItem.getValid());
         return row;
     }
+    public AssetPageRow populateFrom(Asset asset) {
+        AssetPageRow row = new AssetPageRow();
+        row.setPath( asset.getPath() );
+        row.setFormat( asset.getFormat() );
+        row.setName( asset.getName() );
+        row.setDescription( asset.getDescription() );
+        row.setAbbreviatedDescription( StringUtils.abbreviate( asset.getDescription(), 80 ) );
+        row.setStateName( asset.getState() );
+        row.setCreator( asset.getLastContributor() );
+        row.setCreatedDate( asset.getDateCreated() );
+        row.setLastContributor( asset.getLastContributor() );
+        row.setLastModified( asset.getLastModified() );
+        //TODO:
+        //row.setCategorySummary( asset.getMetaData().getCategories() );
+        row.setExternalSource( asset.getMetaData().getExternalSource() );
+        row.setDisabled( asset.getMetaData().isDisabled() );
+        row.setValid(asset.getMetaData().getValid());
+        return row;
+    }    
 }

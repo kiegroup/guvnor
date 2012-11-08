@@ -98,7 +98,9 @@ public class FactModelsWidget extends Composite
         String containingModuleUUID = asset.getMetaData().getModuleUUID();
         List<String> formats = Arrays.asList( new String[]{AssetFormats.DRL_MODEL} );
 
-        AssetPageRequest request = new AssetPageRequest( containingModuleUUID,
+        Path path = new PathImpl();
+        path.setUUID(containingModuleUUID);
+        AssetPageRequest request = new AssetPageRequest( path,
                                                          formats,
                                                          null );
         clientFactory.getAssetService().findAssetPage( request,
