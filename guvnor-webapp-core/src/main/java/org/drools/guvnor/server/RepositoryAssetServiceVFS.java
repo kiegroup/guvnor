@@ -123,19 +123,17 @@ public class RepositoryAssetServiceVFS
     public Asset loadRuleAsset(Path assetPath) throws SerializationException {    	
         long time = System.currentTimeMillis();
 
-        AssetItem item = rulesRepository.loadAssetByUUID( assetPath.getUUID() );
-        Asset asset = new AssetPopulator().populateFrom( item );
+        Asset asset = rulesRepositoryVFS.loadRuleAsset(assetPath);
 
-        asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
+        //Big TODO: Refactor ContentHandler, make it has no dependency on AssetItem
+/*        ModuleItem pkgItem = handlePackageItem( item,
+                                                asset );*/
 
-
-        ModuleItem pkgItem = handlePackageItem( item,
-                                                asset );
-
-        log.debug( "Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
-        UserInbox.recordOpeningEvent( item );
+        log.debug( "Package: " + asset.getMetaData().getModuleName() + ", asset: " + asset.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
+        
+        //TODO: implement UserInbox
+        //UserInbox.recordOpeningEvent( item );
         return asset;
-
     }
 
     private ModuleItem handlePackageItem(AssetItem item,

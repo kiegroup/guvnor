@@ -210,4 +210,43 @@ public class RulesRepositoryVFS {
     public int listAssetsNotOfFormatCount(Module module, List<String> formats) {
     	return 1;
     }      
+    
+    public Asset loadRuleAsset(Path assetPath) {
+    	//Mock data
+        Asset ruleAsset = new Asset();
+        Path path = new PathImpl();
+        ruleAsset.setPath(path);
+        //ruleAsset.setUuid( assetItem.getUUID() );
+        ruleAsset.setName( "mock assetName" );
+        ruleAsset.setDescription( "mock Description" );
+        ruleAsset.setLastModified( new Date() );
+        ruleAsset.setLastContributor( "mock Contributor" );
+        ruleAsset.setState( "mock state");
+        ruleAsset.setDateCreated( new Date() );
+        ruleAsset.setCheckinComment( "mock checkin comment" );
+        ruleAsset.setVersionNumber( 2 );
+        ruleAsset.setFormat("drl");
+        ruleAsset.setArchived(false);
+        
+        //Mock metadata:
+        MetaData meta = new MetaData();
+        //TODO: Populuate version metadata. check  RepositoryAssetOperations.populateMetaData(VersionableItem item)
+        //populateMetaData((VersionableItem) item);
+
+        meta.setModuleName("mocked module name");
+        //TODO: need module Path?
+        //meta.setModuleUUID(item.getModule().getUUID());
+        meta.setBinary(false);
+
+        //TODO: category?
+/*        List<CategoryItem> categories = item.getCategories();
+        fillMetaCategories(meta,
+                categories);*/
+        
+        meta.setDateEffective(new Date());
+        meta.setDateExpired(new Date());
+        ruleAsset.setMetaData(meta);
+
+        return ruleAsset;
+    }
 }
