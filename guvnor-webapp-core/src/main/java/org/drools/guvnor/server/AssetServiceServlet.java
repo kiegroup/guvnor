@@ -150,18 +150,6 @@ public class AssetServiceServlet
                 p4);
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult listAssetsWithPackageName(java.lang.String p0,
-                                                                                  java.lang.String[] p1,
-                                                                                  int p2,
-                                                                                  int p3,
-                                                                                  java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
-        return assetService.listAssetsWithPackageName(p0,
-                p1,
-                p2,
-                p3,
-                p4);
-    }
-
     public Path copyAsset(Path p0,
                                       java.lang.String p1,
                                       java.lang.String p2) {

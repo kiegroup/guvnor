@@ -214,27 +214,6 @@ public interface AssetService
                                       int numRows,
                                       String tableConfig) throws SerializationException;
 
-    /**
-     * Given a format, this will return assets that match. It can also be used
-     * for "pagination" by passing in start and finish row numbers.
-     * 
-     * @param packageName
-     *            The name of package to search inside.
-     * @param format
-     *            The format to filter on. If this is empty - it will look for
-     *            all non "known" asset types (ie "misc" stuff).
-     * @param numRows
-     *            The number of rows to return. -1 means all.
-     * @param startRow
-     *            The starting row number if paging - if numRows is -1 then this
-     *            is ignored.
-     * @deprecated by {@link #findAssetPage(AssetPageRequest)}
-     */
-    public TableDataResult listAssetsWithPackageName(String packageName,
-                                                     String formats[],
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException;
 
     /**
      * Copies an asset into a new destination package.

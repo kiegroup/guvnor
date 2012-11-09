@@ -16,10 +16,20 @@
 
 package org.drools.guvnor.client.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeSelectableItem;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.ModuleService;
+import org.drools.guvnor.client.rpc.ModuleServiceAsync;
+import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 
 import com.google.gwt.core.client.Scheduler;
@@ -27,6 +37,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
@@ -66,7 +77,55 @@ public class GlobalAreaAssetSelector extends Composite {
     }
 
     private void loadAssetList() {
-        AssetServiceAsync assetService = GWT.create(AssetService.class);
+        ModuleServiceAsync moduleService = GWT.create(ModuleService.class);
+        
+        moduleService.loadGlobalModule(new GenericCallback<Module>() {
+            public void onSuccess(Module packageConfigData) {
+                
+                List<String> formatsInList = new ArrayList<String>();
+                for(String format : formats) {
+                    formatsInList.add(format);                	
+                }
+                AssetPageRequest request = new AssetPageRequest( packageConfigData.getPath(),
+                		formatsInList,
+                        null );// null returns all pages
+                
+                AssetServiceAsync assetService = GWT.create(AssetService.class);
+        		assetService.findAssetPage(request,
+        				new GenericCallback<PageResponse<AssetPageRow>>() {
+        					public void onSuccess(PageResponse<AssetPageRow> response) {
+        						List<AssetPageRow> rowList = response.getPageRowList();
+                                for ( int i = 0; i < rowList.size(); i++ ) {
+                                	assetList.addItem(rowList.get(i).getName(), rowList.get(i).getName());
+                                    if ( currentlySelectedAsset != null &&
+                                    		rowList.get(i).getName().equals( currentlySelectedAsset ) ) {
+                                        assetList.setSelectedIndex( i );
+                                    }
+                                }
+
+/*                                for ( int i = 0; i < result.data.length; i++ ) {
+                                    assetList.addItem( result.data[i].getDisplayName(),
+                                                       result.data[i].id );
+                                    if ( currentlySelectedAsset != null &&
+                                         result.data[i].equals( currentlySelectedAsset ) ) {
+                                        assetList.setSelectedIndex( i );
+                                    }
+                                }
+*/
+                                assetList.addChangeHandler( new ChangeHandler() {
+                                    public void onChange(ChangeEvent sender) {
+                                        currentlySelectedAsset = getSelectedAsset();
+                                    }
+                                } );					
+
+        					}
+        				});
+        		
+            	
+            }
+        });
+
+/*		
         assetService.listAssetsWithPackageName( "globalArea",
                                                                               formats,
                                                                               0,
@@ -102,7 +161,7 @@ public class GlobalAreaAssetSelector extends Composite {
                                                                                   }
 
                                                                               } );
-    }
+*/    }
 
     /**
      * Returns the selected package.

@@ -207,23 +207,6 @@ public class RepositoryAssetServiceVFS
         return repositoryAssetOperations.loadArchivedAssets( request );
     }
 
-    /**
-     * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
-     */
-    public TableDataResult listAssetsWithPackageName(String packageName,
-                                                     String formats[],
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException {
-        ModuleItem pkg = rulesRepository.loadModule( packageName );
-        Path path = new PathImpl();
-        path.setUUID(pkg.getUUID());
-        return listAssets( path,
-                           formats,
-                           skip,
-                           numRows,
-                           tableConfig );
-    }
 
     /**
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
