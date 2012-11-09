@@ -161,10 +161,10 @@ public interface ModuleService
     /**
      * Copy the module (everything).
      *
-     * @param sourceModuleName
+     * @param sourceModulePath
      * @param destModuleName
      */
-    public Path copyModule(String sourceModuleName,
+    public Path copyModule(Path sourceModulePath,
                            String destModuleName) throws SerializationException;
 
     /**

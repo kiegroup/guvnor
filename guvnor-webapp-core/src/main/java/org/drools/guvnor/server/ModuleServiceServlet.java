@@ -127,7 +127,7 @@ public class ModuleServiceServlet
     }
 
     @Override
-    public Path copyModule(java.lang.String p0,
+    public Path copyModule(Path p0,
                              java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return moduleService.copyModule(p0,
                 p1);

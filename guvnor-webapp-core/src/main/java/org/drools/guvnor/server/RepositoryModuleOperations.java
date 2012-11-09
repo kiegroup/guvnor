@@ -190,13 +190,13 @@ public class RepositoryModuleOperations {
         return data;
     }
 
-    protected Path copyModules(String sourceModuleName,
+    protected Path copyModules(Path sourceModulePath,
                                String destModuleName) throws SerializationException {
 
         try {
-            log.info( "COPYING module [" + sourceModuleName + "] to  module [" + destModuleName + "]" );
+            log.info( "COPYING module [" + sourceModulePath + "] to  module [" + destModuleName + "]" );
 
-            final String newModuleUUID = rulesRepository.copyModule( sourceModuleName,
+            final String newModuleUUID = rulesRepository.copyModule( sourceModulePath.getFileName(),
                                                                      destModuleName );
             Path path = new PathImpl();
             path.setUUID(newModuleUUID);            

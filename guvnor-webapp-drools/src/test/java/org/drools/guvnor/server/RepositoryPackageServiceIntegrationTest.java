@@ -646,13 +646,15 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
 
         pkgs = repositoryPackageService.listModules();
 
-        repositoryPackageService.copyModule( "testCreatePackage",
+        Path path = new PathImpl("testCreatePackage", null);
+        repositoryPackageService.copyModule( path,
                                              "testCreatePackage_COPY" );
 
         assertEquals( pkgs.length + 1,
                       repositoryPackageService.listModules().length );
         try {
-            repositoryPackageService.copyModule( "testCreatePackage",
+            path = new PathImpl("testCreatePackage", null);
+            repositoryPackageService.copyModule( path,
                                                  "testCreatePackage_COPY" );
         } catch ( RulesRepositoryException e ) {
             assertNotNull( e.getMessage() );

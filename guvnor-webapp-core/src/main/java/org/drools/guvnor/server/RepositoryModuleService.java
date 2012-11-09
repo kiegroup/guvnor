@@ -149,9 +149,9 @@ public class RepositoryModuleService
     }
 
     @Roles({"ADMIN"})
-    public Path copyModule(String sourceModuleName,
+    public Path copyModule(Path sourceModulePath,
                            String destModuleName) throws SerializationException {
-        return repositoryModuleOperations.copyModules( sourceModuleName,
+        return repositoryModuleOperations.copyModules( sourceModulePath,
                                                        destModuleName );
     }
 

@@ -349,11 +349,11 @@ public class PackageEditorActionToolbar extends Composite {
                     return;
                 }
                 LoadingPopup.showMessage( Constants.INSTANCE.PleaseWaitDotDotDot() );
-                moduleService.copyModule( packageConfigData.getName(),
+                moduleService.copyModule( packageConfigData.getPath(),
                         name.getText(),
                         new GenericCallback<Path>() {
-                            public void onSuccess(Path uuid) {
-                                completedCopying( uuid );
+                            public void onSuccess(Path newModulePath) {
+                                completedCopying( newModulePath );
                                 pop.hide();
                             }
                         } );

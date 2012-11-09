@@ -33,7 +33,7 @@ public class ModuleFactory {
 
     private static Module create(ModuleItem item) {
         Module data = new Module();
-        Path path = new PathImpl();
+        Path path = new PathImpl(item.getName(), null); //set file name. Path.getFileName is used by copyModule()
         path.setUUID(item.getUUID());
         data.setPath(path);
         data.setUuid(item.getUUID());

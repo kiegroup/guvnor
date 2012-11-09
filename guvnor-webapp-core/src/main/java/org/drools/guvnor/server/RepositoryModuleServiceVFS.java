@@ -202,21 +202,18 @@ public class RepositoryModuleServiceVFS
     }
 
     @Roles({"ADMIN"})
-    public Path copyModule(String sourceModuleName,
+    public Path copyModule(Path sourceModulePath,
                            String destModuleName) throws SerializationException {
-    	//TODO: change "String sourceModuleName" to "Path sourceModulePath"
-        //return rulesRepositoryVFS.copyModule(sourceModulePath, destModuleName);
-    	return null;
+        return rulesRepositoryVFS.copyModule(sourceModulePath, destModuleName);
     }
 
-    public void removeModule(Path uuid) {
-        repositoryModuleOperations.removeModule( uuid );
+    public void removeModule(Path modulePath) {
+    	rulesRepositoryVFS.removeModule( modulePath );
     }
 
-    public Path renameModule(Path uuid,
+    public Path renameModule(Path modulePath,
                              String newName) {
-        return repositoryModuleOperations.renameModule( uuid,
-                                                        newName );
+        return rulesRepositoryVFS.renameModule( modulePath, newName );
     }
 
     public byte[] exportModules(String moduleName) {
@@ -230,22 +227,18 @@ public class RepositoryModuleServiceVFS
     }
 
     public Path createModule(String name,
-                               String description,
-                               String format) throws RulesRepositoryException {
-        return repositoryModuleOperations.createModule( name,
-                                                        description,
-                                                        format );
+                             String description,
+                             String format) throws RulesRepositoryException {
+        return rulesRepositoryVFS.createModule( name, description, format );
     }
 
+    //No more workspace
     @Roles({"ADMIN"})
     public Path createModule(String name,
                                String description,
                                String format,
                                String[] workspace) throws RulesRepositoryException {
-        return repositoryModuleOperations.createModule( name,
-                                                        description,
-                                                        format,
-                                                        workspace );
+        return createModule(name, description, format);
     }
 
     /*
@@ -273,8 +266,8 @@ public class RepositoryModuleServiceVFS
     	return rulesRepositoryVFS.loadModule(modulePath);
     }
 
-    public void saveModule(Module data) throws SerializationException {
-        repositoryModuleOperations.saveModule( data );
+    public void saveModule(Module module) throws SerializationException {
+    	rulesRepositoryVFS.saveModule( module );
     }
 
     public BuilderResult buildPackage(Path modulePath,
@@ -510,12 +503,6 @@ public class RepositoryModuleServiceVFS
         }
 
         return repositoryModuleOperations.compareSnapshots( request );
-    }
-
-    public void ensureBinaryUpToDate(ModuleItem moduleItem) throws DetailedSerializationException {
-        if (!moduleItem.isBinaryUpToDate()) {
-            repositoryModuleOperations.buildModuleWithoutErrors( moduleItem, false );
-        }
     }
 
     private ClassLoaderBuilder createClassLoaderBuilder(ModuleItem packageItem) {

@@ -65,7 +65,7 @@ import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
 //@Named("org.drools.guvnor.client.rpc.AssetService")
-/*@Veto*/
+//@Veto
 public class RepositoryAssetService
         implements
         AssetService {

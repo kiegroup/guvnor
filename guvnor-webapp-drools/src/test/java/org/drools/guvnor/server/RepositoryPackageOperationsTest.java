@@ -103,7 +103,8 @@ public class RepositoryPackageOperationsTest {
         when( rulesRepository.copyModule( "from",
                                           "to" ) ).thenReturn( "newUUID" );
 
-        repositoryPackageOperations.copyModules( "from",
+        Path path = new PathImpl("from", null);
+        repositoryPackageOperations.copyModules( path,
                                                  "to" );
         verify( rulesRepository ).copyModule( "from",
                                                "to" );

@@ -34,7 +34,7 @@ public interface ModuleServiceAsync {
     public void buildPackage(Path p0, boolean p1, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void buildPackage(Path p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void buildModuleSource(Path p0, AsyncCallback<java.lang.String> cb);
-    public void copyModule(java.lang.String p0, java.lang.String p1, AsyncCallback<Path> cb);
+    public void copyModule(Path p0, java.lang.String p1, AsyncCallback<Path> cb);
     public void removeModule(Path p0, AsyncCallback cb);
     public void renameModule(Path p0, java.lang.String p1, AsyncCallback<Path> cb);
     public void rebuildSnapshots(AsyncCallback cb);
