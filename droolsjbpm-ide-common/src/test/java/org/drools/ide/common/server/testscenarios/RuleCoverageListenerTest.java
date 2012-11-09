@@ -219,6 +219,11 @@ class MockActivation
     @Override
     public void setMatched(boolean matched) {
         // TODO Auto-generated method stub
-    }     
-    
+    }
+
+    @Override
+    public boolean isRuleNetworkEvaluatorActivation() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }

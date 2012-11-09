@@ -34,18 +34,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.NodeMemories;
-import org.drools.common.NodeMemory;
-import org.drools.common.ObjectStore;
-import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.RuleBasePartitionId;
-import org.drools.common.TruthMaintenanceSystem;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.common.*;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -116,7 +105,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
     }
 
-    public void clearNodeMemory(NodeMemory node) {
+    public void clearNodeMemory(MemoryFactory memoryFactory) {
     }
 
     public void executeQueuedActions() {
@@ -151,7 +140,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     @Override
-    public Memory getNodeMemory(NodeMemory node) {
+    public Memory getNodeMemory(MemoryFactory node) {
         return null;
     }
 
