@@ -1,0 +1,5 @@
+exclude:
+   - /*.ico
+   - /org.drools.guvnor.Guvnor/images/**
+   - /org.drools.guvnor.Guvnor/css/**
+   - /css/**

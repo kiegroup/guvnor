@@ -28,7 +28,7 @@
       margin: 0;
       pading: 0;
       color: #fff;
-      background: url('/image/bg-login.png') repeat #1b1b1b;
+      background: url('<%=request.getContextPath()%>/org.drools.guvnor.Guvnor/images/bg-login.png') repeat #1b1b1b;
       font-size: 14px;
       text-shadow: #050505 0 -1px 0;
       font-weight: bold;
@@ -45,7 +45,7 @@
       border-bottom: solid 3px #777973;
       height: 250px;
       width: 100%;
-      background: url('/image/bg-login-top.png') repeat #fff;
+      background: url('<%=request.getContextPath()%>/org.drools.guvnor.Guvnor/images/bg-login-top.png') repeat #fff;
       z-index: 1;
     }
 
@@ -73,8 +73,12 @@
     #login-top {
       height: 120px;
       width: 401px;
-      padding-top: 140px;
+      padding-top: 20px;
       text-align: center;
+    }
+
+    #login-content {
+      margin-top: 120px;
     }
 
     label {
@@ -138,7 +142,7 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="/image/drools_logo.gif" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="<%=request.getContextPath()%>/org.drools.guvnor.Guvnor/images/drools_logo.gif" alt="Drools Logo" title="Powered By Uberfire"/>
   </div>
 
   <div id="login-content">
