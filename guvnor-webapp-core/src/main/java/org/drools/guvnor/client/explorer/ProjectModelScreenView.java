@@ -1,11 +1,19 @@
 package org.drools.guvnor.client.explorer;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rikkola
- * Date: 11/9/12
- * Time: 12:30 PM
- * To change this template use File | Settings | File Templates.
- */
-public interface ProjectModelScreenView {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface ProjectModelScreenView
+        extends IsWidget {
+
+    interface Presenter{
+
+        void onKBaseSelection(String name);
+
+    }
+    void setPresenter(Presenter presenter);
+
+    void addKnowledgeBaseConfiguration(String kbaseName);
+
+    void showForm(KnowledgeBaseConfiguration knowledgeBaseConfiguration);
+
 }

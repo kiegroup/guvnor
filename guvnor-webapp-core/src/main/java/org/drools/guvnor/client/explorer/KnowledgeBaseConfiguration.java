@@ -1,11 +1,27 @@
 package org.drools.guvnor.client.explorer;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rikkola
- * Date: 11/9/12
- * Time: 2:11 PM
- * To change this template use File | Settings | File Templates.
- */
 public class KnowledgeBaseConfiguration {
+
+    private String name;
+    private String namespace;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getFullName() {
+        return namespace + "." + name;
+    }
 }

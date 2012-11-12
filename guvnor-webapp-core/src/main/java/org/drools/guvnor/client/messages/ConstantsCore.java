@@ -2674,5 +2674,23 @@ public interface ConstantsCore
     String Characteristics();
     //end of scorecards
 
+    String Namespace();
+
+    String Identity();
+
+    String Equality();
+
+    String EqualsBehavior();
+
+    String EventProcessingMode();
+
+    String Stream();
+
+    String Cloud();
+
+    String StatefulKSessions();
+
+    String StatelessKSessions();
+
     String Navigation();
 }

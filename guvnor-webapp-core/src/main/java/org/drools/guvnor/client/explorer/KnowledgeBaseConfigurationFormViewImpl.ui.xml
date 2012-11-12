@@ -8,20 +8,66 @@
   the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:guvnor='urn:import:org.drools.guvnor.client.explorer'>
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-    <ui:with field='images' type='org.drools.guvnor.client.resources.ImagesCore'/>
+    <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore"/>
 
-    <gwt:HorizontalPanel>
-        <gwt:VerticalPanel>
-            <gwt:HorizontalPanel>
-                <gwt:Button text="Add KBase"/>
-                <gwt:Button text="Delete KBase"/>
-            </gwt:HorizontalPanel>
-            <gwt:ListBox ui:field="kbaseList" visibleItemCount="30" width="360px" />
-        </gwt:VerticalPanel>
-        <guvnor:KnowledgeBaseConfigurationForm ui:field="form" />
-    </gwt:HorizontalPanel>
+    <gwt:HTMLPanel>
+        <div>
+            <div style='float:left'>
+                <div>
+                    <div>
+                        <gwt:Label text="{i18n.Namespace}"/>
+                    </div>
+                    <div>
+                        <gwt:Label text="{i18n.Name}"/>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <gwt:TextBox ui:field="nameSpaceTextBox"/>
+                    </div>
+                    <div>
+                        <gwt:TextBox ui:field="nameTextBox"/>
+                    </div>
+                </div>
+            </div>
+            <div style='float:left; padding-left: 20px;'>
+                <gwt:Label text="{i18n.EqualsBehavior}"/>
+                <div>
+                    <gwt:RadioButton name="equalsBehavior" text="{i18n.Identity}"/>
+                </div>
+                <div>
+                    <gwt:RadioButton name="equalsBehavior" text="{i18n.Equality}"/>
+                </div>
+            </div>
+            <div style='float:left; padding-left: 20px;'>
+                <div>
+                    <gwt:Label text="{i18n.EventProcessingMode}"/>
+                    <div>
+                        <gwt:RadioButton name="eventProcessingMode" text="{i18n.Stream}"/>
+                    </div>
+                    <div>
+                        <gwt:RadioButton name="eventProcessingMode" text="{i18n.Cloud}"/>
+                    </div>
+                </div>
+            </div>
+            <div style='clear:both;'/>
+        </div>
+        <gwt:TabLayoutPanel barHeight="50" barUnit="PX" height="300px">
+            <gwt:tab>
+                <gwt:header><ui:text from="{i18n.StatefulKSessions}" /></gwt:header>
+                <gwt:SimplePanel>
+                    <gwt:Label text="Tab1"/>
+                </gwt:SimplePanel>
+            </gwt:tab>
+            <gwt:tab>
+                <gwt:header><ui:text from="{i18n.StatelessKSessions}" /></gwt:header>
+                <gwt:SimplePanel>
+                    <gwt:Label text="Tab2"/>
+                </gwt:SimplePanel>
+            </gwt:tab>
+        </gwt:TabLayoutPanel>
+    </gwt:HTMLPanel>
 
 </ui:UiBinder>
