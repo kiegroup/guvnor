@@ -64,7 +64,7 @@ public class SuggestionCompletionEngine2Test {
 
     @Test
     public void testAccessorsAndMutatorsJavaClass() throws Exception {
-        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine2Test.Person\n";
+        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngine2Test.Person\n";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 

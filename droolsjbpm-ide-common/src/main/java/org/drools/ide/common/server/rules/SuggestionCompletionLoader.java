@@ -817,7 +817,7 @@ public class SuggestionCompletionLoader
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.server.rules.ClassToGenericClassConverter#
+     * @see org.kie.ide.common.server.rules.ClassToGenericClassConverter#
      * translateClassToGenericType(java.lang.Class)
      */
     //XXX {bauna} field type

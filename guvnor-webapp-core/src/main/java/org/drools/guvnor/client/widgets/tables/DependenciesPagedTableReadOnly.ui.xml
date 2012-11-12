@@ -18,11 +18,11 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
     xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
-    xmlns:guvnor-pager="urn:import:org.drools.guvnor.client.widgets.tables">
+    xmlns:guvnor-pager="urn:import:org.kie.guvnor.client.widgets.tables">
 
-  <ui:with field='images' type='org.drools.guvnor.client.resources.ImagesCore'/>
+  <ui:with field='images' type='org.kie.guvnor.client.resources.ImagesCore'/>
 	
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.ConstantsCore" />
+  <ui:with field="i18n" type="org.kie.guvnor.client.messages.ConstantsCore" />
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>

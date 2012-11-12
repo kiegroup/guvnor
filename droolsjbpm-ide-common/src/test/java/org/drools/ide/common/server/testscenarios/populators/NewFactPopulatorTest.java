@@ -51,7 +51,7 @@ public class NewFactPopulatorTest {
 
     @Test
     public void testDummyRunNoRules() throws Exception {
-        typeResolver.addImport("org.drools.Cheese");
+        typeResolver.addImport("org.kie.Cheese");
 
         List<Field> fieldData = new ArrayList<Field>();
         fieldData.add(new FieldData("type",

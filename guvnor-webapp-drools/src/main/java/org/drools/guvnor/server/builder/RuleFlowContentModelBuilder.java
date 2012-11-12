@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
 import org.drools.guvnor.client.asseteditor.ruleflow.*;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.process.core.Work;
@@ -37,6 +35,8 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -443,7 +443,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     }
 
     /**
-     * @see org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.HasExpressionTypeChangeHandlers#addExpressionTypeChangeHandler(org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.ExpressionTypeChangeHandler)
+     * @see org.kie.guvnor.client.asseteditor.drools.modeldriven.ui.HasExpressionTypeChangeHandlers#addExpressionTypeChangeHandler(org.kie.guvnor.client.asseteditor.drools.modeldriven.ui.ExpressionTypeChangeHandler)
      */
     public HandlerRegistration addExpressionTypeChangeHandler(ExpressionTypeChangeHandler handler) {
         return addHandler( handler,

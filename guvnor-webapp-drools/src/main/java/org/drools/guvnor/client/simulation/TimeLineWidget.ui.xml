@@ -17,9 +17,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:simulation="urn:import:org.drools.guvnor.client.simulation">
+             xmlns:simulation="urn:import:org.kie.guvnor.client.simulation">
 
-  <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
+  <ui:with field="simulationResources" type="org.kie.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel>
     <gwt:HorizontalPanel spacing="0">

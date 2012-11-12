@@ -1,6 +1,5 @@
 package org.drools.guvnor.server.verification;
 
-import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.Asset;
@@ -10,11 +9,12 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 public class TemporalBRLAssetVerifier extends VerifierRunner {
 

@@ -28,10 +28,10 @@ import org.drools.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.MarshallerFactory;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.MarshallerFactory;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

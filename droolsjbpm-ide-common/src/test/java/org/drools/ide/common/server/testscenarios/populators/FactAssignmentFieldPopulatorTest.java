@@ -38,7 +38,7 @@ public class FactAssignmentFieldPopulatorTest {
     public void testFactAssignmentField() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
-        typeResolver.addImport("org.drools.ide.common.server.testscenarios.Cheese");
+        typeResolver.addImport("org.kie.ide.common.server.testscenarios.Cheese");
 
         Mouse mouse = new Mouse();
 
@@ -55,7 +55,7 @@ public class FactAssignmentFieldPopulatorTest {
     public void testSimpleFields() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
-        typeResolver.addImport("org.drools.ide.common.server.testscenarios.Cheese");
+        typeResolver.addImport("org.kie.ide.common.server.testscenarios.Cheese");
 
         Mouse mouse = new Mouse();
 
@@ -73,7 +73,7 @@ public class FactAssignmentFieldPopulatorTest {
     public void testMatryoshkaDollSituation() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
-        typeResolver.addImport("org.drools.ide.common.server.testscenarios.MatryoshkaDoll");
+        typeResolver.addImport("org.kie.ide.common.server.testscenarios.MatryoshkaDoll");
 
         MatryoshkaDoll matryoshkaDoll = new MatryoshkaDoll();
 

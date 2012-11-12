@@ -75,7 +75,7 @@ public class BRLPersistenceTest {
         assertTrue( xml.indexOf( "Person" ) > -1 );
         assertTrue( xml.indexOf( "Accident" ) > -1 );
         assertTrue( xml.indexOf( "no-loop" ) > -1 );
-        assertTrue( xml.indexOf( "org.drools" ) == -1 );
+        assertTrue( xml.indexOf( "org.kie" ) == -1 );
         assertTrue( xml.indexOf( "addToGlobal" ) > -1 );
 
         RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal( xml );
@@ -92,7 +92,7 @@ public class BRLPersistenceTest {
         final String xml = p.marshal( m );
         System.out.println( xml );
 
-        assertTrue( xml.indexOf( "org.drools" ) == -1 );
+        assertTrue( xml.indexOf( "org.kie" ) == -1 );
 
     }
 

@@ -81,7 +81,7 @@ public class ImportFileGenerator implements Constants {
      */
     public String generateImportFile(Map<String, PackageFile> packages) throws IOException {
         // go through each replacer definition creating drl template replacements
-        //TODO: what is the org.drools.io.RuleSetReader ??? is this what Guvnor uses this to read the .drl file parts?
+        //TODO: what is the org.kie.io.RuleSetReader ??? is this what Guvnor uses this to read the .drl file parts?
         String draftStateReferenceUUID = GeneratedData.generateUUID();
         String categoryReferenceUUID = GeneratedData.generateUUID();
 

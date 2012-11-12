@@ -46,7 +46,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
      * Method used to create the field Restriction. It returns the class name
      * of the Restriction used in the generated rule. By default, it returns
      * "LiteralRestriction", but subclasses could override this method in order
-     * to use other subclasses of org.drools.verifier.components.Restriction
+     * to use other subclasses of org.kie.verifier.components.Restriction
      * @return
      */
     protected String getFieldRestrictionClassName(){
@@ -137,7 +137,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
      * @param config
      * @return
      * @deprecated Use drools-verifier instead of this method:
-     * {@link #getVerifierRule(org.drools.ide.common.factconstraints.client.ConstraintConfiguration) }
+     * {@link #getVerifierRule(org.kie.ide.common.factconstraints.client.ConstraintConfiguration) }
      */
     @Deprecated
     public ValidationResult validate(Object value, ConstraintConfiguration config) {
@@ -236,13 +236,13 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     /* Imports */
     protected String getVerifierImportsTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierImportsTemplate = new StringBuilder();
-        verifierImportsTemplate.append("import org.drools.verifier.components.*;\n");
+        verifierImportsTemplate.append("import org.kie.verifier.components.*;\n");
         verifierImportsTemplate.append("import java.util.Map;\n");
         verifierImportsTemplate.append("import java.util.HashMap;\n");
-        verifierImportsTemplate.append("import org.drools.verifier.report.components.VerifierMessage;\n");
-        verifierImportsTemplate.append("import org.drools.verifier.data.VerifierReport;\n");
-        verifierImportsTemplate.append("import org.drools.verifier.report.components.Severity;\n");
-        verifierImportsTemplate.append("import org.drools.verifier.report.components.MessageType;\n");
+        verifierImportsTemplate.append("import org.kie.verifier.report.components.VerifierMessage;\n");
+        verifierImportsTemplate.append("import org.kie.verifier.data.VerifierReport;\n");
+        verifierImportsTemplate.append("import org.kie.verifier.report.components.Severity;\n");
+        verifierImportsTemplate.append("import org.kie.verifier.report.components.MessageType;\n");
 
         return verifierImportsTemplate.toString();
 
@@ -257,7 +257,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     }
 
     protected String getVerifierPackageTemplate(ConstraintConfiguration config, Map<String, Object> context) {
-        return "package org.drools.verifier.consequence\n";
+        return "package org.kie.verifier.consequence\n";
     }
 
     protected String getVerifierPackagePrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {

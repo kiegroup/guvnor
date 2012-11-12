@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * A WorkDefinition used in Guvnor.
  * 
- * @see org.drools.process.core.WorkDefinition
+ * @see org.kie.process.core.WorkDefinition
  */
 public class PortableWorkDefinition
     implements

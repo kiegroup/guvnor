@@ -18,7 +18,6 @@ package org.drools.guvnor.server.builder;
 
 import java.util.Collection;
 
-import org.drools.definition.process.Node;
 import org.drools.guvnor.client.asseteditor.ruleflow.ElementContainerTransferNode;
 import org.drools.guvnor.client.asseteditor.ruleflow.HumanTaskTransferNode;
 import org.drools.guvnor.client.asseteditor.ruleflow.SplitNode;
@@ -35,6 +34,7 @@ import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Node;
 
 public class RuleFlowProcessBuilder {
 

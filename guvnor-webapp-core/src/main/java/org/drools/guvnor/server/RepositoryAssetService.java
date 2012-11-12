@@ -64,7 +64,7 @@ import org.jboss.solder.core.Veto;
 import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
-//@Named("org.drools.guvnor.client.rpc.AssetService")
+//@Named("org.kie.guvnor.client.rpc.AssetService")
 //@Veto
 public class RepositoryAssetService
         implements
@@ -346,7 +346,7 @@ public class RepositoryAssetService
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
+     * org.kie.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
      * )
      */
     public void lockAsset(Path assetPath) {
@@ -356,7 +356,7 @@ public class RepositoryAssetService
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
+     * org.kie.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
      * String)
      */
     public void unLockAsset(Path assetPath) {
@@ -479,7 +479,7 @@ public class RepositoryAssetService
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
+     * org.kie.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
      * (java.lang.String)
      */
     public String getAssetLockerUserName(Path assetPath) {

@@ -48,7 +48,7 @@ public class ActionFieldValue
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#isFormula()
+     * @see org.kie.ide.common.client.modeldriven.brl.FieldNature#isFormula()
      */
     public boolean isFormula() {
         return this.value != null && this.value.trim().startsWith( "=" );
@@ -56,7 +56,7 @@ public class ActionFieldValue
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getField()
+     * @see org.kie.ide.common.client.modeldriven.brl.FieldNature#getField()
      */
     public String getField() {
         return field;
@@ -65,7 +65,7 @@ public class ActionFieldValue
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setField(java
+     * org.kie.ide.common.client.modeldriven.brl.FieldNature#setField(java
      * .lang.String)
      */
     public void setField(String field) {
@@ -74,7 +74,7 @@ public class ActionFieldValue
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getValue()
+     * @see org.kie.ide.common.client.modeldriven.brl.FieldNature#getValue()
      */
     public String getValue() {
         return value;
@@ -83,7 +83,7 @@ public class ActionFieldValue
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setValue(java
+     * org.kie.ide.common.client.modeldriven.brl.FieldNature#setValue(java
      * .lang.String)
      */
     public void setValue(String value) {
@@ -92,7 +92,7 @@ public class ActionFieldValue
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getNature()
+     * @see org.kie.ide.common.client.modeldriven.brl.FieldNature#getNature()
      */
     public long getNature() {
         return nature;
@@ -101,7 +101,7 @@ public class ActionFieldValue
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
+     * org.kie.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
      */
     public void setNature(long nature) {
         this.nature = nature;
@@ -109,7 +109,7 @@ public class ActionFieldValue
 
     /*
      * (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getType()
+     * @see org.kie.ide.common.client.modeldriven.brl.FieldNature#getType()
      */
     public String getType() {
         return type;
@@ -118,7 +118,7 @@ public class ActionFieldValue
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setType(java
+     * org.kie.ide.common.client.modeldriven.brl.FieldNature#setType(java
      * .lang.String)
      */
     public void setType(String type) {

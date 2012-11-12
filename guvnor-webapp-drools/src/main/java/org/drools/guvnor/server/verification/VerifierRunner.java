@@ -16,10 +16,6 @@
 
 package org.drools.guvnor.server.verification;
 
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.server.builder.AssetValidationIterator;
@@ -27,13 +23,17 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.util.DroolsHeader;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import java.io.StringReader;
 

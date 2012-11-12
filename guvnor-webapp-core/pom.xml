@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>guvnor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
@@ -129,21 +129,21 @@
 
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-repository</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-repository</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
@@ -151,15 +151,15 @@
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-templates</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
     <dependency>

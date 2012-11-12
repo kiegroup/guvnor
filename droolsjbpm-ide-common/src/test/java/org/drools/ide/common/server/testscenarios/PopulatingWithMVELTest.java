@@ -14,7 +14,7 @@ public class PopulatingWithMVELTest {
 
     @Test
     public void testMVELPopulate() throws Exception {
-        Object q = MVEL.eval("new org.drools.ide.common.server.testscenarios.DumbFact()");
+        Object q = MVEL.eval("new org.kie.ide.common.server.testscenarios.DumbFact()");
 
         Map m = new HashMap();
         m.put("obj", q);

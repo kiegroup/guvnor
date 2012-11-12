@@ -1,5 +1,5 @@
 exclude:
    - /*.ico
-   - /org.drools.guvnor.Guvnor/images/**
-   - /org.drools.guvnor.Guvnor/css/**
+   - /org.kie.guvnor.Guvnor/images/**
+   - /org.kie.guvnor.Guvnor/css/**
    - /css/**

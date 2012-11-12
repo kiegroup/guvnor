@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>guvnor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
@@ -70,10 +70,10 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <!-- The default profile needs to be fast, so we only build 1 permutation
           { -->
-          <module>org.drools.guvnor.FastCompiledGuvnor</module>
+          <module>org.kie.guvnor.FastCompiledGuvnor</module>
           <draftCompile>true</draftCompile>
           <!-- } -->
-          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
+          <runTarget>org.kie.guvnor.Guvnor/Guvnor.html</runTarget>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
@@ -86,9 +86,9 @@
             <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:guvnor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:droolsjbpm-ide-common</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:guvnor-webapp-core</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
@@ -260,7 +260,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <module>org.drools.guvnor.Guvnor</module>
+              <module>org.kie.guvnor.Guvnor</module>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -281,7 +281,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <module>org.drools.guvnor.Guvnor</module>
+              <module>org.kie.guvnor.Guvnor</module>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -468,7 +468,7 @@
       </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-scorecards</artifactId>
       <version>${drools.version}</version>
     </dependency>
@@ -535,11 +535,11 @@
   
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-repository</artifactId>
       <exclusions>
         <exclusion>
@@ -549,7 +549,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-compiler</artifactId>
       <exclusions>
       	<exclusion>
@@ -563,31 +563,31 @@
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-templates</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>drools-simulator</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

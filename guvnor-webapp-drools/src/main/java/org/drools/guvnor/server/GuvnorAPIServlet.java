@@ -36,9 +36,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.definition.process.Connection;
-import org.drools.definition.process.Node;
-import org.drools.definition.process.Process;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetService;
@@ -56,6 +53,9 @@ import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
 

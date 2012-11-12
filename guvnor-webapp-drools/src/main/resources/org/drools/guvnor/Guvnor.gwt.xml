@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
 
-  <inherits name="org.drools.ide.common.Common"/>
-  <inherits name="org.drools.guvnor.GuvnorCore"/>
+  <inherits name="org.kie.ide.common.Common"/>
+  <inherits name="org.kie.guvnor.GuvnorCore"/>
 
   <!-- Here we put different locales (translations) There are of the form 
 values="xx_YY" - which match to Constants_xx_YY.properties which contain
@@ -16,20 +16,20 @@ the end of the URL. <extend-property name="locale" values="fr"/> -->
   <extend-property name="locale" values="fr_FR"/>
 
   <!-- Specify the app entry point class. -->
-  <!--<entry-point class="org.drools.guvnor.client.GuvnorDroolsEntryPoint"/>-->
+  <!--<entry-point class="org.kie.guvnor.client.GuvnorDroolsEntryPoint"/>-->
   <inherits name="org.uberfire.UberfireAPI"/>
 
-  <servlet path="/verificationService" class="org.drools.guvnor.server.VerificationServiceImplementation"/>
-  <servlet path="/oryxeditor" class="org.drools.guvnor.server.files.OryxEditorServlet"/>
+  <servlet path="/verificationService" class="org.kie.guvnor.server.VerificationServiceImplementation"/>
+  <servlet path="/oryxeditor" class="org.kie.guvnor.server.files.OryxEditorServlet"/>
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 
-  <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
-    <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
+  <generate-with class="org.kie.guvnor.gwtutil.PerspectiveFactoryGenerator">
+    <when-type-assignable class="org.kie.guvnor.client.perspective.PerspectiveFactory"/>
   </generate-with>
 
-  <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
-    <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
+  <generate-with class="org.kie.guvnor.gwtutil.AssetEditorFactoryGenerator">
+    <when-type-assignable class="org.kie.guvnor.client.common.AssetEditorFactory"/>
   </generate-with>
 
 </module>

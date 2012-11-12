@@ -39,7 +39,7 @@ public class FileDownloadUtilTest {
     @Test
     public void testDownloadRemoteRepository() throws IOException {
         final String jbossReleaseRepo = "http://repository.jboss.org/nexus/content/repositories/releases/";
-        final MavenArtifact artifact = new MavenArtifact( "org.drools:knowledge-api:jar:5.3.1.Final:compile" );
+        final MavenArtifact artifact = new MavenArtifact( "org.kie:knowledge-api:jar:5.3.1.Final:compile" );
 
         final HttpURLConnection connection = (HttpURLConnection) new URL( artifact.toURL( jbossReleaseRepo ) ).openConnection();
         connection.setRequestMethod( "HEAD" );

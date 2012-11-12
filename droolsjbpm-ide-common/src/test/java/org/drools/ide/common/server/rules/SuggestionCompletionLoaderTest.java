@@ -45,7 +45,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testSuggestionCompLoader() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.Person",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -66,7 +66,7 @@ public class SuggestionCompletionLoaderTest {
                 };
             }
         } );
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.Person",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -78,7 +78,7 @@ public class SuggestionCompletionLoaderTest {
         assertTrue( factTypes.contains( "Set" ) );
         assertTrue( factTypes.contains( "Person" ) );
 
-        eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end",
+        eng = loader.getSuggestionEngine( "package foo \n import org.kie.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end",
                                           new ArrayList(),
                                           new ArrayList() );
         assertEquals( 5,
@@ -106,7 +106,7 @@ public class SuggestionCompletionLoaderTest {
                 };
             }
         } );
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.Person \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         eng.setFactTypeFilter( new FactTypeFilter() {
@@ -131,7 +131,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testSuggestionCompLoaderWildCards() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        loader.getSuggestionEngine( "package foo \n import org.drools.*",
+        loader.getSuggestionEngine( "package foo \n import org.kie.*",
                                     Collections.<JarInputStream> emptyList(),
                                     Collections.<DSLTokenizedMappingFile> emptyList() );
         assertEquals( 1,
@@ -169,7 +169,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testLoadDifferentFieldTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.ide.common.server.rules.SomeFact",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -260,7 +260,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testLoadDifferentMethodTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.ide.common.server.rules.SomeFact",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -356,7 +356,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testGeneratedBeansExtendsPOJOSimple() throws Exception {
         String packageDrl = "package foo \n"
-                            + "import org.drools.Address\n"
+                            + "import org.kie.Address\n"
                             + "declare Address \n"
                             + "end";
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
@@ -390,7 +390,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testGeneratedBeansExtendsPOJOComplex() throws Exception {
         String packageDrl = "package foo \n"
-                            + "import org.drools.Address\n"
+                            + "import org.kie.Address\n"
                             + "declare Address \n"
                             + "end\n"
                             + "declare Address2 extends Address\n"
@@ -447,7 +447,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testGlobal() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.drools.Person p",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.kie.Person p",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -493,7 +493,7 @@ public class SuggestionCompletionLoaderTest {
     public void testSortOrderOfFields() throws Exception {
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.ide.common.server.rules.SomeFact",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -561,7 +561,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testEnumFields() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.ide.common.server.rules.SomeFact",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -580,7 +580,7 @@ public class SuggestionCompletionLoaderTest {
     @Test
     public void testSortOrderOfFacts() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact\n import org.drools.Person",
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.kie.ide.common.server.rules.SomeFact\n import org.kie.Person",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );
@@ -779,7 +779,7 @@ public class SuggestionCompletionLoaderTest {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
         String header = "";
-        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+        header += "package foo \n import org.kie.ide.common.server.rules.ReadOnlyFact\n";
 
         header += "declare ReadOnlyFact\n";
         header += "@role( event )\n";
@@ -800,7 +800,7 @@ public class SuggestionCompletionLoaderTest {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
         String header = "";
-        header += "package foo \n import org.drools.ide.common.server.rules.ReadOnlyFact\n";
+        header += "package foo \n import org.kie.ide.common.server.rules.ReadOnlyFact\n";
 
         header += "declare ReadOnlyFact\n";
         header += "@role( event )\n";
@@ -824,9 +824,9 @@ public class SuggestionCompletionLoaderTest {
     public void testLoadDelegatedProperties() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n" +
-                                                                             "import org.drools.ide.common.server.rules.MotherClass\n" +
-                                                                             "import org.drools.ide.common.server.rules.DelegationClass\n" +
-                                                                             "import org.drools.ide.common.server.rules.SubClass\n",
+                                                                             "import org.kie.ide.common.server.rules.MotherClass\n" +
+                                                                             "import org.kie.ide.common.server.rules.DelegationClass\n" +
+                                                                             "import org.kie.ide.common.server.rules.SubClass\n",
                                                                      new ArrayList(),
                                                                      new ArrayList() );
         assertNotNull( eng );

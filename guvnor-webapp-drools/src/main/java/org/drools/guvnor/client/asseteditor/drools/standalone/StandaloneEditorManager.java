@@ -273,12 +273,12 @@ public class StandaloneEditorManager {
 
             getDRL: function (callbackFunction) {
                 this.drlCallbackFunction = callbackFunction;
-                app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getDRLs()();
+                app.@org.kie.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getDRLs()();
             },
 
             getBRL: function (callbackFunction) {
                 this.brlCallbackFunction = callbackFunction;
-                app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getBRLs()();
+                app.@org.kie.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getBRLs()();
             },
 
             registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction) {
@@ -298,7 +298,7 @@ public class StandaloneEditorManager {
             },
 
             getAssetsUUIDs: function() {
-                return app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getAssetsUUIDs()();
+                return app.@org.kie.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getAssetsUUIDs()();
             }
         }
         $wnd.guvnorEditorObject = guvnorEditorObject;

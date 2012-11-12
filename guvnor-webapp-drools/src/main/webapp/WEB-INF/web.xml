@@ -11,7 +11,7 @@
 
   <context-param>
     <param-name>javax.ws.rs.Application</param-name>
-    <param-value>org.drools.guvnor.server.jaxrs.GuvnorRestApplication</param-value>
+    <param-value>org.kie.guvnor.server.jaxrs.GuvnorRestApplication</param-value>
   </context-param>
   <context-param>
     <param-name>resteasy.servlet.mapping.prefix</param-name>
@@ -19,7 +19,7 @@
   </context-param>
   <context-param>
     <param-name>resteasy.providers</param-name>
-    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider</param-value>
+    <param-value>org.kie.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.kie.guvnor.server.jaxrs.providers.atom.AtomFeedProvider</param-value>
   </context-param>
 
   <context-param>
@@ -46,63 +46,63 @@
 
   <servlet>
     <servlet-name>serviceWarBuilderAndDownloadHandler</servlet-name>
-    <servlet-class>org.drools.guvnor.server.contenthandler.drools.ServiceWarBuilderAndDownloadHandler</servlet-class>
+    <servlet-class>org.kie.guvnor.server.contenthandler.drools.ServiceWarBuilderAndDownloadHandler</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>mavenArtifactsService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.maven.ArtifactDependenciesServiceImpl</servlet-class>
+    <servlet-class>org.kie.guvnor.server.maven.ArtifactDependenciesServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>guvnorService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.RepositoryServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>assetService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.AssetServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.AssetServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>categoryService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.CategoryServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.CategoryServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>suggestionCompletionEngineService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.SuggestionCompletionEngineServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.SuggestionCompletionEngineServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>testScenarioService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.TestScenarioServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.TestScenarioServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>simulationTestService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.simulation.SimulationTestServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.simulation.SimulationTestServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>AssetFileServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.AssetFileServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.AssetFileServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>PackageDeploymentServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.PackageDeploymentServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.PackageDeploymentServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>RepositoryBackupServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.RepositoryBackupServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.RepositoryBackupServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>WebdavServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.WebdavServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.WebdavServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>RestAPIServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.RestAPIServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.RestAPIServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ActionsAPIServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.ActionsAPIServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.ActionsAPIServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>FeedServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.FeedServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.FeedServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>WorkflowManagerServlet</servlet-name>
@@ -114,39 +114,39 @@
   </servlet>
   <servlet>
     <servlet-name>guvnorAPI</servlet-name>
-    <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.GuvnorAPIServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>moduleService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.ModuleServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.ModuleServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>verificationService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
+    <servlet-class>org.kie.guvnor.server.VerificationServiceImplementation</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>configurationService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.ConfigurationServiceImplementation</servlet-class>
+    <servlet-class>org.kie.guvnor.server.ConfigurationServiceImplementation</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>OryxEditorServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.files.OryxEditorServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.files.OryxEditorServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>StandaloneEditorServlet</servlet-name>
-    <servlet-class>org.drools.guvnor.server.StandaloneEditorServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.StandaloneEditorServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
-    <servlet-class>org.drools.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
+    <servlet-class>org.kie.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>workItemService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.WorkItemServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.WorkItemServiceServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>droolsService</servlet-name>
-    <servlet-class>org.drools.guvnor.server.DroolsServiceServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.server.DroolsServiceServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -178,7 +178,7 @@
 
   <servlet-mapping>
     <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/Guvnor.html</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/Guvnor.html</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -197,7 +197,7 @@
   </listener>
    -->
   <listener>
-    <listener-class>org.drools.guvnor.server.repository.SafeWeldListener</listener-class>
+    <listener-class>org.kie.guvnor.server.repository.SafeWeldListener</listener-class>
   </listener>
  
   <!-- Needed to make weld/arquillian work on tomcat6, jetty6 and jetty7 -->
@@ -218,107 +218,107 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>serviceWarBuilderAndDownloadHandler</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/serviceWarBuilderAndDownloadHandler</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/serviceWarBuilderAndDownloadHandler</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>mavenArtifactsService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/mavenArtifactsService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/mavenArtifactsService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OryxEditorServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/oryxeditor/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/oryxeditor/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>StandaloneEditorServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorServlet/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/standaloneEditorServlet/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/standaloneEditorService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/standaloneEditorService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>guvnorService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/guvnorService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>assetService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/assetService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/assetService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>categoryService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/categoryService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/categoryService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>suggestionCompletionEngineService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/suggestionCompletionEngineService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/suggestionCompletionEngineService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>testScenarioService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/testScenarioService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/testScenarioService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>simulationTestService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/simulationTestService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/simulationTestService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AssetFileServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/asset</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/asset</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PackageDeploymentServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/package/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/package/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RepositoryBackupServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/backup</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/backup</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WebdavServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/webdav/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/webdav/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RestAPIServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/api/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ActionsAPIServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/action/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/action/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>FeedServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/feed/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WorkflowManagerServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/workflowmanager/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/workflowmanager/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WSDLParserServlet</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/wsdlparser/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>guvnorAPI</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/guvnorAPI</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>verificationService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/verificationService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>moduleService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/moduleService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/moduleService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>configurationService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/configurationService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/configurationService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>workItemService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/workItemService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/workItemService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>droolsService</servlet-name>
-    <url-pattern>/org.drools.guvnor.Guvnor/droolsService</url-pattern>
+    <url-pattern>/org.kie.guvnor.Guvnor/droolsService</url-pattern>
   </servlet-mapping>
   
   <session-config>

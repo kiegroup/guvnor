@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.definition.process.Process;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
@@ -51,6 +50,7 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
 import org.xml.sax.SAXException;
 
 import com.google.gwt.user.client.rpc.SerializationException;

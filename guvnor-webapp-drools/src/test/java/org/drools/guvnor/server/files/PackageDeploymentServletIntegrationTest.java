@@ -49,7 +49,7 @@ public class PackageDeploymentServletIntegrationTest extends GuvnorIntegrationTe
             AssetItem header = pkg.addAsset( "drools",
                                              "" );
             header.updateFormat( "package" );
-            header.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
+            header.updateContent( "import org.kie.guvnor.server.files.SampleFact\n global org.kie.guvnor.server.files.SampleFact sf" );
             header.checkin( "" );
 
             AssetItem asset = pkg.addAsset( "someRule",
@@ -85,7 +85,7 @@ public class PackageDeploymentServletIntegrationTest extends GuvnorIntegrationTe
             byte[] bin = res.extractContentBytes();
             byte[] bin_ = pkg.getCompiledPackageBytes();
 
-            org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream( bin ) );
+            org.kie.rule.Package o = (org.kie.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream( bin ) );
             assertNotNull( o );
             assertEquals( 1,
                           o.getRules().length );
@@ -339,7 +339,7 @@ public class PackageDeploymentServletIntegrationTest extends GuvnorIntegrationTe
                                         "" );
         asset.updateFormat("pgn");
         asset.updateBinaryContentAttachment(getClass().getResource( "resources/myprocess.png" ).openStream());
-        asset.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
+        asset.updateContent( "import org.kie.guvnor.server.files.SampleFact\n global org.kie.guvnor.server.files.SampleFact sf" );
         asset.checkin("");
 
         AssetItem assetnew = rulesRepository.loadAssetByUUID( asset.getUUID() );

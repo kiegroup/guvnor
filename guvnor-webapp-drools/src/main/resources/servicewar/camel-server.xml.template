@@ -17,12 +17,12 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:cxf="http://camel.apache.org/schema/cxf"@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
+       xmlns:cxf="http://camel.apache.org/schema/cxf"@if{serviceConfig.hasProtocolReference(org.kie.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"@end{}
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd@if{serviceConfig.hasProtocolReference(org.kie.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd@end{}
     ">
     
@@ -40,15 +40,15 @@
    !   Copy and paste this element, changing id and the address, to expose services on different urls.
    !   Different Camel routes can handle different end point paths.
     -->
-@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
+@if{serviceConfig.hasProtocolReference(org.kie.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.REST)}
   <cxf:rsServer id="rsServer"
                 address="/rest"
-                serviceClass="org.drools.jax.rs.CommandExecutorImpl">
+                serviceClass="org.kie.jax.rs.CommandExecutorImpl">
        <cxf:providers>
-           <bean class="org.drools.jax.rs.CommandMessageBodyReader"/>
+           <bean class="org.kie.jax.rs.CommandMessageBodyReader"/>
        </cxf:providers>
   </cxf:rsServer>@end{}
-@if{serviceConfig.hasProtocolReference(org.drools.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
+@if{serviceConfig.hasProtocolReference(org.kie.guvnor.client.asseteditor.drools.serviceconfig.ProtocolOption.WEB_SERVICE)}
   <cxf:cxfEndpoint id="soapServer"
             address="/soap"
              serviceName="ns:CommandExecutor"
@@ -62,7 +62,7 @@
   </cxf:cxfEndpoint>@end{}
 
   <!-- Leave this, as it's needed to make Camel "drools" aware -->
-  <bean id="droolsPolicy" class="org.drools.camel.component.DroolsPolicy" />
+  <bean id="droolsPolicy" class="org.kie.camel.component.DroolsPolicy" />
 
   <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
 @foreach{kbase : serviceConfig.kbases}@foreach{ksession : kbase.ksessions}@includeNamed{'ksession.uri'; ksession=ksession}@end{}@end{}

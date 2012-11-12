@@ -1,2 +1,2 @@
-org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider
-org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider
+org.kie.guvnor.server.jaxrs.providers.atom.AtomFeedProvider
+org.kie.guvnor.server.jaxrs.providers.atom.AtomEntryProvider

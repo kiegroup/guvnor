@@ -46,7 +46,7 @@ public class ScenarioXMLPersistenceTest {
         Scenario sc_ = p.unmarshal(s);
         assertEquals(sc.getGlobals().size(), sc_.getGlobals().size());
         assertEquals(sc.getFixtures().size(), sc_.getFixtures().size());
-        assertTrue(s.indexOf("org.drools") == -1); //check we have aliased all
+        assertTrue(s.indexOf("org.kie") == -1); //check we have aliased all
 
     }
 

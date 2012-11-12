@@ -20,16 +20,16 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.util.Iterator;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.io.ResourceFactory;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.rule.Rule;
+import org.kie.io.ResourceFactory;
 
 public class PackageBuilderTest {
 

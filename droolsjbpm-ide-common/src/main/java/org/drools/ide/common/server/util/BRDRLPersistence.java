@@ -95,7 +95,7 @@ public class BRDRLPersistence
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
+     * org.kie.ide.common.server.util.BRLPersistence#marshal(org.kie.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
     public String marshal(RuleModel model) {
@@ -146,7 +146,7 @@ public class BRDRLPersistence
     }
 
     /**
-     * @see org.drools.ide.common.server.util.BRLPersistence#unmarshal(java.lang.String)
+     * @see org.kie.ide.common.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
     public RuleModel unmarshal(String str) {
         throw new UnsupportedOperationException( "Still not possible to convert pure DRL to RuleModel" );
@@ -264,7 +264,7 @@ public class BRDRLPersistence
             //Add boiler-plate for actions operating on WorkItems
             if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
                 buf.append( indentation );
-                buf.append( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
+                buf.append( "org.kie.process.instance.WorkItemManager wim = (org.kie.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
             }
 
             //Marshall the model itself
@@ -776,7 +776,7 @@ public class BRDRLPersistence
         protected StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
             String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
             if ( className == null ) {
-                throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
+                throw new IllegalStateException( "Implementation of 'org.kie.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
             }
 
             try {
@@ -1057,9 +1057,9 @@ public class BRDRLPersistence
             instantiatedWorkItems.add( wiName );
 
             buf.append( indentation );
-            buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
+            buf.append( "org.kie.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
-            buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
+            buf.append( " = new org.kie.process.instance.impl.WorkItemImpl();\n" );
             buf.append( indentation );
             buf.append( wiImplName );
             buf.append( ".setName( \"" );

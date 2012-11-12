@@ -18,13 +18,13 @@ package org.drools.guvnor.examples.mortgage.client;
 
 import javax.swing.JOptionPane;
 
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.definition.type.FactType;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.definition.type.FactType;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class MortgageClientExample {
 

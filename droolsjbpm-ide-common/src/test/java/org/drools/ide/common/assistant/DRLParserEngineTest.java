@@ -35,13 +35,13 @@ public class DRLParserEngineTest {
 
     @Before
     public void setUp() throws Exception {
-        rule =     "package org.drools.assistant.test;\n\n";
-        rule += "import org.drools.assistant.test.model.Company;\n";
-        rule += "import org.drools.assistant.test.model.Employee;\n\n";
-        rule += "import function org.drools.assistant.model.Class1.anotherFunction \n";
-        rule += "import        function org.drools.assistant.model.Class1.mathFunction \n";
-        rule += "global     org.drools.assistant.test.model.Class2    results \n";
-        rule += "global org.drools.assistant.test.model.Class3 current\n";
+        rule =     "package org.kie.assistant.test;\n\n";
+        rule += "import org.kie.assistant.test.model.Company;\n";
+        rule += "import org.kie.assistant.test.model.Employee;\n\n";
+        rule += "import function org.kie.assistant.model.Class1.anotherFunction \n";
+        rule += "import        function org.kie.assistant.model.Class1.mathFunction \n";
+        rule += "global     org.kie.assistant.test.model.Class2    results \n";
+        rule += "global org.kie.assistant.test.model.Class3 current\n";
         rule += "expander help-expander.dsl\n";
         rule += "query \"all clients\"\n";
         rule += "    result : Clients()\n";

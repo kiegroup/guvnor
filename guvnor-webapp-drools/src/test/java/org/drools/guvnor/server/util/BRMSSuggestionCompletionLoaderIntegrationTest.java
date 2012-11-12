@@ -60,7 +60,7 @@ public class BRMSSuggestionCompletionLoaderIntegrationTest extends GuvnorIntegra
 
         ModuleItem item = repo.createModule( "testLoaderWithComplexFields",
                                                "to test the loader" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.util.Agent",
+        DroolsHeader.updateDroolsHeader( "import org.kie.guvnor.server.util.Agent",
                                                   item );
         repo.save();
 

@@ -16,7 +16,13 @@
 
 package org.drools.ide.common.server.testscenarios.populators;
 
-import org.drools.*;
+import org.drools.Cheese;
+import org.drools.CheeseType;
+import org.drools.Cheesery;
+import org.drools.MyCollectionWrapper;
+import org.drools.OuterFact;
+import org.drools.Person;
+import org.drools.SqlDateWrapper;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
@@ -26,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.server.testscenarios.MockWorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.*;
 
 import java.util.*;
 
@@ -36,7 +43,7 @@ public class FactPopulatorTest {
 
     static {
         try {
-            Class.forName("org.drools.base.mvel.MVELCompilationUnit");
+            Class.forName("org.kie.base.mvel.MVELCompilationUnit");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -577,13 +584,13 @@ public class FactPopulatorTest {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), getClassLoader());
 
-        resolver.addImport("org.drools.MyCollectionWrapper");
-        resolver.addImport("org.drools.Cheesery");
-        resolver.addImport("org.drools.Cheese");
-        resolver.addImport("org.drools.SqlDateWrapper");
-        resolver.addImport("org.drools.CheeseType");
-        resolver.addImport("org.drools.Person");
-        resolver.addImport("org.drools.OuterFact");
+        resolver.addImport("org.kie.MyCollectionWrapper");
+        resolver.addImport("org.kie.Cheesery");
+        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.kie.SqlDateWrapper");
+        resolver.addImport("org.kie.CheeseType");
+        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.kie.OuterFact");
 
         return resolver;
     }

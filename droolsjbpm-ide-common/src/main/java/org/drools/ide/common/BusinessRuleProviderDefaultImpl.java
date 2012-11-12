@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.drools.Service;
 import org.drools.compiler.BusinessRuleProvider;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.io.Resource;
+import org.kie.Service;
+import org.kie.io.Resource;
 
 public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {
 
@@ -36,8 +36,8 @@ public class BusinessRuleProviderDefaultImpl implements Service, BusinessRulePro
      * (non-Javadoc)
      *
      * @see
-     * org.drools.compiler.BusinessRuleProvider#getKnowledgeReader(org.drools
-     * .io.Resource, org.drools.lang.Expander)
+     * org.kie.compiler.BusinessRuleProvider#getKnowledgeReader(org.kie
+     * .io.Resource, org.kie.lang.Expander)
      */
     public Reader getKnowledgeReader(Resource ruleResource) throws IOException {
         String brl = loadBrlFile(ruleResource.getReader());

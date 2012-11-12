@@ -18,8 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
-  <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
+  <ui:with field="i18n" type="org.kie.guvnor.client.messages.Constants" />
+  <ui:with field="simulationResources" type="org.kie.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:VerticalPanel styleName="{simulationResources.style.addCommandWidget}">
     <gwt:cell>

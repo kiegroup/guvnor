@@ -23,7 +23,7 @@ public class RESTUtil {
 
     public static String getRESTBaseURL() {
         String url = GWT.getModuleBaseURL();
-        String baseURL = url.substring(0, url.indexOf("org.drools.guvnor.Guvnor"));
+        String baseURL = url.substring(0, url.indexOf("org.kie.guvnor.Guvnor"));
         return baseURL + "rest/";
     }
 

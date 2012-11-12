@@ -18,12 +18,10 @@ package org.drools.ide.common.server.factconstraints.predefined;
 
 import java.util.Collection;
 
-import org.drools.builder.ResourceType;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl;
 import org.drools.ide.common.server.factconstraints.Constraint;
 import org.drools.ide.common.server.factconstraints.predefined.RangeConstraint;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
@@ -37,6 +35,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import static org.junit.Assert.*;
 
@@ -72,8 +72,8 @@ public class RangeConstraintSingleOperatorTest {
         int fail = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age == -5)\n";
@@ -115,8 +115,8 @@ public class RangeConstraintSingleOperatorTest {
         int warning = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age != -5)\n";
@@ -158,8 +158,8 @@ public class RangeConstraintSingleOperatorTest {
         int warning = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age > -5)\n";
@@ -202,8 +202,8 @@ public class RangeConstraintSingleOperatorTest {
         int warning = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age >= -5)\n";
@@ -246,8 +246,8 @@ public class RangeConstraintSingleOperatorTest {
         int warning = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age < -5)\n";
@@ -290,8 +290,8 @@ public class RangeConstraintSingleOperatorTest {
         int warning = 0;
 
         //FAIL
-        rulesToVerify += "package org.drools.factconstraint.test\n\n";
-        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "package org.kie.factconstraint.test\n\n";
+        rulesToVerify += "import org.kie.factconstraint.model.*\n";
         rulesToVerify += "rule \"rule1\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age <= -5)\n";

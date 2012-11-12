@@ -18,12 +18,10 @@ package org.drools.ide.common.server.factconstraints.predefined;
 
 import java.util.Collection;
 
-import org.drools.builder.ResourceType;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl;
 import org.drools.ide.common.server.factconstraints.Constraint;
 import org.drools.ide.common.server.factconstraints.predefined.InvalidFieldConstraint;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
@@ -36,6 +34,8 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import static org.junit.Assert.*;
 
@@ -57,8 +57,8 @@ public class InvalidFieldConstraintTest {
         int fail = 0;
 
         //FAIL
-        ruleToVerify += "package org.drools.factconstraint.test\n\n";
-        ruleToVerify += "import org.drools.factconstraint.model.*\n";
+        ruleToVerify += "package org.kie.factconstraint.test\n\n";
+        ruleToVerify += "import org.kie.factconstraint.model.*\n";
 
         ruleToVerify += "global Number globalAge;\n";
 

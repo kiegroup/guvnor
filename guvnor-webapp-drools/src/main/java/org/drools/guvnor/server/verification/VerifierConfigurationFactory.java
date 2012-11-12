@@ -5,15 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
-import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.EmptyVerifierConfiguration;
 import org.drools.verifier.VerifierConfiguration;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

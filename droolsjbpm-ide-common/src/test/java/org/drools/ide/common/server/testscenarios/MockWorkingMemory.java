@@ -48,23 +48,23 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.Calendars;
-import org.drools.runtime.Channel;
-import org.drools.runtime.Environment;
-import org.drools.runtime.ExitPoint;
-import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.type.DateFormats;
+import org.kie.runtime.Calendars;
+import org.kie.runtime.Channel;
+import org.kie.runtime.Environment;
+import org.kie.runtime.ExitPoint;
+import org.kie.runtime.ObjectFilter;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.time.SessionClock;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
@@ -246,7 +246,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+    public Object getObject(org.kie.runtime.rule.FactHandle handle) {
         return null;
     }
 
@@ -294,11 +294,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Iterator< ? > iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
+    public Iterator< ? > iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
         return null;
     }
 
-    public Iterator< ? > iterateObjects(org.drools.runtime.ObjectFilter filter) {
+    public Iterator< ? > iterateObjects(org.kie.runtime.ObjectFilter filter) {
         return null;
     }
 
@@ -364,10 +364,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void modifyRetract(FactHandle factHandle) {
     }
 
-    public void retract(org.drools.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(org.kie.runtime.rule.FactHandle handle) throws FactException {
     }
 
-    public void update(org.drools.runtime.rule.FactHandle handle,
+    public void update(org.kie.runtime.rule.FactHandle handle,
                        Object object) throws FactException {
     }
 
@@ -451,11 +451,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return null;
     }
 
-    public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         return null;
     }
 

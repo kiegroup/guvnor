@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.simulation;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.ResourceType;
 import org.drools.command.World;
 import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
 import org.drools.fluent.simulation.SimulationFluent;
@@ -34,9 +32,11 @@ import org.drools.guvnor.shared.simulation.command.AbstractCommandModel;
 import org.drools.guvnor.shared.simulation.command.AssertRuleFiredCommandModel;
 import org.drools.guvnor.shared.simulation.command.FireAllRulesCommandModel;
 import org.drools.guvnor.shared.simulation.command.InsertBulkDataCommandModel;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
+import org.kie.KnowledgeBase;
+import org.kie.builder.ResourceType;
+import org.kie.io.ResourceFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

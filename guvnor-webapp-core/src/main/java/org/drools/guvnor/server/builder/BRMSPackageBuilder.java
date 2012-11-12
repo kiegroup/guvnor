@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -27,9 +26,10 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
-import org.drools.util.ChainedProperties;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.kie.builder.conf.DefaultPackageNameOption;
+import org.kie.util.ChainedProperties;
 
 import java.io.IOException;
 import java.util.Collections;

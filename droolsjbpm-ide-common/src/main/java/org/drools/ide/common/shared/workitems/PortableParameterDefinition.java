@@ -21,7 +21,7 @@ import org.drools.guvnor.shared.api.PortableObject;
 /**
  * A ParameterDefinition used in Guvnor.
  * 
- * @see org.drools.process.core.ParameterDefinition
+ * @see org.kie.process.core.ParameterDefinition
  */
 public abstract class PortableParameterDefinition
     implements

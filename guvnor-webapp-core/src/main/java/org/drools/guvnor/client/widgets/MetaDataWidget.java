@@ -441,7 +441,7 @@ public class MetaDataWidget extends Composite {
 
     static String getRESTBaseURL() {
         String url = GWT.getModuleBaseURL();
-        return url.replaceFirst( "org.drools.guvnor.Guvnor",
+        return url.replaceFirst( "org.kie.guvnor.Guvnor",
                 "rest" );
     }
 

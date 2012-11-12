@@ -17,7 +17,6 @@
 package org.drools.guvnor.server.builder;
 
 
-import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.Package;
@@ -25,6 +24,7 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.conf.DefaultPackageNameOption;
 
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -335,9 +335,9 @@ public class BRMSPackageBuilderTest {
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add(jis);
         Properties properties = new Properties();
-        properties.setProperty("drools.accumulate.function.groupCount", "org.drools.base.accumulators.MaxAccumulateFunction");
+        properties.setProperty("drools.accumulate.function.groupCount", "org.kie.base.accumulators.MaxAccumulateFunction");
         BRMSPackageBuilder builder = new BRMSPackageBuilder(properties, new ClassLoaderBuilder(l).buildClassLoader());
-        assertEquals("org.drools.base.accumulators.MaxAccumulateFunction", builder.getPackageBuilderConfiguration().getAccumulateFunction("groupCount").getClass().getName());
+        assertEquals("org.kie.base.accumulators.MaxAccumulateFunction", builder.getPackageBuilderConfiguration().getAccumulateFunction("groupCount").getClass().getName());
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage(pc);

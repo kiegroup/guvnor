@@ -17,7 +17,7 @@
       <param name="ConversionPattern" value="%-5p %d{dd-MM HH:mm:ss,SSS} (%F:%M:%L) \t %m%n"/>
     </layout>
   </appender>
-  <logger name="org.drools">
+  <logger name="org.kie">
     <level value="INFO"/>
   </logger>
   <root>

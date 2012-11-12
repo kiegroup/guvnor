@@ -61,7 +61,7 @@ public class CEPWindowOperatorsDropdown extends Composite
     protected HasCEPWindow                 hcw;
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
-    private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPWindowOperatorParameterDRLBuilder";
+    private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.ide.common.server.util.CEPWindowOperatorParameterDRLBuilder";
 
     public CEPWindowOperatorsDropdown() {
         windowContainer.setStylePrimaryName( css.container() );

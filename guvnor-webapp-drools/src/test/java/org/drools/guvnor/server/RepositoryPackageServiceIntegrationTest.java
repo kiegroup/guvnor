@@ -30,11 +30,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.KnowledgeBase;
 import org.drools.Person;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -69,8 +65,12 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.runtime.StatelessKnowledgeSession;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
 
@@ -240,7 +240,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         ModuleItem pkg = repo.createModule( "testGetHistoryPackageBinary",
                                             "" );
         assertFalse( pkg.isBinaryUpToDate() );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
                                           pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -1098,7 +1098,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         // create our package
         ModuleItem pkg = repo.createModule( "testBinaryPackageCompile",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "global java.util.List ls \n import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "global java.util.List ls \n import org.kie.Person",
                                           pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -1187,7 +1187,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         // create our package
         ModuleItem pkg = repo.createModule( "testBinaryPackageCompileBRL",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
                                           pkg );
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
@@ -1321,7 +1321,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         //Setup a binary package for use with this test
         ModuleItem pkg = repo.createModule( "testLoadAndExecBinary",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
                                           pkg );
         AssetItem rule = pkg.addAsset( "rule",
                                         "" );

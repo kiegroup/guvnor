@@ -82,7 +82,7 @@ public class CmdArgsParser {
 //              "-o","generated.xml",
 //              "-n","1.0.0-SNAPSHOT",
 //              "-c","functions.drl",
-//              "-k", "http://localhost:8080/brms/org.drools.guvnor.Guvnor/package/",
+//              "-k", "http://localhost:8080/brms/org.kie.guvnor.Guvnor/package/",
 //              "-b", "/home/mallen/workspace/guvnor-importer",
 //              "-w", "kagentChangeSet.xml",
 //              "-V"};

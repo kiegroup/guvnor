@@ -41,12 +41,12 @@ public class PerspectiveConfigurationParserTest {
         boolean foundSOAServiceModuleEditor = false;
         for(ModuleEditorConfiguration config:configList) {
         	if(config.getFormat().equalsIgnoreCase("package")) {
-                assertEquals("org.drools.guvnor.client.moduleeditor.drools.PackageEditor", config.getEditorClass());       		
+                assertEquals("org.kie.guvnor.client.moduleeditor.drools.PackageEditor", config.getEditorClass());       		
                 assertEquals("brl,dslr,xls", config.getAssetEditorFormats());       		
                 foundPackageModuleEditor = true;
             } 
             if(config.getFormat().equalsIgnoreCase("soaservice")) {
-                assertEquals("org.drools.guvnor.client.moduleeditor.soa.SOAServiceEditor", config.getEditorClass());               
+                assertEquals("org.kie.guvnor.client.moduleeditor.soa.SOAServiceEditor", config.getEditorClass());               
                 assertEquals("brl", config.getAssetEditorFormats());               
                 foundSOAServiceModuleEditor = true;
             } 

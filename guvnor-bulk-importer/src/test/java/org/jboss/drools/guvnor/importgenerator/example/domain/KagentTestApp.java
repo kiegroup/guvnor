@@ -26,20 +26,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeScannerImpl;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
 
 public class KagentTestApp {
     private boolean changeScannerInitialised = false;
@@ -71,7 +71,7 @@ public class KagentTestApp {
             StatefulKnowledgeSession s = createStatefulSession(packageNames);
 //      List facts=new ArrayList();
 //      facts.add("ping");
-            org.drools.runtime.rule.FactHandle fact1 = s.insert("ping");
+            org.kie.runtime.rule.FactHandle fact1 = s.insert("ping");
             s.fireAllRules();
             System.out.println(fact1.toString());
 //      for (Object x : facts) {
@@ -151,7 +151,7 @@ public class KagentTestApp {
 
     private String getChangeSet(String packageName) {
         // packageName=toCustomPackage(packageName, ".");
-        String url = "http://localhost:8080/brms/org.drools.guvnor.Guvnor/package/";
+        String url = "http://localhost:8080/brms/org.kie.guvnor.Guvnor/package/";
         KnowledgeResourceType type = KnowledgeResourceType.PKG;// valueOf(System.getProperty("PKG"));
         StringBuffer xml = new StringBuffer();
         xml.append("<change-set xmlns='http://drools.org/drools-5.0/change-set'");

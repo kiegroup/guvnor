@@ -30,23 +30,12 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.commons.io.IOUtils;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.SystemEventListenerFactory;
 import org.drools.agent.HttpClientImpl;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -54,6 +43,17 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.SystemEventListenerFactory;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentConfiguration;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.definition.rule.Rule;
+import org.kie.io.Resource;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
 import org.drools.rule.Package;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -73,27 +73,27 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         ModuleItem pkgA = rulesRepository.createModule("applyChangeSetTwice",
                 "this is package applyChangeSetTwice");
         AssetItem ruleA1 = pkgA.addAsset("ruleA1", "", null, AssetFormats.DRL);
-        ruleA1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleA1.updateContent("rule 'ruleA1' when org.kie.Person() then end");
         ruleA1.checkin("version 1");
         AssetItem ruleA2 = pkgA.addAsset("ruleA2", "", null, AssetFormats.DRL);
-        ruleA2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
+        ruleA2.updateContent("rule 'ruleA2' when org.kie.Person() then end");
         ruleA2.checkin("version 1");
         repositoryPackageService.createModuleSnapshot(pkgA.getName(), "snapshotA1", false, "");
 
         ModuleItem pkgB = rulesRepository.createModule("scanForChangeInRepository",
                 "this is package scanForChangeInRepository");
         AssetItem ruleB1 = pkgB.addAsset("ruleB1", "", null, AssetFormats.DRL);
-        ruleB1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleB1.updateContent("rule 'ruleA1' when org.kie.Person() then end");
         ruleB1.checkin("version 1");
         AssetItem ruleB2 = pkgB.addAsset("ruleB2", "", null, AssetFormats.DRL);
-        ruleB2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
+        ruleB2.updateContent("rule 'ruleA2' when org.kie.Person() then end");
         ruleB2.checkin("version 1");
         repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotB1", false, "");
 
         ModuleItem pkgC = rulesRepository.createModule("downloadPackageWithHttpClientImpl",
                 "this is package scanForChangeInRepository");
         AssetItem ruleC1 = pkgC.addAsset("ruleC1", "", null, AssetFormats.DRL);
-        ruleC1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
+        ruleC1.updateContent("rule 'ruleA1' when org.kie.Person() then end");
         ruleC1.checkin("version 1");
         repositoryPackageService.createModuleSnapshot(pkgC.getName(), "snapshotC1", false, "");
 
@@ -104,7 +104,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     @Test
     @RunAsClient
     public void applyChangeSetTwice(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/applyChangeSetTwice/LATEST/ChangeSet.xml");
+        URL url = new URL(baseURL, "org.kie.guvnor.Guvnor/package/applyChangeSetTwice/LATEST/ChangeSet.xml");
         Resource res = ResourceFactory.newUrlResource(url);
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         Authenticator.setDefault(new Authenticator() {
@@ -132,7 +132,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     @Test
     @RunAsClient
     public void scanForChangeInRepository(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/scanForChangeInRepository/LATEST/ChangeSet.xml");
+        URL url = new URL(baseURL, "org.kie.guvnor.Guvnor/package/scanForChangeInRepository/LATEST/ChangeSet.xml");
         Resource res = ResourceFactory.newUrlResource(url);
         Authenticator.setDefault(new Authenticator() {
             @Override
@@ -202,7 +202,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
     @RunAsClient
     public void downloadPackageWithHttpClientImpl(@ArquillianResource URL baseURL)
             throws IOException, ClassNotFoundException {
-        URL url = new URL(baseURL, "org.drools.guvnor.Guvnor/package/downloadPackageWithHttpClientImpl/snapshotC1");
+        URL url = new URL(baseURL, "org.kie.guvnor.Guvnor/package/downloadPackageWithHttpClientImpl/snapshotC1");
         Resource resource = ResourceFactory.newUrlResource(url);
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         Authenticator.setDefault(new Authenticator() {

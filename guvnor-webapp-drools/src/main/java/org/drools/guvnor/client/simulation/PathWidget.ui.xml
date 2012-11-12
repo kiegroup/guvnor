@@ -19,7 +19,7 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
     >
 
-  <ui:with field="simulationResources" type="org.drools.guvnor.client.simulation.resources.SimulationResources" />
+  <ui:with field="simulationResources" type="org.kie.guvnor.client.simulation.resources.SimulationResources" />
 
   <gwt:FlowPanel width="100%">
     <gwt:FlexTable ui:field="flexTable" width="100%"/>

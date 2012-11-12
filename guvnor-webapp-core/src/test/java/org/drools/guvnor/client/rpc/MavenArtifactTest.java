@@ -24,7 +24,7 @@ public class MavenArtifactTest {
 
     @Test
     public void testConstructFromStringWithoutComplement() {
-        final String mavenArtifactValue = "org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile";
+        final String mavenArtifactValue = "org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile";
         final MavenArtifact artifact = new MavenArtifact(mavenArtifactValue);
 
         assertNotNull(artifact);
@@ -37,7 +37,7 @@ public class MavenArtifactTest {
                 artifact.toURL("http://my/site/"));
         assertEquals("http://my/site/org/drools/knowledge-api/5.5.0-SNAPSHOT/knowledge-api-5.5.0-SNAPSHOT.jar",
                 artifact.toURL("http://my/site"));
-        assertEquals("org.drools:knowledge-api-5.5.0-SNAPSHOT.jar",
+        assertEquals("org.kie:knowledge-api-5.5.0-SNAPSHOT.jar",
                 artifact.toLabel());
         assertEquals(mavenArtifactValue,
                 artifact.toValue());
@@ -89,24 +89,24 @@ public class MavenArtifactTest {
                 .equals(new MavenArtifact("org.apache.camel:camel-core:test-jar:2.4.0:test")));
 
         //different on group
-        assertFalse(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
+        assertFalse(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
                 .equals(new MavenArtifact("org.jboss:knowledge-api:jar:5.5.0-SNAPSHOT:compile")));
 
         //different on version
-        assertFalse(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
-                .equals(new MavenArtifact("org.drools:knowledge-api:jar:5.4.0:compile")));
+        assertFalse(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
+                .equals(new MavenArtifact("org.kie:knowledge-api:jar:5.4.0:compile")));
 
         //different on artifact
-        assertFalse(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
-                .equals(new MavenArtifact("org.drools:knowledge-core:jar:5.5.0-SNAPSHOT:compile")));
+        assertFalse(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
+                .equals(new MavenArtifact("org.kie:knowledge-core:jar:5.5.0-SNAPSHOT:compile")));
 
         //different on type
-        assertFalse(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
-                .equals(new MavenArtifact("org.drools:knowledge-api:war:5.5.0-SNAPSHOT:compile")));
+        assertFalse(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
+                .equals(new MavenArtifact("org.kie:knowledge-api:war:5.5.0-SNAPSHOT:compile")));
 
         //different on scope
-        assertFalse(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
-                .equals(new MavenArtifact("org.drools:knowledge-api:jar:5.5.0-SNAPSHOT:test")));
+        assertFalse(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:compile")
+                .equals(new MavenArtifact("org.kie:knowledge-api:jar:5.5.0-SNAPSHOT:test")));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -117,7 +117,7 @@ public class MavenArtifactTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructInvalidStringLotsOfUnncesaryStrings() {
-        final String mavenArtifactValue = "org.drools:invalid:data:here:knowledge-api:jar:5.5.0-SNAPSHOT:compile";
+        final String mavenArtifactValue = "org.kie:invalid:data:here:knowledge-api:jar:5.5.0-SNAPSHOT:compile";
         new MavenArtifact(mavenArtifactValue);
     }
 
