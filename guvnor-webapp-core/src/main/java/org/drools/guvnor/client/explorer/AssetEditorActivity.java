@@ -20,6 +20,7 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.GuvnorEventBus;
@@ -35,6 +36,8 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -45,6 +48,9 @@ import javax.inject.Inject;
 public class AssetEditorActivity {
 
 
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
+
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
     private final PlaceManager placeManager;
@@ -52,6 +58,7 @@ public class AssetEditorActivity {
 
     @Inject
     private Event<RefreshModuleDataModelEvent> refreshModuleDataModelEvents;
+    private PlaceRequest place;
 
     @Inject
     public AssetEditorActivity(PlaceManager placeManager, ClientFactory clientFactory, GuvnorEventBus eventBus) {
@@ -61,7 +68,8 @@ public class AssetEditorActivity {
     }
 
     @OnStart
-    public void init() {
+    public void init(final PlaceRequest place) {
+        this.place = place;
         loadRuleAsset(placeManager.getCurrentPlaceRequest().getParameterString("uuid", null));
     }
 
@@ -73,7 +81,7 @@ public class AssetEditorActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Asset Editor"; // TODO : -Rikkola-
+        return "";
     }
 
     private boolean[] loadingTimer() {
@@ -105,6 +113,8 @@ public class AssetEditorActivity {
                         new RefreshModuleDataModelEvent(
                                 ruleAsset.metaData.moduleName,
                                 createOnRefreshModuleDataModelCompletion(ruleAsset, loading)));
+
+                changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(place, new InlineLabel(ruleAsset.getName())));
             }
 
             private Command createOnRefreshModuleDataModelCompletion(final Asset ruleAsset, final boolean[] loading) {

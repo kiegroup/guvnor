@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.GuvnorEventBus;
@@ -27,13 +28,19 @@ import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen(identifier = "moduleEditor")
 public class ModuleEditorActivity {
+
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private final ClientFactory clientFactory;
     private ModuleEditorActivityView view;
@@ -56,7 +63,7 @@ public class ModuleEditorActivity {
     }
 
     @OnStart
-    public void init() {
+    public void init(final PlaceRequest place) {
         Path path = (Path)placeManager.getCurrentPlaceRequest().getParameter("path", null);
         clientFactory.getModuleService().loadModule(path,
                 new GenericCallback<Module>() {
@@ -65,6 +72,8 @@ public class ModuleEditorActivity {
                         simplePanel.add(new ModuleEditorWrapper(packageConfigData, clientFactory, eventBus));
 
                         view.closeLoadingPackageInformationMessage();
+
+                        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(place, new InlineLabel(packageConfigData.getName())));
                     }
                 });
 
@@ -78,6 +87,6 @@ public class ModuleEditorActivity {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Module Editor"; // TODO : -Rikkola-
+        return "";
     }
 }
