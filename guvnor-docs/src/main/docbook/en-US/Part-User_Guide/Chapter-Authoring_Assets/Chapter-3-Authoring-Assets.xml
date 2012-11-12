@@ -53,4 +53,6 @@
   <xi:include href="NewChangeSet.xml" xpointer="element(/1)" />
 
   <xi:include href="NewServiceConfig.xml" xpointer="element(/1)" />
+
+  <xi:include href="NewScorecards.xml" xpointer="element(/1)" />
 </chapter>
