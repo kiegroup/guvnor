@@ -104,9 +104,9 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         String flType = sce.getFieldType( key );
         panel.clear();
         if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            valueEditorWidget =  editableTextBox( callback,
-                                                  field.getName(),
-                                                  field.getValue() );
+            valueEditorWidget =  editableNumericTextBox( callback,
+                                                          field.getName(),
+                                                          field.getValue() );
             panel.add( valueEditorWidget );
             
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
@@ -162,6 +162,17 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     }
 
+
+    private TextBox editableNumericTextBox(final ValueChanged changed,
+                                    String fieldName,
+                                    String initialValue){
+        TextBox textBox = editableTextBox(changed, fieldName, initialValue);
+
+        textBox.addKeyPressHandler( new NumbericFilterKeyPressHandler( textBox ) );
+
+        return textBox;
+    }
+
     private TextBox editableTextBox(final ValueChanged changed,
                                     String fieldName,
                                     String initialValue) {
@@ -175,8 +186,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 changed.valueChanged( tb.getText() );
             }
         } );
-        
-        tb.addKeyPressHandler( new NumbericFilterKeyPressHandler( tb ) );
 
         return tb;
     }
