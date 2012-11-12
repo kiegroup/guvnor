@@ -23,6 +23,7 @@ public class GuvnorDefaultPerspective {
         definition.setName("home");
 
         final PanelDefinition east = new PanelDefinitionImpl();
+        east.setWidth(360);
         east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("navigationPanel")));
         definition.getRoot().insertChild(Position.WEST, east);
 
