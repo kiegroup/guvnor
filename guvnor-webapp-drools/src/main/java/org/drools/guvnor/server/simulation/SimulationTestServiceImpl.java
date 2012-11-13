@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.simulation;
 
-import org.drools.command.World;
 import org.drools.fluent.session.StatefulKnowledgeSessionSimFluent;
 import org.drools.fluent.simulation.SimulationFluent;
 import org.drools.fluent.simulation.impl.DefaultSimulationFluent;
@@ -36,6 +35,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.kie.KnowledgeBase;
 import org.kie.builder.ResourceType;
+import org.kie.command.World;
 import org.kie.io.ResourceFactory;
 
 import javax.enterprise.context.ApplicationScoped;

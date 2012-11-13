@@ -18,7 +18,7 @@ package org.drools.guvnor.shared.simulation;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.drools.simulation.SimulationPath;
+import org.kie.simulation.SimulationPath;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
