@@ -11,7 +11,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
@@ -27,14 +26,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CallMethodWidget extends DirtyableComposite {
@@ -230,26 +226,6 @@ public class CallMethodWidget extends DirtyableComposite {
                                                            makeDirty();
                                                        }
                                                    } );
-    }
-
-    /**
-     * This will return a keyboard listener for field setters, which will obey
-     * numeric conventions - it will also allow formulas (a formula is when the
-     * first value is a "=" which means it is meant to be taken as the user
-     * typed)
-     */
-    public static KeyPressHandler getNumericFilter(final TextBox box) {
-        return new KeyPressHandler() {
-
-            public void onKeyPress(KeyPressEvent event) {
-                TextBox w = (TextBox) event.getSource();
-                char c = event.getCharCode();
-                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
-                    ((TextBox) w).cancelKey();
-                }
-
-            }
-        };
     }
 
     private Widget fieldSelector(final CallFieldValue val) {
