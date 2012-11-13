@@ -459,6 +459,14 @@
 
   <dependencies>
 
+
+      <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-commons</artifactId>
+          <version>0.1.0-SNAPSHOT</version>
+          <classifier>sources</classifier>
+      </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-scorecards</artifactId>
