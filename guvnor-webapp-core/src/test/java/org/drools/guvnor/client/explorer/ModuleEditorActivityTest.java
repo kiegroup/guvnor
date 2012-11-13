@@ -58,37 +58,4 @@ public class ModuleEditorActivityTest {
         assertTrue(true);
     }
 
-    //    @Test
-//    public void testStart() throws Exception {
-//        AcceptsOneWidget acceptsOneWidget = mock( AcceptsOneWidget.class );
-//        EventBus eventBus = mock( EventBus.class );
-//
-//        PackageServiceAsync packageService = mock( PackageServiceAsync.class );
-//        when(
-//                clientFactory.getPackageService()
-//        ).thenReturn(
-//                packageService
-//        );
-//
-//        moduleEditorActivity.start( acceptsOneWidget, eventBus );
-//
-//
-//        verify( view ).showLoadingPackageInformationMessage();
-//
-//        ArgumentCaptor<GenericCallback> packageConfigDataArgumentCaptor = ArgumentCaptor.forClass( GenericCallback.class );
-//        verify( packageService ).loadPackageConfig( eq( "mockUuid" ), packageConfigDataArgumentCaptor.capture() );
-//
-//        GenericCallback<PackageConfigData> value = (GenericCallback<PackageConfigData>) packageConfigDataArgumentCaptor.getValue();
-//
-//        PackageConfigData packageConfigData = new PackageConfigData();
-//
-//        value.onSuccess( packageConfigData );
-//
-//        verify( acceptsOneWidget ).setWidget( Matchers.<PackageEditorWrapper>any() );
-//
-    // TODO: Make currentlySelectedPackage better for testing -Rikkola-
-//        assertEquals( "mockUuid", RulePackageSelector.currentlySelectedPackage );
-//
-//    }
-
 }

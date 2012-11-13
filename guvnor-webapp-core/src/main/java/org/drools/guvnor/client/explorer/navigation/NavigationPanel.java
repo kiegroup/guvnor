@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.GuvnorEventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.Perspective;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -73,7 +74,7 @@ public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Navigation"; //TODO -Rikkola-
+        return ConstantsCore.INSTANCE.Navigation();
     }
 
     @WorkbenchPartView

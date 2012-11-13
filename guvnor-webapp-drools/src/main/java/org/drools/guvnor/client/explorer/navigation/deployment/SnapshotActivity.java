@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.explorer.navigation.deployment;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.GuvnorEventBus;
@@ -19,14 +20,19 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen(identifier = "snapshotScreen")
 public class SnapshotActivity {
+
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private final SimplePanel simplePanel = new SimplePanel();
 
@@ -35,6 +41,7 @@ public class SnapshotActivity {
 
     private String moduleName;
     private String snapshotName;
+    private PlaceRequest place;
 
     @Inject
     public SnapshotActivity(ClientFactory clientFactory, GuvnorEventBus eventBus) {
@@ -44,13 +51,14 @@ public class SnapshotActivity {
 
     @OnStart
     public void init(final PlaceRequest place) {
+        this.place = place;
         moduleName = place.getParameterString("moduleName", null);
         snapshotName = place.getParameterString("snapshotName", null);
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.SnapshotLabel("snapshotInfo.getName()"); // TODO : -Rikkola-
+        return "";
     }
 
     @WorkbenchPartView
@@ -83,6 +91,8 @@ public class SnapshotActivity {
                                         snapshotInfo,
                                         module));
                         LoadingPopup.close();
+
+                        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(place, new InlineLabel(Constants.INSTANCE.SnapshotLabel(snapshotInfo.getName()))));
                     }
                 });
 

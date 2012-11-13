@@ -2673,4 +2673,6 @@ public interface ConstantsCore
 
     String Characteristics();
     //end of scorecards
+
+    String Navigation();
 }
