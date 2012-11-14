@@ -146,7 +146,7 @@ public class GuvnorSimplePager extends AbstractPager {
     private final ImageButton prevPage;
 
     /**
-     * The {@link org.kie.guvnor.client.resources.GuvnorSimplePagerResources} used by this widget.
+     * The {@link org.drools.guvnor.client.resources.GuvnorSimplePagerResources} used by this widget.
      */
     private final GuvnorSimplePagerResources resources;
 
@@ -185,7 +185,7 @@ public class GuvnorSimplePager extends AbstractPager {
      * @param location
      *            the location of the text relative to the buttons
      * @param resources
-     *            the {@link org.kie.guvnor.client.resources.GuvnorSimplePagerResources} to use
+     *            the {@link org.drools.guvnor.client.resources.GuvnorSimplePagerResources} to use
      * @param showFastForwardButton
      *            if true, show a fast-forward button that advances by a larger
      *            increment than a single page

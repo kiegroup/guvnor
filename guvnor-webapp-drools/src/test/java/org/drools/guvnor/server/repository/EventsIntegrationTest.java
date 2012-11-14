@@ -31,7 +31,7 @@ public class EventsIntegrationTest extends GuvnorIntegrationTest {
     @Test
     public void testLoadSave() throws Exception {
         System.setProperty( "guvnor.saveEventListener",
-                            "org.kie.guvnor.server.repository.SampleSaveEvent" );
+                            "org.drools.guvnor.server.repository.SampleSaveEvent" );
 
         ModuleItem pkg = rulesRepository.createModule( "testLoadSaveEvents",
                                                                    "" );

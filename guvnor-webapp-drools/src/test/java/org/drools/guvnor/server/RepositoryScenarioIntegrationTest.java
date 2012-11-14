@@ -60,7 +60,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
     public void testRunScenario() throws Exception {
         ModuleItem pkg = rulesRepository.createModule("testScenarioRun",
                 "" );
-        DroolsHeader.updateDroolsHeader("import org.kie.Person\n global org.kie.Cheese cheese\n",
+        DroolsHeader.updateDroolsHeader("import org.drools.Person\n global org.drools.Cheese cheese\n",
                 pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -469,7 +469,7 @@ public class RepositoryScenarioIntegrationTest extends GuvnorIntegrationTest {
     public void testRunPackageScenarios() throws Exception {
         ModuleItem pkg = rulesRepository.createModule("testScenarioRunBulk",
                 "" );
-        DroolsHeader.updateDroolsHeader("import org.kie.Person",
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
                 pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );

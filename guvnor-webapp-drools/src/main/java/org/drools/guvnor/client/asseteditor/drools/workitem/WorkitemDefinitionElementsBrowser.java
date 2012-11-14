@@ -97,14 +97,14 @@ public class WorkitemDefinitionElementsBrowser extends Composite {
         
         final ListBox importsList = new ListBox();
         importsList.addItem( Constants.INSTANCE.ChooseImportClass() );
-        importsList.addItem( "BooleanDataType", "import org.kie.process.core.datatype.impl.type.BooleanDataType;" );
-        importsList.addItem( "EnumDataType", "import org.kie.process.core.datatype.impl.type.EnumDataType;" );
-        importsList.addItem( "FloatDataType", "import org.kie.process.core.datatype.impl.type.FloatDataType;" );
-        importsList.addItem( "IntegerDataType", "import org.kie.process.core.datatype.impl.type.IntegerDataType;" );
-        importsList.addItem( "ListDataType", "import org.kie.process.core.datatype.impl.type.ListDataType;" );
-        importsList.addItem( "ObjectDataType", "import org.kie.process.core.datatype.impl.type.ObjectDataType;" );
-        importsList.addItem( "StringDataType", "import org.kie.process.core.datatype.impl.type.StringDataType;" );
-        importsList.addItem( "UndefinedDataType", "import org.kie.process.core.datatype.impl.type.UndefinedDataType;" );
+        importsList.addItem( "BooleanDataType", "import org.drools.process.core.datatype.impl.type.BooleanDataType;" );
+        importsList.addItem( "EnumDataType", "import org.drools.process.core.datatype.impl.type.EnumDataType;" );
+        importsList.addItem( "FloatDataType", "import org.drools.process.core.datatype.impl.type.FloatDataType;" );
+        importsList.addItem( "IntegerDataType", "import org.drools.process.core.datatype.impl.type.IntegerDataType;" );
+        importsList.addItem( "ListDataType", "import org.drools.process.core.datatype.impl.type.ListDataType;" );
+        importsList.addItem( "ObjectDataType", "import org.drools.process.core.datatype.impl.type.ObjectDataType;" );
+        importsList.addItem( "StringDataType", "import org.drools.process.core.datatype.impl.type.StringDataType;" );
+        importsList.addItem( "UndefinedDataType", "import org.drools.process.core.datatype.impl.type.UndefinedDataType;" );
         
         importsList.setVisibleItemCount( 9 );
         importsList.setSelectedIndex( 0 );

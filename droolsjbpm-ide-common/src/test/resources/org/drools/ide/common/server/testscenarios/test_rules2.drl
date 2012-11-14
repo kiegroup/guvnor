@@ -16,8 +16,8 @@
 
 package foo.bar
 
-import org.kie.Cheese
-import org.kie.Person
+import org.drools.Cheese
+import org.drools.Person
 
 global Person p
 

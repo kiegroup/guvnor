@@ -276,7 +276,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
      * for the factType and field defined by variableDef, then a button a custom
      * form editor (aka Widget wrapping a button) is returned. Otherwise, the
      * result of
-     * {@link #getBox(org.kie.ide.common.client.modeldriven.brl.DSLVariableValue, java.lang.String) }
+     * {@link #getBox(org.drools.ide.common.client.modeldriven.brl.DSLVariableValue, java.lang.String) }
      * is returned.
      * 
      * @param variableDef

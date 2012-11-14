@@ -42,7 +42,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testNestedImports() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
@@ -56,7 +56,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testStringNonNumeric() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.Alert";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.Alert";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
@@ -71,7 +71,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testDataEnums() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -121,7 +121,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testDataEnums2() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -186,7 +186,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testDataEnums3() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -220,7 +220,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testNestedEnums() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -245,7 +245,7 @@ public class SuggestionCompletionEngineTest {
     
     @Test
     public void testNestedEnumsFieldLookup() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedEnum";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -1444,7 +1444,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testDataHasEnums() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -1470,7 +1470,7 @@ public class SuggestionCompletionEngineTest {
 
     @Test
     public void testDataHasEnumsFieldSuffixes() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -1501,7 +1501,7 @@ public class SuggestionCompletionEngineTest {
     
     @Test
     public void testDependentEnums() {
-        String pkg = "package org.test\n import org.kie.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
+        String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 

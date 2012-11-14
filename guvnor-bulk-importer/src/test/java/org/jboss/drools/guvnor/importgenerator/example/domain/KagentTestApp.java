@@ -151,7 +151,7 @@ public class KagentTestApp {
 
     private String getChangeSet(String packageName) {
         // packageName=toCustomPackage(packageName, ".");
-        String url = "http://localhost:8080/brms/org.kie.guvnor.Guvnor/package/";
+        String url = "http://localhost:8080/brms/org.drools.guvnor.Guvnor/package/";
         KnowledgeResourceType type = KnowledgeResourceType.PKG;// valueOf(System.getProperty("PKG"));
         StringBuffer xml = new StringBuffer();
         xml.append("<change-set xmlns='http://drools.org/drools-5.0/change-set'");

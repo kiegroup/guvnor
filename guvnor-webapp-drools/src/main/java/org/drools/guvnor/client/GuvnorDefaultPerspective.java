@@ -14,7 +14,7 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.kie.guvnor.home", isDefault = true)
+@WorkbenchPerspective(identifier = "org.drools.guvnor.home", isDefault = true)
 public class GuvnorDefaultPerspective {
 
     @Perspective

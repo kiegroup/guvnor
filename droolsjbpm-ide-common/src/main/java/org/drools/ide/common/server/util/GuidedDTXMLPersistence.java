@@ -87,8 +87,8 @@ public class GuidedDTXMLPersistence {
                   DTCellValue52.class );
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        xt.aliasPackage( "org.kie.guvnor.client",
-                         "org.kie.ide.common.client" );
+        xt.aliasPackage( "org.drools.guvnor.client",
+                         "org.drools.ide.common.client" );
 
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric",

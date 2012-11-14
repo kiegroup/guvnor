@@ -18,9 +18,9 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
-  <ui:with field="i18n" type="org.kie.guvnor.client.messages.Constants" />
-  <ui:with field="images" type="org.kie.guvnor.client.resources.DroolsGuvnorImageResources" />
-  <ui:with field="res" type="org.kie.guvnor.client.resources.WizardResources" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.DroolsGuvnorImageResources" />
+  <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">
     <gwt:HorizontalPanel ui:field="msgIncompleteConditions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">

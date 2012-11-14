@@ -221,7 +221,7 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.indent();
         sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
         sourceWriter.indent();
-        sourceWriter.println( "return new org.kie.guvnor.client.perspective.author.AuthorPerspective();");
+        sourceWriter.println( "return new org.drools.guvnor.client.perspective.author.AuthorPerspective();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
@@ -283,11 +283,11 @@ public class PerspectiveFactoryGenerator extends Generator {
     
         sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
         sourceWriter.indent();
-        sourceWriter.println( "return (new org.kie.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
+        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
-        sourceWriter.println( "return (new org.kie.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
+        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
 
         sourceWriter.outdent();
         sourceWriter.println( "}" );           
@@ -300,11 +300,11 @@ public class PerspectiveFactoryGenerator extends Generator {
     
         sourceWriter.println( "if(\"package\".equals(data.getFormat())) {");
         sourceWriter.indent();
-        sourceWriter.println( "return new org.kie.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
-        sourceWriter.println( "return new org.kie.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
 
         sourceWriter.outdent();
         sourceWriter.println( "}" );         
@@ -317,12 +317,12 @@ public class PerspectiveFactoryGenerator extends Generator {
     
         sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
         sourceWriter.indent();
-        sourceWriter.println( "return new org.kie.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
 
-        sourceWriter.println( "return new org.kie.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
 
         sourceWriter.outdent();
         sourceWriter.println( "}" );          
@@ -356,7 +356,7 @@ public class PerspectiveFactoryGenerator extends Generator {
 
     private static String getPerspectiveClassName(String perspectiveType) {
         if ("author".equals(perspectiveType)) {
-            return "org.kie.guvnor.client.perspective.author.AuthorPerspective";
+            return "org.drools.guvnor.client.perspective.author.AuthorPerspective";
         }
         return null;
     }

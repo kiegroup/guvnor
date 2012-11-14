@@ -75,7 +75,7 @@ public class EnumDropDown extends ListBox
     }
 
     //Build a comma separated list of values form a multi-select drop-down.
-    //org.kie.ide.common.server.util.BRDRLPersistence is blissfully unaware that 
+    //org.drools.ide.common.server.util.BRDRLPersistence is blissfully unaware that
     //the "in" and "not in" operators require a list of values hence it is constructed here.
     String encodeSelectedItems() {
         if ( getItemCount() == 0 ) {

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.examples.sudoku
+package org.drools.examples.sudoku
 
-import org.kie.examples.sudoku.rules.PossibleCellValue;
-import org.kie.examples.sudoku.rules.ResolvedCellValue;
+import org.drools.examples.sudoku.rules.PossibleCellValue;
+import org.drools.examples.sudoku.rules.ResolvedCellValue;
 
 /**
  * This rule package defines a set of rules that can be used to solve a partially filled Sudoku grid.
@@ -29,8 +29,8 @@ import org.kie.examples.sudoku.rules.ResolvedCellValue;
  * After each rule fires, it inserts a String object into the working memoru detailing the action that
  * the fired rule has taken.
  *
- * @see org.kie.examples.sudoku.rules.PossibleCellValue
- * @see org.kie.examples.sudoku.rules.ResolvedCellValue
+ * @see org.drools.examples.sudoku.rules.PossibleCellValue
+ * @see org.drools.examples.sudoku.rules.ResolvedCellValue
  * @author <a href="pbennett@redhat.com">Pete Bennett</a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen</a>
  * @version $Revision: 1.1 $

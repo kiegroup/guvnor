@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
+    <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
@@ -149,7 +149,7 @@
                 <argument>1.0.0-SNAPSHOT</argument> <!--  default snapshot name -->
 
                 <argument>-k</argument>
-                <argument>${guvnor.server.url}/org.kie.guvnor.Guvnor/package/</argument> <!--  kagent brms server -->
+                <argument>${guvnor.server.url}/org.drools.guvnor.Guvnor/package/</argument> <!--  kagent brms server -->
 
                 <argument>-b</argument>
                 <argument>${basedir}</argument>
@@ -185,21 +185,21 @@
       <artifactId>servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
     </dependency>
 
     <!-- for RuleAgent testing -->
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <!-- end RuleAgent testing dependencies -->

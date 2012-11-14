@@ -1,12 +1,12 @@
-package org.kie.verifier.consequence
-import org.kie.verifier.components.*;
+package org.drools.verifier.consequence
+import org.drools.verifier.components.*;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.kie.verifier.report.components.VerifierMessage;
-import org.kie.verifier.data.VerifierReport;
-import org.kie.verifier.report.components.Severity;
-import org.kie.verifier.report.components.MessageType;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
 global VerifierReport result;
 
 rule "Mandatory_Field_Constraint_PATTERN_WITH_CONSTRAINTS_$uuid$"

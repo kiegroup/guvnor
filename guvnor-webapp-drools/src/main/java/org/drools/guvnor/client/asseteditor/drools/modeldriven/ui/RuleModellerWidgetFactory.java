@@ -42,10 +42,10 @@ public class RuleModellerWidgetFactory
     /*
      * (non-Javadoc)
      * @see
-     * org.kie.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
-     * (org.kie.guvnor.client.modeldriven.ui.RuleModeller,
+     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
+     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
      * com.google.gwt.event.shared.EventBus,
-     * org.kie.guvnor.client.modeldriven.brl.IAction, boolean )
+     * org.drools.guvnor.client.modeldriven.brl.IAction, boolean )
      */
     public RuleModellerWidget getWidget(RuleModeller ruleModeller,
                                         EventBus eventBus,
@@ -101,10 +101,10 @@ public class RuleModellerWidgetFactory
     /*
      * (non-Javadoc)
      * @see
-     * org.kie.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
-     * (org.kie.guvnor.client.modeldriven.ui.RuleModeller,
+     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
+     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
      * com.google.gwt.event.shared.EventBus,
-     * org.kie.guvnor.client.modeldriven.brl.IPattern, boolean)
+     * org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
      */
     public RuleModellerWidget getWidget(RuleModeller ruleModeller,
                                         EventBus eventBus,

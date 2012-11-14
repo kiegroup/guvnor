@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<org.kie.guvnor.client.rpc.WorkingSetConfigData>
+<org.drools.guvnor.client.rpc.WorkingSetConfigData>
   <constraints class="linked-list">
-    <org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
       <args/>
       <constraintName>MandatoryFieldConstraint</constraintName>
       <factType>Applicant</factType>
       <fieldName>name</fieldName>
-    </org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
-    <org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    </org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
       <args>
         <entry>
           <string>matches</string>
@@ -17,12 +17,12 @@
       <constraintName>Matches</constraintName>
       <factType>Applicant</factType>
       <fieldName>name</fieldName>
-    </org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
-    <org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl reference="../org.kie.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl[2]"/>
+    </org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl reference="../org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl[2]"/>
   </constraints>
   <validFacts>
     <string>Applicant</string>
     <string>Bankruptcy</string>
     <string>IncomeSource</string>
   </validFacts>
-</org.kie.guvnor.client.rpc.WorkingSetConfigData>
+</org.drools.guvnor.client.rpc.WorkingSetConfigData>

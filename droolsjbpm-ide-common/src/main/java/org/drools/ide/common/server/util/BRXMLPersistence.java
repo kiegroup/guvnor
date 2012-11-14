@@ -150,10 +150,10 @@ public class BRXMLPersistence
         //end ExpressionFormLine
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        this.xt.aliasPackage( "org.kie.guvnor.client",
-                              "org.kie.ide.common.client" );
+        this.xt.aliasPackage( "org.drools.guvnor.client",
+                              "org.drools.ide.common.client" );
 
-        this.xt.alias( "org.kie.guvnor.client.modeldriven.dt.TemplateModel",
+        this.xt.alias( "org.drools.guvnor.client.modeldriven.dt.TemplateModel",
                        TemplateModel.class );
 
         //Legacy DSLSentences have a collection of String values whereas newer persisted models
@@ -171,7 +171,7 @@ public class BRXMLPersistence
     /*
      * (non-Javadoc)
      * @see
-     * org.kie.ide.common.server.util.BRLPersistence#toXML(org.kie.guvnor
+     * org.drools.ide.common.server.util.BRLPersistence#toXML(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
     public String marshal(final RuleModel model) {
@@ -181,7 +181,7 @@ public class BRXMLPersistence
     /*
      * (non-Javadoc)
      * @see
-     * org.kie.ide.common.server.util.BRLPersistence#toModel(java.lang.String
+     * org.drools.ide.common.server.util.BRLPersistence#toModel(java.lang.String
      * )
      */
     public RuleModel unmarshal(final String xml) {

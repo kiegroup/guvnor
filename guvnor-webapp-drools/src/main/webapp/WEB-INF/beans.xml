@@ -3,8 +3,8 @@
     xmlns:s="urn:java:ee"
     xmlns:weld="http://jboss.org/schema/weld/beans"
     xmlns:security="urn:java:org.jboss.seam.security"
-    xmlns:guvnorRepository="urn:java:org.kie.repository"
-    xmlns:guvnorSecurity="urn:java:org.kie.guvnor.server.security"
+    xmlns:guvnorRepository="urn:java:org.drools.repository"
+    xmlns:guvnorSecurity="urn:java:org.drools.guvnor.server.security"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
@@ -14,7 +14,7 @@
 
     <!-- JackRabbit  -->
     <guvnorRepository:properties>
-      <s:entry><s:key>org.kie.repository.configurator</s:key><s:value>org.kie.repository.jackrabbit.JackrabbitRepositoryConfigurator</s:value></s:entry>
+      <s:entry><s:key>org.drools.repository.configurator</s:key><s:value>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</s:value></s:entry>
       <!--  the root directory for the repo storage the directory must exist. -->
       <!--<s:entry><s:key>repository.root.directory</s:key><s:value>/opt/yourpath</s:value></s:entry>-->
     </guvnorRepository:properties>
@@ -25,11 +25,11 @@
       you provided for JAAS (used by ModeShape only).
     -->
     <!--<guvnorRepository:properties>-->
-      <!--<s:entry><s:key>org.kie.repository.configurator</s:key><s:value>org.kie.repository.modeshape.ModeShapeRepositoryConfigurator</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.configurator</s:key><s:value>org.drools.repository.modeshape.ModeShapeRepositoryConfigurator</s:value></s:entry>-->
       <!--<s:entry><s:key>org.modeshape.jcr.URL</s:key><s:value>jndi:jcr/local?repositoryName=brms</s:value></s:entry>-->
-      <!--<s:entry><s:key>org.kie.repository.secure.passwords</s:key><s:value>false</s:value></s:entry>-->
-      <!--<s:entry><s:key>org.kie.repository.logInAdmin.password</s:key><s:value>logInAdmin</s:value></s:entry>-->
-      <!--<s:entry><s:key>org.kie.repository.mailman.password</s:key><s:value>mailman</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.secure.passwords</s:key><s:value>false</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.logInAdmin.password</s:key><s:value>logInAdmin</s:value></s:entry>-->
+      <!--<s:entry><s:key>org.drools.repository.mailman.password</s:key><s:value>mailman</s:value></s:entry>-->
     <!--</guvnorRepository:properties>-->
 
   </guvnorRepository:GuvnorBootstrapConfiguration>
@@ -56,8 +56,8 @@
 
   <weld:scan>
     <!-- TODO remove me when GUVNOR-1196 is fixed -->
-    <weld:exclude name="org.kie.guvnor.gwtutil.**"/>
-    <weld:exclude name="org.kie.guvnor.client.**"/>
+    <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
+    <weld:exclude name="org.drools.guvnor.client.**"/>
   </weld:scan>
 
 </beans>

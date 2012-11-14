@@ -32,7 +32,6 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.server.testscenarios.MockWorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.*;
 
 import java.util.*;
 
@@ -585,11 +584,11 @@ public class FactPopulatorTest {
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), getClassLoader());
 
         resolver.addImport("org.kie.MyCollectionWrapper");
-        resolver.addImport("org.kie.Cheesery");
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheesery");
+        resolver.addImport("org.drools.Cheese");
         resolver.addImport("org.kie.SqlDateWrapper");
-        resolver.addImport("org.kie.CheeseType");
-        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.drools.CheeseType");
+        resolver.addImport("org.drools.Person");
         resolver.addImport("org.kie.OuterFact");
 
         return resolver;

@@ -25,7 +25,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetPackageToExport() throws Exception {
-        String uri = "/org.kie.guvnor.Guvnor/package/boo/ya+man";
+        String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man";
 
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
@@ -41,7 +41,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetPackageWithDRL() throws Exception {
-        String uri = "/org.kie.guvnor.Guvnor/package/boo/ya+man.drl";
+        String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
         assertTrue(helper.isSource());
@@ -54,7 +54,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetAssetDRL() throws Exception {
-        String uri = "/org.kie.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertTrue(helper.isSource());
         assertFalse(helper.isDocumentation());
@@ -66,7 +66,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetDocumentation() throws Exception {
-        String uri = "/org.kie.guvnor.Guvnor/package/packName/LATEST/documentation.pdf";
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/documentation.pdf";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertFalse(helper.isSource());
         assertTrue(helper.isDocumentation());
@@ -83,7 +83,7 @@ public class PackageDeploymentURIHelperTest {
      * convention for that image is {processDefinitionId}.png.
      */
     public void testGetPNG() throws Exception {
-        String uri = "/org.kie.guvnor.Guvnor/package/packName/LATEST/process.png";
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/process.png";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertTrue(helper.isAsset());
         assertEquals("LATEST", helper.getVersion());

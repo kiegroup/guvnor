@@ -19,7 +19,7 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
     >
 
-  <ui:with field="i18n" type="org.kie.guvnor.client.messages.Constants" />
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <ui:style>
     .externalButtons {

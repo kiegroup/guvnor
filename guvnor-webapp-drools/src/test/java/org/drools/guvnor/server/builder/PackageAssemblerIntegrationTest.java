@@ -201,21 +201,21 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         AssetItem props1 = pkg.addAsset( "conf1",
                                          "" );
         props1.updateFormat( "properties" );
-        props1.updateContent( "drools.accumulate.function.groupCount = org.kie.base.accumulators.MaxAccumulateFunction" );
+        props1.updateContent( "drools.accumulate.function.groupCount = org.drools.base.accumulators.MaxAccumulateFunction" );
         props1.checkin( "" );
 
         AssetItem props2 = pkg.addAsset( "conf2",
                                          "" );
         props2.updateFormat( "conf" );
-        props2.updateBinaryContentAttachment( new ByteArrayInputStream( "drools.accumulate.function.groupFun = org.kie.base.accumulators.MinAccumulateFunction".getBytes() ) );
+        props2.updateBinaryContentAttachment( new ByteArrayInputStream( "drools.accumulate.function.groupFun = org.drools.base.accumulators.MinAccumulateFunction".getBytes() ) );
         props2.checkin( "" );
 
         PackageAssembler asm = new PackageAssembler();
         asm.init(pkg, null);
         asm.compile();
-        assertEquals( "org.kie.base.accumulators.MaxAccumulateFunction",
+        assertEquals( "org.drools.base.accumulators.MaxAccumulateFunction",
                       asm.getBuilder().getPackageBuilderConfiguration().getAccumulateFunction( "groupCount" ).getClass().getName() );
-        assertEquals( "org.kie.base.accumulators.MinAccumulateFunction",
+        assertEquals( "org.drools.base.accumulators.MinAccumulateFunction",
                       asm.getBuilder().getPackageBuilderConfiguration().getAccumulateFunction( "groupFun" ).getClass().getName() );
 
     }
@@ -657,7 +657,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "drools/eventing-example.jar" ) );
         model.checkin( "" );
 
-        DroolsHeader.updateDroolsHeader( "import org.kie.examples.eventing.EventRequest\n",
+        DroolsHeader.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\n",
                                          pkg );
         AssetItem asset = pkg.addAsset( "whee",
                                         "" );
@@ -869,7 +869,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         //create our package
         ModuleItem pkg = repo.createModule( "testBRLWithDSLMixedIn",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "rule2",
                                         "" );
@@ -955,7 +955,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         //create our package
         ModuleItem pkg = repo.createModule( "testCustomSelector",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "rule1",
                                         "" );
@@ -1068,7 +1068,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         //create our package
         ModuleItem pkg = repo.createModule( "testBuiltInSelector",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "rule1",
                                         "" );
@@ -1170,7 +1170,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         //first, setup the package correctly:
         ModuleItem pkg = repo.createModule( "testFunctionWithPOJOFactType",
                                             "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
 
         AssetItem func = pkg.addAsset( "func",

@@ -45,7 +45,7 @@ public class GlobalFactPopulatorTest {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheese");
 
         MockWorkingMemory wm = new MockWorkingMemory();
         Map<String, Object> populatedData = new HashMap<String, Object>();

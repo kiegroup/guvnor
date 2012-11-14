@@ -34,15 +34,15 @@ public class RangeConstraint implements Constraint {
 
     static {
         StringBuilder rules = new StringBuilder();
-        rules.append("package org.kie.verifier.consequence\n");
+        rules.append("package org.drools.verifier.consequence\n");
 
-        rules.append("import org.kie.verifier.components.*;\n");
+        rules.append("import org.drools.verifier.components.*;\n");
         rules.append("import java.util.Map;\n");
         rules.append("import java.util.HashMap;\n");
-        rules.append("import org.kie.verifier.report.components.VerifierMessage;\n");
-        rules.append("import org.kie.verifier.data.VerifierReport;\n");
-        rules.append("import org.kie.verifier.report.components.Severity;\n");
-        rules.append("import org.kie.verifier.report.components.MessageType;\n");
+        rules.append("import org.drools.verifier.report.components.VerifierMessage;\n");
+        rules.append("import org.drools.verifier.data.VerifierReport;\n");
+        rules.append("import org.drools.verifier.report.components.Severity;\n");
+        rules.append("import org.drools.verifier.report.components.MessageType;\n");
         rules.append("import org.kie.base.evaluators.Operator;\n");
 
         rules.append("global VerifierReport result;\n");

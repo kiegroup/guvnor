@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.server.selector
+package org.drools.guvnor.server.selector
 
 dialect "mvel"
 
-import org.kie.repository.AssetItem
-import org.kie.guvnor.server.selector.Allow
+import org.drools.repository.AssetItem
+import org.drools.guvnor.server.selector.Allow
 
 rule "rule1"
     when

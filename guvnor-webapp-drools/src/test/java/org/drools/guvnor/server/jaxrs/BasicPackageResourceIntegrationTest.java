@@ -70,7 +70,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
                                                                    "this is package restPackage1" );
 
         //Package version 2	
-        DroolsHeader.updateDroolsHeader( "import org.kie.Cheese\n global org.kie.Person customer1",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer1",
                                          pkg );
 
         AssetItem func = pkg.addAsset( "func",
@@ -111,7 +111,7 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         pkg.checkin( "version2" );
 
         //Package version 3
-        DroolsHeader.updateDroolsHeader( "import org.kie.Cheese\n global org.kie.Person customer2",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Cheese\n global org.drools.Person customer2",
                                          pkg );
         func.updateContent( "function void foo() { System.out.println(\"version 2\"); }" );
         func.checkin( "version 2" );
@@ -923,8 +923,8 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
   
         assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue( result.indexOf( "import org.kie.Cheese" ) >= 0 );
-        assertTrue( result.indexOf( "global org.kie.Person customer2" ) >= 0 );
+        assertTrue( result.indexOf( "import org.drools.Cheese" ) >= 0 );
+        assertTrue( result.indexOf( "global org.drools.Person customer2" ) >= 0 );
         assertTrue( result.indexOf( "function void foo() { System.out.println(\"version 2\"); }" ) >= 0 );
         assertTrue( result.indexOf( "declare Album2" ) >= 0 );
     }
@@ -1156,8 +1156,8 @@ public class BasicPackageResourceIntegrationTest extends GuvnorIntegrationTest {
         String result = IOUtils.toString(connection.getInputStream());
 
         assertTrue(result.contains("package restPackage1"));
-        assertTrue(result.contains("import org.kie.Cheese"));
-        assertTrue(result.contains("global org.kie.Person customer1"));
+        assertTrue(result.contains("import org.drools.Cheese"));
+        assertTrue(result.contains("global org.drools.Person customer1"));
         assertTrue(result.contains("function void foo() { System.out.println(\"version 1\"); }"));
         assertTrue(result.contains("declare Album1"));
     }

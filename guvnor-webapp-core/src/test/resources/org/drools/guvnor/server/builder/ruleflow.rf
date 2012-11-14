@@ -11,23 +11,23 @@
     <workItem id="15" name="Log" x="48" y="477" >
       <work name="Log" >
         <parameter name="Message" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </workItem>
     <humanTask id="4" name="Human Task" x="130" y="372" >
       <work name="Human Task" >
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
@@ -71,16 +71,16 @@
     <workItem id="14" name="Email" x="152" y="475" >
       <work name="Email" >
         <parameter name="To" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="From" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Text" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Subject" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </workItem>

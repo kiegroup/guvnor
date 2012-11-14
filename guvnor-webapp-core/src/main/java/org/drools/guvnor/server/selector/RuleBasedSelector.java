@@ -23,7 +23,6 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.compiler.RuleBaseLoader;
 import org.drools.repository.AssetItem;
-import org.kie.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

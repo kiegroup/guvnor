@@ -73,7 +73,7 @@ public class WorkItemServiceImplementation
      *
      * @param packageUUID The Package from which to load Work Items
      * @return
-     * @throws org.kie.guvnor.client.rpc.DetailedSerializationException
+     * @throws org.drools.guvnor.client.rpc.DetailedSerializationException
      *
      */
     public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {

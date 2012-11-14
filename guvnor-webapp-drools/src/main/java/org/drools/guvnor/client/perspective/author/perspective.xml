@@ -2,7 +2,7 @@
 
 <perspective>
   <!--  name>author</name>
-  <class>org.kie.guvnor.client.perspectives.author.AuthorPerspective</class>
+  <class>org.drools.guvnor.client.perspectives.author.AuthorPerspective</class>
   <title>constants.AuthorPerspective()</title-->
 
   <NavigationPanelHeader>
@@ -15,12 +15,12 @@
     <title>constants.Services()</title>
   </ModuleTreeHeader>
 
-  <CreateNewMenu>org.kie.guvnor.client.explorer.navigation.modules.ServicesNewAssetMenu
+  <CreateNewMenu>org.drools.guvnor.client.explorer.navigation.modules.ServicesNewAssetMenu
   </CreateNewMenu>
 
   <moduleeditors>
     <moduleeditor>
-      <class>org.kie.guvnor.client.moduleeditor.drools.PackageEditor</class>
+      <class>org.drools.guvnor.client.moduleeditor.drools.PackageEditor</class>
       <format>package</format>
       <!-- Keep in sync with asseteditors.xml -->
       <asseteditorformats>brl,dslr,xls,gdst,template,drl,function,dsl,jar,model.drl,rf,formdef,bpmn,bpmn2,rf,enumeration,scenario,simulationTest,properties,xml,,workingset,springContext,serviceConfig,wid,changeset,scxls,scgd</asseteditorformats>

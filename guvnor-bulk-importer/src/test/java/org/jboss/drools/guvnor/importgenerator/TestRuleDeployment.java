@@ -110,7 +110,7 @@ public class TestRuleDeployment {
 
     private Properties getProps(String packageName, String snapshotName) {
         Properties r = new Properties();
-        r.put("url", ruleServer + "/org.kie.guvnor.Guvnor/package/" + packageName + "/" + snapshotName);
+        r.put("url", ruleServer + "/org.drools.guvnor.Guvnor/package/" + packageName + "/" + snapshotName);
         r.put("file", "my_rules/permissions/zone1/1.0.0-SNAPSHOT/permissions.");
         r.put("name", "RuleAgent for " + packageName); //optional
         r.put("poll", "30");

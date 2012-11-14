@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
 
-  <inherits name="org.kie.guvnor.GuvnorApi"/>
+  <inherits name="org.drools.guvnor.GuvnorApi"/>
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
 

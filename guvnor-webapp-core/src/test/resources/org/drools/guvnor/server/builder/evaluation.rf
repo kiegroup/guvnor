@@ -7,13 +7,13 @@
   <header>
     <variables>
       <variable name="employee" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
       <variable name="projectManager" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
       <variable name="hrManager" >
-        <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
     </variables>
   </header>
@@ -22,26 +22,26 @@
     <humanTask id="4" name="Self Evaluation" x="96" y="56" width="143" height="48" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{employee}</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>As part of your performance evaluation, you have to do a self-assessment.</value>
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>1</value>
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>false</value>
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Performance Evaluation</value>
         </parameter>
       </work>
@@ -49,26 +49,26 @@
     <humanTask id="8" name="Project Manager Evaluation" x="352" y="16" width="225" height="48" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{projectManager}</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>A performance evaluation has been requested for employee #{employee}</value>
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>1</value>
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>false</value>
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Performance Evaluation</value>
         </parameter>
       </work>
@@ -83,26 +83,26 @@
     <humanTask id="5" name="HR Manager Evaluation" x="352" y="96" width="225" height="48" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{hrManager}</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>A performance evaluation has been requested for employee #{employee}</value>
         </parameter>
         <parameter name="Content" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>1</value>
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>false</value>
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.kie.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Performance Evaluation</value>
         </parameter>
       </work>

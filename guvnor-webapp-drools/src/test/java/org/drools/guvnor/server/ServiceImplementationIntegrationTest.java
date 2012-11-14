@@ -128,7 +128,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
         AssetItem localItem = rulesRepository.loadAssetByUUID( uuid.getUUID() );
 
-        // String drl = "package org.kie.repository\n\ndialect 'mvel'\n\n" +
+        // String drl = "package org.drools.repository\n\ndialect 'mvel'\n\n" +
         // "rule Rule1 \n when \n AssetItem(description != null) \n then \n
         // System.out.println(\"yeah\");\nend";
         // RuleBase rb = RuleBaseLoader.getInstance().loadFromReader(new
@@ -772,7 +772,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         // create our package
         ModuleItem pkg = rulesRepository.createModule( "testSISuggestionCompletionLoading",
                                                        "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "model_1",
                                         "" );
@@ -830,7 +830,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         ModuleItem pkg = rulesRepository.createModule( "testBinaryPackageUpToDate",
                                                        "" );
         assertFalse( pkg.isBinaryUpToDate() );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -932,7 +932,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
 
         ModuleItem pkg = rulesRepository.createModule( "testGuidedDTExecutePackage",
                                                        "" );
-        DroolsHeader.updateDroolsHeader( "import org.kie.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                          pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -1594,7 +1594,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         Asset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
         RuleContentText content1 = new RuleContentText();
         content1.content = ""
-                           + "import org.kie.process.core.datatype.impl.type.StringDataType;\n"
+                           + "import org.drools.process.core.datatype.impl.type.StringDataType;\n"
                            + "[\n"
                            + "[\n"
                            + "\"name\" : \"MyTask1\",\n"
@@ -1621,7 +1621,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         Asset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
         RuleContentText content2 = new RuleContentText();
         content2.content = ""
-                           + "import org.kie.process.core.datatype.impl.type.IntegerDataType;\n"
+                           + "import org.drools.process.core.datatype.impl.type.IntegerDataType;\n"
                            + "[\n"
                            + "[\n"
                            + "\"name\" : \"MyTask2\",\n"
@@ -1648,7 +1648,7 @@ public class ServiceImplementationIntegrationTest extends GuvnorIntegrationTest 
         Asset asset3 = repositoryAssetService.loadRuleAsset( uuid3 );
         RuleContentText content3 = new RuleContentText();
         content3.content = ""
-                           + "import org.kie.process.core.datatype.impl.type.ObjectDataType;\n"
+                           + "import org.drools.process.core.datatype.impl.type.ObjectDataType;\n"
                            + "[\n"
                            + "[\n"
                            + "\"name\" : \"MyTask3\",\n"

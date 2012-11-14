@@ -65,8 +65,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         TypeResolver resolver = new ClassTypeResolver(
                 new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
-        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.Person");
 
         Scenario scenario = new Scenario();
 
@@ -218,8 +218,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
-        resolver.addImport("org.kie.CheeseType");
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.CheeseType");
 
         Scenario scenario = new Scenario();
         scenario.getFixtures().add(cheeseFactData);
@@ -420,8 +420,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
-        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.Person");
 
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 
@@ -505,8 +505,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
-        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.Person");
 
         WorkingMemory wm = getWorkingMemory("test_rules_infinite_loop.drl");
 
@@ -706,7 +706,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheese");
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
@@ -749,7 +749,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheese");
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
@@ -794,7 +794,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheese");
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(
@@ -813,8 +813,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheese");
-        resolver.addImport("org.kie.Person");
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.Person");
 
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 
@@ -849,8 +849,8 @@ public class ScenarioRunnerTest extends RuleUnit {
     public void testCollection() throws Exception {
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(),
                 Thread.currentThread().getContextClassLoader());
-        resolver.addImport("org.kie.Cheesery");
-        resolver.addImport("org.kie.Cheese");
+        resolver.addImport("org.drools.Cheesery");
+        resolver.addImport("org.drools.Cheese");
 
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import org.uberfire.security.annotations.Roles;
 
 @ApplicationScoped
-@Named("org.kie.guvnor.client.rpc.CategoryService")
+@Named("org.drools.guvnor.client.rpc.CategoryService")
 public class RepositoryCategoryService
     implements
     CategoryService {

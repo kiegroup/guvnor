@@ -95,7 +95,7 @@ public class BRDRLPersistence
     /*
      * (non-Javadoc)
      * @see
-     * org.kie.ide.common.server.util.BRLPersistence#marshal(org.kie.guvnor
+     * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
     public String marshal(RuleModel model) {
@@ -146,7 +146,7 @@ public class BRDRLPersistence
     }
 
     /**
-     * @see org.kie.ide.common.server.util.BRLPersistence#unmarshal(java.lang.String)
+     * @see org.drools.ide.common.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
     public RuleModel unmarshal(String str) {
         throw new UnsupportedOperationException( "Still not possible to convert pure DRL to RuleModel" );
@@ -776,7 +776,7 @@ public class BRDRLPersistence
         protected StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
             String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
             if ( className == null ) {
-                throw new IllegalStateException( "Implementation of 'org.kie.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
+                throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
             }
 
             try {

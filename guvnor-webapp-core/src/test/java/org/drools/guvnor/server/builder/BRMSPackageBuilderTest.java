@@ -335,9 +335,9 @@ public class BRMSPackageBuilderTest {
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add(jis);
         Properties properties = new Properties();
-        properties.setProperty("drools.accumulate.function.groupCount", "org.kie.base.accumulators.MaxAccumulateFunction");
+        properties.setProperty("drools.accumulate.function.groupCount", "org.drools.base.accumulators.MaxAccumulateFunction");
         BRMSPackageBuilder builder = new BRMSPackageBuilder(properties, new ClassLoaderBuilder(l).buildClassLoader());
-        assertEquals("org.kie.base.accumulators.MaxAccumulateFunction", builder.getPackageBuilderConfiguration().getAccumulateFunction("groupCount").getClass().getName());
+        assertEquals("org.drools.base.accumulators.MaxAccumulateFunction", builder.getPackageBuilderConfiguration().getAccumulateFunction("groupCount").getClass().getName());
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage(pc);
