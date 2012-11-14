@@ -169,6 +169,10 @@
   <servlet>
     <servlet-name>UberFireServlet</servlet-name>
     <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <init-param>
+      <param-name>org.uberfire.template.app</param-name>
+      <param-value>org.drools.guvnor.Guvnor/Guvnor.html</param-value>
+    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
