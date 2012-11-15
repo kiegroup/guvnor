@@ -26,23 +26,32 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class FormStyleLayout extends Composite {
 
-    private FlexTable         layout      = new FlexTable();
-    private FlexCellFormatter formatter   = layout.getFlexCellFormatter();
-    private int               numInLayout = 0;
+    private FlexTable layout = new FlexTable();
+    private FlexCellFormatter formatter = layout.getFlexCellFormatter();
+    private int numInLayout = 0;
+
+    /**
+     * This has no header
+     */
+    public FormStyleLayout() {
+        initWidget( layout );
+    }
 
     /**
      * Create a new layout with a header and and icon.
      */
-    public FormStyleLayout(Image image,
-                           String title) {
+    public FormStyleLayout( final Image image,
+                            final String title ) {
         addHeader( image,
                    title );
-
         initWidget( layout );
     }
 
-    /** This has no header */
-    public FormStyleLayout() {
+    /**
+     * Create a new layout with a header.
+     */
+    public FormStyleLayout( final String title ) {
+        addHeader( title );
         initWidget( layout );
     }
 
@@ -56,25 +65,22 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form"
-     * 
-     * @param lbl
-     *            The label displayed in column 0
-     * @param editor
-     *            The Widget displayed in column 1
+     * @param lbl The label displayed in column 0
+     * @param editor The Widget displayed in column 1
      * @return Index of row created
      */
-    public int addAttribute(String lbl,
-                            Widget editor) {
-    	String id = DOM.createUniqueId();
-    	if(editor instanceof CheckBox) {
-    	    editor.getElement().getFirstChildElement().setAttribute("aria-labelledby", id);
-    	    editor.getElement().getFirstChildElement().setAttribute("aria-required", String.valueOf(true));
-    	    editor.getElement().getFirstChildElement().setTabIndex(0);
-    	} else {
-        	editor.getElement().setAttribute("aria-labelledby", id);
-        	editor.getElement().setAttribute("aria-required", String.valueOf(true));
-        	editor.getElement().setTabIndex(0);    		
-    	}
+    public int addAttribute( final String lbl,
+                             final Widget editor ) {
+        String id = DOM.createUniqueId();
+        if ( editor instanceof CheckBox ) {
+            editor.getElement().getFirstChildElement().setAttribute( "aria-labelledby", id );
+            editor.getElement().getFirstChildElement().setAttribute( "aria-required", String.valueOf( true ) );
+            editor.getElement().getFirstChildElement().setTabIndex( 0 );
+        } else {
+            editor.getElement().setAttribute( "aria-labelledby", id );
+            editor.getElement().setAttribute( "aria-required", String.valueOf( true ) );
+            editor.getElement().setTabIndex( 0 );
+        }
 
         int row = numInLayout;
         HTML label = new HTML( "<div class='form-field' id=" + id + ">" + lbl + "</div>" );
@@ -99,18 +105,14 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form"
-     * 
-     * @param lbl
-     *            The label displayed in column 0
-     * @param editor
-     *            The Widget displayed in column 1
-     * @param isVisible
-     *            Is the new row visible
+     * @param lbl The label displayed in column 0
+     * @param editor The Widget displayed in column 1
+     * @param isVisible Is the new row visible
      * @return Index of row created
      */
-    public int addAttribute(String lbl,
-                             Widget editor,
-                             boolean isVisible) {
+    public int addAttribute( final String lbl,
+                             final Widget editor,
+                             final boolean isVisible ) {
         int rowIndex = addAttribute( lbl,
                                      editor );
         setAttributeVisibility( rowIndex,
@@ -120,13 +122,11 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form" across an entire row
-     * 
-     * @param w
-     *            The Widget displayed in column 1
+     * @param w The Widget displayed in column 1
      * @return Index of row created
      */
-    public int addRow(Widget w) {
-    	//TODO ARIA: what to do with widget has no visible label? 
+    public int addRow( final Widget w ) {
+        //TODO ARIA: what to do with widget has no visible label?
 
         int row = numInLayout;
         layout.setWidget( numInLayout,
@@ -141,12 +141,11 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Set the visibility of an Attribute
-     * 
      * @param row
      * @param isVisible
      */
-    public void setAttributeVisibility(int row,
-                                       boolean isVisible) {
+    public void setAttributeVisibility( final int row,
+                                        final boolean isVisible ) {
         layout.getWidget( row,
                           0 ).setVisible( isVisible );
         layout.getWidget( row,
@@ -156,18 +155,18 @@ public class FormStyleLayout extends Composite {
     /**
      * Adds a header at the top.
      */
-    protected void addHeader(Image image,
-                             String title) {
+    protected void addHeader( final Image image,
+                              final String title ) {
         HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         doHeader( image,
                   name );
     }
 
-    private void doHeader(Image image,
-                          Widget title) {
-        //The image in FormStyleLayout is merely for the purpose of decoration, no need to set it's alt text for section 508. 
-        image.setAltText("");
+    private void doHeader( final Image image,
+                           final Widget title ) {
+        //The image in FormStyleLayout is merely for the purpose of decoration, no need to set it's alt text for section 508.
+        image.setAltText( "" );
         layout.setWidget( 0,
                           0,
                           image );
@@ -181,9 +180,25 @@ public class FormStyleLayout extends Composite {
         numInLayout++;
     }
 
-    protected void addHeader(Image image,
-                             String title,
-                             Widget titleIcon) {
+    /**
+     * Adds a header at the top.
+     */
+    protected void addHeader( final String title ) {
+        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
+        name.setStyleName( "resource-name-Label" );
+        doHeader( name );
+    }
+
+    private void doHeader( Widget title ) {
+        layout.setWidget( 0,
+                          1,
+                          title );
+        numInLayout++;
+    }
+
+    protected void addHeader( final Image image,
+                              final String title,
+                              final Widget titleIcon ) {
         HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         HorizontalPanel horiz = new HorizontalPanel();
@@ -194,9 +209,9 @@ public class FormStyleLayout extends Composite {
 
     }
 
-    public void setFlexTableWidget(int row,
-                                   int col,
-                                   Widget widget) {
+    public void setFlexTableWidget( final int row,
+                                    final int col,
+                                    final Widget widget ) {
         layout.setWidget( row,
                           col,
                           widget );

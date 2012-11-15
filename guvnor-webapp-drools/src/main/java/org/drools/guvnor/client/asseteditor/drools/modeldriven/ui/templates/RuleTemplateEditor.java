@@ -46,23 +46,23 @@ public class RuleTemplateEditor extends DirtyableComposite
         implements
         RuleModelEditor {
 
-    private TemplateModel              model;
-    private RuleModeller               ruleModeller;
+    private TemplateModel model;
+    private RuleModeller ruleModeller;
     private SuggestionCompletionEngine sce;
 
-    private TemplateDataTableWidget    table;
+    private TemplateDataTableWidget table;
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
-    private EventBus                   eventBus = new SimpleEventBus();
+    private EventBus eventBus = new SimpleEventBus();
 
     //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
     @SuppressWarnings("unused")
-    private EventBus                   globalEventBus;
+    private EventBus globalEventBus;
 
-    public RuleTemplateEditor(final Asset asset,
-                              final RuleViewer viewer,
-                              final ClientFactory clientFactory,
-                              final EventBus globalEventBus) {
+    public RuleTemplateEditor( final Asset asset,
+                               final RuleViewer viewer,
+                               final ClientFactory clientFactory,
+                               final EventBus globalEventBus ) {
 
         this.globalEventBus = globalEventBus;
         this.model = (TemplateModel) asset.getContent();
@@ -81,12 +81,11 @@ public class RuleTemplateEditor extends DirtyableComposite
         tPanel.add( new Button( Constants.INSTANCE.LoadTemplateData(),
                                 new ClickHandler() {
 
-                                    public void onClick(ClickEvent event) {
-                                        int height = (int) (Window.getClientHeight() * 0.7);
-                                        int width = (int) (Window.getClientWidth() * 0.7);
+                                    public void onClick( ClickEvent event ) {
+                                        int height = (int) ( Window.getClientHeight() * 0.7 );
+                                        int width = (int) ( Window.getClientWidth() * 0.7 );
 
-                                        final FormStylePopup popUp = new FormStylePopup( null,
-                                                                                         Constants.INSTANCE.TemplateData(),
+                                        final FormStylePopup popUp = new FormStylePopup( Constants.INSTANCE.TemplateData(),
                                                                                          width );
 
                                         //Initialise table to edit data
@@ -100,16 +99,16 @@ public class RuleTemplateEditor extends DirtyableComposite
                                                             table );
 
                                         Button btnOK = new Button( ConstantsCore.INSTANCE.OK(),
-                                                                             new ClickHandler() {
-                                                                                 public void onClick(ClickEvent event) {
-                                                                                     popUp.hide();
-                                                                                 }
-                                                                             } );
+                                                                   new ClickHandler() {
+                                                                       public void onClick( ClickEvent event ) {
+                                                                           popUp.hide();
+                                                                       }
+                                                                   } );
 
                                         Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),
                                                                        new ClickHandler() {
 
-                                                                           public void onClick(ClickEvent event) {
+                                                                           public void onClick( ClickEvent event ) {
                                                                                table.appendRow();
                                                                            }
 
