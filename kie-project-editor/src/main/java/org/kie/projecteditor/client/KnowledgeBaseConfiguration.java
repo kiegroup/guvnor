@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.explorer;
+package org.kie.projecteditor.client;
 
 public class KnowledgeBaseConfiguration {
 

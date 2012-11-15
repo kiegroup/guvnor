@@ -89,6 +89,8 @@
   </build>
 
   <modules>
+    <module>kie-uberfire-bootstrap</module>
+    <module>kie-project-editor</module>
     <module>guvnor-api</module>
     <module>guvnor-repository-connector</module>
     <module>guvnor-repository</module>

@@ -1,7 +1,8 @@
-package org.drools.guvnor.client.explorer;
+package org.kie.projecteditor.client;
 
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.projecteditor.client.constants.ProjectEditorConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -12,14 +13,14 @@ import java.util.HashMap;
 
 @Dependent
 @WorkbenchScreen(identifier = "projectModel")
-public class ProjectModelScreen
-        implements ProjectModelScreenView.Presenter {
+public class ProjectEditorScreen
+        implements ProjectEditorScreenView.Presenter {
 
-    private final ProjectModelScreenView view;
+    private final ProjectEditorScreenView view;
     private final HashMap<String, KnowledgeBaseConfiguration> configurations = new HashMap<String, KnowledgeBaseConfiguration>();
 
     @Inject
-    public ProjectModelScreen(ProjectModelScreenView view) {
+    public ProjectEditorScreen(ProjectEditorScreenView view) {
         this.view = view;
         view.setPresenter(this);
 
@@ -48,7 +49,7 @@ public class ProjectModelScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Project Model"; // TODO : -Rikkola-
+        return ProjectEditorConstants.INSTANCE.ProjectModel();
     }
 
     @Override

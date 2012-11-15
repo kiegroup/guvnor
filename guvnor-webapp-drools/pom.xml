@@ -89,6 +89,7 @@
             <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:kie-project-editor</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
@@ -495,6 +496,18 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-project-editor</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-project-editor</artifactId>
+      <classifier>sources</classifier>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <!--<dependency>-->

@@ -2693,4 +2693,6 @@ public interface ConstantsCore
     String StatelessKSessions();
 
     String Navigation();
+
+    String ProjectModel();
 }

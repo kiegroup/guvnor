@@ -17,12 +17,17 @@
 
 <module>
 
+  <!-- Inherit the core Web Toolkit stuff. -->
+
+  <inherits name="com.google.gwt.i18n.I18N"/>
   <inherits name="com.google.gwt.user.User"/>
-  <inherits name="org.kie.uberfirebootstrap.UberfireBootstrap"/>
+  <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
+  <inherits name="com.google.gwt.resources.Resources"/>
 
-  <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
-
-  <source path='client'/>
-  <source path='shared'/>
+  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
 
 </module>
