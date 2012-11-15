@@ -28,28 +28,31 @@ public class FormStylePopup extends Popup {
 
     private FormStyleLayout form;
 
-    public FormStylePopup(Image image,
-                          final String title) {
-
-        form = new FormStyleLayout( image,
-                                    title );
-
-        setModal( true );
-
-        setTitle( title );
-
-    }
-
     public FormStylePopup() {
         form = new FormStyleLayout();
     }
 
-    public FormStylePopup(Image image,
-                          final String title,
-                          Integer width) {
+    public FormStylePopup( final Image image,
+                           final String title ) {
+        form = new FormStyleLayout( image,
+                                    title );
+        setModal( true );
+        setTitle( title );
+    }
+
+    public FormStylePopup( final Image image,
+                           final String title,
+                           final Integer width ) {
         this( image,
               title );
         setWidth( width + "px" );
+    }
+
+    public FormStylePopup( final String title,
+                           final Integer width ) {
+        form = new FormStyleLayout( title );
+        setModal( true );
+        setTitle( title );
     }
 
     @Override
@@ -61,33 +64,31 @@ public class FormStylePopup extends Popup {
         this.form.clear();
     }
 
-    public int addAttribute(String label,
-                            Widget wid) {
+    public int addAttribute( final String label,
+                             final Widget wid ) {
         return form.addAttribute( label,
                                   wid );
     }
 
-    public int addAttribute(String label,
-                            Widget wid,
-                            boolean isVisible) {
-       return form.addAttribute( label,
-                                 wid,
-                                 isVisible );
-   }
+    public int addAttribute( final String label,
+                             final Widget wid,
+                             final boolean isVisible ) {
+        return form.addAttribute( label,
+                                  wid,
+                                  isVisible );
+    }
 
-    
-    public int addRow(Widget wid) {
+    public int addRow( final Widget wid ) {
         return form.addRow( wid );
     }
-    
+
     /**
      * Set the visibility of an Attribute
-     * 
      * @param row
      * @param isVisible
      */
-    public void setAttributeVisibility(int row,
-                                       boolean isVisible) {
+    public void setAttributeVisibility( final int row,
+                                        final boolean isVisible ) {
         form.setAttributeVisibility( row, isVisible );
     }
 
