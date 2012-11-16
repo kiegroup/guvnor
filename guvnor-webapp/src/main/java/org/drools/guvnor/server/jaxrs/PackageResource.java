@@ -761,6 +761,7 @@ public class PackageResource extends Resource {
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
             asset.checkout();
             asset.updateBinaryContentAttachment(is);
+            asset.getPackage().updateBinaryUpToDate(false);
             asset.checkin("Update binary");
             repository.save();
         } catch (Exception e) {
