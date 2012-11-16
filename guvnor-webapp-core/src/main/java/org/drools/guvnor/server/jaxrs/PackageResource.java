@@ -795,6 +795,7 @@ public class PackageResource extends Resource {
                 pkg.updateBinaryUpToDate(false);
                 RuleBaseCache.getInstance().remove(pkg.getUUID());
             }
+            asset.getModule().updateBinaryUpToDate(false);
             asset.checkin("Update binary");
             rulesRepository.save();
         } catch (RuntimeException e) {
