@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client;
+package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.projecteditor.shared.model.KSessionModel;
 
 import javax.inject.Inject;
 
-public class KnowledgeBaseConfigurationForm
+public class KSessionForm
         implements IsWidget {
 
-    private final KnowledgeBaseConfigurationFormView view;
+
+    private final KSessionFormView view;
 
     @Inject
-    public KnowledgeBaseConfigurationForm(KnowledgeBaseConfigurationFormView view) {
+    public KSessionForm(KSessionFormView view) {
         this.view = view;
     }
 
@@ -36,8 +38,17 @@ public class KnowledgeBaseConfigurationForm
         return view.asWidget();
     }
 
-    public void setConfig(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
-        view.setName(knowledgeBaseConfiguration.getName());
-        view.setNamespace(knowledgeBaseConfiguration.getNamespace());
+    public void setModel(KSessionModel kSessionModel) {
+        view.setNamespace(kSessionModel.getNamespace());
+        view.setName(kSessionModel.getName());
+
+        switch (kSessionModel.getClockType()) {
+            case PSEUDO:
+                view.selectPseudo();
+                break;
+            case REALTIME:
+                view.selectRealtime();
+                break;
+        }
     }
 }

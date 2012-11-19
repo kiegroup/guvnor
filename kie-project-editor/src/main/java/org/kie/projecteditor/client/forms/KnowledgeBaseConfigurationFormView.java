@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client;
+package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.projecteditor.shared.model.KSessionModel;
 
-public interface ProjectEditorScreenView
+import java.util.ArrayList;
+
+public interface KnowledgeBaseConfigurationFormView
         extends IsWidget {
 
-    interface Presenter{
+    void setName(String name);
 
-        void onKBaseSelection(String name);
+    void setNamespace(String namespace);
 
-    }
-    void setPresenter(Presenter presenter);
+    void setEqualsBehaviorEquality();
 
-    void addKnowledgeBaseConfiguration(String kbaseName);
+    void setEqualsBehaviorIdentity();
 
-    void showForm(KnowledgeBaseConfiguration knowledgeBaseConfiguration);
+    void setEventProcessingModeStream();
 
+    void setEventProcessingModeCloud();
+
+    void setStatefulSessions(ArrayList<KSessionModel> statefulSessions);
+
+    void setStatelessSessions(ArrayList<KSessionModel> statefulSessions);
 }

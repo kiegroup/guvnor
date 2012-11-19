@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.constants;
+package org.kie.projecteditor.client.forms;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import java.util.Date;
+public interface KSessionFormView
+        extends IsWidget {
 
-public interface ProjectEditorConstants
-        extends
-        Messages {
+    void setNamespace(String namespace);
 
-    ProjectEditorConstants INSTANCE = GWT.create(ProjectEditorConstants.class);
+    void setName(String name);
 
-    String ProjectModel();
+    void selectPseudo();
+
+    void selectRealtime();
 }

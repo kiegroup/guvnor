@@ -14,35 +14,48 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client;
+package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KnowledgeBaseConfigurationFormViewImpl
+public class KSessionFormViewImpl
         extends Composite
-        implements KnowledgeBaseConfigurationFormView {
+        implements KSessionFormView {
 
-    interface KnowledgeBaseConfigurationFormViewImplBinder
+
+    interface KSessionFormViewImplBinder
             extends
-            UiBinder<Widget, KnowledgeBaseConfigurationFormViewImpl> {
+            UiBinder<Widget, KSessionFormViewImpl> {
 
     }
 
-    private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
+    private static KSessionFormViewImplBinder uiBinder = GWT.create(KSessionFormViewImplBinder.class);
+
+    @UiField
+    TextBox nameSpaceTextBox;
 
     @UiField
     TextBox nameTextBox;
 
     @UiField
-    TextBox nameSpaceTextBox;
+    RadioButton realtime;
 
-    public KnowledgeBaseConfigurationFormViewImpl() {
+    @UiField
+    RadioButton pseudo;
+
+    public KSessionFormViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    @Override
+    public void setNamespace(String namespace) {
+        nameSpaceTextBox.setText(namespace);
     }
 
     @Override
@@ -51,8 +64,13 @@ public class KnowledgeBaseConfigurationFormViewImpl
     }
 
     @Override
-    public void setNamespace(String namespace) {
-        nameSpaceTextBox.setText(namespace);
+    public void selectPseudo() {
+        pseudo.setValue(true);
+    }
+
+    @Override
+    public void selectRealtime() {
+        realtime.setValue(true);
     }
 
 }

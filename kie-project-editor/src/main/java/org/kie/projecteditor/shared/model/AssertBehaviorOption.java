@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client;
+package org.kie.projecteditor.shared.model;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public interface KnowledgeBaseConfigurationFormView
-        extends IsWidget {
-
-    void setName(String name);
-
-    void setNamespace(String namespace);
+@Portable
+public enum AssertBehaviorOption {
+    EQUALITY, IDENTITY;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client;
+package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
 
 import javax.inject.Inject;
 
