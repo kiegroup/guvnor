@@ -191,6 +191,12 @@
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus</artifactId>
         <version>${errai.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>org.slf4j</artifactId>
+            <groupId>slf4j-log4j12</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
