@@ -1,0 +1,13 @@
+
+META-INF
+org
+org/jboss
+org/jboss/jca
+org/jboss/jca/validator
+org/jboss/jca/validator/rules
+org/jboss/jca/validator/rules/ao
+org/jboss/jca/validator/rules/as
+org/jboss/jca/validator/rules/cf
+org/jboss/jca/validator/rules/mc
+org/jboss/jca/validator/rules/mcf
+org/jboss/jca/validator/rules/ra

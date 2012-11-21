@@ -1,0 +1,10 @@
+
+META-INF
+META-INF/services
+org
+org/jboss
+org/jboss/as
+org/jboss/as/threads
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-threads

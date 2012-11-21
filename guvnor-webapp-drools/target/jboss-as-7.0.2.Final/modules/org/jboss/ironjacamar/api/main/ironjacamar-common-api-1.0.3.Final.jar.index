@@ -1,0 +1,17 @@
+
+META-INF
+org
+org/jboss
+org/jboss/jca
+org/jboss/jca/common
+org/jboss/jca/common/api
+org/jboss/jca/common/api/metadata
+org/jboss/jca/common/api/metadata/common
+org/jboss/jca/common/api/metadata/ds
+org/jboss/jca/common/api/metadata/ironjacamar
+org/jboss/jca/common/api/metadata/ra
+org/jboss/jca/common/api/metadata/ra/ra10
+org/jboss/jca/common/api/metadata/ra/ra15
+org/jboss/jca/common/api/metadata/ra/ra16
+org/jboss/jca/common/api/metadata/resourceadapter
+org/jboss/jca/common/api/validator

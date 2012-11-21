@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.drools.guvnor.client.asseteditor.drools.serviceconfig.ServiceKBaseConfigTest
+-------------------------------------------------------------------------------
+Tests run: 27, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 sec

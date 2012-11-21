@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/jca
+org/jboss/jca/spi
+META-INF/maven
+META-INF/maven/org.jboss.integration
+META-INF/maven/org.jboss.integration/jboss-jca-spi

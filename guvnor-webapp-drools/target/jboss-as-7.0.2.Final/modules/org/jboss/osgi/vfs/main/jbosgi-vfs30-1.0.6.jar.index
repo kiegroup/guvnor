@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/osgi
+org/jboss/osgi/vfs30
+META-INF/maven
+META-INF/maven/org.jboss.osgi.vfs
+META-INF/maven/org.jboss.osgi.vfs/jbosgi-vfs30

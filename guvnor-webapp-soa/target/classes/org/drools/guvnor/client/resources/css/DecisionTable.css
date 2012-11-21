@@ -1,0 +1,204 @@
+@CHARSET "UTF-8";
+
+/* CellTable body */
+@def rowHeight  24px ;
+@def rowHeaderHeight  24px ;
+@def rowHeaderSorterHeight  16px ;
+@def rowHeaderSplitterHeight  8px ;
+@def sidebarWidth  48px ;
+@def borderWidth  1px ;
+@def borderWidthThick  2px ;
+    
+.cellTable {
+    cursor: default;
+    table-layout: fixed;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cellTableCell {
+    padding: 0px;
+    margin: 0px;
+    font-size: 8pt;
+    outline: none;
+    border-bottom: borderWidth solid #C8C8C8;
+    border-right: borderWidth dotted grey;
+}
+
+.cellTableCellSelected {
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
+}
+
+.cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
+    background-color: #e09090;
+}
+
+.cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
+    background-color: #60f070;
+}
+
+.cellTableCell:HOVER {
+    padding: 0px;
+    margin: 0px;
+    font-size: 8pt;
+    outline: none;
+    border-bottom: borderWidth solid #C8C8C8;
+    background-color: #ffff99;
+}
+
+.cellTableCellDiv {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+.cellTableGroupDiv {
+    position: absolute;
+}
+
+.cellTableTextDiv {
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+}
+
+.cellTableEvenRow {
+    background: #f0f0f0;
+}
+
+.cellTableOddRow {
+    background: #fbfbfb;
+}
+
+/* Header */
+.headerRowBottom {
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth dotted grey;
+}
+
+.headerRowIntermediate {
+    border-bottom: borderWidth solid grey;
+    border-right: borderWidth dotted grey;
+}
+
+.headerText {
+    font-size: 8pt;
+    text-align: center;
+    color: #4B4A4A;
+    text-shadow: 1px 1px 0 #DDDDFF;
+    border-right: borderWidth dotted grey;
+}
+
+.headerSplitter {
+    height: 8px;
+    background-color: #a0a0a0;
+    border-right: borderWidth dotted grey;
+}
+
+.headerResizer {
+    top: 0px;
+    left: 0px;
+    z-index: 100000;
+    width: 2px;
+    background-color: #a0a0a0;
+    visibility: hidden;
+    position: absolute;
+    cursor: col-resize;
+}
+
+.selectorSpacer {
+    width: sidebarWidth;
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth solid grey;
+}
+
+.selectorSpacerOuterDiv {
+    position: relative;
+}
+
+.selectorSpacerInnerDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.selectorCell {
+    width: sidebarWidth;
+    text-align: center;
+    border-right: borderWidth solid grey;
+    border-bottom: borderWidth solid #C8C8C8;
+}
+
+.metaColumn {
+}
+        
+.conditionColumn {
+	background-color: #ADD8E6;
+}
+
+.actionColumn {
+}
+
+.templateColumn {
+}
+
+.cellTableEvenRow .conditionColumn {
+    background: #d2EFFF;
+}
+
+.cellTableOddRow .conditionColumn {
+    background: #f2FFFF
+}
+
+.cellTableEvenRow .conditionColumn:HOVER {
+    background-color: #ffff99;
+}
+
+.cellTableOddRow .conditionColumn:HOVER {
+    background: #ffff99;
+}
+
+.cellTableEvenRow .cellTableCellSelected {
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
+}
+
+.cellTableOddRow .cellTableCellSelected {
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
+}
+
+.cellTableEvenRow .cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
+    background-color: #60f070;
+}
+
+.cellTableOddRow .cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
+    background-color: #60f070;
+}
+
+.cellTableEvenRow .cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
+    background-color: #e09090;
+}
+
+.cellTableOddRow .cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
+    background-color: #e09090;
+}
+
+.patternSectionHeader {
+	padding: 2px 2px 2px 2px;
+	margin: 2px 2px 2px 2px;
+	background-color: #d0d0d0;
+	width: 400px;
+}
+
+.columnLabelHidden {
+	font-style: italic;
+	color: grey;
+}

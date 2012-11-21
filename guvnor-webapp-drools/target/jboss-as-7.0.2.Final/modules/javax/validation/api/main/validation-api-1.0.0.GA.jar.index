@@ -1,0 +1,12 @@
+
+META-INF
+javax
+javax/validation
+javax/validation/bootstrap
+javax/validation/constraints
+javax/validation/groups
+javax/validation/metadata
+javax/validation/spi
+META-INF/maven
+META-INF/maven/javax.validation
+META-INF/maven/javax.validation/validation-api

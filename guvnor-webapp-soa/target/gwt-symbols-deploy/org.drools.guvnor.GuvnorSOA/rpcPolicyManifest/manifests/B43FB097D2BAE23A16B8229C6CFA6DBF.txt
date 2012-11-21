@@ -1,0 +1,2 @@
+serviceClass: org.drools.guvnor.client.rpc.ConfigurationService
+path: C80F6FBD70FE21AC21B414B306880EBA.gwt.rpc

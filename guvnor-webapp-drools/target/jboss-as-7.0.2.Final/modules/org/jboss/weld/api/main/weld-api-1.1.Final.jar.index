@@ -1,0 +1,13 @@
+
+META-INF
+org
+org/jboss
+org/jboss/weld
+org/jboss/weld/context
+org/jboss/weld/context/bound
+org/jboss/weld/context/ejb
+org/jboss/weld/context/http
+org/jboss/weld/context/unbound
+META-INF/maven
+META-INF/maven/org.jboss.weld
+META-INF/maven/org.jboss.weld/weld-api

@@ -1,0 +1,13 @@
+
+META-INF
+org
+org/jboss
+org/jboss/interceptor
+org/jboss/interceptor/spi
+org/jboss/interceptor/spi/context
+org/jboss/interceptor/spi/instance
+org/jboss/interceptor/spi/metadata
+org/jboss/interceptor/spi/model
+META-INF/maven
+META-INF/maven/org.jboss.interceptor
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-spi

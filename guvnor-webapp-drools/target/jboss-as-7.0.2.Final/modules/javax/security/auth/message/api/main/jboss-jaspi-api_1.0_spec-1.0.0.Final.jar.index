@@ -1,0 +1,12 @@
+
+META-INF
+javax
+javax/security
+javax/security/auth
+javax/security/auth/message
+javax/security/auth/message/callback
+javax/security/auth/message/module
+javax/security/auth/message/config
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.security.auth.message
+META-INF/maven/org.jboss.spec.javax.security.auth.message/jboss-jaspi-api_1.0_spec

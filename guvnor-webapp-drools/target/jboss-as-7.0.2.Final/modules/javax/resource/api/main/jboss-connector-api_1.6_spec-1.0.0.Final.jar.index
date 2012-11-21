@@ -1,0 +1,12 @@
+
+META-INF
+javax
+javax/resource
+javax/resource/spi
+javax/resource/spi/security
+javax/resource/spi/endpoint
+javax/resource/spi/work
+javax/resource/cci
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.resource
+META-INF/maven/org.jboss.spec.javax.resource/jboss-connector-api_1.6_spec

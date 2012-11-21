@@ -1,0 +1,14 @@
+
+META-INF
+javax
+javax/decorator
+javax/enterprise
+javax/enterprise/context
+javax/enterprise/context/spi
+javax/enterprise/event
+javax/enterprise/inject
+javax/enterprise/inject/spi
+javax/enterprise/util
+META-INF/maven
+META-INF/maven/javax.enterprise
+META-INF/maven/javax.enterprise/cdi-api

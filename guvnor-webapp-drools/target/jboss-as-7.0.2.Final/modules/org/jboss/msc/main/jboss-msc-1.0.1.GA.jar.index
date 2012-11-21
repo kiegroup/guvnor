@@ -1,0 +1,12 @@
+
+META-INF
+org
+org/jboss
+org/jboss/msc
+org/jboss/msc/inject
+org/jboss/msc/service
+org/jboss/msc/service/management
+org/jboss/msc/value
+META-INF/maven
+META-INF/maven/org.jboss.msc
+META-INF/maven/org.jboss.msc/jboss-msc

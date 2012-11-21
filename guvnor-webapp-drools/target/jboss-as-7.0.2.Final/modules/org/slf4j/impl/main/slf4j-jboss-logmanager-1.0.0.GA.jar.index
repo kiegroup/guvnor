@@ -1,0 +1,8 @@
+
+META-INF
+org
+org/slf4j
+org/slf4j/impl
+META-INF/maven
+META-INF/maven/org.jboss.slf4j
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager

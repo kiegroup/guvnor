@@ -1,0 +1,2 @@
+serviceClass: org.drools.guvnor.client.rpc.AssetService
+path: 531763E9D8FEA47031F8372CA1408504.gwt.rpc

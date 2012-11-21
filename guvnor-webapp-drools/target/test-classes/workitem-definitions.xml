@@ -1,0 +1,37 @@
+//Required for unit testing
+
+import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.FloatDataType;
+import org.drools.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.process.core.datatype.impl.type.EnumDataType;
+import org.drools.process.core.datatype.impl.type.ListDataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
+
+[
+
+  [
+    "name" : "MyTask",
+    "parameters" : [
+        "StringParam" : new StringDataType(),
+        "IntegerParam" : new IntegerDataType(),
+        "FloatParam" : new FloatDataType(),
+        "BooleanParam" : new BooleanDataType(),
+        "EnumParam" : new EnumDataType(),
+        "ListParam" : new ListDataType(),
+        "ObjectParam" : new ObjectDataType()
+    ],
+    "results" : [
+        "StringResult" : new StringDataType(),
+        "IntegerResult" : new IntegerDataType(),
+        "FloatResult" : new FloatDataType(),
+        "BooleanResult" : new BooleanDataType(),
+        "EnumResult" : new EnumDataType(),
+        "ListResult" : new ListDataType(),
+        "ObjectResult" : new ObjectDataType()
+    ],
+    "displayName" : "My Task",
+    "icon" : "",
+  ]
+     
+]

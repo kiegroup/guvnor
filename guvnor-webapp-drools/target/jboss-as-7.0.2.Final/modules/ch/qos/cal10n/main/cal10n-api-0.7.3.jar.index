@@ -1,0 +1,10 @@
+
+META-INF
+ch
+ch/qos
+ch/qos/cal10n
+ch/qos/cal10n/util
+ch/qos/cal10n/verifier
+META-INF/maven
+META-INF/maven/ch.qos.cal10n
+META-INF/maven/ch.qos.cal10n/cal10n-api

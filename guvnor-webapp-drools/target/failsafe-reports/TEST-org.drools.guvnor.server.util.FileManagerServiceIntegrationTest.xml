@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="135.148" errors="1" skipped="0" tests="1" name="org.drools.guvnor.server.util.FileManagerServiceIntegrationTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/local/dev/jdk1.6.0_29/jre/lib/i386"/>
+    <property name="java.vm.version" value="20.4-b02"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/local/git/guvnor/guvnor-webapp-drools"/>
+    <property name="java.runtime.version" value="1.6.0_29-b11"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/local/dev/jdk1.6.0_29/jre/lib/endorsed"/>
+    <property name="os.arch" value="i386"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="classworlds.conf" value="/local/dev/apache-maven-3.0.3/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/local/dev/jdk1.6.0_29/jre/lib/i386/server:/local/dev/jdk1.6.0_29/jre/lib/i386:/local/dev/jdk1.6.0_29/jre/../lib/i386:/usr/java/packages/lib/i386:/lib:/usr/lib"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot Tiered Compilers"/>
+    <property name="os.version" value="2.6.26.8-57.fc8"/>
+    <property name="user.home" value="/home/jliu"/>
+    <property name="user.timezone" value="Asia/Shanghai"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="jliu"/>
+    <property name="java.class.path" value="/local/dev/apache-maven-3.0.3/boot/plexus-classworlds-2.4.jar"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="/local/dev/jdk1.6.0_29/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher integration-test"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_29"/>
+    <property name="java.ext.dirs" value="/local/dev/jdk1.6.0_29/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="securerandom.source" value="file:/dev/./urandom"/>
+    <property name="sun.boot.class.path" value="/local/dev/jdk1.6.0_29/jre/lib/resources.jar:/local/dev/jdk1.6.0_29/jre/lib/rt.jar:/local/dev/jdk1.6.0_29/jre/lib/sunrsasign.jar:/local/dev/jdk1.6.0_29/jre/lib/jsse.jar:/local/dev/jdk1.6.0_29/jre/lib/jce.jar:/local/dev/jdk1.6.0_29/jre/lib/charsets.jar:/local/dev/jdk1.6.0_29/jre/lib/modules/jdk.boot.jar:/local/dev/jdk1.6.0_29/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="maven.home" value="/local/dev/apache-maven-3.0.3"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="135.148" classname="org.drools.guvnor.server.util.FileManagerServiceIntegrationTest" name="org.drools.guvnor.server.util.FileManagerServiceIntegrationTest">
+    <error message="Could not start container" type="org.jboss.arquillian.container.spi.client.container.LifecycleException">org.jboss.arquillian.container.spi.client.container.LifecycleException: Could not start container
+	at org.jboss.as.arquillian.container.managed.ManagedDeployableContainer.startInternal(ManagedDeployableContainer.java:148)
+	at org.jboss.as.arquillian.container.CommonDeployableContainer.start(CommonDeployableContainer.java:69)
+	at org.jboss.arquillian.container.impl.ContainerImpl.start(ContainerImpl.java:198)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$8.perform(ContainerLifecycleController.java:163)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$8.perform(ContainerLifecycleController.java:157)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.forContainer(ContainerLifecycleController.java:255)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.startContainer(ContainerLifecycleController.java:156)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.container.impl.client.ContainerDeploymentContextHandler.createContainerContext(ContainerDeploymentContextHandler.java:57)
+	at sun.reflect.GeneratedMethodAccessor19.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:88)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:134)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:114)
+	at org.jboss.arquillian.core.impl.EventImpl.fire(EventImpl.java:67)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$2.perform(ContainerLifecycleController.java:77)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$2.perform(ContainerLifecycleController.java:70)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.forEachSuiteContainer(ContainerLifecycleController.java:221)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.startSuiteContainers(ContainerLifecycleController.java:69)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:134)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:114)
+	at org.jboss.arquillian.core.impl.EventImpl.fire(EventImpl.java:67)
+	at org.jboss.arquillian.container.test.impl.client.container.ContainerRestarter.restart(ContainerRestarter.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.test.impl.TestContextHandler.createClassContext(TestContextHandler.java:75)
+	at sun.reflect.GeneratedMethodAccessor3.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:88)
+	at org.jboss.arquillian.test.impl.TestContextHandler.createSuiteContext(TestContextHandler.java:60)
+	at sun.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:90)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:88)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:134)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:114)
+	at org.jboss.arquillian.test.impl.EventTestRunnerAdaptor.beforeClass(EventTestRunnerAdaptor.java:80)
+	at org.jboss.arquillian.junit.Arquillian$2.evaluate(Arquillian.java:182)
+	at org.jboss.arquillian.junit.Arquillian.multiExecute(Arquillian.java:314)
+	at org.jboss.arquillian.junit.Arquillian.access$100(Arquillian.java:46)
+	at org.jboss.arquillian.junit.Arquillian$3.evaluate(Arquillian.java:199)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:300)
+	at org.jboss.arquillian.junit.Arquillian.run(Arquillian.java:147)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:134)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:113)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:103)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:74)
+Caused by: java.util.concurrent.TimeoutException: Managed server was not started within [30] s
+	at org.jboss.as.arquillian.container.managed.ManagedDeployableContainer.startInternal(ManagedDeployableContainer.java:144)
+	... 77 more
+</error>
+    <system-out>18:52:06,997 INFO  [org.jboss.weld] (MSC service thread 1-3) Stopping weld service
+18:52:07,003 ERROR [org.jboss.weld.Bean] (MSC service thread 1-3) WELD-000019 Error destroying an instance Managed Bean [class org.jboss.seam.security.permission.SecurityRuleLoader] with qualifiers [@Any @Default] of org.jboss.seam.security.permission.SecurityRuleLoader@1f12a1b
+18:52:07,004 INFO  [stdout] (MSC service thread 1-3) INFO  08-05 18:52:07,004 (RepositoryStartupService.java:close:98) 	 Shutting down repository...
+18:52:07,073 INFO  [org.jboss.as.server.controller] (pool-1-thread-1) Undeployed &quot;3fc54135-fce8-4b42-8573-33602d874836.war&quot;
+18:52:07,786 INFO  [stdout] (MSC service thread 1-3) INFO  08-05 18:52:07,785 (RulesRepositoryConfigurator.java:shutdown:180) 	 SHUTDOWN RULES CONFIG
+18:52:07,969 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-4) Stopped deployment 3fc54135-fce8-4b42-8573-33602d874836.war in 989ms
+18:52:39,522 INFO  [org.jboss.as.server.deployment] (pool-1-thread-1) Content added at location /local/git/guvnor/guvnor-webapp-drools/target/jboss-as-7.0.2.Final/standalone/data/content/86/493900e8278227167b867ee46613f1dabad855/content
+18:52:39,527 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-4) Starting deployment of &quot;343e8612-7bb2-46a6-b51c-124a605c8ace.war&quot;
+18:53:10,111 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry iText-toolbox.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,149 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry iText-toolbox-2.1.2.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,149 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry bcmail-jdk14-138.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,149 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry bcprov-jdk14-138.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,149 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/mail-1.4.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_cs.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_de_DE.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_es.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_fr.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_hu.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_it.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_ja_JP.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,150 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_ko_KR.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_pl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_pt_BR.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_ru.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_zh_CN.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry derbyLocale_zh_TW.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jaxb-api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jaxb-impl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,151 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jsr173_1.0_api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,152 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,152 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jaxb-api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,152 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,152 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jsr173_1.0_api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,152 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-3) Class Path entry jaxb1-impl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:53:10,199 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;org.springframework.context.ApplicationContext,org.springframework.beans.BeansException&quot; for service type &quot;org.apache.cxf.bus.factory&quot;
+18:53:10,200 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.ConfigurableArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.spi.Configurable&quot;
+18:53:10,201 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.GenericArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:53:10,201 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:53:10,201 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;archiveFormat=UNKNOWN&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:53:10,201 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.serialization.ZipSerializableViewImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.serialization.SerializableView&quot;
+18:53:10,202 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:53:10,202 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:53:10,202 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:53:10,202 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.tar.TarExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarExporter&quot;
+18:53:10,202 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.tar&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarExporter&quot;
+18:53:10,203 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ZipImporter&quot;
+18:53:10,203 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ZipImporter&quot;
+18:53:10,203 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.tar.TarImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarImporter&quot;
+18:53:10,203 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.tar&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarImporter&quot;
+18:53:10,204 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:53:10,204 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.war&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:53:10,204 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:53:10,204 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.tar.TarGzExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarGzExporter&quot;
+18:53:10,204 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.tar.gz&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarGzExporter&quot;
+18:53:10,205 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.serialization.ZipSerializableViewImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.serialization.ZipSerializableView&quot;
+18:53:10,205 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.ExplodedImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ExplodedImporter&quot;
+18:53:10,205 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.EnterpriseArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:53:10,205 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.ear&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:53:10,205 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:53:10,206 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.ResourceAdapterArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:53:10,206 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.rar&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:53:10,206 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:53:10,206 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.ExplodedExporter&quot;
+18:53:10,207 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.tar.TarGzImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarGzImporter&quot;
+18:53:10,207 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;extension=.tar.gz&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarGzImporter&quot;
+18:53:10,234 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.ZipExporter&quot;
+18:53:10,236 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-3) Encountered invalid class name &quot;org.xmlpull.mxp1.MXParser,org.xmlpull.mxp1_serializer.MXSerializer&quot; for service type &quot;org.xmlpull.v1.XmlPullParserFactory&quot;
+18:53:10,319 INFO  [org.jboss.as.jpa] (MSC service thread 1-1) added javax.persistence.api dependency to 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+18:53:10,500 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.headers.HeaderManagerImpl/bus on class org.apache.cxf.headers.HeaderManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,501 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.bus.resource.ResourceManagerImpl/bus on class org.apache.cxf.bus.resource.ResourceManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,501 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.catalog.OASISCatalogManager/bus on class org.apache.cxf.catalog.OASISCatalogManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,501 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.wsdl11.WSDLManagerImpl/bus on class org.apache.cxf.wsdl11.WSDLManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,501 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.endpoint.ServerRegistryImpl/bus on class org.apache.cxf.endpoint.ServerRegistryImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,502 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.workqueue.WorkQueueManager on class org.apache.cxf.workqueue.AutomaticWorkQueueImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,502 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.workqueue.WorkQueueManagerImpl/bus on class org.apache.cxf.workqueue.WorkQueueManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,502 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.DestinationFactoryManagerImpl/bus on class org.apache.cxf.transport.DestinationFactoryManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,502 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.http.QueryHandlerRegistryImpl/bus on class org.apache.cxf.transport.http.QueryHandlerRegistryImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,502 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.ConduitInitiatorManagerImpl/bus on class org.apache.cxf.transport.ConduitInitiatorManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,503 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.buslifecycle.CXFBusLifeCycleManager/bus on class org.apache.cxf.buslifecycle.CXFBusLifeCycleManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,503 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.service.factory.FactoryBeanListenerManager/bus on class org.apache.cxf.service.factory.FactoryBeanListenerManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,503 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.binding.BindingFactoryManagerImpl/bus on class org.apache.cxf.binding.BindingFactoryManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,503 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.binding.AbstractBaseBindingFactory/bus on class org.apache.cxf.binding.AbstractBaseBindingFactory since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,503 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.jaxrs.interceptor.AttachmentInputInterceptor/supportedTypes on class org.apache.cxf.jaxrs.interceptor.AttachmentInputInterceptor since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,504 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: cxf on class org.apache.cxf.databinding.AbstractDataBinding since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,504 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-1) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.http.HTTPTransportFactory/bus on class org.apache.cxf.transport.http.HTTPTransportFactory since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:53:10,506 INFO  [org.jboss.weld] (MSC service thread 1-1) Processing CDI deployment: 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+18:53:11,111 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-2) Deploying JDBC-compliant driver class org.apache.derby.jdbc.AutoloadedDriver (version 10.5)
+18:53:11,158 INFO  [org.jboss.weld] (MSC service thread 1-2) Starting Services for CDI deployment: 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+18:53:11,174 INFO  [org.jboss.weld] (MSC service thread 1-3) Starting weld service
+18:53:11,222 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Solder Config XML provider starting...
+18:53:11,223 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Loading XmlDocumentProvider: org.jboss.solder.config.xml.bootstrap.ResourceLoaderXmlDocumentProvider
+18:53:11,428 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/beans.xml
+18:53:11,542 WARN  [org.jboss.solder.config.xml.model.ModelBuilder] (MSC service thread 1-3) Solder Config could not resolve XML namspace for: {}
+18:53:11,552 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-remoting-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,553 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-security-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,554 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-transaction-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,556 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/guvnor-webapp-core-5.4.0-SNAPSHOT.jar/META-INF/beans.xml
+18:53:11,558 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-international-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,559 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-persistence-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,560 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/guvnor-repository-5.4.0-SNAPSHOT.jar/META-INF/beans.xml
+18:53:11,561 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-security-api-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,562 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-conversation-spi-3.0.0.Final.jar/META-INF/beans.xml
+18:53:11,565 WARN  [org.jboss.solder.config.xml.model.ModelBuilder] (MSC service thread 1-3) Solder Config could not resolve XML namspace for: {}
+18:53:11,565 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-international-api-3.1.0.Final.jar/META-INF/beans.xml
+18:53:11,584 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Adding XML Defined Bean: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+18:53:11,618 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Adding XML Defined Bean: org.jboss.seam.security.IdentityImpl
+18:53:11,621 INFO  [org.jboss.solder.Version] (MSC service thread 1-3) Solder null (build id: null)
+18:53:11,758 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Preventing installation of default bean: org.jboss.seam.security.IdentityImpl
+18:53:11,861 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.security.SecurityEventMessages from being installed as bean due to @Veto annotation
+18:53:13,391 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.persistence.HibernatePersistenceProvider from being installed as bean due to @Veto annotation
+18:53:13,408 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.persistence.hibernate.HibernateManagedSessionExtensionImpl from being installed as bean due to @Veto annotation
+18:53:13,808 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.international.locale.LocaleConfiguration from being installed as bean due to @Veto annotation
+18:53:16,519 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Preventing installation of default bean: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+18:53:16,852 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.NoTransaction from being installed as bean due to @Veto annotation
+18:53:16,854 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.UTTransaction from being installed as bean due to @Veto annotation
+18:53:16,871 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.HibernateTransaction from being installed as bean due to @Veto annotation
+18:53:16,879 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.SeSynchronizations from being installed as bean due to @Veto annotation
+18:53:16,882 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.CMTTransaction from being installed as bean due to @Veto annotation
+18:53:16,883 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-3) Preventing class org.jboss.seam.transaction.EntityTransaction from being installed as bean due to @Veto annotation
+18:53:17,475 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Wrapping InjectionTarget to set field values: org.jboss.seam.security.IdentityImpl
+18:53:17,679 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-3) Wrapping InjectionTarget to set field values: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+18:53:17,745 INFO  [org.jboss.solder.exception.control.extension] (MSC service thread 1-3) Adding handler Qualifiers: [@javax.enterprise.inject.Any()] TraversalMode: BREADTH_FIRST Handles Type: class java.lang.Throwable Precedence: -100 [method] public org.jboss.seam.transaction.SimpleTransactionExceptionHandler.markTransactionRollback(CaughtException&lt;Throwable&gt;) to known handlers
+18:53:17,763 INFO  [org.jboss.seam.international.status.TypedStatusMessageBundleExtension] (MSC service thread 1-3) Add @MessageBundle to org.jboss.solder.reflection.annotated.AnnotationBuilder.messages injection point for the type: org.jboss.solder.support.SolderMessages
+18:53:17,823 INFO  [org.jboss.seam.international.status.TypedStatusMessageBundleExtension] (MSC service thread 1-3) Add @MessageBundle to org.jboss.solder.reflection.annotated.AnnotatedTypeBuilder.messages injection point for the type: org.jboss.solder.support.SolderMessages
+18:53:19,202 INFO  [javax.enterprise.resource.webcontainer.jsf.config] (MSC service thread 1-2) Initializing Mojarra 2.1.3 (SNAPSHOT 20110825) for context &apos;/343e8612-7bb2-46a6-b51c-124a605c8ace&apos;
+18:53:20,243 INFO  [solder-servlet] (MSC service thread 1-2) Catch Integration for Servlets enabled
+18:53:20,247 INFO  [org.jboss.web] (MSC service thread 1-2) registering web context: /343e8612-7bb2-46a6-b51c-124a605c8ace
+18:53:20,255 INFO  [org.jboss.as.server.controller] (pool-1-thread-1) Deployed &quot;343e8612-7bb2-46a6-b51c-124a605c8ace.war&quot;
+ERROR 08-05 18:53:20,439 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:53:22,732 INFO  [org.jboss.modules] JBoss Modules version 1.0.2.GA
+18:53:29,374 INFO  [org.jboss.msc] JBoss MSC version 1.0.1.GA
+18:53:29,430 INFO  [org.jboss.as] JBoss AS 7.0.2.Final &quot;Arc&quot; starting
+18:53:40,526 WARN  [org.jboss.as] No security realm defined for native management service, all access will be unrestricted.
+18:53:40,615 INFO  [org.jboss.as] creating http management service using network interface (management) port (9990)
+18:53:40,617 WARN  [org.jboss.as] No security realm defined for http management service, all access will be unrestricted.
+18:53:40,632 INFO  [org.jboss.as.logging] Removing bootstrap log handlers
+18:53:40,723 INFO  [org.jboss.as.connector.subsystems.datasources] (Controller Boot Thread) Deploying JDBC-compliant driver class org.h2.Driver (version 1.2)
+18:53:40,746 INFO  [org.jboss.as.clustering.infinispan.subsystem] (Controller Boot Thread) Activating Infinispan subsystem.
+18:53:40,868 INFO  [org.jboss.as.naming] (Controller Boot Thread) JBAS011800: Activating Naming Subsystem
+18:53:40,880 INFO  [org.jboss.as.naming] (MSC service thread 1-4) JBAS011802: Starting Naming Service
+18:53:40,893 INFO  [org.jboss.as.osgi] (Controller Boot Thread) JBAS011910: Activating OSGi Subsystem
+18:53:40,929 INFO  [org.jboss.remoting] (MSC service thread 1-4) JBoss Remoting version 3.2.0.Beta2
+18:53:40,935 INFO  [org.jboss.as.security] (Controller Boot Thread) Activating Security Subsystem
+18:53:41,015 INFO  [org.xnio] (MSC service thread 1-4) XNIO Version 3.0.0.Beta3
+18:53:41,028 INFO  [org.xnio.nio] (MSC service thread 1-4) XNIO NIO Implementation Version 3.0.0.Beta3
+18:53:41,281 INFO  [org.apache.catalina.core.AprLifecycleListener] (MSC service thread 1-3) The Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: /local/dev/jdk1.6.0_29/jre/lib/i386/server:/local/dev/jdk1.6.0_29/jre/lib/i386:/local/dev/jdk1.6.0_29/jre/../lib/i386:/usr/java/packages/lib/i386:/lib:/usr/lib
+18:53:41,345 INFO  [org.jboss.as.remoting] (MSC service thread 1-4) Listening on /127.0.0.1:9999
+18:53:41,353 INFO  [org.jboss.as.ee] (Controller Boot Thread) Activating EE subsystem
+18:53:41,409 INFO  [org.apache.coyote.http11.Http11Protocol] (MSC service thread 1-3) Starting Coyote HTTP/1.1 on http--127.0.0.1-8080
+18:53:41,425 INFO  [org.jboss.as.jmx.JMXConnectorService] (MSC service thread 1-3) Starting remote JMX connector
+18:53:41,699 INFO  [org.jboss.as.connector] (MSC service thread 1-4) Starting JCA Subsystem (JBoss IronJacamar 1.0.3.Final)
+18:53:41,788 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-2) Bound data source [java:jboss/datasources/ExampleDS]
+ERROR 08-05 18:53:41,808 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:42,092 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:42,201 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:42,307 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:53:42,761 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-4) Starting deployment of &quot;343e8612-7bb2-46a6-b51c-124a605c8ace.war&quot;
+18:53:42,769 INFO  [org.jboss.as.deployment] (MSC service thread 1-2) Started FileSystemDeploymentService for directory /local/git/guvnor/guvnor-webapp-drools/target/jboss-as-7.0.2.Final/standalone/deployments
+ERROR 08-05 18:53:43,489 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:43,923 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:44,031 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:44,140 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:45,123 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:45,334 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:45,441 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:45,655 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:45,761 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:45,973 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:46,405 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:47,255 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:48,328 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:48,859 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:49,239 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:49,348 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:49,454 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:49,564 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:49,889 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:50,320 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:50,429 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:50,751 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:51,293 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:51,836 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:52,281 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:52,493 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:52,704 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:52,810 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:53,134 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:53,240 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:53,453 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:53,665 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:54,090 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:54,517 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:54,622 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:54,837 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:55,158 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:57,018 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:53:57,615 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:57,838 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:57,948 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:58,055 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:58,268 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:58,439 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:59,299 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:53:59,867 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:00,021 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:01,631 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:01,739 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:01,841 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:02,053 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:03,913 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry iText-toolbox.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,913 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry iText-toolbox-2.1.2.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,913 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry bcmail-jdk14-138.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,913 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry bcprov-jdk14-138.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/itext-2.1.2.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/mail-1.4.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_cs.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_de_DE.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_es.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_fr.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_hu.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,914 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_it.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_ja_JP.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_ko_KR.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_pl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_pt_BR.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_ru.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_zh_CN.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry derbyLocale_zh_TW.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/derby-10.5.3.0_1.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,915 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jaxb-api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jaxb-impl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jsr173_1.0_api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-xjc-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jaxb-api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry activation.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jsr173_1.0_api.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+18:54:03,916 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-2) Class Path entry jaxb1-impl.jar in &quot;/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/jaxb-impl-2.2.5.jar&quot;  does not point to a valid jar for a Class-Path reference.
+ERROR 08-05 18:54:03,955 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:04,061 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+18:54:04,098 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;org.springframework.context.ApplicationContext,org.springframework.beans.BeansException&quot; for service type &quot;org.apache.cxf.bus.factory&quot;
+18:54:04,106 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.ConfigurableArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.spi.Configurable&quot;
+18:54:04,106 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.GenericArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:54:04,106 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:54:04,107 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;archiveFormat=UNKNOWN&quot; for service type &quot;org.jboss.shrinkwrap.api.GenericArchive&quot;
+18:54:04,107 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.serialization.ZipSerializableViewImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.serialization.SerializableView&quot;
+18:54:04,107 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:54:04,108 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:54:04,108 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.JavaArchive&quot;
+18:54:04,108 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.tar.TarExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarExporter&quot;
+18:54:04,108 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.tar&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarExporter&quot;
+18:54:04,109 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ZipImporter&quot;
+18:54:04,109 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.jar&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ZipImporter&quot;
+18:54:04,109 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.tar.TarImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarImporter&quot;
+18:54:04,110 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.tar&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarImporter&quot;
+18:54:04,110 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:54:04,110 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.war&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:54:04,110 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.WebArchive&quot;
+18:54:04,111 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.tar.TarGzExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarGzExporter&quot;
+18:54:04,111 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.tar.gz&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.TarGzExporter&quot;
+18:54:04,111 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.serialization.ZipSerializableViewImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.serialization.ZipSerializableView&quot;
+18:54:04,112 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.ExplodedImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.ExplodedImporter&quot;
+18:54:04,112 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.EnterpriseArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:54:04,112 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.ear&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:54:04,113 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.EnterpriseArchive&quot;
+18:54:04,113 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.spec.ResourceAdapterArchiveImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:54:04,113 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.rar&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:54:04,113 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;archiveFormat=ZIP&quot; for service type &quot;org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive&quot;
+18:54:04,114 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.ExplodedExporter&quot;
+18:54:04,114 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.importer.tar.TarGzImporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarGzImporter&quot;
+18:54:04,114 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;extension=.tar.gz&quot; for service type &quot;org.jboss.shrinkwrap.api.importer.TarGzImporter&quot;
+18:54:04,114 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;implementingClassName=org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl&quot; for service type &quot;org.jboss.shrinkwrap.api.exporter.ZipExporter&quot;
+18:54:04,117 WARN  [org.jboss.as.server.deployment.service-loader] (MSC service thread 1-2) Encountered invalid class name &quot;org.xmlpull.mxp1.MXParser,org.xmlpull.mxp1_serializer.MXSerializer&quot; for service type &quot;org.xmlpull.v1.XmlPullParserFactory&quot;
+ERROR 08-05 18:54:04,291 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+18:54:04,762 INFO  [org.jboss.as.jpa] (MSC service thread 1-3) added javax.persistence.api dependency to 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+ERROR 08-05 18:54:05,011 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:06,009 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:06,490 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.headers.HeaderManagerImpl/bus on class org.apache.cxf.headers.HeaderManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,491 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.bus.resource.ResourceManagerImpl/bus on class org.apache.cxf.bus.resource.ResourceManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,491 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.catalog.OASISCatalogManager/bus on class org.apache.cxf.catalog.OASISCatalogManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,491 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.wsdl11.WSDLManagerImpl/bus on class org.apache.cxf.wsdl11.WSDLManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,492 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.endpoint.ServerRegistryImpl/bus on class org.apache.cxf.endpoint.ServerRegistryImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,492 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.workqueue.WorkQueueManager on class org.apache.cxf.workqueue.AutomaticWorkQueueImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,492 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.workqueue.WorkQueueManagerImpl/bus on class org.apache.cxf.workqueue.WorkQueueManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,493 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.DestinationFactoryManagerImpl/bus on class org.apache.cxf.transport.DestinationFactoryManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,493 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.http.QueryHandlerRegistryImpl/bus on class org.apache.cxf.transport.http.QueryHandlerRegistryImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,493 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.ConduitInitiatorManagerImpl/bus on class org.apache.cxf.transport.ConduitInitiatorManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,493 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.buslifecycle.CXFBusLifeCycleManager/bus on class org.apache.cxf.buslifecycle.CXFBusLifeCycleManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,494 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.service.factory.FactoryBeanListenerManager/bus on class org.apache.cxf.service.factory.FactoryBeanListenerManager since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,494 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.binding.BindingFactoryManagerImpl/bus on class org.apache.cxf.binding.BindingFactoryManagerImpl since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,494 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.binding.AbstractBaseBindingFactory/bus on class org.apache.cxf.binding.AbstractBaseBindingFactory since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,494 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.jaxrs.interceptor.AttachmentInputInterceptor/supportedTypes on class org.apache.cxf.jaxrs.interceptor.AttachmentInputInterceptor since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,495 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: cxf on class org.apache.cxf.databinding.AbstractDataBinding since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,495 WARN  [org.jboss.as.ee.component.deployers.ResourceInjectionAnnotationParsingProcessor] (MSC service thread 1-3) Can&apos;t handle @Resource for ENC name: org.apache.cxf.transport.http.HTTPTransportFactory/bus on class org.apache.cxf.transport.http.HTTPTransportFactory since it&apos;s missing a &quot;lookup&quot; (or &quot;mappedName&quot;) value and isn&apos;t of any known type
+18:54:06,508 INFO  [org.jboss.weld] (MSC service thread 1-3) Processing CDI deployment: 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+ERROR 08-05 18:54:06,543 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:06,757 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:07,299 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:07,405 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:07,512 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:07,618 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:07,724 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+18:54:07,958 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-1) Deploying JDBC-compliant driver class org.apache.derby.jdbc.AutoloadedDriver (version 10.5)
+18:54:07,960 INFO  [org.jboss.weld] (MSC service thread 1-1) Starting Services for CDI deployment: 343e8612-7bb2-46a6-b51c-124a605c8ace.war
+18:54:08,002 INFO  [org.jboss.weld.Version] (MSC service thread 1-1) WELD-000900 1.1.2 (Final)
+ERROR 08-05 18:54:08,047 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+18:54:08,086 INFO  [org.jboss.weld] (MSC service thread 1-2) Starting weld service
+18:54:08,423 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Solder Config XML provider starting...
+18:54:08,425 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Loading XmlDocumentProvider: org.jboss.solder.config.xml.bootstrap.ResourceLoaderXmlDocumentProvider
+18:54:08,519 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/beans.xml
+18:54:08,568 WARN  [org.jboss.solder.config.xml.model.ModelBuilder] (MSC service thread 1-2) Solder Config could not resolve XML namspace for: {}
+18:54:08,569 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-remoting-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,570 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-security-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,572 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-transaction-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,573 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/guvnor-webapp-core-5.4.0-SNAPSHOT.jar/META-INF/beans.xml
+18:54:08,575 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-international-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,578 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-persistence-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,580 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/guvnor-repository-5.4.0-SNAPSHOT.jar/META-INF/beans.xml
+18:54:08,583 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-security-api-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,585 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-conversation-spi-3.0.0.Final.jar/META-INF/beans.xml
+18:54:08,600 WARN  [org.jboss.solder.config.xml.model.ModelBuilder] (MSC service thread 1-2) Solder Config could not resolve XML namspace for: {}
+18:54:08,601 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Reading XML file: vfs:/content/343e8612-7bb2-46a6-b51c-124a605c8ace.war/WEB-INF/lib/seam-international-api-3.1.0.Final.jar/META-INF/beans.xml
+18:54:08,631 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Adding XML Defined Bean: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+18:54:08,651 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Adding XML Defined Bean: org.jboss.seam.security.IdentityImpl
+18:54:08,661 INFO  [org.jboss.solder.Version] (MSC service thread 1-2) Solder null (build id: null)
+ERROR 08-05 18:54:09,081 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:09,371 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:09,518 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:09,682 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:09,800 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:09,968 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:10,179 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:10,326 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:10,499 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:11,544 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.persistence.HibernatePersistenceProvider from being installed as bean due to @Veto annotation
+18:54:11,579 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.persistence.hibernate.HibernateManagedSessionExtensionImpl from being installed as bean due to @Veto annotation
+ERROR 08-05 18:54:11,685 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:11,947 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.international.locale.LocaleConfiguration from being installed as bean due to @Veto annotation
+ERROR 08-05 18:54:12,243 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:12,390 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Preventing installation of default bean: org.jboss.seam.security.IdentityImpl
+18:54:12,433 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.security.SecurityEventMessages from being installed as bean due to @Veto annotation
+ERROR 08-05 18:54:12,676 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:12,976 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:13,127 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:13,779 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:14,371 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:14,684 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:14,920 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:15,189 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:15,498 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:15,610 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Preventing installation of default bean: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+ERROR 08-05 18:54:15,661 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:15,806 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:16,081 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.NoTransaction from being installed as bean due to @Veto annotation
+18:54:16,087 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.UTTransaction from being installed as bean due to @Veto annotation
+18:54:16,127 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.HibernateTransaction from being installed as bean due to @Veto annotation
+18:54:16,134 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.SeSynchronizations from being installed as bean due to @Veto annotation
+18:54:16,139 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.CMTTransaction from being installed as bean due to @Veto annotation
+18:54:16,142 INFO  [org.jboss.solder.core.CoreExtension] (MSC service thread 1-2) Preventing class org.jboss.seam.transaction.EntityTransaction from being installed as bean due to @Veto annotation
+ERROR 08-05 18:54:16,230 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:16,272 INFO  [org.jboss.seam.international.status.TypedStatusMessageBundleExtension] (MSC service thread 1-2) Add @MessageBundle to org.jboss.solder.reflection.annotated.AnnotationBuilder.messages injection point for the type: org.jboss.solder.support.SolderMessages
+18:54:16,549 INFO  [org.jboss.seam.international.status.TypedStatusMessageBundleExtension] (MSC service thread 1-2) Add @MessageBundle to org.jboss.solder.reflection.annotated.AnnotatedTypeBuilder.messages injection point for the type: org.jboss.solder.support.SolderMessages
+ERROR 08-05 18:54:17,025 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Message data for non-existent channel
+ERROR 08-05 18:54:17,173 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:17,182 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Wrapping InjectionTarget to set field values: org.jboss.seam.security.IdentityImpl
+ERROR 08-05 18:54:17,632 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:17,802 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+ERROR 08-05 18:54:17,964 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+18:54:18,190 INFO  [org.jboss.solder.config.xml.bootstrap.XmlConfigExtension] (MSC service thread 1-2) Wrapping InjectionTarget to set field values: org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration
+ERROR 08-05 18:54:18,421 (RemoteConnection.java:handleException:97) 	 JBREM00200: Remote connection failed: java.io.IOException: Window open for non-existent channel
+</system-out>
+    <system-err>May 8, 2012 6:53:20 PM org.jboss.as.arquillian.container.managed.ManagedDeployableContainer startInternal
+INFO: Starting container with: [java, -XX:MaxPermSize=256m, -Xmx512m, -Dorg.jboss.as.client.connect.timeout=10000, -Djboss.home.dir=target/jboss-as-7.0.2.Final/, -Dorg.jboss.boot.log.file=target/jboss-as-7.0.2.Final//standalone/log/boot.log, -Dlogging.configuration=file:target/jboss-as-7.0.2.Final//standalone/configuration/logging.properties, -Djboss.modules.dir=target/jboss-as-7.0.2.Final//modules, -jar, /local/git/guvnor/guvnor-webapp-drools/target/jboss-as-7.0.2.Final/jboss-modules.jar, -mp, target/jboss-as-7.0.2.Final//modules, -logmodule, org.jboss.logmanager, -jaxpmodule, javax.xml.jaxp-provider, org.jboss.as.standalone, -server-config, standalone.xml]
+</system-err>
+  </testcase>
+</testsuite>

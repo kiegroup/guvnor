@@ -1,0 +1,41 @@
+.gwt-diagrams-connection {
+	
+}
+
+.gwt-diagrams-canvas {
+	position: absolute;
+	z-index: 0;
+	color: black;
+}
+
+.gwt-diagrams-vml-group {
+	position: absolute;
+	z-index: 0;
+}
+
+.gwt-diagrams-vml-curve {
+	position: relative;
+	z-index: 0;
+	color: black;
+	width: 1px;
+}
+
+.gwt-diagrams-line {
+	position: absolute;
+	background-color: #000000;
+	border: 0px none transparent;
+	width: 1px;
+	height: 1px;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+.gwt-diagrams-line-vertical {
+}
+
+.gwt-diagrams-line-horizontal {
+}
+
+.gwt-diagrams-ending {
+	z-index: 1;
+}

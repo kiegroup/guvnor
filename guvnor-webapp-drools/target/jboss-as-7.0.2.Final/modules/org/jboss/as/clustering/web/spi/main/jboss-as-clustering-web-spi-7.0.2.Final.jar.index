@@ -1,0 +1,11 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/clustering
+org/jboss/as/clustering/web
+org/jboss/as/clustering/web/impl
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-clustering-web-spi

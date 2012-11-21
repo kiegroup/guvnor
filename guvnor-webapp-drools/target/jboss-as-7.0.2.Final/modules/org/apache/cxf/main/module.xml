@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2011, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<module xmlns="urn:jboss:module:1.0" name="org.apache.cxf">
+
+    <resources>
+        <resource-root path="cxf-api-2.4.1.jar"/>
+        <resource-root path="cxf-common-utilities-2.4.1.jar"/>
+        <resource-root path="cxf-rt-bindings-coloc-2.4.1.jar"/>
+        <resource-root path="cxf-rt-bindings-http-2.4.1.jar"/>
+        <resource-root path="cxf-rt-bindings-object-2.4.1.jar"/>
+        <resource-root path="cxf-rt-bindings-soap-2.4.1.jar"/>
+        <resource-root path="cxf-rt-bindings-xml-2.4.1.jar"/>
+        <resource-root path="cxf-rt-core-2.4.1.jar"/>
+        <resource-root path="cxf-rt-databinding-aegis-2.4.1.jar"/>
+        <resource-root path="cxf-rt-databinding-jaxb-2.4.1.jar"/>
+        <resource-root path="cxf-rt-frontend-jaxws-2.4.1.jar"/>
+        <resource-root path="cxf-rt-frontend-simple-2.4.1.jar"/>
+        <resource-root path="cxf-rt-management-2.4.1.jar"/>
+        <resource-root path="cxf-rt-transports-common-2.4.1.jar"/>
+        <resource-root path="cxf-rt-transports-http-2.4.1.jar"/>
+        <resource-root path="cxf-rt-transports-jms-2.4.1.jar"/>
+        <resource-root path="cxf-rt-transports-local-2.4.1.jar"/>
+        <resource-root path="cxf-rt-ws-addr-2.4.1.jar"/>
+        <resource-root path="cxf-rt-ws-policy-2.4.1.jar"/>
+        <resource-root path="cxf-rt-ws-rm-2.4.1.jar"/>
+        <resource-root path="cxf-rt-ws-security-2.4.1.jar"/>
+        <resource-root path="cxf-tools-common-2.4.1.jar"/>
+        <resource-root path="cxf-tools-java2ws-2.4.1.jar"/>
+        <resource-root path="cxf-tools-validator-2.4.1.jar"/>
+        <resource-root path="cxf-tools-wsdlto-core-2.4.1.jar"/>
+        <resource-root path="cxf-tools-wsdlto-databinding-jaxb-2.4.1.jar"/>
+        <resource-root path="cxf-tools-wsdlto-frontend-jaxws-2.4.1.jar"/>
+        <resource-root path="cxf-xjc-boolean-2.3.2.jar"/>
+        <resource-root path="cxf-xjc-bug671-2.3.2.jar"/>
+        <resource-root path="cxf-xjc-dv-2.3.2.jar"/>
+        <resource-root path="cxf-xjc-ts-2.3.2.jar"/>
+        <!-- Insert resources here -->
+    </resources>
+
+    <dependencies>
+        <module name="asm.asm" />
+        <module name="javax.api" />
+        <module name="javax.annotation.api" />
+        <module name="javax.jms.api" />
+        <module name="javax.jws.api" />
+        <module name="javax.mail.api" />
+        <module name="javax.resource.api" />
+        <module name="javax.servlet.api" />
+        <module name="javax.xml.bind.api" services="import"/>
+        <module name="com.sun.xml.bind" services="import"/>
+        <module name="javax.wsdl4j.api" />
+        <module name="javax.xml.soap.api" />
+        <module name="javax.xml.stream.api" />
+        <module name="javax.xml.ws.api" />
+        <module name="org.apache.commons.lang" />
+        <module name="org.apache.neethi" />
+        <module name="org.apache.velocity" />
+        <module name="org.apache.ws.xmlschema" />
+        <module name="org.apache.ws.security" />
+        <module name="org.apache.santuario.xmlsec" />
+        <module name="org.springframework.spring" optional="true"/>
+    </dependencies>
+</module>

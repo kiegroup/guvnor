@@ -1,0 +1,13 @@
+
+META-INF
+javax
+javax/xml
+javax/xml/bind
+javax/xml/bind/annotation
+javax/xml/bind/annotation/adapters
+javax/xml/bind/attachment
+javax/xml/bind/helpers
+javax/xml/bind/util
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.xml.bind
+META-INF/maven/org.jboss.spec.javax.xml.bind/jboss-jaxb-api_2.2_spec

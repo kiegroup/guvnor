@@ -1,0 +1,13 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/server
+org/jboss/as/server/deployment
+org/jboss/as/server/deployment/repository
+org/jboss/as/server/deployment/repository/api
+org/jboss/as/server/deployment/repository/impl
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-deployment-repository

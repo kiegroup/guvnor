@@ -1,0 +1,77 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.guvnor.client.rpc;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.io.Serializable;
+
+import org.drools.guvnor.client.asseteditor.ruleflow.TransferConnection;
+import org.drools.guvnor.client.asseteditor.ruleflow.TransferNode;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
+public class RuleFlowContentModel
+    implements
+    PortableObject {
+
+    private List<TransferNode>             nodes       = new ArrayList<TransferNode>();
+    private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();
+    private String                         xml;
+    private String                         json;
+    private String                         preprocessingdata;
+
+    public void setNodes(List<TransferNode> nodes) {
+        this.nodes = nodes;
+    }
+
+    public Collection<TransferNode> getNodes() {
+        return nodes;
+    }
+
+    public void setConnections(Collection<TransferConnection> connections) {
+        this.connections = connections;
+    }
+
+    public Collection<TransferConnection> getConnections() {
+        return connections;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+
+    public String getJson() {
+        return json;
+    }
+
+    public String getPreprocessingdata() {
+        return preprocessingdata;
+    }
+
+    public void setPreprocessingdata(String preprocessingdata) {
+        this.preprocessingdata = preprocessingdata;
+    }
+}

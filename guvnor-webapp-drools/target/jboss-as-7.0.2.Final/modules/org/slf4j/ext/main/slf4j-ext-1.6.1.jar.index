@@ -1,0 +1,12 @@
+
+META-INF
+org
+org/slf4j
+org/slf4j/agent
+org/slf4j/cal10n
+org/slf4j/ext
+org/slf4j/instrumentation
+org/slf4j/profiler
+META-INF/maven
+META-INF/maven/org.slf4j
+META-INF/maven/org.slf4j/slf4j-ext

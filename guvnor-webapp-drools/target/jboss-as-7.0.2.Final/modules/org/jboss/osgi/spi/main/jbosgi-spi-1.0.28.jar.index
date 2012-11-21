@@ -1,0 +1,15 @@
+
+META-INF
+org
+org/jboss
+org/jboss/osgi
+org/jboss/osgi/spi
+org/jboss/osgi/spi/capability
+org/jboss/osgi/spi/internal
+org/jboss/osgi/spi/util
+org/jboss/osgi/spi/framework
+org/jboss/osgi/testing
+org/jboss/osgi/testing/internal
+META-INF/maven
+META-INF/maven/org.jboss.osgi.spi
+META-INF/maven/org.jboss.osgi.spi/jbosgi-spi

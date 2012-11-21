@@ -1,0 +1,7 @@
+
+META-INF
+org
+org/jboss
+org/jboss/jca
+org/jboss/jca/deployers
+org/jboss/jca/deployers/common

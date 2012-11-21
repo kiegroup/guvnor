@@ -1,0 +1,15 @@
+
+META-INF
+javax
+javax/xml
+javax/xml/ws
+javax/xml/ws/wsaddressing
+javax/xml/ws/spi
+javax/xml/ws/spi/http
+javax/xml/ws/soap
+javax/xml/ws/handler
+javax/xml/ws/handler/soap
+javax/xml/ws/http
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.xml.ws
+META-INF/maven/org.jboss.spec.javax.xml.ws/jboss-jaxws-api_2.2_spec

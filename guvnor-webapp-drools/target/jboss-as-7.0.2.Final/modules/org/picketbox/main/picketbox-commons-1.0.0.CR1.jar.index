@@ -1,0 +1,10 @@
+
+META-INF
+org
+org/picketbox
+org/picketbox/commons
+org/picketbox/commons/cipher
+org/picketbox/commons/ssl
+META-INF/maven
+META-INF/maven/org.picketbox
+META-INF/maven/org.picketbox/picketbox-commons

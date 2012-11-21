@@ -1,0 +1,9 @@
+
+META-INF
+javax
+javax/annotation
+javax/annotation/security
+javax/annotation/sql
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.annotation
+META-INF/maven/org.jboss.spec.javax.annotation/jboss-annotations-api_1.1_spec

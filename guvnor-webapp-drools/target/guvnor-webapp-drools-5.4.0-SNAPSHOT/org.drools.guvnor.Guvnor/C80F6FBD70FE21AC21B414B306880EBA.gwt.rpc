@@ -1,0 +1,13 @@
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true, true, true, true, com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException/3936916533, 3936916533
+com.google.gwt.user.client.rpc.RpcTokenException, true, true, false, false, com.google.gwt.user.client.rpc.RpcTokenException/2345075298, 2345075298
+com.google.gwt.user.client.rpc.XsrfToken, false, false, true, true, com.google.gwt.user.client.rpc.XsrfToken/4254043109, 4254043109
+java.lang.Exception, true, false, true, false, java.lang.Exception/1920171873, 1920171873
+java.lang.RuntimeException, true, false, true, false, java.lang.RuntimeException/515124647, 515124647
+java.lang.String, true, true, true, true, java.lang.String/2004016611, 2004016611
+java.lang.Throwable, true, false, true, false, java.lang.Throwable/2953622131, 2953622131
+java.util.Collections$EmptyMap, true, true, false, false, java.util.Collections$EmptyMap/4174664486, 4174664486
+java.util.HashMap, true, true, false, false, java.util.HashMap/1797211028, 1797211028
+java.util.IdentityHashMap, true, true, false, false, java.util.IdentityHashMap/1839153020, 1839153020
+java.util.LinkedHashMap, true, true, false, false, java.util.LinkedHashMap/3008245022, 3008245022
+java.util.TreeMap, true, true, false, false, java.util.TreeMap/1493889780, 1493889780
+org.drools.guvnor.client.rpc.ConfigurationService, false, false, false, false, _, 4257391722

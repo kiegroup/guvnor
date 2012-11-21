@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.drools.guvnor.server.RepositoryAssetServiceIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 183.468 sec

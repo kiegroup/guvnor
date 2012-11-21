@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/ejb3
+org/jboss/ejb3/annotation
+META-INF/maven
+META-INF/maven/org.jboss.ejb3
+META-INF/maven/org.jboss.ejb3/jboss-ejb3-ext-api

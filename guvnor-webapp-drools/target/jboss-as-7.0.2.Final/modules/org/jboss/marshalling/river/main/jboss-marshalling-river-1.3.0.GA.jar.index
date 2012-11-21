@@ -1,0 +1,10 @@
+
+META-INF
+org
+org/jboss
+org/jboss/marshalling
+org/jboss/marshalling/river
+META-INF/services
+META-INF/maven
+META-INF/maven/org.jboss.marshalling
+META-INF/maven/org.jboss.marshalling/jboss-marshalling-river

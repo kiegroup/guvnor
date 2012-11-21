@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+
+  <!-- Inherit the core Web Toolkit stuff. -->
+
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
+  <inherits name="com.google.gwt.resources.Resources"/>
+  <inherits name="pl.balon.gwt.diagrams.Diagrams"/>
+  <inherits name="org.cobogw.gwt.user.User"/>
+  <inherits name="org.drools.ide.common.Common"/>
+  <inherits name="com.google.gwt.activity.Activity"/>
+  <inherits name="com.allen_sauer.gwt.dnd.gwt-dnd"/>
+
+  <!-- Prevent compilation warning -->
+  <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
+  
+  <source path="client" />
+  <source path="shared" />
+
+  <servlet path="/guvnorAPI" class="org.drools.guvnor.server.GuvnorAPIServlet"/>
+  <servlet path="/guvnorService" class="org.drools.guvnor.server.RepositoryServiceServlet"/>
+  <servlet path="/securityService" class="org.drools.guvnor.server.SecurityServiceServlet"/>
+  <servlet path="/asset" class="org.drools.guvnor.server.files.AssetFileServlet"/>
+  <servlet path="/backup" class="org.drools.guvnor.server.files.RepositoryBackupServlet"/>
+  <servlet path="/package" class="org.drools.guvnor.server.files.PackageDeploymentServlet"/>
+  <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
+  <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
+  <servlet path="/feed" class="org.drools.guvnor.server.files.FeedServlet"/>
+  <servlet path="/workflowmanager" class="org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet"/>
+  <servlet path="/wsdlparser" class="org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet"/>
+  <servlet path="/configurationService" class="org.drools.guvnor.server.ConfigurationServiceImplementation"/>
+  <servlet path="/standaloneEditorServlet" class="org.drools.guvnor.server.StandaloneEditorServlet"/>
+  <servlet path="/standaloneEditorService" class="org.drools.guvnor.server.StandaloneEditorServiceImplementation"/>
+
+  <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true"/>
+
+  <replace-with class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImplSafari">
+    <when-type-is class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImpl"/>
+    <when-property-is name="user.agent" value="safari"/>
+  </replace-with>
+  <replace-with class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImplIE">
+    <when-type-is class="org.drools.guvnor.client.widgets.drools.decoratedgrid.CellHeightCalculatorImpl"/>
+    <any>
+      <when-property-is name="user.agent" value="ie6"/>
+      <when-property-is name="user.agent" value="ie8"/>
+      <when-property-is name="user.agent" value="ie9"/>
+    </any>
+  </replace-with>
+
+</module>

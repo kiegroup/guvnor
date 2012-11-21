@@ -1,0 +1,11 @@
+
+META-INF
+org
+org/apache
+org/apache/http
+org/apache/http/entity
+org/apache/http/entity/mime
+org/apache/http/entity/mime/content
+META-INF/maven
+META-INF/maven/org.apache.httpcomponents
+META-INF/maven/org.apache.httpcomponents/httpmime

@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/resteasy
+org/jboss/resteasy/jsapi
+META-INF/maven
+META-INF/maven/org.jboss.resteasy
+META-INF/maven/org.jboss.resteasy/resteasy-jsapi

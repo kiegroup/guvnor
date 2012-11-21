@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/xnio
+org/xnio/nio
+META-INF/services
+META-INF/maven
+META-INF/maven/org.jboss.xnio
+META-INF/maven/org.jboss.xnio/xnio-nio

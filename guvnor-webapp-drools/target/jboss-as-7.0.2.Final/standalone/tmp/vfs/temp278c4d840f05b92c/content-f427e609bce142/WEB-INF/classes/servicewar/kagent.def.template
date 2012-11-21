@@ -1,0 +1,8 @@
+@if{kagent.resources.size() == 0}  <drools:kagent id="@{kagent.name}" kbase="@{kbase.name}"@if{kagent.newInstance != null} new-instance="@{kagent.newInstance}"@end{}@if{kagent.useKBaseClassloader != null} use-kbase-classloader="@{kagent.useKBaseClassloader}"@end{}/>
+@else{}  <drools:kagent id="@{kagent.name}" kbase="@{kbase.name}"@if{kagent.newInstance != null} new-instance="@{kagent.newInstance}"@end{}@if{kagent.useKBaseClassloader != null} use-kbase-classloader="@{kagent.useKBaseClassloader}"@end{}>
+      <drools:resources>
+
+@foreach{resource : kagent.resources}@includeNamed{'resource.def'; resource=resource; kbase=kbase;}@end{}
+      </drools:resources>
+  </drools:kagent>
+@end{}

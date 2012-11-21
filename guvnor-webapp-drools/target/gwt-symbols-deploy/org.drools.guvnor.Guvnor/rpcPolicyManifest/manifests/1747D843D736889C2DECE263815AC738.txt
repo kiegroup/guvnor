@@ -1,0 +1,2 @@
+serviceClass: org.drools.guvnor.client.rpc.SecurityService
+path: 058684663782EFD05F5EB88F8A14B206.gwt.rpc

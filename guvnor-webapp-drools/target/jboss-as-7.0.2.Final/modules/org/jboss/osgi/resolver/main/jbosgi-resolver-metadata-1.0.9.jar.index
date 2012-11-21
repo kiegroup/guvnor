@@ -1,0 +1,10 @@
+
+META-INF
+org
+org/jboss
+org/jboss/osgi
+org/jboss/osgi/metadata
+org/jboss/osgi/metadata/internal
+META-INF/maven
+META-INF/maven/org.jboss.osgi.resolver
+META-INF/maven/org.jboss.osgi.resolver/jbosgi-resolver-metadata

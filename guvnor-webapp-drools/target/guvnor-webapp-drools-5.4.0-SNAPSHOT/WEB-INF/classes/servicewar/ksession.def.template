@@ -1,0 +1,10 @@
+@if{ksession.hasConfig()}
+  <drools:ksession id="@{ksession.name}" type="@{ksession.type.toXML()}" kbase="@{kbase_name}" node="node1">
+	<drools:configuration>
+@if{ksession.keepReference != null}      <drools:keep-reference enabled="@{ksession.keepReference}" />@end{}
+@if{ksession.clockType != null}      <drools:clock-type type="@{ksession.clockType.toXML()}"  />@end{}
+    </drools:configuration>
+  </drools:ksession>
+@else{}
+  <drools:ksession id="@{ksession.name}" type="@{ksession.type.toXML()}" kbase="@{kbase_name}" node="node1"/>
+@end{}

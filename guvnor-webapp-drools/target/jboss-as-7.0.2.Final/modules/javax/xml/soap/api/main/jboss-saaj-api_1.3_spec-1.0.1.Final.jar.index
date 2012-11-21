@@ -1,0 +1,8 @@
+
+META-INF
+javax
+javax/xml
+javax/xml/soap
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.xml.soap
+META-INF/maven/org.jboss.spec.javax.xml.soap/jboss-saaj-api_1.3_spec

@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/network
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-network

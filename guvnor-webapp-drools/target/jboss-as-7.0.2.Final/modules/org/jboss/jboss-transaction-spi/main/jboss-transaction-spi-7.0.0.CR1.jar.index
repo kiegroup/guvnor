@@ -1,0 +1,10 @@
+
+META-INF
+org
+org/jboss
+org/jboss/tm
+org/jboss/tm/usertx
+org/jboss/tm/usertx/client
+META-INF/maven
+META-INF/maven/org.jboss
+META-INF/maven/org.jboss/jboss-transaction-spi

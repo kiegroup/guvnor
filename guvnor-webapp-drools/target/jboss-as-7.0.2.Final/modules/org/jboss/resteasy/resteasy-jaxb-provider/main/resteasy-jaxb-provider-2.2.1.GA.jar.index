@@ -1,0 +1,16 @@
+
+META-INF
+META-INF/services
+org
+org/jboss
+org/jboss/resteasy
+org/jboss/resteasy/annotations
+org/jboss/resteasy/annotations/providers
+org/jboss/resteasy/annotations/providers/jaxb
+org/jboss/resteasy/plugins
+org/jboss/resteasy/plugins/providers
+org/jboss/resteasy/plugins/providers/jaxb
+org/jboss/resteasy/plugins/stats
+META-INF/maven
+META-INF/maven/org.jboss.resteasy
+META-INF/maven/org.jboss.resteasy/resteasy-jaxb-provider

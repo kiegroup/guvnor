@@ -1,0 +1,7 @@
+@if{kbase.hasConfig()}
+	<drools:configuration>
+@if{kbase.mbeans != null}      <drools:mbeans enabled="@{kbase.mbeans}" />@end{}
+@if{kbase.eventProcessingMode != null}      <drools:event-processing-mode mode="@{kbase.eventProcessingMode.toXML()}" />@end{}
+@if{kbase.assertBehavior != null}      <drools:assert-behavior mode="@{kbase.assertBehavior.toXML()}" />@end{}
+@if{kbase.maxThreads != null}      <drools:multithread enabled="true" max-threads="@{kbase.maxThreads}" />@end{}
+    </drools:configuration>@end{}

@@ -1,0 +1,14 @@
+
+META-INF
+META-INF/services
+org
+org/jboss
+org/jboss/as
+org/jboss/as/clustering
+org/jboss/as/clustering/infinispan
+org/jboss/as/clustering/infinispan/atomic
+org/jboss/as/clustering/infinispan/invoker
+org/jboss/as/clustering/infinispan/subsystem
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-clustering-infinispan

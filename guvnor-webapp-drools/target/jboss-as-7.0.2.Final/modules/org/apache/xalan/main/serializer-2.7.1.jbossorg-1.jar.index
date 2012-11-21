@@ -1,0 +1,8 @@
+
+META-INF
+org
+org/apache
+org/apache/xml
+org/apache/xml/serializer
+org/apache/xml/serializer/dom3
+org/apache/xml/serializer/utils

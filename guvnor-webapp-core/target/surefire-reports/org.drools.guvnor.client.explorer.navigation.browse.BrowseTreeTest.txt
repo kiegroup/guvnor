@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 sec

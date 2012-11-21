@@ -1,0 +1,14 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/domain
+org/jboss/as/domain/management
+org/jboss/as/domain/management/connections
+org/jboss/as/domain/management/operations
+org/jboss/as/domain/management/security
+org/jboss/as/domain/management/util
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-domain-management

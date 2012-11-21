@@ -1,0 +1,15 @@
+
+META-INF
+org
+org/hibernate
+org/hibernate/cache
+org/hibernate/cache/infinispan
+org/hibernate/cache/infinispan/access
+org/hibernate/cache/infinispan/builder
+org/hibernate/cache/infinispan/collection
+org/hibernate/cache/infinispan/entity
+org/hibernate/cache/infinispan/impl
+org/hibernate/cache/infinispan/query
+org/hibernate/cache/infinispan/timestamp
+org/hibernate/cache/infinispan/tm
+org/hibernate/cache/infinispan/util

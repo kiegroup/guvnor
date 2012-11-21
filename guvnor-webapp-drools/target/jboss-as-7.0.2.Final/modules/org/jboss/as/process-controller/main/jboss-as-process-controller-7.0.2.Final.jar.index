@@ -1,0 +1,10 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/process
+org/jboss/as/version
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-process-controller

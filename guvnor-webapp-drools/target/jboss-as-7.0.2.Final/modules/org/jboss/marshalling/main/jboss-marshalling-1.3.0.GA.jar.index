@@ -1,0 +1,11 @@
+
+META-INF
+org
+org/jboss
+org/jboss/marshalling
+org/jboss/marshalling/util
+org/jboss/marshalling/reflect
+org/jboss/marshalling/cloner
+META-INF/maven
+META-INF/maven/org.jboss.marshalling
+META-INF/maven/org.jboss.marshalling/jboss-marshalling

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2010 JBoss Inc Licensed under the Apache License, Version 
+  2.0 (the "License"); you may not use this file except in compliance with
+  the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed
+  under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+  OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
+
+  <ui:with field='roundCornersResource'
+    type='org.drools.guvnor.client.resources.RoundedCornersResource' />
+
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+
+  <ui:style>
+    .menu-bar {
+      cursor: default;
+    }
+
+    .menu-bar .menu-item {
+      cursor: pointer;
+      color: #666666;
+      font-weight: bold;
+      padding: 0 10px;
+      vertical-align: bottom;
+    }
+
+    .status-label {
+      color: #666666;
+      font-weight: bold;
+      font-style: italic;
+      padding: 0 10px;
+      vertical-align: bottom;
+    }
+  </ui:style>
+
+
+  <gwt:HTMLPanel>
+    <table style='width:100%; border-collapse:collapse;'>
+      <tr>
+        <td style='width:4px;'>
+          <div
+            class='{roundCornersResource.roundCornersCss.greyTopLeftCornerClass}'></div>
+        </td>
+        <td>
+          <div class='{roundCornersResource.roundCornersCss.greyTopClass}'></div>
+        </td>
+        <td style='width:4px;'>
+          <div
+            class='{roundCornersResource.roundCornersCss.greyTopRightCornerClass}'></div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class='{roundCornersResource.roundCornersCss.greySideLeftClass}'></td>
+        <td class='{roundCornersResource.roundCornersCss.greyCenterClass}'>
+          <div style="float:left;">
+            <gwt:MenuBar styleName="{style.menu-bar}">
+              <gwt:MenuItem styleName="{style.menuItem}">
+                <ui:text from="{i18n.File}" />
+                <gwt:MenuBar vertical="true">
+                  <gwt:MenuItem ui:field="saveChanges"
+                    title="{i18n.CommitAnyChangesForThisAsset}">
+                    <ui:text from="{i18n.SaveChanges}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="saveChangesAndClose"
+                    title="{i18n.CommitAnyChangesForThisAsset}">
+                    <ui:text from="{i18n.SaveAndClose}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="archive">
+                    <ui:text from="{i18n.Archive}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="delete" title="{i18n.DeleteAssetTooltip}">
+                    <ui:text from="{i18n.Delete}" />
+                  </gwt:MenuItem>
+                </gwt:MenuBar>
+              </gwt:MenuItem>
+              <gwt:MenuItem styleName="{style.menu-item}">
+                <ui:text from="{i18n.Edit}" />
+                <gwt:MenuBar vertical="true">
+                  <gwt:MenuItem ui:field="copy">
+                    <ui:text from="{i18n.Copy}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="rename">
+                    <ui:text from="{i18n.Rename}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="promoteToGlobal">
+                    <ui:text from="{i18n.PromoteToGlobal}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="selectWorkingSets">
+                    <ui:text from="{i18n.SelectWorkingSets}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="changeStatus">
+                    <ui:text from="{i18n.ChangeStatus}" />
+                  </gwt:MenuItem>
+                </gwt:MenuBar>
+              </gwt:MenuItem>
+              <gwt:MenuItem  ui:field="sourceMenu" styleName="{style.menuItem}">
+                <ui:text from="{i18n.Source}" />
+                <gwt:MenuBar vertical="true">
+                  <gwt:MenuItem ui:field="validate">
+                    <ui:text from="{i18n.Validate}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="verify">
+                    <ui:text from="{i18n.Verify}" />
+                  </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="viewSource">
+                    <ui:text from="{i18n.ViewSource}" />
+                  </gwt:MenuItem>
+                </gwt:MenuBar>
+              </gwt:MenuItem>
+            </gwt:MenuBar>
+          </div>
+          <div style="float:right;">
+            <gwt:Label ui:field="status" styleName="{style.status-label}">
+              <ui:text from="{i18n.Status}" />
+            </gwt:Label>
+          </div>
+          <div style="clear:both;"></div>
+        </td>
+        <td class='{roundCornersResource.roundCornersCss.greySideRightClass}'></td>
+      </tr>
+
+      <tr>
+        <td style='width:4px;'>
+          <div
+            class='{roundCornersResource.roundCornersCss.greyBottomLeftCornerClass}'></div>
+        </td>
+        <td>
+          <div class='{roundCornersResource.roundCornersCss.greyBottomClass}'></div>
+        </td>
+        <td style='width:4px;'>
+          <div
+            class='{roundCornersResource.roundCornersCss.greyBottomRightCornerClass}'></div>
+        </td>
+      </tr>
+    </table>
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

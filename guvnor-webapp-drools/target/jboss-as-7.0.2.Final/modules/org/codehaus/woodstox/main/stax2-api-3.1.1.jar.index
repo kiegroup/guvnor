@@ -1,0 +1,15 @@
+
+META-INF
+org
+org/codehaus
+org/codehaus/stax2
+org/codehaus/stax2/evt
+org/codehaus/stax2/io
+org/codehaus/stax2/osgi
+org/codehaus/stax2/ri
+org/codehaus/stax2/ri/dom
+org/codehaus/stax2/ri/evt
+org/codehaus/stax2/ri/typed
+org/codehaus/stax2/typed
+org/codehaus/stax2/util
+org/codehaus/stax2/validation

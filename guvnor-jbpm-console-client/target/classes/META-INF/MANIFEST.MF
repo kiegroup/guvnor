@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Built-By: jliu
+Build-Jdk: 1.6.0_29
+Specification-Title: guvnor-jbpm-console-client
+Specification-Version: 5.5.0-SNAPSHOT
+Specification-Vendor: JBoss by Red Hat
+Implementation-Title: guvnor-jbpm-console-client
+Implementation-Version: 5.5.0-SNAPSHOT
+Implementation-Vendor-Id: org.drools
+Implementation-Vendor: JBoss by Red Hat
+Created-By: Maven Integration for Eclipse
+

@@ -1,0 +1,9 @@
+
+META-INF
+org
+org/jboss
+org/jboss/threads
+org/jboss/threads/management
+META-INF/maven
+META-INF/maven/org.jboss.threads
+META-INF/maven/org.jboss.threads/jboss-threads

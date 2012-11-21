@@ -1,0 +1,10 @@
+
+META-INF
+javax
+javax/servlet
+javax/servlet/descriptor
+javax/servlet/annotation
+javax/servlet/http
+META-INF/maven
+META-INF/maven/org.jboss.spec.javax.servlet
+META-INF/maven/org.jboss.spec.javax.servlet/jboss-servlet-api_3.0_spec

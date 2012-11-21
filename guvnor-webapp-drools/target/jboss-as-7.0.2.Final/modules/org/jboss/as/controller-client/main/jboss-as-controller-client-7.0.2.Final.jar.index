@@ -1,0 +1,16 @@
+
+META-INF
+org
+org/jboss
+org/jboss/as
+org/jboss/as/controller
+org/jboss/as/controller/client
+org/jboss/as/controller/client/helpers
+org/jboss/as/controller/client/helpers/domain
+org/jboss/as/controller/client/helpers/domain/impl
+org/jboss/as/controller/client/helpers/standalone
+org/jboss/as/controller/client/helpers/standalone/impl
+org/jboss/as/controller/client/impl
+META-INF/maven
+META-INF/maven/org.jboss.as
+META-INF/maven/org.jboss.as/jboss-as-controller-client
