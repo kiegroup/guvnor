@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration;
+package org.guvnor.jcr2vfsmigration.config;
 
-import org.guvnor.jcr2vfsmigration.config.MigrationConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
 
-public class Jcr2VfsMigrationApp {
+public class MigrationConfig {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Jcr2VfsMigrationApp.class);
+    private File jcrRepositoryDirectory;
+    private File vfsRepositoryDirectory;
 
-    public static void main(String[] args) {
-        logger.info("Migration started");
-        MigrationConfig migrationConfig = new MigrationConfig();
-        migrationConfig.configureProgramArguments(args);
+    public File getJcrRepositoryDirectory() {
+        return jcrRepositoryDirectory;
+    }
+
+    public File getVfsRepositoryDirectory() {
+        return vfsRepositoryDirectory;
+    }
+
+    // ************************************************************************
+    // Configuration methods
+    // ************************************************************************
+
+    public void configureProgramArguments(String[] args) {
         // TODO
-        logger.info("Migration ended");
     }
 
 }
