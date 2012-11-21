@@ -94,10 +94,10 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp-core</module>
-
-    <module>guvnor-bulk-importer</module>
-    <module>guvnor-examples</module>
     <module>guvnor-webapp-drools</module>
+    <module>guvnor-bulk-importer</module>
+    <module>guvnor-jcr2vfs-migration</module>
+    <module>guvnor-examples</module>
   </modules>
 
   <profiles>
