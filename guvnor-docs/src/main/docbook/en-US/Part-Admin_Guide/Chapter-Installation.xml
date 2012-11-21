@@ -22,7 +22,7 @@
 
       <listitem>
         <para><emphasis role="bold">Download the Guvnor distribution</emphasis> from <link
-        xlink:href="the download site">the download site</link>. In the download zip, there's 1 war file per app server
+        xlink:href="http://www.jboss.org/drools/downloads">the download site</link>. In the download zip, there's 1 war file per app server
         version, for example <filename>guvnor-5.2.0-jboss-eap-5.1.war</filename> for JBoss EAP 5.1. Use the war file best
         suited for your app server. Essentially there's little difference between those war files: mostly it's a matter
         of excluded jars which are already available on the app server.</para>
