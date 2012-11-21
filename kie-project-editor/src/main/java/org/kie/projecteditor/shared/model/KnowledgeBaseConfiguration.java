@@ -10,8 +10,8 @@ public class KnowledgeBaseConfiguration {
     private String name;
     private String namespace;
     private String fullName;
-    private AssertBehaviorOption equalsBehavior;
-    private EventProcessingOption eventProcessingMode;
+    private AssertBehaviorOption equalsBehavior = AssertBehaviorOption.IDENTITY;
+    private EventProcessingOption eventProcessingMode = EventProcessingOption.STREAM;
     private ArrayList<KSessionModel> kSessionModels = new ArrayList<KSessionModel>();
 
     public String getName() {

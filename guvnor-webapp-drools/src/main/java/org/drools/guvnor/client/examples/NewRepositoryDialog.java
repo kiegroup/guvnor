@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.examples;
 
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;

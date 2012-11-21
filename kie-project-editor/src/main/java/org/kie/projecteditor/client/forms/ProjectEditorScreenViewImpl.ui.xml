@@ -24,8 +24,8 @@
   <gwt:HTMLPanel width="100%">
         <div>
             <gwt:HorizontalPanel>
-                <gwt:Button text="{i18n.AddKBase}"/>
-                <gwt:Button text="{i18n.DeleteKBase}"/>
+                <gwt:Button ui:field="addKBase" text="{i18n.AddKBase}"/>
+                <gwt:Button ui:field="deleteKBase" text="{i18n.DeleteKBase}"/>
             </gwt:HorizontalPanel>
         </div>
         <div>

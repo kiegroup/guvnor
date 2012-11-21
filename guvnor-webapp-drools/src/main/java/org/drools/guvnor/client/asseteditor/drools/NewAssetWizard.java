@@ -45,6 +45,8 @@ import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionT
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.guvnor.client.rpc.Path;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a

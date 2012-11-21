@@ -19,7 +19,7 @@ package org.kie.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.projecteditor.shared.model.KSessionModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface KnowledgeBaseConfigurationFormView
         extends IsWidget {
@@ -36,7 +36,7 @@ public interface KnowledgeBaseConfigurationFormView
 
     void setEventProcessingModeCloud();
 
-    void setStatefulSessions(ArrayList<KSessionModel> statefulSessions);
+    void setStatefulSessions(List<KSessionModel> statefulSessions);
 
-    void setStatelessSessions(ArrayList<KSessionModel> statefulSessions);
+    void setStatelessSessions(List<KSessionModel> statelessSessions);
 }

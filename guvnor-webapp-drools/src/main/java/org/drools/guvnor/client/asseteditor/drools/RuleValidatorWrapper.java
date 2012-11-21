@@ -23,9 +23,9 @@ import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
@@ -33,7 +33,6 @@ import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.util.SaveCommand;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.

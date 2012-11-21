@@ -40,4 +40,8 @@ public class KProjectModel
     public KnowledgeBaseConfiguration get(String name) {
         return configurations.get(name);
     }
+
+    public void remove(String fullName) {
+        configurations.remove(fullName);
+    }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.common;
+package org.kie.uberfirebootstrap.client.widgets;
 
 import java.util.Iterator;
 
@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 
 public abstract class Popup extends PopupPanel {
 
@@ -64,6 +65,8 @@ public abstract class Popup extends PopupPanel {
 
     @Override
     public void show() {
+
+        clear();
 
         if ( afterShowEvent != null ) {
             afterShowEvent.execute();
@@ -145,7 +148,7 @@ public abstract class Popup extends PopupPanel {
     }
 
     private void focusFirstWidget(Widget content) {
-        if ( content instanceof FormStyleLayout ) {
+        if ( content instanceof FormStyleLayout) {
             FormStyleLayout fsl = (FormStyleLayout) content;
             Widget ow = fsl.getWidget();
             if ( ow instanceof HasWidgets ) {

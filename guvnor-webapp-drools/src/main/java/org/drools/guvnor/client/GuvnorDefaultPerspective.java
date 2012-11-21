@@ -46,7 +46,7 @@ public class GuvnorDefaultPerspective {
         menubar.addWorkbenchItem(new DefaultMenuItemCommand("Project Model",new Command() {
             @Override
             public void execute() {
-                placeManager.goTo(new DefaultPlaceRequest("projectModel"));
+                placeManager.goTo(new DefaultPlaceRequest("projectEditorScreen"));
             }
         }));
 

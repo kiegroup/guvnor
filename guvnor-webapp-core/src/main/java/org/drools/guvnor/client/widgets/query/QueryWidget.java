@@ -22,9 +22,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.common.DatePickerTextBox;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;

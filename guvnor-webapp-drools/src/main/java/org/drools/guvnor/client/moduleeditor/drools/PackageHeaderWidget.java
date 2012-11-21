@@ -18,12 +18,11 @@ package org.drools.guvnor.client.moduleeditor.drools;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.ModuleService;

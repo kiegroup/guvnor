@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.EventBus;
 
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;

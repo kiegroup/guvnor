@@ -27,6 +27,7 @@ import org.kie.projecteditor.shared.model.KSessionModel;
 import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
 import org.kie.projecteditor.shared.service.ProjectEditorService;
 import org.kie.runtime.conf.ClockTypeOption;
+import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -42,7 +43,7 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public KProjectModel load() {
+    public KProjectModel load(Path path) {
 
         KProjectModel configurations = new KProjectModel();
 

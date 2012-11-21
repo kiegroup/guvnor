@@ -19,8 +19,8 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;

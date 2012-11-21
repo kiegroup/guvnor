@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.Map;
 import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.drools.guvnor.client.rpc.*;
 
 public class SpringContextElementsBrowser extends Composite {

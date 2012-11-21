@@ -26,10 +26,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.asseteditor.MultiViewRow;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;

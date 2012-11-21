@@ -21,7 +21,7 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
-import org.drools.guvnor.client.common.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ClientFactory;

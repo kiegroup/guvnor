@@ -18,8 +18,8 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;

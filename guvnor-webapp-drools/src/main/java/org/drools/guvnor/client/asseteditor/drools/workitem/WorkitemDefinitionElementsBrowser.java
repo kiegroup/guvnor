@@ -18,7 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.workitem;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.common.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.*;

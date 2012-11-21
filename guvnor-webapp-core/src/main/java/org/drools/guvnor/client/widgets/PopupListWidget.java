@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets;
 
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -60,4 +60,12 @@ public interface ProjectEditorConstants
     String Stream();
 
     String Cloud();
+
+    String PleaseSelectAKBase();
+
+    String Ok();
+
+    String Cancel();
+
+    String PleaseSetAName();
 }

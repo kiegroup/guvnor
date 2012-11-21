@@ -21,7 +21,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;

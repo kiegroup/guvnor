@@ -26,7 +26,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern.Co
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;

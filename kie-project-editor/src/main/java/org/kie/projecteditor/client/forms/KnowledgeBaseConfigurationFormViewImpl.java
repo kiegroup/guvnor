@@ -31,6 +31,7 @@ import org.kie.projecteditor.shared.model.KSessionModel;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 
 public class KnowledgeBaseConfigurationFormViewImpl
         extends Composite
@@ -108,12 +109,12 @@ public class KnowledgeBaseConfigurationFormViewImpl
     }
 
     @Override
-    public void setStatefulSessions(ArrayList<KSessionModel> statefulSessions) {
+    public void setStatefulSessions(List<KSessionModel> statefulSessions) {
         statefulSessionsPanel.setSessions(statefulSessions);
     }
 
     @Override
-    public void setStatelessSessions(ArrayList<KSessionModel> statefulSessions) {
+    public void setStatelessSessions(List<KSessionModel> statefulSessions) {
         statelessSessionsPanel.setSessions(statefulSessions);
     }
 }

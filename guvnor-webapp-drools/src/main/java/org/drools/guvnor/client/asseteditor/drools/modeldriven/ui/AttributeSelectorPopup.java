@@ -17,9 +17,8 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;

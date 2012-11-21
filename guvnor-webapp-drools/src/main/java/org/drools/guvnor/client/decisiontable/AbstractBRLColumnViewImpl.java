@@ -25,7 +25,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.events.TemplateVariablesChangedEvent;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.templates.TemplateModellerWidgetFactory;
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Asset;

@@ -14,40 +14,39 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.common;
+package org.kie.uberfirebootstrap.client.widgets;
 
-import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.ImagesCore;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import org.kie.uberfirebootstrap.client.resources.constants.UberfireBootstrapConstants;
+import org.kie.uberfirebootstrap.client.resources.images.UberfireBootstrapImages;
 
 /**
  * This is handy for in-place context help.
  */
-public class InfoPopup extends Composite {
+public class InfoPopup
+        extends Composite {
 
     @UiConstructor
     public InfoPopup(final String title,
                      final String message) {
-        Image info = new Image( ImagesCore.INSTANCE.information() );
-        info.setTitle( message );
+        Image info = new Image(UberfireBootstrapImages.INSTANCE.information());
+        info.setTitle(message);
         info.setAltText(message);
-        info.addClickHandler( new ClickHandler() {
+        info.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                Image image = new Image(ImagesCore.INSTANCE.information());
-                image.setAltText(ConstantsCore.INSTANCE.Information());
+                Image image = new Image(UberfireBootstrapImages.INSTANCE.information());
+                image.setAltText(UberfireBootstrapConstants.INSTANCE.Information());
                 final FormStylePopup pop = new FormStylePopup(image,
-                                                               title );
-                pop.addRow( new SmallLabel( message ) );
+                        title);
+                pop.addRow(new SmallLabel(message));
                 pop.show();
             }
-        } );
-        initWidget( info );
+        });
+        initWidget(info);
     }
 }

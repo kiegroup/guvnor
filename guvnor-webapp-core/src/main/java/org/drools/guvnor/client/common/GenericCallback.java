@@ -24,6 +24,8 @@ import org.drools.guvnor.client.rpc.SessionExpiredException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 
 /**
  * This is a generic call back that handles errors (very simply).
@@ -35,7 +37,8 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
         if (t instanceof SessionExpiredException) {
             showSessionExpiry();
         } else if (t instanceof DetailedSerializationException) {
-            ErrorPopup.showMessage((DetailedSerializationException) t);
+            ErrorPopup.showMessage( t.getMessage(),
+                    ((DetailedSerializationException)t).getLongDescription() );
         } else {
             String message = t.getMessage();
             if (t.getMessage()!=null && t.getMessage().trim().equals("0")){

@@ -17,12 +17,12 @@
 package org.drools.guvnor.client.common;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.ImagesCore;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 
 /**
  * This presents validation error messages to the user, from the server side.

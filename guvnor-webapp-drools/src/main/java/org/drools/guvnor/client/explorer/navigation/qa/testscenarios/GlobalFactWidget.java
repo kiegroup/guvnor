@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
-import org.drools.guvnor.client.common.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;

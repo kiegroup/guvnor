@@ -21,10 +21,8 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPOperatorsDr
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;

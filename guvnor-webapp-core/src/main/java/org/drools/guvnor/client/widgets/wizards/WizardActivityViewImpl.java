@@ -19,9 +19,9 @@ package org.drools.guvnor.client.widgets.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.common.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 import org.drools.guvnor.client.messages.ConstantsCore;
 
 import com.google.gwt.core.client.GWT;

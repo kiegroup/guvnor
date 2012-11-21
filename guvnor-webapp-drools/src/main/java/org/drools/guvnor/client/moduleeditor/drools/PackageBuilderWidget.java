@@ -33,6 +33,10 @@ import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.drools.tables.BuildPackageErrorsSimpleTable;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -607,7 +611,8 @@ public class PackageBuilderWidget extends Composite {
                             	if(((DetailedSerializationException)t).getMessage().contains("Your package has not been built since last change")) {
                             		ErrorPopup.showMessage(Constants.INSTANCE.PackageHadNotBeenBuiltWarning());
                             	} else {
-                                    ErrorPopup.showMessage((DetailedSerializationException) t);
+                                    ErrorPopup.showMessage( t.getMessage(),
+                                            ((DetailedSerializationException)t).getLongDescription() );
                             	}
                             } else {
                                 String message = t.getMessage();

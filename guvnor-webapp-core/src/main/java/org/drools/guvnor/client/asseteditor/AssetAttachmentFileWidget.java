@@ -29,8 +29,9 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.ConstantsCore;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.Asset;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
@@ -43,7 +44,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         EditorWidget {
 
     private FormPanel                form;
-    private FormStyleLayout          layout;
+    private FormStyleLayout layout;
 
     protected final Asset            asset;
     protected final ClientFactory    clientFactory;
@@ -140,7 +141,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                     //this asset, as it has been recently updated" message to users
                     clientFactory.getRefreshAssetEditorEvents().fire(new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(), asset.getUuid()));
                 } else {
-                    ErrorPopup.showMessage( ConstantsCore.INSTANCE.UnableToUploadTheFile() );
+                    ErrorPopup.showMessage(ConstantsCore.INSTANCE.UnableToUploadTheFile());
                 }
             }
 

@@ -22,8 +22,8 @@ import org.kie.projecteditor.shared.model.KSessionModel;
 
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class KSessionsPanel
@@ -43,7 +43,7 @@ public class KSessionsPanel
         return view.asWidget();
     }
 
-    public void setSessions(ArrayList<KSessionModel> sessions) {
+    public void setSessions(List<KSessionModel> sessions) {
         view.clearList();
 
         for (KSessionModel model : sessions) {

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.ruleflow;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

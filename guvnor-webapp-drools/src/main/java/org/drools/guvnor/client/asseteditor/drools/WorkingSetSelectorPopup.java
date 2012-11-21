@@ -30,6 +30,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.*;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 
 
 public class WorkingSetSelectorPopup {

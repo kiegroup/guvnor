@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
@@ -37,6 +36,9 @@ import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.widgets.RESTUtil;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

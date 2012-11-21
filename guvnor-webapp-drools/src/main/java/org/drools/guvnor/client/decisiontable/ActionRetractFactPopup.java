@@ -17,7 +17,7 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.List;
 
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;

@@ -22,15 +22,26 @@ import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
 public interface ProjectEditorScreenView
         extends IsWidget {
 
-    interface Presenter{
+    interface Presenter {
 
-        void onKBaseSelection(String name);
+        void onKBaseSelection(String fullName);
+
+        void onAddNewKBase();
+
+        void onRemoveKBase();
 
     }
+
     void setPresenter(Presenter presenter);
 
     void addKnowledgeBaseConfiguration(String kbaseName);
 
     void showForm(KnowledgeBaseConfiguration knowledgeBaseConfiguration);
+
+    void selectKBase(String fullName);
+
+    void removeKnowledgeBaseConfiguration(String fullName);
+
+    void showPleaseSelectAKBaseInfo();
 
 }

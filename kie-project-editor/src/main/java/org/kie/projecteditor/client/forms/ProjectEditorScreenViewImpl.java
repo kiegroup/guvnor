@@ -18,13 +18,16 @@ package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.projecteditor.client.resources.constants.ProjectEditorConstants;
 import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 
 import javax.inject.Inject;
 
@@ -73,5 +76,40 @@ public class ProjectEditorScreenViewImpl
     @Override
     public void showForm(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
         form.setConfig(knowledgeBaseConfiguration);
+    }
+
+    @Override
+    public void selectKBase(String fullName) {
+        for (int i = 0; i < kbaseList.getItemCount(); i++) {
+            if (kbaseList.getItemText(i).equals(fullName)) {
+                kbaseList.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void removeKnowledgeBaseConfiguration(String fullName) {
+        for (int i = 0; i < kbaseList.getItemCount(); i++) {
+            if (kbaseList.getItemText(i).equals(fullName)) {
+                kbaseList.removeItem(i);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void showPleaseSelectAKBaseInfo() {
+        ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.PleaseSelectAKBase());
+    }
+
+    @UiHandler("addKBase")
+    public void addKBase(ClickEvent event) {
+        presenter.onAddNewKBase();
+    }
+
+    @UiHandler("deleteKBase")
+    public void deleteKBase(ClickEvent event) {
+        presenter.onRemoveKBase();
     }
 }

@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.tables.GuvnorSimplePager;
 import org.drools.guvnor.shared.security.AppRoles;

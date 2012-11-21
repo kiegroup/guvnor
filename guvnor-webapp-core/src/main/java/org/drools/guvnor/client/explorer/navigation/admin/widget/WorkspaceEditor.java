@@ -17,8 +17,8 @@
 package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.user.client.ui.Image;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.ConstantsCore;

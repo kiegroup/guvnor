@@ -36,6 +36,7 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 
 /**
  * Well this one should be pretty obvious what it does.

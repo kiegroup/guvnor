@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.GuvnorImages;

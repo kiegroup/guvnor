@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 
 import com.google.gwt.event.shared.EventBus;

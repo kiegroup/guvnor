@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
-import org.drools.guvnor.client.common.Popup;
+import org.kie.uberfirebootstrap.client.widgets.Popup;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;

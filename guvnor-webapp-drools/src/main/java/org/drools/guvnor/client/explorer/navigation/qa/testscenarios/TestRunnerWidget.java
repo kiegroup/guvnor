@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.AuditEventsImages;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;

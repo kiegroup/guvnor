@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.ide.common.client.modeldriven.DropDownData;

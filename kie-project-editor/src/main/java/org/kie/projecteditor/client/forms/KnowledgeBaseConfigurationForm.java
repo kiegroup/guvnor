@@ -69,7 +69,6 @@ public class KnowledgeBaseConfigurationForm
                 break;
 
             case STREAM:
-            default:
                 view.setEventProcessingModeStream();
                 break;
         }
@@ -82,7 +81,6 @@ public class KnowledgeBaseConfigurationForm
                 break;
 
             case IDENTITY:
-            default:
                 view.setEqualsBehaviorIdentity();
                 break;
         }

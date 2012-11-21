@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.common.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.explorer.ClientFactory;

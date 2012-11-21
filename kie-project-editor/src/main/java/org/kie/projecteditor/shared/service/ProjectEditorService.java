@@ -18,12 +18,14 @@ package org.kie.projecteditor.shared.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.projecteditor.shared.model.KProjectModel;
+import org.uberfire.backend.vfs.Path;
+
 
 @Remote
 public interface ProjectEditorService {
 
     public void save(KProjectModel model);
 
-    public KProjectModel load();
+    public KProjectModel load(Path path);
 
 }

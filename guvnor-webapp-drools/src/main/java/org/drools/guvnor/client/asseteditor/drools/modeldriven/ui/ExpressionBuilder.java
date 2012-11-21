@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.kie.uberfirebootstrap.client.widgets.FormStylePopup;
+import org.kie.uberfirebootstrap.client.widgets.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;

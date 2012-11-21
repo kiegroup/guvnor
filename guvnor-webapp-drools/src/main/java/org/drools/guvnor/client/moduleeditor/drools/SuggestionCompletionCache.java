@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.common.ErrorPopup;
+import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
@@ -32,12 +32,10 @@ import org.drools.guvnor.client.rpc.SuggestionCompletionEngineServiceAsync;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 /**
  * This utility cache will maintain a cache of suggestion completion engines,

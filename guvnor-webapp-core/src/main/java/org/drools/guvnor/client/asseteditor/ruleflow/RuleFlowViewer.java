@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 
 import pl.balon.gwt.diagrams.client.connection.Connection;

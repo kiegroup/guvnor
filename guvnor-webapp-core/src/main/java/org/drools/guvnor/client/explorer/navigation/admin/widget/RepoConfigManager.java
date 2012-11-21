@@ -18,12 +18,11 @@ package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.InfoPopup;
+import org.kie.uberfirebootstrap.client.widgets.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RdbmsConfigurable;
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.resources.GuvnorImages;
-import org.drools.guvnor.client.resources.ImagesCore;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 

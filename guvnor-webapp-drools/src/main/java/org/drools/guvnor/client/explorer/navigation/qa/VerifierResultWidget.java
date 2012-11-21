@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
+import org.kie.uberfirebootstrap.client.widgets.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.rpc.AnalysisReport;
@@ -27,7 +27,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
