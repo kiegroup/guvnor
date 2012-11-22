@@ -78,6 +78,21 @@
       <!--<outputDirectory>binaries/client</outputDirectory>-->
       <!--<useStrictFiltering>true</useStrictFiltering>-->
     <!--</dependencySet>-->
+    <!-- Migration -->
+    <dependencySet>
+      <includes><!-- Keep in sync with guvnor/guvnor-jcr2vfs-migration/pom.xml -->
+        <include>org.drools:guvnor-jcr2vfs-migration:jar</include>
+        <include>org.drools:guvnor-api:jar</include>
+        <include>org.drools:guvnor-repository*:jar</include>
+        <include>org.slf4j:slf4j-api:jar</include>
+        <include>ch.qos.logback:*:jar</include>
+      </includes>
+      <excludes>
+        <exclude>*:sources</exclude>
+      </excludes>
+      <outputDirectory>migration</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
     <dependencySet>
       <includes>
         <include>org.drools:guvnor-examples:jar</include>

@@ -14,11 +14,17 @@
   <description>Migrates the data of Guvnor 5 to Guvnor 6</description>
 
   <dependencies>
+    <!-- Keep dependencies in sync with guvnor-distribution/src/main/assembly/assembly-guvnor.xml -->
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency><!-- This is an executable jar, so it needs a logging implementation -->
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>

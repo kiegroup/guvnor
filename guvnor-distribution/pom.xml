@@ -96,6 +96,17 @@
       <classifier>tomcat-6.0</classifier>
     </dependency>
 
+    <!-- Migration -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-jcr2vfs-migration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-jcr2vfs-migration</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+
     <!-- Examples -->
     <dependency>
       <groupId>org.drools</groupId>
