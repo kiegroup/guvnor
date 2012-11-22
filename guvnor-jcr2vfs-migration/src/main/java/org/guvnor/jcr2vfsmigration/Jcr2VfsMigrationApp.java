@@ -27,7 +27,7 @@ public class Jcr2VfsMigrationApp {
     public static void main(String[] args) {
         logger.info("Migration started");
         MigrationConfig migrationConfig = new MigrationConfig();
-        migrationConfig.configureProgramArguments(args);
+        migrationConfig.parseArgs(args);
         // TODO
         logger.info("Migration ended");
     }

@@ -84,6 +84,7 @@
         <include>org.drools:guvnor-jcr2vfs-migration:jar</include>
         <include>org.drools:guvnor-api:jar</include>
         <include>org.drools:guvnor-repository*:jar</include>
+        <include>commons-cli:commons-cli:jar</include>
         <include>org.slf4j:slf4j-api:jar</include>
         <include>ch.qos.logback:*:jar</include>
       </includes>
