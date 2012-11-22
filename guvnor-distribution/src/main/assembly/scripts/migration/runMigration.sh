@@ -16,7 +16,7 @@ echo "- The environment variable JAVA_HOME should be set to the JDK installation
 echo "  For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
 echo "  For example (mac): export JAVA_HOME=/Library/Java/Home"
 echo
-echo "Starting examples app..."
+echo "Starting migration app..."
 
 # You can use -Xmx128m or less too, but it might be slower
 if [ -f $JAVA_HOME/bin/java ]; then

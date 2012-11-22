@@ -13,7 +13,7 @@ echo "- Java is recommended to be JDK and java 6 for optimal performance"
 echo "- The environment variable JAVA_HOME should be set to the JDK installation directory"
 echo "  For example: set JAVA_HOME="C:\Program Files\Java\jdk1.6.0"
 echo
-echo "Starting examples app..."
+echo "Starting migration app..."
 
 rem You can use -Xmx128m or less too, but it might be slower
 if exist %JAVA_HOME%\bin\java.exe (
