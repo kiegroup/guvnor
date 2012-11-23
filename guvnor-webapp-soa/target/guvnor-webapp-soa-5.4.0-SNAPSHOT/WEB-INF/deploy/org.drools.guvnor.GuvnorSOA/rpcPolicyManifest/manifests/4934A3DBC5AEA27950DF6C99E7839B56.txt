@@ -1,2 +1,0 @@
-serviceClass: org.drools.guvnor.client.rpc.ModuleService
-path: 0AEDBD6DC34A371397015C80C1205EC2.gwt.rpc

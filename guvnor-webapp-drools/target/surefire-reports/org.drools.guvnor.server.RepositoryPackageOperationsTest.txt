@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.drools.guvnor.server.RepositoryPackageOperationsTest
--------------------------------------------------------------------------------
-Tests run: 21, Failures: 0, Errors: 0, Skipped: 2, Time elapsed: 0.356 sec

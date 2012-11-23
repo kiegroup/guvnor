@@ -1,2 +1,0 @@
-serviceClass: org.drools.guvnor.client.rpc.ArtifactDependenciesService
-path: 7BA21F24A5279A155DE4FB77988A1FF3.gwt.rpc

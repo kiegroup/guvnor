@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.drools.guvnor.server.builder.drools.AssetItemValidatorTest
--------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.73 sec

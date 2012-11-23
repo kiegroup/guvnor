@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.drools.guvnor.server.RepositoryCategoryServiceIntegrationTest
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 144.137 sec

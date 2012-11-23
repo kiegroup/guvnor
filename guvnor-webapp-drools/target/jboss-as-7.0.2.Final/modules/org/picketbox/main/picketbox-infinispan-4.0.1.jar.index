@@ -1,9 +1,0 @@
-
-META-INF
-org
-org/jboss
-org/jboss/security
-org/jboss/security/authentication
-META-INF/maven
-META-INF/maven/org.picketbox
-META-INF/maven/org.picketbox/picketbox-infinispan
