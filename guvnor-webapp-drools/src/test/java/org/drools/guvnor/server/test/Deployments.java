@@ -18,28 +18,43 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
-import org.jboss.shrinkwrap.api.Filters;
+import org.jboss.shrinkwrap.resolver.api.Resolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+
 
 public class Deployments {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
-                .importBuildOutput().importTestBuildOutput()
-                .as(WebArchive.class);
+        String warTarget = "target/guvnor-webapp-drools-6.0.0-SNAPSHOT";
+        String testTarget = "target/test-classes";
+
+        WebArchive webArchive = ShrinkWrap.create(WebArchive.class);
+        webArchive.as(ExplodedImporter.class).importDirectory(warTarget);
+        webArchive.merge(
+                ShrinkWrap.create(ExplodedImporter.class, "random_name_to_avoid_sw_failure")
+                        .importDirectory(testTarget)
+                        .as(JavaArchive.class),
+                "WEB-INF/classes");
+
+//    	WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
+//                .importBuildOutput().importTestBuildOutput()
+//                .as(WebArchive.class);
+
         addTestDependencies(webArchive);
 
-        File explodedWarFile = new File("target/guvnor-webapp-drools-6.0.0-SNAPSHOT");
+        File explodedWarFile = new File(warTarget);
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
         filterWebXml(webArchive, explodedWarFile);
+
         removeExcludedFiles(webArchive, explodedWarFile);
+
        // dumpArchive(webArchive);
         return webArchive;
     }
@@ -118,10 +133,13 @@ public class Deployments {
 
                 // Stuff we need
         ).addAsLibraries(
-                DependencyResolvers.use(MavenDependencyResolver.class)
-                        .artifact("org.apache.abdera:abdera-core:1.1.1")
-                        .artifact("org.apache.abdera:abdera-client:1.1.1")
-                        .resolveAsFiles())
+                Resolvers.use(MavenResolverSystem.class)
+                        .resolve(
+                                "org.apache.abdera:abdera-core:1.1.1",
+                                "org.apache.abdera:abdera-client:1.1.1")
+                        .withClassPathResolution(false)
+                        .withTransitivity()
+                        .asFile())
         .addAsLibrary(new File("target/test-classes/billasurf.jar"));
     }
 
