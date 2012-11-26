@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.client.widgets;
 
-public interface AddNewKBasePopupView {
+import com.google.gwt.user.client.ui.IsWidget;
 
-    interface Presenter{
+public interface Form<T>
+        extends IsWidget {
 
-        void onOk();
+    void setModel(T t);
 
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void show();
-
-    String getName();
-
-    void showNameEmptyWarning();
 }

@@ -16,21 +16,23 @@
 
 package org.kie.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.projecteditor.client.widgets.Form;
+import org.kie.projecteditor.shared.model.ClockTypeOption;
 import org.kie.projecteditor.shared.model.KSessionModel;
 
 import javax.inject.Inject;
 
 public class KSessionForm
-        implements IsWidget {
-
+        implements Form<KSessionModel>, KSessionFormView.Presenter {
 
     private final KSessionFormView view;
+    private KSessionModel model;
 
     @Inject
     public KSessionForm(KSessionFormView view) {
         this.view = view;
+        view.setPresenter(this);
     }
 
     @Override
@@ -38,11 +40,12 @@ public class KSessionForm
         return view.asWidget();
     }
 
-    public void setModel(KSessionModel kSessionModel) {
-        view.setNamespace(kSessionModel.getNamespace());
-        view.setName(kSessionModel.getName());
+    public void setModel(KSessionModel model) {
+        this.model = model;
 
-        switch (kSessionModel.getClockType()) {
+        view.setName(model.getName());
+
+        switch (model.getClockType()) {
             case PSEUDO:
                 view.selectPseudo();
                 break;
@@ -50,5 +53,20 @@ public class KSessionForm
                 view.selectRealtime();
                 break;
         }
+    }
+
+    @Override
+    public void onNameChange(String name) {
+        model.setName(name);
+    }
+
+    @Override
+    public void onRealtimeSelect() {
+        model.setClockType(ClockTypeOption.REALTIME);
+    }
+
+    @Override
+    public void onPseudoSelect() {
+        model.setClockType(ClockTypeOption.PSEUDO);
     }
 }

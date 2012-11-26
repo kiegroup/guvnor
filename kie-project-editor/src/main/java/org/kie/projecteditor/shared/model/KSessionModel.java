@@ -19,24 +19,15 @@ package org.kie.projecteditor.shared.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class KSessionModel {
+public class KSessionModel
+        implements HasName {
 
-    private String fullName;
     private String name;
-    private String namespace;
     private String type;
-    private ClockTypeOption clockType;
-
-    public String getFullName() {
-        return fullName;
-    }
+    private ClockTypeOption clockType = ClockTypeOption.REALTIME;
 
     public String getName() {
         return name;
-    }
-
-    public String getNamespace() {
-        return namespace;
     }
 
     public String getType() {
@@ -47,23 +38,15 @@ public class KSessionModel {
         return clockType;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public void setClockType(ClockTypeOption clockType) {
-        this.clockType = clockType;
+    public void setClockType(ClockTypeOption clockTypeEnum) {
+        this.clockType = clockTypeEnum;
     }
 }

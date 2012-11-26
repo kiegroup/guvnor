@@ -14,12 +14,36 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.client.widgets;
 
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface AddKBaseCommand {
+public interface ListFormComboPanelView
+        extends IsWidget {
 
-    public void add(KnowledgeBaseConfiguration knowledgeBaseConfiguration);
+    interface Presenter {
 
+        void onRemove();
+
+        void onAdd();
+
+        void onSelect(String fullName);
+
+        void onRename();
+
+    }
+
+    void addItem(String name);
+
+    void setPresenter(Presenter presenter);
+
+    void setForm(Form form);
+
+    void setSelected(String name);
+
+    void clearList();
+
+    void remove(String selectedSession);
+
+    void showPleaseSelectAnItem();
 }

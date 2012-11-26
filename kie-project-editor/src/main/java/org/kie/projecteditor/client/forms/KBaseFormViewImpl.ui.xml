@@ -20,26 +20,20 @@
              xmlns:editor='urn:import:org.kie.projecteditor.client.forms'>
 
   <ui:with field="i18n" type="org.kie.projecteditor.client.resources.constants.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.projecteditor.client.resources.ProjectEditorResources" />
+  <ui:with field="resources" type="org.kie.projecteditor.client.resources.ProjectEditorResources"/>
 
   <gwt:HTMLPanel width="100%">
     <div>
       <div style='float:left'>
         <div style='float:left;'>
-          <gwt:Label text="{i18n.Namespace}"/>
           <gwt:Label text="{i18n.Name}"/>
         </div>
         <div style='float:left;'>
-          <div>
-            <gwt:TextBox ui:field="nameSpaceTextBox"/>
-          </div>
-          <div>
-            <gwt:TextBox ui:field="nameTextBox"/>
-          </div>
+          <gwt:Label ui:field="nameLabel"/>
         </div>
         <div style='clear:both;'/>
       </div>
-      <div style="float:left" class='{resources.mainCss.selectionBox}' >
+      <div style="float:left" class='{resources.mainCss.selectionBox}'>
         <gwt:Label text="{i18n.EqualsBehavior}"/>
         <div>
           <gwt:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
@@ -48,7 +42,7 @@
           <gwt:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
         </div>
       </div>
-      <div style="float:left"  class='{resources.mainCss.selectionBox}'>
+      <div style="float:left" class='{resources.mainCss.selectionBox}'>
         <div>
           <gwt:Label text="{i18n.EventProcessingMode}"/>
           <div>

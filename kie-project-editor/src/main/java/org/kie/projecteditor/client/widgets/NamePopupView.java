@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.client.widgets;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.projecteditor.shared.model.KSessionModel;
+public interface NamePopupView {
 
-public interface KSessionsPanelView
-        extends IsWidget {
+    interface Presenter{
 
-    interface Presenter {
-
-        void selectKSession(String selectedFullName);
+        void onOk();
 
     }
+
     void setPresenter(Presenter presenter);
 
-    void addKSessionModel(KSessionModel model);
+    void show();
 
-    void clearList();
+    String getName();
 
-    void setSelectedSession(KSessionModel kSessionModel);
+    void setName(String name);
+
+    void showNameEmptyWarning();
 }

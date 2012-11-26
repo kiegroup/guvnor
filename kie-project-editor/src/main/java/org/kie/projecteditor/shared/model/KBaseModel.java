@@ -3,16 +3,20 @@ package org.kie.projecteditor.shared.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Portable
-public class KnowledgeBaseConfiguration {
+public class KBaseModel
+        implements HasName {
 
     private String name;
-    private String namespace;
-    private String fullName;
     private AssertBehaviorOption equalsBehavior = AssertBehaviorOption.IDENTITY;
     private EventProcessingOption eventProcessingMode = EventProcessingOption.STREAM;
-    private ArrayList<KSessionModel> kSessionModels = new ArrayList<KSessionModel>();
+    private Map<String, KSessionModel> statefulSessions = new HashMap<String, KSessionModel>();
+    private Map<String, KSessionModel> statelessSessions = new HashMap<String, KSessionModel>();
+    private List<String> includes = new ArrayList<String>();
 
     public String getName() {
         return name;
@@ -20,22 +24,6 @@ public class KnowledgeBaseConfiguration {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public void setEqualsBehavior(AssertBehaviorOption equalsBehavior) {
@@ -54,11 +42,19 @@ public class KnowledgeBaseConfiguration {
         return eventProcessingMode;
     }
 
-    public void addKSession(KSessionModel kSessionModel) {
-        kSessionModels.add(kSessionModel);
+    public Map<String, KSessionModel> getStatefulSessions() {
+        return statefulSessions;
     }
 
-    public ArrayList<KSessionModel> getKSessionModels() {
-        return kSessionModels;
+    public Map<String, KSessionModel> getStatelessSessions() {
+        return statelessSessions;
+    }
+
+    public List<String> getIncludes() {
+        return includes;
+    }
+
+    public void addInclude(String include) {
+        includes.add(include);
     }
 }

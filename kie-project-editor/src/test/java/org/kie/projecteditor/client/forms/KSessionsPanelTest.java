@@ -18,30 +18,124 @@ package org.kie.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.projecteditor.client.widgets.NamePopup;
+import org.kie.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.projecteditor.shared.model.KSessionModel;
+import org.mockito.ArgumentCaptor;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.mockito.Matchers.any;
+import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class KSessionsPanelTest {
 
-    private KSessionsPanelView view;
+    private ListFormComboPanelView view;
     private KSessionsPanel kSessionsPanel;
+    private ListFormComboPanelView.Presenter presenter;
+    private NamePopup namePopup;
+    private KSessionForm form;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(KSessionsPanelView.class);
-        kSessionsPanel = new KSessionsPanel(view);
+        view = mock(ListFormComboPanelView.class);
+        namePopup = mock(NamePopup.class);
+        form = mock(KSessionForm.class);
+        kSessionsPanel = new KSessionsPanel(view, form, namePopup);
+        presenter = kSessionsPanel;
     }
 
     @Test
     public void testShowEmptyList() throws Exception {
-        kSessionsPanel.setSessions(new ArrayList<KSessionModel>());
+        kSessionsPanel.setItems(new HashMap<String, KSessionModel>());
 
         verify(view).setPresenter(kSessionsPanel);
         verify(view).clearList();
-        verify(view, never()).addKSessionModel(any(KSessionModel.class));
+        verify(view, never()).addItem(anyString());
+    }
+
+    @Test
+    public void testAddKSession() throws Exception {
+        Map<String, KSessionModel> sessions = new HashMap<String, KSessionModel>();
+        kSessionsPanel.setItems(sessions);
+
+        presenter.onAdd();
+
+
+        ArgumentCaptor<PopupSetNameCommand> addKSessionCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        verify(namePopup).show(addKSessionCommandArgumentCaptor.capture());
+
+        addKSessionCommandArgumentCaptor.getValue().setName("TheOne");
+
+        assertEquals(1, sessions.size());
+        assertNotNull(sessions.get("TheOne"));
+        verify(view).addItem("TheOne");
+        verify(view).setSelected("TheOne");
+        verify(form).setModel(sessions.get("TheOne"));
+    }
+
+    @Test
+    public void testRemoveKSession() throws Exception {
+        Map<String, KSessionModel> sessions = new HashMap<String, KSessionModel>();
+        KSessionModel model = new KSessionModel();
+        model.setName("RemoveMe");
+        sessions.put(model.getName(), model);
+
+        kSessionsPanel.setItems(sessions);
+
+        presenter.onSelect("RemoveMe");
+
+        presenter.onRemove();
+
+        assertNull(sessions.get("RemoveMe"));
+        verify(view).remove("RemoveMe");
+    }
+
+    @Test
+    public void testRemoveKSessionNoItemSelected() throws Exception {
+        Map<String, KSessionModel> sessions = new HashMap<String, KSessionModel>();
+        KSessionModel model = createKSession("CantRemoveMe");
+        sessions.put(model.getName(), model);
+
+        kSessionsPanel.setItems(sessions);
+
+        presenter.onRemove();
+
+        verify(view).showPleaseSelectAnItem();
+
+        assertEquals(model, sessions.get("CantRemoveMe"));
+        verify(view, never()).remove("CantRemoveMe");
+    }
+
+    @Test
+    public void testDoubleClickRemoveSecondTimeWithoutATarget() throws Exception {
+
+        Map<String, KSessionModel> sessions = new HashMap<String, KSessionModel>();
+        KSessionModel model = createKSession("CantRemoveMe");
+        sessions.put(model.getName(), model);
+        KSessionModel model2 = createKSession("RemoveMe");
+        sessions.put(model2.getName(), model2);
+
+        kSessionsPanel.setItems(sessions);
+
+        // Select one and remove.
+        presenter.onSelect("RemoveMe");
+        presenter.onRemove();
+
+        // Click again, nothing is selected.
+        presenter.onRemove();
+
+        verify(view).showPleaseSelectAnItem();
+
+        assertEquals(model, sessions.get("CantRemoveMe"));
+        verify(view, never()).remove("CantRemoveMe");
+    }
+
+    private KSessionModel createKSession(String cantRemoveMe) {
+        KSessionModel model = new KSessionModel();
+        model.setName(cantRemoveMe);
+        return model;
     }
 }

@@ -14,29 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.client.widgets;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-public interface KSessionFormView
-        extends IsWidget {
-
-    interface Presenter
-            extends IsWidget {
-
-        void onNameChange(String name);
-
-        void onRealtimeSelect();
-
-        void onPseudoSelect();
-
-    }
-
-    void setPresenter(Presenter presenter);
+public interface PopupSetNameCommand {
 
     void setName(String name);
 
-    void selectPseudo();
-
-    void selectRealtime();
 }

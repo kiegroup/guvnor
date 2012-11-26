@@ -20,5 +20,28 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum ClockTypeOption {
-    PSEUDO, REALTIME;
+
+    PSEUDO("pseudo"),
+    REALTIME("realtime");
+
+    private final String name;
+
+    ClockTypeOption(String name) {
+        this.name = name;
+    }
+
+
+    public String getClockTypeAsString() {
+        return name;
+    }
+
+    public static ClockTypeOption get(String clockType) {
+        if (PSEUDO.getClockTypeAsString().equals(clockType)) {
+            return PSEUDO;
+        } else if (REALTIME.getClockTypeAsString().equals(clockType)) {
+            return REALTIME;
+        }
+
+        return null;
+    }
 }

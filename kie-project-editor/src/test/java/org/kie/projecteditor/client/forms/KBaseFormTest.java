@@ -20,35 +20,37 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.projecteditor.shared.model.AssertBehaviorOption;
 import org.kie.projecteditor.shared.model.EventProcessingOption;
+import org.kie.projecteditor.shared.model.KBaseModel;
 import org.kie.projecteditor.shared.model.KSessionModel;
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
 import org.mockito.ArgumentCaptor;
 
-import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class KnowledgeBaseConfigurationFormTest {
+public class KBaseFormTest {
 
 
-    private KnowledgeBaseConfigurationForm form;
-    private KnowledgeBaseConfigurationFormView view;
+    private KBaseForm form;
+    private KBaseFormView view;
+    private KBaseFormView.Presenter presenter;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(KnowledgeBaseConfigurationFormView.class);
-        form = new KnowledgeBaseConfigurationForm(view);
+        view = mock(KBaseFormView.class);
+        form = new KBaseForm(view);
+        presenter = form;
     }
 
     @Test
     public void testCleanUp() throws Exception {
-        form.setConfig(new KnowledgeBaseConfiguration());
+        verify(view).setPresenter(presenter);
+        form.setModel(new KBaseModel());
         verify(view).setName(null);
-        verify(view).setNamespace(null);
 
-        ArgumentCaptor<List> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<List> statefulModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<Map> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<Map> statefulModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(view).setStatefulSessions(statefulModelArgumentCaptor.capture());
         verify(view).setStatelessSessions(statelessSessionModelArgumentCaptor.capture());
@@ -64,27 +66,24 @@ public class KnowledgeBaseConfigurationFormTest {
 
     @Test
     public void testShowSimpleData() throws Exception {
-        KnowledgeBaseConfiguration config = new KnowledgeBaseConfiguration();
-        config.setFullName("full.name.here.Name");
+        KBaseModel config = new KBaseModel();
         config.setName("Name");
-        config.setNamespace("full.name.here");
 
         config.setEqualsBehavior(AssertBehaviorOption.EQUALITY);
         config.setEventProcessingMode(EventProcessingOption.CLOUD);
 
-        config.addKSession(createStatelessKSession());
-        config.addKSession(createStatelessKSession());
-        config.addKSession(createStatelessKSession());
+        config.getStatelessSessions().put("1", createStatelessKSession("1"));
+        config.getStatelessSessions().put("2", createStatelessKSession("2"));
+        config.getStatelessSessions().put("3", createStatelessKSession("3"));
 
-        config.addKSession(createStatefulKSession());
-        config.addKSession(createStatefulKSession());
+        config.getStatefulSessions().put("4,", createStatefulKSession("4"));
+        config.getStatefulSessions().put("5,", createStatefulKSession("5"));
 
-        form.setConfig(config);
+        form.setModel(config);
         verify(view).setName("Name");
-        verify(view).setNamespace("full.name.here");
 
-        ArgumentCaptor<List> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<List> statefulModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<Map> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<Map> statefulModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(view).setStatefulSessions(statefulModelArgumentCaptor.capture());
         verify(view).setStatelessSessions(statelessSessionModelArgumentCaptor.capture());
@@ -98,14 +97,50 @@ public class KnowledgeBaseConfigurationFormTest {
         assertEquals(2, statefulModelArgumentCaptor.getValue().size());
     }
 
-    private KSessionModel createStatefulKSession() {
+    @Test
+    public void testEqualsBehaviorChange() throws Exception {
+        KBaseModel config = new KBaseModel();
+
+        form.setModel(config);
+
+        // Default
+        assertEquals(AssertBehaviorOption.IDENTITY, config.getEqualsBehavior());
+
+        // Toggle
+        presenter.onEqualsBehaviorEqualitySelect();
+        assertEquals(AssertBehaviorOption.EQUALITY, config.getEqualsBehavior());
+
+        presenter.onEqualsBehaviorIdentitySelect();
+        assertEquals(AssertBehaviorOption.IDENTITY, config.getEqualsBehavior());
+    }
+
+    @Test
+    public void testEventProcessingModeStreamChange() throws Exception {
+        KBaseModel config = new KBaseModel();
+
+        form.setModel(config);
+
+        // Default
+        assertEquals(EventProcessingOption.STREAM, config.getEventProcessingMode());
+
+        // Toggle
+        presenter.onEventProcessingModeCloudSelect();
+        assertEquals(EventProcessingOption.CLOUD, config.getEventProcessingMode());
+
+        presenter.onEventProcessingModeStreamSelect();
+        assertEquals(EventProcessingOption.STREAM, config.getEventProcessingMode());
+    }
+
+    private KSessionModel createStatefulKSession(String fullName) {
         KSessionModel kSessionModel = new KSessionModel();
+        kSessionModel.setName(fullName);
         kSessionModel.setType("stateful");
         return kSessionModel;
     }
 
-    private KSessionModel createStatelessKSession() {
+    private KSessionModel createStatelessKSession(String fullName) {
         KSessionModel kSessionModel = new KSessionModel();
+        kSessionModel.setName(fullName);
         kSessionModel.setType("stateless");
         return kSessionModel;
     }

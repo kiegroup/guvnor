@@ -17,8 +17,11 @@
 package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
@@ -38,9 +41,6 @@ public class KSessionFormViewImpl
     private static KSessionFormViewImplBinder uiBinder = GWT.create(KSessionFormViewImplBinder.class);
 
     @UiField
-    TextBox nameSpaceTextBox;
-
-    @UiField
     TextBox nameTextBox;
 
     @UiField
@@ -49,13 +49,15 @@ public class KSessionFormViewImpl
     @UiField
     RadioButton pseudo;
 
+    private Presenter presenter;
+
     public KSessionFormViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setNamespace(String namespace) {
-        nameSpaceTextBox.setText(namespace);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -71,6 +73,25 @@ public class KSessionFormViewImpl
     @Override
     public void selectRealtime() {
         realtime.setValue(true);
+    }
+
+    @UiHandler("nameTextBox")
+    public void onNameChange(KeyUpEvent keyUpEvent) {
+        presenter.onNameChange(nameTextBox.getText());
+    }
+
+    @UiHandler("realtime")
+    public void onRealtimeChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (realtime.getValue()) {
+            presenter.onRealtimeSelect();
+        }
+    }
+
+    @UiHandler("pseudo")
+    public void onPseudoChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (pseudo.getValue()) {
+            presenter.onPseudoSelect();
+        }
     }
 
 }

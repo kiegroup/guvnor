@@ -17,39 +17,36 @@
 package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.projecteditor.shared.model.KSessionModel;
 
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class KnowledgeBaseConfigurationFormViewImpl
+public class KBaseFormViewImpl
         extends Composite
-        implements KnowledgeBaseConfigurationFormView {
+        implements KBaseFormView {
+
+    private Presenter presenter;
 
     interface KnowledgeBaseConfigurationFormViewImplBinder
             extends
-            UiBinder<Widget, KnowledgeBaseConfigurationFormViewImpl> {
+            UiBinder<Widget, KBaseFormViewImpl> {
 
     }
 
     private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
 
     @UiField
-    TextBox nameTextBox;
-
-    @UiField
-    TextBox nameSpaceTextBox;
+    Label nameLabel;
 
     @UiField
     RadioButton equalsBehaviorIdentity;
@@ -70,8 +67,8 @@ public class KnowledgeBaseConfigurationFormViewImpl
     KSessionsPanel statelessSessionsPanel;
 
     @Inject
-    public KnowledgeBaseConfigurationFormViewImpl(@New KSessionsPanel statefulSessionsPanel,
-                                                  @New KSessionsPanel statelessSessionsPanel) {
+    public KBaseFormViewImpl(@New KSessionsPanel statefulSessionsPanel,
+                             @New KSessionsPanel statelessSessionsPanel) {
         this.statefulSessionsPanel = statefulSessionsPanel;
         this.statelessSessionsPanel = statelessSessionsPanel;
 
@@ -79,13 +76,13 @@ public class KnowledgeBaseConfigurationFormViewImpl
     }
 
     @Override
-    public void setName(String name) {
-        nameTextBox.setText(name);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void setNamespace(String namespace) {
-        nameSpaceTextBox.setText(namespace);
+    public void setName(String name) {
+        nameLabel.setText(name);
     }
 
     @Override
@@ -109,12 +106,40 @@ public class KnowledgeBaseConfigurationFormViewImpl
     }
 
     @Override
-    public void setStatefulSessions(List<KSessionModel> statefulSessions) {
-        statefulSessionsPanel.setSessions(statefulSessions);
+    public void setStatefulSessions(Map<String, KSessionModel> statefulSessions) {
+        statefulSessionsPanel.setItems(statefulSessions);
     }
 
     @Override
-    public void setStatelessSessions(List<KSessionModel> statefulSessions) {
-        statelessSessionsPanel.setSessions(statefulSessions);
+    public void setStatelessSessions(Map<String, KSessionModel> statefulSessions) {
+        statelessSessionsPanel.setItems(statefulSessions);
+    }
+
+    @UiHandler("equalsBehaviorIdentity")
+    public void onEqualsBehaviorIdentityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (equalsBehaviorIdentity.getValue()) {
+            presenter.onEqualsBehaviorIdentitySelect();
+        }
+    }
+
+    @UiHandler("equalsBehaviorEquality")
+    public void onEqualsBehaviorEqualityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (equalsBehaviorEquality.getValue()) {
+            presenter.onEqualsBehaviorEqualitySelect();
+        }
+    }
+
+    @UiHandler("eventProcessingModeStream")
+    public void onEventProcessingModeStreamChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (eventProcessingModeStream.getValue()) {
+            presenter.onEventProcessingModeStreamSelect();
+        }
+    }
+
+    @UiHandler("eventProcessingModeCloud")
+    public void onEventProcessingModeCloudChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+        if (eventProcessingModeCloud.getValue()) {
+            presenter.onEventProcessingModeCloudSelect();
+        }
     }
 }

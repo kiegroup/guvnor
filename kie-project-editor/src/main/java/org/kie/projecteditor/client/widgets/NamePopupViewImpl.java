@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.client.widgets;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,9 +28,9 @@ import org.kie.projecteditor.client.resources.constants.ProjectEditorConstants;
 import org.kie.uberfirebootstrap.client.widgets.ErrorPopup;
 import org.kie.uberfirebootstrap.client.widgets.Popup;
 
-public class AddNewKBasePopupViewImpl
+public class NamePopupViewImpl
         extends Popup
-        implements AddNewKBasePopupView {
+        implements NamePopupView {
 
 
     private final Widget widget;
@@ -38,7 +38,7 @@ public class AddNewKBasePopupViewImpl
 
     interface AddNewKBasePopupViewImplBinder
             extends
-            UiBinder<Widget, AddNewKBasePopupViewImpl> {
+            UiBinder<Widget, NamePopupViewImpl> {
 
     }
 
@@ -53,9 +53,9 @@ public class AddNewKBasePopupViewImpl
     @UiField
     Button cancelButton;
 
-    public AddNewKBasePopupViewImpl() {
+    public NamePopupViewImpl() {
         widget = uiBinder.createAndBindUi(this);
-        setTitle(ProjectEditorConstants.INSTANCE.AddKBase());
+        setTitle(ProjectEditorConstants.INSTANCE.New());
     }
 
     @Override
@@ -76,13 +76,17 @@ public class AddNewKBasePopupViewImpl
 
     @Override
     public void show() {
-        nameTextBox.setText("");
         super.show();
     }
 
     @Override
     public String getName() {
         return nameTextBox.getText();
+    }
+
+    @Override
+    public void setName(String name) {
+        nameTextBox.setText(name);
     }
 
     @Override

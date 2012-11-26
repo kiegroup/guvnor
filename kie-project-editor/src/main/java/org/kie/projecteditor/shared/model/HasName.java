@@ -14,29 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
+package org.kie.projecteditor.shared.model;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.projecteditor.shared.model.KSessionModel;
+public interface HasName {
 
-import java.util.List;
-
-public interface KnowledgeBaseConfigurationFormView
-        extends IsWidget {
+    String getName();
 
     void setName(String name);
-
-    void setNamespace(String namespace);
-
-    void setEqualsBehaviorEquality();
-
-    void setEqualsBehaviorIdentity();
-
-    void setEventProcessingModeStream();
-
-    void setEventProcessingModeCloud();
-
-    void setStatefulSessions(List<KSessionModel> statefulSessions);
-
-    void setStatelessSessions(List<KSessionModel> statelessSessions);
 }

@@ -24,24 +24,55 @@ import java.util.Map;
 
 @Portable
 public class KProjectModel
-        implements Iterable<KnowledgeBaseConfiguration> {
+        implements Iterable<KBaseModel> {
 
-    private final Map<String, KnowledgeBaseConfiguration> configurations = new HashMap<String, KnowledgeBaseConfiguration>();
+    private final Map<String, KBaseModel> kBases = new HashMap<String, KBaseModel>();
+    private String kBasesPath;
+    private String kProjectPath;
+    private GroupArtifactVersionModel groupArtifactVersion;
 
     @Override
-    public Iterator<KnowledgeBaseConfiguration> iterator() {
-        return configurations.values().iterator();
+    public Iterator<KBaseModel> iterator() {
+        return kBases.values().iterator();
     }
 
-    public void add(KnowledgeBaseConfiguration kBase) {
-        configurations.put(kBase.getFullName(), kBase);
+    public void add(KBaseModel kBase) {
+        kBases.put(kBase.getName(), kBase);
     }
 
-    public KnowledgeBaseConfiguration get(String name) {
-        return configurations.get(name);
+    public KBaseModel get(String name) {
+        return kBases.get(name);
+    }
+
+    public Map<String, KBaseModel> getKBases() {
+        return kBases;
     }
 
     public void remove(String fullName) {
-        configurations.remove(fullName);
+        kBases.remove(fullName);
+    }
+
+    public String getKBasesPath() {
+        return kBasesPath;
+    }
+
+    public String getKProjectPath() {
+        return kProjectPath;
+    }
+
+    public GroupArtifactVersionModel getGroupArtifactVersion() {
+        return groupArtifactVersion;
+    }
+
+    public void setKBasesPath(String kBasesPath) {
+        this.kBasesPath = kBasesPath;
+    }
+
+    public void setKProjectPath(String kProjectPath) {
+        this.kProjectPath = kProjectPath;
+    }
+
+    public void setGroupArtifactVersion(GroupArtifactVersionModel groupArtifactVersion) {
+        this.groupArtifactVersion = groupArtifactVersion;
     }
 }

@@ -45,11 +45,11 @@ public interface ProjectEditorConstants
 
     String DeleteKSession();
 
-    String AddKBase();
+    String Add();
 
-    String DeleteKBase();
+    String Delete();
 
-    String Namespace();
+    String Rename();
 
     String Name();
 
@@ -68,4 +68,10 @@ public interface ProjectEditorConstants
     String Cancel();
 
     String PleaseSetAName();
+
+    String PleaseSelectAKSession();
+
+    String New();
+
+    String Save();
 }

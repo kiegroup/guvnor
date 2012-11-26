@@ -20,5 +20,46 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum EventProcessingOption {
-    CLOUD, STREAM;
+
+    CLOUD("cloud"),
+    STREAM("stream");
+
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.eventProcessingMode";
+
+    private String             string;
+
+    EventProcessingOption(String mode) {
+        this.string = mode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+
+    public String getMode() {
+        return string;
+    }
+
+    public String toString() {
+        return "EventProcessingOption( "+string+ " )";
+    }
+
+    public String toExternalForm() {
+        return this.string;
+    }
+
+    public static EventProcessingOption determineEventProcessingMode(String mode) {
+        if ( STREAM.getMode().equalsIgnoreCase( mode ) ) {
+            return STREAM;
+        } else if ( CLOUD.getMode().equalsIgnoreCase( mode ) ) {
+            return CLOUD;
+        }
+        throw new IllegalArgumentException( "Illegal enum value '" + mode + "' for EventProcessingMode" );
+    }
 }

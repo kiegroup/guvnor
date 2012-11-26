@@ -16,16 +16,22 @@
 
 package org.kie.projecteditor.client.forms;
 
+import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.projecteditor.client.widgets.NamePopup;
+import org.kie.projecteditor.client.widgets.PopupSetNameCommand;
+import org.kie.projecteditor.shared.model.KBaseModel;
 import org.kie.projecteditor.shared.model.KProjectModel;
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
 import org.kie.projecteditor.shared.service.ProjectEditorService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -33,169 +39,233 @@ import static org.mockito.Mockito.*;
 
 public class ProjectEditorScreenTest {
 
-
     private Path path;
-    private ProjectEditorService projectEditorService;
-    private ProjectEditorScreenView view;
-    private MockCaller caller;
-    private ArgumentCaptor<RemoteCallback> argumentCaptor;
-    private PlaceRequest placeRequest;
+    private ListFormComboPanelView view;
+    private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private ProjectEditorScreen screen;
-    private ProjectEditorScreenView.Presenter presenter;
-    private AddNewKBasePopup addNewKBasePopup;
+    private ListFormComboPanelView.Presenter presenter;
+    private NamePopup nameNamePopup;
+    private KBaseForm form;
 
     @Before
     public void setUp() throws Exception {
         path = mock(Path.class);
-        projectEditorService = mock(ProjectEditorService.class);
-        view = mock(ProjectEditorScreenView.class);
-        caller = mock(MockCaller.class);
+        view = mock(ListFormComboPanelView.class);
+        projectEditorServiceCaller = new MockProjectEditorServiceCaller();
 
-        argumentCaptor = ArgumentCaptor.forClass(RemoteCallback.class);
-        when(
-                caller.call(argumentCaptor.capture())
-        ).thenReturn(
-                projectEditorService
-        );
-
-        placeRequest = mock(PlaceRequest.class);
-        when(
-                placeRequest.getParameter("path", null)
-        ).thenReturn(
-                path
-        );
-
-        addNewKBasePopup = mock(AddNewKBasePopup.class);
-        screen = new ProjectEditorScreen(caller, addNewKBasePopup, view);
+        nameNamePopup = mock(NamePopup.class);
+        form = mock(KBaseForm.class);
+        screen = new ProjectEditorScreen(projectEditorServiceCaller, form, nameNamePopup, view);
         presenter = screen;
-
-        screen.init(placeRequest);
     }
 
     @Test
     public void testShowEmptyModel() throws Exception {
+        projectEditorServiceCaller.setUpModelForLoading(new KProjectModel());
 
-        RemoteCallback callback = argumentCaptor.getValue();
-        callback.callback(new KProjectModel());
-
-        verify(projectEditorService).load(path);
-        verify(view, never()).addKnowledgeBaseConfiguration(anyString());
+        verify(view, never()).addItem(anyString());
     }
 
     @Test
     public void testShowModelWithSessions() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
         kProjectModel.add(createKBaseConfiguration("First"));
         kProjectModel.add(createKBaseConfiguration("Second"));
         kProjectModel.add(createKBaseConfiguration("Third"));
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
-        verify(projectEditorService).load(path);
-        verify(view).addKnowledgeBaseConfiguration("First");
-        verify(view).addKnowledgeBaseConfiguration("Second");
-        verify(view).addKnowledgeBaseConfiguration("Third");
-        verify(view, times(3)).addKnowledgeBaseConfiguration(anyString());
+        verify(view).addItem("First");
+        verify(view).addItem("Second");
+        verify(view).addItem("Third");
+        verify(view, times(3)).addItem(anyString());
     }
 
     @Test
     public void testSelectKBase() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
-        KnowledgeBaseConfiguration theOne = createKBaseConfiguration("TheOne");
+        KBaseModel theOne = createKBaseConfiguration("TheOne");
         kProjectModel.add(theOne);
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
-        presenter.onKBaseSelection("TheOne");
+        presenter.onSelect("TheOne");
 
-        verify(view).showForm(theOne);
+        verify(form).setModel(theOne);
     }
 
     @Test
     public void testAddKBase() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
-        presenter.onAddNewKBase();
+        presenter.onAdd();
 
-        KnowledgeBaseConfiguration theOne = createKBaseConfiguration("TheOne");
+        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
+        addKBaseCommandArgumentCaptor.getValue().setName("TheOne");
 
-        ArgumentCaptor<AddKBaseCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(AddKBaseCommand.class);
-        verify(addNewKBasePopup).show(addKBaseCommandArgumentCaptor.capture());
-        addKBaseCommandArgumentCaptor.getValue().add(theOne);
-
-        assertEquals(theOne, kProjectModel.get("TheOne"));
-        verify(view).addKnowledgeBaseConfiguration("TheOne");
-        verify(view).selectKBase("TheOne");
-        verify(view).showForm(theOne);
+        verify(nameNamePopup).setOldName(""); // Old name should be "" since there is no old name.
+        assertNotNull(kProjectModel.get("TheOne"));
+        verify(view).addItem("TheOne");
+        verify(view).setSelected("TheOne");
+        verify(form).setModel(kProjectModel.get("TheOne"));
     }
 
     @Test
     public void testRemoveKBase() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
         kProjectModel.add(createKBaseConfiguration("RemoveMe"));
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
-        presenter.onKBaseSelection("RemoveMe");
+        presenter.onSelect("RemoveMe");
 
-        presenter.onRemoveKBase();
+        presenter.onRemove();
 
         assertNull(kProjectModel.get("RemoveMe"));
-        verify(view).removeKnowledgeBaseConfiguration("RemoveMe");
+        verify(view).remove("RemoveMe");
+    }
+
+    @Test
+    public void testRename() throws Exception {
+
+        KProjectModel kProjectModel = new KProjectModel();
+        kProjectModel.add(createKBaseConfiguration("RenameMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
+
+        presenter.onSelect("RenameMe");
+
+        presenter.onRename();
+
+        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
+        addKBaseCommandArgumentCaptor.getValue().setName("NewName");
+
+        verify(nameNamePopup).setOldName("RenameMe");
+        assertNull(kProjectModel.get("RenameMe"));
+        assertNotNull(kProjectModel.get("NewName"));
     }
 
     @Test
     public void testRemoveKBaseNoItemSelected() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
         kProjectModel.add(createKBaseConfiguration("CantRemoveMe"));
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
-        presenter.onRemoveKBase();
+        presenter.onRemove();
 
-        verify(view).showPleaseSelectAKBaseInfo();
+        verify(view).showPleaseSelectAnItem();
 
         assertNotNull(kProjectModel.get("CantRemoveMe"));
-        verify(view, never()).removeKnowledgeBaseConfiguration("CantRemoveMe");
+        verify(view, never()).remove("CantRemoveMe");
     }
 
     @Test
     public void testDoubleClickRemoveSecondTimeWithoutATarget() throws Exception {
 
-        RemoteCallback callback = argumentCaptor.getValue();
         KProjectModel kProjectModel = new KProjectModel();
         kProjectModel.add(createKBaseConfiguration("RemoveMe"));
         kProjectModel.add(createKBaseConfiguration("CantRemoveMe"));
-        callback.callback(kProjectModel);
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
 
         // Select one and remove.
-        presenter.onKBaseSelection("RemoveMe");
-        presenter.onRemoveKBase();
+        presenter.onSelect("RemoveMe");
+        presenter.onRemove();
 
         // Click again, nothing is selected.
-        presenter.onRemoveKBase();
+        presenter.onRemove();
 
-        verify(view).showPleaseSelectAKBaseInfo();
+        verify(view).showPleaseSelectAnItem();
 
         assertNotNull(kProjectModel.get("CantRemoveMe"));
-        verify(view, never()).removeKnowledgeBaseConfiguration("CantRemoveMe");
+        verify(view, never()).remove("CantRemoveMe");
     }
 
-    private KnowledgeBaseConfiguration createKBaseConfiguration(String name) {
-        KnowledgeBaseConfiguration knowledgeBaseConfiguration = new KnowledgeBaseConfiguration();
-        knowledgeBaseConfiguration.setFullName(name);
+    @Test
+    public void testSave() throws Exception {
+        KProjectModel kProjectModel = new KProjectModel();
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickFirst(menuBar);
+
+        assertEquals(kProjectModel, projectEditorServiceCaller.getSavedModel());
+    }
+
+    private void clickFirst(MenuBar menuBar) {
+        for (MenuItem menuItem : menuBar.getItems()) {
+            if (menuItem instanceof DefaultMenuItemCommand) {
+                DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
+                defaultMenuItemCommand.getCommand().execute();
+                break;
+            }
+        }
+    }
+
+    private KBaseModel createKBaseConfiguration(String name) {
+        KBaseModel knowledgeBaseConfiguration = new KBaseModel();
+        knowledgeBaseConfiguration.setName(name);
         return knowledgeBaseConfiguration;
     }
 
-    abstract class MockCaller
+    class MockProjectEditorServiceCaller
             implements Caller<ProjectEditorService> {
+
+        private final ProjectEditorService service;
+
+        private KProjectModel savedModel;
+        private KProjectModel modelForLoading;
+
+        private RemoteCallback callback;
+
+        MockProjectEditorServiceCaller() {
+
+            service = new ProjectEditorService() {
+
+                @Override
+                public void save(KProjectModel model) {
+                    callback.callback(null);
+                    savedModel = model;
+                }
+
+                @Override
+                public KProjectModel load(Path path) {
+                    callback.callback(modelForLoading);
+                    return modelForLoading;
+                }
+            };
+        }
+
+        public KProjectModel getSavedModel() {
+            return savedModel;
+        }
+
+        @Override
+        public ProjectEditorService call(RemoteCallback<?> callback) {
+            this.callback = callback;
+            return service;
+        }
+
+        @Override
+        public ProjectEditorService call(RemoteCallback<?> callback, ErrorCallback errorCallback) {
+            this.callback = callback;
+            return service;
+        }
+
+        public void setUpModelForLoading(KProjectModel upModelForLoading) {
+            this.modelForLoading = upModelForLoading;
+        }
     }
 }
 

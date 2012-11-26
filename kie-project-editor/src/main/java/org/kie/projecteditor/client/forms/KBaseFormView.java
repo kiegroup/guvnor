@@ -17,31 +17,39 @@
 package org.kie.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
+import org.kie.projecteditor.shared.model.KSessionModel;
 
-public interface ProjectEditorScreenView
+import java.util.Map;
+
+public interface KBaseFormView
         extends IsWidget {
 
-    interface Presenter {
+    interface Presenter
+            extends IsWidget {
 
-        void onKBaseSelection(String fullName);
+        void onEqualsBehaviorEqualitySelect();
 
-        void onAddNewKBase();
+        void onEqualsBehaviorIdentitySelect();
 
-        void onRemoveKBase();
+        void onEventProcessingModeStreamSelect();
+
+        void onEventProcessingModeCloudSelect();
 
     }
 
     void setPresenter(Presenter presenter);
 
-    void addKnowledgeBaseConfiguration(String kbaseName);
+    void setName(String name);
 
-    void showForm(KnowledgeBaseConfiguration knowledgeBaseConfiguration);
+    void setEqualsBehaviorEquality();
 
-    void selectKBase(String fullName);
+    void setEqualsBehaviorIdentity();
 
-    void removeKnowledgeBaseConfiguration(String fullName);
+    void setEventProcessingModeStream();
 
-    void showPleaseSelectAKBaseInfo();
+    void setEventProcessingModeCloud();
 
+    void setStatefulSessions(Map<String, KSessionModel> statefulSessions);
+
+    void setStatelessSessions(Map<String, KSessionModel> statelessSessions);
 }

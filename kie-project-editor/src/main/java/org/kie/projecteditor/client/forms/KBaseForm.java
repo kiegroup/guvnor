@@ -16,28 +16,32 @@
 
 package org.kie.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.projecteditor.shared.model.KSessionModel;
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
+import org.kie.projecteditor.client.widgets.Form;
+import org.kie.projecteditor.shared.model.AssertBehaviorOption;
+import org.kie.projecteditor.shared.model.EventProcessingOption;
+import org.kie.projecteditor.shared.model.KBaseModel;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 
-public class KnowledgeBaseConfigurationForm
-        implements IsWidget {
+public class KBaseForm
+        implements Form<KBaseModel>, KBaseFormView.Presenter {
 
-    private final KnowledgeBaseConfigurationFormView view;
+    private final KBaseFormView view;
+    private KBaseModel model;
 
     @Inject
-    public KnowledgeBaseConfigurationForm(KnowledgeBaseConfigurationFormView view) {
+    public KBaseForm(KBaseFormView view) {
         this.view = view;
+        view.setPresenter(this);
     }
 
-    public void setConfig(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
+    @Override
+    public void setModel(KBaseModel knowledgeBaseConfiguration) {
+
+        this.model = knowledgeBaseConfiguration;
 
         view.setName(knowledgeBaseConfiguration.getName());
-        view.setNamespace(knowledgeBaseConfiguration.getNamespace());
 
         setEqualsBehaviour(knowledgeBaseConfiguration);
 
@@ -46,23 +50,12 @@ public class KnowledgeBaseConfigurationForm
         setSessions(knowledgeBaseConfiguration);
     }
 
-    private void setSessions(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
-        ArrayList<KSessionModel> statefulSessions = new ArrayList<KSessionModel>();
-        ArrayList<KSessionModel> statelessSessions = new ArrayList<KSessionModel>();
-
-        for (KSessionModel kSessionModel : knowledgeBaseConfiguration.getKSessionModels()) {
-            if (kSessionModel.getType().equals("stateful")) {
-                statefulSessions.add(kSessionModel);
-            } else if (kSessionModel.getType().equals("stateless")) {
-                statelessSessions.add(kSessionModel);
-            }
-        }
-
-        view.setStatefulSessions(statefulSessions);
-        view.setStatelessSessions(statelessSessions);
+    private void setSessions(KBaseModel knowledgeBaseConfiguration) {
+        view.setStatefulSessions(knowledgeBaseConfiguration.getStatefulSessions());
+        view.setStatelessSessions(knowledgeBaseConfiguration.getStatelessSessions());
     }
 
-    private void setEventProcessingMode(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
+    private void setEventProcessingMode(KBaseModel knowledgeBaseConfiguration) {
         switch (knowledgeBaseConfiguration.getEventProcessingMode()) {
             case CLOUD:
                 view.setEventProcessingModeCloud();
@@ -74,7 +67,7 @@ public class KnowledgeBaseConfigurationForm
         }
     }
 
-    private void setEqualsBehaviour(KnowledgeBaseConfiguration knowledgeBaseConfiguration) {
+    private void setEqualsBehaviour(KBaseModel knowledgeBaseConfiguration) {
         switch (knowledgeBaseConfiguration.getEqualsBehavior()) {
             case EQUALITY:
                 view.setEqualsBehaviorEquality();
@@ -89,5 +82,25 @@ public class KnowledgeBaseConfigurationForm
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    @Override
+    public void onEqualsBehaviorEqualitySelect() {
+        model.setEqualsBehavior(AssertBehaviorOption.EQUALITY);
+    }
+
+    @Override
+    public void onEqualsBehaviorIdentitySelect() {
+        model.setEqualsBehavior(AssertBehaviorOption.IDENTITY);
+    }
+
+    @Override
+    public void onEventProcessingModeStreamSelect() {
+        model.setEventProcessingMode(EventProcessingOption.STREAM);
+    }
+
+    @Override
+    public void onEventProcessingModeCloudSelect() {
+        model.setEventProcessingMode(EventProcessingOption.CLOUD);
     }
 }

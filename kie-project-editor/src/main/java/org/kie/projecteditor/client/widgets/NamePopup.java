@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.projecteditor.client.forms;
-
-import org.kie.projecteditor.shared.model.KnowledgeBaseConfiguration;
+package org.kie.projecteditor.client.widgets;
 
 import javax.inject.Inject;
 
-public class AddNewKBasePopup
-        implements AddNewKBasePopupView.Presenter {
+public class NamePopup
+        implements NamePopupView.Presenter {
 
-    private AddKBaseCommand command;
-    private final AddNewKBasePopupView view;
+    private PopupSetNameCommand command;
+
+    protected final NamePopupView view;
 
     @Inject
-    public AddNewKBasePopup(AddNewKBasePopupView view) {
-        view.setPresenter(this);
+    public NamePopup(NamePopupView view) {
         this.view = view;
+        view.setPresenter(this);
     }
 
-    public void show(AddKBaseCommand command) {
+    public void show(PopupSetNameCommand command) {
         this.command = command;
         view.show();
     }
@@ -40,12 +39,13 @@ public class AddNewKBasePopup
     @Override
     public void onOk() {
         if (view.getName() != null && !view.getName().trim().equals("")) {
-            KnowledgeBaseConfiguration knowledgeBaseConfiguration = new KnowledgeBaseConfiguration();
-
-            knowledgeBaseConfiguration.setFullName(view.getName());
-            command.add(knowledgeBaseConfiguration);
-        }else{
+            command.setName(view.getName());
+        } else {
             view.showNameEmptyWarning();
         }
+    }
+
+    public void setOldName(String oldName) {
+        view.setName(oldName);
     }
 }

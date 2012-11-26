@@ -16,46 +16,28 @@
 
 package org.kie.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.kie.projecteditor.client.widgets.ListFormComboPanel;
+import org.kie.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.projecteditor.client.widgets.NamePopup;
 import org.kie.projecteditor.shared.model.KSessionModel;
 
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class KSessionsPanel
-        implements IsWidget, KSessionsPanelView.Presenter {
-
-    private Map<String, KSessionModel> sessions = new HashMap<String, KSessionModel>();
-    private final KSessionsPanelView view;
+        extends ListFormComboPanel<KSessionModel> {
 
     @Inject
-    public KSessionsPanel(@New KSessionsPanelView view) {
-        this.view = view;
+    public KSessionsPanel(ListFormComboPanelView view,
+                          KSessionForm form,
+                          NamePopup namePopup) {
+        super(view, form, namePopup);
         view.setPresenter(this);
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    public void setSessions(List<KSessionModel> sessions) {
-        view.clearList();
-
-        for (KSessionModel model : sessions) {
-
-            this.sessions.put(model.getFullName(), model);
-
-            view.addKSessionModel(model);
-        }
-    }
-
-    @Override
-    public void selectKSession(String selectedFullName) {
-        view.setSelectedSession(sessions.get(selectedFullName));
+    protected KSessionModel createNew(String name) {
+        KSessionModel kSessionModel = new KSessionModel();
+        kSessionModel.setName(name);
+        return kSessionModel;
     }
 }
