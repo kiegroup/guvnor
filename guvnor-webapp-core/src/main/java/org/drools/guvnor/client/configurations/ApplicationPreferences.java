@@ -39,6 +39,8 @@ public class ApplicationPreferences {
     public static final String           GUVNOR_URL          = "guvnor.url";
     public static final String           SCORECARDS_ASSET          = "asset.enabled.scorecards";
 
+    public static final String GUVNOR_TESTSCENARIO_MAXRULEFIRINGS = "guvnor.testscenario.maxrulefirings";
+
     public static ApplicationPreferences instance;
     private Map<String, String>          preferences;
 

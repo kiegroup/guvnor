@@ -87,8 +87,17 @@ public class ScenarioRunner {
         ScenarioSettings scenarioSettings = new ScenarioSettings();
         scenarioSettings.setRuleList(scenario.getRules());
         scenarioSettings.setInclusive(scenario.isInclusive());
-        scenarioSettings.setMaxRuleFirings(scenario.getMaxRuleFirings());
+        scenarioSettings.setMaxRuleFirings(getMaxRuleFirings(scenario));
         return scenarioSettings;
+    }
+
+    private int getMaxRuleFirings(Scenario scenario) {
+        String property = System.getProperty("guvnor.testscenario.maxrulefirings");
+        if (property == null) {
+            return scenario.getMaxRuleFirings();
+        } else {
+            return Integer.parseInt(property);
+        }
     }
 
     private void applyFixtures(List<Fixture> fixtures,
