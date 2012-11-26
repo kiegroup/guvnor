@@ -61,23 +61,23 @@ public class SimulationTestServiceImpl implements SimulationTestService {
 //        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, classLoader));
 
         SimulationFluent simulationFluent = new DefaultSimulationFluent();
-        for (SimulationPathModel path : simulation.getPaths().values()) {
-            simulationFluent.newPath(path.getName());
-            simulationFluent.newKnowledgeBuilder() // TODO only do once, for the root
-                .add(ResourceFactory.newByteArrayResource(moduleItem.getCompiledBinaryBytes()), ResourceType.PKG)
-                .end();
-            simulationFluent.newKnowledgeBase()
-                    .addKnowledgePackages()
-                    .end(World.ROOT, KnowledgeBase.class.getName());
-            simulationFluent.newStatefulKnowledgeSession().end();
-            for (SimulationStepModel step : path.getSteps().values()) {
-                simulationFluent.newStep(step.getDistanceMillis());
-                StatefulKnowledgeSessionSimFluent session = simulationFluent.getStatefulKnowledgeSession();
-                for (AbstractCommandModel command : step.getCommands()) {
-                    addCommand(session, command);
-                }
-            }
-        }
+//        for (SimulationPathModel path : simulation.getPaths().values()) {
+//            simulationFluent.newPath(path.getName());
+////            simulationFluent.newKnowledgeBuilder() // TODO only do once, for the root
+//                .add(ResourceFactory.newByteArrayResource(moduleItem.getCompiledBinaryBytes()), ResourceType.PKG)
+//                .end();
+//            simulationFluent.newKnowledgeBase()
+//                    .addKnowledgePackages()
+//                    .end(World.ROOT, KnowledgeBase.class.getName());
+//            simulationFluent.newStatefulKnowledgeSession().end();
+//            for (SimulationStepModel step : path.getSteps().values()) {
+//                simulationFluent.newStep(step.getDistanceMillis());
+//                StatefulKnowledgeSessionSimFluent session = simulationFluent.getStatefulKnowledgeSession();
+//                for (AbstractCommandModel command : step.getCommands()) {
+//                    addCommand(session, command);
+//                }
+//            }
+//        }
         simulationFluent.runSimulation();
     }
 
