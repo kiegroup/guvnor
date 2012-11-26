@@ -63,7 +63,7 @@ public class SimulationTestServiceImpl implements SimulationTestService {
         SimulationFluent simulationFluent = new DefaultSimulationFluent();
 //        for (SimulationPathModel path : simulation.getPaths().values()) {
 //            simulationFluent.newPath(path.getName());
-////            simulationFluent.newKnowledgeBuilder() // TODO only do once, for the root
+//            simulationFluent.newKnowledgeBuilder() // TODO only do once, for the root
 //                .add(ResourceFactory.newByteArrayResource(moduleItem.getCompiledBinaryBytes()), ResourceType.PKG)
 //                .end();
 //            simulationFluent.newKnowledgeBase()

@@ -9,7 +9,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor-util='urn:import:org.drools.guvnor.client.util'
-  xmlns:guvnor-common='urn:import:org.drools.guvnor.client.common'
+  xmlns:guvnor-common='urn:import:org.kie.uberfirebootstrap.client.widgets'
   xmlns:guvnor-qa='urn:import:org.drools.guvnor.client.explorer.navigation.qa'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />

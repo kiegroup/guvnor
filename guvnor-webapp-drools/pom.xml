@@ -76,20 +76,21 @@
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:widgets-core-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-vfs-model</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:kie-uberfire-bootstrap</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
