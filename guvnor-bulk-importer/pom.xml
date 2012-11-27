@@ -4,8 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>guvnor</artifactId>
+    <groupId>org.kie.guvnor</groupId>
+    <artifactId>guvnor-parent</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
@@ -14,7 +14,7 @@
     https://issues.jboss.org/browse/GUVNOR-1230
   -->
   <artifactId>guvnor-bulk-importer</artifactId>
-  <name>Guvnor bulk importer</name>
+  <name>Guvnor - Bulk importer</name>
   <description>Bulk imports files into the Guvnor repository</description>
 
   <properties>

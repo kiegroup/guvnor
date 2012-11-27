@@ -11,19 +11,12 @@
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
 
-  <groupId>org.drools</groupId>
-  <artifactId>guvnor</artifactId>
+  <groupId>org.kie.guvnor</groupId>
+  <artifactId>guvnor-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor multiproject</name>
-  <description>
-    Guvnor is the web application and repository to govern Drools and jBPM assets.
-  </description>
-  
-  <properties>
-    <jetty.version>6.1.25</jetty.version>
-    <uberfire.version>0.2.0-SNAPSHOT</uberfire.version>
-  </properties>
+  <name>Guvnor - Multi-project</name>
+  <description>Guvnor is the web application and repository to govern Drools and jBPM assets.</description>
 
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
@@ -43,6 +36,35 @@
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <!-- DistributionManagement -->
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <scm>
     <connection>scm:git:git@github.com:droolsjbpm/guvnor.git</connection>
     <developerConnection>scm:git:git@github.com:droolsjbpm/guvnor.git</developerConnection>
@@ -53,80 +75,48 @@
     <url>https://issues.jboss.org/browse/GUVNOR</url>
   </issueManagement>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <!-- Remove me as soon as all of droolsjbpm requires at least Java 6 -->
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.zanata</groupId>
-          <artifactId>zanata-maven-plugin</artifactId>
-          <version>1.5.0</version>
-          <configuration>
-            <!-- Process sub-modules separately, sharing parent config -->
-            <enableModules>true</enableModules>
-            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-            <srcDir>src/main/java</srcDir>
-            <transDir>src/main/java/</transDir>
-            <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.google.code.maven-config-processor-plugin</groupId>
-          <artifactId>maven-config-processor-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+  <properties>
+    <drools.version>6.0.0-SNAPSHOT</drools.version>
+    <errai.version>2.2.0-SNAPSHOT</errai.version>
+    <weld.version>1.1.8.Final</weld.version>
+    <gwt.version>2.5.0</gwt.version>
+    <jetty.version>6.1.25</jetty.version>
+    <uberfire.version>0.2.0-SNAPSHOT</uberfire.version>
+    <gwt.maven.version>2.5.0</gwt.maven.version>
+    <mvel.version>2.1.Beta8</mvel.version>
+    <kie-commons.version>0.1.0-SNAPSHOT</kie-commons.version>
+    <xstream.version>1.4.3</xstream.version>
+  </properties>
 
   <modules>
-    <module>kie-uberfire-bootstrap</module>
-    <module>kie-project-editor</module>
-    <module>guvnor-api</module>
-    <module>guvnor-repository-connector</module>
-    <module>guvnor-repository</module>
-    <module>droolsjbpm-ide-common</module>
-    <module>guvnor-webapp-core</module>
-    <module>guvnor-webapp-drools</module>
     <module>guvnor-bulk-importer</module>
     <module>guvnor-jcr2vfs-migration</module>
     <module>guvnor-examples</module>
+    <module>guvnor</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-docs</module>
-        <module>guvnor-distribution-wars</module>
-        <module>guvnor-distribution</module>
-      </modules>
-    </profile>
-  </profiles>
 
   <dependencyManagement>
 
     <dependencies>
 
-      <!--KIE commons -->
+      <!-- KIE Commons -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-commons</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>${kie-commons.version}</version>
+      </dependency>
+
+      <!-- Drools -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>knowledge-api</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+        <version>${drools.version}</version>
       </dependency>
 
       <!-- Uberfire -->
@@ -135,78 +125,89 @@
         <artifactId>guava</artifactId>
         <version>12.0</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-server</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-security-api</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-security-client</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-security-server</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-backend-api</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-backend-server</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-api</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-core-client</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-core-backend</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-commons</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widget-markdown</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workbench</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-vfs-jgit</artifactId>
         <version>${uberfire.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-vfs-fs</artifactId>
         <version>${uberfire.version}</version>
-      </dependency>
-
-      <!-- Uberfire - Errai Core -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion><!-- Workaround for https://github.com/errai/errai/pull/13 -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -215,22 +216,71 @@
         <version>1.10</version>
       </dependency>
 
-      <!-- Uberfire - Errai - CDI Integration Modules -->
+      <!-- Errai Core -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-bus</artifactId>
+        <version>${errai.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+          <exclusion><!-- Workaround for https://github.com/errai/errai/pull/13 -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ioc</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.0-SP4</version>
+      </dependency>
+
+      <!-- Errai - CDI Integration Modules -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
         <version>${errai.version}</version>
       </dependency>
 
-      <!-- Uberfire - Errai - TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+      <!-- Errai - Errai Team would like to remove this from here, but it's a dependency of errai-cdi-client -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javax-enterprise</artifactId>
         <version>${errai.version}</version>
         <scope>provided</scope>
       </dependency>
-      
-      <!-- Uberfire - Errai - CDI Development Utils -->
+
+      <!-- Errai - CDI Development Utils -->
       <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
@@ -250,14 +300,345 @@
         <version>${jetty.version}</version>
       </dependency>
 
-      <!-- Uberfire - Errai - Weld Modules -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-jetty</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>7.2.2.v20101205</version>
+      </dependency>
+
+      <!-- Errai - Weld Modules -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-weld-integration</artifactId>
         <version>${errai.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
-      
+
+      <!-- Weld Modules -->
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-spi</artifactId>
+        <version>1.1.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${weld.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.weld.servlet</groupId>
+        <artifactId>weld-servlet-core</artifactId>
+        <version>${weld.version}</version>
+      </dependency>
+
+      <!-- GWT -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${gwt.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mvel</groupId>
+        <artifactId>mvel2</artifactId>
+        <version>${mvel.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${xstream.version}</version>
+      </dependency>
+
     </dependencies>
-    
+
   </dependencyManagement>
+
+  <build>
+
+    <pluginManagement>
+
+      <plugins>
+
+        <plugin>
+          <groupId>org.zanata</groupId>
+          <artifactId>zanata-maven-plugin</artifactId>
+          <version>1.5.0</version>
+          <configuration>
+            <!-- Process sub-modules separately, sharing parent config -->
+            <enableModules>true</enableModules>
+            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
+            <srcDir>src/main/java</srcDir>
+            <transDir>src/main/java/</transDir>
+            <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.code.maven-config-processor-plugin</groupId>
+          <artifactId>maven-config-processor-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>jacoco-gwt-maven-plugin</artifactId>
+          <version>0.5.4.201202141554</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>${gwt.maven.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <fork>false</fork>
+            <meminitial>128m</meminitial>
+            <maxmem>512m</maxmem>
+            <!-- Remove me as soon as all of droolsjbpm requires at least Java 6 -->
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <excludes>
+              <exclude>**/*IntegrationTest.java</exclude>
+            </excludes>
+            <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.12</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <includes>
+              <include>**/*IntegrationTest.java</include>
+            </includes>
+            <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>jar</goal>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>1.3.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <!-- Manually push changes (including git tags) after nexus staged repo is successfully closed -->
+            <pushChanges>false</pushChanges>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+        </plugin>
+
+        <!--Site -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <configuration>
+            <instrumentation>
+              <excludes>
+                <exclude>org/drools/**/*Test.class</exclude>
+              </excludes>
+            </instrumentation>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/6/docs/api</link>
+            </links>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+
+      </plugins>
+
+    </pluginManagement>
+
+    <plugins>
+
+      <!-- We need source files generated by our Java Annotations Processor -->
+      <!-- in the resulting JAR for GWT to reference in child projects. Consequentially -->
+      <!-- copy the source files to the target folder before packaging -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target/generated-sources/annotations</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>.errai/**</include>
+                <include>.vfsgit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+
+    </resources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-docs</module>
+        <module>guvnor-distribution-wars</module>
+        <module>guvnor-distribution</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>
