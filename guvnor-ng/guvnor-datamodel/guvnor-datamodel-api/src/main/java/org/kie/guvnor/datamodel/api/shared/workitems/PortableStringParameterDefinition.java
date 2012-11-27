@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * An Integer parameter
+ * A String parameter
  */
 @Portable
-public class PortableIntegerParameterDefinition
+public class PortableStringParameterDefinition
         extends PortableParameterDefinition
-        implements HasValue<Integer>,
+        implements HasValue<String>,
                    HasBinding {
 
     private String binding;
 
-    private Integer value;
+    private String value;
 
-    public PortableIntegerParameterDefinition() {
+    public PortableStringParameterDefinition() {
 
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return this.value;
     }
 
-    public void setValue( Integer value ) {
+    public void setValue( String value ) {
         this.value = value;
     }
 
@@ -58,12 +58,12 @@ public class PortableIntegerParameterDefinition
         if ( this.value == null ) {
             return "null";
         }
-        return Integer.toString( this.value );
+        return "\"" + value + "\"";
     }
 
     @Override
     public String getClassName() {
-        return Integer.class.getName();
+        return String.class.getName();
     }
 
     public boolean isBound() {

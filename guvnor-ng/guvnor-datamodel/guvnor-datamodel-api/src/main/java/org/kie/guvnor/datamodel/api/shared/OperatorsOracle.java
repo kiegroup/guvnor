@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.api.client;
+package org.kie.guvnor.datamodel.api.shared;
 
 /**
  *

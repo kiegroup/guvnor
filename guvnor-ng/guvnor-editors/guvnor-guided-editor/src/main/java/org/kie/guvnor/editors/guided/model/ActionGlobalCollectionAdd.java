@@ -17,7 +17,7 @@
 package org.kie.guvnor.editors.guided.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.client.IAction;
+import org.kie.guvnor.datamodel.api.shared.IAction;
 
 /**
  * This is for adding a given fact to a global collection

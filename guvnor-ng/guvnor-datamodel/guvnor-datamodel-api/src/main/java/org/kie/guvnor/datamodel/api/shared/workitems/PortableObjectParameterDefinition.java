@@ -13,46 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A Boolean parameter
+ * An Object parameter. These can only be bound to Facts of the same data-type
  */
 @Portable
-public class PortableBooleanParameterDefinition
+public class PortableObjectParameterDefinition
         extends PortableParameterDefinition
-        implements HasValue<Boolean>,
-                   HasBinding {
+        implements HasBinding {
 
-    private static final Boolean[] VALUES = new Boolean[]{ Boolean.TRUE, Boolean.FALSE };
-    private              Boolean   value  = null;
+    private String className;
 
     private String binding;
 
-    public PortableBooleanParameterDefinition() {
+    public PortableObjectParameterDefinition() {
 
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName( String className ) {
+        this.className = className;
+    }
+
     public String getBinding() {
-        return this.binding;
+        return binding;
     }
 
     public void setBinding( String binding ) {
         this.binding = binding;
-    }
-
-    public Boolean getValue() {
-        return this.value;
-    }
-
-    public Boolean[] getValues() {
-        return VALUES;
-    }
-
-    public void setValue( Boolean value ) {
-        this.value = value;
     }
 
     @Override
@@ -60,15 +54,7 @@ public class PortableBooleanParameterDefinition
         if ( isBound() ) {
             return this.getBinding();
         }
-        if ( this.value == null ) {
-            return "null";
-        }
-        return "Boolean." + Boolean.toString( this.getValue() ).toUpperCase();
-    }
-
-    @Override
-    public String getClassName() {
-        return Boolean.class.getName();
+        return "null";
     }
 
     public boolean isBound() {

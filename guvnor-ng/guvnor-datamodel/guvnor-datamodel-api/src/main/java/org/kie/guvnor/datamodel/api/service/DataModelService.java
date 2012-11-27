@@ -17,7 +17,7 @@
 package org.kie.guvnor.datamodel.api.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

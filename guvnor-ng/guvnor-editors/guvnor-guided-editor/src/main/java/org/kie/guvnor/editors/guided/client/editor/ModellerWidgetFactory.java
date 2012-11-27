@@ -17,8 +17,8 @@
 package org.kie.guvnor.editors.guided.client.editor;
 
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.api.client.IAction;
-import org.kie.guvnor.datamodel.api.client.IPattern;
+import org.kie.guvnor.datamodel.api.shared.IAction;
+import org.kie.guvnor.datamodel.api.shared.IPattern;
 import org.kie.guvnor.editors.guided.client.widget.RuleModellerWidget;
 
 public interface ModellerWidgetFactory {

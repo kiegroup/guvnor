@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.editors.drltext.client.resources.ImageResources;
 import org.kie.guvnor.editors.drltext.client.resources.Resources;
 import org.kie.guvnor.editors.drltext.client.resources.i18n.Constants;

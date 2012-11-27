@@ -13,33 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A String parameter
+ * A Boolean parameter
  */
 @Portable
-public class PortableStringParameterDefinition
+public class PortableBooleanParameterDefinition
         extends PortableParameterDefinition
-        implements HasValue<String>,
+        implements HasValue<Boolean>,
                    HasBinding {
+
+    private static final Boolean[] VALUES = new Boolean[]{ Boolean.TRUE, Boolean.FALSE };
+    private              Boolean   value  = null;
 
     private String binding;
 
-    private String value;
+    public PortableBooleanParameterDefinition() {
 
-    public PortableStringParameterDefinition() {
-
-    }
-
-    public String getValue() {
-        return this.value;
-    }
-
-    public void setValue( String value ) {
-        this.value = value;
     }
 
     public String getBinding() {
@@ -50,6 +43,18 @@ public class PortableStringParameterDefinition
         this.binding = binding;
     }
 
+    public Boolean getValue() {
+        return this.value;
+    }
+
+    public Boolean[] getValues() {
+        return VALUES;
+    }
+
+    public void setValue( Boolean value ) {
+        this.value = value;
+    }
+
     @Override
     public String asString() {
         if ( isBound() ) {
@@ -58,12 +63,12 @@ public class PortableStringParameterDefinition
         if ( this.value == null ) {
             return "null";
         }
-        return "\"" + value + "\"";
+        return "Boolean." + Boolean.toString( this.getValue() ).toUpperCase();
     }
 
     @Override
     public String getClassName() {
-        return String.class.getName();
+        return Boolean.class.getName();
     }
 
     public boolean isBound() {

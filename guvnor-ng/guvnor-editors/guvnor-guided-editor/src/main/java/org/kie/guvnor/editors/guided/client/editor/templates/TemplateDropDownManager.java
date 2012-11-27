@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.cell.client.Cell.Context;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.data.DynamicData;

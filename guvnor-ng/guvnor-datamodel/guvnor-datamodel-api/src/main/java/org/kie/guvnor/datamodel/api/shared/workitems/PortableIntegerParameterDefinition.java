@@ -13,50 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * An Enum parameter
+ * An Integer parameter
  */
 @Portable
-public class PortableEnumParameterDefinition
-        extends PortableObjectParameterDefinition
-        implements HasValue<String> {
+public class PortableIntegerParameterDefinition
+        extends PortableParameterDefinition
+        implements HasValue<Integer>,
+                   HasBinding {
 
-    private String[] values;
-    private String   value;
+    private String binding;
 
-    public PortableEnumParameterDefinition() {
+    private Integer value;
+
+    public PortableIntegerParameterDefinition() {
 
     }
 
-    public String getValue() {
-        return value;
+    public Integer getValue() {
+        return this.value;
     }
 
-    public void setValue( String value ) {
+    public void setValue( Integer value ) {
         this.value = value;
     }
 
-    public String[] getValues() {
-        return values;
+    public String getBinding() {
+        return this.binding;
     }
 
-    public void setValues( String[] values ) {
-        this.values = values;
+    public void setBinding( String binding ) {
+        this.binding = binding;
     }
 
     @Override
     public String asString() {
-        if ( !( this.getBinding() == null || "".equals( this.getBinding() ) ) ) {
+        if ( isBound() ) {
             return this.getBinding();
         }
         if ( this.value == null ) {
             return "null";
         }
-        return this.getClassName() + "." + this.value;
+        return Integer.toString( this.value );
+    }
+
+    @Override
+    public String getClassName() {
+        return Integer.class.getName();
+    }
+
+    public boolean isBound() {
+        return ( this.getBinding() != null && !"".equals( this.getBinding() ) );
     }
 
 }

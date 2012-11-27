@@ -17,7 +17,7 @@
 package org.kie.guvnor.editors.guided.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.client.FieldNature;
+import org.kie.guvnor.datamodel.api.shared.FieldNature;
 
 /**
  * Holds field and value for "action" parts of the rule.

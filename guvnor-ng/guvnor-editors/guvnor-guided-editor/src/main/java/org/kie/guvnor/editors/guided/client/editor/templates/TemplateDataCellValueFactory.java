@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.kie.guvnor.datamodel.api.client.DataModel;
-import org.kie.guvnor.datamodel.api.client.DateConverter;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DateConverter;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.data.DynamicDataRow;

@@ -16,8 +16,8 @@
 package org.kie.guvnor.editors.guided.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.client.IAction;
-import org.kie.guvnor.datamodel.api.client.workitems.PortableWorkDefinition;
+import org.kie.guvnor.datamodel.api.shared.IAction;
+import org.kie.guvnor.datamodel.api.shared.workitems.PortableWorkDefinition;
 
 /**
  * An Action to invoke a Work Item

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 

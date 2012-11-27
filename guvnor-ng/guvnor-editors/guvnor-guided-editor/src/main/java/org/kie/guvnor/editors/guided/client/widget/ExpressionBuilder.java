@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.editors.guided.client.editor.ExpressionChangeHandler;
 import org.kie.guvnor.editors.guided.client.editor.ExpressionTypeChangeEvent;
 import org.kie.guvnor.editors.guided.client.editor.HasExpressionTypeChangeHandlers;

@@ -13,52 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * An Object parameter. These can only be bound to Facts of the same data-type
+ * An Enum parameter
  */
 @Portable
-public class PortableObjectParameterDefinition
-        extends PortableParameterDefinition
-        implements HasBinding {
+public class PortableEnumParameterDefinition
+        extends PortableObjectParameterDefinition
+        implements HasValue<String> {
 
-    private String className;
+    private String[] values;
+    private String   value;
 
-    private String binding;
-
-    public PortableObjectParameterDefinition() {
+    public PortableEnumParameterDefinition() {
 
     }
 
-    public String getClassName() {
-        return className;
+    public String getValue() {
+        return value;
     }
 
-    public void setClassName( String className ) {
-        this.className = className;
+    public void setValue( String value ) {
+        this.value = value;
     }
 
-    public String getBinding() {
-        return binding;
+    public String[] getValues() {
+        return values;
     }
 
-    public void setBinding( String binding ) {
-        this.binding = binding;
+    public void setValues( String[] values ) {
+        this.values = values;
     }
 
     @Override
     public String asString() {
-        if ( isBound() ) {
+        if ( !( this.getBinding() == null || "".equals( this.getBinding() ) ) ) {
             return this.getBinding();
         }
-        return "null";
-    }
-
-    public boolean isBound() {
-        return ( this.getBinding() != null && !"".equals( this.getBinding() ) );
+        if ( this.value == null ) {
+            return "null";
+        }
+        return this.getClassName() + "." + this.value;
     }
 
 }

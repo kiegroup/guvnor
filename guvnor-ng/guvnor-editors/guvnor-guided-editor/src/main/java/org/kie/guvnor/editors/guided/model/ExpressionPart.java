@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.editors.guided.model;
 
-import org.kie.guvnor.datamodel.api.client.IAction;
-import org.kie.guvnor.datamodel.api.client.IPattern;
+import org.kie.guvnor.datamodel.api.shared.IAction;
+import org.kie.guvnor.datamodel.api.shared.IPattern;
 
 public abstract class ExpressionPart
         implements IPattern,

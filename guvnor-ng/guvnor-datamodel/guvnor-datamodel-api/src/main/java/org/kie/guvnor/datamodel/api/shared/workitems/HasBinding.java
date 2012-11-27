@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
-package org.kie.guvnor.datamodel.api.client;
+/**
+ * Implementations can be bound to a variable
+ */
+public interface HasBinding {
 
-public interface IPattern {
+    String getBinding();
+
+    void setBinding( String binding );
+
+    boolean isBound();
 
 }

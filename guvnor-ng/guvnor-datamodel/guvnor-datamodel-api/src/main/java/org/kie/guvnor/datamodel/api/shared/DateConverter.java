@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.guvnor.datamodel.api.shared;
 
-package org.kie.guvnor.datamodel.api.client;
+import java.util.Date;
 
-public enum FieldAccessorsAndMutators {
-    MUTATOR, ACCESSOR, BOTH;
+/**
+ * Interface for different Date Conversion implementations.
+ * <p/>
+ * See @{link GWTDateConverter} and @{link JVMDateConverter}
+ */
+public interface DateConverter {
 
-    public static boolean compare( FieldAccessorsAndMutators field1,
-                                   FieldAccessorsAndMutators field2 ) {
+    /**
+     * Convert a Date into a String
+     * @param date
+     * @return
+     */
+    String format( Date date );
 
-        if ( field1 == field2 ) {
-            return true;
-        } else if ( field1 == BOTH || field2 == BOTH ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    /**
+     * Convert a String into a Date
+     * @param text
+     * @return
+     */
+    Date parse( String text );
 
 }

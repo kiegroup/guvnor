@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.editors.guided.client.widget;
 
-import org.kie.guvnor.datamodel.api.client.DataModel;
-import org.kie.guvnor.datamodel.api.client.MethodInfo;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
+import org.kie.guvnor.datamodel.api.shared.MethodInfo;
 import org.kie.guvnor.editors.guided.model.DataType;
 import org.kie.guvnor.editors.guided.model.ExpressionCollection;
 import org.kie.guvnor.editors.guided.model.ExpressionField;

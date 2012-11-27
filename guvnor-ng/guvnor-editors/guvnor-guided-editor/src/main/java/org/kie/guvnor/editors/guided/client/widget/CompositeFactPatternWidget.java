@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.HumanReadable;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;

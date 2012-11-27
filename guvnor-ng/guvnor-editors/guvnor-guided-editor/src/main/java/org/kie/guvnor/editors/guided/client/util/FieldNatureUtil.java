@@ -19,7 +19,7 @@ package org.kie.guvnor.editors.guided.client.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.datamodel.api.client.FieldNature;
+import org.kie.guvnor.datamodel.api.shared.FieldNature;
 
 /**
  *

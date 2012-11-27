@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.kie.guvnor.datamodel.api.client.DSLVariableValue;
+import org.kie.guvnor.datamodel.api.shared.DSLVariableValue;
 
 /**
  * This XStream converter converts legacy String DSL values into

@@ -22,7 +22,7 @@ import java.util.Map;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.ResourcesProvider;

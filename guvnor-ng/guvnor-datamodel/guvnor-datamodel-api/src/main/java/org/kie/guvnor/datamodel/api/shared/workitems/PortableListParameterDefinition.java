@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client.workitems;
+package org.kie.guvnor.datamodel.api.shared.workitems;
 
-import java.io.Serializable;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Implementations have a value
+ * A List parameter
  */
-public interface HasValue<T extends Serializable> {
+@Portable
+public class PortableListParameterDefinition
+        extends PortableObjectParameterDefinition {
 
-    T getValue();
-
-    void setValue( T value );
+    public PortableListParameterDefinition() {
+        this.setClassName( "java.util.List" );
+    }
 
 }

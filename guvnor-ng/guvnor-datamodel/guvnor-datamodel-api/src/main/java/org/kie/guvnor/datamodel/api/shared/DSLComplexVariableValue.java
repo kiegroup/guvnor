@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.guvnor.datamodel.api.shared;
 
-package org.kie.guvnor.editors.guided.model;
+/**
+ * This class represents the value of a complex variable inside a DSLSentence.
+ * "complex variable" means that the variable has 2 values: id and the real value.
+ */
+public class DSLComplexVariableValue extends DSLVariableValue {
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.shared.IPattern;
+    private String id;
 
-@Portable
-public class FromCollectCompositeFactPattern extends FromCompositeFactPattern {
-
-    private IPattern rightPattern;
-
-    public FromCollectCompositeFactPattern() {
+    public DSLComplexVariableValue() {
     }
 
-    public IPattern getRightPattern() {
-        return rightPattern;
+    public DSLComplexVariableValue( String id,
+                                    String value ) {
+        super( value );
+        this.id = id;
     }
 
-    public void setRightPattern( IPattern rightPattern ) {
-        this.rightPattern = rightPattern;
+    public String getId() {
+        return id;
+    }
+
+    public void setId( String id ) {
+        this.id = id;
     }
 
 }

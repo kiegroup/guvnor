@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client;
+package org.kie.guvnor.datamodel.api.shared;
 
 /**
- * This class represents the value of a complex variable inside a DSLSentence.
- * "complex variable" means that the variable has 2 values: id and the real value.
+ * This class represents the value of a simple variable inside a DSLSentence.
+ * "Simple variable" means that it only contains a single value.
  */
-public class DSLComplexVariableValue extends DSLVariableValue {
+public class DSLVariableValue {
 
-    private String id;
+    private String value;
 
-    public DSLComplexVariableValue() {
+    public DSLVariableValue() {
     }
 
-    public DSLComplexVariableValue( String id,
-                                    String value ) {
-        super( value );
-        this.id = id;
+    public DSLVariableValue( String value ) {
+        this.value = value;
     }
 
-    public String getId() {
-        return id;
+    public String getValue() {
+        return value;
     }
 
-    public void setId( String id ) {
-        this.id = id;
+    public void setValue( String value ) {
+        this.value = value;
     }
 
 }

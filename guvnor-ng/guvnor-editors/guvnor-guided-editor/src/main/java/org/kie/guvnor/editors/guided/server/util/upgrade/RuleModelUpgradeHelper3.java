@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.editors.guided.server.util.upgrade;
 
-import org.kie.guvnor.datamodel.api.client.IPattern;
+import org.kie.guvnor.datamodel.api.shared.IPattern;
 import org.kie.guvnor.editors.guided.model.CompositeFactPattern;
 import org.kie.guvnor.editors.guided.model.CompositeFieldConstraint;
 import org.kie.guvnor.editors.guided.model.ConnectiveConstraint;

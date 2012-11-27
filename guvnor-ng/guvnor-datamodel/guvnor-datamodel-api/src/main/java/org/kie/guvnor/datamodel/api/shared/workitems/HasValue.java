@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.datamodel.api.client;
+package org.kie.guvnor.datamodel.api.shared.workitems;
+
+import java.io.Serializable;
 
 /**
- * This class represents the value of a simple variable inside a DSLSentence.
- * "Simple variable" means that it only contains a single value.
+ * Implementations have a value
  */
-public class DSLVariableValue {
+public interface HasValue<T extends Serializable> {
 
-    private String value;
+    T getValue();
 
-    public DSLVariableValue() {
-    }
-
-    public DSLVariableValue( String value ) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue( String value ) {
-        this.value = value;
-    }
+    void setValue( T value );
 
 }

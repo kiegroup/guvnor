@@ -17,7 +17,7 @@
 package org.kie.guvnor.editors.guided.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.client.IPattern;
+import org.kie.guvnor.datamodel.api.shared.IPattern;
 
 /**
  * Represents first order logic like Or, Not, Exists.

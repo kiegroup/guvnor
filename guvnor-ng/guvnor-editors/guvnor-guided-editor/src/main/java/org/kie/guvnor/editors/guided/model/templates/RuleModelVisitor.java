@@ -17,9 +17,9 @@ package org.kie.guvnor.editors.guided.model.templates;
 
 import java.util.Map;
 
-import org.kie.guvnor.datamodel.api.client.DSLSentence;
-import org.kie.guvnor.datamodel.api.client.IAction;
-import org.kie.guvnor.datamodel.api.client.IPattern;
+import org.kie.guvnor.datamodel.api.shared.DSLSentence;
+import org.kie.guvnor.datamodel.api.shared.IAction;
+import org.kie.guvnor.datamodel.api.shared.IPattern;
 import org.kie.guvnor.editors.guided.model.ActionFieldValue;
 import org.kie.guvnor.editors.guided.model.ActionSetField;
 import org.kie.guvnor.editors.guided.model.ActionUpdateField;

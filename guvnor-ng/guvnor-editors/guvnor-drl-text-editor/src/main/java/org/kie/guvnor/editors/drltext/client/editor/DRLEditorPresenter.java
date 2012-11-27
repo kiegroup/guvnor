@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.datamodel.api.client.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
 import org.kie.guvnor.datamodel.api.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;

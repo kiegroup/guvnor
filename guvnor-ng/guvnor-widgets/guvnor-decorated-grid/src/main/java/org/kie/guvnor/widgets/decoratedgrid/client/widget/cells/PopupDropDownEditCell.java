@@ -24,8 +24,8 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.kie.guvnor.datamodel.api.client.DataModel;
-import org.kie.guvnor.datamodel.api.client.DropDownData;
+import org.kie.guvnor.datamodel.api.shared.DataModel;
+import org.kie.guvnor.datamodel.api.shared.DropDownData;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.widgets.factconstraints.client.widget.util.ConstraintValueEditorHelper;
 
