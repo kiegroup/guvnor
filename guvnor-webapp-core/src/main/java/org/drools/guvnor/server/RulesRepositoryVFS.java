@@ -21,6 +21,8 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.Path;
 import org.drools.guvnor.client.rpc.PathImpl;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.shared.api.Valid;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
@@ -248,5 +250,21 @@ public class RulesRepositoryVFS {
         ruleAsset.setMetaData(meta);
 
         return ruleAsset;
+    }
+    
+    public String checkinVersion(Asset asset) {
+    	vfsService.setAttribute(asset.getPath(), "checkinComment", asset.getCheckinComment(), null);
+    	vfsService.setAttribute(asset.getPath(), "description", asset.getDescription(), null);
+    	vfsService.setAttribute(asset.getPath(), "state", asset.getState(), null);
+    	//AND MORE
+    	
+    	//In old Guvnor, we get the binary content by using content handler:
+/*        ContentHandler handler = ContentManager.getHandler(asset.getFormat());
+        handler.storeAssetContent(asset, 
+                repoAsset);*/
+    	byte[] assetContent;
+    	//vfsService.write(asset.getPath(), assetContent);
+    	
+    	return "";//old Guvnor returns uuid
     }
 }

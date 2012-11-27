@@ -158,7 +158,7 @@ public class RepositoryAssetServiceVFS
 
     public String checkinVersion(Asset asset) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] " );
-        return repositoryAssetOperations.checkinVersion( asset );
+        return rulesRepositoryVFS.checkinVersion( asset );
     }
     public void restoreVersion(Path versionPath,
                                Path assetPath,
