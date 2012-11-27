@@ -21,13 +21,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.guided.client.util.WorkingSetConfigData;
-import org.kie.guvnor.guided.model.RuleModel;
-import org.kie.guvnor.guided.model.analysis.AnalysisReport;
-import org.kie.guvnor.guided.model.templates.TemplateModel;
-import org.kie.guvnor.guided.server.util.BRLPersistence;
-import org.kie.guvnor.guided.server.util.BRXMLPersistence;
-import org.kie.guvnor.guided.service.GuidedEditorService;
+import org.kie.guvnor.editors.guided.client.util.WorkingSetConfigData;
+import org.kie.guvnor.editors.guided.model.RuleModel;
+import org.kie.guvnor.editors.guided.model.analysis.AnalysisReport;
+import org.kie.guvnor.editors.guided.model.templates.TemplateModel;
+import org.kie.guvnor.editors.guided.server.util.BRLPersistence;
+import org.kie.guvnor.editors.guided.server.util.BRXMLPersistence;
+import org.kie.guvnor.editors.guided.service.GuidedEditorService;
 import org.uberfire.backend.server.VFSServicesServerImpl;
 import org.uberfire.backend.vfs.Path;
 

@@ -28,7 +28,7 @@
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
   <inherits name="org.kie.guvnor.datamodel.api.GuvnorDataModelAPI"/>
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
-  <inherits name="org.kie.guvnor.factconstraints.GuvnorFactConstraints"/>
+  <inherits name="org.kie.guvnor.widgets.factconstraints.GuvnorFactConstraints"/>
 
 
 </module>

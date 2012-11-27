@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.kie.guvnor.datamodel.api.DataModel;
 import org.kie.guvnor.datamodel.api.DateConverter;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 import org.kie.guvnor.editors.guided.model.DataType;
 import org.kie.guvnor.editors.guided.model.templates.InterpolationVariable;
 import org.kie.guvnor.editors.guided.model.templates.TemplateModel;

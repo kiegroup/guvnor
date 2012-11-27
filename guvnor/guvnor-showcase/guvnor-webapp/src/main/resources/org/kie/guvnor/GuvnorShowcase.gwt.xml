@@ -10,13 +10,14 @@
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
-  <inherits name='org.kie.guvnor.GuvnorDataModelAPI'/>
+  <inherits name='org.kie.guvnor.datamodel.api.GuvnorDataModelAPI'/>
 
   <!-- Editors -->
-  <inherits name="org.kie.guvnor.enums.GuvnorEnumEditor"/>
-  <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditor"/>
-  <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditor"/>
-  <inherits name="org.kie.guvnor.guided.GuvnorGuidedEditor"/>
+  <inherits name="org.kie.guvnor.editors.enums.GuvnorEnumEditor"/>
+  <inherits name="org.kie.guvnor.editors.drltext.GuvnorDRLTextEditor"/>
+  <inherits name="org.kie.guvnor.editors.factmodel.GuvnorFactModelEditor"/>
+  <inherits name="org.kie.guvnor.editors.guided.GuvnorGuidedEditor"/>
+  <inherits name="org.kie.guvnor.editors.projecteditor.ProjectEditor"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnor-showcase.css'/>

@@ -18,9 +18,9 @@ package org.kie.guvnor.editors.guided.client.editor.templates.events;
 import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.editors.guided.client.editor.templates.TemplateDataColumn;
 import org.kie.guvnor.editors.guided.model.templates.TemplateModel;
 

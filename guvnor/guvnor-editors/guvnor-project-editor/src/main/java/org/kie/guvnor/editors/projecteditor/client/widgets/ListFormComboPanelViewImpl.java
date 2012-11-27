@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.editors.projecteditor.client.resources.constants.ProjectEditorConstants;
+import org.kie.guvnor.editors.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.ErrorPopup;
 
 public class ListFormComboPanelViewImpl

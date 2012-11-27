@@ -18,10 +18,12 @@ package org.kie.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.projecteditor.client.widgets.NamePopup;
-import org.kie.projecteditor.client.widgets.PopupSetNameCommand;
-import org.kie.projecteditor.shared.model.KSessionModel;
+import org.kie.guvnor.editors.projecteditor.client.forms.KSessionForm;
+import org.kie.guvnor.editors.projecteditor.client.forms.KSessionsPanel;
+import org.kie.guvnor.editors.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.guvnor.editors.projecteditor.client.widgets.NamePopup;
+import org.kie.guvnor.editors.projecteditor.client.widgets.PopupSetNameCommand;
+import org.kie.guvnor.editors.projecteditor.shared.model.KSessionModel;
 import org.mockito.ArgumentCaptor;
 
 import java.util.HashMap;

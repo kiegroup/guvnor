@@ -55,7 +55,7 @@ import org.kie.guvnor.editors.guided.client.widget.TextBoxFactory;
 import org.kie.guvnor.editors.guided.model.BaseSingleFieldConstraint;
 import org.kie.guvnor.editors.guided.model.CompositeFieldConstraint;
 import org.kie.guvnor.editors.guided.model.ExpressionFormLine;
-import org.kie.guvnor.factconstraints.client.widget.customform.CustomFormConfiguration;
+import org.kie.guvnor.widgets.factconstraints.client.widget.customform.CustomFormConfiguration;
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.GuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;

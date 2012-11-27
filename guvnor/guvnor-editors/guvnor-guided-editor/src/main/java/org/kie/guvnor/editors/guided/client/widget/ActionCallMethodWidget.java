@@ -37,6 +37,7 @@ import org.kie.guvnor.editors.guided.client.editor.RuleModeller;
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.HumanReadable;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;
+import org.kie.guvnor.editors.guided.client.util.FieldNatureUtil;
 import org.kie.guvnor.editors.guided.model.ActionCallMethod;
 import org.kie.guvnor.editors.guided.model.ActionFieldFunction;
 import org.kie.guvnor.editors.guided.model.ActionInsertFact;
@@ -264,7 +265,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         DropDownData enums = completions.getEnums( type,
                                                    val.getField(),
-                                                   toMap( this.model.getFieldValues() ) );
+                                                   FieldNatureUtil.toMap( this.model.getFieldValues() ) );
 
         return new MethodParameterValueEditor( val,
                                                enums,

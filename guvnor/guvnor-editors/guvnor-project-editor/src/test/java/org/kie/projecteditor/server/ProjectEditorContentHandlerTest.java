@@ -17,7 +17,8 @@
 package org.kie.projecteditor.server;
 
 import org.junit.Test;
-import org.kie.projecteditor.shared.model.KProjectModel;
+import org.kie.guvnor.editors.projecteditor.server.ProjectEditorContentHandler;
+import org.kie.guvnor.editors.projecteditor.shared.model.KProjectModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class ProjectEditorContentHandlerTest {
 
     @Test
     public void testMostSimpleOneICanThinkOf() throws Exception {
-        KProjectModel model = ProjectEditorContentHandler.toModel(readResource("simpleKProject.xml"));
+        KProjectModel model = ProjectEditorContentHandler.toModel( readResource( "simpleKProject.xml" ) );
 
         assertNotNull(model);
     }

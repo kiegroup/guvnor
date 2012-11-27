@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.DSLSentence;
-import org.kie.guvnor.datamodel.DataModel;
-import org.kie.guvnor.datamodel.DropDownData;
-import org.kie.guvnor.datamodel.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.MethodInfo;
+import org.kie.guvnor.datamodel.api.DSLSentence;
+import org.kie.guvnor.datamodel.api.DataModel;
+import org.kie.guvnor.datamodel.api.DropDownData;
+import org.kie.guvnor.datamodel.api.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.api.MethodInfo;
 
 @Portable
 public class MockDataModel implements DataModel {

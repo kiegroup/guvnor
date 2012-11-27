@@ -4,7 +4,7 @@ package org.kie.guvnor.editors.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.editors.projecteditor.client.resources.constants.ProjectEditorConstants;
+import org.kie.guvnor.editors.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.editors.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.guvnor.editors.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.editors.projecteditor.client.widgets.NamePopup;

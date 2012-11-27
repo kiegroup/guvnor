@@ -24,7 +24,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.editors.projecteditor.client.resources.constants.ProjectEditorConstants;
+import org.kie.guvnor.editors.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
 

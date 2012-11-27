@@ -20,10 +20,10 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.factmodel.model.FactMetaModel;
-import org.kie.guvnor.factmodel.model.FactModelContent;
-import org.kie.guvnor.factmodel.model.FieldMetaModel;
-import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.editors.factmodel.model.FactMetaModel;
+import org.kie.guvnor.editors.factmodel.model.FactModelContent;
+import org.kie.guvnor.editors.factmodel.model.FieldMetaModel;
+import org.kie.guvnor.editors.factmodel.service.FactModelService;
 import org.uberfire.backend.vfs.Path;
 
 /**

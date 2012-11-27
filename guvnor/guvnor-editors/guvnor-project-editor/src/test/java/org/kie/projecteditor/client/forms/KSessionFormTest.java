@@ -18,8 +18,10 @@ package org.kie.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.projecteditor.shared.model.ClockTypeOption;
-import org.kie.projecteditor.shared.model.KSessionModel;
+import org.kie.guvnor.editors.projecteditor.client.forms.KSessionForm;
+import org.kie.guvnor.editors.projecteditor.client.forms.KSessionFormView;
+import org.kie.guvnor.editors.projecteditor.shared.model.ClockTypeOption;
+import org.kie.guvnor.editors.projecteditor.shared.model.KSessionModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

@@ -30,7 +30,7 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.datamodel.api.DropDownData;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;
 import org.kie.guvnor.editors.guided.service.GuidedEditorService;
-import org.kie.guvnor.factconstraints.client.widget.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.widgets.factconstraints.client.widget.util.ConstraintValueEditorHelper;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
 import org.uberfire.client.common.LoadingPopup;

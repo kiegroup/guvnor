@@ -19,8 +19,8 @@ package org.kie.guvnor.backend.server.impl;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.datamodel.DataModel;
-import org.kie.guvnor.datamodel.DataModelService;
+import org.kie.guvnor.datamodel.api.DataModel;
+import org.kie.guvnor.datamodel.api.DataModelService;
 import org.kie.guvnor.shared.MockDataModel;
 import org.uberfire.backend.vfs.Path;
 

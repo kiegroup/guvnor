@@ -39,6 +39,7 @@ import org.kie.guvnor.editors.guided.client.editor.events.TemplateVariablesChang
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.HumanReadable;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;
+import org.kie.guvnor.editors.guided.client.util.FieldNatureUtil;
 import org.kie.guvnor.editors.guided.model.ActionFieldValue;
 import org.kie.guvnor.editors.guided.model.ActionInsertFact;
 import org.kie.guvnor.editors.guided.model.ActionInsertLogicalFact;
@@ -151,7 +152,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         DataModel completions = this.getModeller().getSuggestionCompletions();
         DropDownData enums = completions.getEnums( this.factType,
                                                    val.getField(),
-                                                   toMap( this.model.getFieldValues() ) );
+                                                   FieldNatureUtil.toMap( this.model.getFieldValues() ) );
 
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,

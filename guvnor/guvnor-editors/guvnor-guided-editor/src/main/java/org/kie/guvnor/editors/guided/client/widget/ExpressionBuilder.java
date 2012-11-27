@@ -63,16 +63,16 @@ public class ExpressionBuilder extends RuleModellerWidget
         HasExpressionTypeChangeHandlers,
         HasExpressionChangeHandlers {
 
-    private static final String                 DELETE_VALUE                 = "_delete_";
-    private static final String                 FIElD_VALUE_PREFIX           = "fl";
-    private static final String                 VARIABLE_VALUE_PREFIX        = "va";
+    private static final String DELETE_VALUE = "_delete_";
+    private static final String FIElD_VALUE_PREFIX = "fl";
+    private static final String VARIABLE_VALUE_PREFIX = "va";
     // private static final String GLOBAL_COLLECTION_VALUE_PREFIX = "gc";
-    private static final String                 GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
-    private static final String                 METHOD_VALUE_PREFIX          = "mt";
-    private final        SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
-    private              HorizontalPanel        panel                        = new HorizontalPanel();
+    private static final String GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
+    private static final String METHOD_VALUE_PREFIX = "mt";
+    private final SmallLabelClickHandler slch = new SmallLabelClickHandler();
+    private HorizontalPanel panel = new HorizontalPanel();
     private ExpressionFormLine expression;
-    private boolean            readOnly;
+    private boolean readOnly;
 
     private boolean isFactTypeKnown;
 
@@ -206,8 +206,8 @@ public class ExpressionBuilder extends RuleModellerWidget
             expression.appendPart( variable );
 
         } else if ( prefix.equals( GLOBAL_VARIABLE_VALUE_PREFIX ) ) {
-            expression.appendPart( getExpressionPartForGlobalVariable( getCompletionEngine(),
-                                                                       attrib ) );
+            expression.appendPart( ExpressionPartHelper.getExpressionPartForGlobalVariable( getCompletionEngine(),
+                                                                                            attrib ) );
         }
         w = getWidgetForCurrentType();
 
@@ -316,13 +316,13 @@ public class ExpressionBuilder extends RuleModellerWidget
             prevFactName = getCompletionEngine().getFactNameFromType( getCurrentClassType() );
             // String genericType = SuggestionCompletionEngine.TYPE_OBJECT;
             if ( FIElD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( getExpressionPartForField( getCompletionEngine(),
-                                                                  prevFactName,
-                                                                  attrib ) );
+                expression.appendPart( ExpressionPartHelper.getExpressionPartForField( getCompletionEngine(),
+                                                                                       prevFactName,
+                                                                                       attrib ) );
             } else if ( METHOD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( getExpressionPartForMethod( getCompletionEngine(),
-                                                                   prevFactName,
-                                                                   attrib ) );
+                expression.appendPart( ExpressionPartHelper.getExpressionPartForMethod( getCompletionEngine(),
+                                                                                        prevFactName,
+                                                                                        attrib ) );
             }
         }
         Widget w = getWidgetForCurrentType();

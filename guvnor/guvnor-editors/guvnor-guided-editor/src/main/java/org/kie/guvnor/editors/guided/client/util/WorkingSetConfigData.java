@@ -18,8 +18,8 @@ package org.kie.guvnor.editors.guided.client.util;
 
 import java.util.List;
 
-import org.kie.guvnor.factconstraints.client.widget.ConstraintConfiguration;
-import org.kie.guvnor.factconstraints.client.widget.customform.CustomFormConfiguration;
+import org.kie.guvnor.widgets.factconstraints.client.widget.ConstraintConfiguration;
+import org.kie.guvnor.widgets.factconstraints.client.widget.customform.CustomFormConfiguration;
 
 public class WorkingSetConfigData {
 

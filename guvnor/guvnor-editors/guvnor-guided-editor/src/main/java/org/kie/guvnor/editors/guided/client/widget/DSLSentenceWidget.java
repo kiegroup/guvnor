@@ -45,7 +45,7 @@ import org.kie.guvnor.editors.guided.client.editor.CustomFormPopUp;
 import org.kie.guvnor.editors.guided.client.editor.RuleModeller;
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;
-import org.kie.guvnor.factconstraints.client.widget.customform.CustomFormConfiguration;
+import org.kie.guvnor.widgets.factconstraints.client.widget.customform.CustomFormConfiguration;
 import org.kie.guvnor.editors.guided.client.editor.EnumDropDown;
 import org.kie.guvnor.editors.guided.client.util.WorkingSetManager;
 import org.uberfire.client.common.DirtyableComposite;

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.kie.guvnor.datamodel.api.DataModel;
 import org.kie.guvnor.datamodel.api.DropDownData;
 import org.kie.guvnor.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
-import org.kie.guvnor.factconstraints.client.widget.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.widgets.factconstraints.client.widget.util.ConstraintValueEditorHelper;
 
 /**
  * A Popup drop-down Editor ;-)

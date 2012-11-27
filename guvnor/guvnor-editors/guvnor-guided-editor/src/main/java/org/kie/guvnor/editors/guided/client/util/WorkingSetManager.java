@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.guvnor.factconstraints.client.widget.customform.CustomFormConfiguration;
-import org.kie.guvnor.factconstraints.client.widget.helper.CustomFormsContainer;
+import org.kie.guvnor.widgets.factconstraints.client.widget.customform.CustomFormConfiguration;
+import org.kie.guvnor.widgets.factconstraints.client.widget.helper.CustomFormsContainer;
 import org.uberfire.backend.vfs.Path;
 
 /**

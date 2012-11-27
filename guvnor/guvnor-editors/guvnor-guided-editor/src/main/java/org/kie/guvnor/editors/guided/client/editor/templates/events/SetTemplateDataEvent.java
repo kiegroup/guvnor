@@ -16,7 +16,7 @@
 package org.kie.guvnor.editors.guided.client.editor.templates.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetModelEvent;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 import org.kie.guvnor.editors.guided.model.templates.TemplateModel;
 
 /**

@@ -17,8 +17,8 @@ package org.kie.guvnor.editors.guided.client.editor.templates;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
-import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.guvnor.widgets.decoratedgrid.client.resources.GridResources;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.ResourcesProvider;
 
 /**
  *

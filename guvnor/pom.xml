@@ -80,6 +80,12 @@
 
       <dependency>
         <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-project-editor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
         <artifactId>guvnor-datamodel-api</artifactId>
         <version>${project.version}</version>
       </dependency>

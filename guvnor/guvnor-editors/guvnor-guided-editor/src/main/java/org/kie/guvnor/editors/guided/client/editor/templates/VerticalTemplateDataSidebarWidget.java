@@ -16,11 +16,11 @@
 package org.kie.guvnor.editors.guided.client.editor.templates;
 
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.CopyPasteContextMenu;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.CopyPasteContextMenu;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.data.RowMapper;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.editors.guided.client.editor.templates.events.SetInternalTemplateDataModelEvent;
 import org.kie.guvnor.editors.guided.model.templates.TemplateModel;
 

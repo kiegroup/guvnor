@@ -17,9 +17,9 @@ package org.kie.guvnor.editors.guided.client.editor.templates;
 
 import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.api.DataModel;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
-import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.AbstractCellFactory;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
+import org.kie.guvnor.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
 import org.kie.guvnor.editors.guided.model.DataType;
 
 public class TemplateDataCellFactory
