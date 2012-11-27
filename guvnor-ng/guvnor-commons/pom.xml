@@ -19,17 +19,17 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor</artifactId>
+    <artifactId>guvnor-ng</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-widgets</artifactId>
+  <artifactId>guvnor-commons</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor - Widgets</name>
+  <name>Guvnor - Commons</name>
 
   <modules>
-    <module>guvnor-fact-constraints</module>
-    <module>guvnor-decorated-grid</module>
+    <module>guvnor-commons-ui</module>
+    <module>guvnor-commons-security</module>
   </modules>
 </project>

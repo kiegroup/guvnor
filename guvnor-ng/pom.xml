@@ -24,11 +24,11 @@
   </parent>
 
   <groupId>org.kie.guvnor</groupId>
-  <artifactId>guvnor</artifactId>
+  <artifactId>guvnor-ng</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor</name>
-  <description>Guvnor Modules</description>
+  <name>Guvnor - NG</name>
+  <description>Guvnor NG Modules</description>
 
   <modules>
     <module>guvnor-commons</module>

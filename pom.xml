@@ -92,7 +92,7 @@
     <module>guvnor-bulk-importer</module>
     <module>guvnor-jcr2vfs-migration</module>
     <module>guvnor-examples</module>
-    <module>guvnor</module>
+    <module>guvnor-ng</module>
   </modules>
 
   <dependencyManagement>

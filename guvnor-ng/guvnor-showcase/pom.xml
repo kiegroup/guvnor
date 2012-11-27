@@ -19,17 +19,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor</artifactId>
+    <artifactId>guvnor-ng</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-commons</artifactId>
+  <artifactId>guvnor-showcase</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor - Commons</name>
+  <name>Guvnor - Showcase</name>
 
   <modules>
-    <module>guvnor-commons-ui</module>
-    <module>guvnor-commons-security</module>
+    <module>guvnor-webapp</module>
   </modules>
 </project>

@@ -19,16 +19,20 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor</artifactId>
+    <artifactId>guvnor-ng</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-datamodel</artifactId>
+  <artifactId>guvnor-editors</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor - Data Model</name>
+  <name>Guvnor - Editors</name>
 
   <modules>
-    <module>guvnor-datamodel-api</module>
+    <module>guvnor-enum-editor</module>
+    <module>guvnor-drl-text-editor</module>
+    <module>guvnor-factmodel-editor</module>
+    <module>guvnor-guided-editor</module>
+    <module>guvnor-project-editor</module>
   </modules>
 </project>
