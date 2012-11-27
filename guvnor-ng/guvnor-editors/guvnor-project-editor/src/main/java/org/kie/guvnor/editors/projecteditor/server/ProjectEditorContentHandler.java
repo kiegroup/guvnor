@@ -19,17 +19,25 @@ package org.kie.guvnor.editors.projecteditor.server;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.kie.guvnor.editors.projecteditor.server.converters.KBaseConverter;
+import org.kie.guvnor.editors.projecteditor.server.converters.KProjectConverter;
 import org.kie.guvnor.editors.projecteditor.server.converters.KSessionConverter;
 import org.kie.guvnor.editors.projecteditor.shared.model.ClockTypeOption;
-import org.kie.guvnor.editors.projecteditor.shared.model.KSessionModel;
-import org.kie.guvnor.editors.projecteditor.server.converters.KProjectConverter;
 import org.kie.guvnor.editors.projecteditor.shared.model.KBaseModel;
 import org.kie.guvnor.editors.projecteditor.shared.model.KProjectModel;
+import org.kie.guvnor.editors.projecteditor.shared.model.KSessionModel;
 
 public class ProjectEditorContentHandler {
 
-    public static KProjectModel toModel(String xml) {
 
+    public static KProjectModel toModel(String xml) {
+        return (KProjectModel) createXStream().fromXML(xml);
+    }
+
+    public static String toString(KProjectModel model) {
+        return createXStream().toXML(model);
+    }
+
+    private static XStream createXStream() {
         XStream xStream = new XStream(new DomDriver());
 
         xStream.alias("kproject", KProjectModel.class);
@@ -41,8 +49,6 @@ public class ProjectEditorContentHandler {
         xStream.registerConverter(new KBaseConverter());
         xStream.registerConverter(new KSessionConverter());
         xStream.registerConverter(new ClockTypeConverter());
-
-        return (KProjectModel) xStream.fromXML(xml);
+        return xStream;
     }
-
 }

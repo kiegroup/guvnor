@@ -17,14 +17,13 @@
 package org.kie.guvnor.editors.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KSessionFormViewImpl
@@ -41,7 +40,7 @@ public class KSessionFormViewImpl
     private static KSessionFormViewImplBinder uiBinder = GWT.create(KSessionFormViewImplBinder.class);
 
     @UiField
-    TextBox nameTextBox;
+    Label nameTextBox;
 
     @UiField
     RadioButton realtime;
@@ -73,11 +72,6 @@ public class KSessionFormViewImpl
     @Override
     public void selectRealtime() {
         realtime.setValue(true);
-    }
-
-    @UiHandler("nameTextBox")
-    public void onNameChange(KeyUpEvent keyUpEvent) {
-        presenter.onNameChange(nameTextBox.getText());
     }
 
     @UiHandler("realtime")

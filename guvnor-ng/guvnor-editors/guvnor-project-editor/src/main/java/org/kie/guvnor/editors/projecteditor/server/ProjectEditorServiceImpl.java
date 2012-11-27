@@ -20,24 +20,27 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.editors.projecteditor.shared.model.KProjectModel;
 import org.kie.guvnor.editors.projecteditor.shared.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @Service
 @ApplicationScoped
 public class ProjectEditorServiceImpl
         implements ProjectEditorService {
 
+    @Inject
+    private VFSService vfsService;
 
     @Override
-    public void save(KProjectModel model) {
-        //TODO -Rikkola-
+    public void save(Path path, KProjectModel model) {
+       vfsService.write(path,ProjectEditorContentHandler.toString(model));
     }
 
     @Override
     public KProjectModel load(Path path) {
-        KProjectModel kProjectModel = ProjectEditorContentHandler.toModel(KProjectLoader.load());
-        return kProjectModel;
+        return ProjectEditorContentHandler.toModel(vfsService.readAllString(path));
     }
 
 }

@@ -52,22 +52,6 @@ public class KSessionFormTest {
     }
 
     @Test
-    public void testChangeName() throws Exception {
-        KSessionModel model = new KSessionModel();
-
-        form.setModel(model);
-
-        presenter.onNameChange("a");
-        assertEquals("a", model.getName());
-
-        presenter.onNameChange("ab");
-        assertEquals("ab", model.getName());
-
-        presenter.onNameChange("abc");
-        assertEquals("abc", model.getName());
-    }
-
-    @Test
     public void testClockTypeChange() throws Exception {
         KSessionModel model = new KSessionModel();
 

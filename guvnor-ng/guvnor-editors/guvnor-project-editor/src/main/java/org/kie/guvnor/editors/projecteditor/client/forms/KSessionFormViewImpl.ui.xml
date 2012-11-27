@@ -25,11 +25,11 @@
   <gwt:HTMLPanel>
     <div>
       <div>
-        <div style='float:left;'>
+        <div style='float:left; padding-right:5px;'>
           <gwt:Label text="{i18n.Name}"/>
         </div>
         <div style='float:left;'>
-          <gwt:TextBox ui:field="nameTextBox"/>
+          <gwt:Label ui:field="nameTextBox"/>
         </div>
         <div style='clear:both;'/>
       </div>

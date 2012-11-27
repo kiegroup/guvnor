@@ -56,11 +56,6 @@ public class KSessionForm
     }
 
     @Override
-    public void onNameChange(String name) {
-        model.setName(name);
-    }
-
-    @Override
     public void onRealtimeSelect() {
         model.setClockType( ClockTypeOption.REALTIME);
     }

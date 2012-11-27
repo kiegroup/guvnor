@@ -22,13 +22,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
-@WorkbenchEditor(identifier = "projectEditorScreen")
+@WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "xml")
 public class ProjectEditorScreen
         extends ListFormComboPanel<KBaseModel> {
 
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
 
     private KProjectModel model;
+    private Path path;
 
     @Inject
     public ProjectEditorScreen(Caller<ProjectEditorService> projectEditorServiceCaller,
@@ -42,6 +43,8 @@ public class ProjectEditorScreen
 
     @OnStart
     public void init(Path path) {
+        this.path = path;
+
         projectEditorServiceCaller.call(new RemoteCallback<KProjectModel>() {
             @Override
             public void callback(KProjectModel model) {
@@ -76,7 +79,7 @@ public class ProjectEditorScreen
 
         toolBar.addItem(
                 new DefaultMenuItemCommand(
-                        "ProjectEditorConstants.INSTANCE.Save()",
+                        ProjectEditorConstants.INSTANCE.Save(),
                         new Command() {
                             @Override
                             public void execute() {
@@ -85,7 +88,7 @@ public class ProjectEditorScreen
                                     public void callback(Void v) {
 
                                     }
-                                }).save(model);
+                                }).save(path, model);
                             }
                         }));
 

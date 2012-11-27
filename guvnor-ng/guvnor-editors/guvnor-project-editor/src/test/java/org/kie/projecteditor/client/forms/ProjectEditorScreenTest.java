@@ -236,7 +236,7 @@ public class ProjectEditorScreenTest {
             service = new ProjectEditorService() {
 
                 @Override
-                public void save(KProjectModel model) {
+                public void save(Path path, KProjectModel model) {
                     callback.callback(null);
                     savedModel = model;
                 }

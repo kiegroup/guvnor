@@ -25,7 +25,7 @@
   <gwt:HTMLPanel width="100%">
     <div>
       <div style='float:left'>
-        <div style='float:left;'>
+        <div style='float:left; padding-right:5px;'>
           <gwt:Label text="{i18n.Name}"/>
         </div>
         <div style='float:left;'>
@@ -55,7 +55,7 @@
       </div>
       <div style='clear:both;'/>
     </div>
-    <gwt:TabLayoutPanel barHeight="50" barUnit="PX" height="400px" width="600">
+    <gwt:TabLayoutPanel barHeight="50" barUnit="PX" height="400px" width="600px">
       <gwt:tab>
         <gwt:header>
           <ui:text from="{i18n.StatefulKSessions}"/>

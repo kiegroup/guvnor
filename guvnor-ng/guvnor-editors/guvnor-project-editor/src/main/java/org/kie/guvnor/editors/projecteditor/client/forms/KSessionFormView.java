@@ -24,8 +24,6 @@ public interface KSessionFormView
     interface Presenter
             extends IsWidget {
 
-        void onNameChange(String name);
-
         void onRealtimeSelect();
 
         void onPseudoSelect();
