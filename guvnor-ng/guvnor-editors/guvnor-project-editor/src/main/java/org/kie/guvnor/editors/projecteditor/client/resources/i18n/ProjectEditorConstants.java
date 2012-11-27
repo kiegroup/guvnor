@@ -74,4 +74,6 @@ public interface ProjectEditorConstants
     String New();
 
     String Save();
+
+    String SaveSuccessful();
 }

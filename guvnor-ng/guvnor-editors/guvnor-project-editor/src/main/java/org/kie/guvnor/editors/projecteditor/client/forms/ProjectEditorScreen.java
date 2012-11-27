@@ -14,11 +14,13 @@ import org.kie.guvnor.editors.projecteditor.shared.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
@@ -30,6 +32,9 @@ public class ProjectEditorScreen
 
     private KProjectModel model;
     private Path path;
+
+    @Inject
+    private Event<NotificationEvent> notification;
 
     @Inject
     public ProjectEditorScreen(Caller<ProjectEditorService> projectEditorServiceCaller,
@@ -86,7 +91,7 @@ public class ProjectEditorScreen
                                 projectEditorServiceCaller.call(new RemoteCallback<Void>() {
                                     @Override
                                     public void callback(Void v) {
-
+                                        notification.fire(new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful()));
                                     }
                                 }).save(path, model);
                             }
