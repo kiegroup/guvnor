@@ -18,8 +18,8 @@ package org.kie.guvnor.editors.guided.model.templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.guvnor.datamodel.api.IAction;
-import org.kie.guvnor.datamodel.api.IPattern;
+import org.kie.guvnor.datamodel.api.client.IAction;
+import org.kie.guvnor.datamodel.api.client.IPattern;
 import org.kie.guvnor.editors.guided.model.ActionFieldValue;
 import org.kie.guvnor.editors.guided.model.BaseSingleFieldConstraint;
 import org.kie.guvnor.editors.guided.model.CompositeFactPattern;

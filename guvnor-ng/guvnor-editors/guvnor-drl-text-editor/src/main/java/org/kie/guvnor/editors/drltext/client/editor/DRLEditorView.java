@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import org.kie.guvnor.datamodel.api.DataModel;
+import org.kie.guvnor.datamodel.api.client.DataModel;
 import org.kie.guvnor.editors.drltext.client.resources.i18n.Constants;
 import org.kie.guvnor.editors.drltext.client.widget.FactTypeBrowserWidget;
 import org.kie.guvnor.editors.drltext.client.widget.RuleContentWidget;

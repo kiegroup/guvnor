@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.editors.guided.model;
 
-import org.kie.guvnor.datamodel.api.IAction;
+import org.kie.guvnor.datamodel.api.client.IAction;
 
 /**
  * This class is the parent for field setting or assertion actions.

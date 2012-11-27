@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.api.DataModel;
+import org.kie.guvnor.datamodel.api.client.DataModel;
 import org.kie.guvnor.editors.guided.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.editors.guided.client.editor.ConstraintValueEditor;
 import org.kie.guvnor.editors.guided.client.editor.OperatorSelection;

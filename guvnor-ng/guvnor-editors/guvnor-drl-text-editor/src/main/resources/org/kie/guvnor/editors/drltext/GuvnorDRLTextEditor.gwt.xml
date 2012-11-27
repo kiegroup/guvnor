@@ -31,4 +31,6 @@
 
   <inherits name='org.kie.guvnor.datamodel.api.GuvnorDataModelAPI'/>
 
+  <source path='client'/>
+
 </module>

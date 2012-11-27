@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.DSLSentence;
-import org.kie.guvnor.datamodel.api.IAction;
-import org.kie.guvnor.datamodel.api.IPattern;
+import org.kie.guvnor.datamodel.api.client.DSLSentence;
+import org.kie.guvnor.datamodel.api.client.IAction;
+import org.kie.guvnor.datamodel.api.client.IPattern;
 
 @Portable
 public class RuleModel {

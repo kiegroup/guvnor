@@ -31,4 +31,6 @@
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
 
+  <source path='client'/>
+
 </module>

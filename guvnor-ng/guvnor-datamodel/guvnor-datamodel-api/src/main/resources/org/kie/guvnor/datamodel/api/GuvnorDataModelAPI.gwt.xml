@@ -21,6 +21,8 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <source path=''/>
+  <source path='client'/>
+  <source path='shared'/>
+  <source path='service'/>
 
 </module>

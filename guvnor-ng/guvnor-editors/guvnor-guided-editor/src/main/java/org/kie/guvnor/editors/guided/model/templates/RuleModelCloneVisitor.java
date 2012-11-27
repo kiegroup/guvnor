@@ -18,10 +18,10 @@ package org.kie.guvnor.editors.guided.model.templates;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.datamodel.api.DSLSentence;
-import org.kie.guvnor.datamodel.api.DSLVariableValue;
-import org.kie.guvnor.datamodel.api.IAction;
-import org.kie.guvnor.datamodel.api.IPattern;
+import org.kie.guvnor.datamodel.api.client.DSLSentence;
+import org.kie.guvnor.datamodel.api.client.DSLVariableValue;
+import org.kie.guvnor.datamodel.api.client.IAction;
+import org.kie.guvnor.datamodel.api.client.IPattern;
 import org.kie.guvnor.editors.guided.model.ActionFieldValue;
 import org.kie.guvnor.editors.guided.model.ActionRetractFact;
 import org.kie.guvnor.editors.guided.model.ActionSetField;

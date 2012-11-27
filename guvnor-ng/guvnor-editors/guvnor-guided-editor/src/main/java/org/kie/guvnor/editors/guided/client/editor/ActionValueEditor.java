@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
-import org.kie.guvnor.datamodel.api.DropDownData;
+import org.kie.guvnor.datamodel.api.client.DropDownData;
 import org.kie.guvnor.editors.guided.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.editors.guided.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.editors.guided.client.resources.GuvnorImages;

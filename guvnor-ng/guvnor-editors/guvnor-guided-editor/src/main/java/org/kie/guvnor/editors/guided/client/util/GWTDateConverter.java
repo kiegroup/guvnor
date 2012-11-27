@@ -19,7 +19,7 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.api.DateConverter;
+import org.kie.guvnor.datamodel.api.client.DateConverter;
 
 /**
  * Convenience class to handle date conversion when running under GWT.

@@ -17,8 +17,8 @@
 package org.kie.guvnor.editors.guided.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.api.IAction;
-import org.kie.guvnor.datamodel.api.IPattern;
+import org.kie.guvnor.datamodel.api.client.IAction;
+import org.kie.guvnor.datamodel.api.client.IPattern;
 
 /**
  * This is a free form line which will be rendered and displayed-as-is.

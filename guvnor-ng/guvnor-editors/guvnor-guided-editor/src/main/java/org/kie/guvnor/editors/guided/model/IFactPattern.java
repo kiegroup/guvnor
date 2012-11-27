@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.editors.guided.model;
 
-import org.kie.guvnor.datamodel.api.IPattern;
+import org.kie.guvnor.datamodel.api.client.IPattern;
 
 /**
  * Interface for Patterns that contains a Fact Type

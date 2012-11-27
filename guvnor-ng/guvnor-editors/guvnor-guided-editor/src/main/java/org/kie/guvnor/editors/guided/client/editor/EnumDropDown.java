@@ -27,7 +27,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ListBox;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.kie.guvnor.datamodel.api.DropDownData;
+import org.kie.guvnor.datamodel.api.client.DropDownData;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;
 import org.kie.guvnor.editors.guided.service.GuidedEditorService;
 import org.kie.guvnor.widgets.factconstraints.client.widget.util.ConstraintValueEditorHelper;

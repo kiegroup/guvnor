@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.kie.guvnor.datamodel.api.DataModel;
+import org.kie.guvnor.datamodel.api.client.DataModel;
 import org.kie.guvnor.editors.guided.client.editor.RuleModelEditor;
 import org.kie.guvnor.editors.guided.client.editor.RuleModeller;
 import org.kie.guvnor.editors.guided.client.resources.i18n.Constants;

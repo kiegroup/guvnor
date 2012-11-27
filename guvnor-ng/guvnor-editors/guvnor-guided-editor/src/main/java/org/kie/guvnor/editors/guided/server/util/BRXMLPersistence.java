@@ -18,7 +18,7 @@ package org.kie.guvnor.editors.guided.server.util;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.kie.guvnor.datamodel.api.DSLSentence;
+import org.kie.guvnor.datamodel.api.client.DSLSentence;
 import org.kie.guvnor.editors.guided.model.ActionFieldValue;
 import org.kie.guvnor.editors.guided.model.ActionGlobalCollectionAdd;
 import org.kie.guvnor.editors.guided.model.ActionInsertFact;
