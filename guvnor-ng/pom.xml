@@ -68,13 +68,67 @@
 
       <dependency>
         <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-factmodel-editor-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-factmodel-editor-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-factmodel-editor-backend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
         <artifactId>guvnor-drl-text-editor</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-drl-text-editor-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-drl-text-editor-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-drl-text-editor-backend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
         <artifactId>guvnor-enum-editor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-enum-editor-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-enum-editor-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.guvnor</groupId>
+        <artifactId>guvnor-enum-editor-backend</artifactId>
         <version>${project.version}</version>
       </dependency>
 

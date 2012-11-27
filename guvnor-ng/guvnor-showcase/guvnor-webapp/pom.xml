@@ -40,22 +40,52 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-drl-text-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-drl-text-editor-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-drl-text-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-enum-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-enum-editor-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-enum-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-factmodel-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-factmodel-editor-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-factmodel-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-editor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-drl-text-editor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-factmodel-editor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-enum-editor</artifactId>
     </dependency>
 
     <dependency>
@@ -216,9 +246,12 @@
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-shared</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-fact-constraints</compileSourcesArtifact>

@@ -13,9 +13,12 @@
   <inherits name='org.kie.guvnor.datamodel.api.GuvnorDataModelAPI'/>
 
   <!-- Editors -->
-  <inherits name="org.kie.guvnor.editors.enums.GuvnorEnumEditor"/>
   <inherits name="org.kie.guvnor.editors.drltext.GuvnorDRLTextEditor"/>
+  <inherits name="org.kie.guvnor.editors.drltext.GuvnorDRLTextEditorShared"/>
+  <inherits name="org.kie.guvnor.editors.enums.GuvnorEnumEditor"/>
+  <inherits name="org.kie.guvnor.editors.enums.GuvnorEnumEditorShared"/>
   <inherits name="org.kie.guvnor.editors.factmodel.GuvnorFactModelEditor"/>
+  <inherits name="org.kie.guvnor.editors.factmodel.GuvnorFactModelEditorShared"/>
   <inherits name="org.kie.guvnor.editors.guided.GuvnorGuidedEditor"/>
   <inherits name="org.kie.guvnor.editors.projecteditor.ProjectEditor"/>
 
