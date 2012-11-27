@@ -1,5 +1,0 @@
-org.kie.guvnor.editors.factmodel.model.FactMetaModel
-org.kie.guvnor.editors.factmodel.model.FieldMetaModel
-org.kie.guvnor.editors.factmodel.model.FactModelContent
-org.kie.guvnor.editors.factmodel.model.AnnotationMetaModel
-org.kie.guvnor.editors.factmodel.service.FactModelService

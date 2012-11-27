@@ -1,6 +1,0 @@
-org.kie.guvnor.editors.enums.client.editor.EnumEditorPresenter
-org.kie.guvnor.editors.enums.client.editor.EnumRow
-org.kie.guvnor.editors.enums.client.editor.EnumEditorPresenterActivity
-org.kie.guvnor.editors.enums.client.editor.EnumEditorView
-org.kie.guvnor.editors.enums.client.widget.DeleteButtonCellWidget
-org.kie.guvnor.editors.enums.client.resources.i18n.Constants
