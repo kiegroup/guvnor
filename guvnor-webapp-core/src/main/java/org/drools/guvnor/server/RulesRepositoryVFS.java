@@ -258,11 +258,13 @@ public class RulesRepositoryVFS {
     	vfsService.setAttribute(asset.getPath(), "state", asset.getState(), null);
     	//AND MORE
     	
-    	//In old Guvnor, we get the binary content by using content handler:
+    	//In old Guvnor, we convert domain object to binary by using content handler:
 /*        ContentHandler handler = ContentManager.getHandler(asset.getFormat());
-        handler.storeAssetContent(asset, 
-                repoAsset);*/
+        handler.storeAssetContent(asset,  repoAsset);*/
+    	//Domain object to binary 
     	byte[] assetContent;
+    	
+    	//TODO: vfsService needs a write(Path path, byte[] content) method.
     	//vfsService.write(asset.getPath(), assetContent);
     	
     	return "";//old Guvnor returns uuid
