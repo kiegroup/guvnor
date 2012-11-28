@@ -22,16 +22,42 @@
   <parent>
     <groupId>org.kie.guvnor</groupId>
     <artifactId>guvnor-showcase</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
 
-  <name>Guvnor - Showcase WebApp</name>
-  <description>Guvnor - Showcase WebApp</description>
+  <name>Guvnor Showcase WebApp</name>
+  <description>Guvnor Showcase WebApp</description>
 
   <dependencies>
+
+    <!--Logs-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <!-- This is a war file, so logback is not in scope test, but in scope compile -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-workingset-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-project-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
@@ -40,12 +66,22 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-drl-text-editor-client</artifactId>
+      <artifactId>guvnor-datamodel-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-drl-text-editor-shared</artifactId>
+      <artifactId>guvnor-guided-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-drl-text-editor-client</artifactId>
     </dependency>
 
     <dependency>
@@ -60,11 +96,6 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-enum-editor-shared</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-enum-editor-backend</artifactId>
     </dependency>
 
@@ -75,22 +106,17 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-factmodel-editor-shared</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-factmodel-editor-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-editor</artifactId>
+      <artifactId>guvnor-project-editor-client</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-editor</artifactId>
+      <artifactId>guvnor-project-editor-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -221,6 +247,7 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -245,18 +272,29 @@
           <module>org.kie.guvnor.FastCompiledGuvnorShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-shared</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-fact-constraints</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid-widget</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-view-source-widget</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-error-messages-widget</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-workingset-client</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-security</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-ui</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-services-api</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>

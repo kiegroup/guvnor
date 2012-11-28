@@ -19,65 +19,21 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-ng</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <artifactId>guvnor</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-editors</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor - Editors</name>
+  <name>Guvnor Editors</name>
 
   <modules>
-    <module>guvnor-enum-editor</module>
     <module>guvnor-drl-text-editor</module>
+    <module>guvnor-enum-editor</module>
     <module>guvnor-factmodel-editor</module>
     <module>guvnor-guided-editor</module>
     <module>guvnor-project-editor</module>
   </modules>
-
-  <dependencies>
-
-    <!-- Uberfire annotations -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench</artifactId>
-    </dependency>
-
-    <!-- Uberfire common widgets -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <!-- CDI -->
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-    </dependency>
-
-  </dependencies>
 
 </project>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<module>
-
-  <source path="client"/>
-  <source path="shared"/>
-
-</module>

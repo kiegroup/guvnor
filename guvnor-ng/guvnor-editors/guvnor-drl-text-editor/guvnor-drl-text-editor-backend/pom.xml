@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>guvnor-drl-text-editor</artifactId>
-    <groupId>org.kie.guvnor</groupId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.guvnor</groupId>
+    <artifactId>guvnor-drl-text-editor</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
 
   <artifactId>guvnor-drl-text-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Guvnor - DRL Text Editor - backend</name>
+  <name>Technical Rule Editor Backend</name>
+  <description>Technical Rule Editor Backend</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-drl-text-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+  </dependencies>
 
 </project>

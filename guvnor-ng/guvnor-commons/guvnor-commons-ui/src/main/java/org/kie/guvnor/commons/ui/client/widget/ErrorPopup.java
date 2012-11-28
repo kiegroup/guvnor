@@ -109,11 +109,4 @@ public class ErrorPopup extends Popup {
 
         LoadingPopup.close();
     }
-
-    public static void showMessage( String message,
-                                    String longDescription ) {
-        ErrorPopup instance = new ErrorPopup();
-        instance.addMessage( message,
-                             longDescription );
-    }
 }

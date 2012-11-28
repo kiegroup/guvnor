@@ -19,17 +19,18 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-ng</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <artifactId>guvnor</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-widgets</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor - Widgets</name>
+  <name>Guvnor Widgets</name>
 
   <modules>
-    <module>guvnor-fact-constraints</module>
-    <module>guvnor-decorated-grid</module>
+    <module>guvnor-decorated-grid-widget</module>
+    <module>guvnor-view-source-widget</module>
+    <module>guvnor-error-messages-widget</module>
   </modules>
 </project>
