@@ -17,20 +17,22 @@
 package org.kie.guvnor.backend.server;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
+import org.kie.commons.java.nio.file.FileSystems;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
 import org.uberfire.backend.vfs.impl.PathImpl;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.FileSystems;
 
 import static java.util.Arrays.*;
 
@@ -39,29 +41,45 @@ public class AppSetup {
 
     private ActiveFileSystems fileSystems = new ActiveFileSystemsImpl();
 
+    @Inject
+    private RepositoryUtils repositoryUtils;
+
     @PostConstruct
     public void onStartup() {
-        final String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        final String userName = "guvnorngtestuser1";
-        final String password = "test1234";
-        final URI fsURI = URI.create("git://uf-playground");
 
-        final Map<String, Object> env = new HashMap<String, Object>();
-        env.put("username", userName);
-        env.put("password", password);
-        env.put("origin", gitURL);
+        final Collection<RepositoryUtils.Repository> repositories = repositoryUtils.getRepositories();
 
-        try {
-            FileSystems.newFileSystem(fsURI, env);
-        } catch (FileSystemAlreadyExistsException ex) {
+        for ( RepositoryUtils.Repository repository : repositories ) {
+            if ( repositoryUtils.isRepositoryDefinitionValid( repository ) ) {
+                final String alias = repository.getAlias();
+                final String url = repository.getUrl();
+                final String userName = repository.getUserName();
+                final String password = repository.getPassword();
+                final boolean bootstrap = repository.isBootstrap();
+
+                final URI fsURI = URI.create( "git://" + alias );
+
+                final Map<String, Object> env = new HashMap<String, Object>();
+                env.put( "username", userName );
+                env.put( "password", password );
+                env.put( "origin", url );
+
+                try {
+                    FileSystems.newFileSystem( fsURI, env );
+                } catch ( FileSystemAlreadyExistsException ex ) {
+                }
+
+                if ( bootstrap ) {
+                    final Path root = new PathImpl( alias, "default://" + alias );
+                    fileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
+                }
+            }
         }
 
-        final Path root = new PathImpl("uf-playground", "default://uf-playground");
-
-        fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }
 
-    @Produces @Named("fs")
+    @Produces
+    @Named("fs")
     public ActiveFileSystems fileSystems() {
         return fileSystems;
     }
