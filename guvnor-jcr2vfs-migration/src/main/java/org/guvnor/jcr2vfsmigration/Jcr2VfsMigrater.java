@@ -20,8 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.jcr2vfsmigration.config.MigrationConfig;
-import org.guvnor.jcr2vfsmigration.converter.AssetMigrater;
-import org.guvnor.jcr2vfsmigration.converter.ModuleMigrater;
+import org.guvnor.jcr2vfsmigration.migrater.AssetMigrater;
+import org.guvnor.jcr2vfsmigration.migrater.ModuleMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

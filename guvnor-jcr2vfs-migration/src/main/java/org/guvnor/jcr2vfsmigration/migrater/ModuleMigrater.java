@@ -1,4 +1,4 @@
-package org.guvnor.jcr2vfsmigration.converter;
+package org.guvnor.jcr2vfsmigration.migrater;
 
 import javax.enterprise.context.ApplicationScoped;
 
