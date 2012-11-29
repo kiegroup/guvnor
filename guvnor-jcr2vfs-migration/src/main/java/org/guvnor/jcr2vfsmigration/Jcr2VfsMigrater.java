@@ -38,11 +38,12 @@ public class Jcr2VfsMigrater {
     @Inject
     protected AssetMigrater assetMigrater;
 
+    public void parseArgs(String[] args) {
+        migrationConfig.parseArgs(args);
+    }
+
     public void migrateAll() {
         logger.info("Migration started");
-        if (migrationConfig == null) {
-            throw new IllegalStateException("The migrationConfig (" + migrationConfig + ") cannot be null.");
-        }
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         logger.info("Migration ended");
