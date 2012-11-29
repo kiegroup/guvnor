@@ -20,15 +20,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 
+@ApplicationScoped
 public class MigrationConfig {
 
     private File inputJcrRepository;
     private File outputVfsRepository;
+
+    private boolean forceOverwriteOutputVfsRepository;
 
     public File getInputJcrRepository() {
         return inputJcrRepository;
@@ -46,6 +52,8 @@ public class MigrationConfig {
         Options options = new Options();
         options.addOption("i", "inputJcrRepository", true, "The Guvnor 5 JCR repository");
         options.addOption("o", "outputVfsRepository", true, "The Guvnor 6 VFS repository");
+        options.addOption("f", "forceOverwriteOutputVfsRepository", true,
+                "Force overwriting the Guvnor 6 VFS repository");
         CommandLine commandLine;
         try {
             commandLine = new BasicParser().parse(options, args);
@@ -61,9 +69,7 @@ public class MigrationConfig {
     }
 
     private void parseArgInputJcrRepository(CommandLine commandLine) {
-        inputJcrRepository = commandLine.hasOption("i")
-                ? new File(commandLine.getOptionValue("i"))
-                : new File("."); // TODO is this a good default or should we fail fast?
+        inputJcrRepository = new File(commandLine.getOptionValue("i", "."));
         if (!inputJcrRepository.exists()) {
             throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository + ") does not exist.");
         }
@@ -75,11 +81,20 @@ public class MigrationConfig {
     }
 
     private void parseArgOutputVfsRepository(CommandLine commandLine) {
-        outputVfsRepository = commandLine.hasOption("o")
-                ? new File(commandLine.getOptionValue("o"))
-                : new File("vfs"); // TODO is this a good default or should we fail fast?
+        // TODO is "target/vfs" a good default or should we fail fast?
+        outputVfsRepository = new File(commandLine.getOptionValue("o", "target/vfs"));
+        forceOverwriteOutputVfsRepository = Boolean.parseBoolean(commandLine.getOptionValue("f", "true"));
         if (outputVfsRepository.exists()) {
-            throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository + ") already exists.");
+            if (forceOverwriteOutputVfsRepository) {
+                try {
+                    FileUtils.deleteDirectory(outputVfsRepository);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Force deleting outputVfsRepository (" + outputVfsRepository
+                            + ") failed.", e);
+                }
+            } else {
+                throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository + ") already exists.");
+            }
         }
         try {
             outputVfsRepository = outputVfsRepository.getCanonicalFile();

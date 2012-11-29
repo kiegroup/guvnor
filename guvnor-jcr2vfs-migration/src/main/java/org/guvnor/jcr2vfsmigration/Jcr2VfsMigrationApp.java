@@ -16,7 +16,14 @@
 
 package org.guvnor.jcr2vfsmigration;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.guvnor.jcr2vfsmigration.config.MigrationConfig;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +32,14 @@ public class Jcr2VfsMigrationApp {
     protected static final Logger logger = LoggerFactory.getLogger(Jcr2VfsMigrationApp.class);
 
     public static void main(String[] args) {
-        logger.info("Migration started");
         MigrationConfig migrationConfig = new MigrationConfig();
         migrationConfig.parseArgs(args);
-        // TODO
-        logger.info("Migration ended");
+
+        Weld weld = new Weld();
+        WeldContainer weldContainer = weld.initialize();
+        Jcr2VfsMigrater migrater = weldContainer.instance().select(Jcr2VfsMigrater.class).get();
+        migrater.migrateAll();
+        weld.shutdown();
     }
 
 }
