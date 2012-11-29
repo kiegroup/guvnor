@@ -10,6 +10,9 @@ public class ModuleMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger(ModuleMigrater.class);
 
+//    @Inject
+//    protected RepositoryModuleService jcrRepositoryModuleService;
+
     public void migrateAll() {
         logger.info("  Module migration started");
         // TODO

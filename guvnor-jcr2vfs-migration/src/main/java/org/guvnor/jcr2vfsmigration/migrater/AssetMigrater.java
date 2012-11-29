@@ -1,6 +1,7 @@
 package org.guvnor.jcr2vfsmigration.migrater;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,9 @@ import org.slf4j.LoggerFactory;
 public class AssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger(AssetMigrater.class);
+
+//    @Inject
+//    protected RepositoryAssetService jcrRepositoryAssetService;
 
     public void migrateAll() {
         logger.info("  Asset migration started");
