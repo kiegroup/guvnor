@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.kie.guvnor.factmodel.service.FactModelService;
 
 // TODO Maybe we should make one per asset type? Or delegate to one per asset type?
 @ApplicationScoped
@@ -14,6 +15,9 @@ public class AssetMigrater {
 
 //    @Inject
 //    protected RepositoryAssetService jcrRepositoryAssetService;
+
+    @Inject
+    protected FactModelService vfsFactModelService;
 
     public void migrateAll() {
         logger.info("  Asset migration started");

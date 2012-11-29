@@ -40,6 +40,7 @@ public class Jcr2VfsMigrater {
 
     public void parseArgs(String[] args) {
         migrationConfig.parseArgs(args);
+        System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
     public void migrateAll() {
