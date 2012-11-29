@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 
 public class Jcr2VfsMigrationApp {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Jcr2VfsMigrationApp.class);
-
     public static void main(String[] args) {
         MigrationConfig migrationConfig = new MigrationConfig();
         migrationConfig.parseArgs(args);

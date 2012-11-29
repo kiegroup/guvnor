@@ -27,9 +27,13 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class MigrationConfig {
+
+    protected static final Logger logger = LoggerFactory.getLogger(MigrationConfig.class);
 
     private File inputJcrRepository;
     private File outputVfsRepository;

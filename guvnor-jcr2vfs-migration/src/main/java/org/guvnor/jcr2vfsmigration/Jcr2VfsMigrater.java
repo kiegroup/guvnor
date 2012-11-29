@@ -35,7 +35,6 @@ public class Jcr2VfsMigrater {
 
     @Inject
     protected ModuleMigrater moduleMigrater;
-
     @Inject
     protected AssetMigrater assetMigrater;
 
