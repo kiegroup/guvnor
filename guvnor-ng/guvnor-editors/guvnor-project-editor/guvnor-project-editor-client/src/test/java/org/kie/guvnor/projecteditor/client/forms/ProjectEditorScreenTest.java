@@ -236,6 +236,11 @@ public class ProjectEditorScreenTest {
             service = new ProjectEditorService() {
 
                 @Override
+                public Path makeNew(String name) {
+                    return null;  //TODO -Rikkola-
+                }
+
+                @Override
                 public void save(Path path, KProjectModel model) {
                     callback.callback(null);
                     savedModel = model;

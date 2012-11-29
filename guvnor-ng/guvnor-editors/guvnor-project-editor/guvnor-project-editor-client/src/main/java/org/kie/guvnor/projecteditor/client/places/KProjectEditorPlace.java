@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.projecteditor.client.places;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+public class KProjectEditorPlace
+        extends DefaultPlaceRequest {
 
-@Remote
-public interface ProjectEditorService {
-
-    public Path makeNew(String name);
-
-    public void save(Path path,
-                     KProjectModel model);
-
-    public KProjectModel load(Path path);
-
+    public KProjectEditorPlace(Path path) {
+        super("projectEditorScreen");
+        addParameter("path:uri", path.toURI());
+        addParameter("path:name", path.getFileName());
+    }
 }

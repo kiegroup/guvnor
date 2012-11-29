@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+//import org.uberfire.backend.Root;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -23,6 +24,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @Service
@@ -32,10 +34,32 @@ public class ProjectEditorServiceImpl
 
     @Inject
     private VFSService vfsService;
+//    private Root root;
+
+
+//    public void newRootDirectory(@Observes Root root) {
+//        this.root = root;
+//    }
+
+    @Override
+    public Path makeNew(String name) {
+
+
+        // Create project structure
+//        vfsService.createDirectory(root.getPath());
+
+
+        // Create default kproject.xml
+
+        new KProjectModel();
+
+
+        return null;  //TODO return the path to project editor -Rikkola-
+    }
 
     @Override
     public void save(Path path, KProjectModel model) {
-       vfsService.write(path,ProjectEditorContentHandler.toString(model));
+        vfsService.write(path, ProjectEditorContentHandler.toString(model));
     }
 
     @Override

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.projecteditor.client.forms;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
-import org.uberfire.backend.vfs.Path;
+import com.google.gwt.user.client.ui.IsWidget;
 
+public interface NewProjectPopupView
+        extends IsWidget {
 
-@Remote
-public interface ProjectEditorService {
+    interface Presenter {
 
-    public Path makeNew(String name);
+        void onOk();
 
-    public void save(Path path,
-                     KProjectModel model);
+        void onCancel();
 
-    public KProjectModel load(Path path);
+        void onNameChange(String text);
+    }
 
+    void setPresenter(Presenter presenter);
 }

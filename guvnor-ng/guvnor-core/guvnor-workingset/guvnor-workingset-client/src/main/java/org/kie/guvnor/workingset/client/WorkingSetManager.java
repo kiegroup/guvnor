@@ -29,7 +29,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.commons.data.Pair;
+//import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.data.events.OnWorkingSetApplied;
 import org.kie.guvnor.commons.data.events.OnWorkingSetDisabled;
 import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
@@ -59,15 +59,15 @@ public class WorkingSetManager {
     private boolean autoVerifierEnabled = false;
 
     public void onWorkingSetApplied( @Observes final OnWorkingSetApplied event ) {
-        final Pair<Path, WorkingSetSettings> projectReference = getProjectConfig( event.getResource() );
-        if ( projectReference != null && projectReference.getK2() == null ) {
-            projectService.call( new RemoteCallback<WorkingSetSettings>() {
-                @Override
-                public void callback( final WorkingSetSettings response ) {
-                    projectSettings.put( projectReference.getK1(), response );
-                }
-            } ).loadWorkingSetConfig( projectReference.getK1() );
-        }
+//        final Pair<Path, WorkingSetSettings> projectReference = getProjectConfig( event.getResource() );
+//        if ( projectReference != null && projectReference.getK2() == null ) {
+//            projectService.call( new RemoteCallback<WorkingSetSettings>() {
+//                @Override
+//                public void callback( final WorkingSetSettings response ) {
+//                    projectSettings.put( projectReference.getK1(), response );
+//                }
+//            } ).loadWorkingSetConfig( projectReference.getK1() );
+//        }
     }
 
     public void onWorkingSetDisabled( @Observes final OnWorkingSetDisabled event ) {
@@ -90,13 +90,13 @@ public class WorkingSetManager {
         return result.getConfigData();
     }
 
-    public Pair<Path, WorkingSetSettings> getProjectConfig( final Path resource ) {
-        final Path project = projectResources.getProject( resource );
-        if ( project == null ) {
-            return null;
-        }
-        return new Pair<Path, WorkingSetSettings>( project, projectSettings.get( project ) );
-    }
+//    public Pair<Path, WorkingSetSettings> getProjectConfig( final Path resource ) {
+//        final Path project = projectResources.getProject( resource );
+//        if ( project == null ) {
+//            return null;
+//        }
+//        return new Pair<Path, WorkingSetSettings>( project, projectSettings.get( project ) );
+//    }
 
     public WorkingSetSettings getActiveSettings( final Path resource ) {
         final Path projectReference = projectResources.getProject( resource );

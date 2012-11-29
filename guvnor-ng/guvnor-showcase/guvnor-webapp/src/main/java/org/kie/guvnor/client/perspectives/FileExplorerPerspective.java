@@ -15,19 +15,24 @@
  */
 package org.kie.guvnor.client.perspectives;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * A Perspective to show File Explorer
@@ -37,25 +42,38 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 public class FileExplorerPerspective {
 
     @Inject
-    private IOCBeanManager iocManager;
-
-    private static String[] PERMISSIONS_ADMIN = new String[]{ "ADMIN" };
+    private PlaceManager placeManager;
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName( "File Explorer" );
+        p.setName("File Explorer");
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("RepositoriesEditor")));
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.setWidth( 300 );
-        west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
+        west.setWidth(300);
+        west.setMinWidth(200);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("FileExplorer")));
 
-        p.getRoot().insertChild( Position.WEST, west );
+        p.getRoot().insertChild(Position.WEST, west);
+
 
         return p;
     }
 
+    @WorkbenchMenu
+    public MenuBar buildMenuBar() {
+        final MenuBar menuBar = new DefaultMenuBar();
+
+        // TODO: Uberfire should have support for new menu items someday
+        menuBar.addItem(new DefaultMenuItemCommand("New Project", new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo("newProjectPopup");
+            }
+        }));
+
+        return menuBar;
+    }
 }
