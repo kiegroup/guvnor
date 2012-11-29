@@ -171,13 +171,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-vfs-jgit</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-jgit</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-vfs-fs</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
     </dependency>
 
     <!-- Errai Core -->
@@ -296,7 +296,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-services-api</compileSourcesArtifact>
 
-            <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
@@ -304,8 +305,9 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-vfs-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.kie.guvnor.GuvnorShowcase/Guvnor.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>

@@ -32,6 +32,10 @@
   <description>Guvnor WorkingSet Client</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-data</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
