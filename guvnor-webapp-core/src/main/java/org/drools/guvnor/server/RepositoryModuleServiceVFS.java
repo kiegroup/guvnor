@@ -73,8 +73,8 @@ import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.VFSTempUtil;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.security.annotations.Roles;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
