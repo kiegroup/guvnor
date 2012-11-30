@@ -80,17 +80,22 @@ public class NewProjectPopup
             @Override
             public void callback(Path path) {
                 placeManager.goTo(new KProjectEditorPlace(path));
+                close();
             }
         }).makeNew(name);
     }
 
     @Override
     public void onCancel() {
-        workbenchPartCloseEvent.fire(new ClosePlaceEvent(placeRequest));
+        close();
     }
 
     @Override
     public void onNameChange(String text) {
         name = text;
+    }
+
+    private void close() {
+        workbenchPartCloseEvent.fire(new ClosePlaceEvent(placeRequest));
     }
 }
