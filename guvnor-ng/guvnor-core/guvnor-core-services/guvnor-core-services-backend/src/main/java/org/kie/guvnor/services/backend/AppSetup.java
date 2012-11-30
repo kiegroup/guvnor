@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.backend.server;
+package org.kie.guvnor.services.backend;
 
 import java.net.URI;
 import java.util.Collection;
@@ -28,8 +28,8 @@ import javax.inject.Singleton;
 
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystems;
-import org.kie.guvnor.backend.server.repositories.RepositoryServiceImpl;
-import org.kie.guvnor.service.Repository;
+import org.kie.guvnor.services.repositories.Repository;
+import org.kie.guvnor.services.repositories.RepositoryService;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
@@ -44,7 +44,7 @@ public class AppSetup {
     private ActiveFileSystems fileSystems = new ActiveFileSystemsImpl();
 
     @Inject
-    private RepositoryServiceImpl repositoryService;
+    private RepositoryService repositoryService;
 
     @PostConstruct
     public void onStartup() {

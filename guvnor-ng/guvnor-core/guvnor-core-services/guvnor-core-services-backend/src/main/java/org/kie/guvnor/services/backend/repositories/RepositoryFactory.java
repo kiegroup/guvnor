@@ -1,10 +1,10 @@
-package org.kie.guvnor.backend.server.repositories;
+package org.kie.guvnor.services.backend.repositories;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.service.GitRepository;
-import org.kie.guvnor.service.Repository;
+import org.kie.guvnor.services.repositories.GitRepository;
+import org.kie.guvnor.services.repositories.Repository;
 
 /**
  * Factory for Repository implementations

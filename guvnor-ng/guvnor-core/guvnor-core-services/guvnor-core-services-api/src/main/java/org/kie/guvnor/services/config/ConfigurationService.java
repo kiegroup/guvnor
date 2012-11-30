@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.backend.server.config;
+package org.kie.guvnor.services.config;
 
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.service.ConfigurationService;
+import org.jboss.errai.bus.server.annotations.Remote;
 
-@Service
-@ApplicationScoped
-public class ConfigurationServiceImpl implements ConfigurationService {
+/**
+ *
+ */
+@Remote
+public interface ConfigurationService {
 
-    @Override
-    public Map<String, String> loadPreferences() {
-        Map<String, String> preferences = ApplicationPreferencesLoader.load();
-        ApplicationPreferencesInitializer.setSystemProperties(preferences);
-        return preferences;
-
-    }
+    Map<String, String> loadPreferences();
 }

@@ -71,6 +71,16 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-core-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-core-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-editor-client</artifactId>
     </dependency>
 
@@ -119,6 +129,7 @@
       <artifactId>guvnor-project-editor-backend</artifactId>
     </dependency>
 
+    <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-server</artifactId>
@@ -132,11 +143,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-server</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-server</artifactId>
     </dependency>
 
     <dependency>
@@ -291,6 +297,7 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-workingset-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-core-services-api</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-security</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-ui</compileSourcesArtifact>

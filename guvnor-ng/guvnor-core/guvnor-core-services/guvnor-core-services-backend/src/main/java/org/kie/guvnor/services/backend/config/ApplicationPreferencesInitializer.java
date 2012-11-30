@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.backend.server.config;
+package org.kie.guvnor.services.backend.config;
 
 import java.util.Map;
 

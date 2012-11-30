@@ -1,4 +1,4 @@
-package org.kie.guvnor.service;
+package org.kie.guvnor.services.repositories;
 
 import java.util.HashMap;
 import java.util.Map;

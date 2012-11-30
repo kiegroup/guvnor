@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.backend.server;
+package org.kie.guvnor.services.backend;
 
 import java.util.Collection;
 import java.util.HashSet;
