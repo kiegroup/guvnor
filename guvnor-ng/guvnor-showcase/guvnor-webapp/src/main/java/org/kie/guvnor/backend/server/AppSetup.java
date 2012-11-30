@@ -28,6 +28,8 @@ import javax.inject.Singleton;
 
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystems;
+import org.kie.guvnor.backend.server.repositories.RepositoryServiceImpl;
+import org.kie.guvnor.service.Repository;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
@@ -42,30 +44,30 @@ public class AppSetup {
     private ActiveFileSystems fileSystems = new ActiveFileSystemsImpl();
 
     @Inject
-    private RepositoryUtils repositoryUtils;
+    private RepositoryServiceImpl repositoryService;
 
     @PostConstruct
     public void onStartup() {
 
-        final Collection<RepositoryUtils.Repository> repositories = repositoryUtils.getRepositories();
+        final Collection<Repository> repositories = repositoryService.getRepositories();
 
-        for ( RepositoryUtils.Repository repository : repositories ) {
-            if ( repositoryUtils.isRepositoryDefinitionValid( repository ) ) {
+        for ( Repository repository : repositories ) {
+            if ( repository.isValid() ) {
                 final String alias = repository.getAlias();
-                final String url = repository.getUrl();
-                final String userName = repository.getUserName();
-                final String password = repository.getPassword();
-                final boolean bootstrap = repository.isBootstrap();
+                final String scheme = repository.getScheme();
+                final boolean bootstrap = repository.getBootstrap();
 
-                final URI fsURI = URI.create( "git://" + alias );
+                final URI fsURI = URI.create( scheme + "://" + alias );
 
                 final Map<String, Object> env = new HashMap<String, Object>();
-                env.put( "username", userName );
-                env.put( "password", password );
-                env.put( "origin", url );
+                for ( Map.Entry<String, String> e : repository.getEnvironment().entrySet() ) {
+                    env.put( e.getKey(),
+                             e.getValue() );
+                }
 
                 try {
-                    FileSystems.newFileSystem( fsURI, env );
+                    FileSystems.newFileSystem( fsURI,
+                                               env );
                 } catch ( FileSystemAlreadyExistsException ex ) {
                 }
 
