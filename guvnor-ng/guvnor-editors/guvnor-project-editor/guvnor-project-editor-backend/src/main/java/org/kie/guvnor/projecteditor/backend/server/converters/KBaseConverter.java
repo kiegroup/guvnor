@@ -47,9 +47,17 @@ public class KBaseConverter
         // writeList(writer, "files", "file", kBase.getFiles());
         writeList(writer, "includes", "include", kBase.getIncludes());
         Map<String, KSessionModel> join = new HashMap<String, KSessionModel>();
+        setTypes("stateful", kBase.getStatefulSessions());
+        setTypes("stateless", kBase.getStatelessSessions());
         join.putAll(kBase.getStatefulSessions());
         join.putAll(kBase.getStatelessSessions());
         writeObjectList(writer, context, "ksessions", "ksession", join.values());
+    }
+
+    private void setTypes(String stateful, Map<String, KSessionModel> sessions) {
+        for (String key : sessions.keySet()) {
+            sessions.get(key).setType(stateful);
+        }
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {

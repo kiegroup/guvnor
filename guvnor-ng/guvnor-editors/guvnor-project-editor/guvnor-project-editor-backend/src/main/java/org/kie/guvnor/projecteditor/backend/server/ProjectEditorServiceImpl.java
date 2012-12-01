@@ -17,6 +17,10 @@
 package org.kie.guvnor.projecteditor.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.builder.*;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.Paths;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -38,7 +42,7 @@ public class ProjectEditorServiceImpl
     public Path makeNew(String name) {
 
         // Create project structure
-        Path directory = vfsService.createDirectory(new PathImpl(name, "default://uf-playground/" + name));
+        Path directory = vfsService.createDirectory(new PathImpl(name, projectURI(name)));
 
         vfsService.createDirectory(new PathImpl(name, directory.toURI() + "/src/kbases"));
 
@@ -60,6 +64,65 @@ public class ProjectEditorServiceImpl
     @Override
     public KProjectModel load(Path path) {
         return ProjectEditorContentHandler.toModel(vfsService.readAllString(path));
+    }
+
+    @Override
+    public void build(Path pathToKProjectXML) {
+
+        KieServices kieServices = KieServices.Factory.get();
+        KieFactory kieFactory = KieFactory.Factory.get();
+        KieFileSystem kieFileSystem = kieFactory.newKieFileSystem();
+
+        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream(Paths.get(getProjectURI(pathToKProjectXML)));
+
+        visitPaths(getProjectName(pathToKProjectXML), kieFileSystem, directoryStream);
+
+        Messages messages = kieServices.newKieBuilder(kieFileSystem).build();
+
+        for (Message message : messages.getInsertedMessages()) {
+            System.out.println("EEEEEEEEEEE" + message.toString());
+        }
+        for (Message message : messages.getDeletedMessages()) {
+            System.out.println("EEEEEEEEEEE" + message.toString());
+        }
+    }
+
+    private String getProjectURI(Path path) {
+        return path.toURI().substring(0, path.toURI().lastIndexOf("/src"));
+    }
+
+    private void visitPaths(String projectName, KieFileSystem kieFileSystem, DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {
+        for (org.kie.commons.java.nio.file.Path path : directoryStream) {
+            if (Files.isDirectory(path)) {
+                visitPaths(projectName, kieFileSystem, Files.newDirectoryStream(path));
+            } else {
+                if (path.toUri().toString().endsWith(KieProject.KPROJECT_JAR_PATH)) {
+                    System.out.println("ADDING krpoject.xml to " + KieProject.KPROJECT_JAR_PATH);
+                    kieFileSystem.write(KieProject.KPROJECT_JAR_PATH, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
+                } else {
+                    String pathAsString = stripPath(projectName, path);
+                    System.out.println("ADDING " + pathAsString);
+
+                    kieFileSystem.write(pathAsString, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
+                }
+            }
+        }
+    }
+
+    private String stripPath(String projectName, org.kie.commons.java.nio.file.Path path) {
+        String s = path.toString();
+        String substring = s.substring(projectName.length() + 2);
+        return substring;
+    }
+
+    private String projectURI(String name) {
+        return "default://uf-playground/" + name;
+    }
+
+    private String getProjectName(Path path) {
+        String s = path.toURI();
+        String substring = s.substring(s.indexOf("uf-playground/") + "uf-playground/".length());
+        return substring.substring(0, substring.indexOf("/"));
     }
 
 }

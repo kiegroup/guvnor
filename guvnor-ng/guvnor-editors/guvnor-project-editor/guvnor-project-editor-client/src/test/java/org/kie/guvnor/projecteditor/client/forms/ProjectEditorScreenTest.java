@@ -251,6 +251,11 @@ public class ProjectEditorScreenTest {
                     callback.callback(modelForLoading);
                     return modelForLoading;
                 }
+
+                @Override
+                public void build(Path path) {
+                    //TODO -Rikkola-
+                }
             };
         }
 

@@ -91,9 +91,25 @@ public class ProjectEditorScreen
                                 projectEditorServiceCaller.call(new RemoteCallback<Void>() {
                                     @Override
                                     public void callback(Void v) {
-                                        notification.fire(new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful()));
+                                        notification.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful()));
                                     }
                                 }).save(path, model);
+                            }
+                        }));
+        toolBar.addItem(
+                // TODO: Check if the latest is saved. -Rikkola-
+
+                new DefaultMenuItemCommand(
+                        ProjectEditorConstants.INSTANCE.Build(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                projectEditorServiceCaller.call(new RemoteCallback<Void>() {
+                                    @Override
+                                    public void callback(Void v) {
+//                                        notification.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful()));
+                                    }
+                                }).build(path);
                             }
                         }));
 

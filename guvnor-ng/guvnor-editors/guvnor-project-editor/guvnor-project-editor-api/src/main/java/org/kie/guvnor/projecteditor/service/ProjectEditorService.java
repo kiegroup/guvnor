@@ -31,4 +31,5 @@ public interface ProjectEditorService {
 
     public KProjectModel load(Path path);
 
+    void build(Path path);
 }
