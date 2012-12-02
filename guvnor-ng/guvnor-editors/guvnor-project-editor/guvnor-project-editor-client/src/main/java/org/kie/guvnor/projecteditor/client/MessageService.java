@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.projecteditor.client;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
-import org.uberfire.backend.vfs.Path;
 
+import javax.enterprise.context.ApplicationScoped;
 
-@Remote
-public interface ProjectEditorService {
+@ApplicationScoped
+public class MessageService {
 
-    public Path makeNew(String name);
-
-    public void save(Path path,
-                     KProjectModel model);
-
-    public KProjectModel load(Path path);
-
-    Messages build(Path path);
+    public void addMessages(Messages messages) {
+        // TODO -Rikkola-
+        //
+//        placeManager.goTo("org.kie.guvnor.Messages");
+    }
 }

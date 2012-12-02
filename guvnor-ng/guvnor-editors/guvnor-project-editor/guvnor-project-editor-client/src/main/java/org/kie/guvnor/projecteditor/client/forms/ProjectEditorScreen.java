@@ -4,23 +4,26 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projecteditor.client.MessageService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
@@ -33,17 +36,20 @@ public class ProjectEditorScreen
     private KProjectModel model;
     private Path path;
 
-    @Inject
-    private Event<NotificationEvent> notification;
+    private final MessageService messageService;
+    private final ProjectEditorScreenView view;
 
     @Inject
     public ProjectEditorScreen(Caller<ProjectEditorService> projectEditorServiceCaller,
+                               MessageService messageService,
                                KBaseForm form,
                                NamePopup namePopup,
-                               ListFormComboPanelView view) {
+                               ProjectEditorScreenView view) {
         super(view, form, namePopup);
 
+        this.messageService = messageService;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
+        this.view = view;
     }
 
     @OnStart
@@ -82,37 +88,48 @@ public class ProjectEditorScreen
     public MenuBar buildMenuBar() {
         DefaultMenuBar toolBar = new DefaultMenuBar();
 
-        toolBar.addItem(
-                new DefaultMenuItemCommand(
-                        ProjectEditorConstants.INSTANCE.Save(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                projectEditorServiceCaller.call(new RemoteCallback<Void>() {
-                                    @Override
-                                    public void callback(Void v) {
-                                        notification.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful()));
-                                    }
-                                }).save(path, model);
-                            }
-                        }));
-        toolBar.addItem(
-                // TODO: Check if the latest is saved. -Rikkola-
-
-                new DefaultMenuItemCommand(
-                        ProjectEditorConstants.INSTANCE.Build(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                projectEditorServiceCaller.call(new RemoteCallback<Void>() {
-                                    @Override
-                                    public void callback(Void v) {
-//                                        notification.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful()));
-                                    }
-                                }).build(path);
-                            }
-                        }));
+        toolBar.addItem(new SaveMenuItem());
+        toolBar.addItem(new BuildMenuItem());
 
         return toolBar;
+    }
+
+    private class SaveMenuItem extends DefaultMenuItemCommand {
+        public SaveMenuItem() {
+            super(view.getSaveMenuItemText(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            projectEditorServiceCaller.call(new RemoteCallback<Void>() {
+                                @Override
+                                public void callback(Void v) {
+                                    view.showSaveSuccessful();
+                                }
+                            }).save(path, model);
+                        }
+                    });
+        }
+    }
+
+    private class BuildMenuItem extends DefaultMenuItemCommand {
+        public BuildMenuItem() {
+            super(view.getBuildMenuItemText(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            // TODO: Check if the latest changes are saved before building. -Rikkola-
+                            projectEditorServiceCaller.call(new RemoteCallback<Messages>() {
+                                @Override
+                                public void callback(Messages messages) {
+                                    if (messages.isEmpty()) {
+                                        view.showBuildSuccessful();
+                                    }
+
+                                    messageService.addMessages(messages);
+                                }
+                            }).build(path);
+                        }
+                    });
+        }
     }
 }

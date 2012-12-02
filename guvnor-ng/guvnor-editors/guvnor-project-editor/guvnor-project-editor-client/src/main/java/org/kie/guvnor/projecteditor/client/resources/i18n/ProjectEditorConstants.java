@@ -78,4 +78,6 @@ public interface ProjectEditorConstants
     String SaveSuccessful();
 
     String Build();
+
+    String BuildSuccessful();
 }

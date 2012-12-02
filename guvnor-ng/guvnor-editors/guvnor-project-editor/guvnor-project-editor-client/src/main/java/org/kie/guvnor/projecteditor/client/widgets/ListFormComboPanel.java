@@ -65,6 +65,7 @@ public abstract class ListFormComboPanel<T extends HasName>
 
     @Override
     public void onAdd() {
+        namePopup.setOldName("");
         namePopup.show(new PopupSetNameCommand() {
             @Override
             public void setName(String name) {

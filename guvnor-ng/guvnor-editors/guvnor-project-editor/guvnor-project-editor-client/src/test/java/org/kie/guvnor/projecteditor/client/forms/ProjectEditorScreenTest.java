@@ -21,19 +21,24 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.client.forms.KBaseForm;
-import org.kie.guvnor.projecteditor.client.forms.ProjectEditorScreen;
+import org.kie.guvnor.projecteditor.client.MessageService;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.builder.Message;
+import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+
+import javax.enterprise.event.Event;
+import java.lang.annotation.Annotation;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -42,22 +47,24 @@ import static org.mockito.Mockito.*;
 public class ProjectEditorScreenTest {
 
     private Path path;
-    private ListFormComboPanelView view;
+    private ProjectEditorScreenView view;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private ProjectEditorScreen screen;
     private ListFormComboPanelView.Presenter presenter;
     private NamePopup nameNamePopup;
     private KBaseForm form;
+    private MessageService messageService;
 
     @Before
     public void setUp() throws Exception {
         path = mock(Path.class);
-        view = mock(ListFormComboPanelView.class);
+        view = mock(ProjectEditorScreenView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
 
         nameNamePopup = mock(NamePopup.class);
         form = mock(KBaseForm.class);
-        screen = new ProjectEditorScreen(projectEditorServiceCaller, form, nameNamePopup, view);
+        messageService = mock(MessageService.class);
+        screen = new ProjectEditorScreen(projectEditorServiceCaller, messageService, form, nameNamePopup, view);
         presenter = screen;
     }
 
@@ -203,6 +210,38 @@ public class ProjectEditorScreenTest {
         clickFirst(menuBar);
 
         assertEquals(kProjectModel, projectEditorServiceCaller.getSavedModel());
+        verify(view).showSaveSuccessful();
+    }
+
+    @Test
+    public void testBuild() throws Exception {
+        KProjectModel kProjectModel = new KProjectModel();
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        projectEditorServiceCaller.setUpMessages(new Messages());
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickSecond(menuBar);
+
+        verify(view).showBuildSuccessful();
+        verify(messageService).addMessages(any(Messages.class));
+    }
+
+    @Test
+    public void testFailingBuild() throws Exception {
+        KProjectModel kProjectModel = new KProjectModel();
+        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        Messages messages = new Messages();
+        messages.getDeletedMessages().add(new Message());
+        projectEditorServiceCaller.setUpMessages(messages);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickSecond(menuBar);
+
+
+        verify(view, never()).showBuildSuccessful();
+        verify(messageService).addMessages(any(Messages.class));
     }
 
     private void clickFirst(MenuBar menuBar) {
@@ -211,6 +250,20 @@ public class ProjectEditorScreenTest {
                 DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
                 defaultMenuItemCommand.getCommand().execute();
                 break;
+            }
+        }
+    }
+
+    private void clickSecond(MenuBar menuBar) {
+        int i = 0;
+        for (MenuItem menuItem : menuBar.getItems()) {
+            if (menuItem instanceof DefaultMenuItemCommand) {
+                if (i == 1) {
+                    DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
+                    defaultMenuItemCommand.getCommand().execute();
+                    break;
+                }
+                i++;
             }
         }
     }
@@ -230,6 +283,7 @@ public class ProjectEditorScreenTest {
         private KProjectModel modelForLoading;
 
         private RemoteCallback callback;
+        private Messages messages;
 
         MockProjectEditorServiceCaller() {
 
@@ -253,8 +307,9 @@ public class ProjectEditorScreenTest {
                 }
 
                 @Override
-                public void build(Path path) {
-                    //TODO -Rikkola-
+                public Messages build(Path path) {
+                    callback.callback(messages);
+                    return messages;
                 }
             };
         }
@@ -277,6 +332,28 @@ public class ProjectEditorScreenTest {
 
         public void setUpModelForLoading(KProjectModel upModelForLoading) {
             this.modelForLoading = upModelForLoading;
+        }
+
+        public void setUpMessages(Messages messages) {
+            this.messages = messages;
+        }
+    }
+
+    class MockNotificationEventCaller implements Event<NotificationEvent> {
+
+        @Override
+        public void fire(NotificationEvent notificationEvent) {
+            //TODO -Rikkola-
+        }
+
+        @Override
+        public Event<NotificationEvent> select(Annotation... annotations) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
+        public <U extends NotificationEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
+            return null;  //TODO -Rikkola-
         }
     }
 }

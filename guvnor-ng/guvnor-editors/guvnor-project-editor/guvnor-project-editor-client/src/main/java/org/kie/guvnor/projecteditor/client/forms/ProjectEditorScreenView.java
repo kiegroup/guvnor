@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.projecteditor.client.forms;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
-import org.uberfire.backend.vfs.Path;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 
+public interface ProjectEditorScreenView
+        extends ListFormComboPanelView {
 
-@Remote
-public interface ProjectEditorService {
+    String getSaveMenuItemText();
 
-    public Path makeNew(String name);
+    void showSaveSuccessful();
 
-    public void save(Path path,
-                     KProjectModel model);
+    String getBuildMenuItemText();
 
-    public KProjectModel load(Path path);
-
-    Messages build(Path path);
+    void showBuildSuccessful();
 }

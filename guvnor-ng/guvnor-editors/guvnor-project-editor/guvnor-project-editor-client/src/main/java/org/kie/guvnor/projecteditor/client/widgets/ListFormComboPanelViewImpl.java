@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.projecteditor.client.widgets;
 
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.ErrorPopup;
 
+import javax.inject.Inject;
+
 public class ListFormComboPanelViewImpl
         extends Composite
         implements ListFormComboPanelView {
@@ -43,7 +43,7 @@ public class ListFormComboPanelViewImpl
 
     }
 
-    private static ListFormComboPanelViewImplBinder uiBinder = GWT.create( ListFormComboPanelViewImplBinder.class );
+    private static ListFormComboPanelViewImplBinder uiBinder = GWT.create(ListFormComboPanelViewImplBinder.class);
 
     @UiField
     ListBox kSessionsList;
@@ -53,24 +53,24 @@ public class ListFormComboPanelViewImpl
 
     @Inject
     public ListFormComboPanelViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addItem( String fullName ) {
-        kSessionsList.addItem( fullName );
+    public void addItem(String fullName) {
+        kSessionsList.addItem(fullName);
     }
 
     @Override
-    public void remove( String fullName ) {
-        for ( int i = 0; i < kSessionsList.getItemCount(); i++ ) {
-            if ( kSessionsList.getItemText( i ).equals( fullName ) ) {
-                kSessionsList.removeItem( i );
+    public void remove(String fullName) {
+        for (int i = 0; i < kSessionsList.getItemCount(); i++) {
+            if (kSessionsList.getItemText(i).equals(fullName)) {
+                kSessionsList.removeItem(i);
                 break;
             }
         }
@@ -82,16 +82,16 @@ public class ListFormComboPanelViewImpl
     }
 
     @Override
-    public void setForm( Form form ) {
+    public void setForm(Form form) {
         kSessionForm.clear();
-        kSessionForm.add( form );
+        kSessionForm.add(form);
     }
 
     @Override
-    public void setSelected( String fullName ) {
-        for ( int i = 0; i < kSessionsList.getItemCount(); i++ ) {
-            if ( kSessionsList.getItemText( i ).equals( fullName ) ) {
-                kSessionsList.setSelectedIndex( i );
+    public void setSelected(String fullName) {
+        for (int i = 0; i < kSessionsList.getItemCount(); i++) {
+            if (kSessionsList.getItemText(i).equals(fullName)) {
+                kSessionsList.setSelectedIndex(i);
                 break;
             }
         }
@@ -99,26 +99,26 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void showPleaseSelectAnItem() {
-        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.PleaseSelectAKSession() );
+        ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.PleaseSelectAKSession());
     }
 
     @UiHandler("kSessionsList")
-    public void handleChange( ChangeEvent event ) {
-        presenter.onSelect( kSessionsList.getValue( kSessionsList.getSelectedIndex() ) );
+    public void handleChange(ChangeEvent event) {
+        presenter.onSelect(kSessionsList.getValue(kSessionsList.getSelectedIndex()));
     }
 
     @UiHandler("addButton")
-    public void add( ClickEvent clickEvent ) {
+    public void add(ClickEvent clickEvent) {
         presenter.onAdd();
     }
 
     @UiHandler("renameButton")
-    public void rename( ClickEvent clickEvent ) {
+    public void rename(ClickEvent clickEvent) {
         presenter.onRename();
     }
 
     @UiHandler("deleteButton")
-    public void delete( ClickEvent clickEvent ) {
+    public void delete(ClickEvent clickEvent) {
         presenter.onRemove();
     }
 }
