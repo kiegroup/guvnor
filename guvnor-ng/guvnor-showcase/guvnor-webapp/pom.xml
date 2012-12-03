@@ -81,12 +81,32 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-editor-client</artifactId>
+      <artifactId>guvnor-guided-rule-editor-client</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-editor-backend</artifactId>
+      <artifactId>guvnor-guided-rule-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-dtable-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-dtable-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-scorecard-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-scorecard-editor-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -284,8 +304,13 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-drl-text-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-rule-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-rule-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-dtable-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-dtable-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-scorecard-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-scorecard-editor-client</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
 
