@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.projecteditor.client.MessageService;
@@ -29,7 +26,6 @@ import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
@@ -268,71 +264,6 @@ public class ProjectEditorScreenTest {
         KBaseModel knowledgeBaseConfiguration = new KBaseModel();
         knowledgeBaseConfiguration.setName(name);
         return knowledgeBaseConfiguration;
-    }
-
-    class MockProjectEditorServiceCaller
-            implements Caller<ProjectEditorService> {
-
-        private final ProjectEditorService service;
-
-        private KProjectModel savedModel;
-        private KProjectModel modelForLoading;
-
-        private RemoteCallback callback;
-        private Messages messages;
-
-        MockProjectEditorServiceCaller() {
-
-            service = new ProjectEditorService() {
-
-                @Override
-                public Path makeNew(String name) {
-                    return null;  //TODO -Rikkola-
-                }
-
-                @Override
-                public void save(Path path, KProjectModel model) {
-                    callback.callback(null);
-                    savedModel = model;
-                }
-
-                @Override
-                public KProjectModel load(Path path) {
-                    callback.callback(modelForLoading);
-                    return modelForLoading;
-                }
-
-                @Override
-                public Messages build(Path path) {
-                    callback.callback(messages);
-                    return messages;
-                }
-            };
-        }
-
-        public KProjectModel getSavedModel() {
-            return savedModel;
-        }
-
-        @Override
-        public ProjectEditorService call(RemoteCallback<?> callback) {
-            this.callback = callback;
-            return service;
-        }
-
-        @Override
-        public ProjectEditorService call(RemoteCallback<?> callback, ErrorCallback errorCallback) {
-            this.callback = callback;
-            return service;
-        }
-
-        public void setUpModelForLoading(KProjectModel upModelForLoading) {
-            this.modelForLoading = upModelForLoading;
-        }
-
-        public void setUpMessages(Messages messages) {
-            this.messages = messages;
-        }
     }
 }
 

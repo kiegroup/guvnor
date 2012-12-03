@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.client.places.KProjectEditorPlace;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.projecteditor.service.FileService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -43,12 +43,12 @@ public class NewFolderPopup
 
     private final Event<ClosePlaceEvent> workbenchPartCloseEvent;
     private PlaceRequest placeRequest;
-    private final Caller<ProjectEditorService> projectEditorServiceCaller;
+    private final Caller<FileService> projectEditorServiceCaller;
     private final PlaceManager placeManager;
 
     @Inject
     public NewFolderPopup(PlaceManager placeManager,
-                          Caller<ProjectEditorService> projectEditorServiceCaller,
+                          Caller<FileService> projectEditorServiceCaller,
                           NewFolderPopupView view,
                           Event<ClosePlaceEvent> workbenchPartCloseEvent) {
         this.placeManager = placeManager;
@@ -57,7 +57,6 @@ public class NewFolderPopup
         this.workbenchPartCloseEvent = workbenchPartCloseEvent;
         view.setPresenter(this);
     }
-
 
     @OnStart
     public void init(PlaceRequest placeRequest) {
@@ -76,13 +75,14 @@ public class NewFolderPopup
 
     @Override
     public void onOk() {
+        Path path = null;
         projectEditorServiceCaller.call(new RemoteCallback<Path>() {
             @Override
-            public void callback(Path path) {
-                placeManager.goTo(new KProjectEditorPlace(path));
+            public void callback(Path folderPath) {
+                placeManager.goTo(new KProjectEditorPlace(folderPath));
                 close();
             }
-        }).makeNew(name);
+        }).newFolder(path, name);
     }
 
     @Override

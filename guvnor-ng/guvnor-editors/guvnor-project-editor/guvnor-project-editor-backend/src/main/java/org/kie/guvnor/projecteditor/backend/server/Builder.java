@@ -16,54 +16,48 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFactory;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieServices;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Paths;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
 public class Builder {
 
-    private final VFSService vfsService;
-    private final KieBuilder kieBuilder;
-    private final String projectName;
-    private final KieFileSystem kieFileSystem;
+//    private final VFSService vfsService;
+//    private final KieBuilder kieBuilder;
+//    private final String projectName;
+//    private final KieFileSystem kieFileSystem;
 
     public Builder(Path pathToKProjectXML, VFSService vfsService) {
-        this.vfsService = vfsService;
-
-        KieServices kieServices = KieServices.Factory.get();
-        KieFactory kieFactory = KieFactory.Factory.get();
-        kieFileSystem = kieFactory.newKieFileSystem();
-
-        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream(Paths.get(getProjectURI(pathToKProjectXML)));
-
-        projectName = getProjectName(pathToKProjectXML);
-        visitPaths(directoryStream);
-
-        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+//        this.vfsService = vfsService;
+//
+//        KieServices kieServices = KieServices.Factory.get();
+//        KieFactory kieFactory = KieFactory.Factory.get();
+//        kieFileSystem = kieFactory.newKieFileSystem();
+//
+//        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream(Paths.get(getProjectURI(pathToKProjectXML)));
+//
+//        projectName = getProjectName(pathToKProjectXML);
+//        visitPaths(directoryStream);
+//
+//        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
     }
 
     public Messages build() {
 
-        kieBuilder.build();
+//        kieBuilder.build();
         return new Messages();
     }
 
-    private String getProjectURI(Path path) {
-        return path.toURI().substring(0, path.toURI().lastIndexOf("/src"));
-    }
-
-    private void visitPaths(DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {
-        for (org.kie.commons.java.nio.file.Path path : directoryStream) {
-            if (Files.isDirectory(path)) {
-                visitPaths(Files.newDirectoryStream(path));
-            } else {
+    //    private String getProjectURI(Path path) {
+//        return path.toURI().substring(0, path.toURI().lastIndexOf("/src"));
+//    }
+//
+//    private void visitPaths(DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {
+//        for (org.kie.commons.java.nio.file.Path path : directoryStream) {
+//            if (Files.isDirectory(path)) {
+//                visitPaths(Files.newDirectoryStream(path));
+//            } else {
 //                if (path.toUri().toString().endsWith(KieProject.KPROJECT_JAR_PATH)) {
 //                    System.out.println("ADDING kproject.xml to " + KieProject.KPROJECT_JAR_PATH);
 //                    kieFileSystem.write(KieProject.KPROJECT_JAR_PATH, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
@@ -73,17 +67,17 @@ public class Builder {
 //
 //                    kieFileSystem.write(pathAsString, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
 //                }
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
-    private String stripPath(String projectName, org.kie.commons.java.nio.file.Path path) {
-        return path.toString().substring(projectName.length() + 2);
-    }
+//    private String stripPath(String projectName, org.kie.commons.java.nio.file.Path path) {
+//        return path.toString().substring(projectName.length() + 2);
+//    }
 
-    private String getProjectName(Path path) {
-        String s = path.toURI();
-        String substring = s.substring(s.indexOf("uf-playground/") + "uf-playground/".length());
-        return substring.substring(0, substring.indexOf("/"));
+//    private String getProjectName(Path path) {
+//        String s = path.toURI();
+//        String substring = s.substring(s.indexOf("uf-playground/") + "uf-playground/".length());
+//        return substring.substring(0, substring.indexOf("/"));
+//    }
     }
-}
