@@ -98,7 +98,7 @@ public class FactPattern
         return this.constraintList.getConstraints();
     }
 
-    public void setFieldConstraints( final List sortedConstraints ) {
+    public void setFieldConstraints( final List<FieldConstraint> sortedConstraints ) {
         if ( sortedConstraints != null ) {
             if ( this.constraintList != null ) {
                 this.constraintList.setConstraints( new FieldConstraint[ sortedConstraints.size() ] );

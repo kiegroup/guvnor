@@ -15,6 +15,7 @@
   <description>Guvnor Guided Decision Table Editor API</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-commons-services-api</artifactId>
@@ -28,6 +29,11 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-rule-editor-api</artifactId>
     </dependency>
 
     <dependency>
