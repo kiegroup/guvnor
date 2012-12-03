@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -37,6 +38,7 @@ public class ListFormComboPanelViewImpl
 
     private Presenter presenter;
 
+    @UiTemplate("ListFormComboPanelViewImpl.ui.xml")
     interface ListFormComboPanelViewImplBinder
             extends
             UiBinder<Widget, ListFormComboPanelViewImpl> {
@@ -51,7 +53,6 @@ public class ListFormComboPanelViewImpl
     @UiField
     SimplePanel kSessionForm;
 
-    @Inject
     public ListFormComboPanelViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }

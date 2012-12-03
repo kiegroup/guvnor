@@ -20,6 +20,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
@@ -88,48 +89,44 @@ public class ProjectEditorScreen
     public MenuBar buildMenuBar() {
         DefaultMenuBar toolBar = new DefaultMenuBar();
 
-        toolBar.addItem(new SaveMenuItem());
-        toolBar.addItem(new BuildMenuItem());
+        toolBar.addItem(newSaveMenuItem());
+        toolBar.addItem(newBuildMenuItem());
 
         return toolBar;
     }
 
-    private class SaveMenuItem extends DefaultMenuItemCommand {
-        public SaveMenuItem() {
-            super(view.getSaveMenuItemText(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            projectEditorServiceCaller.call(new RemoteCallback<Void>() {
-                                @Override
-                                public void callback(Void v) {
-                                    view.showSaveSuccessful();
-                                }
-                            }).save(path, model);
-                        }
-                    });
-        }
+    private MenuItem newSaveMenuItem() {
+        return new DefaultMenuItemCommand(view.getSaveMenuItemText(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        projectEditorServiceCaller.call(new RemoteCallback<Void>() {
+                            @Override
+                            public void callback(Void v) {
+                                view.showSaveSuccessful();
+                            }
+                        }).save(path, model);
+                    }
+                });
     }
 
-    private class BuildMenuItem extends DefaultMenuItemCommand {
-        public BuildMenuItem() {
-            super(view.getBuildMenuItemText(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            // TODO: Check if the latest changes are saved before building. -Rikkola-
-                            projectEditorServiceCaller.call(new RemoteCallback<Messages>() {
-                                @Override
-                                public void callback(Messages messages) {
-                                    if (messages.isEmpty()) {
-                                        view.showBuildSuccessful();
-                                    }
-
-                                    messageService.addMessages(messages);
+    private MenuItem newBuildMenuItem() {
+        return new DefaultMenuItemCommand(view.getBuildMenuItemText(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        // TODO: Check if the latest changes are saved before building. -Rikkola-
+                        projectEditorServiceCaller.call(new RemoteCallback<Messages>() {
+                            @Override
+                            public void callback(Messages messages) {
+                                if (messages.isEmpty()) {
+                                    view.showBuildSuccessful();
                                 }
-                            }).build(path);
-                        }
-                    });
-        }
+
+                                messageService.addMessages(messages);
+                            }
+                        }).build(path);
+                    }
+                });
     }
 }

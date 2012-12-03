@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 public class KSessionsPanelTest {
 
-    private ListFormComboPanelView view;
+    private KSessionsPanelView view;
     private KSessionsPanel kSessionsPanel;
     private ListFormComboPanelView.Presenter presenter;
     private NamePopup namePopup;
@@ -42,7 +42,7 @@ public class KSessionsPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        view = mock(ListFormComboPanelView.class);
+        view = mock(KSessionsPanelView.class);
         namePopup = mock(NamePopup.class);
         form = mock(KSessionForm.class);
         kSessionsPanel = new KSessionsPanel(view, form, namePopup);

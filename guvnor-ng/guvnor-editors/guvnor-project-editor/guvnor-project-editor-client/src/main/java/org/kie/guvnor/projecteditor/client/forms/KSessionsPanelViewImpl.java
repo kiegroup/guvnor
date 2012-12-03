@@ -16,26 +16,16 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelViewImpl;
 
 import javax.inject.Inject;
 
-public class KSessionsPanel
-        extends ListFormComboPanel<KSessionModel> {
+public class KSessionsPanelViewImpl
+        extends ListFormComboPanelViewImpl
+        implements KSessionsPanelView {
 
     @Inject
-    public KSessionsPanel(KSessionsPanelView view,
-                          KSessionForm form,
-                          NamePopup namePopup) {
-        super(view, form, namePopup);
-    }
-
-    @Override
-    protected KSessionModel createNew(String name) {
-        KSessionModel kSessionModel = new KSessionModel();
-        kSessionModel.setName(name);
-        return kSessionModel;
+    public KSessionsPanelViewImpl() {
+        super();
     }
 }
