@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieProject;
+import org.kie.builder.impl.KieProject;
 import org.kie.builder.KieServices;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
@@ -66,7 +66,7 @@ public class Builder {
                 visitPaths(Files.newDirectoryStream(path));
             } else {
                 if (path.toUri().toString().endsWith(KieProject.KPROJECT_JAR_PATH)) {
-                    System.out.println("ADDING krpoject.xml to " + KieProject.KPROJECT_JAR_PATH);
+                    System.out.println("ADDING kproject.xml to " + KieProject.KPROJECT_JAR_PATH);
                     kieFileSystem.write(KieProject.KPROJECT_JAR_PATH, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
                 } else {
                     String pathAsString = stripPath(projectName, path);

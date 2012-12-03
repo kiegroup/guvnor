@@ -18,7 +18,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface NewProjectPopupView
+public interface NewFolderPopupView
         extends IsWidget {
 
     interface Presenter {

@@ -33,11 +33,11 @@ import org.uberfire.shared.mvp.PlaceRequest;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-@WorkbenchPopup(identifier = "newProjectPopup")
-public class NewProjectPopup
-        implements NewProjectPopupView.Presenter {
+@WorkbenchPopup(identifier = "newFolderPopup")
+public class NewFolderPopup
+        implements NewFolderPopupView.Presenter {
 
-    private final NewProjectPopupView view;
+    private final NewFolderPopupView view;
 
     private String name;
 
@@ -47,10 +47,10 @@ public class NewProjectPopup
     private final PlaceManager placeManager;
 
     @Inject
-    public NewProjectPopup(PlaceManager placeManager,
-                           Caller<ProjectEditorService> projectEditorServiceCaller,
-                           NewProjectPopupView view,
-                           Event<ClosePlaceEvent> workbenchPartCloseEvent) {
+    public NewFolderPopup(PlaceManager placeManager,
+                          Caller<ProjectEditorService> projectEditorServiceCaller,
+                          NewFolderPopupView view,
+                          Event<ClosePlaceEvent> workbenchPartCloseEvent) {
         this.placeManager = placeManager;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.view = view;

@@ -32,13 +32,9 @@ import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-
-import javax.enterprise.event.Event;
-import java.lang.annotation.Annotation;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -336,24 +332,6 @@ public class ProjectEditorScreenTest {
 
         public void setUpMessages(Messages messages) {
             this.messages = messages;
-        }
-    }
-
-    class MockNotificationEventCaller implements Event<NotificationEvent> {
-
-        @Override
-        public void fire(NotificationEvent notificationEvent) {
-            //TODO -Rikkola-
-        }
-
-        @Override
-        public Event<NotificationEvent> select(Annotation... annotations) {
-            return null;  //TODO -Rikkola-
-        }
-
-        @Override
-        public <U extends NotificationEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
-            return null;  //TODO -Rikkola-
         }
     }
 }

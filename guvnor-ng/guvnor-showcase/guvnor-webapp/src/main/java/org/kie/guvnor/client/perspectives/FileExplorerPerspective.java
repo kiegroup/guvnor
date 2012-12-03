@@ -29,6 +29,7 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -65,12 +66,22 @@ public class FileExplorerPerspective {
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
         final MenuBar menuBar = new DefaultMenuBar();
+        final MenuBar subMenuBar = new DefaultMenuBar();
+        menuBar.addItem(new DefaultMenuItemSubMenu("New", subMenuBar));
 
-        // TODO: Uberfire should have support for new menu items someday
-        menuBar.addItem(new DefaultMenuItemCommand("New Project", new Command() {
+        subMenuBar.addItem(new DefaultMenuItemCommand("Folder", new Command() {
             @Override
             public void execute() {
-                placeManager.goTo("newProjectPopup");
+                placeManager.goTo("newFolderPopup");
+            }
+        }));
+
+        subMenuBar.addItem(new DefaultMenuItemCommand("pom.xml", new Command() {
+            @Override
+            public void execute() {
+                // TODO Create pom.xml
+                // TODO Go to pom.xml editor
+//                placeManager.goTo("newProjectPopup");
             }
         }));
 
