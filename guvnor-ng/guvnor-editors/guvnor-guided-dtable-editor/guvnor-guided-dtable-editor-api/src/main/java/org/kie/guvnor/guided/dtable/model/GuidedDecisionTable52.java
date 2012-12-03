@@ -71,7 +71,7 @@ public class GuidedDecisionTable52 {
 
     private List<AttributeCol52> attributeCols = new ArrayList<AttributeCol52>();
 
-    private List<CompositeColumn<? extends BaseColumn>> conditionPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
+    private List<CompositeColumn<BaseColumn>> conditionPatterns = new ArrayList<CompositeColumn<BaseColumn>>();
 
     private List<ActionCol52> actionCols = new ArrayList<ActionCol52>();
 
@@ -122,7 +122,7 @@ public class GuidedDecisionTable52 {
         return Collections.unmodifiableList( patterns );
     }
 
-    public List<CompositeColumn<? extends BaseColumn>> getConditions() {
+    public List<CompositeColumn<BaseColumn>> getConditions() {
         return this.conditionPatterns;
     }
 
@@ -315,7 +315,7 @@ public class GuidedDecisionTable52 {
         this.attributeCols = attributeCols;
     }
 
-    public void setConditionPatterns( final List<CompositeColumn<? extends BaseColumn>> conditionPatterns ) {
+    public void setConditionPatterns( final List<CompositeColumn<BaseColumn>> conditionPatterns ) {
         this.conditionPatterns = conditionPatterns;
     }
 
