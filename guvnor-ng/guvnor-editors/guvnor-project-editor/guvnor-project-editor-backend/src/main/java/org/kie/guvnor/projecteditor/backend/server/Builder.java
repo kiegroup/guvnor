@@ -19,7 +19,6 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.impl.KieProject;
 import org.kie.builder.KieServices;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
@@ -65,15 +64,15 @@ public class Builder {
             if (Files.isDirectory(path)) {
                 visitPaths(Files.newDirectoryStream(path));
             } else {
-                if (path.toUri().toString().endsWith(KieProject.KPROJECT_JAR_PATH)) {
-                    System.out.println("ADDING kproject.xml to " + KieProject.KPROJECT_JAR_PATH);
-                    kieFileSystem.write(KieProject.KPROJECT_JAR_PATH, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
-                } else {
-                    String pathAsString = stripPath(projectName, path);
-                    System.out.println("ADDING " + pathAsString);
-
-                    kieFileSystem.write(pathAsString, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
-                }
+//                if (path.toUri().toString().endsWith(KieProject.KPROJECT_JAR_PATH)) {
+//                    System.out.println("ADDING kproject.xml to " + KieProject.KPROJECT_JAR_PATH);
+//                    kieFileSystem.write(KieProject.KPROJECT_JAR_PATH, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
+//                } else {
+//                    String pathAsString = stripPath(projectName, path);
+//                    System.out.println("ADDING " + pathAsString);
+//
+//                    kieFileSystem.write(pathAsString, vfsService.readAllString(org.uberfire.backend.vfs.Paths.fromURI(path.toUri().toString())));
+//                }
             }
         }
     }
