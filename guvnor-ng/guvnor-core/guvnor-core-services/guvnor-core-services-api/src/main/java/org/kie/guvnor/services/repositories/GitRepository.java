@@ -7,9 +7,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
 
 /**
- * A repository
+ * A repository. This is only available server-side.
  */
-@Portable
 public class GitRepository implements Repository {
 
     private String alias;

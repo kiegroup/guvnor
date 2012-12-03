@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright 2012 JBoss Inc
   ~
@@ -21,6 +22,12 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <source path='config'/>
+  <inherits name="org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI"/>
+  <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
+
+  <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
+
+  <source path="model"/>
+  <source path="service"/>
 
 </module>

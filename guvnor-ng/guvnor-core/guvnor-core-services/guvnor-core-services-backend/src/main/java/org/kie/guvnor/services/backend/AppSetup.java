@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystems;
 import org.kie.guvnor.services.repositories.Repository;
@@ -72,8 +73,13 @@ public class AppSetup {
                 }
 
                 if ( bootstrap ) {
-                    final Path root = new PathImpl( alias, "default://" + alias );
+                    final Path root = new PathImpl( alias,
+                                                    "default://" + alias );
                     fileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
+                } else {
+                    final Path fs = new PathImpl( alias,
+                                                  scheme + "://" + alias );
+                    fileSystems.addFileSystem( new FileSystemImpl( asList( fs ) ) );
                 }
             }
         }

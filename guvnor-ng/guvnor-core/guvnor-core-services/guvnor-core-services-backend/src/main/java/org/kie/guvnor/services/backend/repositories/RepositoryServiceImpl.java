@@ -8,15 +8,13 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.services.config.ConfigurationService;
 import org.kie.guvnor.services.repositories.Repository;
 import org.kie.guvnor.services.repositories.RepositoryService;
 
 /**
- * Utilities to manipulate repository information
+ * Server-side utilities to manipulate repository information
  */
-@Service
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
 
@@ -99,21 +97,6 @@ public class RepositoryServiceImpl implements RepositoryService {
             }
         }
         return null;
-    }
-
-    @Override
-    public void addRepository( final Repository repository ) {
-        throw new UnsupportedOperationException( "To implement." );
-    }
-
-    @Override
-    public Repository getRepository( final String alias ) {
-        throw new UnsupportedOperationException( "To implement." );
-    }
-
-    @Override
-    public void removeRepository( final String alias ) {
-        throw new UnsupportedOperationException( "To implement." );
     }
 
     private String getRepositoryAlias( String value ) {

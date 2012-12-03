@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright 2012 JBoss Inc
   ~
@@ -19,8 +20,27 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <!-- Inherit the core Web Toolkit stuff. -->
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <inherits name="com.google.gwt.user.User"/>
+
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <source path='config'/>
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.UberfireWidgetsCommons"/>
+
+  <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
+  <inherits name="org.kie.guvnor.commons.security.GuvnorCommonsSecurity"/>
+
+  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
+  <inherits name="org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget"/>
+  <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
+
+  <inherits name="org.kie.guvnor.guided.scorecard.GuvnorGuidedScoreCardEditorAPI"/>
+
+  <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
+
+  <source path="client"/>
 
 </module>
