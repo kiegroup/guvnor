@@ -54,22 +54,7 @@ public class NewFolderPopupTest {
         verify(view).setPresenter(presenter);
     }
 
-    class MockClosePlaceEvent
+    abstract class MockClosePlaceEvent
             implements Event<ClosePlaceEvent> {
-
-        @Override
-        public void fire(ClosePlaceEvent closePlaceEvent) {
-            //TODO -Rikkola-
-        }
-
-        @Override
-        public Event<ClosePlaceEvent> select(Annotation... annotations) {
-            return null;  //TODO -Rikkola-
-        }
-
-        @Override
-        public <U extends ClosePlaceEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
-            return null;  //TODO -Rikkola-
-        }
     }
 }
