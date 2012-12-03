@@ -16,16 +16,24 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ProjectEditorScreenView
-        extends ListFormComboPanelView {
+        extends IsWidget {
 
-    String getSaveMenuItemText();
+    interface Presenter {
 
-    void showSaveSuccessful();
+        void onKProjectToggleOn();
 
-    String getBuildMenuItemText();
+    }
 
-    void showBuildSuccessful();
+    void setKProjectToggleOff();
+
+    void setKProjectToggleOn();
+
+    void setPresenter(Presenter presenter);
+
+    void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel);
+
+    void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel);
 }

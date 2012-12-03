@@ -20,17 +20,39 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.service.FileService;
+import org.uberfire.backend.vfs.Path;
 
 public class MockFileServiceCaller
         implements Caller<FileService> {
 
+    private Path newPathToReturn;
+
+    private FileService fileService;
+    private RemoteCallback callback;
+
+    public MockFileServiceCaller() {
+        this.fileService = new FileService() {
+            @Override
+            public Path newFolder(String folderName) {
+                callback.callback(newPathToReturn);
+                return newPathToReturn;
+            }
+        };
+    }
+
+    public void setNewPathToReturn(Path newPathToReturn) {
+        this.newPathToReturn = newPathToReturn;
+    }
+
     @Override
     public FileService call(RemoteCallback<?> remoteCallback) {
-        return null;  //TODO -Rikkola-
+        callback = remoteCallback;
+        return fileService;
     }
 
     @Override
     public FileService call(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
-        return null;  //TODO -Rikkola-
+        callback = remoteCallback;
+        return fileService;
     }
 }

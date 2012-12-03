@@ -17,6 +17,7 @@
 package org.kie.guvnor.projecteditor.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -35,7 +36,6 @@ public class ProjectEditorServiceImpl
     @Inject
     private VFSService vfsService;
 
-    @Override
     public Path makeNew(String name) {
 
         // Create project structure
@@ -54,8 +54,18 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
+    public Path setUpProjectStructure(Path pathToPom) {
+        return null;  //TODO -Rikkola-
+    }
+
+    @Override
     public void save(Path path, KProjectModel model) {
         vfsService.write(path, ProjectEditorContentHandler.toString(model));
+    }
+
+    @Override
+    public void saveGav(Path path, GroupArtifactVersionModel gav) {
+        //TODO -Rikkola-
     }
 
     @Override
@@ -69,6 +79,16 @@ public class ProjectEditorServiceImpl
         Builder builder = new Builder(pathToKProjectXML, vfsService);
 
         return builder.build();
+    }
+
+    @Override
+    public GroupArtifactVersionModel loadGav(Path path) {
+        return null;  //TODO -Rikkola-
+    }
+
+    @Override
+    public Path pathToRelatedKProjectFileIfAny() {
+        return null;  //TODO -Rikkola-
     }
 
     private String projectURI(String name) {

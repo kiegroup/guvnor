@@ -19,14 +19,12 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.client.places.KProjectEditorPlace;
 import org.kie.guvnor.projecteditor.service.FileService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -44,17 +42,17 @@ public class NewFolderPopup
     private final Event<ClosePlaceEvent> workbenchPartCloseEvent;
     private PlaceRequest placeRequest;
     private final Caller<FileService> projectEditorServiceCaller;
-    private final PlaceManager placeManager;
+    private final Event<FocusFileEvent> focusFileEvent;
 
     @Inject
-    public NewFolderPopup(PlaceManager placeManager,
-                          Caller<FileService> projectEditorServiceCaller,
+    public NewFolderPopup(Caller<FileService> projectEditorServiceCaller,
                           NewFolderPopupView view,
-                          Event<ClosePlaceEvent> workbenchPartCloseEvent) {
-        this.placeManager = placeManager;
+                          Event<ClosePlaceEvent> workbenchPartCloseEvent,
+                          Event<FocusFileEvent> focusFileEvent) {
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.view = view;
         this.workbenchPartCloseEvent = workbenchPartCloseEvent;
+        this.focusFileEvent = focusFileEvent;
         view.setPresenter(this);
     }
 
@@ -75,14 +73,17 @@ public class NewFolderPopup
 
     @Override
     public void onOk() {
-        Path path = null;
         projectEditorServiceCaller.call(new RemoteCallback<Path>() {
             @Override
             public void callback(Path folderPath) {
-                placeManager.goTo(new KProjectEditorPlace(folderPath));
+
+                //TODO Fire hilight selected file/folder event instead of goto
+//                placeManager.goTo(new KProjectEditorPlace(folderPath));
+                focusFileEvent.fire(new FocusFileEvent(name));
+
                 close();
             }
-        }).newFolder(path, name);
+        }).newFolder(name);
     }
 
     @Override

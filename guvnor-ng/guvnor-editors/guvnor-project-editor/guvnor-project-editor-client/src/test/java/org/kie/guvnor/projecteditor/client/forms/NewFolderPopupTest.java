@@ -18,33 +18,37 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.client.mvp.PlaceManager;
+import org.mockito.ArgumentCaptor;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.event.Event;
-import java.lang.annotation.Annotation;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class NewFolderPopupTest {
 
     private NewFolderPopup popup;
-    private PlaceManager placeManager;
     private NewFolderPopupView view;
     private NewFolderPopupView.Presenter presenter;
     private NewFolderPopupTest.MockClosePlaceEvent closeEvent;
+    private MockFileServiceCaller fileServiceCaller;
+    private NewFolderPopupTest.MockFocusFileEvent focusFileEvent;
 
     @Before
     public void setUp() throws Exception {
-        placeManager = mock(PlaceManager.class);
         view = mock(NewFolderPopupView.class);
         closeEvent = mock(MockClosePlaceEvent.class);
+        focusFileEvent = mock(MockFocusFileEvent.class);
+        fileServiceCaller = new MockFileServiceCaller();
         popup = new NewFolderPopup(
-                placeManager,
-                new MockFileServiceCaller(),
+                fileServiceCaller,
                 view,
-                closeEvent);
+                closeEvent,
+                focusFileEvent);
 
         presenter = popup;
     }
@@ -54,7 +58,43 @@ public class NewFolderPopupTest {
         verify(view).setPresenter(presenter);
     }
 
+
+    @Test
+    public void testCreateFolder() throws Exception {
+        Path path = mock(Path.class);
+        fileServiceCaller.setNewPathToReturn(path);
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        popup.init(placeRequest);
+
+        presenter.onNameChange("newToRoot");
+
+        presenter.onOk();
+
+        ArgumentCaptor<FocusFileEvent> focusFileEventArgumentCaptor = ArgumentCaptor.forClass(FocusFileEvent.class);
+        verify(focusFileEvent).fire(focusFileEventArgumentCaptor.capture());
+        assertEquals("newToRoot", focusFileEventArgumentCaptor.getValue().getFileName());
+    }
+
+    //TODO Test if the folder already exists and warn the user -Rikkola-
+
+    @Test
+    public void testCancel() throws Exception {
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        popup.init(placeRequest);
+
+        presenter.onCancel();
+
+        ArgumentCaptor<ClosePlaceEvent> closePlaceEventArgumentCaptor = ArgumentCaptor.forClass(ClosePlaceEvent.class);
+        verify(closeEvent).fire(closePlaceEventArgumentCaptor.capture());
+
+        assertEquals(placeRequest, closePlaceEventArgumentCaptor.getValue().getPlace());
+    }
+
     abstract class MockClosePlaceEvent
             implements Event<ClosePlaceEvent> {
+    }
+
+    abstract class MockFocusFileEvent
+            implements Event<FocusFileEvent> {
     }
 }

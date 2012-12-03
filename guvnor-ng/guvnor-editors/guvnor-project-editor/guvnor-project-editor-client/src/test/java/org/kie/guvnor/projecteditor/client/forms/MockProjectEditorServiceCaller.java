@@ -19,6 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -34,20 +35,31 @@ public class MockProjectEditorServiceCaller
 
     private RemoteCallback callback;
     private Messages messages;
+    private GroupArtifactVersionModel gavModel;
+    private GroupArtifactVersionModel savedGav;
+    private Path pathToRelatedKProjectFileIfAny;
 
     MockProjectEditorServiceCaller() {
 
         service = new ProjectEditorService() {
 
+
             @Override
-            public Path makeNew(String name) {
-                return null;  //TODO -Rikkola-
+            public Path setUpProjectStructure(Path pathToPom) {
+                callback.callback(pathToRelatedKProjectFileIfAny);
+                return pathToRelatedKProjectFileIfAny;
             }
 
             @Override
             public void save(Path path, KProjectModel model) {
                 callback.callback(null);
                 savedModel = model;
+            }
+
+            @Override
+            public void saveGav(Path path, GroupArtifactVersionModel gav) {
+                callback.callback(null);
+                savedGav = gav;
             }
 
             @Override
@@ -60,6 +72,18 @@ public class MockProjectEditorServiceCaller
             public Messages build(Path path) {
                 callback.callback(messages);
                 return messages;
+            }
+
+            @Override
+            public GroupArtifactVersionModel loadGav(Path path) {
+                callback.callback(gavModel);
+                return gavModel;
+            }
+
+            @Override
+            public Path pathToRelatedKProjectFileIfAny() {
+                callback.callback(pathToRelatedKProjectFileIfAny);
+                return pathToRelatedKProjectFileIfAny;
             }
         };
     }
@@ -86,5 +110,17 @@ public class MockProjectEditorServiceCaller
 
     public void setUpMessages(Messages messages) {
         this.messages = messages;
+    }
+
+    public void setGav(GroupArtifactVersionModel gavModel) {
+        this.gavModel = gavModel;
+    }
+
+    public GroupArtifactVersionModel getSavedGav() {
+        return savedGav;
+    }
+
+    public void setPathToRelatedKProjectFileIfAny(Path pathToRelatedKProjectFileIfAny) {
+        this.pathToRelatedKProjectFileIfAny = pathToRelatedKProjectFileIfAny;
     }
 }

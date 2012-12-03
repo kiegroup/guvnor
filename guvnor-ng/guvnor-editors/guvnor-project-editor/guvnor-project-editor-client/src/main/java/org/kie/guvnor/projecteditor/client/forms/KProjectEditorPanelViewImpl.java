@@ -23,15 +23,15 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-public class ProjectEditorScreenViewImpl
+public class KProjectEditorPanelViewImpl
         extends ListFormComboPanelViewImpl
-        implements ProjectEditorScreenView {
+        implements KProjectEditorPanelView {
 
 
     private final Event<NotificationEvent> notificationEvent;
 
     @Inject
-    public ProjectEditorScreenViewImpl(Event<NotificationEvent> notificationEvent) {
+    public KProjectEditorPanelViewImpl(Event<NotificationEvent> notificationEvent) {
         super();
         this.notificationEvent = notificationEvent;
     }
