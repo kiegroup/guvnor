@@ -16,17 +16,11 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 import javax.inject.Inject;
 
@@ -61,34 +55,6 @@ public class GroupArtifactVersionEditorPanel
         ).loadGav(path);
     }
 
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        MenuBar menuBar = new DefaultMenuBar();
-
-        menuBar.addItem(new DefaultMenuItemCommand(
-                view.getSaveMenuItemText(),
-                new Command() {
-                    @Override
-                    public void execute() {
-                        projectEditorServiceCaller.call(
-                                new RemoteCallback<Object>() {
-                                    @Override
-                                    public void callback(Object o) {
-                                        view.showSaveSuccessful();
-                                    }
-                                }
-                        ).saveGav(path, model);
-                    }
-                }
-        ));
-
-        return menuBar;
-    }
-
     @Override
     public void onGroupIdChange(String groupId) {
         model.setGroupId(groupId);
@@ -102,5 +68,16 @@ public class GroupArtifactVersionEditorPanel
     @Override
     public void onVersionIdChange(String versionId) {
         model.setVersion(versionId);
+    }
+
+    public void save() {
+        projectEditorServiceCaller.call(
+                new RemoteCallback<Object>() {
+                    @Override
+                    public void callback(Object o) {
+                        view.showSaveSuccessful();
+                    }
+                }
+        ).saveGav(path, model);
     }
 }

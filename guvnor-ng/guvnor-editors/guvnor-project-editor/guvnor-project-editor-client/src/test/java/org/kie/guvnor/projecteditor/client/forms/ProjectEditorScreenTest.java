@@ -18,8 +18,14 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.projecteditor.client.MessageService;
+import org.kie.guvnor.projecteditor.model.builder.Message;
+import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
+import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickFirst;
+import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickSecond;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -31,14 +37,18 @@ public class ProjectEditorScreenTest {
     private KProjectEditorPanel kProjectEditorPanel;
     private ProjectEditorScreen screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
+    private MessageService messageService;
 
     @Before
     public void setUp() throws Exception {
         view = mock(ProjectEditorScreenView.class);
+        when(view.getSaveMenuItemText()).thenReturn("");
+        when(view.getBuildMenuItemText()).thenReturn("");
         gavPanel = mock(GroupArtifactVersionEditorPanel.class);
         kProjectEditorPanel = mock(KProjectEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
-        screen = new ProjectEditorScreen(view, gavPanel, kProjectEditorPanel, projectEditorServiceCaller);
+        messageService = mock(MessageService.class);
+        screen = new ProjectEditorScreen(view, gavPanel, kProjectEditorPanel, projectEditorServiceCaller, messageService);
         presenter = screen;
     }
 
@@ -85,4 +95,60 @@ public class ProjectEditorScreenTest {
         verify(kProjectEditorPanel).init(pathToKProjectXML);
     }
 
+    @Test
+    public void testSave() throws Exception {
+        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        Path path = mock(Path.class);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickFirst(menuBar);
+
+        verify(gavPanel).save();
+        verify(kProjectEditorPanel, never()).save();
+    }
+
+    @Test
+    public void testSaveBoth() throws Exception {
+        Path pathToKProjectXML = mock(Path.class);
+        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(pathToKProjectXML);
+        Path path = mock(Path.class);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickFirst(menuBar);
+
+        verify(gavPanel).save();
+        verify(kProjectEditorPanel).save();
+    }
+
+    @Test
+    public void testBuild() throws Exception {
+        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setUpMessages(new Messages());
+        Path path = mock(Path.class);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickSecond(menuBar);
+
+        verify(view).showBuildSuccessful();
+        verify(messageService, never()).addMessages(any(Messages.class));
+    }
+
+    @Test
+    public void testFailingBuild() throws Exception {
+        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        Messages messages = new Messages();
+        messages.getDeletedMessages().add(new Message());
+        projectEditorServiceCaller.setUpMessages(messages);
+        Path path = mock(Path.class);
+        screen.init(path);
+
+        MenuBar menuBar = screen.buildMenuBar();
+        clickSecond(menuBar);
+
+        verify(view, never()).showBuildSuccessful();
+        verify(messageService).addMessages(any(Messages.class));
+    }
 }

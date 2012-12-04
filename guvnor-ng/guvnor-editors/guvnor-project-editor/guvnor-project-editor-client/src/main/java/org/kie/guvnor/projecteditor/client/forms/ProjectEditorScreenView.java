@@ -36,4 +36,10 @@ public interface ProjectEditorScreenView
     void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel);
 
     void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel);
+
+    String getSaveMenuItemText();
+
+    String getBuildMenuItemText();
+
+    void showBuildSuccessful();
 }

@@ -20,12 +20,20 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projecteditor.client.MessageService;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "xml")
 public class ProjectEditorScreen
@@ -36,16 +44,20 @@ public class ProjectEditorScreen
     private final KProjectEditorPanel kProjectEditorPanel;
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private Path pathToPomXML;
+    private Path pathToKProjectXML;
+    private final MessageService messageService;
 
     @Inject
     public ProjectEditorScreen(ProjectEditorScreenView view,
                                GroupArtifactVersionEditorPanel gavPanel,
                                KProjectEditorPanel kProjectEditorPanel,
-                               Caller<ProjectEditorService> projectEditorServiceCaller) {
+                               Caller<ProjectEditorService> projectEditorServiceCaller,
+                               MessageService messageService) {
         this.view = view;
         this.gavPanel = gavPanel;
         this.kProjectEditorPanel = kProjectEditorPanel;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
+        this.messageService = messageService;
 
         view.setPresenter(this);
         view.setGroupArtifactVersionEditorPanel(gavPanel);
@@ -59,9 +71,10 @@ public class ProjectEditorScreen
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path path) {
-                        if (path != null) {
-                            setUpKProject(path);
+                    public void callback(Path pathToKProjectXML) {
+                        ProjectEditorScreen.this.pathToKProjectXML = pathToKProjectXML;
+                        if (pathToKProjectXML != null) {
+                            setUpKProject(pathToKProjectXML);
                         } else {
                             view.setKProjectToggleOff();
                         }
@@ -77,7 +90,7 @@ public class ProjectEditorScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ""; // TODO needs to be set later, to what ever the artifact name is -Rikkola-
+        return ProjectEditorConstants.INSTANCE.ProjectModel(); // TODO needs to be set later, to what ever the artifact name is -Rikkola-
     }
 
     @WorkbenchPartView
@@ -95,5 +108,45 @@ public class ProjectEditorScreen
                     }
                 }
         ).setUpProjectStructure(pathToPomXML);
+    }
+
+    @WorkbenchMenu
+    public MenuBar buildMenuBar() {
+        MenuBar menuBar = new DefaultMenuBar();
+
+        menuBar.addItem(new DefaultMenuItemCommand(
+                view.getSaveMenuItemText(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        gavPanel.save();
+                        if (pathToKProjectXML != null) {
+                            kProjectEditorPanel.save();
+                        }
+                    }
+                }
+        ));
+        menuBar.addItem(new DefaultMenuItemCommand(
+                view.getBuildMenuItemText(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        projectEditorServiceCaller.call(
+                                new RemoteCallback<Messages>() {
+                                    @Override
+                                    public void callback(Messages messages) {
+                                        if (messages.isEmpty()) {
+                                            view.showBuildSuccessful();
+                                        } else {
+                                            messageService.addMessages(messages);
+                                        }
+                                    }
+                                }
+                        ).build(pathToPomXML);
+                    }
+                }
+        ));
+
+        return menuBar;
     }
 }

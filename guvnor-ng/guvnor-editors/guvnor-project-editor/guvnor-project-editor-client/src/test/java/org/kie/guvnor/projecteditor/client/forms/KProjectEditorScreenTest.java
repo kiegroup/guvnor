@@ -18,21 +18,15 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.client.MessageService;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
-import org.kie.guvnor.projecteditor.model.builder.Message;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static junit.framework.Assert.*;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickFirst;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickSecond;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +39,6 @@ public class KProjectEditorScreenTest {
     private ListFormComboPanelView.Presenter presenter;
     private NamePopup nameNamePopup;
     private KBaseForm form;
-    private MessageService messageService;
 
     @Before
     public void setUp() throws Exception {
@@ -55,8 +48,7 @@ public class KProjectEditorScreenTest {
 
         nameNamePopup = mock(NamePopup.class);
         form = mock(KBaseForm.class);
-        messageService = mock(MessageService.class);
-        screenK = new KProjectEditorPanel(projectEditorServiceCaller, messageService, form, nameNamePopup, view);
+        screenK = new KProjectEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
         presenter = screenK;
     }
 
@@ -198,44 +190,11 @@ public class KProjectEditorScreenTest {
         projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
         screenK.init(path);
 
-        MenuBar menuBar = screenK.buildMenuBar();
-        clickFirst(menuBar);
+        screenK.save();
 
         assertEquals(kProjectModel, projectEditorServiceCaller.getSavedModel());
         verify(view).showSaveSuccessful();
     }
-
-    @Test
-    public void testBuild() throws Exception {
-        KProjectModel kProjectModel = new KProjectModel();
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
-        projectEditorServiceCaller.setUpMessages(new Messages());
-        screenK.init(path);
-
-        MenuBar menuBar = screenK.buildMenuBar();
-        clickSecond(menuBar);
-
-        verify(view).showBuildSuccessful();
-        verify(messageService).addMessages(any(Messages.class));
-    }
-
-    @Test
-    public void testFailingBuild() throws Exception {
-        KProjectModel kProjectModel = new KProjectModel();
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
-        Messages messages = new Messages();
-        messages.getDeletedMessages().add(new Message());
-        projectEditorServiceCaller.setUpMessages(messages);
-        screenK.init(path);
-
-        MenuBar menuBar = screenK.buildMenuBar();
-        clickSecond(menuBar);
-
-
-        verify(view, never()).showBuildSuccessful();
-        verify(messageService).addMessages(any(Messages.class));
-    }
-
 
     private KBaseModel createKBaseConfiguration(String name) {
         KBaseModel knowledgeBaseConfiguration = new KBaseModel();

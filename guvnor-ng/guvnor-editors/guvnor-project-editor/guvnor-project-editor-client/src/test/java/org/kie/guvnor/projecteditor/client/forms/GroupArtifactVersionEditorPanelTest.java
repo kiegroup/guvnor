@@ -20,10 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static junit.framework.Assert.assertEquals;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickFirst;
 import static org.mockito.Mockito.*;
 
 public class GroupArtifactVersionEditorPanelTest {
@@ -75,9 +73,7 @@ public class GroupArtifactVersionEditorPanelTest {
         presenter.onArtifactIdChange("artifact2");
         presenter.onVersionIdChange("2.2.2");
 
-        MenuBar menuBar = panel.buildMenuBar();
-        clickFirst(menuBar);
-
+        panel.save();
 
         GroupArtifactVersionModel savedGav = projectEditorServiceCaller.getSavedGav();
         assertEquals("group2", savedGav.getGroupId());

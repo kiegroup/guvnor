@@ -26,36 +26,35 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.PathImpl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @Service
 @ApplicationScoped
 public class ProjectEditorServiceImpl
         implements ProjectEditorService {
 
-    @Inject
-    private VFSService vfsService;
+    private final VFSService vfsService;
 
-    public Path makeNew(String name) {
-
-        // Create project structure
-        Path directory = vfsService.createDirectory(new PathImpl(name, projectURI(name)));
-
-        vfsService.createDirectory(new PathImpl(name, directory.toURI() + "/src/kbases"));
-
-        vfsService.createDirectory(new PathImpl(name, directory.toURI() + "/src/main/java"));
-        PathImpl path = new PathImpl(name, directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
-        save(path, new KProjectModel());
-
-        vfsService.createDirectory(new PathImpl(name, directory.toURI() + "/src/test/java"));
-        vfsService.createDirectory(new PathImpl(name, directory.toURI() + "/src/test/resources"));
-
-        return path;
+    public ProjectEditorServiceImpl(VFSService vfsService) {
+        this.vfsService = vfsService;
     }
 
     @Override
     public Path setUpProjectStructure(Path pathToPom) {
-        return null;  //TODO -Rikkola-
+
+        // Create project structure
+        String s = pathToPom.toURI();
+        Path directory = new PathImpl(s.substring(0, s.length() - "/pom.xml".length()));
+
+        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/kbases"));
+
+        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/main/java"));
+        PathImpl pathToKProjectXML = new PathImpl(directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
+        save(pathToKProjectXML, new KProjectModel());
+
+        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/java"));
+        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/resources"));
+
+        return pathToKProjectXML;
     }
 
     @Override
