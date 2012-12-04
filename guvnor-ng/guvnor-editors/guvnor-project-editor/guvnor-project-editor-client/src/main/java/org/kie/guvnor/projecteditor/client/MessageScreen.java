@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.uberfire.client.annotations.DefaultPosition;
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -28,18 +29,42 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.Messages")
-public class MessageScreen {
+public class MessageScreen
+        implements MessageScreenView.Presenter {
 
+    private final PlaceManager placeManager;
+    private final MessageScreenView view;
+    private final MessageService messageService;
 
     @Inject
-    private PlaceManager placeManager;
+    public MessageScreen(MessageScreenView view,
+                         PlaceManager placeManager,
+                         MessageService messageService) {
+        this.view = view;
+        this.placeManager = placeManager;
+        this.messageService = messageService;
 
-    public void onMessageSent(@Observes Message message) {
+        view.setPresenter(this);
+    }
 
+    @OnStart
+    public void init() {
+        for (Message message : messageService.getMessageLog()) {
+            switch (message.getLevel()) {
+                case INFO:
+                    view.addInfoLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
+                    break;
+                case WARNING:
+                    view.addWarningLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
+                    break;
+                case ERROR:
+                    view.addErrorLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
+                    break;
+            }
+        }
     }
 
     @DefaultPosition

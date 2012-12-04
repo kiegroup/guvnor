@@ -16,16 +16,30 @@
 
 package org.kie.guvnor.projecteditor.client;
 
+import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class MessageService {
+
+    private List<Message> messageLog = new ArrayList<Message>();
 
     public void addMessages(Messages messages) {
         // TODO -Rikkola-
         //
 //        placeManager.goTo("org.kie.guvnor.Messages");
+    }
+
+    public void onNewMessage(@Observes Message message) {
+        // TODO -Rikkola-
+    }
+
+    public List<Message> getMessageLog() {
+        return messageLog;
     }
 }
