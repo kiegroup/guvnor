@@ -16,12 +16,11 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 public class Builder {
-
 
     // TODO: Finish this when the core is more stable
 
@@ -30,7 +29,8 @@ public class Builder {
 //    private final String projectName;
 //    private final KieFileSystem kieFileSystem;
 
-    public Builder(Path pathToKProjectXML, VFSService vfsService) {
+    public Builder( Path pathToKProjectXML,
+                    IOService ioService ) {
 //        this.vfsService = vfsService;
 //
 //        KieServices kieServices = KieServices.Factory.get();

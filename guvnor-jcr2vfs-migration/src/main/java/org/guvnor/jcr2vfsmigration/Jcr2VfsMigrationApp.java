@@ -19,9 +19,9 @@ package org.guvnor.jcr2vfsmigration;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -37,11 +37,6 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
-
-import com.google.gwt.user.client.rpc.SerializationException;
 
 public class Jcr2VfsMigrationApp {
     protected static final Logger logger = LoggerFactory.getLogger(Jcr2VfsMigrationApp.class);

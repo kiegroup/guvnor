@@ -33,8 +33,13 @@
     <!--</dependency>-->
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-api</artifactId>
+      <artifactId>kie-commons-io</artifactId>
     </dependency>
 
     <dependency>

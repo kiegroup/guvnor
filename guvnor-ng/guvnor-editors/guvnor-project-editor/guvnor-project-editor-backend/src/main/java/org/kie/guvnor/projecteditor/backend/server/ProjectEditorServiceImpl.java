@@ -16,95 +16,104 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @Service
 @ApplicationScoped
 public class ProjectEditorServiceImpl
         implements ProjectEditorService {
 
-    private final VFSService vfsService;
-    private final KProjectEditorContentHandler projectEditorContentHandler;
+    private final IOService                               ioService;
+    private final Paths                                   paths;
+    private final KProjectEditorContentHandler            projectEditorContentHandler;
     private final GroupArtifactVersionModelContentHandler gavModelContentHandler;
 
-    public ProjectEditorServiceImpl(VFSService vfsService,
-                                    KProjectEditorContentHandler projectEditorContentHandler,
-                                    GroupArtifactVersionModelContentHandler gavModelContentHandler) {
-        this.vfsService = vfsService;
+    public ProjectEditorServiceImpl( final IOService ioService,
+                                     final Paths paths,
+                                     final KProjectEditorContentHandler projectEditorContentHandler,
+                                     final GroupArtifactVersionModelContentHandler gavModelContentHandler ) {
+        this.ioService = ioService;
+        this.paths = paths;
         this.projectEditorContentHandler = projectEditorContentHandler;
         this.gavModelContentHandler = gavModelContentHandler;
     }
 
     @Override
-    public Path setUpProjectStructure(Path pathToPom) {
+    public Path setUpProjectStructure( final Path pathToPom ) {
 
         // Create project structure
-        Path directory = getPomPath(pathToPom);
+        final org.kie.commons.java.nio.file.Path directory = getPomPath( pathToPom );
 
-        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/kbases"));
+        ioService.createDirectory( directory.resolve( "/src/kbases" ) );
 
-        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/main/java"));
-        PathImpl pathToKProjectXML = new PathImpl(directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
-        saveKProject(pathToKProjectXML, new KProjectModel());
+        ioService.createDirectory( directory.resolve( "/src/main/java" ) );
+        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve( "/src/main/resources/META-INF/kproject.xml" );
+        saveKProject( pathToKProjectXML, new KProjectModel() );
 
-        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/java"));
-        vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/resources"));
+        ioService.createDirectory( directory.resolve( "/src/test/java" ) );
+        ioService.createDirectory( directory.resolve( "/src/test/resources" ) );
 
-        return pathToKProjectXML;
+        return paths.convert( pathToKProjectXML );
     }
 
     @Override
-    public void saveKProject(Path path, KProjectModel model) {
-        vfsService.write(path, projectEditorContentHandler.toString(model));
+    public void saveKProject( final Path path,
+                              final KProjectModel model ) {
+        saveKProject( paths.convert( path ), model );
     }
 
     @Override
-    public void saveGav(Path path, GroupArtifactVersionModel gavModel) {
-        vfsService.write(path, gavModelContentHandler.toString(gavModel));
+    public void saveGav( final Path path,
+                         final GroupArtifactVersionModel gavModel ) {
+        ioService.write( paths.convert( path ), gavModelContentHandler.toString( gavModel ) );
     }
 
     @Override
-    public KProjectModel loadKProject(Path path) {
-        return projectEditorContentHandler.toModel(vfsService.readAllString(path));
+    public KProjectModel loadKProject( final Path path ) {
+        return projectEditorContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
-    public Messages build(Path pathToKProjectXML) {
+    public Messages build( Path pathToKProjectXML ) {
 
-        Builder builder = new Builder(pathToKProjectXML, vfsService);
+        Builder builder = new Builder( pathToKProjectXML, ioService );
 
         return builder.build();
     }
 
     @Override
-    public GroupArtifactVersionModel loadGav(Path path) {
-        return gavModelContentHandler.toModel(vfsService.readAllString(path));
+    public GroupArtifactVersionModel loadGav( final Path path ) {
+        return gavModelContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
-    public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML) {
-        PathImpl directory = getPomPath(pathToPomXML);
+    public Path pathToRelatedKProjectFileIfAny( final Path pathToPomXML ) {
+        final org.kie.commons.java.nio.file.Path directory = getPomPath( pathToPomXML );
 
-        PathImpl pathToKProjectXML = new PathImpl(directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
+        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve( "/src/main/resources/META-INF/kproject.xml" );
 
-        if (vfsService.exists(pathToKProjectXML)) {
-            return pathToKProjectXML;
+        if ( ioService.exists( pathToKProjectXML ) ) {
+            return paths.convert( pathToKProjectXML );
         } else {
             return null;
         }
     }
 
-    private PathImpl getPomPath(Path pathToPomXML) {
-        String s = pathToPomXML.toURI();
-        return new PathImpl(s.substring(0, s.length() - "/pom.xml".length()));
+    private void saveKProject( final org.kie.commons.java.nio.file.Path path,
+                               final KProjectModel model ) {
+        ioService.write( path, projectEditorContentHandler.toString( model ) );
+    }
+
+    private org.kie.commons.java.nio.file.Path getPomPath( final Path pathToPomXML ) {
+        return paths.convert( pathToPomXML ).getParent();
     }
 }

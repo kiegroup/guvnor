@@ -23,7 +23,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.uberfire.backend.vfs.PathFactory;
 
 import static java.util.Collections.*;
 
@@ -47,6 +47,6 @@ public class ProjectServiceImpl
     @Override
     public Path resolveProject( final Path resource ) {
         //TODO {porcelli}
-        return new PathImpl();
+        return PathFactory.newPath( null );
     }
 }

@@ -26,23 +26,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.commons.java.nio.file.FileSystem;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.FileSystems;
 import org.kie.guvnor.services.repositories.Repository;
 import org.kie.guvnor.services.repositories.RepositoryService;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 
 import static java.util.Arrays.*;
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 @Singleton
 public class AppSetup {
 
-    private ActiveFileSystems fileSystems = new ActiveFileSystemsImpl();
+    private final IOService         ioService   = new IOServiceDotFileImpl();
+    private final ActiveFileSystems fileSystems = new ActiveFileSystemsImpl();
 
     @Inject
     private RepositoryService repositoryService;
@@ -62,23 +64,23 @@ public class AppSetup {
 
                 final Map<String, Object> env = new HashMap<String, Object>();
                 for ( Map.Entry<String, String> e : repository.getEnvironment().entrySet() ) {
-                    env.put( e.getKey(),
-                             e.getValue() );
+                    env.put( e.getKey(), e.getValue() );
                 }
 
                 try {
-                    FileSystems.newFileSystem( fsURI,
-                                               env );
+                    if ( bootstrap ) {
+                        ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
+                    } else {
+                        ioService.newFileSystem( fsURI, env );
+                    }
                 } catch ( FileSystemAlreadyExistsException ex ) {
                 }
 
                 if ( bootstrap ) {
-                    final Path root = new PathImpl( alias,
-                                                    "default://" + alias );
+                    final Path root = PathFactory.newPath( alias, "default://" + alias );
                     fileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
                 } else {
-                    final Path fs = new PathImpl( alias,
-                                                  scheme + "://" + alias );
+                    final Path fs = PathFactory.newPath( alias, scheme + "://" + alias );
                     fileSystems.addFileSystem( new FileSystemImpl( asList( fs ) ) );
                 }
             }
@@ -90,6 +92,12 @@ public class AppSetup {
     @Named("fs")
     public ActiveFileSystems fileSystems() {
         return fileSystems;
+    }
+
+    @Produces
+    @Named("ioStrategy")
+    public IOService ioService() {
+        return ioService;
     }
 
 }
