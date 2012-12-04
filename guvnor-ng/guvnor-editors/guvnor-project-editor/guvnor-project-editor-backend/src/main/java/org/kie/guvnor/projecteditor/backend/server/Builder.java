@@ -16,12 +16,14 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
-import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
 public class Builder {
+
+
+    // TODO: Finish this when the core is more stable
 
 //    private final VFSService vfsService;
 //    private final KieBuilder kieBuilder;
@@ -80,4 +82,4 @@ public class Builder {
 //        String substring = s.substring(s.indexOf("uf-playground/") + "uf-playground/".length());
 //        return substring.substring(0, substring.indexOf("/"));
 //    }
-    }
+}

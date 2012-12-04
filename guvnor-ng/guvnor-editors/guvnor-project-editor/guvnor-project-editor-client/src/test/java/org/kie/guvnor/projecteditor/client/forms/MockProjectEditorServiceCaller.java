@@ -51,7 +51,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public void save(Path path, KProjectModel model) {
+            public void saveKProject(Path path, KProjectModel model) {
                 callback.callback(null);
                 savedModel = model;
             }
@@ -63,7 +63,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public KProjectModel load(Path path) {
+            public KProjectModel loadKProject(Path path) {
                 callback.callback(modelForLoading);
                 return modelForLoading;
             }

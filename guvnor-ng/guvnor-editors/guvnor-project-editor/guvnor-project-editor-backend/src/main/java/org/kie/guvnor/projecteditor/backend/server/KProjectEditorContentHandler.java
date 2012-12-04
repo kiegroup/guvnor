@@ -26,18 +26,19 @@ import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KProjectModel;
 import org.kie.guvnor.projecteditor.model.KSessionModel;
 
-public class ProjectEditorContentHandler {
+public class KProjectEditorContentHandler {
 
+    // TODO: Finish this when the core is more stable
 
-    public static KProjectModel toModel(String xml) {
+    public KProjectModel toModel(String xml) {
         return (KProjectModel) createXStream().fromXML(xml);
     }
 
-    public static String toString(KProjectModel model) {
+    public String toString(KProjectModel model) {
         return createXStream().toXML(model);
     }
 
-    private static XStream createXStream() {
+    private XStream createXStream() {
         XStream xStream = new XStream(new DomDriver());
 
         xStream.alias("kproject", KProjectModel.class);
@@ -49,6 +50,7 @@ public class ProjectEditorContentHandler {
         xStream.registerConverter(new KBaseConverter());
         xStream.registerConverter(new KSessionConverter());
         xStream.registerConverter(new ClockTypeConverter());
+
         return xStream;
     }
 }

@@ -33,23 +33,28 @@ public class ProjectEditorServiceImpl
         implements ProjectEditorService {
 
     private final VFSService vfsService;
+    private final KProjectEditorContentHandler projectEditorContentHandler;
+    private final GroupArtifactVersionModelContentHandler gavModelContentHandler;
 
-    public ProjectEditorServiceImpl(VFSService vfsService) {
+    public ProjectEditorServiceImpl(VFSService vfsService,
+                                    KProjectEditorContentHandler projectEditorContentHandler,
+                                    GroupArtifactVersionModelContentHandler gavModelContentHandler) {
         this.vfsService = vfsService;
+        this.projectEditorContentHandler = projectEditorContentHandler;
+        this.gavModelContentHandler = gavModelContentHandler;
     }
 
     @Override
     public Path setUpProjectStructure(Path pathToPom) {
 
         // Create project structure
-        String s = pathToPom.toURI();
-        Path directory = new PathImpl(s.substring(0, s.length() - "/pom.xml".length()));
+        Path directory = getPomPath(pathToPom);
 
         vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/kbases"));
 
         vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/main/java"));
         PathImpl pathToKProjectXML = new PathImpl(directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
-        save(pathToKProjectXML, new KProjectModel());
+        saveKProject(pathToKProjectXML, new KProjectModel());
 
         vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/java"));
         vfsService.createDirectory(new PathImpl(directory.toURI() + "/src/test/resources"));
@@ -58,18 +63,18 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public void save(Path path, KProjectModel model) {
-        vfsService.write(path, ProjectEditorContentHandler.toString(model));
+    public void saveKProject(Path path, KProjectModel model) {
+        vfsService.write(path, projectEditorContentHandler.toString(model));
     }
 
     @Override
-    public void saveGav(Path path, GroupArtifactVersionModel gav) {
-        //TODO -Rikkola-
+    public void saveGav(Path path, GroupArtifactVersionModel gavModel) {
+        vfsService.write(path, gavModelContentHandler.toString(gavModel));
     }
 
     @Override
-    public KProjectModel load(Path path) {
-        return ProjectEditorContentHandler.toModel(vfsService.readAllString(path));
+    public KProjectModel loadKProject(Path path) {
+        return projectEditorContentHandler.toModel(vfsService.readAllString(path));
     }
 
     @Override
@@ -82,16 +87,24 @@ public class ProjectEditorServiceImpl
 
     @Override
     public GroupArtifactVersionModel loadGav(Path path) {
-        return null;  //TODO -Rikkola-
+        return gavModelContentHandler.toModel(vfsService.readAllString(path));
     }
 
     @Override
-    public Path pathToRelatedKProjectFileIfAny() {
-        return null;  //TODO -Rikkola-
+    public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML) {
+        PathImpl directory = getPomPath(pathToPomXML);
+
+        PathImpl pathToKProjectXML = new PathImpl(directory.toURI() + "/src/main/resources/META-INF/kproject.xml");
+
+        if (vfsService.exists(pathToKProjectXML)) {
+            return pathToKProjectXML;
+        } else {
+            return null;
+        }
     }
 
-    private String projectURI(String name) {
-        return "default://uf-playground/" + name;
+    private PathImpl getPomPath(Path pathToPomXML) {
+        String s = pathToPomXML.toURI();
+        return new PathImpl(s.substring(0, s.length() - "/pom.xml".length()));
     }
-
 }

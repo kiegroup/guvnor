@@ -28,18 +28,18 @@ public interface ProjectEditorService {
 
     public Path setUpProjectStructure(Path pathToPom);
 
-    public void save(Path path,
-                     KProjectModel model);
+    public void saveKProject(Path path,
+                             KProjectModel model);
 
     public void saveGav(Path path,
                         GroupArtifactVersionModel gav);
 
-    public KProjectModel load(Path path);
+    public KProjectModel loadKProject(Path path);
 
     public Messages build(Path path);
 
     public GroupArtifactVersionModel loadGav(Path path);
 
-    public Path pathToRelatedKProjectFileIfAny();
+    public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML);
 
 }

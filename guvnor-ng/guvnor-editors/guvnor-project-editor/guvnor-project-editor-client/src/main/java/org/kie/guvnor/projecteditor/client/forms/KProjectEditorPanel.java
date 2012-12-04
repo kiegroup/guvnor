@@ -44,7 +44,7 @@ public class KProjectEditorPanel
 
                 setItems(model.getKBases());
             }
-        }).load(path);
+        }).loadKProject(path);
     }
 
     @Override
@@ -60,6 +60,6 @@ public class KProjectEditorPanel
             public void callback(Void v) {
                 view.showSaveSuccessful();
             }
-        }).save(path, model);
+        }).saveKProject(path, model);
     }
 }
