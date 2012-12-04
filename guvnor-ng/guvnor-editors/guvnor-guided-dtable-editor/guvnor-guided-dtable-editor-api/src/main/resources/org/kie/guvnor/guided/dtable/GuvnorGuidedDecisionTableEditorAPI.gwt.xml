@@ -26,6 +26,7 @@
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
 
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
+  <inherits name='org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget'/>
 
   <source path="model"/>
   <source path="service"/>

@@ -17,6 +17,7 @@
 package org.kie.guvnor.datamodel.model;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 @Portable
 public class MockDataModel implements DataModelOracle {
+
+    private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
+
+    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();                                                                                                                               // TODO this is
 
     public MockDataModel() {
     }
@@ -185,6 +190,17 @@ public class MockDataModel implements DataModelOracle {
     public String getFieldClassName( String factName,
                                      String fieldName ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setFieldsForTypes( Map<String, ModelField[]> fieldsForType ) {
+        this.modelFields.clear();
+        this.modelFields.putAll( fieldsForType );
+    }
+
+    public void putDataEnumList( String name,
+                                 String[] value ) {
+        this.dataEnumLists.put( name,
+                                value );
     }
 
 }

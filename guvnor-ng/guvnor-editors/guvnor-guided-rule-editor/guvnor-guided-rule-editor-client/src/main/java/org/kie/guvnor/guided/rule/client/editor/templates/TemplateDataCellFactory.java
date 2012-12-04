@@ -25,21 +25,18 @@ import org.kie.guvnor.guided.rule.model.DataType;
 public class TemplateDataCellFactory
         extends AbstractCellFactory<TemplateDataColumn> {
 
-    private final DataModelOracle sce;
-
     /**
      * Construct a Cell Factory for a specific Template Data Widget
-     * @param sce SuggestionCompletionEngine to assist with drop-downs
+     * @param oracle DataModelOracle to assist with drop-downs
      * @param dropDownManager DropDownManager for dependent cells
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public TemplateDataCellFactory( DataModelOracle sce,
+    public TemplateDataCellFactory( DataModelOracle oracle,
                                     TemplateDropDownManager dropDownManager,
                                     boolean isReadOnly,
                                     EventBus eventBus ) {
-        super( dropDownManager, isReadOnly, eventBus );
-        this.sce = sce;
+        super( oracle, dropDownManager, isReadOnly, eventBus );
     }
 
     /**
@@ -54,13 +51,13 @@ public class TemplateDataCellFactory
         //Check if the column has an enumeration
         String factType = column.getFactType();
         String factField = column.getFactField();
-        if ( sce.hasEnums( factType,
-                           factField ) ) {
+        if ( oracle.hasEnums( factType,
+                              factField ) ) {
 
             // Columns with lists of values, enums etc are always Text (for now)
             PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
                                                                     factField,
-                                                                    sce,
+                                                                    oracle,
                                                                     dropDownManager,
                                                                     isReadOnly );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd,

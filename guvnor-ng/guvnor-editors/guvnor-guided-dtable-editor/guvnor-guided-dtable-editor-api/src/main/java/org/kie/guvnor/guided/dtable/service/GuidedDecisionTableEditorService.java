@@ -16,10 +16,13 @@
 
 package org.kie.guvnor.guided.dtable.service;
 
+import java.util.Set;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
+import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 
@@ -33,5 +36,7 @@ public interface GuidedDecisionTableEditorService
 
     void save( final Path path,
                final GuidedDecisionTable52 model );
+
+    Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 
 }

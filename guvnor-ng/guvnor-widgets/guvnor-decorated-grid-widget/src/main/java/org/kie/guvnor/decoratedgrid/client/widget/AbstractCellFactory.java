@@ -22,6 +22,7 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigIntegerEditCell;
@@ -41,6 +42,8 @@ public abstract class AbstractCellFactory<T> {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
+    protected final DataModelOracle oracle;
+
     protected final CellTableDropDownDataValueMapProvider dropDownManager;
 
     protected final boolean isReadOnly;
@@ -49,19 +52,25 @@ public abstract class AbstractCellFactory<T> {
 
     /**
      * Construct a Cell Factory for a specific grid widget
+     * @param oracle DataModelOracle to assist with drop-downs
      * @param dropDownManager DropDownManager for dependent cells
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public AbstractCellFactory( final CellTableDropDownDataValueMapProvider dropDownManager,
+    public AbstractCellFactory( final DataModelOracle oracle,
+                                final CellTableDropDownDataValueMapProvider dropDownManager,
                                 final boolean isReadOnly,
                                 final EventBus eventBus ) {
+        if ( oracle == null ) {
+            throw new IllegalArgumentException( "oracle cannot be null" );
+        }
         if ( dropDownManager == null ) {
             throw new IllegalArgumentException( "dropDownManager cannot be null" );
         }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
+        this.oracle = oracle;
         this.dropDownManager = dropDownManager;
         this.isReadOnly = isReadOnly;
         this.eventBus = eventBus;

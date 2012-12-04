@@ -18,11 +18,51 @@ package org.kie.guvnor.guided.dtable.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+import org.kie.guvnor.commons.ui.client.resources.CollapseExpand;
+import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.guvnor.decoratedgrid.client.resources.TableImageResources;
 
 public interface ImageResources
         extends
         ClientBundle {
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+
+    @Source("delete_item_small.gif")
+    ImageResource deleteItemSmall();
+
+    @Source("emptyArrow.png")
+    ImageResource arrowSpacerIcon();
+
+    @Source("icon-unmerge.png")
+    ImageResource toggleUnmergeIcon();
+
+    @Source("icon-merge.png")
+    ImageResource toggleMergeIcon();
+
+    @Source("edit.gif")
+    ImageResource edit();
+
+    @Source("editDisabled.gif")
+    ImageResource editDisabled();
+
+    @Source("error.gif")
+    ImageResource error();
+
+    @Source("information.gif")
+    ImageResource information();
+
+    @Source("warning.gif")
+    ImageResource warning();
+
+    @Source("config.png")
+    ImageResource config();
+
+    TableImageResources tableImageResources();
+
+    CollapseExpand collapseExpand();
+
+    ItemImages itemImages();
 
 }

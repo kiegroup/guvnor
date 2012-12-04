@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.DateConverter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
@@ -42,8 +42,6 @@ public class TemplateDataCellValueFactory
     // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
     protected static DateConverter DATE_CONVERTOR = null;
 
-    private final DataModelOracle sce;
-
     /**
      * Override the default, GWT-centric, Date conversion utility class. Only
      * use to hook-in a JVM Compatible implementation for tests
@@ -55,12 +53,12 @@ public class TemplateDataCellValueFactory
 
     /**
      * Construct a Cell Value Factory for a specific Template data editor
-     * @param TemplateModel model for which cells will be created
-     * @param sce SuggestionCompletionEngine to assist with drop-downs
+     * @param model for which cells will be created
+     * @param oracle SuggestionCompletionEngine to assist with drop-downs
      */
     public TemplateDataCellValueFactory( final TemplateModel model,
-                                         final DataModelOracle sce ) {
-        this.sce = sce;
+                                         final DataModelOracle oracle ) {
+        super( oracle );
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -84,7 +82,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Construct a new row of data for the MergableGridWidget
-     * @param cell
      * @return
      */
     @Override
@@ -145,7 +142,8 @@ public class TemplateDataCellValueFactory
 
     /**
      * Convert a Model cell to one that can be used in the UI
-     * @param cell
+     * @param column
+     * @param dcv
      * @return
      */
     @Override
@@ -264,8 +262,8 @@ public class TemplateDataCellValueFactory
 
         //Check for enumerations
         if ( factType != null && factField != null ) {
-            vals = sce.getEnumValues( factType,
-                                      factField );
+            vals = oracle.getEnumValues( factType,
+                                         factField );
             if ( vals != null && vals.length > 0 ) {
                 return DataType.DataTypes.STRING;
             }
@@ -313,7 +311,7 @@ public class TemplateDataCellValueFactory
     /**
      * Convert a type-safe UI CellValue into a type-safe Model CellValue
      * @param column Model column from which data-type can be derived
-     * @param cell UI CellValue to convert into Model CellValue
+     * @param cv UI CellValue to convert into Model CellValue
      * @return
      */
     public String convertToModelCell( TemplateDataColumn column,

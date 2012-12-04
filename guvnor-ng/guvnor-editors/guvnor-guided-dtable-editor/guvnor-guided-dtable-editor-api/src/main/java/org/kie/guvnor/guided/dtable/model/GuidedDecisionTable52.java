@@ -71,7 +71,7 @@ public class GuidedDecisionTable52 {
 
     private List<AttributeCol52> attributeCols = new ArrayList<AttributeCol52>();
 
-    private List<CompositeColumn<BaseColumn>> conditionPatterns = new ArrayList<CompositeColumn<BaseColumn>>();
+    private List<CompositeColumn<? extends BaseColumn>> conditionPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
 
     private List<ActionCol52> actionCols = new ArrayList<ActionCol52>();
 
@@ -122,7 +122,7 @@ public class GuidedDecisionTable52 {
         return Collections.unmodifiableList( patterns );
     }
 
-    public List<CompositeColumn<BaseColumn>> getConditions() {
+    public List<CompositeColumn<? extends BaseColumn>> getConditions() {
         return this.conditionPatterns;
     }
 
@@ -150,26 +150,25 @@ public class GuidedDecisionTable52 {
         return new Pattern52();
     }
 
-//TODO {manstis} Is this used??
-//    public BRLColumn<?, ?> getBRLColumn( final BRLVariableColumn col ) {
-//        for ( CompositeColumn<? extends BaseColumn> cc : conditionPatterns ) {
-//            if ( cc instanceof BRLConditionColumn ) {
-//                final BRLConditionColumn brl = (BRLConditionColumn) cc;
-//                if ( brl.getChildColumns().contains( col ) ) {
-//                    return brl;
-//                }
-//            }
-//        }
-//        for ( ActionCol52 ac : actionCols ) {
-//            if ( ac instanceof BRLActionColumn ) {
-//                final BRLActionColumn brl = (BRLActionColumn) ac;
-//                if ( brl.getChildColumns().contains( col ) ) {
-//                    return brl;
-//                }
-//            }
-//        }
-//        throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
-//    }
+    public BRLColumn<?, ?> getBRLColumn( final BRLVariableColumn col ) {
+        for ( CompositeColumn<? extends BaseColumn> cc : conditionPatterns ) {
+            if ( cc instanceof BRLConditionColumn ) {
+                final BRLConditionColumn brl = (BRLConditionColumn) cc;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        for ( ActionCol52 ac : actionCols ) {
+            if ( ac instanceof BRLActionColumn ) {
+                final BRLActionColumn brl = (BRLActionColumn) ac;
+                if ( brl.getChildColumns().contains( col ) ) {
+                    return brl;
+                }
+            }
+        }
+        throw new IllegalStateException( "col is not a child of any of the defined BRLColumns." );
+    }
 
     public BRLConditionColumn getBRLColumn( BRLConditionVariableColumn col ) {
         for ( CompositeColumn<? extends BaseColumn> cc : conditionPatterns ) {
@@ -315,7 +314,7 @@ public class GuidedDecisionTable52 {
         this.attributeCols = attributeCols;
     }
 
-    public void setConditionPatterns( final List<CompositeColumn<BaseColumn>> conditionPatterns ) {
+    public void setConditionPatterns( final List<CompositeColumn<? extends BaseColumn>> conditionPatterns ) {
         this.conditionPatterns = conditionPatterns;
     }
 

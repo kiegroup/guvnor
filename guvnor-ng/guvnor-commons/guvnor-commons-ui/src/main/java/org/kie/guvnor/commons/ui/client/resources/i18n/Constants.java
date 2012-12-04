@@ -65,4 +65,7 @@ public interface Constants
     String SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
     String ShowDetail();
+
+    String Choose();
+
 }

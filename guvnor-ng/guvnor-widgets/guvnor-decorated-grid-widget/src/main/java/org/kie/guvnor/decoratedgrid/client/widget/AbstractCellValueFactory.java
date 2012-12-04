@@ -20,12 +20,23 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A Factory to create CellValues applicable to given columns.
  */
 public abstract class AbstractCellValueFactory<C, V> {
+
+    // SuggestionCompletionEngine to aid data-type resolution etc
+    protected DataModelOracle oracle;
+
+    public AbstractCellValueFactory( DataModelOracle oracle ) {
+        if ( oracle == null ) {
+            throw new IllegalArgumentException( "oracle cannot be null" );
+        }
+        this.oracle = oracle;
+    }
 
     /**
      * Construct a new row of data for the underlying model
