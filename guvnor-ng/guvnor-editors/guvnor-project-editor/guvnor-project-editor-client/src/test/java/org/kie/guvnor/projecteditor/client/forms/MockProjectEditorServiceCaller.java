@@ -81,7 +81,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path pathToRelatedKProjectFileIfAny() {
+            public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML) {
                 callback.callback(pathToRelatedKProjectFileIfAny);
                 return pathToRelatedKProjectFileIfAny;
             }

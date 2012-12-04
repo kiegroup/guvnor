@@ -80,7 +80,7 @@ public class ProjectEditorScreen
                         }
                     }
                 }
-        ).pathToRelatedKProjectFileIfAny();
+        ).pathToRelatedKProjectFileIfAny(path);
     }
 
     private void setUpKProject(Path path) {
