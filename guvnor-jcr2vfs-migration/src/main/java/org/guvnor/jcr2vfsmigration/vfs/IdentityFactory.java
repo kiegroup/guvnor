@@ -16,26 +16,14 @@
 
 package org.guvnor.jcr2vfsmigration.vfs;
 
-import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.commons.java.nio.file.FileSystems;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
-
-import static java.util.Arrays.*;
 
 @Singleton
 public class IdentityFactory {
@@ -54,7 +42,7 @@ public class IdentityFactory {
                 return Collections.emptyList();
             }
 
-            public boolean hasRole(Role role) {
+            public boolean hasRole( Role role ) {
                 return true;
             }
 

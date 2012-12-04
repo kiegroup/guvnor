@@ -18,38 +18,41 @@ package org.guvnor.jcr2vfsmigration.vfs;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.commons.java.nio.file.FileSystems;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
+import org.kie.commons.io.FileSystemType;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 
-import static java.util.Arrays.*;
+import static org.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
 @Singleton
-public class ActiveFileSystemsFactory {
+public class IOServiceFactory {
 
-    private ActiveFileSystems activeFileSystems;
+    private final IOService ioService = new IOServiceDotFileImpl();
+
+    public static enum Migration implements FileSystemType {
+
+        MIGRATION_INSTANCE;
+
+        public String toString() {
+            return "MIGRATION";
+        }
+    }
 
     @PostConstruct
     public void onStartup() {
-        activeFileSystems = new ActiveFileSystemsImpl();
         String name = "guvnor-jcr2vfs-migration";
-        FileSystems.newFileSystem(URI.create("git://" + name), new HashMap<String, Object>());
-        final Path root = new PathImpl(name, "default://" + name);
-        activeFileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
+        ioService.newFileSystem( URI.create( "git://" + name ), new HashMap<String, Object>(), MIGRATION_INSTANCE );
     }
 
-    @Produces @Named("fs")
-    public ActiveFileSystems getActiveFileSystems() {
-        return activeFileSystems;
+    @Produces
+    @Named("ioStrategy")
+    public IOService ioService() {
+        return ioService;
     }
 
 }
