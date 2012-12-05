@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.guvnor.jcr2vfsmigration.config.MigrationConfig;
 import org.guvnor.jcr2vfsmigration.migrater.AssetMigrater;
+import org.guvnor.jcr2vfsmigration.migrater.CategoryMigrater;
 import org.guvnor.jcr2vfsmigration.migrater.ModuleMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,8 @@ public class Jcr2VfsMigrater {
     protected ModuleMigrater moduleMigrater;
     @Inject
     protected AssetMigrater assetMigrater;
+    @Inject
+    protected CategoryMigrater categoryMigrater;
 
     public void parseArgs(String[] args) {
         migrationConfig.parseArgs(args);
@@ -47,6 +50,7 @@ public class Jcr2VfsMigrater {
         logger.info("Migration started");
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
+        categoryMigrater.migrateAll();
         logger.info("Migration ended");
     }
 
