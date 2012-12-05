@@ -18,8 +18,10 @@ package org.kie.guvnor.datamodel.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -29,7 +31,9 @@ public class MockDataModel implements DataModelOracle {
 
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
 
-    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();                                                                                                                               // TODO this is
+    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();
+
+    private transient Map<String, Object> dataEnumLookupFields;
 
     public MockDataModel() {
     }
@@ -50,13 +54,26 @@ public class MockDataModel implements DataModelOracle {
     @Override
     public String[] getEnumValues( String factType,
                                    String factField ) {
-        return new String[ 0 ];  //To change body of implemented methods use File | Settings | File Templates.
+        return this.dataEnumLists.get( factType + "." + factField );
     }
 
     @Override
     public boolean hasEnums( String factType,
                              String factField ) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        boolean hasEnums = false;
+        final String qualifiedFactField = factType + "." + factField;
+        final String dependentType = qualifiedFactField + "[";
+        for ( String e : this.dataEnumLists.keySet() ) {
+            //e.g. Fact.field1
+            if ( e.equals( qualifiedFactField ) ) {
+                return true;
+            }
+            //e.g. Fact.field2[field1=val2]
+            if ( e.startsWith( dependentType ) ) {
+                return true;
+            }
+        }
+        return hasEnums;
     }
 
     @Override
@@ -70,7 +87,158 @@ public class MockDataModel implements DataModelOracle {
     public DropDownData getEnums( String factType,
                                   String factField,
                                   Map<String, String> currentValueMap ) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Map<String, Object> dataEnumLookupFields = loadDataEnumLookupFields();
+
+        if ( !currentValueMap.isEmpty() ) {
+            // we may need to check for data dependent enums
+            Object _typeFields = dataEnumLookupFields.get( factType + "." + factField );
+
+            if ( _typeFields instanceof String ) {
+                String typeFields = (String) _typeFields;
+
+                StringBuilder dataEnumListsKeyBuilder = new StringBuilder( factType );
+                dataEnumListsKeyBuilder.append( "." ).append( factField );
+
+                boolean addOpeninColumn = true;
+                String[] splitTypeFields = typeFields.split( "," );
+                for ( int j = 0; j < splitTypeFields.length; j++ ) {
+                    String typeField = splitTypeFields[ j ];
+
+                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
+                        String fieldName = currentValueEntry.getKey();
+                        String fieldValue = currentValueEntry.getValue();
+                        if ( fieldName.trim().equals( typeField.trim() ) ) {
+                            if ( addOpeninColumn ) {
+                                dataEnumListsKeyBuilder.append( "[" );
+                                addOpeninColumn = false;
+                            }
+                            dataEnumListsKeyBuilder.append( typeField ).append( "=" ).append( fieldValue );
+
+                            if ( j != ( splitTypeFields.length - 1 ) ) {
+                                dataEnumListsKeyBuilder.append( "," );
+                            }
+                        }
+                    }
+                }
+
+                if ( !addOpeninColumn ) {
+                    dataEnumListsKeyBuilder.append( "]" );
+                }
+
+                DropDownData data = DropDownData.create( this.dataEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
+                if ( data != null ) {
+                    return data;
+                }
+            } else if ( _typeFields != null ) {
+                // these enums are calculated on demand, server side...
+                String[] fieldsNeeded = (String[]) _typeFields;
+
+                String queryString = getQueryString( factType,
+                                                     factField,
+                                                     fieldsNeeded,
+                                                     this.dataEnumLists );
+
+                String[] valuePairs = new String[ fieldsNeeded.length ];
+
+                // collect all the values of the fields needed, then return it
+                // as a string...
+                for ( int i = 0; i < fieldsNeeded.length; i++ ) {
+                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
+                        String fieldName = currentValueEntry.getKey();
+                        String fieldValue = currentValueEntry.getValue();
+                        if ( fieldName.equals( fieldsNeeded[ i ] ) ) {
+                            valuePairs[ i ] = fieldsNeeded[ i ] + "=" + fieldValue;
+                        }
+                    }
+                }
+
+                if ( valuePairs.length > 0 && valuePairs[ 0 ] != null ) {
+                    return DropDownData.create( queryString,
+                                                valuePairs );
+                }
+            }
+        }
+        return DropDownData.create( getEnumValues( factType,
+                                                   factField ) );
+    }
+
+    Map<String, Object> loadDataEnumLookupFields() {
+        if ( this.dataEnumLookupFields == null ) {
+            this.dataEnumLookupFields = new HashMap<String, Object>();
+            Set<String> keys = this.dataEnumLists.keySet();
+            for ( String key : keys ) {
+                if ( key.indexOf( '[' ) != -1 ) {
+                    int ix = key.indexOf( '[' );
+                    String factField = key.substring( 0,
+                                                      ix );
+                    String predicate = key.substring( ix + 1,
+                                                      key.indexOf( ']' ) );
+                    if ( predicate.indexOf( '=' ) > -1 ) {
+
+                        String[] bits = predicate.split( "," );
+                        StringBuilder typeFieldBuilder = new StringBuilder();
+
+                        for ( int i = 0; i < bits.length; i++ ) {
+                            typeFieldBuilder.append( bits[ i ].substring( 0,
+                                                                          bits[ i ].indexOf( '=' ) ) );
+                            if ( i != ( bits.length - 1 ) ) {
+                                typeFieldBuilder.append( "," );
+                            }
+                        }
+
+                        dataEnumLookupFields.put( factField,
+                                                  typeFieldBuilder.toString() );
+                    } else {
+                        String[] fields = predicate.split( "," );
+                        for ( int i = 0; i < fields.length; i++ ) {
+                            fields[ i ] = fields[ i ].trim();
+                        }
+                        dataEnumLookupFields.put( factField,
+                                                  fields );
+                    }
+                }
+            }
+        }
+
+        return dataEnumLookupFields;
+    }
+
+    String getQueryString( String factType,
+                           String field,
+                           String[] fieldsNeeded,
+                           Map<String, String[]> dataEnumLists ) {
+        for ( Iterator<String> iterator = dataEnumLists.keySet().iterator(); iterator.hasNext(); ) {
+            String key = iterator.next();
+            if ( key.startsWith( factType + "." + field ) && fieldsNeeded != null && key.contains( "[" ) ) {
+
+                String[] values = key.substring( key.indexOf( '[' ) + 1,
+                                                 key.lastIndexOf( ']' ) ).split( "," );
+
+                if ( values.length != fieldsNeeded.length ) {
+                    continue;
+                }
+
+                boolean fail = false;
+                for ( int i = 0; i < values.length; i++ ) {
+                    String a = values[ i ].trim();
+                    String b = fieldsNeeded[ i ].trim();
+                    if ( !a.equals( b ) ) {
+                        fail = true;
+                        break;
+                    }
+                }
+                if ( fail ) {
+                    continue;
+                }
+
+                String[] qry = this.dataEnumLists.get( key );
+                return qry[ 0 ];
+            } else if ( key.startsWith( factType + "." + field ) && ( fieldsNeeded == null || fieldsNeeded.length == 0 ) ) {
+                String[] qry = this.dataEnumLists.get( key );
+                return qry[ 0 ];
+            }
+        }
+        throw new IllegalStateException();
     }
 
     @Override
@@ -132,9 +300,19 @@ public class MockDataModel implements DataModelOracle {
     }
 
     @Override
-    public String getFieldType( String variableClass,
-                                String fieldName ) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String getFieldType( String factType,
+                                String factField ) {
+        ModelField field = null;
+        ModelField[] fields = this.modelFields.get( factType );
+        if ( fields == null ) {
+            return null;
+        }
+        for ( ModelField modelField : fields ) {
+            if ( modelField.getName().equals( factField ) ) {
+                field = modelField;
+            }
+        }
+        return field == null ? null : field.getType();
     }
 
     @Override
