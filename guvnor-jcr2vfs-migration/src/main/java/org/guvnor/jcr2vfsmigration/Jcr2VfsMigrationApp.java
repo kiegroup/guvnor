@@ -57,11 +57,12 @@ public class Jcr2VfsMigrationApp {
     //4. Do we want to migrate package snapshot? probably not...As long as we migrate package history correctly, users can always build a package
     //with the specified version by themselves.    
     public void migrate() {
-/*        migrateStateMetaData();
-        migrateCategoryMetaData();
-        migrateRolesAndPermissionsMetaData();
-        migrateAssets();*/
+        //migrateStateMetaData();
+        //migrateCategoryMetaData();
+        //migrateRolesAndPermissionsMetaData();
+        migrateAssets();
     }
+    
     public void migrateAssets() {
         Module[] modules = moduleServiceJCR.listModules();
         
@@ -97,10 +98,6 @@ public class Jcr2VfsMigrationApp {
                     //migrate state:
                     migrateAssetState(assetJCR, assetVFS, row.getUuid());
                     
-                    //Write asset back to git repository using AssetServiceVFS
-                    //TODO: We need a assetServiceVFS.checkinVersion method that takes following (extra) parameters: contributor, modified, versionNumber(?). 
-                    //The checkinComment is taken from Asset
-                    assetVFS.setCheckinComment(assetJCR.getCheckinComment());     
                     rulesRepositoryVFS.checkinVersion(assetJCR);
                 }   
             } catch (SerializationException e) {
@@ -110,13 +107,9 @@ public class Jcr2VfsMigrationApp {
         }
     }
     
-    //NOTE: Adding or removing asset discussions won't change asset history (in old Guvnor)
     public void migrateAssetDiscussions(Asset assetJCR, Asset assetVFS, String assetUUID) {
         List<DiscussionRecord> discussions = assetServiceJCR.loadDiscussionForAsset(assetUUID);
-        for(DiscussionRecord discussion : discussions) {
-            //TODO: we need a addToDiscussionForAsset method that takes author as parameter so that we can write the author information back
-            //assetServiceVFS.addToDiscussionForAsset(assetPath, discussion.note);      
-        }        
+        rulesRepositoryVFS.addToDiscussionForAsset(assetVFS, discussions);     
     }
     
     public void migrateAssetState(Asset assetJCR, Asset assetVFS, String assetUUID) {
@@ -149,19 +142,17 @@ public class Jcr2VfsMigrationApp {
             String versionSnapshotUUID = row.id;
             
             Asset historicalAssetJCR = assetServiceJCR.loadRuleAsset(versionSnapshotUUID);            
-            Asset historicalSssetVFS = historicalAssetJCR;
+            Asset historicalAssetVFS = historicalAssetJCR;
             
             //TODO: migrate asset binary content. The binary content of assets from previous Guvnor version can not be reused by VFS directly. 
             //Make sure we deserialize/serialize the binary content of assets 
             PortableObject binaryContent = historicalAssetJCR.getContent();
-            historicalSssetVFS.setContent(binaryContent);
+            historicalAssetVFS.setContent(binaryContent);
             
             //migrate state:
-            migrateAssetState(historicalAssetJCR, historicalSssetVFS, versionSnapshotUUID);
-            
-            //Write asset back to git repository using AssetServiceVFS
-            historicalSssetVFS.setCheckinComment(checkinComment);            
-            rulesRepositoryVFS.checkinVersion(historicalSssetVFS);
+            migrateAssetState(historicalAssetJCR, historicalAssetVFS, versionSnapshotUUID);            
+
+            rulesRepositoryVFS.checkinVersion(historicalAssetVFS);
         }
 
     }   

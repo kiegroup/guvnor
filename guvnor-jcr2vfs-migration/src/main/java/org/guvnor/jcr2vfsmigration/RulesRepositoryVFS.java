@@ -18,13 +18,18 @@ package org.guvnor.jcr2vfsmigration;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileSystem;
@@ -61,15 +66,26 @@ public class RulesRepositoryVFS {
     public String checkinVersion( final Asset asset ) {
         final Path assetPath = convertUUIDToPath( asset );
 
-        //commits the change, if many changes at once, use other options
-        ioService.setAttribute( assetPath, "checkinComment", asset.getCheckinComment() );
-
+        //TODO: what format to use to convert Date to String? 
         Map<String, Object> attrs = new HashMap<String, Object>() {{
             put( "checkinComment", asset.getCheckinComment() );
             put( "description", asset.getDescription() );
             put( "state", asset.getState() );
+            put( "format", asset.getFormat() );
+            put( "lastContributor", asset.getLastContributor() );
+            put( "lastModified", asset.getLastModified() );
+            put( "title", asset.getName());
+            put( "created", asset.getDateCreated());
+            //put( "state", asset.isReadonly() );
+            put( "creator", asset.getMetaData().getCreator() );
+            put( "coverage", asset.getMetaData().getCoverage());
+            put( "dateEffective", asset.getMetaData().getDateEffective() );
+            put( "dateExpired", asset.getMetaData().getDateExpired() );
+            put( "valid", asset.getMetaData().getValid() );
+            //if the node has an "drools:binaryContent" attribute, Guvnor JCR returns true for asset.getMetaData().isBinary()
+            //put( "state", asset.getMetaData().isBinary() );
+            put( "disabled", asset.getMetaData().isDisabled() );
         }};
-        //AND MORE
 
         //In old Guvnor, we convert domain object to binary by using content handler:
 /*        ContentHandler handler = ContentManager.getHandler(asset.getFormat());
@@ -77,9 +93,19 @@ public class RulesRepositoryVFS {
         //Domain object to binary
         String assetContent = null;
 
+       
         //TODO: vfsService needs a write(Path path, byte[] content) method.
+        final OpenOption commentedOption = new CommentedOption( asset.getLastContributor(), null, asset.getCheckinComment(), asset.getLastModified() );
 
-        final OpenOption commentedOption = new CommentedOption( "user", asset.getCheckinComment() );
+        //single commit for metadata and content
+        ioService.write( assetPath, assetContent, attrs, commentedOption );
+        
+        return "";//old Guvnor returns uuid     
+        
+        /*****************IOService examples****************************************/
+        /*        
+        //commits the change, if many changes at once, use other options
+        ioService.setAttribute( assetPath, "checkinComment", asset.getCheckinComment() );
 
         //single commit for metadata and content
         ioService.write( assetPath, assetContent, attrs, commentedOption );
@@ -92,11 +118,21 @@ public class RulesRepositoryVFS {
 
         //commits only content and uses `commentedOption` to customize commit message, user and related
         ioService.write( assetPath, assetContent, commentedOption );
+        */
 
-        return "";//old Guvnor returns uuid
     }
 
-    //TODO
+    public List<DiscussionRecord> addToDiscussionForAsset(Asset assetVFS, List<DiscussionRecord> discussions) {
+        final Path assetPath = convertUUIDToPath( assetVFS );
+
+        Discussion dp = new Discussion();        
+        //Adding a new Discussion has *never* updated the Last Modified Date.
+        //clearAllDiscussionsForAsset has been made consistent with this behaviour.
+        //Make sure the behavior is consistent.
+        ioService.setAttribute( assetPath, "discussion", dp.toString(discussions) );
+        return discussions;
+    }
+    
     public Path convertUUIDToPath( Asset asset ) {
         String packageName = asset.getMetaData().getModuleName();
         String assetName = asset.getName();
