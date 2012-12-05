@@ -3,13 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <title>Guvnor Showcase</title>
+    <title>Guvnor NG</title>
     <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
     <link rel="icon" href="images/drools.gif" type="image/gif"/>
-
-    <link rel="stylesheet" href="css/uberfire-workbench.css">
     <link rel="stylesheet" href="css/guvnor-showcase.css">
-    <link rel="stylesheet" href="css/ruleflow.css">
+
 </head>
 <body>
 <iframe id="__gwt_historyFrame" style="width: 0; height: 0; border: 0"></iframe>

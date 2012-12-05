@@ -38,6 +38,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.client.resources.ShowcaseResources;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.commons.ui.client.resources.RoundedCornersResource;
 import org.kie.guvnor.services.config.ConfigurationService;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -93,6 +94,7 @@ public class ShowcaseEntryPoint {
     private void loadStyles() {
         //Ensure CSS has been loaded
         ShowcaseResources.INSTANCE.CSS().ensureInjected();
+        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
     }
 
     private void setupMenu() {
