@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.auditlog.AuditLog;
+import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLog;
 import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditLogFilter;
 
 /**
@@ -345,7 +346,7 @@ public class GuidedDecisionTable52 {
      */
     public AuditLog getAuditLog() {
         if ( this.auditLog == null ) {
-            this.auditLog = new AuditLog( new DecisionTableAuditLogFilter() );
+            this.auditLog = new DefaultAuditLog( new DecisionTableAuditLogFilter() );
         }
         return this.auditLog;
     }

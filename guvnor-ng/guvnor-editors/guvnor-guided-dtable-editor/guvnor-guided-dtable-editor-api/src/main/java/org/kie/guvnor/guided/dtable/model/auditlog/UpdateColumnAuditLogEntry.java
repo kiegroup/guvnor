@@ -26,7 +26,7 @@ public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
 
     private static final long serialVersionUID = -6953659333450748813L;
 
-    private static final String TYPE = DecisionTableAuditLogFilter.DecisionTableAuditEvents.UPDATE_COLUMN.name();
+    private static final String TYPE = DecisionTableAuditEvents.UPDATE_COLUMN.name();
 
     private ColumnDetails originalDetails;
 

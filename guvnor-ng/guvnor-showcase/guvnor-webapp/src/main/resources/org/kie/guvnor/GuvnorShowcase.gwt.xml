@@ -12,17 +12,19 @@
 
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
 
-  <inherits name="org.kie.guvnor.project.GuvnorProjectClient"/>
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
 
   <!-- Editors -->
   <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditorClient"/>
   <inherits name="org.kie.guvnor.enums.GuvnorEnumEditorClient"/>
   <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorClient"/>
+<!--
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
+  -->
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
+<!--
   <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
-
+-->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
 
 

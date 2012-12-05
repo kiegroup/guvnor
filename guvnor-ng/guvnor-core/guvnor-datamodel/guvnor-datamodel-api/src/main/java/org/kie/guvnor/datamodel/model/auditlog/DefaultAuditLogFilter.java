@@ -15,20 +15,30 @@
  */
 package org.kie.guvnor.datamodel.model.auditlog;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * An Audit Log Filter, controlling which entries passed to the AuditLog are
  * actually appended to the log.
  */
-public interface AuditLogFilter {
+@Portable
+public class DefaultAuditLogFilter implements AuditLogFilter {
+
+    private Map<String, Boolean> acceptedTypes = new HashMap<String, Boolean>();
 
     /**
      * Register a type this Filter understands. When a new entry is added the
      * AuditLogFilter is set to not accept the type by default.
      * @param type
      */
-    public void addType( final String type );
+    @Override
+    public void addType( final String type ) {
+        this.acceptedTypes.put( type,
+                                Boolean.FALSE );
+    }
 
     /**
      * This is the filtering method. When an AuditLogEntry is added to an
@@ -37,8 +47,17 @@ public interface AuditLogFilter {
      * @param entry
      * @return true if the AuditLogEntry should be added to the AuditLog
      */
-    boolean accept( final AuditLogEntry entry );
+    @Override
+    public boolean accept( final AuditLogEntry entry ) {
+        if ( !acceptedTypes.containsKey( entry.getGenericType() ) ) {
+            return false;
+        }
+        return acceptedTypes.get( entry.getGenericType() );
+    }
 
-    public Map<String, Boolean> getAcceptedTypes();
+    @Override
+    public Map<String, Boolean> getAcceptedTypes() {
+        return this.acceptedTypes;
+    }
 
 }

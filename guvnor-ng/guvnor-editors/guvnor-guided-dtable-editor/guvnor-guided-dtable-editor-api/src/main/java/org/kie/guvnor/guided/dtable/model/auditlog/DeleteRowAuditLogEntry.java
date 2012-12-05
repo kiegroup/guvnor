@@ -16,17 +16,17 @@
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogEntry;
 
 /**
  * An Audit Event when a row is deleted
  */
 @Portable
-public class DeleteRowAuditLogEntry extends AuditLogEntry {
+public class DeleteRowAuditLogEntry extends DefaultAuditLogEntry {
 
     private static final long serialVersionUID = 8049692773593046770L;
 
-    private static final String TYPE = DecisionTableAuditLogFilter.DecisionTableAuditEvents.DELETE_ROW.name();
+    private static final String TYPE = DecisionTableAuditEvents.DELETE_ROW.name();
 
     public int rowIndex;
 

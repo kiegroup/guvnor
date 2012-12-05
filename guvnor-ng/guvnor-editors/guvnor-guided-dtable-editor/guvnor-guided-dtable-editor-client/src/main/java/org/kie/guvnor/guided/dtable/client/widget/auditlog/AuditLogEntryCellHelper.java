@@ -32,8 +32,7 @@ import org.kie.guvnor.guided.dtable.model.auditlog.ActionSetFieldColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.AttributeColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.ColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.ConditionColumnDetails;
-import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditLogFilter;
-import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditLogFilter.DecisionTableAuditEvents;
+import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditEvents;
 import org.kie.guvnor.guided.dtable.model.auditlog.DeleteColumnAuditLogEntry;
 import org.kie.guvnor.guided.dtable.model.auditlog.DeleteRowAuditLogEntry;
 import org.kie.guvnor.guided.dtable.model.auditlog.InsertColumnAuditLogEntry;
@@ -89,7 +88,7 @@ public class AuditLogEntryCellHelper {
      * @return
      */
     public static String getEventTypeDisplayText( final String eventType ) {
-        if ( eventType.equals( DecisionTableAuditLogFilter.DecisionTableAuditEvents.INSERT_COLUMN.name() ) ) {
+        if ( eventType.equals( DecisionTableAuditEvents.INSERT_COLUMN.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertColumn();
         } else if ( eventType.equals( DecisionTableAuditEvents.INSERT_ROW.name() ) ) {
             return Constants.INSTANCE.DecisionTableAuditLogEventInsertRow();

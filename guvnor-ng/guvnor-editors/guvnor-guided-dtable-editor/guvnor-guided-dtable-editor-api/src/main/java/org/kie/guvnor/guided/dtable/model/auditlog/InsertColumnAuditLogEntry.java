@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogEntry;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.AttributeCol52;
@@ -33,11 +33,11 @@ import org.kie.guvnor.guided.dtable.model.MetadataCol52;
  * An Audit Event for when a column is inserted
  */
 @Portable
-public class InsertColumnAuditLogEntry extends AuditLogEntry {
+public class InsertColumnAuditLogEntry extends DefaultAuditLogEntry {
 
     private static final long serialVersionUID = -7525789306354393393L;
 
-    private static final String TYPE = DecisionTableAuditLogFilter.DecisionTableAuditEvents.INSERT_COLUMN.name();
+    private static final String TYPE = DecisionTableAuditEvents.INSERT_COLUMN.name();
 
     private ColumnDetails details;
 

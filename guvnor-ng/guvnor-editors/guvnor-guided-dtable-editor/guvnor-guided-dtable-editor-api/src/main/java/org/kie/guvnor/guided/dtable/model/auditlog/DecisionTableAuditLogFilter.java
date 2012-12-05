@@ -16,16 +16,16 @@
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogFilter;
+import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogFilter;
 
 /**
  * An AuditLogFilter implementation specific to the types of AuditLogEntry's
  * created by a Web Guided Decision Table.
  */
 @Portable
-public class DecisionTableAuditLogFilter extends AuditLogFilter {
+public class DecisionTableAuditLogFilter extends DefaultAuditLogFilter {
 
-    private static final long serialVersionUID = 8506440541322969289L;
+    private static final long serialVersionUID = 2465421087379912355L;
 
     public DecisionTableAuditLogFilter() {
         addType( DecisionTableAuditEvents.INSERT_ROW.name() );
@@ -33,15 +33,6 @@ public class DecisionTableAuditLogFilter extends AuditLogFilter {
         addType( DecisionTableAuditEvents.DELETE_ROW.name() );
         addType( DecisionTableAuditEvents.DELETE_COLUMN.name() );
         addType( DecisionTableAuditEvents.UPDATE_COLUMN.name() );
-    }
-
-    //DO NOT CHANGE THE NAMES OF THESE ENUMS TO PRESERVE COMPATIBILITY OF EXISTING AUDIT LOGS IN FUTURE RELEASES
-    public static enum DecisionTableAuditEvents {
-        INSERT_ROW,
-        INSERT_COLUMN,
-        DELETE_ROW,
-        DELETE_COLUMN,
-        UPDATE_COLUMN
     }
 
 }
