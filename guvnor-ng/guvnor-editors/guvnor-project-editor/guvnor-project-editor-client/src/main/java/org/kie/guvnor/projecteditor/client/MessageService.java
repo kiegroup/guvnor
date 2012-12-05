@@ -24,19 +24,18 @@ import javax.enterprise.event.Observes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service for Message Console, the Console is a screen that shows compile time errors.
+ * This listens to Messages and if the Console is not open it opens it.
+ */
 @ApplicationScoped
 public class MessageService {
 
     private List<Message> messageLog = new ArrayList<Message>();
 
-    public void addMessages(Messages messages) {
-        // TODO -Rikkola-
-        //
-//        placeManager.goTo("org.kie.guvnor.Messages");
-    }
-
     public void onNewMessage(@Observes Message message) {
         // TODO -Rikkola-
+//        placeManager.goTo("org.kie.guvnor.Messages");
     }
 
     public List<Message> getMessageLog() {
