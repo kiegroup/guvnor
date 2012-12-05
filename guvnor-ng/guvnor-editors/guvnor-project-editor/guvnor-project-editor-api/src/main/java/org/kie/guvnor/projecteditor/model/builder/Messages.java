@@ -19,23 +19,25 @@ package org.kie.guvnor.projecteditor.model.builder;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Portable
-public class Messages {
+public class Messages
+        implements Iterable<Message> {
 
-    private ArrayList<Message> insertedMessages = new ArrayList<Message>();
-    private ArrayList<Message> deletedMessages = new ArrayList<Message>();
+    private ArrayList<Message> messages = new ArrayList<Message>();
 
-    public List<Message> getInsertedMessages() {
-        return insertedMessages;
-    }
-
-    public List<Message> getDeletedMessages() {
-        return deletedMessages;
+    public List<Message> getMessages() {
+        return messages;
     }
 
     public boolean isEmpty() {
-        return insertedMessages.isEmpty() && deletedMessages.isEmpty();
+        return messages.isEmpty();
+    }
+
+    @Override
+    public Iterator<Message> iterator() {
+        return messages.iterator();
     }
 }

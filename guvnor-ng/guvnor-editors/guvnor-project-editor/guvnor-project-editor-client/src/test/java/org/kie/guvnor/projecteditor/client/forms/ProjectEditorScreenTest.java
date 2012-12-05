@@ -133,14 +133,14 @@ public class ProjectEditorScreenTest {
         clickSecond(menuBar);
 
         verify(view).showBuildSuccessful();
-//        verify(messageService, never()).addMessages(any(Messages.class));
+        verify(messageService, never()).addMessages(any(Messages.class));
     }
 
     @Test
     public void testFailingBuild() throws Exception {
         projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
         Messages messages = new Messages();
-        messages.getDeletedMessages().add(new Message());
+        messages.getMessages().add(new Message());
         projectEditorServiceCaller.setUpMessages(messages);
         Path path = mock(Path.class);
         screen.init(path);
@@ -149,6 +149,6 @@ public class ProjectEditorScreenTest {
         clickSecond(menuBar);
 
         verify(view, never()).showBuildSuccessful();
-//        verify(messageService).addMessages(any(Messages.class));
+        verify(messageService).addMessages(any(Messages.class));
     }
 }

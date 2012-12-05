@@ -16,13 +16,11 @@
 
 package org.kie.guvnor.projecteditor.client;
 
-import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
+import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -31,14 +29,20 @@ import java.util.List;
 @ApplicationScoped
 public class MessageService {
 
-    private List<Message> messageLog = new ArrayList<Message>();
+    private final PlaceManager placeManager;
+    private Messages messages;
 
-    public void onNewMessage(@Observes Message message) {
-        // TODO -Rikkola-
-//        placeManager.goTo("org.kie.guvnor.Messages");
+    @Inject
+    public MessageService(PlaceManager placeManager) {
+        this.placeManager = placeManager;
     }
 
-    public List<Message> getMessageLog() {
-        return messageLog;
+    public void addMessages(Messages messages) {
+        this.messages = messages;
+        placeManager.goTo("org.kie.guvnor.Messages");
+    }
+
+    public Messages getMessageLog() {
+        return messages;
     }
 }

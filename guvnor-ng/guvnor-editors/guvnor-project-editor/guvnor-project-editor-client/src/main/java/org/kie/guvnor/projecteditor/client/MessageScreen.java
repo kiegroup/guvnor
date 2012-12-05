@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.uberfire.client.annotations.DefaultPosition;
+import org.uberfire.client.annotations.OnFocus;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -48,6 +49,13 @@ public class MessageScreen
         this.messageService = messageService;
 
         view.setPresenter(this);
+    }
+
+
+    @OnFocus
+    public void onFocus() {
+        view.clean();
+        init();
     }
 
     @OnStart

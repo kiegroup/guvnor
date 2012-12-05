@@ -138,7 +138,7 @@ public class ProjectEditorScreen
                                         if (messages.isEmpty()) {
                                             view.showBuildSuccessful();
                                         } else {
-//                                            messageService.addMessages(messages);
+                                            messageService.addMessages(messages);
                                         }
                                     }
                                 }

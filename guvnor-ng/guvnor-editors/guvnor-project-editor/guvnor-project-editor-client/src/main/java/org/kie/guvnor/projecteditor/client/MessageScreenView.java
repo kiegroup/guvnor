@@ -24,6 +24,8 @@ public interface MessageScreenView {
 
     void setPresenter(Presenter presenter);
 
+    void clean();
+
     void addInfoLine(long id, String text, int column, int line);
 
     void addWarningLine(long id, String text, int column, int line);
