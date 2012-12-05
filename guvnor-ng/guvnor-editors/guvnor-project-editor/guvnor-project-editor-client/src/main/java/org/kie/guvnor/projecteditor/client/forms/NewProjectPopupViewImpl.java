@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class NewFolderPopupViewImpl
+public class NewProjectPopupViewImpl
         extends Composite
-        implements NewFolderPopupView {
+        implements NewProjectPopupView {
 
 
     interface NewFolderPopupViewImplBinder
             extends
-            UiBinder<Widget, NewFolderPopupViewImpl> {
+            UiBinder<Widget, NewProjectPopupViewImpl> {
 
     }
 
@@ -46,7 +46,7 @@ public class NewFolderPopupViewImpl
     private Presenter presenter;
 
 
-    public NewFolderPopupViewImpl() {
+    public NewProjectPopupViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 

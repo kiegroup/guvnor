@@ -21,5 +21,5 @@ import org.uberfire.backend.vfs.Path;
 
 public interface FileService {
 
-    public Path newFolder(String folderName);
+    public Path newProject(String folderName);
 }

@@ -19,40 +19,42 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projecteditor.client.places.KProjectEditorPlace;
 import org.kie.guvnor.projecteditor.service.FileService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-@WorkbenchPopup(identifier = "newFolderPopup")
-public class NewFolderPopup
-        implements NewFolderPopupView.Presenter {
+@WorkbenchPopup(identifier = "newProjectPopup")
+public class NewProjectPopup
+        implements NewProjectPopupView.Presenter {
 
-    private final NewFolderPopupView view;
+    private final NewProjectPopupView view;
 
     private String name;
 
     private final Event<ClosePlaceEvent> workbenchPartCloseEvent;
     private PlaceRequest placeRequest;
     private final Caller<FileService> projectEditorServiceCaller;
-    private final Event<FocusFileEvent> focusFileEvent;
+    private final PlaceManager placeManager;
 
     @Inject
-    public NewFolderPopup(Caller<FileService> projectEditorServiceCaller,
-                          NewFolderPopupView view,
-                          Event<ClosePlaceEvent> workbenchPartCloseEvent,
-                          Event<FocusFileEvent> focusFileEvent) {
+    public NewProjectPopup(Caller<FileService> projectEditorServiceCaller,
+                           NewProjectPopupView view,
+                           Event<ClosePlaceEvent> workbenchPartCloseEvent,
+                           PlaceManager placeManager) {
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.view = view;
         this.workbenchPartCloseEvent = workbenchPartCloseEvent;
-        this.focusFileEvent = focusFileEvent;
+        this.placeManager = placeManager;
         view.setPresenter(this);
     }
 
@@ -78,12 +80,11 @@ public class NewFolderPopup
             public void callback(Path folderPath) {
 
                 //TODO Fire hilight selected file/folder event instead of goto
-//                placeManager.goTo(new KProjectEditorPlace(folderPath));
-                focusFileEvent.fire(new FocusFileEvent(name));
+                placeManager.goTo(new KProjectEditorPlace(folderPath));
 
                 close();
             }
-        }).newFolder(name);
+        }).newProject(name);
     }
 
     @Override

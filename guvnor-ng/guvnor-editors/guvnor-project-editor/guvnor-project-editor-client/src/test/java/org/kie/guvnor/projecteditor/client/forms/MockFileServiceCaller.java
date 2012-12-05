@@ -33,7 +33,7 @@ public class MockFileServiceCaller
     public MockFileServiceCaller() {
         this.fileService = new FileService() {
             @Override
-            public Path newFolder(String folderName) {
+            public Path newProject(String folderName) {
                 callback.callback(newPathToReturn);
                 return newPathToReturn;
             }

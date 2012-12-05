@@ -128,7 +128,7 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-factmodel-editor-backend</artifactId>
     </dependency>
-<!--
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-project-editor-client</artifactId>
@@ -138,7 +138,7 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-project-editor-backend</artifactId>
     </dependency>
--->
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>

@@ -18,9 +18,9 @@
   <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditorClient"/>
   <inherits name="org.kie.guvnor.enums.GuvnorEnumEditorClient"/>
   <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorClient"/>
-<!--
+
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
-  -->
+
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
 <!--
   <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
