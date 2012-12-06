@@ -19,7 +19,8 @@ package org.kie.guvnor.commons.ui.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
-import org.kie.guvnor.commons.ui.client.widget.GuvnorSimplePager;
+
+import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
 
 /**
  * A ClientBundle that provides images for this widget.

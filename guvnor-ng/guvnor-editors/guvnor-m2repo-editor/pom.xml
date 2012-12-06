@@ -19,25 +19,19 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor</artifactId>
+    <artifactId>guvnor-editors</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-editors</artifactId>
+  <!-- Guvnor M2_REPO editor-->
+  <artifactId>guvnor-m2repo-editor</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor Editors</name>
+  <name>Fact Model Editor</name>
 
   <modules>
-    <module>guvnor-drl-text-editor</module>
-    <module>guvnor-enum-editor</module>
-    <module>guvnor-factmodel-editor</module>
-    <module>guvnor-project-editor</module>
-    <module>guvnor-explorer</module>
-    <module>guvnor-guided-rule-editor</module>
-    <module>guvnor-guided-dtable-editor</module>
-    <module>guvnor-guided-scorecard-editor</module>
-    <module>guvnor-m2repo-editor</module>
+    <module>guvnor-m2repo-editor-api</module>
+    <module>guvnor-m2repo-editor-client</module>
+    <module>guvnor-m2repo-editor-backend</module>
   </modules>
-
 </project>

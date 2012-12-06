@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.security.AppRoles;
-import org.kie.guvnor.commons.ui.client.widget.GuvnorSimplePager;
+import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
 import org.kie.guvnor.datamodel.model.auditlog.AuditLog;
 import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;

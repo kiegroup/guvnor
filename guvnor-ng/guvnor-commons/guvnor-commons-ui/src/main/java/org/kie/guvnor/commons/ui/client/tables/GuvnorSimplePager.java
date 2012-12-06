@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.kie.guvnor.commons.ui.client.widget;
+package org.kie.guvnor.commons.ui.client.tables;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
