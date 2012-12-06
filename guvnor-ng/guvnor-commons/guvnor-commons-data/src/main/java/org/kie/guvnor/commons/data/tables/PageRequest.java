@@ -25,7 +25,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @see PageResponse
  */
-@Portable
 public class PageRequest
         implements
     IsSerializable {

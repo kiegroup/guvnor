@@ -23,7 +23,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A single row of a paged data
  */
-@Portable
 public abstract class AbstractPageRow
     implements
     IsSerializable,
