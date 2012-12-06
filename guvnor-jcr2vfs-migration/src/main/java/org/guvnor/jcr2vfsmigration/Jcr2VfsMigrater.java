@@ -47,11 +47,13 @@ public class Jcr2VfsMigrater {
     }
 
     public void migrateAll() {
-        logger.info("Migration started");
+        logger.info("Migration started: Reading from inputJcrRepository ({}).",
+                migrationConfig.getInputJcrRepository().getAbsolutePath());
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
-        logger.info("Migration ended");
+        logger.info("Migration ended: Written into outputVfsRepository ({}).",
+                migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
 }
