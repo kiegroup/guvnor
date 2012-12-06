@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.commons.data.tables;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @see PageResponse
  */
+@Portable
 public class PageRequest
         implements
     IsSerializable {
