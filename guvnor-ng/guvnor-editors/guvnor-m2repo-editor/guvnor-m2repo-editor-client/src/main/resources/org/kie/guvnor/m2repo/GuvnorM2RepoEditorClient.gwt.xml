@@ -34,5 +34,4 @@
 
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
 
-
 </module>

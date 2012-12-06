@@ -30,16 +30,15 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
-
 @Dependent
-@WorkbenchEditor(identifier = "M2RepoEditor", fileTypes = "model.drl")
+@WorkbenchEditor(identifier = "M2RepoEditor", fileTypes = "repository")
 public class M2RepoEditorPresenter {
 
     public interface View
             extends
             IsWidget {
-    }
 
+    }
 
     @Inject
     private View view;

@@ -19,11 +19,10 @@ package org.kie.guvnor.m2repo.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.m2repo.data.JarListPageRow;
-
+import org.kie.guvnor.m2repo.model.JarListPageRow;
 
 @Remote
 public interface M2RepoService {
 
-    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest);
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest );
 }

@@ -26,7 +26,7 @@ import org.kie.guvnor.commons.ui.client.tables.AbstractPagedTable;
 import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
-import org.kie.guvnor.m2repo.data.JarListPageRow;
+import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 
 import com.google.gwt.core.client.GWT;

@@ -14,31 +14,36 @@
  * the License.
  */
 
-package org.kie.guvnor.m2repo.data;
+package org.kie.guvnor.m2repo.model;
 
 import java.util.Date;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 
 /**
  * A single row of a paged data
  */
+@Portable
 public class JarListPageRow extends AbstractPageRow {
 
     private String name;
-    private Date   lastModified;
+    private Date lastModified;
+
     public String getName() {
         return name;
     }
-    public void setName(String name) {
+
+    public void setName( String name ) {
         this.name = name;
     }
+
     public Date getLastModified() {
         return lastModified;
     }
-    public void setLastModified(Date lastModified) {
+
+    public void setLastModified( Date lastModified ) {
         this.lastModified = lastModified;
     }
-
 
 }

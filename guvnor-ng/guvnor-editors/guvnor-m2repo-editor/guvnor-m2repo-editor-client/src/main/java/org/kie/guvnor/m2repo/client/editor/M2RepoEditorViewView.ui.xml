@@ -17,12 +17,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:uf='urn:import:org.uberfire.client.common'
-             xmlns:guvnor='urn:import:org.kie.guvnor.m2repo.client.editor'>
+             xmlns:m2repo='urn:import:org.kie.guvnor.m2repo.client.editor'>
 
   <gwt:HTMLPanel>
     <div style="margin-bottom:20px;">
-      <uf:JarListPagedTable ui:field="jarListPagedTable"></uf:JarListPagedTable>
+      <m2repo:JarListPagedTable ui:field="jarListPagedTable"></m2repo:JarListPagedTable>
     </div>
   </gwt:HTMLPanel>
 

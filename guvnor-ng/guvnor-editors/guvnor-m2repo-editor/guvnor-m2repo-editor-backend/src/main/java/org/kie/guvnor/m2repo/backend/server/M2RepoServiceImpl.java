@@ -16,21 +16,15 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.builder.GAV;
-
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.m2repo.data.JarListPageRow;
+import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-
+import org.uberfire.backend.vfs.VFSService;
 
 /**
  *
@@ -44,7 +38,7 @@ public class M2RepoServiceImpl
     private VFSService vfs;
 
     @Override
-    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest) {
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest ) {
         return null;
     }
 }

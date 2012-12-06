@@ -15,14 +15,11 @@
  */
 package org.kie.guvnor.m2repo.client.editor;
 
-
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-
 
 public class M2RepoEditorView
         extends Composite
@@ -38,7 +35,6 @@ public class M2RepoEditorView
 
     @UiField
     JarListPagedTable jarListPagedTable;
-
 
     public M2RepoEditorView() {
         initWidget( uiBinder.createAndBindUi( this ) );
