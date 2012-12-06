@@ -85,4 +85,7 @@ public interface Constants
     String Date();
 
     String DecimalNumber();
+
+    String newFactModelDescription();
+
 }

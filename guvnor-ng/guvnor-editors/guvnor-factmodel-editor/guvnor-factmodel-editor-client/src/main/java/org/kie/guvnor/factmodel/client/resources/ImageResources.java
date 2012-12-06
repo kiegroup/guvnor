@@ -35,4 +35,7 @@ public interface ImageResources
     @Source("images/shuffle_down.gif")
     ImageResource shuffleDown();
 
+    @Source("images/factModelIcon.gif")
+    ImageResource factModelIcon();
+
 }

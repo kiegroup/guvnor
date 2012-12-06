@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.client.resources;
+package org.kie.guvnor.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-public interface ShowcaseImages
+public interface ImageResources
         extends
         ClientBundle {
 
-    ShowcaseImages INSTANCE = GWT.create( ShowcaseImages.class );
+    ImageResources INSTANCE = GWT.create( ImageResources.class );
+
+    @Source("newFolder")
+    ImageResource newFolderIcon();
+
+    @Source("newProject")
+    ImageResource newProjectIcon();
 
 }

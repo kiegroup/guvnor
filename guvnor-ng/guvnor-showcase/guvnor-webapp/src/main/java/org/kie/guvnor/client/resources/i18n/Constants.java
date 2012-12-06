@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.client.i18n;
+package org.kie.guvnor.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
@@ -37,5 +37,9 @@ public interface Constants
     String SignOut();
 
     String WelcomeUser();
+
+    String newFolderDescription();
+
+    String newProjectDescription();
 
 }
