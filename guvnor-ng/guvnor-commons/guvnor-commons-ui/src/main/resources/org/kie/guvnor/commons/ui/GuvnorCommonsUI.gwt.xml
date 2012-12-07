@@ -27,4 +27,9 @@
 
   <inherits name="org.kie.guvnor.datamodel.GuvnorDataModelAPI"/>
 
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.UberfireWidgetsCommons"/>
+
+  <inherits name="org.jboss.errai.ioc.Container" />
+
 </module>

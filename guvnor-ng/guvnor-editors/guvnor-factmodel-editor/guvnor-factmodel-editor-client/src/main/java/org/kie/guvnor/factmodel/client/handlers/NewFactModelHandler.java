@@ -5,6 +5,8 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.factmodel.client.resources.ImageResources;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
@@ -17,6 +19,8 @@ import org.uberfire.backend.vfs.Path;
 public class NewFactModelHandler implements NewResourceHandler {
 
     private static String FILE_TYPE = "model.drl";
+
+    private TextBox mockParameter = new TextBox();
 
     @Override
     public String getFileType() {
@@ -35,6 +39,12 @@ public class NewFactModelHandler implements NewResourceHandler {
 
     @Override
     public void create( final Path path ) {
-        Window.alert( "Creating new Fact Model" + ( path == null ? "" : " at: " + path.toURI() ) );
+        Window.alert( "Creating new Fact Model" + ( path == null ? "" : " at: " + path.toURI() ) + " [" + mockParameter.getText() + "]" );
     }
+
+    @Override
+    public IsWidget getExtension() {
+        return mockParameter;
+    }
+
 }

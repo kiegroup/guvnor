@@ -41,4 +41,10 @@ public class NewFolderHandler implements NewResourceHandler {
     public void create( final Path path ) {
         placeManager.goTo( "newFolderPopup" );
     }
+
+    @Override
+    public IsWidget getExtension() {
+        return null;
+    }
+
 }

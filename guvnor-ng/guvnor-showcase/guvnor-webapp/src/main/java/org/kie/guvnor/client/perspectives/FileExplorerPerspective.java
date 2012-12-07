@@ -22,10 +22,13 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewItemWidget;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
@@ -38,6 +41,9 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
@@ -53,13 +59,18 @@ public class FileExplorerPerspective {
     @Inject
     private IOCBeanManager iocBeanManager;
 
+    @Inject
+    private NewItemWidget newItemWidget;
+
     private PerspectiveDefinition perspective;
     private MenuBar menuBar;
+    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
         buildPerspective();
         buildMenuBar();
+        buildToolBar();
     }
 
     @Perspective
@@ -72,7 +83,12 @@ public class FileExplorerPerspective {
         return this.menuBar;
     }
 
-    public void buildPerspective() {
+    @WorkbenchToolBar
+    public ToolBar getToolBar() {
+        return this.toolBar;
+    }
+
+    private void buildPerspective() {
         this.perspective = new PerspectiveDefinitionImpl();
         this.perspective.setName( "File Explorer" );
 
@@ -86,7 +102,7 @@ public class FileExplorerPerspective {
         this.perspective.getRoot().insertChild( Position.WEST, west );
     }
 
-    public void buildMenuBar() {
+    private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
         final MenuBar subMenuBar = new DefaultMenuBar();
         this.menuBar.addItem( new DefaultMenuItemSubMenu( "New", subMenuBar ) );
@@ -110,6 +126,22 @@ public class FileExplorerPerspective {
                 } ) );
             }
         }
+
+    }
+
+    private void buildToolBar() {
+        this.toolBar = new DefaultToolBar();
+        final String url = "images/new_item.png";
+        final String tooltip = Constants.INSTANCE.newItem();
+        final Command command = new Command() {
+            @Override
+            public void execute() {
+                newItemWidget.show();
+            }
+        };
+        toolBar.addItem( new DefaultToolBarItem( url,
+                                                 tooltip,
+                                                 command ) );
 
     }
 

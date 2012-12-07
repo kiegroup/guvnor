@@ -42,4 +42,6 @@ public interface Constants
 
     String newProjectDescription();
 
+    String newItem();
+
 }

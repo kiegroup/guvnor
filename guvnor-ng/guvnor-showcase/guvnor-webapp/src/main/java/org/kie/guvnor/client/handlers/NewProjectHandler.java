@@ -42,4 +42,10 @@ public class NewProjectHandler implements NewResourceHandler {
         // TODO: Just show the new project popup here, it does not need to be a place. -Rikkola-
         placeManager.goTo("newProjectPopup");
     }
+
+    @Override
+    public IsWidget getExtension() {
+        return null;
+    }
+
 }

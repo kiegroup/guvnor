@@ -32,4 +32,10 @@ public interface NewResourceHandler {
      */
     public void create( final Path path );
 
+    /**
+     * Return a Widget that the NewResourceHandler can use to gather additional parameters for the new resource
+     * @return null if no extension is provided
+     */
+    public IsWidget getExtension();
+
 }
