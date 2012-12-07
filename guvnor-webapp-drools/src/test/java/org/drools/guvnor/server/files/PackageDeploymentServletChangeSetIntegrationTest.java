@@ -30,8 +30,6 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.commons.io.IOUtils;
-import org.drools.agent.HttpClientImpl;
-import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -142,7 +140,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         });
 
         // system event listener
-        SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));
+        //SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgentConfiguration conf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();

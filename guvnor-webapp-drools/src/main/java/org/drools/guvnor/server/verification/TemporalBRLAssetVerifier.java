@@ -13,7 +13,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 import org.kie.io.ResourceFactory;
 
 public class TemporalBRLAssetVerifier extends VerifierRunner {

@@ -8,13 +8,13 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystems;
+import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
+import org.uberfire.backend.vfs.impl.FileSystemImpl;
 
 import static java.util.Arrays.*;
 
@@ -40,7 +40,7 @@ public class AppSetup {
         } catch (FileSystemAlreadyExistsException ex) {
         }
 
-        final Path root = new PathImpl("uf-playground", "default://uf-playground");
+        final Path root = PathFactory.newPath( "uf-playground", "default://uf-playground" );
 
         fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }

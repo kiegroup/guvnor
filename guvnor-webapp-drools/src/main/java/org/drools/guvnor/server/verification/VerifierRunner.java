@@ -32,7 +32,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 import org.kie.io.ResourceFactory;
 
 import java.io.StringReader;

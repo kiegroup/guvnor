@@ -16,19 +16,16 @@
 
 package org.drools.integrationtests;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.Person;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 import static org.junit.Assert.*;
-
-import org.drools.Person;
 
 public class BrlTest {
    

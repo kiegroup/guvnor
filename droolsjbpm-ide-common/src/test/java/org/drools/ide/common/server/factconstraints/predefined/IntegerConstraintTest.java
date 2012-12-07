@@ -22,7 +22,6 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.ValidationResult;
 import org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl;
 import org.drools.ide.common.server.factconstraints.Constraint;
-import org.drools.ide.common.server.factconstraints.predefined.IntegerConstraint;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
@@ -32,11 +31,10 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 import static org.junit.Assert.*;
 
