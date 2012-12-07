@@ -42,4 +42,5 @@ public interface ProjectEditorService {
 
     public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML);
 
+    public Path newProject(String name);
 }

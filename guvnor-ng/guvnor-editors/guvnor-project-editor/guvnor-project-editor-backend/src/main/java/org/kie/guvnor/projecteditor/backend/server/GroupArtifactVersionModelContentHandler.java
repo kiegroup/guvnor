@@ -23,10 +23,15 @@ public class GroupArtifactVersionModelContentHandler {
     // TODO: Finish this when the core is more stable
 
     public String toString(GroupArtifactVersionModel gavModel) {
-        return null;  // TODO -Rikkola-
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "<groupId>org.kie.guvnor</groupId>\n" +
+                "<artifactId>guvnor-parent</artifactId>\n" +
+                "<name>Guvnor - Multi-project</name>";  // TODO -Rikkola-
     }
 
     public GroupArtifactVersionModel toModel(String xml) {
-        return null;  // TODO -Rikkola-
+        return new GroupArtifactVersionModel();  // TODO -Rikkola-
     }
 }

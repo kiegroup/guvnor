@@ -1,8 +1,5 @@
 package org.kie.guvnor.client.handlers;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.client.resources.i18n.Constants;
@@ -10,6 +7,9 @@ import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Handler for the creation of new Projects
@@ -34,13 +34,12 @@ public class NewProjectHandler implements NewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.newProjectIcon() );
+        return new Image(ImageResources.INSTANCE.newProjectIcon());
     }
 
     @Override
-    public void create( final Path path ) {
-        // TODO Create pom.xml
-        // TODO Go to pom.xml editor
-//                placeManager.goTo("newProjectPopup");
+    public void create(final Path path) {
+        // TODO: Just show the new project popup here, it does not need to be a place. -Rikkola-
+        placeManager.goTo("newProjectPopup");
     }
 }

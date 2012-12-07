@@ -31,13 +31,13 @@ public class NewProjectPopupViewImpl
         implements NewProjectPopupView {
 
 
-    interface NewFolderPopupViewImplBinder
+    interface NewProjectPopupViewImplBinder
             extends
             UiBinder<Widget, NewProjectPopupViewImpl> {
 
     }
 
-    private static NewFolderPopupViewImplBinder uiBinder = GWT.create(NewFolderPopupViewImplBinder.class);
+    private static NewProjectPopupViewImplBinder uiBinder = GWT.create(NewProjectPopupViewImplBinder.class);
 
 
     @UiField

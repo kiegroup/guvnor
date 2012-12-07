@@ -35,7 +35,7 @@ public class NewProjectPopupTest {
     private NewProjectPopupView view;
     private NewProjectPopupView.Presenter presenter;
     private NewProjectPopupTest.MockClosePlaceEvent closeEvent;
-    private MockFileServiceCaller fileServiceCaller;
+    private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private PlaceManager placeManager;
 
     @Before
@@ -43,9 +43,9 @@ public class NewProjectPopupTest {
         view = mock(NewProjectPopupView.class);
         closeEvent = mock(MockClosePlaceEvent.class);
         placeManager = mock(PlaceManager.class);
-        fileServiceCaller = new MockFileServiceCaller();
+        projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         popup = new NewProjectPopup(
-                fileServiceCaller,
+                projectEditorServiceCaller,
                 view,
                 closeEvent,
                 placeManager);
@@ -62,7 +62,7 @@ public class NewProjectPopupTest {
 //    @Test
 //    public void testCreateFolder() throws Exception {
 //        Path path = placeManager(Path.class);
-//        fileServiceCaller.setNewPathToReturn(path);
+//        projectEditorServiceCaller.setNewPathToReturn(path);
 //        PlaceRequest placeRequest = placeManager(PlaceRequest.class);
 //        popup.init(placeRequest);
 //

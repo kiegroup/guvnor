@@ -85,6 +85,11 @@ public class MockProjectEditorServiceCaller
                 callback.callback(pathToRelatedKProjectFileIfAny);
                 return pathToRelatedKProjectFileIfAny;
             }
+
+            @Override
+            public Path newProject(String name) {
+                return null;  //TODO -Rikkola-
+            }
         };
     }
 

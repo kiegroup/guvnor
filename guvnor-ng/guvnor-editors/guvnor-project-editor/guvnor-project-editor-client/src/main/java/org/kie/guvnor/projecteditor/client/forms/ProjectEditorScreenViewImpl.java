@@ -1,0 +1,77 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.guvnor.projecteditor.client.forms;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+
+public class ProjectEditorScreenViewImpl
+        extends Composite
+        implements ProjectEditorScreenView {
+
+
+    public ProjectEditorScreenViewImpl() {
+        initWidget(new Label("XXX"));
+    }
+
+    @Override
+    public void setKProjectToggleOff() {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public void setKProjectToggleOn() {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel) {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel) {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public String getSaveMenuItemText() {
+        return ProjectEditorConstants.INSTANCE.Save();
+    }
+
+    @Override
+    public String getBuildMenuItemText() {
+        return ProjectEditorConstants.INSTANCE.Build();
+    }
+
+    @Override
+    public void showBuildSuccessful() {
+        //TODO -Rikkola-
+    }
+
+    @Override
+    public Widget asWidget() {
+        return null;  //TODO -Rikkola-
+    }
+}

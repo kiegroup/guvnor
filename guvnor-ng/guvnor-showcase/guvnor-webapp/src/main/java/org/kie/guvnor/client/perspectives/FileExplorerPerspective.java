@@ -109,6 +109,7 @@ public class FileExplorerPerspective {
                     }
                 } ) );
             }
+        }
 
     }
 

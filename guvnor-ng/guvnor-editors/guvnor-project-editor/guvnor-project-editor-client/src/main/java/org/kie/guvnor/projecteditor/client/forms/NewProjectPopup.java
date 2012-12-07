@@ -21,6 +21,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.client.places.KProjectEditorPlace;
 import org.kie.guvnor.projecteditor.service.FileService;
+import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -43,11 +44,11 @@ public class NewProjectPopup
 
     private final Event<ClosePlaceEvent> workbenchPartCloseEvent;
     private PlaceRequest placeRequest;
-    private final Caller<FileService> projectEditorServiceCaller;
+    private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private final PlaceManager placeManager;
 
     @Inject
-    public NewProjectPopup(Caller<FileService> projectEditorServiceCaller,
+    public NewProjectPopup(Caller<ProjectEditorService> projectEditorServiceCaller,
                            NewProjectPopupView view,
                            Event<ClosePlaceEvent> workbenchPartCloseEvent,
                            PlaceManager placeManager) {
@@ -77,11 +78,10 @@ public class NewProjectPopup
     public void onOk() {
         projectEditorServiceCaller.call(new RemoteCallback<Path>() {
             @Override
-            public void callback(Path folderPath) {
+            public void callback(Path pathToPom) {
 
                 //TODO Fire hilight selected file/folder event instead of goto
-                placeManager.goTo(new KProjectEditorPlace(folderPath));
-
+                placeManager.goTo(new KProjectEditorPlace(pathToPom));
                 close();
             }
         }).newProject(name);
