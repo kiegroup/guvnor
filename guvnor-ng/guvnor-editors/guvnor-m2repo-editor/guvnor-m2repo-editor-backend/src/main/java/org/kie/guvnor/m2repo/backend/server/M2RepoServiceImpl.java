@@ -16,15 +16,23 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.builder.GAV;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.uberfire.backend.vfs.VFSService;
+
 
 /**
  *
@@ -35,10 +43,46 @@ public class M2RepoServiceImpl
         implements M2RepoService {
 
     @Inject
-    private VFSService vfs;
+    private M2Repository repository;
 
+
+
+    public void addJar(InputStream is, GAV gav) {
+        repository.addFile(is, gav);
+    }
+    
+    public void deleteJar(String path) {
+        repository.deleteFile(path);
+    }
+    
     @Override
     public PageResponse<JarListPageRow> listJars( PageRequest pageRequest ) {
-        return null;
+        Collection<File> files = repository.listFiles();
+        
+        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
+
+        int i = 0;
+        for(File file : files) {
+            if(i>=pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
+                break;
+            }
+            if(i>=pageRequest.getStartRowIndex()) {
+                JarListPageRow jarListPageRow = new JarListPageRow();
+                jarListPageRow.setName(file.getName());
+                jarListPageRow.setPath(file.getPath());
+                jarListPageRow.setLastModified(new Date(file.lastModified()));
+                tradeRatePageRowList.add(jarListPageRow);
+            }
+            i++;            
+        }
+        
+        response.setPageRowList(tradeRatePageRowList);
+        response.setStartRowIndex(pageRequest.getStartRowIndex());
+        response.setTotalRowSize(files.size());
+        response.setTotalRowSizeExact(true);
+        //response.setLastPage(true);
+        
+        return response;
     }
 }

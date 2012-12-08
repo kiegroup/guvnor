@@ -16,13 +16,17 @@
 
 package org.kie.guvnor.m2repo.service;
 
+import java.io.InputStream;
+
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.builder.GAV;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 
 @Remote
 public interface M2RepoService {
-
+    public void addJar(InputStream is, GAV gav);
+    public void deleteJar(String path);
     public PageResponse<JarListPageRow> listJars( PageRequest pageRequest );
 }

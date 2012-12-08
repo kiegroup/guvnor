@@ -20,7 +20,7 @@ import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
-
+import org.kie.builder.GAV;
 /**
  * A single row of a paged data
  */
@@ -28,6 +28,8 @@ import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 public class JarListPageRow extends AbstractPageRow {
 
     private String name;
+    private String path;
+    private GAV gav;
     private Date lastModified;
 
     public String getName() {
@@ -36,6 +38,22 @@ public class JarListPageRow extends AbstractPageRow {
 
     public void setName( String name ) {
         this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public GAV getGav() {
+        return gav;
+    }
+
+    public void setGav(GAV gav) {
+        this.gav = gav;
     }
 
     public Date getLastModified() {
