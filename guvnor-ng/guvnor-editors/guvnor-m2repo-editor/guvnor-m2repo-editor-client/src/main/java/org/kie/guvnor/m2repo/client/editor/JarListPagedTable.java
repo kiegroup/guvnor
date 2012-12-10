@@ -72,6 +72,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
                 PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
+                String filters = null;
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
@@ -81,7 +82,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                         updateRowData( response.getStartRowIndex(),
                                response.getPageRowList() );
                     }
-                } ).listJars(request);
+                } ).listJars(request, filters);
             }
         } );
 

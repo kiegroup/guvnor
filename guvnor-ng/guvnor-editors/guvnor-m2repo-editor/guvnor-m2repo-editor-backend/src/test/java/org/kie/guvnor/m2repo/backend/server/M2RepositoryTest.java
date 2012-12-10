@@ -134,6 +134,54 @@ public class M2RepositoryTest {
     }
     
     @Test
+    public void testListFilesWithFilter() throws Exception {
+        M2Repository repo = new M2Repository();
+        repo.init();
+
+        GAV gav = new GAVImpl("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        repo.addFile(is, gav);
+        
+        gav = new GAVImpl("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
+        is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        repo.addFile(is, gav);
+        
+        //filter with version number
+        Collection<File> files = repo.listFiles("1.0.2");
+        boolean found1 = false;
+        for(File file : files) {
+            String fileName = file.getName();
+            if("arquillian-core-api-1.0.2.Final.jar".equals(fileName)) {
+                found1 = true;
+            } 
+        }        
+        assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);
+        
+/*        //filter with group id
+        files = repo.listFiles("org.kie.guvnor");
+        found1 = false;
+        for(File file : files) {
+            String fileName = file.getName();
+            if("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar".equals(fileName)) {
+                found1 = true;
+            } 
+        }        
+        assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);*/
+        
+        //fileter with artifact id
+        files = repo.listFiles("arquillian-core-api");
+        found1 = false;
+        for(File file : files) {
+            String fileName = file.getName();
+            if("arquillian-core-api-1.0.2.Final.jar".equals(fileName)) {
+                found1 = true;
+            } 
+        }        
+        assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);
+
+    }
+    
+    @Test
     public void testDeleteFile() throws Exception {
         M2Repository repo = new M2Repository();
         repo.init();

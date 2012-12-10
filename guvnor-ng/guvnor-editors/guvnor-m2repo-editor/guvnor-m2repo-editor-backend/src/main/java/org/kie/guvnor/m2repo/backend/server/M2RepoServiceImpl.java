@@ -56,8 +56,8 @@ public class M2RepoServiceImpl
     }
     
     @Override
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest ) {
-        Collection<File> files = repository.listFiles();
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters ) {
+        Collection<File> files = repository.listFiles(filters);
         
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();

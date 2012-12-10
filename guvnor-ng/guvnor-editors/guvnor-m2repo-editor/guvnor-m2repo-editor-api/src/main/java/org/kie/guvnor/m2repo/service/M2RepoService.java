@@ -28,5 +28,5 @@ import org.kie.guvnor.m2repo.model.JarListPageRow;
 public interface M2RepoService {
     public void addJar(InputStream is, GAV gav);
     public void deleteJar(String path);
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest );
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters );
 }

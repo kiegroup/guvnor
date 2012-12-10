@@ -30,8 +30,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.drools.kproject.GAVImpl;
 import org.kie.builder.GAV;
 
@@ -109,16 +112,31 @@ public class M2Repository {
         } 
         return false;
     }
-    
+
+    /**
+     * Finds files within the repository with the given filters.
+     * 
+     * @return an collection of java.io.File with the matching files
+     */
     public Collection<File> listFiles() {
-        //TODO:
-        String regex;
-        //filter with version
-        //regex = "^(.*?)";
-        regex = "^(.*?)";
+        return listFiles(null);
+    }
+    
+    /**
+     * Finds files within the repository with the given filters.
+     *
+     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*fileter*.*", in which "*" is  
+     * to represent a multiple wildcard characters. 
+     * @return an collection of java.io.File with the matching files
+     */
+    public Collection<File> listFiles(String filters) {
+        String wildcard = "*.*";
+        if(filters != null) {
+            wildcard = "*" + filters + "*.*";
+        }
         Collection<File> files = FileUtils.listFiles(
                 releasesRepository, 
-                new RegexFileFilter(regex), 
+                new WildcardFileFilter(wildcard, IOCase.INSENSITIVE),
                 DirectoryFileFilter.DIRECTORY
               );
         
