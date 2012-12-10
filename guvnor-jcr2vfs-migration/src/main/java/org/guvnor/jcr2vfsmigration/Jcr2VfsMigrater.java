@@ -49,9 +49,17 @@ public class Jcr2VfsMigrater {
     public void migrateAll() {
         logger.info("Migration started: Reading from inputJcrRepository ({}).",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
+//    //TO-DO-LIST:
+//    //1. How to migrate the globalArea (moduleServiceJCR.listModules() wont return globalArea)
+//    //2. How to handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
+//    //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
+//    //3. Do we want to migrate archived assets and archived packages? probably not...
+//    //4. Do we want to migrate package snapshot? probably not...As long as we migrate package history correctly, users can always build a package
+//    //with the specified version by themselves.
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
+        //  TODO: migratePackagePermissions, migrateRolesAndPermissionsMetaData
         logger.info("Migration ended: Written into outputVfsRepository ({}).",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }

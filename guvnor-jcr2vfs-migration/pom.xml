@@ -14,17 +14,41 @@
   <description>Migrates the data of Guvnor 5 to Guvnor 6</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-repository</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-core</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>guvnor-repository</artifactId>-->
+      <!--<version>5.5.0-SNAPSHOT</version>-->
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.slf4j</groupId>-->
+          <!--<artifactId>slf4j-log4j12</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>guvnor-webapp-core</artifactId>-->
+      <!--<version>5.5.0-SNAPSHOT</version>-->
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.slf4j</groupId>-->
+          <!--<artifactId>slf4j-log4j12</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>guvnor-webapp-drools</artifactId>-->
+      <!--<version>5.5.0-SNAPSHOT</version>-->
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.slf4j</groupId>-->
+          <!--<artifactId>slf4j-log4j12</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+    <!--</dependency>-->
     
     <!-- Keep dependencies in sync with guvnor-distribution/src/main/assembly/assembly-guvnor.xml -->
 
