@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration;
+package org.kie.guvnor.jcr2vfsmigration;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;

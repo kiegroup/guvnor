@@ -1,9 +1,7 @@
-package org.guvnor.jcr2vfsmigration.migrater;
+package org.kie.guvnor.jcr2vfsmigration.migrater;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.kie.guvnor.factmodel.service.FactModelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

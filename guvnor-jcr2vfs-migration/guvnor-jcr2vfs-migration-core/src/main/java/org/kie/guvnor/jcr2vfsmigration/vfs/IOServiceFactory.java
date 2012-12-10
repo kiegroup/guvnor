@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration.vfs;
+package org.kie.guvnor.jcr2vfsmigration.vfs;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 
-import static org.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
+import static org.kie.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
 @Singleton
 public class IOServiceFactory {

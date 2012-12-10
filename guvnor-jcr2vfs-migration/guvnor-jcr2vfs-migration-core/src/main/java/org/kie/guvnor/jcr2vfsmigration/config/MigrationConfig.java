@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration.config;
+package org.kie.guvnor.jcr2vfsmigration.config;
 
 import java.io.File;
 import java.io.IOException;

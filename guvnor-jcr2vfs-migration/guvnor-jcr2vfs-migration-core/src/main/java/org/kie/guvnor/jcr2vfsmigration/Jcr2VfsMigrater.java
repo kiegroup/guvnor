@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration;
+package org.kie.guvnor.jcr2vfsmigration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.jcr2vfsmigration.config.MigrationConfig;
-import org.guvnor.jcr2vfsmigration.migrater.AssetMigrater;
-import org.guvnor.jcr2vfsmigration.migrater.CategoryMigrater;
-import org.guvnor.jcr2vfsmigration.migrater.ModuleMigrater;
+import org.kie.guvnor.jcr2vfsmigration.config.MigrationConfig;
+import org.kie.guvnor.jcr2vfsmigration.migrater.AssetMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.CategoryMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.ModuleMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,29 +14,13 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration.vfs;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+package org.kie.guvnor.jcr2vfsmigration.vfs;
 
 //import org.apache.commons.lang.StringEscapeUtils;
 //import org.drools.guvnor.client.rpc.Asset;
 //import org.drools.guvnor.client.rpc.DiscussionRecord;
 //import org.drools.guvnor.server.util.Discussion;
 //import org.drools.repository.AssetItem;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.commons.java.nio.file.OpenOption;
-import org.kie.commons.java.nio.file.Path;
-
-import static org.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
 // TODO delete this class once we have all of its functionality in other classes
 //@ApplicationScoped

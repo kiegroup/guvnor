@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.jcr2vfsmigration.vfs;
+package org.kie.guvnor.jcr2vfsmigration.vfs;
 
 import java.util.Collections;
 import java.util.List;

@@ -3,7 +3,7 @@
 setLocal EnableDelayedExpansion
 set mainClasspath=
 for %%i in (binaries\*.jar) do (set mainClasspath=!mainClasspath!;%%i)
-set mainClass=org.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
+set mainClass=org.kie.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
 
 echo "Usage: runMigration.bat"
 echo "For example: runMigration.bat"
