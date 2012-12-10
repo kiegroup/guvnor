@@ -99,11 +99,11 @@
     <!-- Migration -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-jcr2vfs-migration</artifactId>
+      <artifactId>guvnor-jcr2vfs-migration-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-jcr2vfs-migration</artifactId>
+      <artifactId>guvnor-jcr2vfs-migration-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
 
