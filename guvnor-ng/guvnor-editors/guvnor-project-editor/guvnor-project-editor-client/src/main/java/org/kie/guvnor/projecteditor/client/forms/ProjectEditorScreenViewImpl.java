@@ -16,19 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.uberfire.client.common.MultiPageEditorView;
+import org.uberfire.client.common.Page;
 
 public class ProjectEditorScreenViewImpl
-        extends Composite
+        extends MultiPageEditorView
         implements ProjectEditorScreenView {
-
-
-    public ProjectEditorScreenViewImpl() {
-        initWidget(new Label("XXX"));
-    }
 
     @Override
     public void setKProjectToggleOff() {
@@ -47,12 +41,32 @@ public class ProjectEditorScreenViewImpl
 
     @Override
     public void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel) {
-        //TODO -Rikkola-
+        addPage(new Page(gavPanel, "pom.xml") {
+            @Override
+            public void onFocus() {
+                //TODO -Rikkola-
+            }
+
+            @Override
+            public void onLostFocus() {
+                //TODO -Rikkola-
+            }
+        });
     }
 
     @Override
     public void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel) {
-        //TODO -Rikkola-
+        addPage(new Page(kProjectEditorPanel, "kproject.xml") {
+            @Override
+            public void onFocus() {
+                //TODO -Rikkola-
+            }
+
+            @Override
+            public void onLostFocus() {
+                //TODO -Rikkola-
+            }
+        });
     }
 
     @Override
@@ -68,10 +82,5 @@ public class ProjectEditorScreenViewImpl
     @Override
     public void showBuildSuccessful() {
         //TODO -Rikkola-
-    }
-
-    @Override
-    public Widget asWidget() {
-        return null;  //TODO -Rikkola-
     }
 }

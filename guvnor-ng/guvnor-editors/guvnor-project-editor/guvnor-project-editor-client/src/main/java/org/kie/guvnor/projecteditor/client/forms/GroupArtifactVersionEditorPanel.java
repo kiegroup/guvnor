@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
@@ -25,7 +27,7 @@ import org.uberfire.backend.vfs.Path;
 import javax.inject.Inject;
 
 public class GroupArtifactVersionEditorPanel
-        implements GroupArtifactVersionEditorPanelView.Presenter {
+        implements GroupArtifactVersionEditorPanelView.Presenter, IsWidget {
 
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private final GroupArtifactVersionEditorPanelView view;
@@ -79,5 +81,11 @@ public class GroupArtifactVersionEditorPanel
                     }
                 }
         ).saveGav(path, model);
+    }
+
+    @Override
+    public Widget asWidget() {
+        Widget widget = view.asWidget();
+        return widget;
     }
 }

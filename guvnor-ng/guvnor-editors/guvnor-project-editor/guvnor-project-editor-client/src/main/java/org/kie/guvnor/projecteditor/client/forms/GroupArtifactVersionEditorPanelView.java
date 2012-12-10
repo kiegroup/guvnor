@@ -38,7 +38,5 @@ public interface GroupArtifactVersionEditorPanelView
 
     void setVersionId(String versionId);
 
-    String getSaveMenuItemText();
-
     void showSaveSuccessful();
 }

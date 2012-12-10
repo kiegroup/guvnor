@@ -16,8 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GroupArtifactVersionEditorPanelViewImpl
@@ -25,42 +30,66 @@ public class GroupArtifactVersionEditorPanelViewImpl
         implements GroupArtifactVersionEditorPanelView {
 
 
+    private Presenter presenter;
+
+    interface GroupArtifactVersionEditorPanelViewImplBinder
+            extends
+            UiBinder<Widget, GroupArtifactVersionEditorPanelViewImpl> {
+
+    }
+
+    private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create(GroupArtifactVersionEditorPanelViewImplBinder.class);
+
+    @UiField
+    TextBox groupIdTextBox;
+
+    @UiField
+    TextBox artifactIdTextBox;
+
+    @UiField
+    TextBox versionIdTextBox;
+
     public GroupArtifactVersionEditorPanelViewImpl() {
-        initWidget(new Label("TODO"));
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
-        //TODO -Rikkola-
+        this.presenter = presenter;
     }
 
     @Override
     public void setGroupId(String id) {
-        //TODO -Rikkola-
+        groupIdTextBox.setText(id);
+    }
+
+    @UiHandler("groupIdTextBox")
+    public void onGroupIdChange(KeyUpEvent event) {
+        presenter.onGroupIdChange(groupIdTextBox.getText());
     }
 
     @Override
     public void setArtifactId(String id) {
-        //TODO -Rikkola-
+        artifactIdTextBox.setText(id);
+    }
+
+    @UiHandler("artifactIdTextBox")
+    public void onArtifactIdChange(KeyUpEvent event) {
+        presenter.onArtifactIdChange(artifactIdTextBox.getText());
     }
 
     @Override
     public void setVersionId(String versionId) {
-        //TODO -Rikkola-
+        versionIdTextBox.setText(versionId);
     }
 
-    @Override
-    public String getSaveMenuItemText() {
-        return null;  //TODO -Rikkola-
+    @UiHandler("versionIdTextBox")
+    public void onVersionIdChange(KeyUpEvent event) {
+        presenter.onVersionIdChange(versionIdTextBox.getText());
     }
 
     @Override
     public void showSaveSuccessful() {
         //TODO -Rikkola-
-    }
-
-    @Override
-    public Widget asWidget() {
-        return null;  //TODO -Rikkola-
     }
 }

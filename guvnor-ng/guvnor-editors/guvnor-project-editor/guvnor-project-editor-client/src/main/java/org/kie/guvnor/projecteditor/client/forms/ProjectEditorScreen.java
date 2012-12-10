@@ -95,7 +95,8 @@ public class ProjectEditorScreen
 
     @WorkbenchPartView
     public Widget asWidget() {
-        return view.asWidget();
+        Widget widget = view.asWidget();
+        return widget;
     }
 
     @Override

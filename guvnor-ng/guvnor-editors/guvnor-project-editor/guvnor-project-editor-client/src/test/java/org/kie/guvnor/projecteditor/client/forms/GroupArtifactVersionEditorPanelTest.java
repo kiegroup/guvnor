@@ -58,8 +58,6 @@ public class GroupArtifactVersionEditorPanelTest {
 
     @Test
     public void testSave() throws Exception {
-        when(view.getSaveMenuItemText()).thenReturn("");
-
         GroupArtifactVersionModel gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
         projectEditorServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);

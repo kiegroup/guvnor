@@ -16,7 +16,13 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 public class GroupArtifactVersionModelContentHandler {
 
@@ -31,7 +37,20 @@ public class GroupArtifactVersionModelContentHandler {
                 "<name>Guvnor - Multi-project</name>";  // TODO -Rikkola-
     }
 
-    public GroupArtifactVersionModel toModel(String xml) {
-        return new GroupArtifactVersionModel();  // TODO -Rikkola-
+    public GroupArtifactVersionModel toModel(String propertiesString) {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model = null;
+        try {
+            model = reader.read(new StringReader(propertiesString));
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        }
+
+        return new GroupArtifactVersionModel(
+                model.getGroupId(),
+                model.getArtifactId(),
+                model.getVersion());
     }
 }
