@@ -3,9 +3,11 @@ package org.kie.guvnor.jcr2vfsmigration.migrater;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.drools.guvnor.server.contenthandler.BaseXStreamContentHandler;
 
 // TODO Maybe we should make one per asset type? Or delegate to one per asset type?
 @ApplicationScoped
@@ -16,14 +18,21 @@ public class AssetMigrater {
 //    @Inject
 //    protected RepositoryModuleService jcrRepositoryModuleService;
 
-//    @Inject
-//    protected RepositoryAssetService jcrRepositoryAssetService;
+    @Inject
+    protected RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
     protected FactModelService vfsFactModelService;
 
     public void migrateAll() {
         logger.info("  Asset migration started");
+        if (jcrRepositoryAssetService == null) {
+            throw new IllegalStateException("jcrRepositoryAssetService null");
+        }
+        if (vfsFactModelService == null) {
+            throw new IllegalStateException("vfsFactModelService null");
+        }
+        System.out.println(BaseXStreamContentHandler.class); // TODO remove me
         // TODO
         // vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), new FactModels()); // TODO remove me
         logger.info("  Asset migration ended");

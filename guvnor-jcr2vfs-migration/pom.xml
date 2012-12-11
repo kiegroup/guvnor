@@ -14,7 +14,12 @@
   <name>Guvnor - JCR to UberFire VFS migration parent</name>
   <description>Migrates the data of Guvnor 5 to Guvnor 6</description>
 
+  <properties>
+    <jcrGuvnor.version>5.5.0-SNAPSHOT</jcrGuvnor.version>
+  </properties>
+
   <modules>
+    <module>guvnor-migration-repackage</module>
     <module>guvnor-jcr2vfs-migration-core</module>
   </modules>
 
