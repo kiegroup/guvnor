@@ -20,7 +20,7 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -30,14 +30,14 @@ public class MockProjectEditorServiceCaller
 
     private final ProjectEditorService service;
 
-    private KProjectModel savedModel;
-    private KProjectModel modelForLoading;
+    private KModuleModel savedModel;
+    private KModuleModel modelForLoading;
 
     private RemoteCallback callback;
     private Messages messages;
     private GroupArtifactVersionModel gavModel;
     private GroupArtifactVersionModel savedGav;
-    private Path pathToRelatedKProjectFileIfAny;
+    private Path pathToRelatedKModuleFileIfAny;
 
     MockProjectEditorServiceCaller() {
 
@@ -45,13 +45,13 @@ public class MockProjectEditorServiceCaller
 
 
             @Override
-            public Path setUpKProjectStructure(Path pathToPom) {
-                callback.callback(pathToRelatedKProjectFileIfAny);
-                return pathToRelatedKProjectFileIfAny;
+            public Path setUpKModuleStructure(Path pathToPom) {
+                callback.callback(pathToRelatedKModuleFileIfAny);
+                return pathToRelatedKModuleFileIfAny;
             }
 
             @Override
-            public void saveKProject(Path path, KProjectModel model) {
+            public void saveKModule(Path path, KModuleModel model) {
                 callback.callback(null);
                 savedModel = model;
             }
@@ -64,7 +64,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public KProjectModel loadKProject(Path path) {
+            public KModuleModel loadKModule(Path path) {
                 callback.callback(modelForLoading);
                 return modelForLoading;
             }
@@ -82,9 +82,9 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path pathToRelatedKProjectFileIfAny(Path pathToPomXML) {
-                callback.callback(pathToRelatedKProjectFileIfAny);
-                return pathToRelatedKProjectFileIfAny;
+            public Path pathToRelatedKModuleFileIfAny(Path pathToPomXML) {
+                callback.callback(pathToRelatedKModuleFileIfAny);
+                return pathToRelatedKModuleFileIfAny;
             }
 
             @Override
@@ -94,7 +94,7 @@ public class MockProjectEditorServiceCaller
         };
     }
 
-    public KProjectModel getSavedModel() {
+    public KModuleModel getSavedModel() {
         return savedModel;
     }
 
@@ -110,7 +110,7 @@ public class MockProjectEditorServiceCaller
         return service;
     }
 
-    public void setUpModelForLoading(KProjectModel upModelForLoading) {
+    public void setUpModelForLoading(KModuleModel upModelForLoading) {
         this.modelForLoading = upModelForLoading;
     }
 
@@ -126,7 +126,7 @@ public class MockProjectEditorServiceCaller
         return savedGav;
     }
 
-    public void setPathToRelatedKProjectFileIfAny(Path pathToRelatedKProjectFileIfAny) {
-        this.pathToRelatedKProjectFileIfAny = pathToRelatedKProjectFileIfAny;
+    public void setPathToRelatedKModuleFileIfAny(Path pathToRelatedKModuleFileIfAny) {
+        this.pathToRelatedKModuleFileIfAny = pathToRelatedKModuleFileIfAny;
     }
 }

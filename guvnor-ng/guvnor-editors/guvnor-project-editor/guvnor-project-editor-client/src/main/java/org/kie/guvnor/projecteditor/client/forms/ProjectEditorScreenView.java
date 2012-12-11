@@ -23,7 +23,7 @@ public interface ProjectEditorScreenView
 
     interface Presenter {
 
-        void onKProjectToggleOn();
+        void onKModuleToggleOn();
 
     }
 
@@ -33,7 +33,7 @@ public interface ProjectEditorScreenView
 
     void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel);
 
-    void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel);
+    void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel);
 
     String getSaveMenuItemText();
 

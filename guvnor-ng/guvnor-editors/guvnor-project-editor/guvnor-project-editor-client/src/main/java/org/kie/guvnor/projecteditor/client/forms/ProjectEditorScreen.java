@@ -41,22 +41,21 @@ public class ProjectEditorScreen
 
     private final ProjectEditorScreenView view;
     private final GroupArtifactVersionEditorPanel gavPanel;
-    private final KProjectEditorPanel kProjectEditorPanel;
+    private final KModuleEditorPanel kModuleEditorPanel;
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private Path pathToPomXML;
-    private Path pathToKProjectXML;
+    private Path pathToKModuleXML;
     private final MessageService messageService;
-    private DefaultMenuItemCommand enableKProjectMenuItem;
 
     @Inject
     public ProjectEditorScreen(ProjectEditorScreenView view,
                                GroupArtifactVersionEditorPanel gavPanel,
-                               KProjectEditorPanel kProjectEditorPanel,
+                               KModuleEditorPanel kModuleEditorPanel,
                                Caller<ProjectEditorService> projectEditorServiceCaller,
                                MessageService messageService) {
         this.view = view;
         this.gavPanel = gavPanel;
-        this.kProjectEditorPanel = kProjectEditorPanel;
+        this.kModuleEditorPanel = kModuleEditorPanel;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.messageService = messageService;
 
@@ -72,19 +71,19 @@ public class ProjectEditorScreen
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path pathToKProjectXML) {
-                        ProjectEditorScreen.this.pathToKProjectXML = pathToKProjectXML;
-                        if (pathToKProjectXML != null) {
-                            setUpKProject(pathToKProjectXML);
+                    public void callback(Path pathToKModuleXML) {
+                        ProjectEditorScreen.this.pathToKModuleXML = pathToKModuleXML;
+                        if (pathToKModuleXML != null) {
+                            setUpKProject(pathToKModuleXML);
                         }
                     }
                 }
-        ).pathToRelatedKProjectFileIfAny(path);
+        ).pathToRelatedKModuleFileIfAny(path);
     }
 
     private void setUpKProject(Path path) {
-        view.setKProjectEditorPanel(kProjectEditorPanel);
-        kProjectEditorPanel.init(path);
+        view.setKModuleEditorPanel(kModuleEditorPanel);
+        kModuleEditorPanel.init(path);
     }
 
     @WorkbenchPartTitle
@@ -98,17 +97,16 @@ public class ProjectEditorScreen
     }
 
     @Override
-    public void onKProjectToggleOn() {
+    public void onKModuleToggleOn() {
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path pathToKProject) {
-                        pathToKProjectXML = pathToKProject;
+                        pathToKModuleXML = pathToKProject;
                         setUpKProject(pathToKProject);
-
                     }
                 }
-        ).setUpKProjectStructure(pathToPomXML);
+        ).setUpKModuleStructure(pathToPomXML);
     }
 
     @WorkbenchMenu
@@ -124,8 +122,8 @@ public class ProjectEditorScreen
                         gavPanel.save(new com.google.gwt.user.client.Command() {
                             @Override
                             public void execute() {
-                                if (pathToKProjectXML != null) {
-                                    kProjectEditorPanel.save();
+                                if (pathToKModuleXML != null) {
+                                    kModuleEditorPanel.save();
                                 }
                             }
                         });
@@ -153,17 +151,16 @@ public class ProjectEditorScreen
                     }
                 }
         ));
-        if (pathToKProjectXML == null) {
-            enableKProjectMenuItem = new DefaultMenuItemCommand(
+        if (pathToKModuleXML == null) {
+            menuBar.addItem(new DefaultMenuItemCommand(
                     view.getEnableKieProjectMenuItemText(),
                     new Command() {
                         @Override
                         public void execute() {
-                            onKProjectToggleOn();
+                            onKModuleToggleOn();
                         }
                     }
-            );
-            menuBar.addItem(enableKProjectMenuItem);
+            ));
         }
 
         return menuBar;

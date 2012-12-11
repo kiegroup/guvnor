@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.places;
+package org.kie.guvnor.projecteditor.client.forms;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 
-public class KProjectEditorPlace
-        extends DefaultPlaceRequest {
+public interface KModuleEditorPanelView
+        extends ListFormComboPanelView {
 
-    public KProjectEditorPlace(Path path) {
-        super("projectEditorScreen");
-        addParameter("path:uri", path.toURI());
-        addParameter("path:name", path.getFileName());
-    }
+    void showSaveSuccessful(String fileName);
+
 }

@@ -22,45 +22,45 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class KProjectConverter
+public class KModuleConverter
         extends AbstractXStreamConverter {
 
-    public KProjectConverter() {
-        super(KProjectModel.class);
+    public KModuleConverter() {
+        super(KModuleModel.class);
     }
 
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-        KProjectModel kProject = (KProjectModel) value;
-        writeAttribute(writer, "kBasesPath", kProject.getKBasesPath());
-        writeAttribute(writer, "kProjectPath", kProject.getKProjectPath());
-        writeObject(writer, context, "groupArtifactVersion", kProject.getGroupArtifactVersion());
-        writeObjectList(writer, context, "kbases", "kbase", kProject.getKBases().values());
+        KModuleModel kModule = (KModuleModel) value;
+        writeAttribute(writer, "kBasesPath", kModule.getKBasesPath());
+        writeAttribute(writer, "kModulePath", kModule.getKModulePath());
+        writeObject(writer, context, "groupArtifactVersion", kModule.getGroupArtifactVersion());
+        writeObjectList(writer, context, "kbases", "kbase", kModule.getKBases().values());
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-        final KProjectModel kProject = new KProjectModel();
-        kProject.setKBasesPath(reader.getAttribute("kBasesPath"));
-        kProject.setKProjectPath(reader.getAttribute("kProjectPath"));
+        final KModuleModel kModule = new KModuleModel();
+        kModule.setKBasesPath(reader.getAttribute("kBasesPath"));
+        kModule.setKModulePath(reader.getAttribute("kModulePath"));
 
         readNodes(reader, new AbstractXStreamConverter.NodeReader() {
             public void onNode(HierarchicalStreamReader reader, String name, String value) {
                 if ("groupArtifactVersion".equals(name)) {
-                    kProject.setGroupArtifactVersion((GroupArtifactVersionModel) context.convertAnother(reader.getValue(), GroupArtifactVersionModel.class));
+                    kModule.setGroupArtifactVersion((GroupArtifactVersionModel) context.convertAnother(reader.getValue(), GroupArtifactVersionModel.class));
                 } else if ("kbases".equals(name)) {
                     Map<String, KBaseModel> kBases = new HashMap<String, KBaseModel>();
                     for (KBaseModel kBase : readObjectList(reader, context, KBaseModel.class)) {
                         kBases.put(kBase.getName(), kBase);
                     }
-                    kProject.getKBases().putAll(kBases);
+                    kModule.getKBases().putAll(kBases);
                 }
             }
         });
 
-        return kProject;
+        return kModule;
     }
 }

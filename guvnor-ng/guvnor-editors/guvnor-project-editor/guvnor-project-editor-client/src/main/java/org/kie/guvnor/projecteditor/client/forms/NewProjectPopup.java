@@ -19,8 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.client.places.KProjectEditorPlace;
-import org.kie.guvnor.projecteditor.service.FileService;
+import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
@@ -81,7 +80,7 @@ public class NewProjectPopup
             public void callback(Path pathToPom) {
 
                 //TODO Fire hilight selected file/folder event instead of goto
-                placeManager.goTo(new KProjectEditorPlace(pathToPom));
+                placeManager.goTo(new ProjectEditorPlace(pathToPom));
                 close();
             }
         }).newProject(name);

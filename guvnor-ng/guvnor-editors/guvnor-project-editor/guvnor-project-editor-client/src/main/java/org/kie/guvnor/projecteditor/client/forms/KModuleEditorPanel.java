@@ -6,27 +6,27 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
 
-public class KProjectEditorPanel
+public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
 
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
 
-    private KProjectModel model;
+    private KModuleModel model;
     private Path path;
 
-    private final KProjectEditorPanelView view;
+    private final KModuleEditorPanelView view;
 
     @Inject
-    public KProjectEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
-                               KBaseForm form,
-                               NamePopup namePopup,
-                               KProjectEditorPanelView view) {
+    public KModuleEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
+                              KBaseForm form,
+                              NamePopup namePopup,
+                              KModuleEditorPanelView view) {
         super(view, form, namePopup);
 
         this.projectEditorServiceCaller = projectEditorServiceCaller;
@@ -36,15 +36,15 @@ public class KProjectEditorPanel
     public void init(Path path) {
         this.path = path;
 
-        projectEditorServiceCaller.call(new RemoteCallback<KProjectModel>() {
+        projectEditorServiceCaller.call(new RemoteCallback<KModuleModel>() {
             @Override
-            public void callback(KProjectModel model) {
+            public void callback(KModuleModel model) {
 
-                KProjectEditorPanel.this.model = model;
+                KModuleEditorPanel.this.model = model;
 
                 setItems(model.getKBases());
             }
-        }).loadKProject(path);
+        }).loadKModule(path);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class KProjectEditorPanel
         projectEditorServiceCaller.call(new RemoteCallback<Void>() {
             @Override
             public void callback(Void v) {
-                view.showSaveSuccessful("kproject.xml");
+                view.showSaveSuccessful("kmodule.xml");
             }
-        }).saveKProject(path, model);
+        }).saveKModule(path, model);
     }
 }

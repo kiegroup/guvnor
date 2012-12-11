@@ -22,7 +22,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 //import org.junit.Test;
 //import org.kie.commons.io.IOService;
 //import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
-//import org.kie.guvnor.projecteditor.model.KProjectModel;
+//import org.kie.guvnor.projecteditor.model.KModuleModel;
 //import org.mockito.ArgumentCaptor;
 //import org.mockito.ArgumentMatcher;
 //import org.uberfire.backend.server.util.Paths;
@@ -37,14 +37,14 @@ public class ProjectEditorServiceImplTest {
 //    private IOService                               ioService;
 //    private Paths                                   paths;
 //    private ProjectEditorServiceImpl                service;
-//    private KProjectEditorContentHandler            kProjectEditorContentHandler;
+//    private KModuleEditorContentHandler            kProjectEditorContentHandler;
 //    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
 //
 //    @Before
 //    public void setUp() throws Exception {
 //        ioService = mock( IOService.class );
 //        paths = mock( Paths.class );
-//        kProjectEditorContentHandler = mock( KProjectEditorContentHandler.class );
+//        kProjectEditorContentHandler = mock( KModuleEditorContentHandler.class );
 //        groupArtifactVersionModelContentHandler = mock( GroupArtifactVersionModelContentHandler.class );
 //        service = new ProjectEditorServiceImpl( ioService, paths, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler );
 //    }
@@ -79,14 +79,14 @@ public class ProjectEditorServiceImplTest {
 //                "blaaXML"
 //                        );
 //
-//        KProjectModel original = new KProjectModel();
+//        KModuleModel original = new KModuleModel();
 //        when(
 //                kProjectEditorContentHandler.toModel( "blaaXML" )
 //            ).thenReturn(
 //                original
 //                        );
 //
-//        KProjectModel loaded = service.loadKProject( path );
+//        KModuleModel loaded = service.loadKProject( path );
 //
 //        assertEquals( original, loaded );
 //    }
@@ -94,7 +94,7 @@ public class ProjectEditorServiceImplTest {
 //    @Test
 //    public void testSaveKPRoject() throws Exception {
 //        Path path = mock( Path.class );
-//        KProjectModel kProjectModel = new KProjectModel();
+//        KModuleModel kProjectModel = new KModuleModel();
 //
 //        when(
 //                kProjectEditorContentHandler.toString( kProjectModel )

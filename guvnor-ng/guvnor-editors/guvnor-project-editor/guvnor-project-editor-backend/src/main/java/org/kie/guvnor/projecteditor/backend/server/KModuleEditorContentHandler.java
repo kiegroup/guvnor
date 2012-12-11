@@ -19,34 +19,34 @@ package org.kie.guvnor.projecteditor.backend.server;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.kie.guvnor.projecteditor.backend.server.converters.KBaseConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.KProjectConverter;
+import org.kie.guvnor.projecteditor.backend.server.converters.KModuleConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.KSessionConverter;
 import org.kie.guvnor.projecteditor.model.ClockTypeOption;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.model.KSessionModel;
 
-public class KProjectEditorContentHandler {
+public class KModuleEditorContentHandler {
 
     // TODO: Finish this when the core is more stable
 
-    public KProjectModel toModel(String xml) {
-        return (KProjectModel) createXStream().fromXML(xml);
+    public KModuleModel toModel(String xml) {
+        return (KModuleModel) createXStream().fromXML(xml);
     }
 
-    public String toString(KProjectModel model) {
+    public String toString(KModuleModel model) {
         return createXStream().toXML(model);
     }
 
     private XStream createXStream() {
         XStream xStream = new XStream(new DomDriver());
 
-        xStream.alias("kproject", KProjectModel.class);
+        xStream.alias("kmodule", KModuleModel.class);
         xStream.alias("kbase", KBaseModel.class);
         xStream.alias("ksession", KSessionModel.class);
         xStream.alias("clockType", ClockTypeOption.class);
 
-        xStream.registerConverter(new KProjectConverter());
+        xStream.registerConverter(new KModuleConverter());
         xStream.registerConverter(new KBaseConverter());
         xStream.registerConverter(new KSessionConverter());
         xStream.registerConverter(new ClockTypeConverter());

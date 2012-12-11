@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
-import org.junit.Test;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,12 +24,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class ProjectEditorContentHandlerTest {
 
-//    @Test
-//    public void testMostSimpleOneICanThinkOf() throws Exception {
-//        KProjectModel model = new KProjectEditorContentHandler().toModel(readResource("simpleKProject.xml"));
-//
-//        assertNotNull(model);
-//    }
 
     private String readResource(String name) {
         StringBuffer contents = new StringBuffer();

@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Portable
-public class KProjectModel
+public class KModuleModel
         implements Iterable<KBaseModel> {
 
     private final Map<String, KBaseModel> kBases = new HashMap<String, KBaseModel>();
     private String kBasesPath;
-    private String kProjectPath;
+    private String kModulePath;
     private GroupArtifactVersionModel groupArtifactVersion;
 
     @Override
@@ -56,8 +56,8 @@ public class KProjectModel
         return kBasesPath;
     }
 
-    public String getKProjectPath() {
-        return kProjectPath;
+    public String getKModulePath() {
+        return kModulePath;
     }
 
     public GroupArtifactVersionModel getGroupArtifactVersion() {
@@ -68,8 +68,8 @@ public class KProjectModel
         this.kBasesPath = kBasesPath;
     }
 
-    public void setKProjectPath(String kProjectPath) {
-        this.kProjectPath = kProjectPath;
+    public void setKModulePath(String kModulePath) {
+        this.kModulePath = kModulePath;
     }
 
     public void setGroupArtifactVersion(GroupArtifactVersionModel groupArtifactVersion) {

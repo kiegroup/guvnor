@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
@@ -52,8 +51,8 @@ public class ProjectEditorScreenViewImpl
     }
 
     @Override
-    public void setKProjectEditorPanel(KProjectEditorPanel kProjectEditorPanel) {
-        addPage(new Page(kProjectEditorPanel, "kproject.xml") {
+    public void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel) {
+        addPage(new Page(kModuleEditorPanel, "kmodule.xml") {
             @Override
             public void onFocus() {
                 //TODO -Rikkola-

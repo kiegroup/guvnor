@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.server.util.Paths;
@@ -40,7 +40,7 @@ public class ProjectEditorServiceImpl
 
     private IOService ioService;
     private Paths paths;
-    private KProjectEditorContentHandler projectEditorContentHandler;
+    private KModuleEditorContentHandler moduleEditorContentHandler;
     private GroupArtifactVersionModelContentHandler gavModelContentHandler;
 
 
@@ -51,11 +51,11 @@ public class ProjectEditorServiceImpl
     @Inject
     public ProjectEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
                                     final Paths paths,
-                                    final KProjectEditorContentHandler projectEditorContentHandler,
+                                    final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final GroupArtifactVersionModelContentHandler gavModelContentHandler) {
         this.ioService = ioService;
         this.paths = paths;
-        this.projectEditorContentHandler = projectEditorContentHandler;
+        this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.gavModelContentHandler = gavModelContentHandler;
     }
 
@@ -66,7 +66,7 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public Path setUpKProjectStructure(final Path pathToPom) {
+    public Path setUpKModuleStructure(final Path pathToPom) {
         try {
             // Create project structure
             final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
@@ -75,22 +75,22 @@ public class ProjectEditorServiceImpl
             ioService.createDirectory(resolve);
 
             ioService.createDirectory(directory.resolve("src/main/java"));
-            final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
-            saveKProject(pathToKProjectXML, new KProjectModel());
+            final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve("src/main/resources/META-INF/kmodule.xml");
+            saveKModule(pathToKModuleXML, new KModuleModel());
 
             ioService.createDirectory(directory.resolve("src/test/java"));
             ioService.createDirectory(directory.resolve("src/test/resources"));
 
-            return paths.convert(pathToKProjectXML);
+            return paths.convert(pathToKModuleXML);
         } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public void saveKProject(final Path path,
-                             final KProjectModel model) {
-        saveKProject(paths.convert(path), model);
+    public void saveKModule(final Path path,
+                            final KModuleModel model) {
+        saveKModule(paths.convert(path), model);
     }
 
     @Override
@@ -105,14 +105,14 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public KProjectModel loadKProject(final Path path) {
-        return projectEditorContentHandler.toModel(ioService.readAllString(paths.convert(path)));
+    public KModuleModel loadKModule(final Path path) {
+        return moduleEditorContentHandler.toModel(ioService.readAllString(paths.convert(path)));
     }
 
     @Override
-    public Messages build(Path pathToKProjectXML) {
+    public Messages build(Path pathToKModuleXML) {
 
-        Builder builder = new Builder(pathToKProjectXML, ioService);
+        Builder builder = new Builder(pathToKModuleXML, ioService, paths);
 
         return builder.build();
     }
@@ -131,21 +131,21 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public Path pathToRelatedKProjectFileIfAny(final Path pathToPomXML) {
+    public Path pathToRelatedKModuleFileIfAny(final Path pathToPomXML) {
         final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPomXML);
 
-        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
+        final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve("src/main/resources/META-INF/kmodule.xml");
 
-        if (ioService.exists(pathToKProjectXML)) {
-            return paths.convert(pathToKProjectXML);
+        if (ioService.exists(pathToKModuleXML)) {
+            return paths.convert(pathToKModuleXML);
         } else {
             return null;
         }
     }
 
-    private void saveKProject(final org.kie.commons.java.nio.file.Path path,
-                              final KProjectModel model) {
-        ioService.write(path, projectEditorContentHandler.toString(model));
+    private void saveKModule(final org.kie.commons.java.nio.file.Path path,
+                             final KModuleModel model) {
+        ioService.write(path, moduleEditorContentHandler.toString(model));
     }
 
     private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {

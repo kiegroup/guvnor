@@ -22,7 +22,7 @@ import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KProjectModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
@@ -30,12 +30,12 @@ import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class KProjectEditorScreenTest {
+public class KModuleEditorPanelTest {
 
     private Path path;
-    private KProjectEditorPanelView view;
+    private KModuleEditorPanelView view;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
-    private KProjectEditorPanel screenK;
+    private KModuleEditorPanel screenK;
     private ListFormComboPanelView.Presenter presenter;
     private NamePopup nameNamePopup;
     private KBaseForm form;
@@ -43,18 +43,18 @@ public class KProjectEditorScreenTest {
     @Before
     public void setUp() throws Exception {
         path = mock(Path.class);
-        view = mock(KProjectEditorPanelView.class);
+        view = mock(KModuleEditorPanelView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
 
         nameNamePopup = mock(NamePopup.class);
         form = mock(KBaseForm.class);
-        screenK = new KProjectEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
+        screenK = new KModuleEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
         presenter = screenK;
     }
 
     @Test
     public void testShowEmptyModel() throws Exception {
-        projectEditorServiceCaller.setUpModelForLoading(new KProjectModel());
+        projectEditorServiceCaller.setUpModelForLoading(new KModuleModel());
 
         verify(view, never()).addItem(anyString());
     }
@@ -62,11 +62,11 @@ public class KProjectEditorScreenTest {
     @Test
     public void testShowModelWithSessions() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        kProjectModel.add(createKBaseConfiguration("First"));
-        kProjectModel.add(createKBaseConfiguration("Second"));
-        kProjectModel.add(createKBaseConfiguration("Third"));
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("First"));
+        kModuleModel.add(createKBaseConfiguration("Second"));
+        kModuleModel.add(createKBaseConfiguration("Third"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         verify(view).addItem("First");
@@ -78,10 +78,10 @@ public class KProjectEditorScreenTest {
     @Test
     public void testSelectKBase() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
+        KModuleModel kModuleModel = new KModuleModel();
         KBaseModel theOne = createKBaseConfiguration("TheOne");
-        kProjectModel.add(theOne);
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        kModuleModel.add(theOne);
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         presenter.onSelect("TheOne");
@@ -92,8 +92,8 @@ public class KProjectEditorScreenTest {
     @Test
     public void testAddKBase() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         presenter.onAdd();
@@ -103,34 +103,34 @@ public class KProjectEditorScreenTest {
         addKBaseCommandArgumentCaptor.getValue().setName("TheOne");
 
         verify(nameNamePopup).setOldName(""); // Old name should be "" since there is no old name.
-        assertNotNull(kProjectModel.get("TheOne"));
+        assertNotNull(kModuleModel.get("TheOne"));
         verify(view).addItem("TheOne");
         verify(view).setSelected("TheOne");
-        verify(form).setModel(kProjectModel.get("TheOne"));
+        verify(form).setModel(kModuleModel.get("TheOne"));
     }
 
     @Test
     public void testRemoveKBase() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        kProjectModel.add(createKBaseConfiguration("RemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         presenter.onSelect("RemoveMe");
 
         presenter.onRemove();
 
-        assertNull(kProjectModel.get("RemoveMe"));
+        assertNull(kModuleModel.get("RemoveMe"));
         verify(view).remove("RemoveMe");
     }
 
     @Test
     public void testRename() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        kProjectModel.add(createKBaseConfiguration("RenameMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RenameMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         presenter.onSelect("RenameMe");
@@ -142,33 +142,33 @@ public class KProjectEditorScreenTest {
         addKBaseCommandArgumentCaptor.getValue().setName("NewName");
 
         verify(nameNamePopup).setOldName("RenameMe");
-        assertNull(kProjectModel.get("RenameMe"));
-        assertNotNull(kProjectModel.get("NewName"));
+        assertNull(kModuleModel.get("RenameMe"));
+        assertNotNull(kModuleModel.get("NewName"));
     }
 
     @Test
     public void testRemoveKBaseNoItemSelected() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        kProjectModel.add(createKBaseConfiguration("CantRemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         presenter.onRemove();
 
         verify(view).showPleaseSelectAnItem();
 
-        assertNotNull(kProjectModel.get("CantRemoveMe"));
+        assertNotNull(kModuleModel.get("CantRemoveMe"));
         verify(view, never()).remove("CantRemoveMe");
     }
 
     @Test
     public void testDoubleClickRemoveSecondTimeWithoutATarget() throws Exception {
 
-        KProjectModel kProjectModel = new KProjectModel();
-        kProjectModel.add(createKBaseConfiguration("RemoveMe"));
-        kProjectModel.add(createKBaseConfiguration("CantRemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RemoveMe"));
+        kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         // Select one and remove.
@@ -180,19 +180,19 @@ public class KProjectEditorScreenTest {
 
         verify(view).showPleaseSelectAnItem();
 
-        assertNotNull(kProjectModel.get("CantRemoveMe"));
+        assertNotNull(kModuleModel.get("CantRemoveMe"));
         verify(view, never()).remove("CantRemoveMe");
     }
 
     @Test
     public void testSave() throws Exception {
-        KProjectModel kProjectModel = new KProjectModel();
-        projectEditorServiceCaller.setUpModelForLoading(kProjectModel);
+        KModuleModel kModuleModel = new KModuleModel();
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
         screenK.save();
 
-        assertEquals(kProjectModel, projectEditorServiceCaller.getSavedModel());
+        assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
         verify(view).showSaveSuccessful("kproject.xml");
     }
 

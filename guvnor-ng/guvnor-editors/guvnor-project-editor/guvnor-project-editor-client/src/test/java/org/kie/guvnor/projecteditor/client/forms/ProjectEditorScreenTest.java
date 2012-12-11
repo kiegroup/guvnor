@@ -35,7 +35,7 @@ public class ProjectEditorScreenTest {
     private ProjectEditorScreenView view;
     private ProjectEditorScreenView.Presenter presenter;
     private GroupArtifactVersionEditorPanel gavPanel;
-    private KProjectEditorPanel kProjectEditorPanel;
+    private KModuleEditorPanel kModuleEditorPanel;
     private ProjectEditorScreen screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MessageService messageService;
@@ -47,10 +47,10 @@ public class ProjectEditorScreenTest {
         when(view.getBuildMenuItemText()).thenReturn("");
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
         gavPanel = mock(GroupArtifactVersionEditorPanel.class);
-        kProjectEditorPanel = mock(KProjectEditorPanel.class);
+        kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         messageService = mock(MessageService.class);
-        screen = new ProjectEditorScreen(view, gavPanel, kProjectEditorPanel, projectEditorServiceCaller, messageService);
+        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller, messageService);
         presenter = screen;
     }
 
@@ -58,47 +58,47 @@ public class ProjectEditorScreenTest {
     public void testBasicSetup() throws Exception {
         verify(view).setPresenter(presenter);
         verify(view).setGroupArtifactVersionEditorPanel(gavPanel);
-        verify(view, never()).setKProjectEditorPanel(kProjectEditorPanel);
+        verify(view, never()).setKModuleEditorPanel(kModuleEditorPanel);
     }
 
     @Test
     public void testInit() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path path = mock(Path.class);
         screen.init(path);
 
         verify(gavPanel).init(path);
-        verify(kProjectEditorPanel, never()).init(any(Path.class));
+        verify(kModuleEditorPanel, never()).init(any(Path.class));
     }
 
     @Test
-    public void testInitWithKProjectFile() throws Exception {
-        Path pathToKProjectXML = mock(Path.class);
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(pathToKProjectXML);
+    public void testInitWithKModuleFile() throws Exception {
+        Path pathToKModuleXML = mock(Path.class);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKModuleXML);
         Path path = mock(Path.class);
         screen.init(path);
 
         verify(gavPanel).init(path);
-        verify(kProjectEditorPanel).init(pathToKProjectXML);
+        verify(kModuleEditorPanel).init(pathToKModuleXML);
     }
 
     @Test
     public void testEnableKProject() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path pathToGav = mock(Path.class);
         screen.init(pathToGav);
 
         Path pathToKProjectXML = mock(Path.class);
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(pathToKProjectXML);
-        presenter.onKProjectToggleOn();
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKProjectXML);
+        presenter.onKModuleToggleOn();
 
-        verify(kProjectEditorPanel).init(pathToKProjectXML);
-        verify(view).setKProjectEditorPanel(kProjectEditorPanel);
+        verify(kModuleEditorPanel).init(pathToKProjectXML);
+        verify(view).setKModuleEditorPanel(kModuleEditorPanel);
     }
 
     @Test
     public void testSave() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path path = mock(Path.class);
         screen.init(path);
 
@@ -106,13 +106,13 @@ public class ProjectEditorScreenTest {
         clickFirst(menuBar);
 
         verify(gavPanel).save(any(Command.class));
-        verify(kProjectEditorPanel, never()).save();
+        verify(kModuleEditorPanel, never()).save();
     }
 
     @Test
     public void testSaveBoth() throws Exception {
         Path pathToKProjectXML = mock(Path.class);
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(pathToKProjectXML);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKProjectXML);
         Path path = mock(Path.class);
         screen.init(path);
 
@@ -122,12 +122,12 @@ public class ProjectEditorScreenTest {
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
         verify(gavPanel).save(commandArgumentCaptor.capture());
         commandArgumentCaptor.getValue().execute();
-        verify(kProjectEditorPanel).save();
+        verify(kModuleEditorPanel).save();
     }
 
     @Test
     public void testBuild() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         projectEditorServiceCaller.setUpMessages(new Messages());
         Path path = mock(Path.class);
         screen.init(path);
@@ -141,7 +141,7 @@ public class ProjectEditorScreenTest {
 
     @Test
     public void testFailingBuild() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
+        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Messages messages = new Messages();
         messages.getMessages().add(new Message());
         projectEditorServiceCaller.setUpMessages(messages);
