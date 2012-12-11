@@ -23,12 +23,14 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.ui.client.handlers.NewItemWidget;
+import org.kie.guvnor.commons.ui.client.handlers.NewItemPresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
@@ -57,7 +59,10 @@ public class FileExplorerPerspective {
     private IOCBeanManager iocBeanManager;
 
     @Inject
-    private NewItemWidget newItemWidget;
+    private NewItemPresenter newItemPresenter;
+
+    @Inject
+    private WorkbenchContext context;
 
     @Inject
     private PlaceManager placeManager;
@@ -105,12 +110,12 @@ public class FileExplorerPerspective {
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
         this.menuBar.addItem( new DefaultMenuItemCommand( "File Explorer",
-                                                         new Command() {
-                                                             @Override
-                                                             public void execute() {
-                                                                 placeManager.goTo( "FileExplorer" );
-                                                             }
-                                                         } ) );
+                                                          new Command() {
+                                                              @Override
+                                                              public void execute() {
+                                                                  placeManager.goTo( "FileExplorer" );
+                                                              }
+                                                          } ) );
 
         final MenuBar subMenuBar = new DefaultMenuBar();
         this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
@@ -120,16 +125,17 @@ public class FileExplorerPerspective {
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
-                final NewResourceHandler handler = handlerBean.getInstance();
-                final String description = handler.getDescription();
+                final NewResourceHandler activeHandler = handlerBean.getInstance();
+                final String description = activeHandler.getDescription();
                 subMenuBar.addItem( new DefaultMenuItemCommand( description,
-                                                                 new Command() {
-                                                                     @Override
-                                                                     public void execute() {
-                                                                         newItemWidget.setActiveHandler( handler );
-                                                                         newItemWidget.show();
-                                                                     }
-                                                                 } ) );
+                                                                new Command() {
+                                                                    @Override
+                                                                    public void execute() {
+                                                                        final Path activePath = context.getActivePath();
+                                                                        newItemPresenter.show( activePath,
+                                                                                            activeHandler );
+                                                                    }
+                                                                } ) );
             }
         }
 
@@ -142,7 +148,8 @@ public class FileExplorerPerspective {
         final Command command = new Command() {
             @Override
             public void execute() {
-                newItemWidget.show();
+                final Path activePath = context.getActivePath();
+                newItemPresenter.show( activePath );
             }
         };
         toolBar.addItem( new DefaultToolBarItem( url,

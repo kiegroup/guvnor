@@ -32,16 +32,8 @@ public interface NewItemPopupConstants
 
     String itemNameSubheading();
 
-    String itemPathSubheading();
-
-    String itemUndefinedPath();
-
-    String itemExtensionSubheading();
-
     String OK();
 
-    String missingName();
-
-    String missingPath();
+    String MissingName();
 
 }

@@ -22,6 +22,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-data</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
     </dependency>

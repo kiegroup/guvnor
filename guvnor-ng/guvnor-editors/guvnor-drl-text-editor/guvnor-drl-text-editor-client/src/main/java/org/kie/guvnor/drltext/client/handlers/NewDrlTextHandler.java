@@ -1,5 +1,6 @@
 package org.kie.guvnor.drltext.client.handlers;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -7,6 +8,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.drltext.client.resources.ImageResources;
 import org.kie.guvnor.drltext.client.resources.i18n.Constants;
@@ -62,7 +64,7 @@ public class NewDrlTextHandler implements NewResourceHandler {
     }
 
     @Override
-    public IsWidget getExtension() {
+    public List<Pair<String, IsWidget>> getExtensions() {
         //No additional parameters required.
         return null;
     }

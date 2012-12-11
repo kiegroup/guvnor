@@ -1,10 +1,12 @@
 package org.kie.guvnor.client.handlers;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
@@ -44,7 +46,7 @@ public class NewProjectHandler implements NewResourceHandler {
     }
 
     @Override
-    public IsWidget getExtension() {
+    public List<Pair<String, IsWidget>> getExtensions() {
         return null;
     }
 

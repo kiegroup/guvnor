@@ -1,6 +1,9 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -33,10 +36,11 @@ public interface NewResourceHandler {
     public void create( final Path path );
 
     /**
-     * Return a Widget that the NewResourceHandler can use to gather additional parameters for the new resource
+     * Return a List of Widgets that the NewResourceHandler can use to gather additional parameters for the
+     * new resource. The List is of Pairs, where each Pair consists of a String caption and IsWidget editor.
      * @return null if no extension is provided
      */
-    public IsWidget getExtension();
+    public List<Pair<String, IsWidget>> getExtensions();
 
     /**
      * Provide NewResourceHandlers with the ability to validate additional parameters before the creation of the new resource

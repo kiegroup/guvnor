@@ -82,4 +82,10 @@ public interface CommonConstants
 
     String ItemSavedSuccessfully();
 
+    String ItemPathSubheading();
+
+    String ItemUndefinedPath();
+
+    String MissingPath();
+
 }

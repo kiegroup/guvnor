@@ -25,6 +25,7 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.kie.commons.KieCommonsData"/>
   <inherits name="org.kie.guvnor.datamodel.GuvnorDataModelAPI"/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
