@@ -18,23 +18,44 @@ package org.kie.guvnor.projecteditor.backend.server;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 public class GroupArtifactVersionModelContentHandler {
 
     // TODO: Finish this when the core is more stable
 
     public String toString(GroupArtifactVersionModel gavModel) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-                "<groupId>org.kie.guvnor</groupId>\n" +
-                "<artifactId>guvnor-parent</artifactId>\n" +
-                "<name>Guvnor - Multi-project</name>";  // TODO -Rikkola-
+
+        MavenXpp3Writer writer = new MavenXpp3Writer();
+
+        Model model = new Model();
+        model.setGroupId(gavModel.getGroupId());
+        model.setArtifactId(gavModel.getArtifactId());
+        model.setVersion(gavModel.getVersion());
+
+        StringWriter stringWriter = new StringWriter();
+        try {
+            writer.write(stringWriter, model);
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        }
+
+        return stringWriter.toString();
+
+//        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+//                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+//                "  <groupId>org.kie.guvnor</groupId>\n" +
+//                "  <artifactId>guvnor-parent</artifactId>\n" +
+//                "  <name>Guvnor - Multi-project</name>\n" +
+//                "  <version>6.0.0-SNAPSHOT</version>\n" +
+//                "</project>";  // TODO -Rikkola-
     }
 
     public GroupArtifactVersionModel toModel(String propertiesString) {

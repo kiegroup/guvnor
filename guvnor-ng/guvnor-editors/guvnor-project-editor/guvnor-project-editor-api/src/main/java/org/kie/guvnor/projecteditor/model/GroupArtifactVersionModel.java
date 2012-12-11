@@ -20,9 +20,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class GroupArtifactVersionModel {
-    private String groupId;
-    private String artifactId;
-    private String version;
+
+    private String groupId = "";
+    private String artifactId = "";
+    private String version = "";
 
     public GroupArtifactVersionModel() {
     }

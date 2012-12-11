@@ -57,9 +57,10 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public void saveGav(Path path, GroupArtifactVersionModel gav) {
+            public Path saveGav(Path path, GroupArtifactVersionModel gav) {
                 callback.callback(null);
                 savedGav = gav;
+                return null;
             }
 
             @Override

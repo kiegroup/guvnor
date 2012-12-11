@@ -60,9 +60,9 @@ public class ProjectEditorServiceImpl
 
     @Override
     public Path newProject(String name) {
-        Path pathToPom = PathFactory.newPath(getGavURI(name));
-        saveGav(pathToPom, new GroupArtifactVersionModel());
-        return setUpProjectStructure(pathToPom);
+        Path pathToPom = saveGav(PathFactory.newPath(getGavURI(name)), new GroupArtifactVersionModel());
+        setUpProjectStructure(pathToPom);
+        return pathToPom;
     }
 
     @Override
@@ -74,8 +74,8 @@ public class ProjectEditorServiceImpl
         org.kie.commons.java.nio.file.Path resolve = directory.resolve("src/kbases");
         ioService.createDirectory(resolve);
 
-        ioService.createDirectory(directory.resolve( "src/main/java"));
-        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve( "src/main/resources/META-INF/kproject.xml");
+        ioService.createDirectory(directory.resolve("src/main/java"));
+        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
         saveKProject(pathToKProjectXML, new KProjectModel());
 
         ioService.createDirectory(directory.resolve("src/test/java"));
@@ -91,9 +91,9 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public void saveGav(final Path path,
+    public Path saveGav(final Path pathToGAV,
                         final GroupArtifactVersionModel gavModel) {
-        ioService.write(paths.convert(path), gavModelContentHandler.toString(gavModel));
+        return paths.convert(ioService.write(paths.convert(pathToGAV), gavModelContentHandler.toString(gavModel)));
     }
 
     @Override

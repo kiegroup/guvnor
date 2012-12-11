@@ -31,7 +31,7 @@ public interface ProjectEditorService {
     public void saveKProject(Path path,
                              KProjectModel model);
 
-    public void saveGav(Path path,
+    public Path saveGav(Path path,
                         GroupArtifactVersionModel gav);
 
     public KProjectModel loadKProject(Path path);
