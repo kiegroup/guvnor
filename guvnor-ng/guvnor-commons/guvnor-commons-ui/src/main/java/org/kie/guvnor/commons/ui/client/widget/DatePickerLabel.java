@@ -26,7 +26,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 public class DatePickerLabel extends DatePicker {
 
@@ -57,7 +57,7 @@ public class DatePickerLabel extends DatePicker {
                     panel.add( labelWidget );
                     datePickerPopUp.hide();
                 } catch ( Exception e ) {
-                    Window.alert( Constants.INSTANCE.InvalidDateFormatMessage() );
+                    Window.alert( CommonConstants.INSTANCE.InvalidDateFormatMessage() );
                 }
 
             }

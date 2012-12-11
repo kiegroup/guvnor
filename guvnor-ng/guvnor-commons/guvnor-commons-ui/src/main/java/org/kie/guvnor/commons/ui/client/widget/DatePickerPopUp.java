@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 public class DatePickerPopUp extends PopupPanel {
 
@@ -66,18 +66,18 @@ public class DatePickerPopUp extends PopupPanel {
         horizontalPanel.add( years );
 
         // Add months
-        months.addItem( Constants.INSTANCE.January() );
-        months.addItem( Constants.INSTANCE.February() );
-        months.addItem( Constants.INSTANCE.March() );
-        months.addItem( Constants.INSTANCE.April() );
-        months.addItem( Constants.INSTANCE.May() );
-        months.addItem( Constants.INSTANCE.June() );
-        months.addItem( Constants.INSTANCE.July() );
-        months.addItem( Constants.INSTANCE.August() );
-        months.addItem( Constants.INSTANCE.September() );
-        months.addItem( Constants.INSTANCE.October() );
-        months.addItem( Constants.INSTANCE.November() );
-        months.addItem( Constants.INSTANCE.December() );
+        months.addItem( CommonConstants.INSTANCE.January() );
+        months.addItem( CommonConstants.INSTANCE.February() );
+        months.addItem( CommonConstants.INSTANCE.March() );
+        months.addItem( CommonConstants.INSTANCE.April() );
+        months.addItem( CommonConstants.INSTANCE.May() );
+        months.addItem( CommonConstants.INSTANCE.June() );
+        months.addItem( CommonConstants.INSTANCE.July() );
+        months.addItem( CommonConstants.INSTANCE.August() );
+        months.addItem( CommonConstants.INSTANCE.September() );
+        months.addItem( CommonConstants.INSTANCE.October() );
+        months.addItem( CommonConstants.INSTANCE.November() );
+        months.addItem( CommonConstants.INSTANCE.December() );
 
         months.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
@@ -108,7 +108,7 @@ public class DatePickerPopUp extends PopupPanel {
             horizontalPanel.add( minutes );
         }
 
-        Button okButton = new Button( Constants.INSTANCE.OK() );
+        Button okButton = new Button( CommonConstants.INSTANCE.OK() );
         okButton.addClickHandler( okClickHandler );
         horizontalPanel.add( okButton );
 

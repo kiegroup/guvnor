@@ -17,6 +17,10 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,12 +30,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.kie.guvnor.commons.ui.client.resources.ItemImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.context.WorkbenchContext;
 
@@ -46,15 +53,23 @@ public class NewItemWidget extends FormStylePopup {
 
     private final TextBox itemNameTextBox = new TextBox();
     private final Label itemPathLabel = new Label();
+    private final Button okButton = makeOKButton();
+
     private final SimplePanel extensionContainer = new SimplePanel();
+    private final List<NewResourceHandler> handlers = new LinkedList<NewResourceHandler>();
+    private final Map<NewResourceHandler, RadioButton> options = new HashMap<NewResourceHandler, RadioButton>();
 
     private Path activePath = null;
     private NewResourceHandler activeHandler = null;
 
+    public NewItemWidget() {
+        super( ItemImages.INSTANCE.newItem(),
+               NewItemPopupConstants.INSTANCE.popupTitle() );
+    }
+
     @PostConstruct
     private void setup() {
-        //Title and mandatory details
-        setTitle( NewItemPopupConstants.INSTANCE.popupTitle() );
+        //Mandatory details
         addAttribute( NewItemPopupConstants.INSTANCE.itemNameSubheading(),
                       itemNameTextBox );
         addAttribute( NewItemPopupConstants.INSTANCE.itemPathSubheading(),
@@ -66,18 +81,36 @@ public class NewItemWidget extends FormStylePopup {
         addAttribute( NewItemPopupConstants.INSTANCE.itemExtensionSubheading(),
                       extensionContainer );
         addAttribute( "",
-                      makeOKButton() );
+                      okButton );
     }
 
     @Override
     public void show() {
+        super.show();
+
+        //Set active Path
         activePath = context.getActivePath();
         if ( activePath != null ) {
             itemPathLabel.setText( activePath.toURI() );
+            okButton.setEnabled( true );
         } else {
             itemPathLabel.setText( NewItemPopupConstants.INSTANCE.itemUndefinedPath() );
+            okButton.setEnabled( false );
         }
-        super.show();
+        if ( activeHandler == null ) {
+            activeHandler = handlers.get( 0 );
+        }
+
+        //Select active Handler
+        final RadioButton option = options.get( activeHandler );
+        if ( option != null ) {
+            option.setValue( true );
+        }
+
+    }
+
+    public void setActiveHandler( final NewResourceHandler handler ) {
+        activeHandler = handler;
     }
 
     private void addResourceHandlers() {
@@ -89,27 +122,36 @@ public class NewItemWidget extends FormStylePopup {
     }
 
     private void addResourceHandler( final NewResourceHandler handler ) {
+        handlers.add( handler );
+        final RadioButton option = makeOption( handler );
+        options.put( handler,
+                     option );
         addAttribute( "",
-                      makeButton( handler ) );
+                      option );
     }
 
-    private Button makeButton( final NewResourceHandler handler ) {
-        final Button button = new Button( handler.getDescription() );
-        button.addClickHandler( new ClickHandler() {
+    private RadioButton makeOption( final NewResourceHandler handler ) {
+        final RadioButton option = new RadioButton( "options",
+                                                    handler.getDescription() );
+        option.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( final ClickEvent event ) {
-                activeHandler = handler;
-                extensionContainer.clear();
-                final IsWidget extensionWidget = handler.getExtension();
-                if ( extensionWidget != null ) {
-                    extensionContainer.setWidget( extensionWidget );
-                }
+                selectNewResourceHandler( handler );
                 center();
             }
 
         } );
-        return button;
+        return option;
+    }
+
+    private void selectNewResourceHandler( final NewResourceHandler handler ) {
+        activeHandler = handler;
+        extensionContainer.clear();
+        final IsWidget extensionWidget = handler.getExtension();
+        if ( extensionWidget != null ) {
+            extensionContainer.setWidget( extensionWidget );
+        }
     }
 
     private Button makeOKButton() {
@@ -118,12 +160,20 @@ public class NewItemWidget extends FormStylePopup {
             @Override
             public void onClick( final ClickEvent event ) {
                 if ( activeHandler != null ) {
-                    activeHandler.create( activePath );
+                    activeHandler.create( buildFullPathName() );
                 }
                 hide();
             }
         } );
         return okButton;
+    }
+
+    private Path buildFullPathName() {
+        final String pathName = this.activePath.toURI();
+        final String fileName = this.itemNameTextBox.getText() + "." + this.activeHandler.getFileType();
+        final Path assetPath = PathFactory.newPath( fileName,
+                                                    pathName + "/" + fileName );
+        return assetPath;
     }
 
 }

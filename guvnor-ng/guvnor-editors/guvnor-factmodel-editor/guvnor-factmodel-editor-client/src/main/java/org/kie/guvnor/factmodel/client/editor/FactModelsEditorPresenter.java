@@ -19,11 +19,15 @@ package org.kie.guvnor.factmodel.client.editor;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -34,10 +38,17 @@ import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+
+import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "model.drl")
@@ -52,6 +63,12 @@ public class FactModelsEditorPresenter {
                          final ModelNameHelper modelNameHelper );
 
         FactModels getContent();
+
+        boolean isDirty();
+
+        void setNotDirty();
+
+        boolean confirmClose();
     }
 
     @Inject
@@ -66,12 +83,17 @@ public class FactModelsEditorPresenter {
     @Inject
     private MultiPageEditor multiPage;
 
+    @Inject
+    private Event<NotificationEvent> notification;
+
     private Path path;
 
     @PostConstruct
     public void init() {
-        multiPage.addWidget( view, "Edit" );
-        multiPage.addPage( new Page( viewSource, "Source" ) {
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 factModelService.call( new RemoteCallback<String>() {
@@ -103,7 +125,9 @@ public class FactModelsEditorPresenter {
                                                                currentModel.getName() );
                 }
 
-                view.setContent( content.getFactModels(), content.getSuperTypes(), modelNameHelper );
+                view.setContent( content.getFactModels(),
+                                 content.getSuperTypes(),
+                                 modelNameHelper );
             }
         } ).loadContent( path );
     }
@@ -113,9 +137,11 @@ public class FactModelsEditorPresenter {
         factModelService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( Path response ) {
-
+                view.setNotDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).save( path, view.getContent() );
+        } ).save( path,
+                  view.getContent() );
     }
 
     @WorkbenchPartView
@@ -131,6 +157,29 @@ public class FactModelsEditorPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         return "Fact Models Editor [" + path.getFileName() + "]";
+    }
+
+    @WorkbenchMenu
+    public MenuBar buildMenuBar() {
+        return newResourceMenuBuilder().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                factModelService.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path, view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).build();
     }
 
 }

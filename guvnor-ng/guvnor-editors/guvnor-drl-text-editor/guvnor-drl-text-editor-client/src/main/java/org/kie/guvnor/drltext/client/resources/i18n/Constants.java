@@ -28,8 +28,6 @@ public interface Constants
 
     public static final Constants INSTANCE = GWT.create( Constants.class );
 
-    String discardUnsavedData();
-
     String FactTypes();
 
     String hide();

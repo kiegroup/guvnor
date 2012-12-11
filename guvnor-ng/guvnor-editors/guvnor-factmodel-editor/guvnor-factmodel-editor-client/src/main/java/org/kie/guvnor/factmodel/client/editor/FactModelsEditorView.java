@@ -25,8 +25,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -84,7 +86,26 @@ public class FactModelsEditorView
         return factModels;
     }
 
-    public void addFactModelToStackPanel( final FactMetaModel factMetaModel ) {
+    @Override
+    public boolean isDirty() {
+        //TODO This editor does not currently support "isDirty"
+        return false;
+    }
+
+    @Override
+    public void setNotDirty() {
+        //TODO This editor does not currently support "isDirty"
+    }
+
+    @Override
+    public boolean confirmClose() {
+        if ( isDirty() ) {
+            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+        }
+        return true;
+    }
+
+    private void addFactModelToStackPanel( final FactMetaModel factMetaModel ) {
         final FactModelEditor editor = new FactModelEditor( factMetaModel,
                                                             superTypeFactModels,
                                                             modelNameHelper );

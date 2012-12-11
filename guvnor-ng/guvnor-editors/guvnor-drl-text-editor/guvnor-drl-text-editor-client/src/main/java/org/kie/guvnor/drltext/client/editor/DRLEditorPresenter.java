@@ -17,6 +17,7 @@
 package org.kie.guvnor.drltext.client.editor;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -24,6 +25,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
@@ -41,6 +43,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
@@ -83,6 +86,9 @@ public class DRLEditorPresenter {
     @Inject
     private ProjectResources projectResources;
 
+    @Inject
+    private Event<NotificationEvent> notification;
+
     private Path path;
 
     @OnStart
@@ -96,9 +102,11 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback( String response ) {
                         if ( response == null ) {
-                            view.setContent( "-- empty --", model );
+                            view.setContent( "-- empty --",
+                                             model );
                         } else {
-                            view.setContent( response, model );
+                            view.setContent( response,
+                                             model );
                         }
                     }
                 } ).readAllString( path );
@@ -113,8 +121,10 @@ public class DRLEditorPresenter {
             @Override
             public void callback( Path response ) {
                 view.setNotDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).write( path, view.getContent() );
+        } ).write( path,
+                   view.getContent() );
     }
 
     @IsDirty
@@ -150,7 +160,7 @@ public class DRLEditorPresenter {
         return newResourceMenuBuilder().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( "Wait while validating..." );
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
                 drlTextEditorService.call( new RemoteCallback<BuilderResult>() {
                     @Override
                     public void callback( BuilderResult response ) {
@@ -158,7 +168,13 @@ public class DRLEditorPresenter {
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path, view.getContent() );
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
             }
         } ).build();
     }

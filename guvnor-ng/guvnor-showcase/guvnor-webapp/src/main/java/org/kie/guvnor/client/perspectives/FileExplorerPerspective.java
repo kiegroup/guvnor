@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewItemWidget;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -54,13 +54,13 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 public class FileExplorerPerspective {
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private IOCBeanManager iocBeanManager;
 
     @Inject
     private NewItemWidget newItemWidget;
+
+    @Inject
+    private PlaceManager placeManager;
 
     private PerspectiveDefinition perspective;
     private MenuBar menuBar;
@@ -104,26 +104,32 @@ public class FileExplorerPerspective {
 
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
+        this.menuBar.addItem( new DefaultMenuItemCommand( "File Explorer",
+                                                         new Command() {
+                                                             @Override
+                                                             public void execute() {
+                                                                 placeManager.goTo( "FileExplorer" );
+                                                             }
+                                                         } ) );
+
         final MenuBar subMenuBar = new DefaultMenuBar();
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New", subMenuBar ) );
+        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
+                                                          subMenuBar ) );
 
         //Dynamic items
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler handler = handlerBean.getInstance();
-                final String fileType = handler.getFileType();
                 final String description = handler.getDescription();
-                subMenuBar.addItem( new DefaultMenuItemCommand( description, new Command() {
-                    @Override
-                    public void execute() {
-                        // TODO Need to get the currently selected path.
-                        // This will entail adding a new ApplicationContext class to UberFire
-                        // that observes PathChangeEvents raised by the FileExplorer (and others)
-                        // that sets the currently selected Path.
-                        handler.create( null );
-                    }
-                } ) );
+                subMenuBar.addItem( new DefaultMenuItemCommand( description,
+                                                                 new Command() {
+                                                                     @Override
+                                                                     public void execute() {
+                                                                         newItemWidget.setActiveHandler( handler );
+                                                                         newItemWidget.show();
+                                                                     }
+                                                                 } ) );
             }
         }
 

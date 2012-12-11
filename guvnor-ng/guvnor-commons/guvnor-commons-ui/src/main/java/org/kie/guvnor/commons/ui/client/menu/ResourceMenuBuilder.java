@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.commons.ui.client.menu;
 
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
@@ -35,7 +36,7 @@ public final class ResourceMenuBuilder {
     private ResourceMenuBuilder() {
     }
 
-    private Command saveCommand     = null;
+    private Command saveCommand = null;
     private Command validateCommand = null;
 
     public ResourceMenuBuilder addValidation( final Command command ) {
@@ -51,15 +52,18 @@ public final class ResourceMenuBuilder {
     public MenuBar build() {
         final MenuBar menuBar = new DefaultMenuBar();
         final MenuBar subMenuBar = new DefaultMenuBar();
-        menuBar.addItem( new DefaultMenuItemSubMenu( "File", subMenuBar ) );
+        menuBar.addItem( new DefaultMenuItemSubMenu( CommonConstants.INSTANCE.File(),
+                                                     subMenuBar ) );
 
         if ( validateCommand != null ) {
-            final MenuItem validate = new DefaultMenuItemCommand( "Validate", validateCommand );
+            final MenuItem validate = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Validate(),
+                                                                  validateCommand );
             subMenuBar.addItem( validate );
         }
 
         if ( saveCommand != null ) {
-            final MenuItem save = new DefaultMenuItemCommand( "Save", saveCommand );
+            final MenuItem save = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Save(),
+                                                              saveCommand );
             subMenuBar.addItem( save );
         }
 

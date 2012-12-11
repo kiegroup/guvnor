@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.model.workitems.PortableBooleanParameterDefinition;
 
 /**
@@ -81,7 +81,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
         Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
-            lstAvailableBindings.addItem( Constants.INSTANCE.Choose() );
+            lstAvailableBindings.addItem( CommonConstants.INSTANCE.Choose() );
             lstAvailableBindings.setEnabled( true && !isReadOnly );
             lstAvailableBindings.setVisible( true );
             int selectedIndex = 0;

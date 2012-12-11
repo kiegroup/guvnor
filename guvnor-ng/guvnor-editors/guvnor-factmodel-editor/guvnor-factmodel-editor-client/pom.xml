@@ -41,6 +41,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-error-messages-widget</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>

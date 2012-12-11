@@ -22,13 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * EnumEditor I18N constants
  */
-public interface Constants
+public interface CommonConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
-
-    String discardUnsavedData();
+    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
 
     String InvalidDateFormatMessage();
 
@@ -67,5 +65,21 @@ public interface Constants
     String ShowDetail();
 
     String Choose();
+
+    String WaitWhileValidating();
+
+    String File();
+
+    String Save();
+
+    String Validate();
+
+    String EditTabTitle();
+
+    String SourceTabTitle();
+
+    String DiscardUnsavedData();
+
+    String ItemSavedSuccessfully();
 
 }

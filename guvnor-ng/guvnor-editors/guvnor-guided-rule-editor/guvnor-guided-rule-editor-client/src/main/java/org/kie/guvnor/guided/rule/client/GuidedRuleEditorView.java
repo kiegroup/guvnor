@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerWidgetFactory;
@@ -71,7 +71,7 @@ public class GuidedRuleEditorView
     @Override
     public boolean confirmClose() {
         if ( isDirty() ) {
-            return Window.confirm( Constants.INSTANCE.discardUnsavedData() );
+            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
         }
         return true;
 

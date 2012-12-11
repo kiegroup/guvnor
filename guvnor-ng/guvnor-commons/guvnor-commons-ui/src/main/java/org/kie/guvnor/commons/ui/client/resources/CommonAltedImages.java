@@ -17,7 +17,7 @@
 package org.kie.guvnor.commons.ui.client.resources;
 
 import com.google.gwt.user.client.ui.Image;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 /**
  *
@@ -32,7 +32,7 @@ public final class CommonAltedImages {
 
     public Image Edit() {
         final Image image = new Image( CommonImages.INSTANCE.edit() );
-        image.setAltText( Constants.INSTANCE.Edit() );
+        image.setAltText( CommonConstants.INSTANCE.Edit() );
         return image;
     }
 

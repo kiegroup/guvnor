@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
-import org.kie.guvnor.commons.ui.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.Popup;
 
@@ -43,7 +43,7 @@ public class ErrorPopup extends Popup {
 
     private ErrorPopup() {
 
-        setTitle( Constants.INSTANCE.Error() );
+        setTitle( CommonConstants.INSTANCE.Error() );
         setWidth( WIDTH );
         setModal( true );
 
@@ -61,7 +61,7 @@ public class ErrorPopup extends Popup {
         body.clear();
         if ( message != null && message.contains( "ItemExistsException" ) ) { //NON-NLS
             longMessage = message;
-            message = Constants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
+            message = CommonConstants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
         }
 
@@ -76,7 +76,7 @@ public class ErrorPopup extends Popup {
 
         final SimplePanel detailPanel = new SimplePanel();
         if ( longMessage != null && !"".equals( longMessage ) ) {
-            Button showD = new Button( Constants.INSTANCE.ShowDetail() );
+            Button showD = new Button( CommonConstants.INSTANCE.ShowDetail() );
             showD.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
