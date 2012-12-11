@@ -33,4 +33,6 @@ public interface Constants
     String hide();
 
     String ShowFactTypes();
+
+    String NewDrlTextDescription();
 }

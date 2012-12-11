@@ -38,4 +38,10 @@ public interface NewResourceHandler {
      */
     public IsWidget getExtension();
 
+    /**
+     * Provide NewResourceHandlers with the ability to validate additional parameters before the creation of the new resource
+     * @return true if validation is successful
+     */
+    public boolean validate();
+
 }

@@ -47,4 +47,9 @@ public class NewFolderHandler implements NewResourceHandler {
         return null;
     }
 
+    @Override
+    public boolean validate() {
+        return true;
+    }
+
 }

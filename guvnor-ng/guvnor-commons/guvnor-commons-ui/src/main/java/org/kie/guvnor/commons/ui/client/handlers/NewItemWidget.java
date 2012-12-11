@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
@@ -87,6 +88,9 @@ public class NewItemWidget extends FormStylePopup {
     @Override
     public void show() {
         super.show();
+
+        //Clear previous resource name
+        itemNameTextBox.setText( "" );
 
         //Set active Path
         activePath = context.getActivePath();
@@ -160,12 +164,29 @@ public class NewItemWidget extends FormStylePopup {
             @Override
             public void onClick( final ClickEvent event ) {
                 if ( activeHandler != null ) {
-                    activeHandler.create( buildFullPathName() );
+                    if ( validate() ) {
+                        if ( activeHandler.validate() ) {
+                            activeHandler.create( buildFullPathName() );
+                            hide();
+                        }
+                    }
                 }
-                hide();
             }
         } );
         return okButton;
+    }
+
+    private boolean validate() {
+        boolean isValid = true;
+        if ( itemNameTextBox.getText().isEmpty() ) {
+            Window.alert( NewItemPopupConstants.INSTANCE.missingName() );
+            isValid = false;
+        }
+        if ( activePath == null ) {
+            Window.alert( NewItemPopupConstants.INSTANCE.missingPath() );
+            isValid = false;
+        }
+        return isValid;
     }
 
     private Path buildFullPathName() {

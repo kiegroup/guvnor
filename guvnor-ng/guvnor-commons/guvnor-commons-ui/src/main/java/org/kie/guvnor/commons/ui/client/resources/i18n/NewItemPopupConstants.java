@@ -40,4 +40,8 @@ public interface NewItemPopupConstants
 
     String OK();
 
+    String missingName();
+
+    String missingPath();
+
 }

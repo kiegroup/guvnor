@@ -101,7 +101,7 @@ public class DRLEditorPresenter {
                 vfs.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( String response ) {
-                        if ( response == null ) {
+                        if ( response == null || response.isEmpty() ) {
                             view.setContent( "-- empty --",
                                              model );
                         } else {
