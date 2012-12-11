@@ -38,5 +38,5 @@ public interface GroupArtifactVersionEditorPanelView
 
     void setVersionId(String versionId);
 
-    void showSaveSuccessful();
+    void showSaveSuccessful(String fileName);
 }

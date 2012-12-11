@@ -193,7 +193,7 @@ public class KProjectEditorScreenTest {
         screenK.save();
 
         assertEquals(kProjectModel, projectEditorServiceCaller.getSavedModel());
-        verify(view).showSaveSuccessful();
+        verify(view).showSaveSuccessful("kproject.xml");
     }
 
     private KBaseModel createKBaseConfiguration(String name) {

@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.AttachDetachException;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -72,12 +74,13 @@ public class GroupArtifactVersionEditorPanel
         model.setVersion(versionId);
     }
 
-    public void save() {
+    public void save(final Command callback) {
         projectEditorServiceCaller.call(
                 new RemoteCallback<Object>() {
                     @Override
                     public void callback(Object o) {
-                        view.showSaveSuccessful();
+                        callback.execute();
+                        view.showSaveSuccessful("pom.xml");
                     }
                 }
         ).saveGav(path, model);

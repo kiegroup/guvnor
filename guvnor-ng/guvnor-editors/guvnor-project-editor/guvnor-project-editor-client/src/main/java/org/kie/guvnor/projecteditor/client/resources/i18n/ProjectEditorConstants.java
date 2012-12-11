@@ -75,9 +75,11 @@ public interface ProjectEditorConstants
 
     String Save();
 
-    String SaveSuccessful();
+    String SaveSuccessful(String fileName);
 
     String Build();
 
     String BuildSuccessful();
+
+    String EnableKieProject();
 }

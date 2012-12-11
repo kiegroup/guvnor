@@ -21,11 +21,6 @@ import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 public interface KProjectEditorPanelView
         extends ListFormComboPanelView {
 
-    String getSaveMenuItemText();
+    void showSaveSuccessful(String fileName);
 
-    void showSaveSuccessful();
-
-    String getBuildMenuItemText();
-
-    void showBuildSuccessful();
 }

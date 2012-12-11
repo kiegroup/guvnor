@@ -46,6 +46,7 @@ public class ProjectEditorScreen
     private Path pathToPomXML;
     private Path pathToKProjectXML;
     private final MessageService messageService;
+    private DefaultMenuItemCommand enableKProjectMenuItem;
 
     @Inject
     public ProjectEditorScreen(ProjectEditorScreenView view,
@@ -61,11 +62,11 @@ public class ProjectEditorScreen
 
         view.setPresenter(this);
         view.setGroupArtifactVersionEditorPanel(gavPanel);
-        view.setKProjectEditorPanel(kProjectEditorPanel);
     }
 
     @OnStart
     public void init(Path path) {
+
         pathToPomXML = path;
         gavPanel.init(path);
         projectEditorServiceCaller.call(
@@ -75,8 +76,6 @@ public class ProjectEditorScreen
                         ProjectEditorScreen.this.pathToKProjectXML = pathToKProjectXML;
                         if (pathToKProjectXML != null) {
                             setUpKProject(pathToKProjectXML);
-                        } else {
-                            view.setKProjectToggleOff();
                         }
                     }
                 }
@@ -84,8 +83,8 @@ public class ProjectEditorScreen
     }
 
     private void setUpKProject(Path path) {
+        view.setKProjectEditorPanel(kProjectEditorPanel);
         kProjectEditorPanel.init(path);
-        view.setKProjectToggleOn();
     }
 
     @WorkbenchPartTitle
@@ -95,8 +94,7 @@ public class ProjectEditorScreen
 
     @WorkbenchPartView
     public Widget asWidget() {
-        Widget widget = view.asWidget();
-        return widget;
+        return view.asWidget();
     }
 
     @Override
@@ -105,10 +103,12 @@ public class ProjectEditorScreen
                 new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path pathToKProject) {
-                        kProjectEditorPanel.init(pathToKProject);
+                        pathToKProjectXML = pathToKProject;
+                        setUpKProject(pathToKProject);
+
                     }
                 }
-        ).setUpProjectStructure(pathToPomXML);
+        ).setUpKProjectStructure(pathToPomXML);
     }
 
     @WorkbenchMenu
@@ -120,10 +120,16 @@ public class ProjectEditorScreen
                 new Command() {
                     @Override
                     public void execute() {
-                        gavPanel.save();
-                        if (pathToKProjectXML != null) {
-                            kProjectEditorPanel.save();
-                        }
+                        // We need to use callback here or jgit will break when we save two files at the same time.
+                        gavPanel.save(new com.google.gwt.user.client.Command() {
+                            @Override
+                            public void execute() {
+                                if (pathToKProjectXML != null) {
+                                    kProjectEditorPanel.save();
+                                }
+                            }
+                        });
+
                     }
                 }
         ));
@@ -147,6 +153,18 @@ public class ProjectEditorScreen
                     }
                 }
         ));
+        if (pathToKProjectXML == null) {
+            enableKProjectMenuItem = new DefaultMenuItemCommand(
+                    view.getEnableKieProjectMenuItemText(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            onKProjectToggleOn();
+                        }
+                    }
+            );
+            menuBar.addItem(enableKProjectMenuItem);
+        }
 
         return menuBar;
     }

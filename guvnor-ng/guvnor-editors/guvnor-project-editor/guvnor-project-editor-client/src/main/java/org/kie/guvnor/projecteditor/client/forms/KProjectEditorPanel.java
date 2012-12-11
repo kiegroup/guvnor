@@ -58,7 +58,7 @@ public class KProjectEditorPanel
         projectEditorServiceCaller.call(new RemoteCallback<Void>() {
             @Override
             public void callback(Void v) {
-                view.showSaveSuccessful();
+                view.showSaveSuccessful("kproject.xml");
             }
         }).saveKProject(path, model);
     }

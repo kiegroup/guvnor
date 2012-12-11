@@ -26,7 +26,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ProjectEditorService {
 
-    public Path setUpProjectStructure(Path pathToPom);
+    public Path setUpKProjectStructure(Path pathToPom);
 
     public void saveKProject(Path path,
                              KProjectModel model);

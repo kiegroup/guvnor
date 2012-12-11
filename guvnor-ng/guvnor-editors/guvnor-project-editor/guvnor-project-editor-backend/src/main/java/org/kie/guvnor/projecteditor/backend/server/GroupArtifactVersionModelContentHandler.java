@@ -28,11 +28,8 @@ import java.io.StringWriter;
 
 public class GroupArtifactVersionModelContentHandler {
 
-    // TODO: Finish this when the core is more stable
-
-    public String toString(GroupArtifactVersionModel gavModel) {
-
-        MavenXpp3Writer writer = new MavenXpp3Writer();
+    public String toString(GroupArtifactVersionModel gavModel)
+            throws IOException {
 
         Model model = new Model();
         model.setGroupId(gavModel.getGroupId());
@@ -40,34 +37,14 @@ public class GroupArtifactVersionModelContentHandler {
         model.setVersion(gavModel.getVersion());
 
         StringWriter stringWriter = new StringWriter();
-        try {
-            writer.write(stringWriter, model);
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO -Rikkola-
-        }
+        new MavenXpp3Writer().write(stringWriter, model);
 
         return stringWriter.toString();
-
-//        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-//                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-//                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-//                "  <groupId>org.kie.guvnor</groupId>\n" +
-//                "  <artifactId>guvnor-parent</artifactId>\n" +
-//                "  <name>Guvnor - Multi-project</name>\n" +
-//                "  <version>6.0.0-SNAPSHOT</version>\n" +
-//                "</project>";  // TODO -Rikkola-
     }
 
-    public GroupArtifactVersionModel toModel(String propertiesString) {
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = null;
-        try {
-            model = reader.read(new StringReader(propertiesString));
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO -Rikkola-
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();  //TODO -Rikkola-
-        }
+    public GroupArtifactVersionModel toModel(String propertiesString)
+            throws IOException, XmlPullParserException {
+        Model model = new MavenXpp3Reader().read(new StringReader(propertiesString));
 
         return new GroupArtifactVersionModel(
                 model.getGroupId(),

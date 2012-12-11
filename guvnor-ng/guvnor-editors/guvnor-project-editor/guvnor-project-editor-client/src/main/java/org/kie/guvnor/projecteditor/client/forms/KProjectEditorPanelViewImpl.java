@@ -37,22 +37,8 @@ public class KProjectEditorPanelViewImpl
     }
 
     @Override
-    public String getSaveMenuItemText() {
-        return ProjectEditorConstants.INSTANCE.Save();
+    public void showSaveSuccessful(String fileName) {
+        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
     }
 
-    @Override
-    public String getBuildMenuItemText() {
-        return ProjectEditorConstants.INSTANCE.Build();
-    }
-
-    @Override
-    public void showSaveSuccessful() {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful()));
-    }
-
-    @Override
-    public void showBuildSuccessful() {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.BuildSuccessful()));
-    }
 }

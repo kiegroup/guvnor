@@ -24,6 +24,11 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 public class GroupArtifactVersionEditorPanelViewImpl
         extends Composite
@@ -40,6 +45,8 @@ public class GroupArtifactVersionEditorPanelViewImpl
 
     private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create(GroupArtifactVersionEditorPanelViewImplBinder.class);
 
+    private final Event<NotificationEvent> notificationEvent;
+
     @UiField
     TextBox groupIdTextBox;
 
@@ -49,8 +56,10 @@ public class GroupArtifactVersionEditorPanelViewImpl
     @UiField
     TextBox versionIdTextBox;
 
-    public GroupArtifactVersionEditorPanelViewImpl() {
+    @Inject
+    public GroupArtifactVersionEditorPanelViewImpl(Event<NotificationEvent> notificationEvent) {
         initWidget(uiBinder.createAndBindUi(this));
+        this.notificationEvent = notificationEvent;
     }
 
     @Override
@@ -89,7 +98,7 @@ public class GroupArtifactVersionEditorPanelViewImpl
     }
 
     @Override
-    public void showSaveSuccessful() {
-        //TODO -Rikkola-
+    public void showSaveSuccessful(String fileName) {
+        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
     }
 }

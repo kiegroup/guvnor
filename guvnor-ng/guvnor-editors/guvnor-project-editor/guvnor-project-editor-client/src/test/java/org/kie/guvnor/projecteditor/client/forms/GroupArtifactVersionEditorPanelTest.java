@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
@@ -71,14 +72,19 @@ public class GroupArtifactVersionEditorPanelTest {
         presenter.onArtifactIdChange("artifact2");
         presenter.onVersionIdChange("2.2.2");
 
-        panel.save();
+        panel.save(new Command() {
+            @Override
+            public void execute() {
+                //TODO -Rikkola-
+            }
+        });
 
         GroupArtifactVersionModel savedGav = projectEditorServiceCaller.getSavedGav();
         assertEquals("group2", savedGav.getGroupId());
         assertEquals("artifact2", savedGav.getArtifactId());
         assertEquals("2.2.2", savedGav.getVersion());
 
-        verify(view).showSaveSuccessful();
+        verify(view).showSaveSuccessful("pom.xml");
     }
 
     private GroupArtifactVersionModel createTestModel(String group, String artifact, String version) {

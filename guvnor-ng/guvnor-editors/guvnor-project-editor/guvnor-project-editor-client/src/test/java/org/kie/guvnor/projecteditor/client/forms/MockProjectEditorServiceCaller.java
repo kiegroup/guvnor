@@ -45,7 +45,7 @@ public class MockProjectEditorServiceCaller
 
 
             @Override
-            public Path setUpProjectStructure(Path pathToPom) {
+            public Path setUpKProjectStructure(Path pathToPom) {
                 callback.callback(pathToRelatedKProjectFileIfAny);
                 return pathToRelatedKProjectFileIfAny;
             }

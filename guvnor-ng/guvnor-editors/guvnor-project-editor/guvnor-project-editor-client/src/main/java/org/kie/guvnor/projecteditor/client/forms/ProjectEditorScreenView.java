@@ -27,9 +27,7 @@ public interface ProjectEditorScreenView
 
     }
 
-    void setKProjectToggleOff();
-
-    void setKProjectToggleOn();
+    String getEnableKieProjectMenuItemText();
 
     void setPresenter(Presenter presenter);
 

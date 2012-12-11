@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
@@ -29,6 +30,7 @@ import org.uberfire.backend.vfs.PathFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
 
 @Service
 @ApplicationScoped
@@ -60,28 +62,29 @@ public class ProjectEditorServiceImpl
 
     @Override
     public Path newProject(String name) {
-        Path pathToPom = saveGav(PathFactory.newPath(getGavURI(name)), new GroupArtifactVersionModel());
-        setUpProjectStructure(pathToPom);
-        return pathToPom;
+        return saveGav(PathFactory.newPath(getGavURI(name)), new GroupArtifactVersionModel());
     }
 
     @Override
-    public Path setUpProjectStructure(final Path pathToPom) {
+    public Path setUpKProjectStructure(final Path pathToPom) {
+        try {
+            // Create project structure
+            final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
 
-        // Create project structure
-        final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
+            org.kie.commons.java.nio.file.Path resolve = directory.resolve("src/kbases");
+            ioService.createDirectory(resolve);
 
-        org.kie.commons.java.nio.file.Path resolve = directory.resolve("src/kbases");
-        ioService.createDirectory(resolve);
+            ioService.createDirectory(directory.resolve("src/main/java"));
+            final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
+            saveKProject(pathToKProjectXML, new KProjectModel());
 
-        ioService.createDirectory(directory.resolve("src/main/java"));
-        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
-        saveKProject(pathToKProjectXML, new KProjectModel());
+            ioService.createDirectory(directory.resolve("src/test/java"));
+            ioService.createDirectory(directory.resolve("src/test/resources"));
 
-        ioService.createDirectory(directory.resolve("src/test/java"));
-        ioService.createDirectory(directory.resolve("src/test/resources"));
-
-        return paths.convert(pathToKProjectXML);
+            return paths.convert(pathToKProjectXML);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -93,7 +96,12 @@ public class ProjectEditorServiceImpl
     @Override
     public Path saveGav(final Path pathToGAV,
                         final GroupArtifactVersionModel gavModel) {
-        return paths.convert(ioService.write(paths.convert(pathToGAV), gavModelContentHandler.toString(gavModel)));
+        try {
+            return paths.convert(ioService.write(paths.convert(pathToGAV), gavModelContentHandler.toString(gavModel)));
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        }
+        return null;
     }
 
     @Override
@@ -111,14 +119,22 @@ public class ProjectEditorServiceImpl
 
     @Override
     public GroupArtifactVersionModel loadGav(final Path path) {
-        return gavModelContentHandler.toModel(ioService.readAllString(paths.convert(path)));
+        try {
+            return gavModelContentHandler.toModel(ioService.readAllString(paths.convert(path)));
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        }
+        return null;
+
     }
 
     @Override
     public Path pathToRelatedKProjectFileIfAny(final Path pathToPomXML) {
         final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPomXML);
 
-        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("/src/main/resources/META-INF/kproject.xml");
+        final org.kie.commons.java.nio.file.Path pathToKProjectXML = directory.resolve("src/main/resources/META-INF/kproject.xml");
 
         if (ioService.exists(pathToKProjectXML)) {
             return paths.convert(pathToKProjectXML);

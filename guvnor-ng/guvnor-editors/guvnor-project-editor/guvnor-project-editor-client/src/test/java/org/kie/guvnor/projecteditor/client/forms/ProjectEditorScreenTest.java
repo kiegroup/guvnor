@@ -16,11 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.projecteditor.client.MessageService;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
+import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
@@ -30,7 +32,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProjectEditorScreenTest {
-
     private ProjectEditorScreenView view;
     private ProjectEditorScreenView.Presenter presenter;
     private GroupArtifactVersionEditorPanel gavPanel;
@@ -44,6 +45,7 @@ public class ProjectEditorScreenTest {
         view = mock(ProjectEditorScreenView.class);
         when(view.getSaveMenuItemText()).thenReturn("");
         when(view.getBuildMenuItemText()).thenReturn("");
+        when(view.getEnableKieProjectMenuItemText()).thenReturn("");
         gavPanel = mock(GroupArtifactVersionEditorPanel.class);
         kProjectEditorPanel = mock(KProjectEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
@@ -56,7 +58,7 @@ public class ProjectEditorScreenTest {
     public void testBasicSetup() throws Exception {
         verify(view).setPresenter(presenter);
         verify(view).setGroupArtifactVersionEditorPanel(gavPanel);
-        verify(view).setKProjectEditorPanel(kProjectEditorPanel);
+        verify(view, never()).setKProjectEditorPanel(kProjectEditorPanel);
     }
 
     @Test
@@ -65,7 +67,6 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        verify(view).setKProjectToggleOff();
         verify(gavPanel).init(path);
         verify(kProjectEditorPanel, never()).init(any(Path.class));
     }
@@ -77,7 +78,6 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        verify(view).setKProjectToggleOn();
         verify(gavPanel).init(path);
         verify(kProjectEditorPanel).init(pathToKProjectXML);
     }
@@ -85,14 +85,15 @@ public class ProjectEditorScreenTest {
     @Test
     public void testEnableKProject() throws Exception {
         projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(null);
-        Path path = mock(Path.class);
-        screen.init(path);
+        Path pathToGav = mock(Path.class);
+        screen.init(pathToGav);
 
         Path pathToKProjectXML = mock(Path.class);
         projectEditorServiceCaller.setPathToRelatedKProjectFileIfAny(pathToKProjectXML);
         presenter.onKProjectToggleOn();
 
         verify(kProjectEditorPanel).init(pathToKProjectXML);
+        verify(view).setKProjectEditorPanel(kProjectEditorPanel);
     }
 
     @Test
@@ -104,7 +105,7 @@ public class ProjectEditorScreenTest {
         MenuBar menuBar = screen.buildMenuBar();
         clickFirst(menuBar);
 
-        verify(gavPanel).save();
+        verify(gavPanel).save(any(Command.class));
         verify(kProjectEditorPanel, never()).save();
     }
 
@@ -118,7 +119,9 @@ public class ProjectEditorScreenTest {
         MenuBar menuBar = screen.buildMenuBar();
         clickFirst(menuBar);
 
-        verify(gavPanel).save();
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(gavPanel).save(commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
         verify(kProjectEditorPanel).save();
     }
 

@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
@@ -24,14 +25,10 @@ public class ProjectEditorScreenViewImpl
         extends MultiPageEditorView
         implements ProjectEditorScreenView {
 
-    @Override
-    public void setKProjectToggleOff() {
-        //TODO -Rikkola-
-    }
 
-    @Override
-    public void setKProjectToggleOn() {
-        //TODO -Rikkola-
+
+    public ProjectEditorScreenViewImpl() {
+
     }
 
     @Override
@@ -67,6 +64,12 @@ public class ProjectEditorScreenViewImpl
                 //TODO -Rikkola-
             }
         });
+    }
+
+
+    @Override
+    public String getEnableKieProjectMenuItemText() {
+        return ProjectEditorConstants.INSTANCE.EnableKieProject();
     }
 
     @Override
