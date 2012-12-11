@@ -31,7 +31,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 @Dependent
-@WorkbenchEditor(identifier = "M2RepoEditor", fileTypes = "repository")
+@WorkbenchEditor(identifier = "M2RepoEditor")
 public class M2RepoEditorPresenter {
 
     public interface View
