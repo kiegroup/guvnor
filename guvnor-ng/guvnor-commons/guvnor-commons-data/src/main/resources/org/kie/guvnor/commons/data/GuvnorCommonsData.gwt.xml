@@ -26,5 +26,6 @@
   <source path='factconstraints'/>
   <source path='project'/>
   <source path='workingset'/>
-
+  <source path='tables'/>
+  
 </module>

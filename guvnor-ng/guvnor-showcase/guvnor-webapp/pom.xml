@@ -46,6 +46,11 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-commons-data</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-workingset-client</artifactId>
     </dependency>
 
@@ -138,6 +143,21 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-project-editor-backend</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-backend</artifactId>
+    </dependency>    
 
     <!-- UberFire -->
     <dependency>
@@ -322,6 +342,9 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
 -->
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
+            
             <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-view-source-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-error-messages-widget</compileSourcesArtifact>
@@ -333,7 +356,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-security</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-services-api</compileSourcesArtifact>
-
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-data</compileSourcesArtifact>
+            
             <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
