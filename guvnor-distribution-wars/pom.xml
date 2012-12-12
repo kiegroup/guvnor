@@ -28,7 +28,7 @@
           <transformations>
             <transformation>
               <!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-              <input>../guvnor-webapp-drools/src/main/webapp/WEB-INF/web.xml</input>
+              <input>../guvnor-ng/guvnor-showcase/guvnor-webapp/src/main/webapp/WEB-INF/web.xml</input>
               <config>src/main/config-processor-filter/jboss-as-7_0/web_xml-filter.xml</config>
               <output>config-processor-filtered/jboss-as-7_0/WEB-INF/web.xml</output>
             </transformation>
@@ -71,8 +71,8 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-drools</artifactId>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-webapp</artifactId>
       <type>war</type>
     </dependency>
     <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
