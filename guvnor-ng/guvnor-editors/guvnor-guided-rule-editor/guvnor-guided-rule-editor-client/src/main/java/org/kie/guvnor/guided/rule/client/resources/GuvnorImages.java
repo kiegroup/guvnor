@@ -24,10 +24,6 @@ public class GuvnorImages {
 
     public static final GuvnorImages INSTANCE = new GuvnorImages();
 
-    private GuvnorImages() {
-
-    }
-
     public Image DeleteItemSmall() {
         Image image = new Image( ItemImages.INSTANCE.deleteItemSmall() );
         image.setAltText( Constants.INSTANCE.DeleteItem() );

@@ -18,12 +18,16 @@ package org.kie.guvnor.guided.rule.client;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -35,10 +39,17 @@ import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+
+import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "brl")
@@ -73,12 +84,17 @@ public class GuidedRuleEditorPresenter {
     @Inject
     private Caller<GuidedRuleEditorService> service;
 
+    @Inject
+    private Event<NotificationEvent> notification;
+
     private Path path = null;
 
     @PostConstruct
     public void init() {
-        multiPage.addWidget( view, "Edit" );
-        multiPage.addPage( new Page( viewSource, "Source" ) {
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 service.call( new RemoteCallback<String>() {
@@ -114,8 +130,10 @@ public class GuidedRuleEditorPresenter {
             @Override
             public void callback( Path response ) {
                 view.setNotDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).save( path, view.getContent() );
+        } ).save( path,
+                  view.getContent() );
     }
 
     @IsDirty
@@ -144,6 +162,30 @@ public class GuidedRuleEditorPresenter {
     @WorkbenchPartView
     public IsWidget getWidget() {
         return multiPage;
+    }
+
+    @WorkbenchMenu
+    public MenuBar buildMenuBar() {
+        return newResourceMenuBuilder().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).build();
     }
 
 }

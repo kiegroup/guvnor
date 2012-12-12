@@ -71,4 +71,7 @@ public interface DroolsGuvnorImageResources
     @Source("images/fact.gif")
     ImageResource fact();
 
+    @Source("images/guidedRuleIcon.gif")
+    ImageResource guidedRuleIcon();
+
 }

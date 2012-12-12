@@ -71,9 +71,10 @@ public class GuidedRuleEditorServiceImpl
     @Override
     public void save( final Path path,
                       final RuleModel model ) {
-        if ( model instanceof TemplateModel ) {
-
-        }
+        final BRLPersistence p = BRXMLPersistence.getInstance();
+        final String xml = p.marshal( model );
+        vfs.write( path,
+                   xml );
     }
 
     @Override

@@ -461,4 +461,6 @@ public interface Constants
 
     String InvalidPatternSectionDisabled();
 
+    String NewGuidedRuleDescription();
+
 }

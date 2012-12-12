@@ -21,13 +21,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class AnalysisReport {
 
-    private AnalysisReportLine[] errors;
-    private AnalysisReportLine[] warnings;
-    private AnalysisReportLine[] notes;
-    private AnalysisFactUsage[]  factUsages;
+    private AnalysisReportLine[] errors = new AnalysisReportLine[ 0 ];
+    private AnalysisReportLine[] warnings = new AnalysisReportLine[ 0 ];
+    private AnalysisReportLine[] notes = new AnalysisReportLine[ 0 ];
+    private AnalysisFactUsage[] factUsages = new AnalysisFactUsage[ 0 ];
 
     public AnalysisReport() {
-
     }
 
     public AnalysisReportLine[] getErrors() {
