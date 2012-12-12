@@ -31,6 +31,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
@@ -97,7 +98,7 @@ public class SerializationHelper {
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
-            
+
             throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
@@ -111,16 +112,16 @@ public class SerializationHelper {
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                        boolean dispose) throws Exception {
-        
-        return getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newSerializeMarshallingStrategy(), dispose);
+                                                                                 boolean dispose) throws Exception {
+
+        return getSerialisedStatefulKnowledgeSession( ksession, MarshallerFactory.newSerializeMarshallingStrategy(), dispose );
     }
-    
+
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                         ObjectMarshallingStrategy strategy,
-                                                                        boolean dispose) throws Exception {
-        
-        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(), new ObjectMarshallingStrategy[]{ strategy } );
+                                                                                 ObjectMarshallingStrategy strategy,
+                                                                                 boolean dispose) throws Exception {
+
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase(), new ObjectMarshallingStrategy[]{strategy} );
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         marshaller.marshall( bos,
@@ -129,9 +130,9 @@ public class SerializationHelper {
         bos.close();
 
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulKnowledgeSession ksession2 = marshaller.unmarshall( bais,
-                                                                    new SessionConfiguration(),
-                                                                    EnvironmentFactory.newEnvironment() );
+        KieSession ksession2 = marshaller.unmarshall( bais,
+                                                      new SessionConfiguration(),
+                                                      EnvironmentFactory.newEnvironment() );
         bais.close();
 
         bos = new ByteArrayOutputStream();
@@ -152,7 +153,7 @@ public class SerializationHelper {
             ksession.dispose();
         }
 
-        return ksession2;
+        return (StatefulKnowledgeSession) ksession2;
     }
 
     public static boolean areByteArraysEqual(byte[] b1,
@@ -163,7 +164,7 @@ public class SerializationHelper {
 
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
-                System.out.println("Difference at "+i+": ["+b1[i]+"] != ["+b2[i]+"]");
+                System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
                 return false;
             }
         }
