@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.enums.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.client.widget.DeleteButtonCellWidget;
 
 public class EnumEditorView
@@ -112,9 +112,12 @@ public class EnumEditorView
         } );
 
         cellTable.addColumn( delete );
-        cellTable.addColumn( columnFirst, "Fact" );
-        cellTable.addColumn( columnSecond, "Field" );
-        cellTable.addColumn( columnThird, "Context" );
+        cellTable.addColumn( columnFirst,
+                             "Fact" );
+        cellTable.addColumn( columnSecond,
+                             "Field" );
+        cellTable.addColumn( columnThird,
+                             "Context" );
 
         // Connect the table to the data provider.
         dataProvider.addDataDisplay( cellTable );
@@ -186,7 +189,7 @@ public class EnumEditorView
     @Override
     public boolean confirmClose() {
         if ( isDirty() ) {
-            return Window.confirm( Constants.INSTANCE.discardUnsavedData() );
+            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
         }
         return true;
     }

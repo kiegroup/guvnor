@@ -18,12 +18,14 @@ package org.kie.guvnor.enums.client.editor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -42,6 +44,7 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
@@ -83,12 +86,17 @@ public class EnumEditorPresenter {
     @Inject
     private Caller<EnumService> enumService;
 
+    @Inject
+    private Event<NotificationEvent> notification;
+
     private Path path;
 
     @PostConstruct
     public void init() {
-        multiPage.addWidget( view, "Edit" );
-        multiPage.addPage( new Page( viewSource, "Source" ) {
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 viewSource.setContent( view.getContent() );
@@ -107,8 +115,8 @@ public class EnumEditorPresenter {
         vfs.call( new RemoteCallback<String>() {
             @Override
             public void callback( String response ) {
-                if ( response == null ) {
-                    view.setContent( "-- empty --" );
+                if ( response == null || response.isEmpty() ) {
+                    view.setContent( null );
                 } else {
                     view.setContent( response );
                 }
@@ -122,8 +130,10 @@ public class EnumEditorPresenter {
             @Override
             public void callback( Path response ) {
                 view.setNotDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).write( path, view.getContent() );
+        } ).write( path,
+                   view.getContent() );
     }
 
     @IsDirty
@@ -168,6 +178,11 @@ public class EnumEditorPresenter {
                         pop.show();
                     }
                 } ).validate( path, view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
             }
         } ).build();
     }

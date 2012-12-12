@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.enums.client.resources.i18n;
+package org.kie.guvnor.enums.client.resources;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-/**
- * EnumEditor I18N constants
- */
-public interface Constants
+public interface ImageResources
         extends
-        Messages {
+        ClientBundle {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    String newEnumDescription();
+    @Source("images/enumIcon.gif")
+    ImageResource enumIcon();
 
 }

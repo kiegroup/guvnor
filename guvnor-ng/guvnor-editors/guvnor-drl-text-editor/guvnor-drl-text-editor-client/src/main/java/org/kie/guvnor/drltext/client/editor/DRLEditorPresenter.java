@@ -102,7 +102,7 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback( String response ) {
                         if ( response == null || response.isEmpty() ) {
-                            view.setContent( "-- empty --",
+                            view.setContent( null,
                                              model );
                         } else {
                             view.setContent( response,
