@@ -80,6 +80,8 @@ public interface CommonConstants
 
     String DiscardUnsavedData();
 
+    String ItemCreatedSuccessfully();
+
     String ItemSavedSuccessfully();
 
     String ItemPathSubheading();

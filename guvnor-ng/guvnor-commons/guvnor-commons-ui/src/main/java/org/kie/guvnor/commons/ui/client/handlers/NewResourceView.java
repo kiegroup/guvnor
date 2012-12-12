@@ -17,73 +17,43 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.commons.ui.client.resources.ItemImages;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.FormStylePopup;
 
 @ApplicationScoped
-public class NewItemView extends FormStylePopup implements NewItemPresenter.View {
+public class NewResourceView extends FormStylePopup implements NewResourcePresenter.View {
 
-    private NewItemPresenter presenter;
+    private NewResourcePresenter presenter;
 
-    private final TextBox itemNameTextBox = new TextBox();
-    private final Label itemPathLabel = new Label();
+    private final TextBox fileNameTextBox = new TextBox();
+    private final VerticalPanel handlersContainer = new VerticalPanel();
+    private final Map<NewResourceHandler, RadioButton> options = new HashMap<NewResourceHandler, RadioButton>();
     private final Button okButton = makeOKButton();
 
-    private final VerticalPanel handlersContainer = new VerticalPanel();
-    private final FormStyleLayout extensionContainer = new FormStyleLayout();
-    private final Map<NewResourceHandler, RadioButton> options = new HashMap<NewResourceHandler, RadioButton>();
-
-    public NewItemView() {
-        super( ItemImages.INSTANCE.newItem(),
-               NewItemPopupConstants.INSTANCE.popupTitle() );
-    }
-
     @Override
-    public void init( final NewItemPresenter presenter ) {
+    public void init( final NewResourcePresenter presenter ) {
         this.presenter = presenter;
-    }
-
-    @PostConstruct
-    private void setup() {
-        //Mandatory details
-        addAttribute( NewItemPopupConstants.INSTANCE.itemNameSubheading(),
-                      itemNameTextBox );
-        addAttribute( CommonConstants.INSTANCE.ItemPathSubheading(),
-                      itemPathLabel );
-
-        //Handlers
-        addAttribute( "",
-                      handlersContainer );
-
-        //Extensions
-        addRow( extensionContainer );
-
-        //OK button
-        addAttribute( "",
-                      okButton );
     }
 
     @Override
     public void show() {
         //Clear previous resource name
-        itemNameTextBox.setText( "" );
+        fileNameTextBox.setText( "" );
         super.show();
     }
 
@@ -93,22 +63,33 @@ public class NewItemView extends FormStylePopup implements NewItemPresenter.View
     }
 
     @Override
-    public void setActivePath( final Path path ) {
-        if ( path == null ) {
-            itemPathLabel.setText( CommonConstants.INSTANCE.ItemUndefinedPath() );
-            okButton.setEnabled( false );
-        } else {
-            itemPathLabel.setText( path.toURI() );
-            okButton.setEnabled( true );
-        }
-    }
-
-    @Override
     public void setActiveHandler( final NewResourceHandler handler ) {
+        //Render entire panel contents (this assures we can re-use the same underlying FormStyleLayout
+        clear();
+        addAttribute( NewItemPopupConstants.INSTANCE.itemNameSubheading(),
+                      fileNameTextBox );
+        addAttribute( "",
+                      handlersContainer );
+
+        //Extensions for Handler
+        final List<Pair<String, IsWidget>> extensions = handler.getExtensions();
+        if ( extensions != null ) {
+            for ( Pair<String, IsWidget> extension : extensions ) {
+                addAttribute( extension.getK1(),
+                              extension.getK2() );
+            }
+        }
+
+        addAttribute( "",
+                      okButton );
+
+        //Select handler
         final RadioButton option = options.get( handler );
         if ( option != null ) {
-            option.setValue( true );
+            option.setValue( true,
+                             true );
         }
+
     }
 
     @Override
@@ -120,8 +101,8 @@ public class NewItemView extends FormStylePopup implements NewItemPresenter.View
     }
 
     @Override
-    public String getItemName() {
-        return itemNameTextBox.getText();
+    public String getFileName() {
+        return fileNameTextBox.getText();
     }
 
     @Override
@@ -129,35 +110,25 @@ public class NewItemView extends FormStylePopup implements NewItemPresenter.View
         Window.alert( NewItemPopupConstants.INSTANCE.MissingName() );
     }
 
-    @Override
-    public void showMissingPathError() {
-        Window.alert( CommonConstants.INSTANCE.MissingPath() );
-    }
-
-    @Override
-    public void addExtensionWidget( final String caption,
-                                    final IsWidget widget ) {
-        extensionContainer.addAttribute( caption,
-                                         widget );
-    }
-
     private RadioButton makeOption( final NewResourceHandler handler ) {
         final RadioButton option = new RadioButton( "options",
                                                     handler.getDescription() );
-        option.addClickHandler( new ClickHandler() {
+        option.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
             @Override
-            public void onClick( final ClickEvent event ) {
-                selectNewResourceHandler( handler );
-                center();
+            public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                if ( event.getValue() == true ) {
+                    selectNewResourceHandler( handler );
+                    center();
+                }
             }
-
         } );
+
         return option;
     }
 
     private void selectNewResourceHandler( final NewResourceHandler handler ) {
-        extensionContainer.clear();
+        setActiveHandler( handler );
         presenter.setActiveHandler( handler );
     }
 

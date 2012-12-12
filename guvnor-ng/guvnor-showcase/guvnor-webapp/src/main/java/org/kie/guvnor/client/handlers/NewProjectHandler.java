@@ -2,6 +2,7 @@ package org.kie.guvnor.client.handlers;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
@@ -10,8 +11,10 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * Handler for the creation of new Projects
@@ -23,6 +26,9 @@ public class NewProjectHandler implements NewResourceHandler {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<NotificationEvent> notificationEvent;
 
     @Override
     public String getFileType() {
@@ -40,8 +46,9 @@ public class NewProjectHandler implements NewResourceHandler {
     }
 
     @Override
-    public void create( final Path path ) {
+    public void create( final String fileName ) {
         // TODO: Just show the new project popup here, it does not need to be a place. -Rikkola-
+        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
         placeManager.goTo( "newProjectPopup" );
     }
 

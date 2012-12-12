@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.commons.ui.client.handlers.NewItemPresenter;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -59,7 +59,7 @@ public class GuvnorM2RepoPerspective {
     private IOCBeanManager iocBeanManager;
 
     @Inject
-    private NewItemPresenter newItemPresenter;
+    private NewResourcePresenter newResourcePresenter;
 
     private PerspectiveDefinition perspective;
     private MenuBar menuBar;
@@ -135,7 +135,7 @@ public class GuvnorM2RepoPerspective {
         final Command command = new Command() {
             @Override
             public void execute() {
-                newItemPresenter.show();
+                newResourcePresenter.show();
             }
         };
         toolBar.addItem( new DefaultToolBarItem( url,

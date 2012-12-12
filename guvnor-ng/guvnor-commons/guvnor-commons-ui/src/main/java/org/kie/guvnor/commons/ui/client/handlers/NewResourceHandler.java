@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.commons.data.Pair;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -31,9 +30,9 @@ public interface NewResourceHandler {
 
     /**
      * An entry-point for the creation of the new resource
-     * @param path
+     * @param name Name of the new resource including file extension
      */
-    public void create( final Path path );
+    public void create( final String name );
 
     /**
      * Return a List of Widgets that the NewResourceHandler can use to gather additional parameters for the

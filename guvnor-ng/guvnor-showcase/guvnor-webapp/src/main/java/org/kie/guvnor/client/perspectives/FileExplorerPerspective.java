@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.ui.client.handlers.NewItemPresenter;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.Perspective;
@@ -59,7 +59,7 @@ public class FileExplorerPerspective {
     private IOCBeanManager iocBeanManager;
 
     @Inject
-    private NewItemPresenter newItemPresenter;
+    private NewResourcePresenter newResourcePresenter;
 
     @Inject
     private WorkbenchContext context;
@@ -132,8 +132,7 @@ public class FileExplorerPerspective {
                                                                     @Override
                                                                     public void execute() {
                                                                         final Path activePath = context.getActivePath();
-                                                                        newItemPresenter.show( activePath,
-                                                                                            activeHandler );
+                                                                        newResourcePresenter.show( activeHandler );
                                                                     }
                                                                 } ) );
             }
@@ -149,7 +148,7 @@ public class FileExplorerPerspective {
             @Override
             public void execute() {
                 final Path activePath = context.getActivePath();
-                newItemPresenter.show( activePath );
+                newResourcePresenter.show();
             }
         };
         toolBar.addItem( new DefaultToolBarItem( url,
