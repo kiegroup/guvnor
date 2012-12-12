@@ -16,59 +16,91 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
-//import java.util.List;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.kie.commons.io.IOService;
-//import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
-//import org.kie.guvnor.projecteditor.model.KModuleModel;
-//import org.mockito.ArgumentCaptor;
-//import org.mockito.ArgumentMatcher;
-//import org.uberfire.backend.server.util.Paths;
-//import org.uberfire.backend.vfs.Path;
-//import org.uberfire.backend.vfs.PathFactory;
-//
-//import static org.junit.Assert.*;
-//import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.commons.io.IOService;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
+
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class ProjectEditorServiceImplTest {
 
-//    private IOService                               ioService;
-//    private Paths                                   paths;
-//    private ProjectEditorServiceImpl                service;
-//    private KModuleEditorContentHandler            kProjectEditorContentHandler;
-//    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        ioService = mock( IOService.class );
-//        paths = mock( Paths.class );
-//        kProjectEditorContentHandler = mock( KModuleEditorContentHandler.class );
-//        groupArtifactVersionModelContentHandler = mock( GroupArtifactVersionModelContentHandler.class );
-//        service = new ProjectEditorServiceImpl( ioService, paths, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler );
-//    }
-//
-//    @Test
-//    public void testSetUpProjectStructure() throws Exception {
-//        Path pathToPom = PathFactory.newPath( "file://myproject/pom.xml" );
-//
-//        service.setUpProjectStructure( pathToPom );
-//
-//        ArgumentCaptor<Path> folderPathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-//        verify( ioService, times( 4 ) ).createDirectory( folderPathArgumentCaptor.capture() );
-//
-//        assertContains( "file://myproject/src/kbases", folderPathArgumentCaptor.getAllValues() );
-//        assertContains( "file://myproject/src/main/java", folderPathArgumentCaptor.getAllValues() );
-//        assertContains( "file://myproject/src/test/java", folderPathArgumentCaptor.getAllValues() );
-//        assertContains( "file://myproject/src/test/resources", folderPathArgumentCaptor.getAllValues() );
-//
-//        ArgumentCaptor<Path> filePathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-//        verify( ioService ).write( filePathArgumentCaptor.capture(), anyString() );
-//
-//        assertEquals( "file://myproject/src/main/resources/META-INF/kproject.xml", filePathArgumentCaptor.getValue().toURI() );
-//    }
-//
+    private IOService ioService;
+    private Paths paths;
+    private ProjectEditorServiceImpl service;
+    private KModuleEditorContentHandler kProjectEditorContentHandler;
+    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        ioService = mock(IOService.class);
+        paths = mock(Paths.class);
+        kProjectEditorContentHandler = mock(KModuleEditorContentHandler.class);
+        groupArtifactVersionModelContentHandler = mock(GroupArtifactVersionModelContentHandler.class);
+        service = new ProjectEditorServiceImpl(ioService, paths, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler);
+    }
+
+    @Test
+    public void testSetUpProjectStructure() throws Exception {
+
+        Path pathToPom = mock(Path.class);
+        org.kie.commons.java.nio.file.Path directory = setUpPathToPomDirectory(pathToPom);
+
+        org.kie.commons.java.nio.file.Path kbases = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/kbases", kbases);
+        org.kie.commons.java.nio.file.Path mainJava = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/java", mainJava);
+        org.kie.commons.java.nio.file.Path mainResources = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/resources", mainResources);
+        org.kie.commons.java.nio.file.Path testJava = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/test/java", testJava);
+        org.kie.commons.java.nio.file.Path testResources = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/test/resources", testResources);
+
+        org.kie.commons.java.nio.file.Path kmodule = mock(org.kie.commons.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/resources/META-INF/kmodule.xml", kmodule);
+
+        service.setUpKModuleStructure(pathToPom);
+
+        verify(ioService).createDirectory(kbases);
+        verify(ioService).createDirectory(mainJava);
+        verify(ioService).createDirectory(mainResources);
+        verify(ioService).createDirectory(testJava);
+        verify(ioService).createDirectory(testResources);
+
+        verify(ioService).write(eq(kmodule), anyString());
+    }
+
+    private org.kie.commons.java.nio.file.Path setUpPathToPomDirectory(Path pathToPom) {
+        org.kie.commons.java.nio.file.Path child = mock(org.kie.commons.java.nio.file.Path.class);
+        when(
+                paths.convert(pathToPom)
+        ).thenReturn(
+                child
+        );
+        org.kie.commons.java.nio.file.Path directory = mock(org.kie.commons.java.nio.file.Path.class);
+        when(
+                child.getParent()
+        ).thenReturn(
+                directory
+        );
+        return directory;
+    }
+
+    private void setUpDirectory(org.kie.commons.java.nio.file.Path directory, String pathAsText, org.kie.commons.java.nio.file.Path path) {
+        when(
+                directory.resolve(pathAsText)
+        ).thenReturn(
+                path
+        );
+    }
+
+
+    //
 //    @Test
 //    public void testLoadKProject() throws Exception {
 //
@@ -173,18 +205,18 @@ public class ProjectEditorServiceImplTest {
 //        assertNull( service.pathToRelatedKProjectFileIfAny( path ) );
 //    }
 //
-//    private void assertContains( String uri,
-//                                 List<Path> allValues ) {
-//        boolean contains = false;
-//        for ( Path path : allValues ) {
-//            if ( uri.equals( path.toURI() ) ) {
-//                contains = true;
-//                break;
-//            }
-//        }
-//
-//        assertTrue( "Values should contain " + uri, contains );
-//    }
+    private void assertContains(String uri,
+                                List<org.kie.commons.java.nio.file.Path> allValues) {
+        boolean contains = false;
+        for (org.kie.commons.java.nio.file.Path path : allValues) {
+            if (uri.equals(path.toUri())) {
+                contains = true;
+                break;
+            }
+        }
+
+        assertTrue("Values should contain " + uri, contains);
+    }
 //
 //    class PathMatcher extends ArgumentMatcher<Path> {
 //

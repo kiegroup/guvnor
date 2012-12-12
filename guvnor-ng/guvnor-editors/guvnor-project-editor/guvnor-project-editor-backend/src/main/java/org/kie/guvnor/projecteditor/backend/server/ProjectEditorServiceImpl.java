@@ -75,6 +75,7 @@ public class ProjectEditorServiceImpl
             ioService.createDirectory(resolve);
 
             ioService.createDirectory(directory.resolve("src/main/java"));
+            ioService.createDirectory(directory.resolve("src/main/resources"));
             final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve("src/main/resources/META-INF/kmodule.xml");
             saveKModule(pathToKModuleXML, new KModuleModel());
 
