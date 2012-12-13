@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.model;
+package org.kie.guvnor.datamodel.oracle;
 
 public interface DataType {
 

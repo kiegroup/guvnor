@@ -342,4 +342,7 @@ public interface Constants
 
     String AreYouSureYouWantToRemoveThisItem();
 
+    //NewResourceHandler
+    String NewGuidedDecisionTableDescription();
+
 }

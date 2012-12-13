@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.guvnor.datamodel.model.MockDataModel;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.AttributeCol52;
@@ -271,11 +271,11 @@ public class GuidedDecisionTableTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "name",
                                              String.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING )
+                                             DataType.TYPE_STRING )
                      } );
             }
         } );
@@ -341,25 +341,25 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( at ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( c1_ ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( a2 ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( ins_ ) );
 
-        assertEquals( DataModelTypes.TYPE_BOOLEAN,
+        assertEquals( DataType.TYPE_BOOLEAN,
                       utils.getType( at_ ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( c1 ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( a ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( ins ) );
 
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( c2 ) );
     }
 
@@ -375,19 +375,19 @@ public class GuidedDecisionTableTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "name",
                                              String.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING ),
+                                             DataType.TYPE_STRING ),
                              new ModelField( "date",
                                              Date.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_DATE ),
+                                             DataType.TYPE_DATE ),
                              new ModelField( "approved",
                                              Boolean.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_BOOLEAN )
+                                             DataType.TYPE_BOOLEAN )
                      } );
             }
         } );
@@ -459,27 +459,27 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( salienceAttribute ) );
-        assertEquals( DataModelTypes.TYPE_BOOLEAN,
+        assertEquals( DataType.TYPE_BOOLEAN,
                       utils.getType( enabledAttribute ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( conditionColName ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( conditionColAge ) );
-        assertEquals( DataModelTypes.TYPE_DATE,
+        assertEquals( DataType.TYPE_DATE,
                       utils.getType( conditionColDate ) );
-        assertEquals( DataModelTypes.TYPE_BOOLEAN,
+        assertEquals( DataType.TYPE_BOOLEAN,
                       utils.getType( conditionColApproved ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( a ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( a2 ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( ins ) );
-        assertEquals( DataModelTypes.TYPE_NUMERIC_INTEGER,
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       utils.getType( ins_ ) );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       utils.getType( conditionColAge2 ) );
     }
 
@@ -528,11 +528,11 @@ public class GuidedDecisionTableTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "name",
                                              String.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING )
+                                             DataType.TYPE_STRING )
                      } );
             }
         } );
@@ -637,11 +637,11 @@ public class GuidedDecisionTableTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "name",
                                              String.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING )
+                                             DataType.TYPE_STRING )
                      } );
             }
         } );
@@ -653,7 +653,7 @@ public class GuidedDecisionTableTest {
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        c1.setFieldType( DataModelTypes.TYPE_STRING );
+        c1.setFieldType( DataType.TYPE_STRING );
         c1.setValueList( "age>10,age>20,age>30" );
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );
@@ -680,11 +680,11 @@ public class GuidedDecisionTableTest {
                              new ModelField( "age",
                                              Integer.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "name",
                                              String.class.getName(),
                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING )
+                                             DataType.TYPE_STRING )
                      } );
             }
         } );
@@ -696,7 +696,7 @@ public class GuidedDecisionTableTest {
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-        c1.setFieldType( DataModelTypes.TYPE_STRING );
+        c1.setFieldType( DataType.TYPE_STRING );
         c1.setValueList( "getAge()>10,getAge()>20,getAge()>30" );
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );

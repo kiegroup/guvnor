@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.rule.client.widget;
 
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionCollection;
 import org.kie.guvnor.guided.rule.model.ExpressionField;
 import org.kie.guvnor.guided.rule.model.ExpressionGlobalVariable;

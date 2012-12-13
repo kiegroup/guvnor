@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
@@ -283,27 +283,27 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Get a cell based upon the data-type
         String type = utils.getType( col );
 
-        if ( type.equals( DataModelTypes.TYPE_NUMERIC ) ) {
+        if ( type.equals( DataType.TYPE_NUMERIC ) ) {
             cell = makeNumericCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGDECIMAL ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
             cell = makeNumericBigDecimalCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGINTEGER ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
             cell = makeNumericBigIntegerCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BYTE ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
             cell = makeNumericByteCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_DOUBLE ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
             cell = makeNumericDoubleCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_FLOAT ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
             cell = makeNumericFloatCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_INTEGER ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
             cell = makeNumericIntegerCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_LONG ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
             cell = makeNumericLongCell();
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_SHORT ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
             cell = makeNumericShortCell();
-        } else if ( type.equals( DataModelTypes.TYPE_BOOLEAN ) ) {
+        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
             cell = makeBooleanCell();
-        } else if ( type.equals( DataModelTypes.TYPE_DATE ) ) {
+        } else if ( type.equals( DataType.TYPE_DATE ) ) {
             cell = makeDateCell();
         }
 

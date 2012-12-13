@@ -26,7 +26,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.templates.InterpolationVariable;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 

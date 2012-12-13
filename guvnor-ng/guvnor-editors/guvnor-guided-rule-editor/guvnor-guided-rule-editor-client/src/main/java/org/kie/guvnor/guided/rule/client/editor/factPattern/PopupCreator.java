@@ -33,7 +33,7 @@ import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
 import org.kie.guvnor.guided.rule.model.ExpressionUnboundFact;
 import org.kie.guvnor.guided.rule.model.FactPattern;

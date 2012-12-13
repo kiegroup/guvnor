@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.kie.guvnor.datamodel.model.DateConverter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.ActionWorkItemCol52;
 import org.kie.guvnor.guided.dtable.model.ActionWorkItemInsertFactCol52;
@@ -28,7 +29,6 @@ import org.kie.guvnor.guided.dtable.model.ActionWorkItemSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
@@ -71,28 +71,28 @@ public class DTCellValueUtilities {
      * @param column
      * @return
      */
-    public DTDataTypes52 getDataType( BaseColumn column ) {
+    public DataType.DataTypes getDataType( BaseColumn column ) {
 
         //Limited Entry are simply boolean
         if ( column instanceof LimitedEntryCol ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Action Work Items are always boolean
         if ( column instanceof ActionWorkItemCol52 ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Actions setting Field Values from Work Item Result Parameters are always boolean
         if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;
             if ( cc.getOperator() != null && ( cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" ) ) ) {
-                return DTDataTypes52.BOOLEAN;
+                return DataType.DataTypes.BOOLEAN;
             }
         }
 
@@ -106,17 +106,17 @@ public class DTCellValueUtilities {
      * @param condition ConditionCol52
      * @return
      */
-    public DTDataTypes52 getDataType( Pattern52 pattern,
-                                      ConditionCol52 condition ) {
+    public DataType.DataTypes getDataType( Pattern52 pattern,
+                                           ConditionCol52 condition ) {
 
         //Limited Entry are simply boolean
         if ( condition instanceof LimitedEntryCol ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Operators "is null" and "is not null" require a boolean cell
         if ( condition.getOperator() != null && ( condition.getOperator().equals( "== null" ) || condition.getOperator().equals( "!= null" ) ) ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Extended Entry...
@@ -130,12 +130,12 @@ public class DTCellValueUtilities {
      * @param action ActionSetFieldCol52
      * @return
      */
-    public DTDataTypes52 getDataType( Pattern52 pattern,
-                                      ActionSetFieldCol52 action ) {
+    public DataType.DataTypes getDataType( Pattern52 pattern,
+                                           ActionSetFieldCol52 action ) {
 
         //Limited Entry are simply boolean
         if ( action instanceof LimitedEntryCol ) {
-            return DTDataTypes52.BOOLEAN;
+            return DataType.DataTypes.BOOLEAN;
         }
 
         //Extended Entry...
@@ -152,7 +152,7 @@ public class DTCellValueUtilities {
      * @param dataType
      * @param dcv
      */
-    public void assertDTCellValue( DTDataTypes52 dataType,
+    public void assertDTCellValue( DataType.DataTypes dataType,
                                    DTCellValue52 dcv ) {
         if ( dcv == null ) {
             return;
@@ -287,7 +287,7 @@ public class DTCellValueUtilities {
     //class then all values are held in the DTCellValue's StringValue. This
     //function attempts to set the correct DTCellValue property based on
     //the DTCellValue's data type.
-    private void convertDTCellValueFromString( DTDataTypes52 dataType,
+    private void convertDTCellValueFromString( DataType.DataTypes dataType,
                                                DTCellValue52 dcv ) {
         String text = dcv.getStringValue();
         switch ( dataType ) {
@@ -404,7 +404,7 @@ public class DTCellValueUtilities {
     //If the Decision Table model was pre-5.4 Numeric data-types were always stored as 
     //BigDecimals. This function attempts to set the correct DTCellValue property based 
     //on the *true* data type.
-    private void convertDTCellValueFromNumeric( DTDataTypes52 dataType,
+    private void convertDTCellValueFromNumeric( DataType.DataTypes dataType,
                                                 DTCellValue52 dcv ) {
         //Generic type NUMERIC was always stored as a BigDecimal
         final BigDecimal value = (BigDecimal) dcv.getNumericValue();

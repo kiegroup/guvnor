@@ -59,6 +59,9 @@ public interface ImageResources
     @Source("config.png")
     ImageResource config();
 
+    @Source("guidedDecisionTableIcon.gif")
+    ImageResource guidedDecisionTableIcon();
+
     TableImageResources tableImageResources();
 
     CollapseExpand collapseExpand();

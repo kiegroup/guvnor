@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
@@ -72,7 +73,6 @@ import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.DescriptionCol52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryActionRetractFactCol52;
@@ -724,7 +724,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             if ( cv == null ) {
                 return null;
             }
-            DTDataTypes52 type = cv.getDataType();
+            DataType.DataTypes type = cv.getDataType();
             switch ( type ) {
                 case BOOLEAN:
                     return cv.getBooleanValue().toString();

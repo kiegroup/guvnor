@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
@@ -49,7 +50,6 @@ import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
 import org.kie.guvnor.guided.dtable.model.CompositeColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52.TableFormat;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
@@ -316,8 +316,8 @@ public class ConditionPopup extends FormStylePopup {
                         } else {
                             //Ensure the Default Value has been updated to represent the column's data-type.
                             final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-                            final DTDataTypes52 dataType = utilities.getDataType( editingPattern,
-                                                                                  editingCol );
+                            final DataType.DataTypes dataType = utilities.getDataType( editingPattern,
+                                                                                       editingCol );
                             utilities.assertDTCellValue( dataType,
                                                          defaultValue );
                         }
@@ -516,8 +516,8 @@ public class ConditionPopup extends FormStylePopup {
         //data-type. Legacy Default Values are all String-based and need to be 
         //coerced to the correct type
         final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-        final DTDataTypes52 dataType = utilities.getDataType( editingPattern,
-                                                              editingCol );
+        final DataType.DataTypes dataType = utilities.getDataType( editingPattern,
+                                                                   editingCol );
         utilities.assertDTCellValue( dataType,
                                      defaultValue );
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,

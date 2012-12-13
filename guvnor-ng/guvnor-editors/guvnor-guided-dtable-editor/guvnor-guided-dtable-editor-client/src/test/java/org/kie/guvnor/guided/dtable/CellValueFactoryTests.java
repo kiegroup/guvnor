@@ -29,7 +29,7 @@ import org.kie.guvnor.datamodel.model.MockDataModel;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
@@ -38,7 +38,6 @@ import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.AttributeCol52;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
@@ -82,47 +81,47 @@ public class CellValueFactoryTests {
                              new ModelField( "bigDecimalField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_BIGDECIMAL ),
+                                             DataType.TYPE_NUMERIC_BIGDECIMAL ),
                              new ModelField( "bigIntegerField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_BIGINTEGER ),
+                                             DataType.TYPE_NUMERIC_BIGINTEGER ),
                              new ModelField( "byteField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_BYTE ),
+                                             DataType.TYPE_NUMERIC_BYTE ),
                              new ModelField( "doubleField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_DOUBLE ),
+                                             DataType.TYPE_NUMERIC_DOUBLE ),
                              new ModelField( "floatField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_FLOAT ),
+                                             DataType.TYPE_NUMERIC_FLOAT ),
                              new ModelField( "integerField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_INTEGER ),
+                                             DataType.TYPE_NUMERIC_INTEGER ),
                              new ModelField( "longField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_LONG ),
+                                             DataType.TYPE_NUMERIC_LONG ),
                              new ModelField( "shortField",
                                              Integer.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_NUMERIC_SHORT ),
+                                             DataType.TYPE_NUMERIC_SHORT ),
                              new ModelField( "stringField",
                                              String.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_STRING ),
+                                             DataType.TYPE_STRING ),
                              new ModelField( "dateField",
                                              Boolean.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_DATE ),
+                                             DataType.TYPE_DATE ),
                              new ModelField( "booleanField",
                                              Boolean.class.getName(),
                                              FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                             DataModelTypes.TYPE_BOOLEAN )
+                                             DataType.TYPE_BOOLEAN )
                      } );
             }
         } );
@@ -269,27 +268,27 @@ public class CellValueFactoryTests {
         DTCellValue52 dcv11 = new DTCellValue52( "Smurf" );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes52.BOOLEAN );
+                      DataType.DataTypes.BOOLEAN );
         assertEquals( dcv2.getDataType(),
-                      DTDataTypes52.DATE );
+                      DataType.DataTypes.DATE );
         assertEquals( dcv3.getDataType(),
-                      DTDataTypes52.NUMERIC_BIGDECIMAL );
+                      DataType.DataTypes.NUMERIC_BIGDECIMAL );
         assertEquals( dcv4.getDataType(),
-                      DTDataTypes52.NUMERIC_BIGINTEGER );
+                      DataType.DataTypes.NUMERIC_BIGINTEGER );
         assertEquals( dcv5.getDataType(),
-                      DTDataTypes52.NUMERIC_BYTE );
+                      DataType.DataTypes.NUMERIC_BYTE );
         assertEquals( dcv6.getDataType(),
-                      DTDataTypes52.NUMERIC_DOUBLE );
+                      DataType.DataTypes.NUMERIC_DOUBLE );
         assertEquals( dcv7.getDataType(),
-                      DTDataTypes52.NUMERIC_FLOAT );
+                      DataType.DataTypes.NUMERIC_FLOAT );
         assertEquals( dcv8.getDataType(),
-                      DTDataTypes52.NUMERIC_INTEGER );
+                      DataType.DataTypes.NUMERIC_INTEGER );
         assertEquals( dcv9.getDataType(),
-                      DTDataTypes52.NUMERIC_LONG );
+                      DataType.DataTypes.NUMERIC_LONG );
         assertEquals( dcv10.getDataType(),
-                      DTDataTypes52.NUMERIC_SHORT );
+                      DataType.DataTypes.NUMERIC_SHORT );
         assertEquals( dcv11.getDataType(),
-                      DTDataTypes52.STRING );
+                      DataType.DataTypes.STRING );
     }
 
     @Test
@@ -618,35 +617,35 @@ public class CellValueFactoryTests {
                       null );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes52.NUMERIC_INTEGER );
+                      DataType.DataTypes.NUMERIC_INTEGER );
         assertEquals( dcv2.getDataType(),
-                      DTDataTypes52.BOOLEAN );
+                      DataType.DataTypes.BOOLEAN );
         assertEquals( dcv3.getDataType(),
-                      DTDataTypes52.STRING );
+                      DataType.DataTypes.STRING );
         assertEquals( dcv4.getDataType(),
-                      DTDataTypes52.NUMERIC_BIGDECIMAL );
+                      DataType.DataTypes.NUMERIC_BIGDECIMAL );
         assertEquals( dcv5.getDataType(),
-                      DTDataTypes52.NUMERIC_BIGINTEGER );
+                      DataType.DataTypes.NUMERIC_BIGINTEGER );
         assertEquals( dcv6.getDataType(),
-                      DTDataTypes52.NUMERIC_BYTE );
+                      DataType.DataTypes.NUMERIC_BYTE );
         assertEquals( dcv7.getDataType(),
-                      DTDataTypes52.NUMERIC_DOUBLE );
+                      DataType.DataTypes.NUMERIC_DOUBLE );
         assertEquals( dcv8.getDataType(),
-                      DTDataTypes52.NUMERIC_FLOAT );
+                      DataType.DataTypes.NUMERIC_FLOAT );
         assertEquals( dcv9.getDataType(),
-                      DTDataTypes52.NUMERIC_INTEGER );
+                      DataType.DataTypes.NUMERIC_INTEGER );
         assertEquals( dcv10.getDataType(),
-                      DTDataTypes52.NUMERIC_LONG );
+                      DataType.DataTypes.NUMERIC_LONG );
         assertEquals( dcv11.getDataType(),
-                      DTDataTypes52.NUMERIC_SHORT );
+                      DataType.DataTypes.NUMERIC_SHORT );
         assertEquals( dcv12.getDataType(),
-                      DTDataTypes52.DATE );
+                      DataType.DataTypes.DATE );
         assertEquals( dcv13.getDataType(),
-                      DTDataTypes52.BOOLEAN );
+                      DataType.DataTypes.BOOLEAN );
         assertEquals( dcv14.getDataType(),
-                      DTDataTypes52.STRING );
+                      DataType.DataTypes.STRING );
         assertEquals( dcv15.getDataType(),
-                      DTDataTypes52.STRING );
+                      DataType.DataTypes.STRING );
     }
 
 }

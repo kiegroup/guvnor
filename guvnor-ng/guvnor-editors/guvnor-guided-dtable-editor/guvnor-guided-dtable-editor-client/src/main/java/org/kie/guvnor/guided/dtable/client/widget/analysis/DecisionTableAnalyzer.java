@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.InsertFactActionDetectorKey;
@@ -153,62 +153,62 @@ public class DecisionTableAnalyzer {
             newDetector = new UnrecognizedConditionDetector( pattern,
                                                              factField,
                                                              operator );
-        } else if ( type.equals( DataModelTypes.TYPE_STRING ) ) {
+        } else if ( type.equals( DataType.TYPE_STRING ) ) {
             newDetector = new StringConditionDetector( pattern,
                                                        factField,
                                                        realCellValue.getStringValue(),
                                                        operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC ) ) {
             newDetector = new NumericConditionDetector( pattern,
                                                         factField,
                                                         (BigDecimal) realCellValue.getNumericValue(),
                                                         operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGDECIMAL ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
             newDetector = new NumericBigDecimalConditionDetector( pattern,
                                                                   factField,
                                                                   (BigDecimal) realCellValue.getNumericValue(),
                                                                   operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGINTEGER ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
             newDetector = new NumericBigIntegerConditionDetector( pattern,
                                                                   factField,
                                                                   (BigInteger) realCellValue.getNumericValue(),
                                                                   operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BYTE ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
             newDetector = new NumericByteConditionDetector( pattern,
                                                             factField,
                                                             (Byte) realCellValue.getNumericValue(),
                                                             operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_DOUBLE ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
             newDetector = new NumericDoubleConditionDetector( pattern,
                                                               factField,
                                                               (Double) realCellValue.getNumericValue(),
                                                               operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_FLOAT ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
             newDetector = new NumericFloatConditionDetector( pattern,
                                                              factField,
                                                              (Float) realCellValue.getNumericValue(),
                                                              operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_INTEGER ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
             newDetector = new NumericIntegerConditionDetector( pattern,
                                                                factField,
                                                                (Integer) realCellValue.getNumericValue(),
                                                                operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_LONG ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
             newDetector = new NumericLongConditionDetector( pattern,
                                                             factField,
                                                             (Long) realCellValue.getNumericValue(),
                                                             operator );
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_SHORT ) ) {
+        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
             newDetector = new NumericShortConditionDetector( pattern,
                                                              factField,
                                                              (Short) realCellValue.getNumericValue(),
                                                              operator );
-        } else if ( type.equals( DataModelTypes.TYPE_BOOLEAN ) ) {
+        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
             newDetector = new BooleanConditionDetector( pattern,
                                                         factField,
                                                         realCellValue.getBooleanValue(),
                                                         operator );
-        } else if ( type.equals( DataModelTypes.TYPE_DATE ) ) {
+        } else if ( type.equals( DataType.TYPE_DATE ) ) {
             newDetector = new DateConditionDetector( pattern,
                                                      factField,
                                                      realCellValue.getDateValue(),

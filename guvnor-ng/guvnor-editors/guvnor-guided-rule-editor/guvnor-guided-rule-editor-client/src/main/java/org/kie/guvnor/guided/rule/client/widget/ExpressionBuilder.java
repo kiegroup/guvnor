@@ -44,7 +44,7 @@ import org.kie.guvnor.guided.rule.client.editor.HasExpressionChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionCollectionIndex;
 import org.kie.guvnor.guided.rule.model.ExpressionFieldVariable;
 import org.kie.guvnor.guided.rule.model.ExpressionFormLine;

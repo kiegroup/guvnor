@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.dtable.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+package org.kie.guvnor.guided.dtable.model.legacy;
 
-/**
- * Explicit DataTypes handled by the Mergable Grid Widgets
- */
-@Portable
-public enum DTDataTypes52 {
+@Deprecated
+public class ActionSetFieldCol extends ActionCol {
 
-    STRING,
-    NUMERIC,
-    NUMERIC_BIGDECIMAL,
-    NUMERIC_BIGINTEGER,
-    NUMERIC_BYTE,
-    NUMERIC_DOUBLE,
-    NUMERIC_FLOAT,
-    NUMERIC_INTEGER,
-    NUMERIC_LONG,
-    NUMERIC_SHORT,
-    DATE,
-    BOOLEAN
+    public String boundName;
 
+    public String factField;
+
+    public String type;
+
+    public String valueList;
+
+    public boolean update = false;
 }

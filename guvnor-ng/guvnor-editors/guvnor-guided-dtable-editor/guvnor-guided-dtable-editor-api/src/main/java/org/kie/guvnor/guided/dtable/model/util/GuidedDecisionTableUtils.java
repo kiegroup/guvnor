@@ -5,7 +5,7 @@ import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
@@ -19,7 +19,6 @@ import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.CompositeColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.DescriptionCol52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.MetadataCol52;
@@ -62,38 +61,38 @@ public class GuidedDecisionTableUtils {
         } else if ( col instanceof BRLActionVariableColumn ) {
             return getType( (BRLActionVariableColumn) col );
         }
-        return DataModelTypes.TYPE_STRING;
+        return DataType.TYPE_STRING;
     }
 
     private String getType( final RowNumberCol52 col ) {
-        return DataModelTypes.TYPE_NUMERIC_INTEGER;
+        return DataType.TYPE_NUMERIC_INTEGER;
     }
 
     private String getType( final AttributeCol52 col ) {
-        String type = DataModelTypes.TYPE_STRING;
+        String type = DataType.TYPE_STRING;
         final String attrName = col.getAttribute();
         if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
-            type = DataModelTypes.TYPE_NUMERIC_INTEGER;
+            type = DataType.TYPE_NUMERIC_INTEGER;
         } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
-            type = DataModelTypes.TYPE_BOOLEAN;
+            type = DataType.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
-            type = DataModelTypes.TYPE_BOOLEAN;
+            type = DataType.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
-            type = DataModelTypes.TYPE_NUMERIC_LONG;
+            type = DataType.TYPE_NUMERIC_LONG;
         } else if ( attrName.equals( GuidedDecisionTable52.TIMER_ATTR ) ) {
-            type = DataModelTypes.TYPE_STRING;
+            type = DataType.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.CALENDARS_ATTR ) ) {
-            type = DataModelTypes.TYPE_STRING;
+            type = DataType.TYPE_STRING;
         } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
-            type = DataModelTypes.TYPE_BOOLEAN;
+            type = DataType.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
-            type = DataModelTypes.TYPE_BOOLEAN;
+            type = DataType.TYPE_BOOLEAN;
         } else if ( attrName.equals( GuidedDecisionTable52.DATE_EFFECTIVE_ATTR ) ) {
-            type = DataModelTypes.TYPE_DATE;
+            type = DataType.TYPE_DATE;
         } else if ( attrName.equals( GuidedDecisionTable52.DATE_EXPIRES_ATTR ) ) {
-            type = DataModelTypes.TYPE_DATE;
+            type = DataType.TYPE_DATE;
         } else if ( attrName.equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
-            type = DataModelTypes.TYPE_STRING;
+            type = DataType.TYPE_STRING;
         }
         return type;
     }
@@ -109,29 +108,29 @@ public class GuidedDecisionTableUtils {
 
         // Columns with "Value Lists" etc are always Text (for now)
         if ( hasValueList( col ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         // Operator "in" and "not in" requires a List as the value. These are always Text (for now)
         if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Literals without operators are always Text (as the user can specify the operator "in cell")
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
-                return DataModelTypes.TYPE_STRING;
+                return DataType.TYPE_STRING;
             }
         }
 
         //Formula are always Text (as the user can specify anything "in cell")
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Predicates are always Text (as the user can specify anything "in cell")
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Otherwise lookup from SuggestionCompletionEngine
@@ -161,7 +160,7 @@ public class GuidedDecisionTableUtils {
 
         // Columns with "Value Lists" etc are always Text (for now)
         if ( hasValueList( col ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Otherwise lookup from SuggestionCompletionEngine
@@ -176,7 +175,7 @@ public class GuidedDecisionTableUtils {
 
         // Columns with "Value Lists" etc are always Text (for now)
         if ( hasValueList( col ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Otherwise lookup from SuggestionCompletionEngine
@@ -190,7 +189,7 @@ public class GuidedDecisionTableUtils {
 
         // Columns with "Value Lists" etc are always Text (for now)
         if ( hasValueList( col ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Otherwise lookup from SuggestionCompletionEngine
@@ -222,7 +221,7 @@ public class GuidedDecisionTableUtils {
         // Columns with enumerations are always Text (for now)
         if ( oracle.hasEnums( factType,
                               fieldName ) ) {
-            return DataModelTypes.TYPE_STRING;
+            return DataType.TYPE_STRING;
         }
 
         //Otherwise lookup from SuggestionCompletionEngine
@@ -232,53 +231,53 @@ public class GuidedDecisionTableUtils {
     }
 
     // Get the Data Type corresponding to a given column
-    public DTDataTypes52 getTypeSafeType( final BaseColumn column ) {
+    public DataType.DataTypes getTypeSafeType( final BaseColumn column ) {
 
         final String type = getType( column );
         return convertToTypeSafeType( type );
     }
 
     // Get the Data Type corresponding to a given column
-    public DTDataTypes52 getTypeSafeType( final Pattern52 pattern,
-                                          final ConditionCol52 column ) {
+    public DataType.DataTypes getTypeSafeType( final Pattern52 pattern,
+                                               final ConditionCol52 column ) {
         final String type = getType( pattern,
                                      column );
         return convertToTypeSafeType( type );
     }
 
     // Get the Data Type corresponding to a given column
-    public DTDataTypes52 getTypeSafeType( final Pattern52 pattern,
-                                          final ActionSetFieldCol52 column ) {
+    public DataType.DataTypes getTypeSafeType( final Pattern52 pattern,
+                                               final ActionSetFieldCol52 column ) {
         final String type = getType( pattern,
                                      column );
         return convertToTypeSafeType( type );
     }
 
-    private DTDataTypes52 convertToTypeSafeType( final String type ) {
-        if ( type.equals( DataModelTypes.TYPE_NUMERIC ) ) {
-            return DTDataTypes52.NUMERIC;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            return DTDataTypes52.NUMERIC_BIGDECIMAL;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BIGINTEGER ) ) {
-            return DTDataTypes52.NUMERIC_BIGINTEGER;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_BYTE ) ) {
-            return DTDataTypes52.NUMERIC_BYTE;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_DOUBLE ) ) {
-            return DTDataTypes52.NUMERIC_DOUBLE;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_FLOAT ) ) {
-            return DTDataTypes52.NUMERIC_FLOAT;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_INTEGER ) ) {
-            return DTDataTypes52.NUMERIC_INTEGER;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_LONG ) ) {
-            return DTDataTypes52.NUMERIC_LONG;
-        } else if ( type.equals( DataModelTypes.TYPE_NUMERIC_SHORT ) ) {
-            return DTDataTypes52.NUMERIC_SHORT;
-        } else if ( type.equals( DataModelTypes.TYPE_BOOLEAN ) ) {
-            return DTDataTypes52.BOOLEAN;
-        } else if ( type.equals( DataModelTypes.TYPE_DATE ) ) {
-            return DTDataTypes52.DATE;
+    private DataType.DataTypes convertToTypeSafeType( final String type ) {
+        if ( type.equals( DataType.TYPE_NUMERIC ) ) {
+            return DataType.DataTypes.NUMERIC;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            return DataType.DataTypes.NUMERIC_BIGDECIMAL;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
+            return DataType.DataTypes.NUMERIC_BIGINTEGER;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
+            return DataType.DataTypes.NUMERIC_BYTE;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
+            return DataType.DataTypes.NUMERIC_DOUBLE;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
+            return DataType.DataTypes.NUMERIC_FLOAT;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
+            return DataType.DataTypes.NUMERIC_INTEGER;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
+            return DataType.DataTypes.NUMERIC_LONG;
+        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
+            return DataType.DataTypes.NUMERIC_SHORT;
+        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
+            return DataType.DataTypes.BOOLEAN;
+        } else if ( type.equals( DataType.TYPE_DATE ) ) {
+            return DataType.DataTypes.DATE;
         }
-        return DTDataTypes52.STRING;
+        return DataType.DataTypes.STRING;
     }
 
     public String[] getValueList( final BaseColumn col ) {

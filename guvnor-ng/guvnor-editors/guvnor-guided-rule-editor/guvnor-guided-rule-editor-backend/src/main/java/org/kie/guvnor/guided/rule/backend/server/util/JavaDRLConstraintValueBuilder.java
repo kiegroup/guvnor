@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 
 /**
  * Specific implementation for MVEL

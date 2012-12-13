@@ -42,7 +42,7 @@ import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.ActionFieldFunction;
 import org.kie.guvnor.guided.rule.model.ActionFieldValue;
 import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FieldNatureType;
 import org.uberfire.client.common.DirtyableComposite;

@@ -20,7 +20,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 
 public class TemplateDataCellFactory
         extends AbstractCellFactory<TemplateDataColumn> {

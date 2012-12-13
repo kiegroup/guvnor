@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable;
 
 import org.junit.Test;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
 import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
@@ -61,7 +61,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLRuleModel model = new BRLRuleModel( dt );
@@ -99,7 +99,7 @@ public class BRLRuleModelTest {
         sfc1.setOperator( "==" );
         sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
-        sfc1.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc1.setFieldType( DataType.TYPE_STRING );
 
         fp.addConstraint( sfc1 );
         brlCondition.getDefinition().add( fp );
@@ -109,7 +109,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLRuleModel model = new BRLRuleModel( dt );
@@ -149,7 +149,7 @@ public class BRLRuleModelTest {
         sfc1.setOperator( "==" );
         sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
-        sfc1.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc1.setFieldType( DataType.TYPE_STRING );
 
         fp.addConstraint( sfc1 );
         brlCondition.getDefinition().add( fp );
@@ -159,7 +159,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLRuleModel model = new BRLRuleModel( dt );
@@ -215,7 +215,7 @@ public class BRLRuleModelTest {
         sfc1.setOperator( "==" );
         sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
-        sfc1.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc1.setFieldType( DataType.TYPE_STRING );
 
         fp.addConstraint( sfc1 );
         brlCondition.getDefinition().add( fp );
@@ -225,7 +225,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLRuleModel model = new BRLRuleModel( dt );
@@ -236,7 +236,7 @@ public class BRLRuleModelTest {
         SingleFieldConstraint fcr1sfc = (SingleFieldConstraint) fcr1;
         assertEquals( "name",
                       fcr1sfc.getFieldName() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       fcr1sfc.getFieldType() );
     }
 
@@ -260,7 +260,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLActionColumn brlAction = new BRLActionColumn();
@@ -268,7 +268,7 @@ public class BRLRuleModelTest {
         aif.setBoundName( "$aif" );
         aif.addFieldValue( new ActionFieldValue( "rating",
                                                  null,
-                                                 DataModelTypes.TYPE_STRING ) );
+                                                 DataType.TYPE_STRING ) );
         aif.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         brlAction.getDefinition().add( aif );
@@ -298,7 +298,7 @@ public class BRLRuleModelTest {
                       raif1.getFactType() );
         assertEquals( "rating",
                       raif1.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif1.getFieldValues()[ 0 ].getType() );
         assertNull( raif1.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -312,7 +312,7 @@ public class BRLRuleModelTest {
                       raif2.getFactType() );
         assertEquals( "rating",
                       raif2.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif2.getFieldValues()[ 0 ].getType() );
         assertNull( raif2.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -340,7 +340,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         ActionInsertFactCol52 ins2 = new ActionInsertFactCol52();
@@ -348,7 +348,7 @@ public class BRLRuleModelTest {
         ins2.setBoundName( "$ins2" );
         ins2.setFactField( "rating2" );
         ins2.setFactType( "Person2" );
-        ins2.setType( DataModelTypes.TYPE_STRING );
+        ins2.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins2 );
 
         BRLActionColumn brlAction = new BRLActionColumn();
@@ -356,7 +356,7 @@ public class BRLRuleModelTest {
         aif.setBoundName( "$aif" );
         aif.addFieldValue( new ActionFieldValue( "rating",
                                                  null,
-                                                 DataModelTypes.TYPE_STRING ) );
+                                                 DataType.TYPE_STRING ) );
         aif.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         brlAction.getDefinition().add( aif );
@@ -379,7 +379,7 @@ public class BRLRuleModelTest {
                       raif1.getFactType() );
         assertEquals( "rating",
                       raif1.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif1.getFieldValues()[ 0 ].getType() );
         assertNull( raif1.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -393,7 +393,7 @@ public class BRLRuleModelTest {
                       raif2.getFactType() );
         assertEquals( "rating2",
                       raif2.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif2.getFieldValues()[ 0 ].getType() );
         assertNull( raif2.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -407,7 +407,7 @@ public class BRLRuleModelTest {
                       raif3.getFactType() );
         assertEquals( "rating",
                       raif3.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif3.getFieldValues()[ 0 ].getType() );
         assertNull( raif3.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -442,7 +442,7 @@ public class BRLRuleModelTest {
         sfc1.setOperator( "==" );
         sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
-        sfc1.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc1.setFieldType( DataType.TYPE_STRING );
 
         fp.addConstraint( sfc1 );
         model.addLhsItem( fp );
@@ -500,7 +500,7 @@ public class BRLRuleModelTest {
         sfc1.setOperator( "==" );
         sfc1.setFactType( "Driver" );
         sfc1.setFieldName( "name" );
-        sfc1.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc1.setFieldType( DataType.TYPE_STRING );
 
         fp1.addConstraint( sfc1 );
         brlCondition.getDefinition().add( fp1 );
@@ -516,7 +516,7 @@ public class BRLRuleModelTest {
         sfc2.setOperator( "==" );
         sfc2.setFactType( "Driver" );
         sfc2.setFieldName( "name" );
-        sfc2.setFieldType( DataModelTypes.TYPE_STRING );
+        sfc2.setFieldType( DataType.TYPE_STRING );
 
         fp2.addConstraint( sfc2 );
         model.addLhsItem( fp2 );
@@ -557,7 +557,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         //Setup RuleModel columns (new BRLActionColumn being added)
@@ -566,7 +566,7 @@ public class BRLRuleModelTest {
         aif.setBoundName( "$aif" );
         aif.addFieldValue( new ActionFieldValue( "rating",
                                                  null,
-                                                 DataModelTypes.TYPE_STRING ) );
+                                                 DataType.TYPE_STRING ) );
         aif.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         model.addRhsItem( aif );
 
@@ -585,7 +585,7 @@ public class BRLRuleModelTest {
                       raif1.getFactType() );
         assertEquals( "rating",
                       raif1.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif1.getFieldValues()[ 0 ].getType() );
         assertNull( raif1.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -599,7 +599,7 @@ public class BRLRuleModelTest {
                       raif2.getFactType() );
         assertEquals( "rating",
                       raif2.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif2.getFieldValues()[ 0 ].getType() );
         assertNull( raif2.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -615,7 +615,7 @@ public class BRLRuleModelTest {
         ins.setBoundName( "$ins" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
-        ins.setType( DataModelTypes.TYPE_STRING );
+        ins.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( ins );
 
         BRLActionColumn brlAction = new BRLActionColumn();
@@ -623,7 +623,7 @@ public class BRLRuleModelTest {
         aif1.setBoundName( "$aif" );
         aif1.addFieldValue( new ActionFieldValue( "rating",
                                                   null,
-                                                  DataModelTypes.TYPE_STRING ) );
+                                                  DataType.TYPE_STRING ) );
         aif1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         brlAction.getDefinition().add( aif1 );
@@ -635,7 +635,7 @@ public class BRLRuleModelTest {
         aif2.setBoundName( "$aif" );
         aif2.addFieldValue( new ActionFieldValue( "rating",
                                                   null,
-                                                  DataModelTypes.TYPE_STRING ) );
+                                                  DataType.TYPE_STRING ) );
         aif2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
         model.addRhsItem( aif2 );
 
@@ -654,7 +654,7 @@ public class BRLRuleModelTest {
                       raif1.getFactType() );
         assertEquals( "rating",
                       raif1.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif1.getFieldValues()[ 0 ].getType() );
         assertNull( raif1.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
@@ -668,7 +668,7 @@ public class BRLRuleModelTest {
                       raif2.getFactType() );
         assertEquals( "rating",
                       raif2.getFieldValues()[ 0 ].getField() );
-        assertEquals( DataModelTypes.TYPE_STRING,
+        assertEquals( DataType.TYPE_STRING,
                       raif2.getFieldValues()[ 0 ].getType() );
         assertNull( raif2.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,

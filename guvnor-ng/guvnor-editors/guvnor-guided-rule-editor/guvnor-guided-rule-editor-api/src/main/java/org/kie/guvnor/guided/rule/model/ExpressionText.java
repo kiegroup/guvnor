@@ -17,6 +17,7 @@
 package org.kie.guvnor.guided.rule.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.datamodel.oracle.DataType;
 
 @Portable
 public class ExpressionText extends ExpressionPart {

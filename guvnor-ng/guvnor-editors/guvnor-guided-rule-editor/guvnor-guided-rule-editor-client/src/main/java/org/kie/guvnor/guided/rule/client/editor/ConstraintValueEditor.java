@@ -60,7 +60,7 @@ import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
 import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.guided.rule.model.DataType;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FieldConstraint;

@@ -23,7 +23,7 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.model.BRLColumn;
 import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
@@ -41,19 +41,19 @@ import org.uberfire.backend.vfs.Path;
  * An editor for a BRL Condition Columns
  */
 public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPattern, BRLConditionVariableColumn>
-    implements
-    BRLConditionColumnView {
+        implements
+        BRLConditionColumnView {
 
     private Presenter presenter;
 
     public BRLConditionColumnViewImpl( final Path path,
-                                    final DataModelOracle oracle,
-                                    final GuidedDecisionTable52 model,
-                                    final boolean isNew,
-                                    final BRLConditionColumn column,
-                                    final EventBus eventBus ) {
-        super(path,
-              oracle,
+                                       final DataModelOracle oracle,
+                                       final GuidedDecisionTable52 model,
+                                       final boolean isNew,
+                                       final BRLConditionColumn column,
+                                       final EventBus eventBus ) {
+        super( path,
+               oracle,
                model,
                isNew,
                column,
@@ -62,19 +62,21 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         setTitle( Constants.INSTANCE.ConditionBRLFragmentConfiguration() );
     }
 
-    protected boolean isHeaderUnique(String header) {
-        for ( CompositeColumn< ? > cc : model.getConditions() ) {
+    protected boolean isHeaderUnique( String header ) {
+        for ( CompositeColumn<?> cc : model.getConditions() ) {
             for ( int iChild = 0; iChild < cc.getChildColumns().size(); iChild++ ) {
-                if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) return false;
+                if ( cc.getChildColumns().get( iChild ).getHeader().equals( header ) ) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    public BRLRuleModel getRuleModel(BRLColumn<IPattern, BRLConditionVariableColumn> column) {
+    public BRLRuleModel getRuleModel( BRLColumn<IPattern, BRLConditionVariableColumn> column ) {
         BRLRuleModel ruleModel = new BRLRuleModel( model );
         List<IPattern> definition = column.getDefinition();
-        ruleModel.lhs = definition.toArray( new IPattern[definition.size()] );
+        ruleModel.lhs = definition.toArray( new IPattern[ definition.size() ] );
         return ruleModel;
     }
 
@@ -84,7 +86,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                                               true );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -102,12 +104,12 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     @Override
-    protected List<BRLConditionVariableColumn> convertInterpolationVariables(Map<InterpolationVariable, Integer> ivs) {
+    protected List<BRLConditionVariableColumn> convertInterpolationVariables( Map<InterpolationVariable, Integer> ivs ) {
 
         //If there are no variables add a boolean column to specify whether the fragment should apply 
         if ( ivs.size() == 0 ) {
             BRLConditionVariableColumn variable = new BRLConditionVariableColumn( "",
-                                                                                  DataModelTypes.TYPE_BOOLEAN );
+                                                                                  DataType.TYPE_BOOLEAN );
             variable.setHeader( editingCol.getHeader() );
             variable.setHideColumn( editingCol.isHideColumn() );
             List<BRLConditionVariableColumn> variables = new ArrayList<BRLConditionVariableColumn>();
@@ -116,7 +118,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         }
 
         //Convert to columns for use in the Decision Table
-        BRLConditionVariableColumn[] variables = new BRLConditionVariableColumn[ivs.size()];
+        BRLConditionVariableColumn[] variables = new BRLConditionVariableColumn[ ivs.size() ];
         for ( Map.Entry<InterpolationVariable, Integer> me : ivs.entrySet() ) {
             InterpolationVariable iv = me.getKey();
             int index = me.getValue();
@@ -126,7 +128,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                                                                                   iv.getFactField() );
             variable.setHeader( editingCol.getHeader() );
             variable.setHideColumn( editingCol.isHideColumn() );
-            variables[index] = variable;
+            variables[ index ] = variable;
         }
 
         //Convert the array into a mutable list (Arrays.toList provides an immutable list)
@@ -138,7 +140,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     }
 
     @Override
-    protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn(BRLColumn<IPattern, BRLConditionVariableColumn> col) {
+    protected BRLColumn<IPattern, BRLConditionVariableColumn> cloneBRLColumn( BRLColumn<IPattern, BRLConditionVariableColumn> col ) {
         BRLConditionColumn clone = new BRLConditionColumn();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
@@ -147,7 +149,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return clone;
     }
 
-    private List<BRLConditionVariableColumn> cloneVariables(List<BRLConditionVariableColumn> variables) {
+    private List<BRLConditionVariableColumn> cloneVariables( List<BRLConditionVariableColumn> variables ) {
         List<BRLConditionVariableColumn> clone = new ArrayList<BRLConditionVariableColumn>();
         for ( BRLConditionVariableColumn variable : variables ) {
             clone.add( cloneVariable( variable ) );
@@ -155,7 +157,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return clone;
     }
 
-    private BRLConditionVariableColumn cloneVariable(BRLConditionVariableColumn variable) {
+    private BRLConditionVariableColumn cloneVariable( BRLConditionVariableColumn variable ) {
         BRLConditionVariableColumn clone = new BRLConditionVariableColumn( variable.getVarName(),
                                                                            variable.getFieldType(),
                                                                            variable.getFactType(),
@@ -166,7 +168,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         return clone;
     }
 
-    private List<IPattern> cloneDefinition(List<IPattern> definition) {
+    private List<IPattern> cloneDefinition( List<IPattern> definition ) {
         RuleModelCloneVisitor visitor = new RuleModelCloneVisitor();
         RuleModel rm = new RuleModel();
         for ( IPattern pattern : definition ) {

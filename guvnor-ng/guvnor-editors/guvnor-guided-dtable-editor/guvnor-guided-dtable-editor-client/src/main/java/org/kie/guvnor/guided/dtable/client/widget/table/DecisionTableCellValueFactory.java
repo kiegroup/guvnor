@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue.CellState;
@@ -31,7 +32,6 @@ import org.kie.guvnor.guided.dtable.model.AnalysisCol52;
 import org.kie.guvnor.guided.dtable.model.AttributeCol52;
 import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
 import org.kie.guvnor.guided.dtable.model.RowNumberCol52;
@@ -85,7 +85,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         List<BaseColumn> columns = model.getExpandedColumns();
         for ( BaseColumn column : columns ) {
             DTCellValue52 dcv = makeModelCellValue( column );
-            DTDataTypes52 dataType = utilities.getDataType( column );
+            DataType.DataTypes dataType = utilities.getDataType( column );
             utilities.assertDTCellValue( dataType,
                                          dcv );
             CellValue<? extends Comparable<?>> cell = convertModelCellValue( column,
@@ -134,7 +134,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      */
     @Override
     public DTCellValue52 makeModelCellValue( BaseColumn column ) {
-        DTDataTypes52 dataType = utilities.getDataType( column );
+        DataType.DataTypes dataType = utilities.getDataType( column );
         DTCellValue52 dcv = null;
         if ( column instanceof LimitedEntryCol ) {
             dcv = new DTCellValue52( Boolean.FALSE );
@@ -169,7 +169,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         }
 
         //Other cells do use data-type
-        DTDataTypes52 dataType = utilities.getDataType( column );
+        DataType.DataTypes dataType = utilities.getDataType( column );
         utilities.assertDTCellValue( dataType,
                                      dcv );
 
@@ -259,7 +259,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      */
     public DTCellValue52 convertToModelCell( BaseColumn column,
                                              CellValue<?> cell ) {
-        DTDataTypes52 dt = utilities.getDataType( column );
+        DataType.DataTypes dt = utilities.getDataType( column );
         DTCellValue52 dtCell = null;
 
         switch ( dt ) {

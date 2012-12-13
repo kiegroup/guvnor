@@ -36,6 +36,7 @@ import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
@@ -46,7 +47,6 @@ import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.DTDataTypes52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
@@ -119,7 +119,7 @@ public class DTCellValueWidgetFactory {
      * @return
      */
     public DTCellValue52 makeNewValue( DTColumnConfig52 c ) {
-        DTDataTypes52 type = utils.getTypeSafeType( c );
+        DataType.DataTypes type = utils.getTypeSafeType( c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -135,8 +135,8 @@ public class DTCellValueWidgetFactory {
      */
     public DTCellValue52 makeNewValue( Pattern52 p,
                                        ConditionCol52 c ) {
-        DTDataTypes52 type = utils.getTypeSafeType( p,
-                                                    c );
+        DataType.DataTypes type = utils.getTypeSafeType( p,
+                                                         c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -185,8 +185,8 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DTDataTypes52 type = utils.getTypeSafeType( pattern,
-                                                    column );
+        DataType.DataTypes type = utils.getTypeSafeType( pattern,
+                                                         column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );
@@ -225,8 +225,8 @@ public class DTCellValueWidgetFactory {
      */
     public DTCellValue52 makeNewValue( Pattern52 p,
                                        ActionSetFieldCol52 c ) {
-        DTDataTypes52 type = utils.getTypeSafeType( p,
-                                                    c );
+        DataType.DataTypes type = utils.getTypeSafeType( p,
+                                                         c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -274,8 +274,8 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DTDataTypes52 type = utils.getTypeSafeType( pattern,
-                                                    column );
+        DataType.DataTypes type = utils.getTypeSafeType( pattern,
+                                                         column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );
@@ -338,7 +338,7 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DTDataTypes52 type = utils.getTypeSafeType( column );
+        DataType.DataTypes type = utils.getTypeSafeType( column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );

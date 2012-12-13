@@ -23,7 +23,7 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelTypes;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
@@ -107,7 +107,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
         //If there are no variables add a boolean column to specify whether the fragment should apply 
         if ( ivs.size() == 0 ) {
             BRLActionVariableColumn variable = new BRLActionVariableColumn( "",
-                                                                            DataModelTypes.TYPE_BOOLEAN );
+                                                                            DataType.TYPE_BOOLEAN );
             variable.setHeader( editingCol.getHeader() );
             variable.setHideColumn( editingCol.isHideColumn() );
             List<BRLActionVariableColumn> variables = new ArrayList<BRLActionVariableColumn>();
