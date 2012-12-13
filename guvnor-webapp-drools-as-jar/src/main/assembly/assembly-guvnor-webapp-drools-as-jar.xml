@@ -14,7 +14,8 @@
       <directory>${project.build.directory}/guvnor-webapp-drools-unpacked/WEB-INF/classes/</directory>
       <outputDirectory/>
       <excludes>
-        <exclude>org/drools/guvnor/client/**</exclude>
+        <!-- Don't exclude the client classes because it turns out the server uses them (and fails CDI without it) -->
+        <!--<exclude>org/drools/guvnor/client/**</exclude>-->
       </excludes>
     </fileSet>
     <fileSet>
