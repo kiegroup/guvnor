@@ -24,6 +24,7 @@ package org.kie.guvnor.jcr2vfsmigration.vfs;
 
 // TODO delete this class once we have all of its functionality in other classes
 //@ApplicationScoped
+@Deprecated
 public class RulesRepositoryVFS {
 
 //    @Inject

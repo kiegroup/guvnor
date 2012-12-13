@@ -16,9 +16,13 @@
 
 package org.kie.guvnor.jcr2vfsmigration;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.bound.BoundSessionContext;
 import org.kie.guvnor.jcr2vfsmigration.config.MigrationConfig;
 import org.kie.guvnor.jcr2vfsmigration.migrater.AssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.CategoryMigrater;
@@ -41,6 +45,14 @@ public class Jcr2VfsMigrater {
     @Inject
     protected CategoryMigrater categoryMigrater;
 
+    @Inject
+    protected BoundSessionContext sessionContext;
+    protected Map<String, Object> sessionDataStore;
+
+    @Inject
+    protected BoundRequestContext requestContext;
+    protected Map<String, Object> requestDataStore;
+
     public void parseArgs(String[] args) {
         migrationConfig.parseArgs(args);
         System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
@@ -49,6 +61,7 @@ public class Jcr2VfsMigrater {
     public void migrateAll() {
         logger.info("Migration started: Reading from inputJcrRepository ({}).",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
+        startContexts();
 //    //TO-DO-LIST:
 //    //1. How to migrate the globalArea (moduleServiceJCR.listModules() wont return globalArea)
 //    //2. How to handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
@@ -60,8 +73,33 @@ public class Jcr2VfsMigrater {
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
         //  TODO: migratePackagePermissions, migrateRolesAndPermissionsMetaData
+        endContexts();
         logger.info("Migration ended: Written into outputVfsRepository ({}).",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
+    }
+
+    private void startContexts() {
+        sessionDataStore = new HashMap<String, Object>();
+        sessionContext.associate(sessionDataStore);
+        sessionContext.activate();
+        requestDataStore = new HashMap<String, Object>();
+        requestContext.associate(requestDataStore);
+        requestContext.activate();
+    }
+
+    private void endContexts() {
+        try {
+            requestContext.invalidate();
+            requestContext.deactivate();
+        } finally {
+            requestContext.dissociate(requestDataStore);
+        }
+        try {
+            sessionContext.invalidate();
+            sessionContext.deactivate();
+        } finally {
+            sessionContext.dissociate(sessionDataStore);
+        }
     }
 
 }

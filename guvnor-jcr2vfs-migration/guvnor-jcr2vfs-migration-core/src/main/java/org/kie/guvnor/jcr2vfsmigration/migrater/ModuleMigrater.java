@@ -3,6 +3,7 @@ package org.kie.guvnor.jcr2vfsmigration.migrater;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,16 @@ public class ModuleMigrater {
 
     public void migrateAll() {
         logger.info("  Module migration started");
-        // TODO
+        Module[] modules = jcrRepositoryModuleService.listModules();
+        for (Module module : modules) {
+            migrate(module);
+            logger.debug("    Module ({}) migrated.", module.getName());
+        }
         logger.info("  Module migration ended");
+    }
+
+    protected void migrate(Module module) {
+        logger.debug("    TODO migrate module ({}).", module.getName()); // TODO REPLACE ME WITH ACTUAL CODE
     }
 
 }
