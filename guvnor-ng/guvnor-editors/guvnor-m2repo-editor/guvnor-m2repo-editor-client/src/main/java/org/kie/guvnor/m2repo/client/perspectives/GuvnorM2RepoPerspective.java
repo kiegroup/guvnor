@@ -43,10 +43,11 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
+import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * A Perspective to show Guvnor's M2_REPO related screens
  */
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "GuvnorM2RepoPerspective", isDefault = false)
@@ -88,30 +89,39 @@ public class GuvnorM2RepoPerspective {
     }
 
     private void buildPerspective() {
+        final PlaceRequest place1 = new DefaultPlaceRequest( "M2RepoEditor" );
+        place1.addParameter( "instance",
+                             "1" );
+        final PlaceRequest place2 = new DefaultPlaceRequest( "M2RepoEditor" );
+        place2.addParameter( "instance",
+                             "2" );
+
         this.perspective = new PerspectiveDefinitionImpl();
         this.perspective.setName( "Guvnor M2 Repository Explorer" );
 
-        this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
+        this.perspective.getRoot().addPart( new PartDefinitionImpl( place1 ) );
 
         final PanelDefinition west = new PanelDefinitionImpl();
         west.setWidth( 300 );
         west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
 
-        this.perspective.getRoot().insertChild( Position.WEST, west );
+        west.addPart( new PartDefinitionImpl( place2 ) );
+
+        this.perspective.getRoot().insertChild( Position.WEST,
+                                                west );
     }
 
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
         final MenuBar subMenuBar = new DefaultMenuBar();
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New", subMenuBar ) );
+        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
+                                                          subMenuBar ) );
 
         //Dynamic items
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler handler = handlerBean.getInstance();
-                final String fileType = handler.getFileType();
                 final String description = handler.getDescription();
                 subMenuBar.addItem( new DefaultMenuItemCommand( description, new Command() {
                     @Override

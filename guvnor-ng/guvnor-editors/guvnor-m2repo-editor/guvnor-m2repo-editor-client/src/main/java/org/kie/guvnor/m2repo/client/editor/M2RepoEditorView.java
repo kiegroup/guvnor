@@ -34,8 +34,8 @@ public class M2RepoEditorView
 
     private static M2RepoEditorBinder uiBinder = GWT.create( M2RepoEditorBinder.class );
 
-    @UiField
-    JarListPagedTable jarListPagedTable;
+//    @UiField
+//    JarListPagedTable jarListPagedTable;
 
     public M2RepoEditorView() {
         initWidget( uiBinder.createAndBindUi( this ) );

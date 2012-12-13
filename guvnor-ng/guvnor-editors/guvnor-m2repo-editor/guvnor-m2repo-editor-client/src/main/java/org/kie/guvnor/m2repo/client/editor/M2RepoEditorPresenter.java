@@ -21,19 +21,16 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchEditor(identifier = "M2RepoEditor" , fileTypes = "REPO")
-//@WorkbenchScreen(identifier = "M2RepoEditor")
+@WorkbenchScreen(identifier = "M2RepoEditor")
 public class M2RepoEditorPresenter {
 
     public interface View
