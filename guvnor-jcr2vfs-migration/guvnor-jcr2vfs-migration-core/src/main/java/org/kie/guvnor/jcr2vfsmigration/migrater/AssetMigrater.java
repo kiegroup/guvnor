@@ -32,7 +32,6 @@ public class AssetMigrater {
         if (vfsFactModelService == null) {
             throw new IllegalStateException("vfsFactModelService null");
         }
-        System.out.println(BaseXStreamContentHandler.class); // TODO remove me
         // TODO
         // vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), new FactModels()); // TODO remove me
         logger.info("  Asset migration ended");
