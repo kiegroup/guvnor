@@ -24,9 +24,11 @@
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
 
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
-  <!--
-    <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
-    <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
+
+  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
+  
+  <!--    
     <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
   -->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>

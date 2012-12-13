@@ -20,7 +20,7 @@ import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
-import org.kie.builder.GAV;
+
 /**
  * A single row of a paged data
  */

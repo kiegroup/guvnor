@@ -33,8 +33,8 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.drools.kproject.GAVImpl;
-import org.kie.builder.GAV;
+import org.drools.kproject.ReleaseIdImpl;
+import org.kie.builder.ReleaseId;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 
 
@@ -122,7 +122,7 @@ public class FileServlet extends HttpServlet {
         String fileName = uploadItem.getFile().getName();
         
         //TODO: Get GAV from client
-        GAV gav = new GAVImpl("", "", "");
+        ReleaseId gav = new ReleaseIdImpl("", "", "");
 
         m2RepoService.addJar(fileData, gav);
         uploadItem.getFile().getInputStream().close();

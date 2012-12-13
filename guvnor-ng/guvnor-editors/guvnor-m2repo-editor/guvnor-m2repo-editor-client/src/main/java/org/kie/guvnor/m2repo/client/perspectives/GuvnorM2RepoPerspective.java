@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.client.perspectives;
+package org.kie.guvnor.m2repo.client.perspectives;
 
 import java.util.Collection;
 import javax.annotation.PostConstruct;

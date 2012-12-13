@@ -27,7 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
@@ -47,7 +47,7 @@ public class M2RepoServiceImpl
 
 
 
-    public void addJar(InputStream is, GAV gav) {
+    public void addJar(InputStream is, ReleaseId gav) {
         repository.addFile(is, gav);
     }
     
