@@ -265,7 +265,7 @@ public class BRDRLPersistence
             //Add boiler-plate for actions operating on WorkItems
             if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
                 buf.append( indentation );
-                buf.append( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
+                buf.append( "org.kie.process.instance.WorkItemManager wim = (org.kie.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
             }
 
             //Marshall the model itself
@@ -1058,9 +1058,9 @@ public class BRDRLPersistence
             instantiatedWorkItems.add( wiName );
 
             buf.append( indentation );
-            buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
+            buf.append( "org.kie.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
-            buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
+            buf.append( " = new org.kie.process.instance.impl.WorkItemImpl();\n" );
             buf.append( indentation );
             buf.append( wiImplName );
             buf.append( ".setName( \"" );

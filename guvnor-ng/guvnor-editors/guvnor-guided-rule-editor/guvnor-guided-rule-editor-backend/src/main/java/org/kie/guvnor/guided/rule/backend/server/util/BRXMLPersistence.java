@@ -141,6 +141,9 @@ public class BRXMLPersistence
         this.xt.aliasPackage( "org.drools.guvnor.client",
                               "org.drools.ide.common.client" );
 
+        this.xt.aliasPackage( "org.drools.guvnor.client.modeldriven.brl",
+                              "org.kie.guvnor.datamodel.model" );
+
         this.xt.alias( "org.drools.guvnor.client.modeldriven.dt.TemplateModel",
                        TemplateModel.class );
 
