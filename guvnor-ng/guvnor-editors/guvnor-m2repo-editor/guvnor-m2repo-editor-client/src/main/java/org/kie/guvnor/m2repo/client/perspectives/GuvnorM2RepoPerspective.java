@@ -89,7 +89,7 @@ public class GuvnorM2RepoPerspective {
 
     private void buildPerspective() {
         this.perspective = new PerspectiveDefinitionImpl();
-        this.perspective.setName( "Guvnor M2_Repo Explorer" );
+        this.perspective.setName( "Guvnor M2 Repository Explorer" );
 
         this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
 

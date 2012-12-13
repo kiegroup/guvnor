@@ -29,9 +29,11 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchEditor(identifier = "M2RepoEditor")
+@WorkbenchEditor(identifier = "M2RepoEditor" , fileTypes = "REPO")
+//@WorkbenchScreen(identifier = "M2RepoEditor")
 public class M2RepoEditorPresenter {
 
     public interface View
@@ -70,7 +72,7 @@ public class M2RepoEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guvnor M2_REPO Editor [" + path.getFileName() + "]";
+        return "Guvnor M2 REPOSITORY";
     }
 
 }

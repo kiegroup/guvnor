@@ -21,7 +21,7 @@
 
   <gwt:HTMLPanel>
     <div style="margin-bottom:20px;">
-      <m2repo:JarListPagedTable ui:field="jarListPagedTable"></m2repo:JarListPagedTable>
+<!--       <m2repo:JarListPagedTable ui:field="jarListPagedTable"></m2repo:JarListPagedTable> -->
     </div>
   </gwt:HTMLPanel>
 
