@@ -51,14 +51,14 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         UiBinder<Widget, JarListPagedTable> {
     }
 
-/*    @UiField()
+    @UiField()
     protected Button                             uploadJarButton;
 
     @UiField()
     protected Button                             deleteSelectedJarButton;
-*/
-    @UiField()
-    protected Button                             refreshButton;
+
+/*    @UiField()
+    protected Button                             refreshButton;*/
     
     private static JarListPagedTableBinder uiBinder  = GWT.create( JarListPagedTableBinder.class );
 
@@ -126,7 +126,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         return uiBinder.createAndBindUi( this );
     }
 
-/*    @UiHandler("uploadJarButton")
+    @UiHandler("uploadJarButton")
     void uploadJar(ClickEvent e) {
 
     }
@@ -135,10 +135,10 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     void deleteSelectedJar(ClickEvent e) {
 
     }
-*/    
-    @UiHandler("refreshButton")
+    
+/*    @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
 
-    }
+    }*/
 
 }
