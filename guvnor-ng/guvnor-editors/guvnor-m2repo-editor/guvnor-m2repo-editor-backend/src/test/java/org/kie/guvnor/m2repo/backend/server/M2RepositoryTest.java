@@ -90,7 +90,7 @@ public class M2RepositoryTest {
             if("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar".equals(fileName)) {
                 found = true;
                 String path = file.getPath();
-                assertEquals("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
+                assertEquals("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
                 break;
             } 
         }
@@ -120,12 +120,12 @@ public class M2RepositoryTest {
             if("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar".equals(fileName)) {
                 found1 = true;
                 String path = file.getPath();
-                assertEquals("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
+                assertEquals("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
             } 
             if("arquillian-core-api-1.0.2.Final.jar".equals(fileName)) {
                 found2 = true;
                 String path = file.getPath();
-                assertEquals("repository\\releases\\org\\jboss\\arquillian\\core\\arquillian-core-api\\1.0.2.Final\\arquillian-core-api-1.0.2.Final.jar", path);
+                assertEquals("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "jboss" + File.separator + "arquillian" + File.separator + "core" + File.separator + "arquillian-core-api" + File.separator + "1.0.2.Final" + File.separator + "arquillian-core-api-1.0.2.Final.jar", path);
             } 
         }
         
@@ -203,12 +203,12 @@ public class M2RepositoryTest {
             if("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar".equals(fileName)) {
                 found1 = true;
                 String path = file.getPath();
-                assertEquals("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
+                assertEquals("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar", path);
             } 
             if("arquillian-core-api-1.0.2.Final.jar".equals(fileName)) {
                 found2 = true;
                 String path = file.getPath();
-                assertEquals("repository\\releases\\org\\jboss\\arquillian\\core\\arquillian-core-api\\1.0.2.Final\\arquillian-core-api-1.0.2.Final.jar", path);
+                assertEquals("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "jboss" + File.separator + "arquillian" + File.separator + "core" + File.separator + "arquillian-core-api" + File.separator + "1.0.2.Final" + File.separator + "arquillian-core-api-1.0.2.Final.jar", path);
             } 
         }
         
