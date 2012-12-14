@@ -193,7 +193,7 @@ public class KModuleEditorPanelTest {
         screenK.save();
 
         assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
-        verify(view).showSaveSuccessful("kproject.xml");
+        verify(view).showSaveSuccessful("kmodule.xml");
     }
 
     private KBaseModel createKBaseConfiguration(String name) {
