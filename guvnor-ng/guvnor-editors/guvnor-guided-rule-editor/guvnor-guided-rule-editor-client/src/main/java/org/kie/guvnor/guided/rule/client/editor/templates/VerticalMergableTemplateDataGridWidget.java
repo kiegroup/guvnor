@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.rule.client.editor.templates;
 
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalMergableGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.rule.client.editor.templates.events.SetInternalTemplateDataModelEvent;

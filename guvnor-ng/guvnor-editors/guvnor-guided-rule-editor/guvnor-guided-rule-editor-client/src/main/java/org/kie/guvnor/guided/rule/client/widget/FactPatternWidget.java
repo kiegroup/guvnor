@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -40,8 +41,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.model.IPattern;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
@@ -57,7 +58,6 @@ import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FieldConstraint;
 import org.kie.guvnor.guided.rule.model.HasCEPWindow;
@@ -77,9 +77,9 @@ public class FactPatternWidget extends RuleModellerWidget {
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private Connectives connectives;
     private PopupCreator popupCreator;
-    private boolean      bindable;
-    private boolean      isAll0WithLabel;
-    private boolean      readOnly;
+    private boolean bindable;
+    private boolean isAll0WithLabel;
+    private boolean readOnly;
 
     private boolean isFactTypeKnown;
 

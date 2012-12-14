@@ -20,17 +20,13 @@
   <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditorClient"/>
   <inherits name="org.kie.guvnor.enums.GuvnorEnumEditorClient"/>
   <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorClient"/>
-
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
-
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
+  <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
 
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
   
-  <!--    
-    <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
-  -->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
 
   <!-- Specify the application specific style sheet. -->

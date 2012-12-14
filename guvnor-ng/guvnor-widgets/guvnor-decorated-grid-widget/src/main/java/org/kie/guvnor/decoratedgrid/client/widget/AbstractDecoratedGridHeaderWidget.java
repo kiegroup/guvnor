@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -46,7 +47,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteColumnEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.InsertInternalColumnEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.MoveColumnsEvent;
@@ -74,11 +74,11 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
      */
     public class ResizerInformation {
 
-        private boolean          isResizePrimed    = false;
-        private boolean          isResizing        = false;
-        private int              resizeColumnLeft  = 0;
-        private DynamicColumn<T> resizeColumn      = null;
-        private int              resizeColumnWidth = 0;
+        private boolean isResizePrimed = false;
+        private boolean isResizing = false;
+        private int resizeColumnLeft = 0;
+        private DynamicColumn<T> resizeColumn = null;
+        private int resizeColumnWidth = 0;
 
         /**
          * @param resizeColumn the resizeColumn to set
@@ -115,12 +115,12 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
     // Resources
     protected ResourcesProvider<T> resources;
-    protected EventBus             eventBus;
+    protected EventBus eventBus;
 
     // Column resizing
     private ResizerInformation resizerInfo = new ResizerInformation();
     private DivElement resizer;
-    private UIObject   parent;
+    private UIObject parent;
 
     /**
      * Construct a "Header" for the provided DecoratedGridWidget

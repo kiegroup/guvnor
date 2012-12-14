@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -29,10 +30,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
@@ -54,10 +54,10 @@ import org.uberfire.client.common.SmallLabel;
 public class ActionInsertFactWidget extends RuleModellerWidget {
 
     private final DirtyableFlexTable layout;
-    private final ActionInsertFact   model;
-    private final String[]           fieldCompletions;
-    private final String             factType;
-    private       boolean            readOnly;
+    private final ActionInsertFact model;
+    private final String[] fieldCompletions;
+    private final String factType;
+    private boolean readOnly;
 
     private boolean isFactTypeKnown;
 

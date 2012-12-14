@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
@@ -51,11 +51,11 @@ public class TemplateDataTableWidget extends Composite
         UpdateModelEvent.Handler {
 
     // Decision Table data
-    protected TemplateModel                                                          model;
+    protected TemplateModel model;
     protected AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn, String> widget;
-    protected TemplateDataCellFactory                                                cellFactory;
-    protected TemplateDataCellValueFactory                                           cellValueFactory;
-    protected TemplateDropDownManager                                                dropDownManager;
+    protected TemplateDataCellFactory cellFactory;
+    protected TemplateDataCellValueFactory cellValueFactory;
+    protected TemplateDropDownManager dropDownManager;
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus eventBus = new SimpleEventBus();

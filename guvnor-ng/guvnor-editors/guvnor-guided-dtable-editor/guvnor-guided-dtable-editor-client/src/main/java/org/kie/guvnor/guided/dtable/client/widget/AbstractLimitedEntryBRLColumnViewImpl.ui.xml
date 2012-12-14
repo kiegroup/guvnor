@@ -21,18 +21,18 @@
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants"/>
   <ui:with field="images" type="org.kie.guvnor.guided.dtable.client.resources.images.ImageResources"/>
-  <ui:with field="wizardResources" type="org.drools.guvnor.client.resources.WizardResources"/>
+  <ui:with field="wizardResources" type="org.kie.guvnor.guided.dtable.client.resources.WizardResources"/>
 
-  <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:HorizontalPanel styleName="{wizardResources.style.wizardDTableFieldContainerValid}">
-      <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{wizardResources.style.wizardDTableFields}"/>
-      <gwt:TextBox ui:field="txtColumnHeader" styleName="{wizardResources.style.wizardDTableFields}"/>
+  <gwt:VerticalPanel width="100%">
+    <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">
+      <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <gwt:TextBox ui:field="txtColumnHeader" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel styleName="{wizardResources.style.wizardDTableFieldContainerValid}">
-      <gwt:Label text="{i18n.HideThisColumn}" styleName="{wizardResources.style.wizardDTableFields}"/>
-      <gwt:CheckBox ui:field="chkHideColumn" styleName="{wizardResources.style.wizardDTableFields}"/>
+    <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">
+      <gwt:Label text="{i18n.HideThisColumn}" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <gwt:CheckBox ui:field="chkHideColumn" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
-    <gwt:ScrollPanel ui:field="brlEditorContainer" styleName="{wizardResources.style.scrollPanel}">
+    <gwt:ScrollPanel ui:field="brlEditorContainer" styleName="{wizardResources.css.scrollPanel}">
       <guvnor:RuleModeller ui:field="ruleModeller"/>
     </gwt:ScrollPanel>
     <gwt:Button ui:field="cmdApplyChanges" text="{i18n.ApplyChanges}"/>

@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.guided.rule.client;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
@@ -34,8 +34,8 @@ public class GuidedRuleEditorView
 
     private final EventBus localBus = new SimpleEventBus();
 
-    private final VerticalPanel panel    = new VerticalPanel();
-    private       RuleModeller  modeller = null;
+    private final VerticalPanel panel = new VerticalPanel();
+    private RuleModeller modeller = null;
 
     public GuidedRuleEditorView() {
         panel.setWidth( "100%" );

@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.dtable.client.resources.css.CssResources;
+import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
@@ -150,19 +150,22 @@ public class GuidedDecisionTableWidget extends Composite
     private final boolean isReadOnly;
 
     public GuidedDecisionTableWidget( final Path path,
+                                      final DataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
                                       final EventBus globalEventBus,
-                                      final boolean isReadOnly,
                                       final Identity identity ) {
 
         this.path = path;
+        this.oracle = oracle;
         this.model = model;
-        this.model.initAnalysisColumn();
         this.globalEventBus = globalEventBus;
+        this.identity = identity;
         this.rm = new BRLRuleModel( model );
-        this.isReadOnly = isReadOnly;
+        this.isReadOnly = false;
 
-        layout = new VerticalPanel();
+        this.model.initAnalysisColumn();
+
+        this.layout = new VerticalPanel();
 
         setupDecisionTable();
 
@@ -264,7 +267,7 @@ public class GuidedDecisionTableWidget extends Composite
     private SmallLabel makeColumnLabel( ActionCol52 ac ) {
         SmallLabel label = new SmallLabel( ac.getHeader() );
         if ( ac.isHideColumn() ) {
-            label.setStylePrimaryName( CssResources.INSTANCE.columnLabelHidden() );
+            label.setStylePrimaryName( Resources.INSTANCE.css().columnLabelHidden() );
         }
         return label;
     }
@@ -541,7 +544,7 @@ public class GuidedDecisionTableWidget extends Composite
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( CssResources.INSTANCE.patternSectionHeader() );
+                patternHeaderPanel.setStylePrimaryName( Resources.INSTANCE.css().patternSectionHeader() );
                 Label patternLabel = makePatternLabel( p );
                 patternHeaderPanel.add( patternLabel );
                 patternPanel.add( patternHeaderPanel );
@@ -568,7 +571,7 @@ public class GuidedDecisionTableWidget extends Composite
                 boolean bAreConditionsDraggable = conditions.size() > 1 && !isReadOnly;
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     HorizontalPanel hp = new HorizontalPanel();
-                    hp.setStylePrimaryName( CssResources.INSTANCE.patternConditionSectionHeader() );
+                    hp.setStylePrimaryName( Resources.INSTANCE.css().patternConditionSectionHeader() );
                     if ( !isReadOnly ) {
                         hp.add( removeCondition( c ) );
                     }
@@ -592,7 +595,7 @@ public class GuidedDecisionTableWidget extends Composite
                 BRLConditionColumn brl = (BRLConditionColumn) column;
 
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( CssResources.INSTANCE.patternSectionHeader() );
+                patternHeaderPanel.setStylePrimaryName( Resources.INSTANCE.css().patternSectionHeader() );
                 HorizontalPanel patternPanel = new HorizontalPanel();
                 if ( !isReadOnly ) {
                     patternPanel.add( removeCondition( brl ) );
@@ -1085,7 +1088,7 @@ public class GuidedDecisionTableWidget extends Composite
         sb.append( cc.getHeader() );
         SmallLabel label = new SmallLabel( sb.toString() );
         if ( cc.isHideColumn() ) {
-            label.setStylePrimaryName( CssResources.INSTANCE.columnLabelHidden() );
+            label.setStylePrimaryName( Resources.INSTANCE.css().columnLabelHidden() );
         }
         return label;
     }
@@ -1375,9 +1378,9 @@ public class GuidedDecisionTableWidget extends Composite
     private void setColumnLabelStyleWhenHidden( SmallLabel label,
                                                 boolean isHidden ) {
         if ( isHidden ) {
-            label.addStyleName( CssResources.INSTANCE.columnLabelHidden() );
+            label.addStyleName( Resources.INSTANCE.css().columnLabelHidden() );
         } else {
-            label.removeStyleName( CssResources.INSTANCE.columnLabelHidden() );
+            label.removeStyleName( Resources.INSTANCE.css().columnLabelHidden() );
         }
     }
 

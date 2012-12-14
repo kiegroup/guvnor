@@ -20,11 +20,11 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteRowEvent;
@@ -50,11 +50,11 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
         SetModelEvent.Handler<M> {
 
     // Widgets for UI
-    protected Panel                                    mainPanel;
-    protected Panel                                    bodyPanel;
-    protected ScrollPanel                              scrollPanel;
-    protected AbstractMergableGridWidget<M, T>         gridWidget;
-    protected AbstractDecoratedGridHeaderWidget<M, T>  headerWidget;
+    protected Panel mainPanel;
+    protected Panel bodyPanel;
+    protected ScrollPanel scrollPanel;
+    protected AbstractMergableGridWidget<M, T> gridWidget;
+    protected AbstractDecoratedGridHeaderWidget<M, T> headerWidget;
     protected AbstractDecoratedGridSidebarWidget<M, T> sidebarWidget;
 
     protected int height;

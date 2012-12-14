@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
@@ -30,7 +31,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -39,9 +39,9 @@ import org.kie.guvnor.commons.security.UserCapabilities;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReportLine;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -68,15 +68,15 @@ public class RuleModeller extends DirtyableComposite
 
     private WorkingSetManager workingSetManager = null;
 
-    private DirtyableFlexTable        layout;
-    private RuleModel                 model;
+    private DirtyableFlexTable layout;
+    private RuleModel model;
     private DataModelOracle dataModel;
     private RuleModellerConfiguration configuration;
-    private boolean showingOptions   = false;
-    private int     currentLayoutRow = 0;
-    private Path                  path;
+    private boolean showingOptions = false;
+    private int currentLayoutRow = 0;
+    private Path path;
     private ModellerWidgetFactory widgetFactory;
-    private EventBus              eventBus;
+    private EventBus eventBus;
     private boolean readOnly = false;
 
     private List<RuleModellerWidget> lhsWidgets = new ArrayList<RuleModellerWidget>();

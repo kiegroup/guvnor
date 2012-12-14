@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;

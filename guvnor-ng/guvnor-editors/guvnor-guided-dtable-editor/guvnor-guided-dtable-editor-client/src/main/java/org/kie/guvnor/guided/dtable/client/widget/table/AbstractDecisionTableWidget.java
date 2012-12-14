@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;

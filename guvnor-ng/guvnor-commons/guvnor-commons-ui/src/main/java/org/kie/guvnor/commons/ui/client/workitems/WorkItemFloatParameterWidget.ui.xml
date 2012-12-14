@@ -20,12 +20,12 @@
   xmlns:uf='urn:import:org.uberfire.client.common'>
 
   <ui:with field='i18n' type='org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants'/>
-  <ui:with field='resources' type='org.kie.guvnor.commons.ui.client.resources.WorkItemsCss'/>
+  <ui:with field='resources' type='org.kie.guvnor.commons.ui.client.resources.WorkItemsResources'/>
 
   <gwt:HorizontalPanel spacing="2">
-    <gwt:Label ui:field="parameterName" styleName="{resources.workItemParameter}"/>
-    <uf:NumericFloatTextBox ui:field="parameterEditor" styleName="{resources.workItemParameter}"/>
-    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.workItemParameter}"/>
+    <gwt:Label ui:field="parameterName" styleName="{resources.css.workItemParameter}"/>
+    <uf:NumericFloatTextBox ui:field="parameterEditor" styleName="{resources.css.workItemParameter}"/>
+    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.css.workItemParameter}"/>
   </gwt:HorizontalPanel>
 
 </ui:UiBinder>

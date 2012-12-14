@@ -18,8 +18,8 @@ package org.kie.guvnor.guided.rule.client.editor.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
@@ -41,7 +41,7 @@ public abstract class AbstractDecoratedTemplateDataGridWidget
         extends AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn, String> {
 
     //Factories to create new data elements
-    protected final TemplateDataCellFactory      cellFactory;
+    protected final TemplateDataCellFactory cellFactory;
     protected final TemplateDataCellValueFactory cellValueFactory;
 
     public AbstractDecoratedTemplateDataGridWidget( ResourcesProvider<TemplateDataColumn> resources,

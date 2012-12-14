@@ -10,7 +10,8 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -22,13 +23,13 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 @ApplicationScoped
 public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "dtable";
+    private static String FILE_TYPE = "gdst";
 
     @Inject
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<GuidedRuleEditorService> service;
+    private Caller<GuidedDecisionTableEditorService> service;
 
     @Override
     public String getFileType() {
@@ -47,6 +48,21 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final String fileName ) {
+        final Path path = buildFullPathName( fileName );
+        final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
+        service.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( Path response ) {
+                notifySuccess();
+                final PlaceRequest place = new DefaultPlaceRequest( "GuidedDecisionTableEditor" );
+                place.addParameter( "path:uri",
+                                    path.toURI() );
+                place.addParameter( "path:name",
+                                    path.getFileName() );
+                placeManager.goTo( place );
+            }
+        } ).save( path,
+                  ruleModel );
     }
 
 }

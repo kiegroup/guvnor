@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.guided.rule.client.editor.templates;
 
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.kie.guvnor.datamodel.oracle.DataType;
 
 public class TemplateDataCellFactory
         extends AbstractCellFactory<TemplateDataColumn> {
@@ -36,7 +36,10 @@ public class TemplateDataCellFactory
                                     TemplateDropDownManager dropDownManager,
                                     boolean isReadOnly,
                                     EventBus eventBus ) {
-        super( oracle, dropDownManager, isReadOnly, eventBus );
+        super( oracle,
+               dropDownManager,
+               isReadOnly,
+               eventBus );
     }
 
     /**

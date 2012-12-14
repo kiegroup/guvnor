@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -38,7 +39,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
 import org.kie.guvnor.decoratedgrid.client.widget.events.AppendRowEvent;
@@ -250,9 +250,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
             implements
             ToggleMergingEvent.Handler {
 
-        private Image   icon     = new Image();
-        private Element tre      = DOM.createTR();
-        private Element tce      = DOM.createTD();
+        private Image icon = new Image();
+        private Element tre = DOM.createTR();
+        private Element tce = DOM.createTD();
         private Element outerDiv = DOM.createDiv();
         private Element innerDiv = DOM.createDiv();
 
@@ -338,13 +338,13 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
     }
 
     // UI Elements
-    private ScrollPanel            scrollPanel;
+    private ScrollPanel scrollPanel;
     private VerticalSelectorWidget selectors;
     private VerticalSideBarSpacerWidget spacer = new VerticalSideBarSpacerWidget();
 
     //Underlying model
     protected DynamicData data;
-    protected RowMapper   rowMapper;
+    protected RowMapper rowMapper;
 
     /**
      * Construct a "Sidebar" for the provided DecisionTable

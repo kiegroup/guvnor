@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.InsertRowEvent;
@@ -39,8 +39,8 @@ public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
         RowGroupingChangeEvent.Handler {
 
     protected ResourcesProvider<T> resources;
-    protected boolean              isReadOnly;
-    protected EventBus             eventBus;
+    protected boolean isReadOnly;
+    protected EventBus eventBus;
 
     /**
      * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar

@@ -4,13 +4,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 
 /**
- * Decision Table styles
+ * General Decision Table CSS
  */
 public interface CssResources
         extends
         CssResource {
-
-    public static final CssResources INSTANCE = GWT.create( CssResources.class );
 
     int rowHeight();
 

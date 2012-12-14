@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;

@@ -18,9 +18,9 @@ package org.kie.guvnor.decoratedgrid.client.widget;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
@@ -36,16 +36,16 @@ public class DynamicColumn<T> extends DynamicBaseColumn
 
     private int columnIndex = 0;
     private T modelColumn;
-    private Boolean           isVisible          = new Boolean( true );
-    private Boolean           isSystemControlled = new Boolean( false );
-    private SortConfiguration sortConfig         = new SortConfiguration();
-    private int               width              = 100;
+    private Boolean isVisible = new Boolean( true );
+    private Boolean isSystemControlled = new Boolean( false );
+    private SortConfiguration sortConfig = new SortConfiguration();
+    private int width = 100;
 
     // Event handling using GWT's EventBus
     private EventBus eventBus;
 
-    public DynamicColumn( T modelColumn,
-                          EventBus eventBus ) {
+    public DynamicColumn( final T modelColumn,
+                          final EventBus eventBus ) {
         this( modelColumn,
               null,
               0,
@@ -54,9 +54,9 @@ public class DynamicColumn<T> extends DynamicBaseColumn
               eventBus );
     }
 
-    public DynamicColumn( T modelColumn,
-                          DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
-                          EventBus eventBus ) {
+    public DynamicColumn( final T modelColumn,
+                          final DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
+                          final EventBus eventBus ) {
         this( modelColumn,
               cell,
               0,
@@ -65,10 +65,10 @@ public class DynamicColumn<T> extends DynamicBaseColumn
               eventBus );
     }
 
-    public DynamicColumn( T modelColumn,
-                          DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
-                          int columnIndex,
-                          EventBus eventBus ) {
+    public DynamicColumn( final T modelColumn,
+                          final DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
+                          final int columnIndex,
+                          final EventBus eventBus ) {
         this( modelColumn,
               cell,
               columnIndex,
@@ -77,12 +77,12 @@ public class DynamicColumn<T> extends DynamicBaseColumn
               eventBus );
     }
 
-    public DynamicColumn( T modelColumn,
-                          DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
-                          int columnIndex,
-                          boolean isSystemControlled,
-                          boolean isSortable,
-                          EventBus eventBus ) {
+    public DynamicColumn( final T modelColumn,
+                          final DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell,
+                          final int columnIndex,
+                          final boolean isSystemControlled,
+                          final boolean isSortable,
+                          final EventBus eventBus ) {
         super( cell );
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null" );
@@ -138,7 +138,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     }
 
     @Override
-    public CellValue<?> getValue( DynamicDataRow object ) {
+    public CellValue<?> getValue( final DynamicDataRow object ) {
         return (CellValue<?>) object.get( columnIndex );
     }
 
@@ -188,7 +188,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
         return isVisible;
     }
 
-    public void setColumnIndex( int columnIndex ) {
+    public void setColumnIndex( final int columnIndex ) {
         if ( columnIndex < 0 ) {
             throw new IllegalArgumentException( "columnIndex cannot be less than zero" );
         }
@@ -196,13 +196,13 @@ public class DynamicColumn<T> extends DynamicBaseColumn
         this.sortConfig.setColumnIndex( columnIndex );
     }
 
-    public void setSortable( boolean isSortable ) {
+    public void setSortable( final boolean isSortable ) {
         this.sortConfig.setSortable( isSortable );
         ValueChangeEvent.fire( this,
                                sortConfig );
     }
 
-    public void setSortDirection( SortDirection sortDirection ) {
+    public void setSortDirection( final SortDirection sortDirection ) {
         this.sortConfig.setSortDirection( sortDirection );
         if ( sortDirection == SortDirection.NONE ) {
             this.sortConfig.setSortIndex( -1 );
@@ -211,7 +211,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
                                sortConfig );
     }
 
-    public void setSortIndex( int sortIndex ) {
+    public void setSortIndex( final int sortIndex ) {
         if ( sortIndex < 0 ) {
             throw new IllegalArgumentException( "sortIndex cannot be less than zero" );
         }
@@ -226,22 +226,22 @@ public class DynamicColumn<T> extends DynamicBaseColumn
                                sortConfig );
     }
 
-    public void setSystemControlled( boolean isSystemControlled ) {
+    public void setSystemControlled( final boolean isSystemControlled ) {
         this.isSystemControlled = isSystemControlled;
     }
 
-    public void setVisible( boolean isVisible ) {
+    public void setVisible( final boolean isVisible ) {
         this.isVisible = isVisible;
     }
 
-    public void setWidth( int width ) {
+    public void setWidth( final int width ) {
         if ( width < 0 ) {
             throw new IllegalArgumentException( "width cannot be less than zero" );
         }
         this.width = width;
     }
 
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<SortConfiguration> handler ) {
+    public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<SortConfiguration> handler ) {
         if ( handler == null ) {
             throw new IllegalArgumentException( "handler cannot be null" );
         }
@@ -249,7 +249,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
                                                           handler );
     }
 
-    public void fireEvent( GwtEvent<?> event ) {
+    public void fireEvent( final GwtEvent<?> event ) {
         if ( event == null ) {
             throw new IllegalArgumentException( "event cannot be null" );
         }

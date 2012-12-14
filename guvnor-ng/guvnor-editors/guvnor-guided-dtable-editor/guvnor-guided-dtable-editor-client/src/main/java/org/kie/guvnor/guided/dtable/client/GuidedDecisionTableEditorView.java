@@ -16,17 +16,19 @@
 
 package org.kie.guvnor.guided.dtable.client;
 
+import javax.inject.Inject;
+
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.editor.RuleModellerWidgetFactory;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.dtable.client.widget.GuidedDecisionTableWidget;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 public class GuidedDecisionTableEditorView
         extends Composite
@@ -34,38 +36,43 @@ public class GuidedDecisionTableEditorView
 
     private final EventBus localBus = new SimpleEventBus();
 
-    private final VerticalPanel panel    = new VerticalPanel();
-    private       RuleModeller  modeller = null;
+    private final VerticalPanel panel = new VerticalPanel();
+    private GuidedDecisionTable52 model;
+    private GuidedDecisionTableWidget editor;
+
+    @Inject
+    private Identity identity;
 
     public GuidedDecisionTableEditorView() {
         panel.setWidth( "100%" );
-
         initWidget( panel );
     }
 
     @Override
     public void setContent( final Path path,
                             final DataModelOracle dataModel,
-                            final RuleModel content ) {
-
-        this.modeller = new RuleModeller( path, dataModel, content, localBus, new RuleModellerWidgetFactory() );
-
-        panel.add( this.modeller );
+                            final GuidedDecisionTable52 model ) {
+        this.model = model;
+        this.editor = new GuidedDecisionTableWidget( path,
+                                                     dataModel,
+                                                     model,
+                                                     localBus,
+                                                     identity );
+        panel.add( this.editor );
     }
 
     @Override
-    public RuleModel getContent() {
-        return modeller.getModel();
+    public GuidedDecisionTable52 getContent() {
+        return this.model;
     }
 
     @Override
     public boolean isDirty() {
-        return modeller.isDirty();
+        return false;
     }
 
     @Override
     public void setNotDirty() {
-
     }
 
     @Override
@@ -74,6 +81,5 @@ public class GuidedDecisionTableEditorView
             return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
         }
         return true;
-
     }
 }

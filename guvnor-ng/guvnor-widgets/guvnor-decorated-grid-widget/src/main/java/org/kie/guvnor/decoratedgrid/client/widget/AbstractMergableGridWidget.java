@@ -31,11 +31,11 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
@@ -93,10 +93,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     public static class CellSelectionDetail {
 
         private Coordinate c;
-        private int        offsetX;
-        private int        offsetY;
-        private int        height;
-        private int        width;
+        private int offsetX;
+        private int offsetY;
+        private int height;
+        private int width;
 
         CellSelectionDetail( Coordinate c,
                              int offsetX,
@@ -178,25 +178,25 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
     // Resources
     protected ResourcesProvider<T> resources;
-    protected EventBus             eventBus;
+    protected EventBus eventBus;
 
     protected String selectorGroupedCellsHtml;
     protected String selectorUngroupedCellsHtml;
 
     // Data and columns to render
-    protected List<DynamicColumn<T>>                columns;
-    protected DynamicData                           data;
-    protected RowMapper                             rowMapper;
-    protected AbstractCellFactory<T>                cellFactory;
-    protected AbstractCellValueFactory<T, ?>        cellValueFactory;
+    protected List<DynamicColumn<T>> columns;
+    protected DynamicData data;
+    protected RowMapper rowMapper;
+    protected AbstractCellFactory<T> cellFactory;
+    protected AbstractCellValueFactory<T, ?> cellValueFactory;
     protected CellTableDropDownDataValueMapProvider dropDownManager;
 
     //Properties for multi-cell selection
     protected CellValue<?> rangeOriginCell;
     protected CellValue<?> rangeExtentCell;
 
-    protected MOVE_DIRECTION rangeDirection       = MOVE_DIRECTION.NONE;
-    protected boolean        bDragOperationPrimed = false;
+    protected MOVE_DIRECTION rangeDirection = MOVE_DIRECTION.NONE;
+    protected boolean bDragOperationPrimed = false;
 
     //Rows that have been copied in a copy-paste operation
     private List<DynamicDataRow> copiedRows = new ArrayList<DynamicDataRow>();

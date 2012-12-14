@@ -17,9 +17,9 @@ package org.kie.guvnor.guided.rule.client.editor.templates;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.rule.client.editor.templates.events.SetTemplateDataEvent;
 

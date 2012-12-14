@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -41,7 +42,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
@@ -124,7 +124,7 @@ public class TemplateDataHeaderWidget
         private List<HeaderSorter> sorters = new ArrayList<HeaderSorter>();
 
         // UI Components
-        private Element[]                               headerRows    = new Element[ 2 ];
+        private Element[] headerRows = new Element[ 2 ];
         private List<DynamicColumn<TemplateDataColumn>> headerColumns = new ArrayList<DynamicColumn<TemplateDataColumn>>();
 
         // Constructor
@@ -276,7 +276,9 @@ public class TemplateDataHeaderWidget
 
     /**
      * Construct a "Header" for the provided DecoratedGridWidget
-     * @param grid
+     * @param resources
+     * @param eventBus
+     * @param isReadOnly
      */
     public TemplateDataHeaderWidget( final ResourcesProvider<TemplateDataColumn> resources,
                                      final boolean isReadOnly,

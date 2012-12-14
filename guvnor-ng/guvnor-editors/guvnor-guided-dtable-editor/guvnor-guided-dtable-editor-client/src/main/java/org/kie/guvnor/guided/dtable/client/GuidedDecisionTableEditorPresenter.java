@@ -28,9 +28,9 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -52,7 +52,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "dtable")
+@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "gdst")
 public class GuidedDecisionTableEditorPresenter {
 
     public interface View
@@ -61,9 +61,9 @@ public class GuidedDecisionTableEditorPresenter {
 
         void setContent( final Path path,
                          final DataModelOracle dataModel,
-                         final RuleModel content );
+                         final GuidedDecisionTable52 content );
 
-        RuleModel getContent();
+        GuidedDecisionTable52 getContent();
 
         boolean isDirty();
 
@@ -82,7 +82,7 @@ public class GuidedDecisionTableEditorPresenter {
     private MultiPageEditor multiPage;
 
     @Inject
-    private Caller<GuidedRuleEditorService> service;
+    private Caller<GuidedDecisionTableEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -116,10 +116,12 @@ public class GuidedDecisionTableEditorPresenter {
     public void onStart( final Path path ) {
         this.path = path;
 
-        service.call( new RemoteCallback<GuidedEditorContent>() {
+        service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
             @Override
-            public void callback( final GuidedEditorContent response ) {
-                view.setContent( path, response.getDataModel(), response.getRuleModel() );
+            public void callback( final GuidedDecisionTableEditorContent response ) {
+                view.setContent( path,
+                                 response.getDataModel(),
+                                 response.getRuleModel() );
             }
         } ).loadContent( path );
     }
@@ -156,7 +158,7 @@ public class GuidedDecisionTableEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Editor [" + path.getFileName() + "]";
+        return "Guided Decision Table [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

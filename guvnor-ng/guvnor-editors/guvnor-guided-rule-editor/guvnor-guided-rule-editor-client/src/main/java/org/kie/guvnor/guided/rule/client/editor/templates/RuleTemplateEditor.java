@@ -18,6 +18,7 @@ package org.kie.guvnor.guided.rule.client.editor.templates;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -26,7 +27,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.web.bindery.event.shared.EventBus;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -47,7 +47,7 @@ public class RuleTemplateEditor
         implements RuleModelEditor {
 
     private TemplateModel model;
-    private RuleModeller  ruleModeller;
+    private RuleModeller ruleModeller;
 
     private TemplateDataTableWidget table;
 

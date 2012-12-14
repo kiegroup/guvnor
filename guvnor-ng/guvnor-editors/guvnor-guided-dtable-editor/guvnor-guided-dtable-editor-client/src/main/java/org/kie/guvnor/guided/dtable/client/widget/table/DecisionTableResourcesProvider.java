@@ -17,6 +17,7 @@ package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.resources.client.ImageResource;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.css.CssResources;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
@@ -31,7 +32,7 @@ public class DecisionTableResourcesProvider
         ResourcesProvider<BaseColumn> {
 
     protected ImageResources images = ImageResources.INSTANCE;
-    protected CssResources css = CssResources.INSTANCE;
+    protected CssResources css = Resources.INSTANCE.css();
 
     public int rowHeight() {
         return css.rowHeight();

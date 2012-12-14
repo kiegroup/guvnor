@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -42,13 +43,13 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
+import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
@@ -60,7 +61,6 @@ import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
 import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FieldConstraint;
@@ -86,22 +86,22 @@ public class ConstraintValueEditor
 
     private WorkingSetManager workingSetManager = null;
 
-    private String                   factType;
+    private String factType;
     private CompositeFieldConstraint constraintList;
-    private String                   fieldName;
-    private String                   fieldType;
+    private String fieldName;
+    private String fieldType;
 
     private final DataModelOracle sce;
     private final BaseSingleFieldConstraint constraint;
-    private final Panel                     panel;
-    private final RuleModel                 model;
-    private final RuleModeller              modeller;
-    private final EventBus                  eventBus;
+    private final Panel panel;
+    private final RuleModel model;
+    private final RuleModeller modeller;
+    private final EventBus eventBus;
 
     private DropDownData dropDownData;
-    private boolean      readOnly;
-    private Command      onValueChangeCommand;
-    private boolean      isDropDownDataEnum;
+    private boolean readOnly;
+    private Command onValueChangeCommand;
+    private boolean isDropDownDataEnum;
     private Widget constraintWidget = null;
 
     public ConstraintValueEditor( BaseSingleFieldConstraint con,

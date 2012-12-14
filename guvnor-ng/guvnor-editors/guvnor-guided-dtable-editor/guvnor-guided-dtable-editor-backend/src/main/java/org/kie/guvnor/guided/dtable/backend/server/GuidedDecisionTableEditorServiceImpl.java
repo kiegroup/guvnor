@@ -28,7 +28,10 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTDRLPersistence;
+import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRTPersistence;
@@ -58,18 +61,27 @@ public class GuidedDecisionTableEditorServiceImpl
     private DataModelService dataModelService;
 
     @Override
-    public GuidedDecisionTable52 loadContent( final Path path ) {
-        return new GuidedDecisionTable52();
+    public GuidedDecisionTableEditorContent loadContent( final Path path ) {
+        final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
+        final GuidedDecisionTable52 model = p.unmarshal( vfs.readAllString( path ) );
+        final DataModelOracle dataModel = dataModelService.getDataModel( projectService.resolveProject( path ) );
+        return new GuidedDecisionTableEditorContent( dataModel,
+                                                     model );
     }
 
     @Override
     public void save( final Path path,
                       final GuidedDecisionTable52 model ) {
+        final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
+        final String xml = p.marshal( model );
+        vfs.write( path,
+                   xml );
     }
 
     @Override
     public String toSource( final GuidedDecisionTable52 model ) {
-        return "";
+        final GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        return p.marshal( model );
     }
 
     @Override

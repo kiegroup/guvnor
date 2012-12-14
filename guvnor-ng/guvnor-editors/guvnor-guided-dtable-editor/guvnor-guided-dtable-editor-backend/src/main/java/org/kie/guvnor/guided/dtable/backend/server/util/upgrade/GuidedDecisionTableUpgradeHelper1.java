@@ -74,56 +74,69 @@ public class GuidedDecisionTableUpgradeHelper1
 
         //Metadata columns' data-type is implicitly defined in the metadata value. For example
         //a String metadata attribute is: "value", a numerical: 1. No conversion action required
-        for ( MetadataCol c : legacyDTModel.metadataCols ) {
-            newDTModel.getMetadataCols().add( makeNewColumn( c ) );
+        if ( legacyDTModel.metadataCols != null ) {
+            for ( MetadataCol c : legacyDTModel.metadataCols ) {
+                newDTModel.getMetadataCols().add( makeNewColumn( c ) );
+            }
         }
 
         //Attribute columns' data-type is based upon the attribute name
-        for ( AttributeCol c : legacyDTModel.attributeCols ) {
-            newDTModel.getAttributeCols().add( makeNewColumn( c ) );
+        if ( legacyDTModel.attributeCols != null ) {
+            for ( AttributeCol c : legacyDTModel.attributeCols ) {
+                newDTModel.getAttributeCols().add( makeNewColumn( c ) );
+            }
         }
 
         //Legacy decision tables did not have Condition field data-types. Set all Condition 
         //fields to a *sensible* default of String (as this matches legacy behaviour).
         List<Pattern52> patterns = new ArrayList<Pattern52>();
         Map<String, Pattern52> uniquePatterns = new HashMap<String, Pattern52>();
-        for ( int i = 0; i < legacyDTModel.conditionCols.size(); i++ ) {
-            ConditionCol c = legacyDTModel.conditionCols.get( i );
-            String boundName = c.boundName;
-            Pattern52 p = uniquePatterns.get( boundName );
-            if ( p == null ) {
-                p = new Pattern52();
-                p.setBoundName( boundName );
-                p.setFactType( c.factType );
-                patterns.add( p );
-                uniquePatterns.put( boundName,
-                                    p );
+        if ( legacyDTModel.conditionCols != null ) {
+            for ( int i = 0; i < legacyDTModel.conditionCols.size(); i++ ) {
+                ConditionCol c = legacyDTModel.conditionCols.get( i );
+                String boundName = c.boundName;
+                Pattern52 p = uniquePatterns.get( boundName );
+                if ( p == null ) {
+                    p = new Pattern52();
+                    p.setBoundName( boundName );
+                    p.setFactType( c.factType );
+                    patterns.add( p );
+                    uniquePatterns.put( boundName,
+                                        p );
+                }
+                if ( p.getFactType() != null && !p.getFactType().equals( c.factType ) ) {
+                    throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
+                }
+                p.getChildColumns().add( makeNewColumn( c ) );
             }
-            if ( p.getFactType() != null && !p.getFactType().equals( c.factType ) ) {
-                throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
+            for ( Pattern52 p : patterns ) {
+                newDTModel.getConditions().add( p );
             }
-            p.getChildColumns().add( makeNewColumn( c ) );
-        }
-        for ( Pattern52 p : patterns ) {
-            newDTModel.getConditions().add( p );
         }
 
         //Action columns have a discrete data-type. No conversion action required.
-        for ( ActionCol c : legacyDTModel.actionCols ) {
-            newDTModel.getActionCols().add( makeNewColumn( c ) );
+        if ( legacyDTModel.actionCols != null ) {
+            for ( ActionCol c : legacyDTModel.actionCols ) {
+                newDTModel.getActionCols().add( makeNewColumn( c ) );
+            }
         }
 
         //Copy across data
         newDTModel.setData( DataUtilities.makeDataLists( legacyDTModel.data ) );
 
         //Copy the boundName for ActionRetractFactCol into the data of the new Guided Decision Table model
-        final int DATA_COLUMN_OFFSET = legacyDTModel.conditionCols.size() + legacyDTModel.metadataCols.size() + legacyDTModel.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
-        for ( int iCol = 0; iCol < legacyDTModel.actionCols.size(); iCol++ ) {
-            ActionCol lc = legacyDTModel.actionCols.get( iCol );
-            if ( lc instanceof ActionRetractFactCol ) {
-                String boundName = ( (ActionRetractFactCol) lc ).boundName;
-                for ( List<DTCellValue52> row : newDTModel.getData() ) {
-                    row.get( DATA_COLUMN_OFFSET + iCol ).setStringValue( boundName );
+        if ( legacyDTModel.actionCols != null ) {
+            final int metaDataColCount = ( legacyDTModel.metadataCols == null ? 0 : legacyDTModel.metadataCols.size() );
+            final int attributeColCount = ( legacyDTModel.attributeCols == null ? 0 : legacyDTModel.attributeCols.size() );
+            final int conditionColCount = ( legacyDTModel.conditionCols == null ? 0 : legacyDTModel.conditionCols.size() );
+            final int DATA_COLUMN_OFFSET = metaDataColCount + attributeColCount + conditionColCount + GuidedDecisionTable.INTERNAL_ELEMENTS;
+            for ( int iCol = 0; iCol < legacyDTModel.actionCols.size(); iCol++ ) {
+                ActionCol lc = legacyDTModel.actionCols.get( iCol );
+                if ( lc instanceof ActionRetractFactCol ) {
+                    String boundName = ( (ActionRetractFactCol) lc ).boundName;
+                    for ( List<DTCellValue52> row : newDTModel.getData() ) {
+                        row.get( DATA_COLUMN_OFFSET + iCol ).setStringValue( boundName );
+                    }
                 }
             }
         }
@@ -145,7 +158,9 @@ public class GuidedDecisionTableUpgradeHelper1
         }
 
         // Offset into Model's data array
-        final int DATA_COLUMN_OFFSET = model.metadataCols.size() + model.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
+        final int metaDataColCount = ( model.metadataCols == null ? 0 : model.metadataCols.size() );
+        final int attributeColCount = ( model.attributeCols == null ? 0 : model.attributeCols.size() );
+        final int DATA_COLUMN_OFFSET = metaDataColCount + attributeColCount + GuidedDecisionTable.INTERNAL_ELEMENTS;
         Map<String, List<ConditionColData>> uniqueGroups = new TreeMap<String, List<ConditionColData>>();
         List<List<ConditionColData>> groups = new ArrayList<List<ConditionColData>>();
         final int DATA_ROWS = model.data.length;

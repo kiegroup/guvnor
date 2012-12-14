@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -34,8 +35,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeEvent;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeHandler;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionTypeChangeEvent;
@@ -44,7 +45,6 @@ import org.kie.guvnor.guided.rule.client.editor.HasExpressionChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.ExpressionCollectionIndex;
 import org.kie.guvnor.guided.rule.model.ExpressionFieldVariable;
 import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
@@ -63,16 +63,16 @@ public class ExpressionBuilder extends RuleModellerWidget
         HasExpressionTypeChangeHandlers,
         HasExpressionChangeHandlers {
 
-    private static final String                 DELETE_VALUE                 = "_delete_";
-    private static final String                 FIElD_VALUE_PREFIX           = "fl";
-    private static final String                 VARIABLE_VALUE_PREFIX        = "va";
+    private static final String DELETE_VALUE = "_delete_";
+    private static final String FIElD_VALUE_PREFIX = "fl";
+    private static final String VARIABLE_VALUE_PREFIX = "va";
     // private static final String GLOBAL_COLLECTION_VALUE_PREFIX = "gc";
-    private static final String                 GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
-    private static final String                 METHOD_VALUE_PREFIX          = "mt";
-    private final        SmallLabelClickHandler slch                         = new SmallLabelClickHandler();
-    private              HorizontalPanel        panel                        = new HorizontalPanel();
+    private static final String GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
+    private static final String METHOD_VALUE_PREFIX = "mt";
+    private final SmallLabelClickHandler slch = new SmallLabelClickHandler();
+    private HorizontalPanel panel = new HorizontalPanel();
     private ExpressionFormLine expression;
-    private boolean            readOnly;
+    private boolean readOnly;
 
     private boolean isFactTypeKnown;
 

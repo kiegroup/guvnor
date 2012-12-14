@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
@@ -53,14 +53,6 @@ public class RuleModellerWidgetFactory
         implements
         ModellerWidgetFactory {
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
-     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
-     * com.google.web.bindery.event.shared.EventBus,
-     * org.drools.guvnor.client.modeldriven.brl.IAction, boolean )
-     */
     public RuleModellerWidget getWidget( RuleModeller ruleModeller,
                                          EventBus eventBus,
                                          IAction action,
@@ -112,14 +104,6 @@ public class RuleModellerWidgetFactory
         throw new RuntimeException( "I don't know what type of action is: " + action ); //NON-NLS
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget
-     * (org.drools.guvnor.client.modeldriven.ui.RuleModeller,
-     * com.google.web.bindery.event.shared.EventBus,
-     * org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
-     */
     public RuleModellerWidget getWidget( RuleModeller ruleModeller,
                                          EventBus eventBus,
                                          IPattern pattern,

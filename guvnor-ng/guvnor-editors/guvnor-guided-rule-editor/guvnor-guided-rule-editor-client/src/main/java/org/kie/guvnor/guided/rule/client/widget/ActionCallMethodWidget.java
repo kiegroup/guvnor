@@ -23,15 +23,15 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.MethodParameterValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
@@ -51,13 +51,13 @@ import org.uberfire.client.common.SmallLabel;
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
-    final private ActionCallMethod   model;
+    final private ActionCallMethod model;
     final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
 
     private String[] fieldCompletionTexts;
     private String[] fieldCompletionValues;
-    private String   variableClass;
+    private String variableClass;
 
     private boolean readOnly;
 

@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,15 +35,14 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerLabel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.DSLVariableValue;
 import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CustomFormPopUp;
 import org.kie.guvnor.guided.rule.client.editor.EnumDropDown;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
@@ -61,12 +61,12 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     private WorkingSetManager workingSetManager = null;
 
-    private final List<Widget>      widgets;
+    private final List<Widget> widgets;
     private final List<DSLDropDown> dropDownWidgets;
-    private final DSLSentence       sentence;
-    private final VerticalPanel     layout;
-    private       HorizontalPanel   currentRow;
-    private       boolean           readOnly;
+    private final DSLSentence sentence;
+    private final VerticalPanel layout;
+    private HorizontalPanel currentRow;
+    private boolean readOnly;
 
     public DSLSentenceWidget( RuleModeller modeller,
                               EventBus eventBus,
@@ -442,8 +442,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
         final DataModelOracle completions = getModeller().getSuggestionCompletions();
         EnumDropDown resultWidget = null;
-        String           factType;
-        String           factField;
+        String factType;
+        String factField;
         DSLVariableValue selectedValue;
 
         public DSLDropDown( final String variableDef,
@@ -519,9 +519,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             implements
             DSLVariableEditor {
 
-        private DSLVariableValue        selectedValue;
+        private DSLVariableValue selectedValue;
         private CustomFormConfiguration customFormConfiguration;
-        private Button                  btnCustomForm;
+        private Button btnCustomForm;
 
         public DSLCustomFormButton( final String variableDef,
                                     final DSLVariableValue value,

@@ -20,13 +20,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
@@ -44,9 +44,9 @@ import org.uberfire.client.common.SmallLabel;
 public class Connectives {
 
     private final RuleModeller modeller;
-    private final EventBus     eventBus;
-    private final FactPattern  pattern;
-    private final Boolean      isReadOnly;
+    private final EventBus eventBus;
+    private final FactPattern pattern;
+    private final Boolean isReadOnly;
 
     public Connectives( RuleModeller modeller,
                         EventBus eventBus,

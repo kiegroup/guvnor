@@ -20,7 +20,7 @@ import java.util.TreeSet;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.decoratedgrid.client.resources.i18n.Constants;
 import org.kie.guvnor.decoratedgrid.client.widget.events.CopyRowsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteColumnEvent;
@@ -40,7 +40,7 @@ public class CopyPasteContextMenu extends AbstractContextMenu
     private SortedSet<Integer> context = new TreeSet<Integer>();
     private final ContextMenuItem itemCopy;
     private final ContextMenuItem itemPaste;
-    private final EventBus        eventBus;
+    private final EventBus eventBus;
 
     public CopyPasteContextMenu( final EventBus eventBus ) {
         this.eventBus = eventBus;

@@ -48,19 +48,19 @@ public class CEPWindowOperatorsDropdown extends Composite
         HasValueChangeHandlers<OperatorSelection> {
 
     private static final OperatorsResource resources = GWT.create( OperatorsResource.class );
-    private static final OperatorsCss css       = resources.operatorsCss();
+    private static final OperatorsCss css = resources.operatorsCss();
 
     private List<String> operators = CEPOracle.getCEPWindowOperators();
     private ListBox box;
     private HorizontalPanel parametersContainer = new HorizontalPanel();
-    private HorizontalPanel windowContainer     = new HorizontalPanel();
+    private HorizontalPanel windowContainer = new HorizontalPanel();
 
     private boolean isReadOnly = false;
 
     protected HasCEPWindow hcw;
 
-    //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
-    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.server.util.CEPWindowOperatorParameterDRLBuilder";
+    //Parameter value defining the server-side class used to generate DRL for CEP operator parameters
+    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.rule.backend.server.util.CEPWindowOperatorParameterDRLBuilder";
 
     public CEPWindowOperatorsDropdown() {
         windowContainer.setStylePrimaryName( css.container() );

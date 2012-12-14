@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -27,7 +28,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
@@ -52,7 +52,7 @@ import org.uberfire.client.common.FormStylePopup;
 public class CompositeFactPatternWidget extends RuleModellerWidget {
 
     protected final DataModelOracle completions;
-    protected       DirtyableFlexTable layout;
+    protected DirtyableFlexTable layout;
 
     protected CompositeFactPattern pattern;
 

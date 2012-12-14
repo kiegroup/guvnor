@@ -20,12 +20,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.guided.rule.client.editor.DynamicTextArea;
 import org.kie.guvnor.guided.rule.client.editor.FreeFormLinePopup;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
@@ -41,8 +41,8 @@ import org.uberfire.client.common.DirtyableFlexTable;
 public class FreeFormLineWidget extends RuleModellerWidget {
 
     private FreeFormLine action;
-    private DirtyableFlexTable layout   = new DirtyableFlexTable();
-    private DynamicTextArea    textArea = new DynamicTextArea();
+    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private DynamicTextArea textArea = new DynamicTextArea();
     private boolean readOnly;
 
     public FreeFormLineWidget( RuleModeller mod,

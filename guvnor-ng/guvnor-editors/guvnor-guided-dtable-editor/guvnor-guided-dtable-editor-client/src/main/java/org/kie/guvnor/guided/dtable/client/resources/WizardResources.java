@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.commons.ui.client.resources;
+package org.kie.guvnor.guided.dtable.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import org.kie.guvnor.guided.dtable.client.resources.css.WizardCss;
 
 /**
- * General CSS for Guvnor. Use of standalone CSS files should be migrated to here
+ * Wizard resources
  */
-public interface WorkItemsCss
+public interface WizardResources
         extends
-        CssResource {
+        ClientBundle {
 
-    String workItemParameter();
+    WizardResources INSTANCE = GWT.create( WizardResources.class );
 
-    String greyBorderWithRoundCorners();
+    @Source("css/Wizard.css")
+    WizardCss css();
 
 }

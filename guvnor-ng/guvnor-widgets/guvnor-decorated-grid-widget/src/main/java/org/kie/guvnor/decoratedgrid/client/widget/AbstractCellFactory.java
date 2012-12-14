@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;

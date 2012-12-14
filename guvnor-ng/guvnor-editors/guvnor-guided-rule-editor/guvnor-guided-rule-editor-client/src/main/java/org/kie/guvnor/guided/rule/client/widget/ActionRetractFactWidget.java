@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.web.bindery.event.shared.EventBus;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.model.ActionRetractFact;
