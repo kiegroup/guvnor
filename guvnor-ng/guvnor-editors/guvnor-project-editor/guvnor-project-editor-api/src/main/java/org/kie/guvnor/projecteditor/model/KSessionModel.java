@@ -18,6 +18,9 @@ package org.kie.guvnor.projecteditor.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Portable
 public class KSessionModel
         implements HasName {
@@ -25,6 +28,10 @@ public class KSessionModel
     private String name;
     private String type;
     private ClockTypeOption clockType = ClockTypeOption.REALTIME;
+    private boolean theDefault;
+    private String scope;
+    private List<ListenerModel> listenerModels = new ArrayList<ListenerModel>();
+    private List<WorkItemHandlerModel> workItemHandelerModels = new ArrayList<WorkItemHandlerModel>();
 
     public String getName() {
         return name;
@@ -48,5 +55,21 @@ public class KSessionModel
 
     public void setClockType(ClockTypeOption clockTypeEnum) {
         this.clockType = clockTypeEnum;
+    }
+
+    public boolean isDefault() {
+        return theDefault;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public List<ListenerModel> getListenerModels() {
+        return listenerModels;
+    }
+
+    public List<WorkItemHandlerModel> getWorkItemHandelerModels() {
+        return workItemHandelerModels;
     }
 }

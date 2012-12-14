@@ -20,12 +20,8 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class KModuleConverter
         extends AbstractXStreamConverter {
@@ -36,27 +32,19 @@ public class KModuleConverter
 
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         KModuleModel kModule = (KModuleModel) value;
-        writeAttribute(writer, "kBasesPath", kModule.getKBasesPath());
-        writeAttribute(writer, "kModulePath", kModule.getKModulePath());
-        writeObject(writer, context, "groupArtifactVersion", kModule.getGroupArtifactVersion());
-        writeObjectList(writer, context, "kbases", "kbase", kModule.getKBases().values());
+        for (KBaseModel kBaseModule : kModule.getKBases().values()) {
+            writeObject(writer, context, "kbase", kBaseModule);
+        }
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
         final KModuleModel kModule = new KModuleModel();
-        kModule.setKBasesPath(reader.getAttribute("kBasesPath"));
-        kModule.setKModulePath(reader.getAttribute("kModulePath"));
 
         readNodes(reader, new AbstractXStreamConverter.NodeReader() {
             public void onNode(HierarchicalStreamReader reader, String name, String value) {
-                if ("groupArtifactVersion".equals(name)) {
-                    kModule.setGroupArtifactVersion((GroupArtifactVersionModel) context.convertAnother(reader.getValue(), GroupArtifactVersionModel.class));
-                } else if ("kbases".equals(name)) {
-                    Map<String, KBaseModel> kBases = new HashMap<String, KBaseModel>();
-                    for (KBaseModel kBase : readObjectList(reader, context, KBaseModel.class)) {
-                        kBases.put(kBase.getName(), kBase);
-                    }
-                    kModule.getKBases().putAll(kBases);
+                if ("kbase".equals(name)) {
+                    KBaseModel kBaseModule = readObject(reader, context, KBaseModel.class);
+                    kModule.getKBases().put(kBaseModule.getName(), kBaseModule);
                 }
             }
         });

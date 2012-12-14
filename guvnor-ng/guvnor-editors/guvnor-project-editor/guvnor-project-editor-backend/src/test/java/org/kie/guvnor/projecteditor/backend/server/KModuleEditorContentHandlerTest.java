@@ -16,14 +16,25 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import org.junit.Test;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertNotNull;
 
-public class ProjectEditorContentHandlerTest {
+public class KModuleEditorContentHandlerTest {
 
+
+    @Test
+    public void testBasic() throws Exception {
+        KModuleEditorContentHandler kModuleEditorContentHandler = new KModuleEditorContentHandler();
+        KModuleModel model = kModuleEditorContentHandler.toModel(readResource("simpleKModule.xml"));
+
+        assertNotNull(model);
+    }
 
     private String readResource(String name) {
         StringBuffer contents = new StringBuffer();

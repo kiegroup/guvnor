@@ -18,6 +18,10 @@ public class KBaseModel
     private Map<String, KSessionModel> statelessSessions = new HashMap<String, KSessionModel>();
     private List<String> includes = new ArrayList<String>();
 
+    private boolean theDefault = false;
+    private String scope;
+    private List<String> packages=new ArrayList<String>();
+
     public String getName() {
         return name;
     }
@@ -56,5 +60,29 @@ public class KBaseModel
 
     public void addInclude(String include) {
         includes.add(include);
+    }
+
+    public boolean isDefault() {
+        return theDefault;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public List<String> getPackages() {
+        return packages;
+    }
+
+    public void setDefault(boolean theDefault) {
+        this.theDefault = theDefault;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public void addPackage(String pkg) {
+        packages.add(pkg);
     }
 }

@@ -22,6 +22,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.guvnor.projecteditor.model.ClockTypeOption;
 import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.projecteditor.model.ListenerModel;
+import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
 
 public class KSessionConverter
         extends AbstractXStreamConverter {
@@ -34,15 +36,30 @@ public class KSessionConverter
         KSessionModel kSession = (KSessionModel) value;
         writer.addAttribute("name", kSession.getName());
         writer.addAttribute("type", kSession.getType());
+        writer.addAttribute("default", Boolean.toString(kSession.isDefault()));
         if (kSession.getClockType() != null) {
             writer.addAttribute("clockType", kSession.getClockType().getClockTypeAsString());
+        }
+        if (kSession.getScope() != null) {
+            writer.addAttribute("scope", kSession.getScope().toString());
+        }
+        for (ListenerModel listener : kSession.getListenerModels()) {
+            writeObject(writer, context, listener.getKind().toString(), listener);
+        }
+        for (WorkItemHandlerModel wih : kSession.getWorkItemHandelerModels()) {
+            writeObject(writer, context, "workItemHandler", wih);
         }
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         KSessionModel kSession = new KSessionModel();
         kSession.setName(reader.getAttribute("name"));
-        kSession.setType(reader.getAttribute("type"));
+        String type = reader.getAttribute("type");
+        if (type == null) {
+            kSession.setType("stateful");
+        } else {
+            kSession.setType(type);
+        }
 
         String clockType = reader.getAttribute("clockType");
         if (clockType != null) {

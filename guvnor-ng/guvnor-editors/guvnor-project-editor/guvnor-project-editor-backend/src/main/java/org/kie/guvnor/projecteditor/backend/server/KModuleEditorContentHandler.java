@@ -18,17 +18,22 @@ package org.kie.guvnor.projecteditor.backend.server;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.kie.guvnor.projecteditor.backend.server.converters.ClockTypeConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.KBaseConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.KModuleConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.KSessionConverter;
+import org.kie.guvnor.projecteditor.backend.server.converters.ListenerConverter;
+import org.kie.guvnor.projecteditor.backend.server.converters.QualifierConverter;
+import org.kie.guvnor.projecteditor.backend.server.converters.WorkItemHandelerConverter;
 import org.kie.guvnor.projecteditor.model.ClockTypeOption;
 import org.kie.guvnor.projecteditor.model.KBaseModel;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.projecteditor.model.ListenerModel;
+import org.kie.guvnor.projecteditor.model.QualifierModel;
+import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
 
 public class KModuleEditorContentHandler {
-
-    // TODO: Finish this when the core is more stable
 
     public KModuleModel toModel(String xml) {
         return (KModuleModel) createXStream().fromXML(xml);
@@ -41,15 +46,21 @@ public class KModuleEditorContentHandler {
     private XStream createXStream() {
         XStream xStream = new XStream(new DomDriver());
 
-        xStream.alias("kmodule", KModuleModel.class);
-        xStream.alias("kbase", KBaseModel.class);
-        xStream.alias("ksession", KSessionModel.class);
-        xStream.alias("clockType", ClockTypeOption.class);
-
         xStream.registerConverter(new KModuleConverter());
         xStream.registerConverter(new KBaseConverter());
         xStream.registerConverter(new KSessionConverter());
         xStream.registerConverter(new ClockTypeConverter());
+        xStream.registerConverter(new ListenerConverter());
+        xStream.registerConverter(new QualifierConverter());
+        xStream.registerConverter(new WorkItemHandelerConverter());
+
+        xStream.alias("kmodule", KModuleModel.class);
+        xStream.alias("kbase", KBaseModel.class);
+        xStream.alias("ksession", KSessionModel.class);
+        xStream.alias("clockType", ClockTypeOption.class);
+        xStream.alias("listener", ListenerModel.class);
+        xStream.alias("qualifier", QualifierModel.class);
+        xStream.alias("workItemHandler", WorkItemHandlerModel.class);
 
         return xStream;
     }
