@@ -16,14 +16,12 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
-             xmlns:guvnor-pager="urn:import:org.kie.guvnor.commons.ui.client.tables">
+    xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+    xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
+    xmlns:guvnor-pager="urn:import:org.kie.guvnor.commons.ui.client.tables">
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
-      <gwt:Button ui:field="uploadJarButton" text='Upload jar'/>
-      <gwt:Button ui:field="deleteSelectedJarButton" text='Delete selected jar'/>
 <!--       <gwt:Button ui:field="refreshButton" text='refresh'/> -->
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>

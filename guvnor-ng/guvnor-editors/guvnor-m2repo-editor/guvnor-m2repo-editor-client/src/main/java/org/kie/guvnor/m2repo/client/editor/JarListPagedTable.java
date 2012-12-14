@@ -51,12 +51,15 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         UiBinder<Widget, JarListPagedTable> {
     }
 
-    @UiField()
+/*    @UiField()
     protected Button                             uploadJarButton;
 
     @UiField()
     protected Button                             deleteSelectedJarButton;
-
+*/
+    @UiField()
+    protected Button                             refreshButton;
+    
     private static JarListPagedTableBinder uiBinder  = GWT.create( JarListPagedTableBinder.class );
 
 
@@ -71,7 +74,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
-                PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
+                PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
                 String filters = null;
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
@@ -123,13 +126,18 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         return uiBinder.createAndBindUi( this );
     }
 
-    @UiHandler("uploadJarButton")
+/*    @UiHandler("uploadJarButton")
     void uploadJar(ClickEvent e) {
 
     }
 
     @UiHandler("deleteSelectedJarButton")
     void deleteSelectedJar(ClickEvent e) {
+
+    }
+*/    
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
 
     }
 

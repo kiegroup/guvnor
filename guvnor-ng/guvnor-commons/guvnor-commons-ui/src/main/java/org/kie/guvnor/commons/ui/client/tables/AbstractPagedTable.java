@@ -35,8 +35,8 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow>
     protected int                    pageSize;
     protected AsyncDataProvider<T>   dataProvider;
 
-    @UiField
-    public GuvnorSimplePager      pager;
+/*    @UiField
+    public GuvnorSimplePager      pager;*/
 
     /**
      * Constructor
@@ -45,8 +45,8 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow>
      */
     public AbstractPagedTable(int pageSize) {
         this.pageSize = pageSize;
-        pager.setDisplay( cellTable );
-        pager.setPageSize( pageSize );
+/*        pager.setDisplay( cellTable );
+        pager.setPageSize( pageSize );*/
     }
 
     /**

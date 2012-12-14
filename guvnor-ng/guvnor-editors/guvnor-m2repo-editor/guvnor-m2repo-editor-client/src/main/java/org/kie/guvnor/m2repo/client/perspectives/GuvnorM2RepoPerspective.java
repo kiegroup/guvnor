@@ -89,12 +89,12 @@ public class GuvnorM2RepoPerspective {
     }
 
     private void buildPerspective() {
-        final PlaceRequest place1 = new DefaultPlaceRequest( "M2RepoEditor" );
-        place1.addParameter( "instance",
-                             "1" );
-        final PlaceRequest place2 = new DefaultPlaceRequest( "M2RepoEditor" );
+        final PlaceRequest place1 = new DefaultPlaceRequest( "FileExplorer" );
+/*        place1.addParameter( "instance",
+                             "1" );*/
+/*        final PlaceRequest place2 = new DefaultPlaceRequest( "M2RepoEditor" );
         place2.addParameter( "instance",
-                             "2" );
+                             "2" );*/
 
         this.perspective = new PerspectiveDefinitionImpl();
         this.perspective.setName( "Guvnor M2 Repository Explorer" );
@@ -104,11 +104,9 @@ public class GuvnorM2RepoPerspective {
         final PanelDefinition west = new PanelDefinitionImpl();
         west.setWidth( 300 );
         west.setMinWidth( 200 );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
 
-        west.addPart( new PartDefinitionImpl( place2 ) );
-
-        this.perspective.getRoot().insertChild( Position.WEST,
-                                                west );
+        this.perspective.getRoot().insertChild( Position.WEST, west );
     }
 
     private void buildMenuBar() {
