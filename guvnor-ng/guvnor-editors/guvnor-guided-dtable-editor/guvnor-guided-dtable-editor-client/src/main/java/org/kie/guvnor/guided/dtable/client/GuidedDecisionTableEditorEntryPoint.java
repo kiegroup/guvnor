@@ -13,20 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.commons.ui.client;
+package org.kie.guvnor.guided.dtable.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.kie.guvnor.commons.ui.client.resources.GuvnorSimplePagerResources;
-import org.kie.guvnor.commons.ui.client.resources.RoundedCornersResource;
+import org.kie.guvnor.guided.dtable.client.resources.Resources;
+import org.kie.guvnor.guided.dtable.client.resources.WizardResources;
 
 @EntryPoint
-public class GuvnorCommonsUIEntryPoint {
+public class GuidedDecisionTableEditorEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
-        GuvnorSimplePagerResources.INSTANCE.simplePagerStyle().ensureInjected();
+        Resources.INSTANCE.css().ensureInjected();
+        WizardResources.INSTANCE.css().ensureInjected();
     }
 
 }
