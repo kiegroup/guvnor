@@ -23,7 +23,7 @@ import java.util.List;
 
 @Portable
 public class KSessionModel
-        implements HasName {
+        implements HasListFormComboPanelProperties {
 
     private String name;
     private String type;

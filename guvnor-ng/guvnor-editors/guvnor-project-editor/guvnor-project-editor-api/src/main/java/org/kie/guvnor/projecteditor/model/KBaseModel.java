@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Portable
 public class KBaseModel
-        implements HasName {
+        implements HasListFormComboPanelProperties {
 
     private String name;
     private AssertBehaviorOption equalsBehavior = AssertBehaviorOption.IDENTITY;

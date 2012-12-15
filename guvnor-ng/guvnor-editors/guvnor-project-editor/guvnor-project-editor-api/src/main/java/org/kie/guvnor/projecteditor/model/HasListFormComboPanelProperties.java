@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.projecteditor.model;
 
-public interface HasName {
+public interface HasListFormComboPanelProperties {
 
     String getName();
 

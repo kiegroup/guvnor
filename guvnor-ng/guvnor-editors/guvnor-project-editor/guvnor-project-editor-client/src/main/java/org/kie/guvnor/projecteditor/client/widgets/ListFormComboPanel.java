@@ -18,11 +18,11 @@ package org.kie.guvnor.projecteditor.client.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.projecteditor.model.HasName;
+import org.kie.guvnor.projecteditor.model.HasListFormComboPanelProperties;
 
 import java.util.Map;
 
-public abstract class ListFormComboPanel<T extends HasName>
+public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {
 
     private Map<String, T> items;
@@ -129,7 +129,7 @@ public abstract class ListFormComboPanel<T extends HasName>
         if (selectedItemName == null) {
             view.showPleaseSelectAnItem();
         } else {
-            for (HasName item : items.values()) {
+            for (HasListFormComboPanelProperties item : items.values()) {
                 item.setDefault(false);
             }
             items.get(selectedItemName).setDefault(true);
