@@ -60,7 +60,13 @@ public abstract class ListFormComboPanel<T extends HasName>
     @Override
     public void onSelect(String fullName) {
         selectedItemName = fullName;
-        form.setModel(items.get(fullName));
+        T selected = items.get(fullName);
+        form.setModel(selected);
+        if (selected.isDefault()) {
+            view.disableMakeDefault();
+        } else {
+            view.enableMakeDefault();
+        }
     }
 
     @Override
@@ -115,6 +121,19 @@ public abstract class ListFormComboPanel<T extends HasName>
             items.remove(selectedItemName);
             view.remove(selectedItemName);
             selectedItemName = null;
+        }
+    }
+
+    @Override
+    public void onMakeDefault() {
+        if (selectedItemName == null) {
+            view.showPleaseSelectAnItem();
+        } else {
+            for (HasName item : items.values()) {
+                item.setDefault(false);
+            }
+            items.get(selectedItemName).setDefault(true);
+            view.disableMakeDefault();
         }
     }
 }

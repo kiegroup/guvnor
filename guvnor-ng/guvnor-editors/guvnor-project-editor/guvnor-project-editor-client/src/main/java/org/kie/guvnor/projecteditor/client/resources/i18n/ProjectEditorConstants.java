@@ -49,6 +49,8 @@ public interface ProjectEditorConstants
 
     String Delete();
 
+    String MakeDefault();
+
     String Rename();
 
     String Name();

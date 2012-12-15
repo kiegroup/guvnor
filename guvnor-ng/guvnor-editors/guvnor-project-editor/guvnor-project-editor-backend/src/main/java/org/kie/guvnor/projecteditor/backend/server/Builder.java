@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import org.kie.builder.KieServices;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.backend.server.util.Paths;
@@ -23,19 +24,18 @@ import org.uberfire.backend.vfs.Path;
 
 public class Builder {
 
-    // TODO: Finish this when the core is more stable
 
-//    private final KieBuilder kieBuilder;
+    //    private final KieBuilder kieBuilder;
 //    private final String projectName;
 //    private final KieFileSystem kieFileSystem;
-//    private final IOService ioService;
+    private final IOService ioService;
 
     public Builder(Path pathToKModuleXML,
                    IOService ioService,
                    Paths paths) {
-//        this.ioService = ioService;
-//
-//        KieServices kieServices = KieServices.Factory.get();
+        this.ioService = ioService;
+
+        KieServices kieServices = KieServices.Factory.get();
 //        KieFactory kieFactory = KieFactory.Factory.get();
 //        kieFileSystem = kieFactory.newKieFileSystem();
 //
@@ -51,8 +51,7 @@ public class Builder {
     public Messages build() {
 
 //        kieBuilder.build();
-//        return new Messages();
-        return null;
+        return new Messages();
     }
 
 //    private void visitPaths(DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {

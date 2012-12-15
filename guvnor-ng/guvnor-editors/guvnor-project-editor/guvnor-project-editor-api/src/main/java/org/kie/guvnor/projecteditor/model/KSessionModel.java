@@ -32,6 +32,8 @@ public class KSessionModel
     private String scope;
     private List<ListenerModel> listenerModels = new ArrayList<ListenerModel>();
     private List<WorkItemHandlerModel> workItemHandelerModels = new ArrayList<WorkItemHandlerModel>();
+    private ListenerModel listener;
+    private WorkItemHandlerModel workItemHandlerModel;
 
     public String getName() {
         return name;
@@ -61,6 +63,11 @@ public class KSessionModel
         return theDefault;
     }
 
+    @Override
+    public void setDefault(boolean theDefault) {
+        this.theDefault = theDefault;
+    }
+
     public String getScope() {
         return scope;
     }
@@ -69,7 +76,29 @@ public class KSessionModel
         return listenerModels;
     }
 
+    public List<ListenerModel> getListenerModels(ListenerModel.Kind kind) {
+        List<ListenerModel> listeners = new ArrayList<ListenerModel>();
+        for (ListenerModel listener : getListenerModels()) {
+            if (listener.getKind() == kind) {
+                listeners.add(listener);
+            }
+        }
+        return listeners;
+    }
+
     public List<WorkItemHandlerModel> getWorkItemHandelerModels() {
         return workItemHandelerModels;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public void addListenerModel(ListenerModel listener) {
+        this.listener = listener;
+    }
+
+    public void addWorkItemHandelerModel(WorkItemHandlerModel workItemHandlerModel) {
+        this.workItemHandlerModel = workItemHandlerModel;
     }
 }

@@ -28,11 +28,12 @@
         <gwt:Button ui:field="addButton" text="{i18n.Add}"/>
         <gwt:Button ui:field="renameButton" text="{i18n.Rename}"/>
         <gwt:Button ui:field="deleteButton" text="{i18n.Delete}"/>
+        <gwt:Button ui:field="makeDefaultButton" text="{i18n.MakeDefault}"/>
       </gwt:HorizontalPanel>
     </div>
     <div>
       <div style='float:left;'>
-        <gwt:ListBox ui:field="kSessionsList" visibleItemCount="15" width="240px"/>
+        <gwt:ListBox ui:field="kSessionsList" visibleItemCount="15" width="280px"/>
       </div>
       <div style='float:left; padding-left:20px;'>
         <gwt:SimplePanel ui:field="kSessionForm"/>

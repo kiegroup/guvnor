@@ -21,4 +21,8 @@ public interface HasName {
     String getName();
 
     void setName( String name );
+
+    public boolean isDefault();
+
+    void setDefault(boolean theDefault);
 }

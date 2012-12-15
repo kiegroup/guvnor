@@ -18,7 +18,7 @@ public class KBaseModel
     private Map<String, KSessionModel> statelessSessions = new HashMap<String, KSessionModel>();
     private List<String> includes = new ArrayList<String>();
 
-    private boolean theDefault = false;
+    private boolean theDefault;
     private String scope;
     private List<String> packages=new ArrayList<String>();
 

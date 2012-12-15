@@ -31,10 +31,11 @@ public interface ListFormComboPanelView
 
         void onRename();
 
+        void onMakeDefault();
+
     }
 
     void addItem( String name );
-
     void setPresenter( Presenter presenter );
 
     void setForm( Form form );
@@ -46,4 +47,8 @@ public interface ListFormComboPanelView
     void remove( String selectedSession );
 
     void showPleaseSelectAnItem();
+
+    void enableMakeDefault();
+
+    void disableMakeDefault();
 }

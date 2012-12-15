@@ -24,7 +24,7 @@
 
   <gwt:HTMLPanel width="100%">
     <div>
-      <div style='float:left'>
+      <div>
         <div style='float:left; padding-right:5px;'>
           <gwt:Label text="{i18n.Name}"/>
         </div>

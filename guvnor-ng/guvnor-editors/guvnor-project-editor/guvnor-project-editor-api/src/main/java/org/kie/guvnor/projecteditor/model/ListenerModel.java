@@ -48,12 +48,23 @@ public class ListenerModel {
             }
             return null;
         }
+
     }
 
     private Kind kind;
+
     private String type;
 
     private QualifierModel qualifierModel;
+    private KSessionModel kSession;
+
+    public void setKind(Kind kind) {
+        this.kind = kind;
+    }
+
+    public void setKSession(KSessionModel kSession) {
+        this.kSession = kSession;
+    }
 
     public Kind getKind() {
         return kind;

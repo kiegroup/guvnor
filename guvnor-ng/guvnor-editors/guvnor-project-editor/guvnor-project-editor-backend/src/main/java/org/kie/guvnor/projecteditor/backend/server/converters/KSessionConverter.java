@@ -20,10 +20,13 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.guvnor.projecteditor.model.ClockTypeOption;
 import org.kie.guvnor.projecteditor.model.KSessionModel;
 import org.kie.guvnor.projecteditor.model.ListenerModel;
 import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
+
+import java.util.List;
 
 public class KSessionConverter
         extends AbstractXStreamConverter {
@@ -43,28 +46,66 @@ public class KSessionConverter
         if (kSession.getScope() != null) {
             writer.addAttribute("scope", kSession.getScope().toString());
         }
-        for (ListenerModel listener : kSession.getListenerModels()) {
-            writeObject(writer, context, listener.getKind().toString(), listener);
-        }
-        for (WorkItemHandlerModel wih : kSession.getWorkItemHandelerModels()) {
-            writeObject(writer, context, "workItemHandler", wih);
+
+        writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandelerModels());
+
+        if (!kSession.getListenerModels().isEmpty()) {
+            writer.startNode("listeners");
+            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
+                writeObject(writer, context, listener.getKind().toString(), listener);
+            }
+            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
+                writeObject(writer, context, listener.getKind().toString(), listener);
+            }
+            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.PROCESS_EVENT_LISTENER)) {
+                writeObject(writer, context, listener.getKind().toString(), listener);
+            }
+            writer.endNode();
         }
     }
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        KSessionModel kSession = new KSessionModel();
+    public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
+        final KSessionModel kSession = new KSessionModel();
         kSession.setName(reader.getAttribute("name"));
-        String type = reader.getAttribute("type");
-        if (type == null) {
-            kSession.setType("stateful");
-        } else {
-            kSession.setType(type);
-        }
+        kSession.setDefault("true".equals(reader.getAttribute("default")));
+
+        String kSessionType = reader.getAttribute("type");
+        kSession.setType(kSessionType != null ? kSessionType : "stateful");
 
         String clockType = reader.getAttribute("clockType");
         if (clockType != null) {
             kSession.setClockType(ClockTypeOption.get(clockType));
         }
+
+        String scope = reader.getAttribute("scope");
+        if (scope != null) {
+            kSession.setScope(scope);
+        }
+
+        readNodes(reader, new AbstractXStreamConverter.NodeReader() {
+            public void onNode(HierarchicalStreamReader reader,
+                               String name,
+                               String value) {
+                if ("listeners".equals(name)) {
+                    while (reader.hasMoreChildren()) {
+                        reader.moveDown();
+                        String nodeName = reader.getNodeName();
+                        ListenerModel listener = readObject(reader, context, ListenerModel.class);
+                        listener.setKSession(kSession);
+                        listener.setKind(ListenerModel.Kind.fromString(nodeName));
+                        kSession.addListenerModel(listener);
+                        reader.moveUp();
+                    }
+                } else if ("workItemHandlers".equals(name)) {
+                    List<WorkItemHandlerModel> wihs = readObjectList(reader, context, WorkItemHandlerModel.class);
+                    for (WorkItemHandlerModel wih : wihs) {
+                        wih.setKSession(kSession);
+                        kSession.addWorkItemHandelerModel(wih);
+                    }
+                }
+            }
+        });
+
         return kSession;
     }
 }

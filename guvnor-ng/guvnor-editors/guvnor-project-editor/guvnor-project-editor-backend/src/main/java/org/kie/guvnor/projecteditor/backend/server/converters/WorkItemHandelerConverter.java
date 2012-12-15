@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.projecteditor.backend.server.converters;
 
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.guvnor.projecteditor.model.QualifierModel;
 import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
 

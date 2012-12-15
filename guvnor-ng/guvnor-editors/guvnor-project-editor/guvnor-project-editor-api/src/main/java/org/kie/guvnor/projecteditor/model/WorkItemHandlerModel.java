@@ -24,6 +24,7 @@ public class WorkItemHandlerModel {
     private String type;
 
     private QualifierModel qualifierModel;
+    private KSessionModel KSession;
 
     public String getType() {
         return type;
@@ -45,5 +46,9 @@ public class WorkItemHandlerModel {
 
     public void setQualifierModel(QualifierModel qualifierModel) {
         this.qualifierModel = qualifierModel;
+    }
+
+    public void setKSession(KSessionModel KSession) {
+        this.KSession = KSession;
     }
 }

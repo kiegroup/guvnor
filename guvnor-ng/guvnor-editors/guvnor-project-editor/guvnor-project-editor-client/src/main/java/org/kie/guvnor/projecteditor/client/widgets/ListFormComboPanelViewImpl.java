@@ -23,14 +23,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.ErrorPopup;
-
-import javax.inject.Inject;
 
 public class ListFormComboPanelViewImpl
         extends Composite
@@ -52,6 +51,9 @@ public class ListFormComboPanelViewImpl
 
     @UiField
     SimplePanel kSessionForm;
+
+    @UiField
+    Button makeDefaultButton;
 
     public ListFormComboPanelViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -121,5 +123,20 @@ public class ListFormComboPanelViewImpl
     @UiHandler("deleteButton")
     public void delete(ClickEvent clickEvent) {
         presenter.onRemove();
+    }
+
+    @UiHandler("makeDefaultButton")
+    public void makeDefault(ClickEvent clickEvent) {
+        presenter.onMakeDefault();
+    }
+
+    @Override
+    public void enableMakeDefault() {
+        makeDefaultButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableMakeDefault() {
+        makeDefaultButton.setEnabled(false);
     }
 }
