@@ -26,8 +26,9 @@ public class ModuleMigrater {
         logger.info("  Module migration ended");
     }
 
-    protected void migrate(Module module) {
-        logger.debug("    TODO migrate module ({}).", module.getName()); // TODO REPLACE ME WITH ACTUAL CODE
+    private void migrate(Module module) {
+        // TODO REPLACE ME WITH ACTUAL CODE
+        logger.debug("    TODO migrate module ({}).", module.getName());
     }
 
 }
