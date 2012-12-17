@@ -36,6 +36,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
@@ -43,7 +44,7 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
  */
-public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
+public class JarListPagedTable extends Composite/*extends AbstractPagedTable<JarListPageRow>*/ {
 
     // UI
     interface JarListPagedTableBinder
@@ -66,15 +67,16 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     // Other stuff
     private static final int                     PAGE_SIZE = 10;    
 
-    @Inject
-    private Caller<M2RepoService> m2RepoService;
+/*    @Inject
+    private Caller<M2RepoService> m2RepoService;*/
     
     public JarListPagedTable() {
-        super( PAGE_SIZE );
-
+        initWidget( uiBinder.createAndBindUi( this ) );
+        //super( PAGE_SIZE );
+/*
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
-                PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
+                PageRequest request = new PageRequest( 0pager.getPageStart(), pageSize );
                 String filters = null;
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
@@ -87,11 +89,11 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                     }
                 } ).listJars(request, filters);
             }
-        } );
+        } );*/
 
     }
 
-    @Override
+    //@Override
     protected void addAncillaryColumns(ColumnPicker<JarListPageRow> columnPicker,
                                        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup) {
 
@@ -121,10 +123,10 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
      }
 
-    @Override
+/*    @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
-    }
+    }*/
 
     @UiHandler("uploadJarButton")
     void uploadJar(ClickEvent e) {
