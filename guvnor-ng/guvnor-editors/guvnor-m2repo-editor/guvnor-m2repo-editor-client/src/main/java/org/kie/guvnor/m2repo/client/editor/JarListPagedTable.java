@@ -67,16 +67,15 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     // Other stuff
     private static final int                     PAGE_SIZE = 10;    
 
-/*    @Inject
-    private Caller<M2RepoService> m2RepoService;*/
+    @Inject
+    private Caller<M2RepoService> m2RepoService;
     
     public JarListPagedTable() {
-        //initWidget( uiBinder.createAndBindUi( this ) );
         super( PAGE_SIZE );
-/*
+
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
-                PageRequest request = new PageRequest( 0pager.getPageStart(), pageSize );
+                PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
                 String filters = null;
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
@@ -89,7 +88,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                     }
                 } ).listJars(request, filters);
             }
-        } );*/
+        } );
 
     }
 

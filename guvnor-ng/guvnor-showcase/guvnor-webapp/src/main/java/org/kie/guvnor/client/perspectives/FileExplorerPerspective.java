@@ -52,7 +52,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
  * A Perspective to show File Explorer
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective", isDefault = false)
+@WorkbenchPerspective(identifier = "FileExplorerPerspective", isDefault = true)
 public class FileExplorerPerspective {
 
     @Inject

@@ -50,7 +50,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
  * A Perspective to show Guvnor's M2_REPO related screens
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "GuvnorM2RepoPerspective", isDefault = true)
+@WorkbenchPerspective(identifier = "GuvnorM2RepoPerspective", isDefault = false)
 public class GuvnorM2RepoPerspective {
 
     @Inject
