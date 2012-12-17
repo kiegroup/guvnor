@@ -22,7 +22,11 @@ import static org.junit.Assert.*;
 public class Jcr2VfsMigrationAppTest {
 
     @Test
-    public void migrate() throws IOException {
+    public void migrateMortgageExample() throws IOException {
+        migrate("mortgageExample");
+    }
+
+    private void migrate(String datasetName) throws IOException {
         File testBaseDir = new File("target/test/" + getClass().getSimpleName());
         if (testBaseDir.exists()) {
             FileUtils.deleteDirectory(testBaseDir);
@@ -31,20 +35,19 @@ public class Jcr2VfsMigrationAppTest {
         testBaseDir = testBaseDir.getCanonicalFile();
         File inputJcrRepository = new File(testBaseDir, "inputJcr");
         inputJcrRepository.mkdir();
-        unzip(getClass().getResource("mortgageExampleJcr.zip"), inputJcrRepository);
+        unzip(getClass().getResource(datasetName + ".jcr.zip"), inputJcrRepository);
         File outputVfsRepository = new File(testBaseDir, "outputVfs");
 
         Jcr2VfsMigrationApp.main(
                 "-i", inputJcrRepository.getCanonicalPath(),
                 "-o", outputVfsRepository.getCanonicalPath());
-
     }
 
     private void unzip(URL resource, File outputDir) throws IOException {
         assertNotNull(resource);
-        File file = new File(outputDir, resource.getFile().replaceAll(".*/", ""));
-        copyAndClose(resource.openStream(), new FileOutputStream(file));
-        ZipFile zipFile = new ZipFile(file);
+        File tmpFile = new File(outputDir, resource.getFile().replaceAll(".*/", ""));
+        copyAndClose(resource.openStream(), new FileOutputStream(tmpFile));
+        ZipFile zipFile = new ZipFile(tmpFile);
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
@@ -56,6 +59,7 @@ public class Jcr2VfsMigrationAppTest {
                 copyAndClose(zipFile.getInputStream(entry), new FileOutputStream(entryDestination));
             }
         }
+        tmpFile.delete();
     }
 
     private void copyAndClose(InputStream in, OutputStream out) throws IOException {
