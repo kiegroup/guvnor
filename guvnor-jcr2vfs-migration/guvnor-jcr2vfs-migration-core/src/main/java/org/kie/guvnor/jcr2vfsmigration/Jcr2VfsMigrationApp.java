@@ -21,7 +21,7 @@ import org.jboss.weld.environment.se.WeldContainer;
 
 public class Jcr2VfsMigrationApp {
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         Weld weld = new Weld();
         WeldContainer weldContainer = weld.initialize();
 
