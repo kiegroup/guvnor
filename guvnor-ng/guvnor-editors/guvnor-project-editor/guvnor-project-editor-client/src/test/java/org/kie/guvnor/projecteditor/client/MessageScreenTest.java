@@ -26,74 +26,74 @@ import static org.mockito.Mockito.*;
 
 public class MessageScreenTest {
 
-    private PlaceManager placeManager;
-    private MessageScreenView view;
-    private MessageScreenView.Presenter presenter;
-    private MessageScreen screen;
-    private MessageService messageService;
-    private Messages messages;
-
-    @Before
-    public void setUp() throws Exception {
-        placeManager = mock(PlaceManager.class);
-        view = mock(MessageScreenView.class);
-        messageService = mock(MessageService.class);
-        screen = new MessageScreen(view, placeManager, messageService);
-        presenter = screen;
-        messages = new Messages();
-        messages.getMessages().add(createMessage(1010101, Message.Level.INFO, "Just saying hi", 10, 123));
-        messages.getMessages().add(createMessage(123321, Message.Level.WARNING, "RRRRRED ALEEERT!", 1, 321));
-        messages.getMessages().add(createMessage(666666, Message.Level.ERROR, "ERROR!", 51, 121));
-
-        when(
-                messageService.getMessageLog()
-        ).thenReturn(
-                messages
-        );
-    }
-
-    @Test
-    public void testPresenterSet() throws Exception {
-        verify(view).setPresenter(presenter);
-    }
-
-
-    @Test
-    public void testMessageSent() throws Exception {
-
-        screen.init();
-
-        verify(view).addInfoLine(1010101, "Just saying hi", 10, 123);
-        verify(view).addWarningLine(123321, "RRRRRED ALEEERT!", 1, 321);
-        verify(view).addErrorLine(666666, "ERROR!", 51, 121);
-    }
-
-    @Test
-    public void testFocus() throws Exception {
-
-        screen.init();
-
-        verify(view).addInfoLine(1010101, "Just saying hi", 10, 123);
-        verify(view).addWarningLine(123321, "RRRRRED ALEEERT!", 1, 321);
-        verify(view).addErrorLine(666666, "ERROR!", 51, 121);
-        verify(view,never()).addInfoLine(111111, "New One", 11, 111);
-
-        messages.getMessages().add(createMessage(111111, Message.Level.INFO, "New One", 11, 111));
-
-        screen.onFocus();
-
-        verify(view).clean();
-        verify(view).addInfoLine(111111, "New One", 11, 111);
-    }
-
-    private Message createMessage(int id, Message.Level info, String text, int column, int line) {
-        Message message = new Message();
-        message.setId(id);
-        message.setLevel(info);
-        message.setText(text);
-        message.setColumn(column);
-        message.setLine(line);
-        return message;
-    }
+//    private PlaceManager placeManager;
+//    private MessageScreenView view;
+//    private MessageScreenView.Presenter presenter;
+//    private MessageScreen screen;
+//    private MessageService messageService;
+//    private Messages messages;
+//
+//    @Before
+//    public void setUp() throws Exception {
+//        placeManager = mock(PlaceManager.class);
+//        view = mock(MessageScreenView.class);
+//        messageService = mock(MessageService.class);
+//        screen = new MessageScreen(view, placeManager, messageService);
+//        presenter = screen;
+//        messages = new Messages();
+//        messages.getMessages().add(createMessage(1010101, Message.Level.INFO, "Just saying hi", 10, 123));
+//        messages.getMessages().add(createMessage(123321, Message.Level.WARNING, "RRRRRED ALEEERT!", 1, 321));
+//        messages.getMessages().add(createMessage(666666, Message.Level.ERROR, "ERROR!", 51, 121));
+//
+//        when(
+//                messageService.getMessageLog()
+//        ).thenReturn(
+//                messages
+//        );
+//    }
+//
+//    @Test
+//    public void testPresenterSet() throws Exception {
+//        verify(view).setPresenter(presenter);
+//    }
+//
+//
+//    @Test
+//    public void testMessageSent() throws Exception {
+//
+//        screen.init();
+//
+//        verify(view).addInfoLine(1010101, "Just saying hi", 10, 123);
+//        verify(view).addWarningLine(123321, "RRRRRED ALEEERT!", 1, 321);
+//        verify(view).addErrorLine(666666, "ERROR!", 51, 121);
+//    }
+//
+//    @Test
+//    public void testFocus() throws Exception {
+//
+//        screen.init();
+//
+//        verify(view).addInfoLine(1010101, "Just saying hi", 10, 123);
+//        verify(view).addWarningLine(123321, "RRRRRED ALEEERT!", 1, 321);
+//        verify(view).addErrorLine(666666, "ERROR!", 51, 121);
+//        verify(view,never()).addInfoLine(111111, "New One", 11, 111);
+//
+//        messages.getMessages().add(createMessage(111111, Message.Level.INFO, "New One", 11, 111));
+//
+//        screen.onFocus();
+//
+//        verify(view).clean();
+//        verify(view).addInfoLine(111111, "New One", 11, 111);
+//    }
+//
+//    private Message createMessage(int id, Message.Level info, String text, int column, int line) {
+//        Message message = new Message();
+//        message.setId(id);
+//        message.setLevel(info);
+//        message.setText(text);
+//        message.setColumn(column);
+//        message.setLine(line);
+//        return message;
+//    }
 
 }

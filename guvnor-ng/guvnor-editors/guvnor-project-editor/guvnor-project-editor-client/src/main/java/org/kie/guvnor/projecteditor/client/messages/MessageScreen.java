@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client;
+package org.kie.guvnor.projecteditor.client.messages;
 
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.OnFocus;
-import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -51,30 +47,6 @@ public class MessageScreen
         view.setPresenter(this);
     }
 
-
-    @OnFocus
-    public void onFocus() {
-        view.clean();
-        init();
-    }
-
-    @OnStart
-    public void init() {
-        for (Message message : messageService.getMessageLog()) {
-            switch (message.getLevel()) {
-                case INFO:
-                    view.addInfoLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
-                    break;
-                case WARNING:
-                    view.addWarningLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
-                    break;
-                case ERROR:
-                    view.addErrorLine(message.getId(), message.getText(), message.getColumn(), message.getLine());
-                    break;
-            }
-        }
-    }
-
     @DefaultPosition
     public Position getDefaultPosition() {
         return Position.SOUTH;
@@ -87,6 +59,6 @@ public class MessageScreen
 
     @WorkbenchPartView
     public Widget asWidget() {
-        return new Label("Messages");
+        return view.asWidget();
     }
 }

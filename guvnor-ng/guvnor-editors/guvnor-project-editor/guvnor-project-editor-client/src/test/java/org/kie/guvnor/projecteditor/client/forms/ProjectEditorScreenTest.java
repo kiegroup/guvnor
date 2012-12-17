@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.client.MessageService;
+import org.kie.guvnor.projecteditor.client.messages.MessageService;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.mockito.ArgumentCaptor;

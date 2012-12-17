@@ -19,6 +19,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
+import org.kie.builder.Message;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
@@ -40,7 +41,6 @@ public class Builder {
         KieServices kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
-        // TODO This will not work fix me
         DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream(moduleDirectory);
 
         projectName = getProjectName(moduleDirectory);
@@ -52,7 +52,33 @@ public class Builder {
     public Messages build() {
 
         kieBuilder.buildAll();
-        return new Messages();
+
+        Messages messages = new Messages();
+
+        for (Message message : kieBuilder.getResults().getMessages()) {
+            org.kie.guvnor.projecteditor.model.builder.Message m = new org.kie.guvnor.projecteditor.model.builder.Message();
+            switch (message.getLevel()) {
+                case ERROR:
+                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.ERROR);
+                    break;
+                case WARNING:
+                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.WARNING);
+                    break;
+                case INFO:
+                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.INFO);
+                    break;
+            }
+
+            m.setId(message.getId());
+            m.setLine(message.getLine());
+//            m.setPath(message.getPath());
+            m.setColumn(message.getColumn());
+            m.setText(message.getText());
+
+            messages.getMessages().add(m);
+        }
+
+        return messages;
     }
 
     private void visitPaths(DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {

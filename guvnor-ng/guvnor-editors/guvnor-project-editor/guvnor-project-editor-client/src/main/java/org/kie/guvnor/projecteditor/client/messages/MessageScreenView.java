@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client;
+package org.kie.guvnor.projecteditor.client.messages;
 
-public interface MessageScreenView {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface MessageScreenView
+        extends IsWidget {
 
     interface Presenter {
 
     }
 
     void setPresenter(Presenter presenter);
-
-    void clean();
-
-    void addInfoLine(long id, String text, int column, int line);
-
-    void addWarningLine(long id, String text, int column, int line);
-
-    void addErrorLine(long id, String text, int column, int line);
-
 }

@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.client.MessageService;
+import org.kie.guvnor.projecteditor.client.messages.MessageService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;

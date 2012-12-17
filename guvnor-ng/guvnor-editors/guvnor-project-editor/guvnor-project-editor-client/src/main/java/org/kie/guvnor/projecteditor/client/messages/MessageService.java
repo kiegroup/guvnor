@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client;
+package org.kie.guvnor.projecteditor.client.messages;
 
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
+import org.kie.guvnor.projecteditor.model.builder.Message;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -31,6 +35,7 @@ public class MessageService {
 
     private final PlaceManager placeManager;
     private Messages messages;
+    private ListDataProvider<Message> dataProvider = new ListDataProvider<Message>();
 
     @Inject
     public MessageService(PlaceManager placeManager) {
@@ -39,10 +44,22 @@ public class MessageService {
 
     public void addMessages(Messages messages) {
         this.messages = messages;
+        List<Message> list = dataProvider.getList();
+        for (Message message : messages) {
+            list.add(message);
+        }
         placeManager.goTo("org.kie.guvnor.Messages");
     }
 
     public Messages getMessageLog() {
         return messages;
+    }
+
+    public ListDataProvider<Message> getDataProvider() {
+        return dataProvider;
+    }
+
+    public void addDataDisplay(HasData<Message> display) {
+        dataProvider.addDataDisplay(display);
     }
 }
