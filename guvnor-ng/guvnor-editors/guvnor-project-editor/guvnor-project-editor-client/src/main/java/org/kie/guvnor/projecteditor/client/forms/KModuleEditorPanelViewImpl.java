@@ -33,6 +33,7 @@ public class KModuleEditorPanelViewImpl
     @Inject
     public KModuleEditorPanelViewImpl(Event<NotificationEvent> notificationEvent) {
         super();
+        setListTitle(ProjectEditorConstants.INSTANCE.KBases());
         this.notificationEvent = notificationEvent;
     }
 

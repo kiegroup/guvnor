@@ -84,4 +84,8 @@ public interface ProjectEditorConstants
     String BuildSuccessful();
 
     String EnableKieProject();
+
+    String KBases();
+
+    String KSessions();
 }

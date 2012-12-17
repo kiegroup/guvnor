@@ -24,6 +24,7 @@
 
   <gwt:HTMLPanel>
     <div>
+      <gwt:Label ui:field="listTitle"/>
       <gwt:HorizontalPanel>
         <gwt:Button ui:field="addButton" text="{i18n.Add}"/>
         <gwt:Button ui:field="renameButton" text="{i18n.Rename}"/>

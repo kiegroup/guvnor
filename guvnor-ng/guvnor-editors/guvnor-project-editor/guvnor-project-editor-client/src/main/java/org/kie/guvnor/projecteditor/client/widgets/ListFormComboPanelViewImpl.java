@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +48,9 @@ public class ListFormComboPanelViewImpl
     private static ListFormComboPanelViewImplBinder uiBinder = GWT.create(ListFormComboPanelViewImplBinder.class);
 
     @UiField
+    Label listTitle;
+
+    @UiField
     ListBox kSessionsList;
 
     @UiField
@@ -62,6 +66,11 @@ public class ListFormComboPanelViewImpl
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setListTitle(String title) {
+        listTitle.setText(title);
     }
 
     @Override
