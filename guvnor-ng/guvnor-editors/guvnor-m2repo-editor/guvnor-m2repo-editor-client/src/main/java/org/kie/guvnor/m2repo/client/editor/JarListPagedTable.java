@@ -44,7 +44,7 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
  */
-public class JarListPagedTable extends Composite/*extends AbstractPagedTable<JarListPageRow>*/ {
+public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
     // UI
     interface JarListPagedTableBinder
@@ -71,8 +71,8 @@ public class JarListPagedTable extends Composite/*extends AbstractPagedTable<Jar
     private Caller<M2RepoService> m2RepoService;*/
     
     public JarListPagedTable() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        //super( PAGE_SIZE );
+        //initWidget( uiBinder.createAndBindUi( this ) );
+        super( PAGE_SIZE );
 /*
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
@@ -123,10 +123,10 @@ public class JarListPagedTable extends Composite/*extends AbstractPagedTable<Jar
 
      }
 
-/*    @Override
+    @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
-    }*/
+    }
 
     @UiHandler("uploadJarButton")
     void uploadJar(ClickEvent e) {
