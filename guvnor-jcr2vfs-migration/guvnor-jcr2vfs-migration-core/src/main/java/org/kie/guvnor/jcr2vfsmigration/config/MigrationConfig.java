@@ -73,9 +73,10 @@ public class MigrationConfig {
     }
 
     private void parseArgInputJcrRepository(CommandLine commandLine) {
-        inputJcrRepository = new File(commandLine.getOptionValue("i", "."));
+        inputJcrRepository = new File(commandLine.getOptionValue("i", "inputJcr"));
         if (!inputJcrRepository.exists()) {
-            throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository + ") does not exist.");
+            throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository.getAbsolutePath()
+                    + ") does not exist.");
         }
         try {
             inputJcrRepository = inputJcrRepository.getCanonicalFile();
@@ -85,19 +86,19 @@ public class MigrationConfig {
     }
 
     private void parseArgOutputVfsRepository(CommandLine commandLine) {
-        // TODO is "target/vfs" a good default or should we fail fast?
-        outputVfsRepository = new File(commandLine.getOptionValue("o", "target/vfs"));
-        forceOverwriteOutputVfsRepository = Boolean.parseBoolean(commandLine.getOptionValue("f", "true"));
+        outputVfsRepository = new File(commandLine.getOptionValue("o", "outputVfs"));
+        forceOverwriteOutputVfsRepository = Boolean.parseBoolean(commandLine.getOptionValue("f", "false"));
         if (outputVfsRepository.exists()) {
             if (forceOverwriteOutputVfsRepository) {
                 try {
                     FileUtils.deleteDirectory(outputVfsRepository);
                 } catch (IOException e) {
-                    throw new IllegalStateException("Force deleting outputVfsRepository (" + outputVfsRepository
-                            + ") failed.", e);
+                    throw new IllegalStateException("Force deleting outputVfsRepository ("
+                            + outputVfsRepository.getAbsolutePath() + ") failed.", e);
                 }
             } else {
-                throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository + ") already exists.");
+                throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository.getAbsolutePath()
+                        + ") already exists.");
             }
         }
         try {

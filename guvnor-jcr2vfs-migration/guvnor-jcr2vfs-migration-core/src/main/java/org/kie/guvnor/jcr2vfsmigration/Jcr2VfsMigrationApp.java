@@ -22,7 +22,9 @@ import org.jboss.weld.environment.se.WeldContainer;
 public class Jcr2VfsMigrationApp {
 
     /**
-     * To test this, use the unit test.
+     * To run this in development:
+     * Either use the unit test Jcr2VfsMigrationAppTest (recommended): it sets up the input and output dirs for you.
+     * Or run it and fill -i and -o correctly.
      * @param args never null
      */
     public static void main(String... args) {
