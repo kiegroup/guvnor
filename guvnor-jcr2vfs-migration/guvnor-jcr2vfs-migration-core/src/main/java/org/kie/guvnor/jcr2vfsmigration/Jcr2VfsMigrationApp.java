@@ -24,7 +24,7 @@ public class Jcr2VfsMigrationApp {
     /**
      * To run this in development:
      * Either use the unit test Jcr2VfsMigrationAppTest (recommended): it sets up the input and output dirs for you.
-     * Or run it and fill -i and -o correctly.
+     * Or run it and fill in -i and -o correctly.
      * @param args never null
      */
     public static void main(String... args) {
