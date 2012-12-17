@@ -21,6 +21,10 @@ import org.jboss.weld.environment.se.WeldContainer;
 
 public class Jcr2VfsMigrationApp {
 
+    /**
+     * To test this, use the unit test.
+     * @param args never null
+     */
     public static void main(String... args) {
         Weld weld = new Weld();
         WeldContainer weldContainer = weld.initialize();
