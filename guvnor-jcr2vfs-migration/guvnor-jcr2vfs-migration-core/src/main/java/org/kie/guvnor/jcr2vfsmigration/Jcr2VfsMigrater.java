@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.kie.guvnor.jcr2vfsmigration.config.MigrationConfig;
@@ -39,6 +40,9 @@ public class Jcr2VfsMigrater {
     protected MigrationConfig migrationConfig;
 
     @Inject
+    protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
+
+    @Inject
     protected ModuleMigrater moduleMigrater;
     @Inject
     protected AssetMigrater assetMigrater;
@@ -55,12 +59,18 @@ public class Jcr2VfsMigrater {
 
     public void parseArgs(String[] args) {
         migrationConfig.parseArgs(args);
+    }
+
+    private void setupDirectories() {
+        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",
+                migrationConfig.getInputJcrRepository().getAbsolutePath());
         System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
     public void migrateAll() {
         logger.info("Migration started: Reading from inputJcrRepository ({}).",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
+        setupDirectories();
         startContexts();
 //    //TO-DO-LIST:
 //    //1. How to migrate the globalArea (moduleServiceJCR.listModules() wont return globalArea)
