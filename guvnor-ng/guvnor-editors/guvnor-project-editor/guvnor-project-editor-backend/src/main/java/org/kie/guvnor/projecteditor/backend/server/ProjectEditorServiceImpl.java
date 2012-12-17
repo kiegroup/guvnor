@@ -113,7 +113,7 @@ public class ProjectEditorServiceImpl
     @Override
     public Messages build(Path pathToKModuleXML) {
 
-        Builder builder = new Builder(pathToKModuleXML, ioService, paths);
+        Builder builder = new Builder(getPomDirectoryPath(pathToKModuleXML), ioService);
 
         return builder.build();
     }
