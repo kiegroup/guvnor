@@ -16,11 +16,14 @@
 
 package org.kie.guvnor.jcr2vfsmigration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.io.FileUtils;
 import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
@@ -82,13 +85,76 @@ public class Jcr2VfsMigrater {
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
-    private void setupDirectories() {
+    protected void setupDirectories() {
         guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",
-                migrationConfig.getInputJcrRepository().getAbsolutePath());
+                determineJcrRepositoryRootDirectory());
         System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
-    private void startContexts() {
+    /**
+     * Workaround the repository.xml and repository directory layout mess.
+     * <p/>
+     * If repository.root.directory was NOT specified, the layout looks like this:
+     * <pre>
+     * repository.xml
+     * repository
+     * repository/repository
+     * repository/repository/datastore
+     * repository/repository/index
+     * repository/repository/...
+     * repository/version
+     * repository/version/...
+     * repository/workspaces
+     * repository/workspaces/...
+     * </pre>
+     * If repository.root.directory was specified however, the layout looks like this:
+     * <pre>
+     * repository.xml
+     * repository
+     * repository/datastore
+     * repository/index
+     * repository/...
+     * version
+     * version/...
+     * workspaces
+     * workspaces/...
+     * </pre>
+     * @return never null
+     */
+    protected String determineJcrRepositoryRootDirectory() {
+        File inputJcrRepository = migrationConfig.getInputJcrRepository();
+        File repositoryXmlFile = new File(inputJcrRepository, "repository.xml");
+        if (!repositoryXmlFile.exists()) {
+            throw new IllegalStateException(
+                    "The repositoryXmlFile (" + repositoryXmlFile.getAbsolutePath() + ") does not exist.\n"
+                    + "Check your inputJcrRepository (" + inputJcrRepository + ").");
+        }
+        File repositoryDir = new File(inputJcrRepository, "repository");
+        if (!repositoryDir.exists()) {
+            // They are using a non-default repository.xml (for example with storage in a database)
+            return inputJcrRepository.getAbsolutePath();
+        }
+        File unnestedVersionDir = new File(inputJcrRepository, "version");
+        File nestedVersionDir = new File(repositoryDir, "version");
+        if (unnestedVersionDir.exists()) {
+            // repository.root.directory was specified
+            return inputJcrRepository.getAbsolutePath();
+        } else if (nestedVersionDir.exists()) {
+            // repository.root.directory was not specified => HACK
+            try {
+                FileUtils.copyFile(repositoryXmlFile, new File(repositoryDir, "repository.xml"));
+            } catch (IOException e) {
+                throw new IllegalStateException("Cannot copy repositoryXmlFile (" + repositoryXmlFile + ").", e);
+            }
+            return inputJcrRepository.getAbsolutePath() + "/repository";
+        } else {
+            throw new IllegalStateException(
+                    "The unnestedVersionDir (" + unnestedVersionDir.getAbsolutePath()
+                    + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");
+        }
+    }
+
+    protected void startContexts() {
         sessionDataStore = new HashMap<String, Object>();
         sessionContext.associate(sessionDataStore);
         sessionContext.activate();
@@ -97,7 +163,7 @@ public class Jcr2VfsMigrater {
         requestContext.activate();
     }
 
-    private void endContexts() {
+    protected void endContexts() {
         try {
             requestContext.invalidate();
             requestContext.deactivate();
