@@ -34,17 +34,16 @@ public class Jcr2VfsMigrationAppTest {
         unzip(getClass().getResource("mortgageExampleJcr.zip"), inputJcrRepository);
         File outputVfsRepository = new File(testBaseDir, "outputVfs");
 
-//        Jcr2VfsMigrationApp.main(
-//                "-i", inputJcrRepository.getCanonicalPath(),
-//                "-o", outputVfsRepository.getCanonicalPath());
+        Jcr2VfsMigrationApp.main(
+                "-i", inputJcrRepository.getCanonicalPath(),
+                "-o", outputVfsRepository.getCanonicalPath());
 
     }
 
     private void unzip(URL resource, File outputDir) throws IOException {
         assertNotNull(resource);
         File file = new File(outputDir, resource.getFile().replaceAll(".*/", ""));
-        copyAndClose(new BufferedInputStream(resource.openStream()),
-                new BufferedOutputStream(new FileOutputStream(file)));
+        copyAndClose(resource.openStream(), new FileOutputStream(file));
         ZipFile zipFile = new ZipFile(file);
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
@@ -54,8 +53,7 @@ public class Jcr2VfsMigrationAppTest {
             if (entryDestination.isDirectory()) {
                 entryDestination.mkdir();
             } else {
-                copyAndClose(new BufferedInputStream(zipFile.getInputStream(entry)),
-                        new BufferedOutputStream(new FileOutputStream(entryDestination)));
+                copyAndClose(zipFile.getInputStream(entry), new FileOutputStream(entryDestination));
             }
         }
     }
