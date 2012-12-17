@@ -61,12 +61,6 @@ public class Jcr2VfsMigrater {
         migrationConfig.parseArgs(args);
     }
 
-    private void setupDirectories() {
-        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",
-                migrationConfig.getInputJcrRepository().getAbsolutePath());
-        System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
-    }
-
     public void migrateAll() {
         logger.info("Migration started: Reading from inputJcrRepository ({}).",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
@@ -86,6 +80,12 @@ public class Jcr2VfsMigrater {
         endContexts();
         logger.info("Migration ended: Written into outputVfsRepository ({}).",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
+    }
+
+    private void setupDirectories() {
+        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",
+                migrationConfig.getInputJcrRepository().getAbsolutePath());
+        System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 
     private void startContexts() {
