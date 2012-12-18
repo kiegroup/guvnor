@@ -90,7 +90,6 @@ public class Builder {
                     kieFileSystem.write("META-INF/kmodule.xml", ioService.readAllString(path));
                 } else {
                     String pathAsString = stripPath(projectName, path);
-                    String pathAsString = stripPath(projectName, path);
                     kieFileSystem.write(pathAsString, ioService.readAllString(path));
                 }
             }
