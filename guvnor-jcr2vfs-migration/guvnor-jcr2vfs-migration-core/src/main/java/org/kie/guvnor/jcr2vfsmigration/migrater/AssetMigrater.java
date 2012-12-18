@@ -51,7 +51,8 @@ public class AssetMigrater {
                     for (AssetPageRow row : response.getPageRowList()) {
                         Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
                         migrate(jcrModule, jcrAsset);
-                        logger.debug("    Asset ({}) migrated.", jcrAsset.getName());
+                        logger.debug("    Asset ({}) with format ({}) migrated.",
+                                jcrAsset.getName(), jcrAsset.getFormat());
                     }
                 } catch (SerializationException e) {
                     throw new IllegalStateException(e);

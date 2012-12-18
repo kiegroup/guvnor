@@ -23,6 +23,7 @@ public class CategoryMigrater {
     public void migrateAll() {
         logger.info("  Category migration started");
         // TODO similar like ModuleMigrater and assetMigrater
+        logger.debug("      TODO migrate categories.");
         logger.info("  Category migration ended");
     }
 

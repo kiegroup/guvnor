@@ -34,7 +34,7 @@ public class ModuleMigrater {
     private void migrate(Module jcrModule) {
         Path path = migrationPathManager.generatePathForModule(jcrModule);
         // TODO REPLACE ME WITH ACTUAL CODE
-        logger.debug("    TODO migrate module ({}).", jcrModule.getName());
+        logger.debug("      TODO migrate module ({}).", jcrModule.getName());
     }
 
 }
