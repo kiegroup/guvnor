@@ -32,4 +32,5 @@ public interface ProjectEditorScreenView
     String getBuildMenuItemText();
 
     void showBuildSuccessful();
+
 }

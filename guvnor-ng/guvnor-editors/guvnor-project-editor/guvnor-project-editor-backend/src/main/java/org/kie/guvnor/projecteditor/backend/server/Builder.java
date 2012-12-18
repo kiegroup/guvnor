@@ -24,7 +24,11 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
+import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.builder.Messages;
+import org.uberfire.backend.server.util.Paths;
+
+import javax.enterprise.event.Event;
 
 public class Builder {
 
@@ -33,10 +37,22 @@ public class Builder {
     private final String projectName;
     private final KieFileSystem kieFileSystem;
     private final IOService ioService;
+    private final Path moduleDirectory;
+    private final Paths paths;
+    private final GroupArtifactVersionModel gav;
+    private final Event<Messages> messagesEvent;
+
 
     public Builder(Path moduleDirectory,
-                   IOService ioService) {
+                   GroupArtifactVersionModel gav,
+                   IOService ioService,
+                   Paths paths,
+                   Event<Messages> messagesEvent) {
+        this.moduleDirectory = moduleDirectory;
+        this.gav = gav;
         this.ioService = ioService;
+        this.paths = paths;
+        this.messagesEvent = messagesEvent;
 
         KieServices kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
@@ -49,11 +65,12 @@ public class Builder {
         kieBuilder = kieServices.newKieBuilder(kieFileSystem);
     }
 
-    public Messages build() {
+    public void build() {
 
         kieBuilder.buildAll();
 
         Messages messages = new Messages();
+        messages.setArtifactID(gav.getArtifactId());
 
         for (Message message : kieBuilder.getResults().getMessages()) {
             org.kie.guvnor.projecteditor.model.builder.Message m = new org.kie.guvnor.projecteditor.model.builder.Message();
@@ -70,15 +87,18 @@ public class Builder {
             }
 
             m.setId(message.getId());
+            m.setArtifactID(gav.getArtifactId());
             m.setLine(message.getLine());
-//            m.setPath(message.getPath());
+            if (message.getPath() != null && !message.getPath().isEmpty()) {
+                m.setPath(paths.convert(moduleDirectory.resolve(message.getPath())));
+            }
             m.setColumn(message.getColumn());
             m.setText(message.getText());
 
             messages.getMessages().add(m);
         }
 
-        return messages;
+        messagesEvent.fire(messages);
     }
 
     private void visitPaths(DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {

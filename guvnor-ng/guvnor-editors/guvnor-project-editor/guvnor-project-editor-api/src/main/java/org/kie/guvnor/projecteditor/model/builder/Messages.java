@@ -27,6 +27,7 @@ public class Messages
         implements Iterable<Message> {
 
     private ArrayList<Message> messages = new ArrayList<Message>();
+    private String artifactID;
 
     public List<Message> getMessages() {
         return messages;
@@ -39,5 +40,13 @@ public class Messages
     @Override
     public Iterator<Message> iterator() {
         return messages.iterator();
+    }
+
+    public String getArtifactID() {
+        return artifactID;
+    }
+
+    public void setArtifactID(String artifactID) {
+        this.artifactID = artifactID;
     }
 }

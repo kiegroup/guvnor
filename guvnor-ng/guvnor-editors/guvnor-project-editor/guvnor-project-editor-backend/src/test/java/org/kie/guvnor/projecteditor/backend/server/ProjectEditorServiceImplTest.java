@@ -22,6 +22,7 @@ import org.kie.commons.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
+import javax.enterprise.event.Event;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -34,6 +35,7 @@ public class ProjectEditorServiceImplTest {
     private ProjectEditorServiceImpl service;
     private KModuleEditorContentHandler kProjectEditorContentHandler;
     private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    private Event messagesEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +43,8 @@ public class ProjectEditorServiceImplTest {
         paths = mock(Paths.class);
         kProjectEditorContentHandler = mock(KModuleEditorContentHandler.class);
         groupArtifactVersionModelContentHandler = mock(GroupArtifactVersionModelContentHandler.class);
-        service = new ProjectEditorServiceImpl(ioService, paths, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler);
+        messagesEvent = mock(Event.class);
+        service = new ProjectEditorServiceImpl(ioService, paths, messagesEvent, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler);
     }
 
     @Test
@@ -50,8 +53,6 @@ public class ProjectEditorServiceImplTest {
         Path pathToPom = mock(Path.class);
         org.kie.commons.java.nio.file.Path directory = setUpPathToPomDirectory(pathToPom);
 
-        org.kie.commons.java.nio.file.Path kbases = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/kbases", kbases);
         org.kie.commons.java.nio.file.Path mainJava = mock(org.kie.commons.java.nio.file.Path.class);
         setUpDirectory(directory, "src/main/java", mainJava);
         org.kie.commons.java.nio.file.Path mainResources = mock(org.kie.commons.java.nio.file.Path.class);
@@ -66,7 +67,6 @@ public class ProjectEditorServiceImplTest {
 
         service.setUpKModuleStructure(pathToPom);
 
-        verify(ioService).createDirectory(kbases);
         verify(ioService).createDirectory(mainJava);
         verify(ioService).createDirectory(mainResources);
         verify(ioService).createDirectory(testJava);
@@ -104,7 +104,7 @@ public class ProjectEditorServiceImplTest {
 //    @Test
 //    public void testLoadKProject() throws Exception {
 //
-//        Path path = mock( Path.class );
+//        Path path = messagesEvent( Path.class );
 //        when(
 //                ioService.readAllString( path )
 //            ).thenReturn(
@@ -125,7 +125,7 @@ public class ProjectEditorServiceImplTest {
 //
 //    @Test
 //    public void testSaveKPRoject() throws Exception {
-//        Path path = mock( Path.class );
+//        Path path = messagesEvent( Path.class );
 //        KModuleModel kProjectModel = new KModuleModel();
 //
 //        when(
@@ -142,7 +142,7 @@ public class ProjectEditorServiceImplTest {
 //    @Test
 //    public void testLoadGav() throws Exception {
 //
-//        Path path = mock( Path.class );
+//        Path path = messagesEvent( Path.class );
 //        when(
 //                ioService.readAllString( path )
 //            ).thenReturn(
@@ -163,7 +163,7 @@ public class ProjectEditorServiceImplTest {
 //
 //    @Test
 //    public void testSaveGAV() throws Exception {
-//        Path path = mock( Path.class );
+//        Path path = messagesEvent( Path.class );
 //        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel();
 //
 //        when(

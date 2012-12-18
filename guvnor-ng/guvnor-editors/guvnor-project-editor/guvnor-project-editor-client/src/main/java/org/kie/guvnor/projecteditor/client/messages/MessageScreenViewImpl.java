@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
+import com.google.gwt.cell.client.ClickableTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -26,6 +28,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,6 +36,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.model.builder.Message;
+import org.uberfire.client.mvp.PlaceManager;
 
 import javax.inject.Inject;
 
@@ -43,6 +47,7 @@ public class MessageScreenViewImpl
 
     private static Binder uiBinder = GWT.create(Binder.class);
     private Presenter presenter;
+    private final PlaceManager placeManager;
 
     interface Binder extends UiBinder<Widget, MessageScreenViewImpl> {
 
@@ -50,6 +55,9 @@ public class MessageScreenViewImpl
 
     @UiField(provided = true)
     DataGrid<Message> dataGrid;
+
+    @UiField
+    HorizontalPanel panel;
 
     public static final ProvidesKey<Message> KEY_PROVIDER = new ProvidesKey<Message>() {
         @Override
@@ -59,7 +67,8 @@ public class MessageScreenViewImpl
     };
 
     @Inject
-    public MessageScreenViewImpl(MessageService messageService) {
+    public MessageScreenViewImpl(MessageService messageService, PlaceManager placeManager) {
+        this.placeManager = placeManager;
         dataGrid = new DataGrid<Message>(KEY_PROVIDER);
         dataGrid.setWidth("100%");
 
@@ -76,12 +85,16 @@ public class MessageScreenViewImpl
 
     @Override
     public void onResize() {
-        dataGrid.setHeight(getParent().getOffsetHeight() + "px");
+        dataGrid.setPixelSize(getParent().getOffsetWidth(),
+                getParent().getOffsetHeight());
+        dataGrid.onResize();
     }
 
     private void setUpColumns() {
         addLevelColumn();
         addTextColumn();
+        addFileNameColumn();
+        addArtifactIDColumn();
         addColumnColumn();
         addLineColumn();
     }
@@ -116,6 +129,40 @@ public class MessageScreenViewImpl
             }
         };
         dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Text());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+
+    private void addFileNameColumn() {
+        Column<Message, String> column = new Column<Message, String>(new ClickableTextCell()) {
+            @Override
+            public String getValue(Message message) {
+                if (message.getPath() != null) {
+                    return message.getPath().getFileName();
+                } else {
+                    return "-";
+                }
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<Message, String>() {
+            @Override
+            public void update(int index, Message message, String value) {
+                if (message.getPath() != null) {
+                    placeManager.goTo(message.getPath());
+                }
+            }
+        });
+        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.FileName());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+
+    private void addArtifactIDColumn() {
+        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
+            @Override
+            public String getValue(Message message) {
+                return message.getArtifactID();
+            }
+        };
+        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.ArtifactID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 

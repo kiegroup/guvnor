@@ -24,15 +24,15 @@
 
   <gwt:HTMLPanel width="100%" height="100%">
     <gwt:HorizontalPanel>
-      <gwt:Label text="Group ID"/>
+      <gwt:Label text='{i18n.GroupID}'/>
       <gwt:TextBox ui:field="groupIdTextBox"/>
     </gwt:HorizontalPanel>
     <gwt:HorizontalPanel>
-      <gwt:Label text="Artifact ID"/>
+      <gwt:Label text='{i18n.ArtifactID}'/>
       <gwt:TextBox ui:field="artifactIdTextBox"/>
     </gwt:HorizontalPanel>
     <gwt:HorizontalPanel>
-      <gwt:Label text="Version ID"/>
+      <gwt:Label text='{i18n.VersionID}'/>
       <gwt:TextBox ui:field="versionIdTextBox"/>
     </gwt:HorizontalPanel>
   </gwt:HTMLPanel>

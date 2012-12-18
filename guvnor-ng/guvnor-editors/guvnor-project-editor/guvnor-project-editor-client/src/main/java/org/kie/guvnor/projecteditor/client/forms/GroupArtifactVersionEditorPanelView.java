@@ -28,15 +28,19 @@ public interface GroupArtifactVersionEditorPanelView
         void onArtifactIdChange(String artifactId);
 
         void onVersionIdChange(String versionId);
+
     }
 
     void setPresenter(Presenter presenter);
-
     void setGroupId(String id);
 
     void setArtifactId(String id);
 
     void setVersionId(String versionId);
+
+    IsWidget getTitleWidget();
+
+    void setTitleText(String titleText);
 
     void showSaveSuccessful(String fileName);
 }

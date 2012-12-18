@@ -28,6 +28,7 @@ public class Message {
     private int line;
     private int column;
     private String text;
+    private String artifactID;
 
     public void setId(long id) {
         this.id = id;
@@ -75,6 +76,14 @@ public class Message {
 
     public String getText() {
         return text;
+    }
+
+    public void setArtifactID(String artifactId) {
+        this.artifactID = artifactId;
+    }
+
+    public String getArtifactID() {
+        return artifactID;
     }
 
     @Portable

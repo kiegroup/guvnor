@@ -21,7 +21,6 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 
@@ -34,10 +33,10 @@ public class MockProjectEditorServiceCaller
     private KModuleModel modelForLoading;
 
     private RemoteCallback callback;
-    private Messages messages;
     private GroupArtifactVersionModel gavModel;
     private GroupArtifactVersionModel savedGav;
     private Path pathToRelatedKModuleFileIfAny;
+    private boolean buildWasCalled = false;
 
     MockProjectEditorServiceCaller() {
 
@@ -70,9 +69,9 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Messages build(Path path) {
-                callback.callback(messages);
-                return messages;
+            public void build(Path path) {
+                callback.callback(null);
+                buildWasCalled = true;
             }
 
             @Override
@@ -114,10 +113,6 @@ public class MockProjectEditorServiceCaller
         this.modelForLoading = upModelForLoading;
     }
 
-    public void setUpMessages(Messages messages) {
-        this.messages = messages;
-    }
-
     public void setGav(GroupArtifactVersionModel gavModel) {
         this.gavModel = gavModel;
     }
@@ -128,5 +123,9 @@ public class MockProjectEditorServiceCaller
 
     public void setPathToRelatedKModuleFileIfAny(Path pathToRelatedKModuleFileIfAny) {
         this.pathToRelatedKModuleFileIfAny = pathToRelatedKModuleFileIfAny;
+    }
+
+    public boolean isBuildWasCalled() {
+        return buildWasCalled;
     }
 }

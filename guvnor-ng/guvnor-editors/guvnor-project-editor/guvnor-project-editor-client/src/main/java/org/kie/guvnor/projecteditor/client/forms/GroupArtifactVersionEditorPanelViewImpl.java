@@ -22,6 +22,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -36,6 +38,7 @@ public class GroupArtifactVersionEditorPanelViewImpl
 
 
     private Presenter presenter;
+    private InlineLabel tabTitleLabel = new InlineLabel(ProjectEditorConstants.INSTANCE.ProjectModel());
 
     interface GroupArtifactVersionEditorPanelViewImplBinder
             extends
@@ -100,5 +103,15 @@ public class GroupArtifactVersionEditorPanelViewImpl
     @Override
     public void showSaveSuccessful(String fileName) {
         notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
+    }
+
+    @Override
+    public IsWidget getTitleWidget() {
+        return tabTitleLabel;
+    }
+
+    @Override
+    public void setTitleText(String titleText) {
+        tabTitleLabel.setText(titleText);
     }
 }

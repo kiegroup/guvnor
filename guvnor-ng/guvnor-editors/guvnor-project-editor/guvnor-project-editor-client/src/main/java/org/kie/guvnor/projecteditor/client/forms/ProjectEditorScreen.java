@@ -16,16 +16,11 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.client.messages.MessageService;
-import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
@@ -47,20 +42,16 @@ public class ProjectEditorScreen {
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private Path pathToPomXML;
     private Path pathToKModuleXML;
-    private final MessageService messageService;
-    private Label title = new InlineLabel(ProjectEditorConstants.INSTANCE.ProjectModel());
 
     @Inject
     public ProjectEditorScreen(ProjectEditorScreenView view,
                                GroupArtifactVersionEditorPanel gavPanel,
                                KModuleEditorPanel kModuleEditorPanel,
-                               Caller<ProjectEditorService> projectEditorServiceCaller,
-                               MessageService messageService) {
+                               Caller<ProjectEditorService> projectEditorServiceCaller) {
         this.view = view;
         this.gavPanel = gavPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
-        this.messageService = messageService;
 
         view.setGroupArtifactVersionEditorPanel(gavPanel);
     }
@@ -69,7 +60,7 @@ public class ProjectEditorScreen {
     public void init(Path path) {
 
         pathToPomXML = path;
-        gavPanel.init(path, title);
+        gavPanel.init(path);
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
@@ -90,7 +81,7 @@ public class ProjectEditorScreen {
 
     @WorkbenchPartTitle
     public IsWidget getTitle() {
-        return title;
+        return gavPanel.getTitle();
     }
 
     @WorkbenchPartView
@@ -126,14 +117,10 @@ public class ProjectEditorScreen {
                     @Override
                     public void execute() {
                         projectEditorServiceCaller.call(
-                                new RemoteCallback<Messages>() {
+                                new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback(Messages messages) {
-                                        if (messages.isEmpty()) {
-                                            view.showBuildSuccessful();
-                                        } else {
-                                            messageService.addMessages(messages);
-                                        }
+                                    public void callback(Void v) {
+
                                     }
                                 }
                         ).build(pathToPomXML);

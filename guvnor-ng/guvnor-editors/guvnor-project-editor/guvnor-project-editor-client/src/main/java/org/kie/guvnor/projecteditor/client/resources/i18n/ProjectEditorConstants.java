@@ -100,4 +100,12 @@ public interface ProjectEditorConstants
     String KModuleDotXml();
 
     String Problems();
+
+    String FileName();
+
+    String GroupID();
+
+    String ArtifactID();
+
+    String VersionID();
 }

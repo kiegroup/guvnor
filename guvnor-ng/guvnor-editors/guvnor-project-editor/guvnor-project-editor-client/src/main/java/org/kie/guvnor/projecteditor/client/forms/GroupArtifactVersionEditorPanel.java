@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -35,7 +36,6 @@ public class GroupArtifactVersionEditorPanel
     private final GroupArtifactVersionEditorPanelView view;
     private Path path;
     private GroupArtifactVersionModel model;
-    private HasText title;
 
     @Inject
     public GroupArtifactVersionEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
@@ -45,9 +45,8 @@ public class GroupArtifactVersionEditorPanel
         view.setPresenter(this);
     }
 
-    public void init(Path path, final HasText title) {
+    public void init(Path path) {
         this.path = path;
-        this.title = title;
         projectEditorServiceCaller.call(
                 new RemoteCallback<GroupArtifactVersionModel>() {
                     @Override
@@ -55,11 +54,20 @@ public class GroupArtifactVersionEditorPanel
                         GroupArtifactVersionEditorPanel.this.model = gav;
                         view.setGroupId(gav.getGroupId());
                         view.setArtifactId(gav.getArtifactId());
-                        title.setText(gav.getArtifactId());
+
+                        setTitle(gav.getArtifactId());
                         view.setVersionId(gav.getVersion());
                     }
                 }
         ).loadGav(path);
+    }
+
+    private void setTitle(String titleText) {
+        if (titleText == null || titleText.isEmpty()) {
+            view.setTitleText(ProjectEditorConstants.INSTANCE.ProjectModel());
+        } else {
+            view.setTitleText(titleText);
+        }
     }
 
     @Override
@@ -70,7 +78,7 @@ public class GroupArtifactVersionEditorPanel
     @Override
     public void onArtifactIdChange(String artifactId) {
         model.setArtifactId(artifactId);
-        title.setText(artifactId);
+        setTitle(artifactId);
     }
 
     @Override
@@ -94,5 +102,9 @@ public class GroupArtifactVersionEditorPanel
     public Widget asWidget() {
         Widget widget = view.asWidget();
         return widget;
+    }
+
+    public IsWidget getTitle() {
+        return view.getTitleWidget();
     }
 }

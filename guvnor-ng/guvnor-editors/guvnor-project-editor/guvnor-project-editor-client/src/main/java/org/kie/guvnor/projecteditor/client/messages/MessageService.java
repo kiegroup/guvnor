@@ -23,6 +23,7 @@ import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -42,8 +43,9 @@ public class MessageService {
         this.placeManager = placeManager;
     }
 
-    public void addMessages(Messages messages) {
+    public void addMessages(@Observes Messages messages) {
         List<Message> list = dataProvider.getList();
+        list.clear();
         for (Message message : messages) {
             list.add(message);
         }

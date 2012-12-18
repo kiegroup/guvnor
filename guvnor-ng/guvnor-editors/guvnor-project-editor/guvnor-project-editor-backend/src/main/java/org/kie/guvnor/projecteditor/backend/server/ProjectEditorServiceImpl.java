@@ -28,6 +28,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class ProjectEditorServiceImpl
     private Paths paths;
     private KModuleEditorContentHandler moduleEditorContentHandler;
     private GroupArtifactVersionModelContentHandler gavModelContentHandler;
+    private Event<Messages> messagesEvent;
 
 
     public ProjectEditorServiceImpl() {
@@ -51,10 +53,12 @@ public class ProjectEditorServiceImpl
     @Inject
     public ProjectEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
                                     final Paths paths,
+                                    final Event<Messages> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final GroupArtifactVersionModelContentHandler gavModelContentHandler) {
         this.ioService = ioService;
         this.paths = paths;
+        this.messagesEvent = messagesEvent;
         this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.gavModelContentHandler = gavModelContentHandler;
     }
@@ -70,9 +74,6 @@ public class ProjectEditorServiceImpl
         try {
             // Create project structure
             final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
-
-            org.kie.commons.java.nio.file.Path resolve = directory.resolve("src/kbases");
-            ioService.createDirectory(resolve);
 
             ioService.createDirectory(directory.resolve("src/main/java"));
             ioService.createDirectory(directory.resolve("src/main/resources"));
@@ -111,11 +112,11 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public Messages build(Path pathToKModuleXML) {
+    public void build(Path pathToKModuleXML) {
 
-        Builder builder = new Builder(getPomDirectoryPath(pathToKModuleXML), ioService);
+        Builder builder = new Builder(getPomDirectoryPath(pathToKModuleXML), loadGav(pathToKModuleXML), ioService, paths, messagesEvent);
 
-        return builder.build();
+        builder.build();
     }
 
     @Override
