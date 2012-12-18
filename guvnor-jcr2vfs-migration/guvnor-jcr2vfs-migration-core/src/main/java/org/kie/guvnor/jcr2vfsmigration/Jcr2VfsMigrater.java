@@ -79,7 +79,8 @@ public class Jcr2VfsMigrater {
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
-        //  TODO: migratePackagePermissions, migrateRolesAndPermissionsMetaData
+        // TODO migratePackagePermissions, migrateRolesAndPermissionsMetaData
+        // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
         endContexts();
         logger.info("Migration ended: Written into outputVfsRepository ({}).",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
