@@ -34,13 +34,13 @@ public class AssetMigrater {
 
     public void migrateAll() {
         logger.info("  Asset migration started");
-        Module[] modules = jcrRepositoryModuleService.listModules();
-        for (Module module : modules) {
+        Module[] jcrModules = jcrRepositoryModuleService.listModules();
+        for (Module jcrModule : jcrModules) {
             boolean hasMorePages = true;
             int startRowIndex = 0;
             final int pageSize = 100;
             while (hasMorePages) {
-                AssetPageRequest request = new AssetPageRequest(module.getUuid(),
+                AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
                         null, // get all formats
                         null,
                         startRowIndex,
@@ -50,7 +50,7 @@ public class AssetMigrater {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {
                         Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
-                        migrate(jcrAsset);
+                        migrate(jcrModule, jcrAsset);
                         logger.debug("    Asset ({}) migrated.", jcrAsset.getName());
                     }
                 } catch (SerializationException e) {
@@ -66,14 +66,14 @@ public class AssetMigrater {
         logger.info("  Asset migration ended");
     }
 
-    private void migrate(Asset jcrAsset) {
+    private void migrate(Module jcrModule, Asset jcrAsset) {
         if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
-            factModelsMigrater.migrate(jcrAsset);
+            factModelsMigrater.migrate(jcrModule, jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
-            // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
         }
+        // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }
 
     // TODO delete code below once we have all of its functionality

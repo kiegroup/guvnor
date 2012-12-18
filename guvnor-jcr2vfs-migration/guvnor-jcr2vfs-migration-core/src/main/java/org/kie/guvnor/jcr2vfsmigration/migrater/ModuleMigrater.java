@@ -5,9 +5,10 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
-import org.kie.guvnor.jcr2vfsmigration.migrater.util.UuidToPathDictionary;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 public class ModuleMigrater {
@@ -18,22 +19,22 @@ public class ModuleMigrater {
     protected RepositoryModuleService jcrRepositoryModuleService;
 
     @Inject
-    protected UuidToPathDictionary uuidToPathDictionary;
+    protected MigrationPathManager migrationPathManager;
 
     public void migrateAll() {
         logger.info("  Module migration started");
-        Module[] modules = jcrRepositoryModuleService.listModules();
-        for (Module module : modules) {
-            migrate(module);
-            logger.debug("    Module ({}) migrated.", module.getName());
+        Module[] jcrModules = jcrRepositoryModuleService.listModules();
+        for (Module jcrModule : jcrModules) {
+            migrate(jcrModule);
+            logger.debug("    Module ({}) migrated.", jcrModule.getName());
         }
         logger.info("  Module migration ended");
     }
 
-    private void migrate(Module module) {
+    private void migrate(Module jcrModule) {
+        Path path = migrationPathManager.generatePathForModule(jcrModule);
         // TODO REPLACE ME WITH ACTUAL CODE
-        logger.debug("    TODO migrate module ({}).", module.getName());
-        // TODO uuidToPathDictionary.register(...)
+        logger.debug("    TODO migrate module ({}).", jcrModule.getName());
     }
 
 }

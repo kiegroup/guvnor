@@ -7,17 +7,17 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
-import org.kie.guvnor.jcr2vfsmigration.migrater.util.UuidToPathDictionary;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 
 @ApplicationScoped
 public class FactModelsMigrater {
@@ -31,20 +31,17 @@ public class FactModelsMigrater {
     protected FactModelService vfsFactModelService;
 
     @Inject
-    protected UuidToPathDictionary uuidToPathDictionary;
+    protected MigrationPathManager migrationPathManager;
 
-    public void migrate(Asset jcrAsset) {
+    public void migrate(Module jcrModule, Asset jcrAsset) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
                     + ") has the wrong format (" + jcrAsset.getFormat() + ").");
         }
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         FactModels vfsFactModels = convertFactModels(
                 (org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels) jcrAsset.getContent());
-
-        String uuid = jcrAsset.getUuid();
-        Path path = PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar");// TODO
         vfsFactModelService.save(path, vfsFactModels);
-        uuidToPathDictionary.register(uuid, path);
     }
 
     private FactModels convertFactModels(
