@@ -1,7 +1,11 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.server.RepositoryCategoryService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.UuidToPathDictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,12 +15,15 @@ public class CategoryMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger(CategoryMigrater.class);
 
-//    @Inject
-//    protected RepositoryCategoryService jcrRepositoryCategoryService;
+    @Inject
+    protected RepositoryCategoryService jcrRepositoryCategoryService;
+
+    @Inject
+    protected UuidToPathDictionary uuidToPathDictionary;
 
     public void migrateAll() {
         logger.info("  Category migration started");
-        // TODO
+        // TODO similar like ModuleMigrater and assetMigrater
         logger.info("  Category migration ended");
     }
 
