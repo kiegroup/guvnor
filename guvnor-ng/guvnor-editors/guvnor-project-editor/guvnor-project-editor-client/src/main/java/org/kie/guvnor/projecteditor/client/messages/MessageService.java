@@ -34,7 +34,7 @@ import java.util.List;
 public class MessageService {
 
     private final PlaceManager placeManager;
-    private Messages messages;
+
     private ListDataProvider<Message> dataProvider = new ListDataProvider<Message>();
 
     @Inject
@@ -43,20 +43,12 @@ public class MessageService {
     }
 
     public void addMessages(Messages messages) {
-        this.messages = messages;
         List<Message> list = dataProvider.getList();
         for (Message message : messages) {
             list.add(message);
         }
+
         placeManager.goTo("org.kie.guvnor.Messages");
-    }
-
-    public Messages getMessageLog() {
-        return messages;
-    }
-
-    public ListDataProvider<Message> getDataProvider() {
-        return dataProvider;
     }
 
     public void addDataDisplay(HasData<Message> display) {

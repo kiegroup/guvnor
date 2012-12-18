@@ -88,4 +88,12 @@ public interface ProjectEditorConstants
     String KBases();
 
     String KSessions();
+
+    String Line();
+
+    String Column();
+
+    String Text();
+
+    String Level();
 }

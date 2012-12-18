@@ -16,35 +16,36 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
+import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.DataGrid;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SelectionModel;
+import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.model.builder.Message;
 
 import javax.inject.Inject;
 
 public class MessageScreenViewImpl
         extends Composite
-        implements MessageScreenView {
+        implements MessageScreenView,
+        RequiresResize {
 
     private static Binder uiBinder = GWT.create(Binder.class);
     private Presenter presenter;
-    private final MessageService messageService;
 
     interface Binder extends UiBinder<Widget, MessageScreenViewImpl> {
+
     }
 
     @UiField(provided = true)
@@ -57,48 +58,85 @@ public class MessageScreenViewImpl
         }
     };
 
-
     @Inject
     public MessageScreenViewImpl(MessageService messageService) {
-        this.messageService = messageService;
         dataGrid = new DataGrid<Message>(KEY_PROVIDER);
         dataGrid.setWidth("100%");
 
         dataGrid.setAutoHeaderRefreshDisabled(true);
 
-        dataGrid.setEmptyTableWidget(new Label("EMPTY")); // TODO i18n -Rikkola-
+        dataGrid.setEmptyTableWidget(new Label("---"));
 
-        ColumnSortEvent.ListHandler<Message> sortHandler =
-                new ColumnSortEvent.ListHandler<Message>(messageService.getDataProvider().getList());
-        dataGrid.addColumnSortHandler(sortHandler);
-
-        final SelectionModel<Message> selectionModel =
-                new MultiSelectionModel<Message>(KEY_PROVIDER);
-        dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager
-                .<Message>createCheckboxManager());
-
-        initTableColumns(selectionModel, sortHandler);
+        setUpColumns();
 
         messageService.addDataDisplay(dataGrid);
 
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    /**
-     * Add the columns to the table.
-     */
-    private void initTableColumns(final SelectionModel<Message> selectionModel,
-                                  ColumnSortEvent.ListHandler<Message> sortHandler) {
+    @Override
+    public void onResize() {
+        dataGrid.setHeight(getParent().getOffsetHeight() + "px");
+    }
 
-        // Address.
-        Column<Message, String> addressColumn = new Column<Message, String>(new TextCell()) {
+    private void setUpColumns() {
+        addLevelColumn();
+        addTextColumn();
+        addColumnColumn();
+        addLineColumn();
+    }
+
+    private void addLineColumn() {
+        Column<Message, String> lineColumn = new Column<Message, String>(new TextCell()) {
+            @Override
+            public String getValue(Message message) {
+                return Integer.toString(message.getLine());
+            }
+        };
+        dataGrid.addColumn(lineColumn, ProjectEditorConstants.INSTANCE.Line());
+        dataGrid.setColumnWidth(lineColumn, 60, Style.Unit.PCT);
+    }
+
+    private void addColumnColumn() {
+        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
+            @Override
+            public String getValue(Message message) {
+                return Integer.toString(message.getColumn());
+            }
+        };
+        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Column());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+
+    private void addTextColumn() {
+        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
             @Override
             public String getValue(Message message) {
                 return message.getText();
             }
         };
-        dataGrid.addColumn(addressColumn, "Text"); // TODO i18n -Rikkola-
-        dataGrid.setColumnWidth(addressColumn, 60, Style.Unit.PCT);
+        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Text());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+
+    private void addLevelColumn() {
+        Column<Message, ImageResource> column = new Column<Message, ImageResource>(new ImageResourceCell()) {
+            @Override
+            public ImageResource getValue(Message message) {
+                switch (message.getLevel()) {
+                    case ERROR:
+                        return ProjectEditorResources.INSTANCE.Error();
+
+                    case WARNING:
+                        return ProjectEditorResources.INSTANCE.Warning();
+                    case INFO:
+                    default:
+                        return ProjectEditorResources.INSTANCE.Information();
+                }
+            }
+        };
+        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Level());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 
     @Override

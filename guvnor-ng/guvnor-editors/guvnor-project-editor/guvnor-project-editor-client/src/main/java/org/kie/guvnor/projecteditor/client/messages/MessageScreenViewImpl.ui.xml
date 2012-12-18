@@ -24,7 +24,7 @@
   <ui:with field="i18n" type="org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:HorizontalPanel>
-    <cellview:DataGrid ui:field='dataGrid' width="300px" height="300px"/>
+  <gwt:HorizontalPanel width="100%" height="100%">
+    <cellview:DataGrid ui:field='dataGrid' width="100%" />
   </gwt:HorizontalPanel>
 </ui:UiBinder>

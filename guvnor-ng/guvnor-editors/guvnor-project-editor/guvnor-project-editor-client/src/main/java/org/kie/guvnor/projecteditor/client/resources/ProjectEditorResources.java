@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import org.kie.guvnor.projecteditor.client.resources.css.ProjectEditorCss;
 
 public interface ProjectEditorResources
@@ -29,4 +30,13 @@ public interface ProjectEditorResources
 
     @Source("css/ProjectEditor.css")
     public ProjectEditorCss mainCss();
+
+    @Source("images/error.gif")
+    ImageResource Error();
+
+    @Source("images/warning.gif")
+    ImageResource Warning();
+
+    @Source("images/information.gif")
+    ImageResource Information();
 }
