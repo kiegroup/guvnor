@@ -58,11 +58,11 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.ConsequenceException;
-import org.kie.util.CompositeClassLoader;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
