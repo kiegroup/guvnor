@@ -104,7 +104,7 @@
         </property>
       </activation>
       <modules>
-        <module>guvnor-webapp-drools-as-jar</module>
+        <module>guvnor-jcr2vfs-migration</module>
         <module>guvnor-docs</module>
         <module>guvnor-distribution-wars</module>
         <module>guvnor-distribution</module>

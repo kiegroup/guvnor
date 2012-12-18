@@ -4,15 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
-    <artifactId>guvnor</artifactId>
+    <artifactId>guvnor-jcr2vfs-migration</artifactId>
     <version>5.5.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-webapp-drools-as-jar</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor web application Drools as JAR (for JCR to UberFire VFS migration)</name>
-  <description>Repackages Guvnor 5 war content as a jar for the JCR to UberFire VFS migration</description>
+  <name>Guvnor JCR to UberFire VFS migration: Guvnor web application Drools as JAR</name>
+  <description>Repackages Guvnor 5 war content as a jar for the JCR to UberFire VFS migration in Guvnor 6</description>
 
   <build>
     <plugins>
