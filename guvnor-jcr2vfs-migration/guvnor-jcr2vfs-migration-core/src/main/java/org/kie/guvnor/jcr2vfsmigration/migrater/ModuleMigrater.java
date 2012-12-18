@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.UuidToPathDictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,9 @@ public class ModuleMigrater {
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
+
+    @Inject
+    protected UuidToPathDictionary uuidToPathDictionary;
 
     public void migrateAll() {
         logger.info("  Module migration started");
@@ -29,6 +33,7 @@ public class ModuleMigrater {
     private void migrate(Module module) {
         // TODO REPLACE ME WITH ACTUAL CODE
         logger.debug("    TODO migrate module ({}).", module.getName());
+        // TODO uuidToPathDictionary.register(...)
     }
 
 }

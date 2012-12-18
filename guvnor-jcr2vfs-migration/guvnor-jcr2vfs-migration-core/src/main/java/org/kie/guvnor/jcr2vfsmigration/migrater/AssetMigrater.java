@@ -71,7 +71,7 @@ public class AssetMigrater {
             factModelsMigrater.migrate(jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
-            logger.debug("    TODO migrate asset ({}) and format({}).", jcrAsset.getName(), jcrAsset.getFormat());
+            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
             // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
         }
     }

@@ -1,27 +1,22 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater.asset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.AssetPageRequest;
-import org.drools.guvnor.client.rpc.AssetPageRow;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.UuidToPathDictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
 @ApplicationScoped
@@ -35,6 +30,9 @@ public class FactModelsMigrater {
     @Inject
     protected FactModelService vfsFactModelService;
 
+    @Inject
+    protected UuidToPathDictionary uuidToPathDictionary;
+
     public void migrate(Asset jcrAsset) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
@@ -43,9 +41,10 @@ public class FactModelsMigrater {
         FactModels vfsFactModels = convertFactModels(
                 (org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels) jcrAsset.getContent());
 
-
-        // TODO
-        vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), vfsFactModels);
+        String uuid = jcrAsset.getUuid();
+        Path path = PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar");// TODO
+        vfsFactModelService.save(path, vfsFactModels);
+        uuidToPathDictionary.register(uuid, path);
     }
 
     private FactModels convertFactModels(
