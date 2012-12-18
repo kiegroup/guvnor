@@ -1,13 +1,21 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater;
 
+import java.util.Arrays;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.RepositoryModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.kie.guvnor.factmodel.service.FactModelService;
-import org.drools.guvnor.server.contenthandler.BaseXStreamContentHandler;
 
 // TODO Maybe we should make one per asset type? Or delegate to one per asset type?
 @ApplicationScoped
@@ -15,8 +23,8 @@ public class AssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger(AssetMigrater.class);
 
-//    @Inject
-//    protected RepositoryModuleService jcrRepositoryModuleService;
+    @Inject
+    protected RepositoryModuleService jcrRepositoryModuleService;
 
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
@@ -26,15 +34,47 @@ public class AssetMigrater {
 
     public void migrateAll() {
         logger.info("  Asset migration started");
-        if (jcrRepositoryAssetService == null) {
-            throw new IllegalStateException("jcrRepositoryAssetService null");
+        Module[] modules = jcrRepositoryModuleService.listModules();
+        for (Module module : modules) {
+            boolean hasMorePages = true;
+            int startRowIndex = 0;
+            final int pageSize = 100;
+            while (hasMorePages) {
+                AssetPageRequest request = new AssetPageRequest(module.getUuid(),
+                        null, // get all formats
+                        null,
+                        startRowIndex,
+                        pageSize);
+                PageResponse<AssetPageRow> response;
+                try {
+                    response = jcrRepositoryAssetService.findAssetPage(request);
+                    for (AssetPageRow row : response.getPageRowList()) {
+                        Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
+                        migrate(jcrAsset);
+                        logger.debug("    Asset ({}) migrated.", jcrAsset.getName());
+                    }
+                } catch (SerializationException e) {
+                    throw new IllegalStateException(e);
+                }
+                if (response.isLastPage()) {
+                    hasMorePages = false;
+                } else {
+                    startRowIndex += pageSize;
+                }
+            }
         }
-        if (vfsFactModelService == null) {
-            throw new IllegalStateException("vfsFactModelService null");
-        }
-        // TODO
-        // vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), new FactModels()); // TODO remove me
         logger.info("  Asset migration ended");
+    }
+
+    private void migrate(Asset jcrAsset) {
+        if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
+            // TODO
+            // vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), new FactModels()); // TODO remove me
+        } else {
+            // TODO REPLACE ME WITH ACTUAL CODE
+            logger.debug("    TODO migrate asset ({}) and format({}).", jcrAsset.getName(), jcrAsset.getFormat());
+            // IF all assetFormats are listed, the last else should throw an IllegalArgumentException
+        }
     }
 
     // TODO delete code below once we have all of its functionality
