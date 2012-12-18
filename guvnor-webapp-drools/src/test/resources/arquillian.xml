@@ -3,8 +3,7 @@
             xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
   <engine>
-    <!-- Workaround Perm gen space issues of https://issues.jboss.org/browse/AS7-2516 -->
-    <property name="maxTestClassesBeforeRestart">1</property>
+   <property name="deploymentExportPath">target/</property>    
  </engine>
 
 	<!--<container qualifier="weld" default="true">-->
@@ -44,4 +43,8 @@
     <!--</configuration>-->
   <!--</container>-->
 
+    <extension qualifier="suite">
+        <property name="deploymentClass">org.drools.guvnor.server.test.Deployments</property>
+    </extension>
+    
 </arquillian>
