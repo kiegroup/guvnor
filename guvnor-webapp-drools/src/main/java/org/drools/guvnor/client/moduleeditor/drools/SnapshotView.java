@@ -412,8 +412,8 @@ public class SnapshotView extends Composite {
             public void onClick(ClickEvent event) {
                 pop.hide();
                 String pkg = sel.getSelectedPackage();
-                PackageBuilderWidget.showSnapshotDialog( pkg,
-                                                         refreshCmd );
+               PackageBuilderWidget.showSnapshotDialog( pkg,
+                                                        refreshCmd,"","","",false,"","",false,"" );
             }
         } );
 

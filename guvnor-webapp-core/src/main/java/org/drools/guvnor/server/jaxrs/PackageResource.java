@@ -943,7 +943,7 @@ public class PackageResource extends Resource {
             @PathParam("snapshotName") final String snapshotName) throws SerializationException {
         compileModuleIfNeeded(packageName);
         repositoryModuleOperations.createModuleSnapshot(packageName,
-                snapshotName, true, "REST API Snapshot");
+                snapshotName, true, "REST API Snapshot",null,null,null,false,null,null,false,null);
     }
 
     private boolean assetExists(final String packageName, final String assetName) {

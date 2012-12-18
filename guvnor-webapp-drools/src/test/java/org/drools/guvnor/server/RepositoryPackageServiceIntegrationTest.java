@@ -121,7 +121,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiff",
                                                        "FIRST",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -149,7 +149,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiff",
                                                        "SECOND",
                                                        false,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -388,7 +388,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "X",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         SnapshotInfo[] snaps = repositoryPackageService.listSnapshots( "testSnapshot" );
         assertEquals( 1,
                       snaps.length );
@@ -404,13 +404,13 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "Y",
                                                        false,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "X",
                                                        true,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
 
@@ -475,7 +475,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotRebuild",
                                                        "SNAP",
                                                        false,
-                                                       "" );
+                                                       "",false,"","","",false,"","",false,"" );
 
         ModuleItem snap = repo.loadModuleSnapshot( "testSnapshotRebuild",
                                                    "SNAP" );
@@ -497,7 +497,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotRebuild",
                                                        "SNAP2",
                                                        false,
-                                                       "" );
+                                                       "",false,"","","",false,"","",false,"" );
 
         try {
             repositoryPackageService.rebuildSnapshots();
@@ -683,7 +683,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                        "TEST SNAP 2.0",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         ModuleItem loaded = rulesRepository.loadModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                 "TEST SNAP 2.0" );
 
@@ -858,7 +858,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffPagedResultsPackage",
                                                        "FIRST",
                                                        false,
-                                                       "First snapshot" );
+                                                       "First snapshot",false,"","","",false,"","",false,"" );
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffPagedResultsPackage" ).length );
         assertEquals( 4,
@@ -890,7 +890,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffPagedResultsPackage",
                                                        "SECOND",
                                                        false,
-                                                       "Second snapshot" );
+                                                       "Second snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffPagedResultsPackage" ).length );
         assertEquals( 4,
@@ -982,7 +982,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffFullResultsPackage",
                                                        "FIRST",
                                                        false,
-                                                       "First snapshot" );
+                                                       "First snapshot",false,"","","",false,"","",false,"" );
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffFullResultsPackage" ).length );
         assertEquals( 4,
@@ -1014,7 +1014,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffFullResultsPackage",
                                                        "SECOND",
                                                        false,
-                                                       "Second snapshot" );
+                                                       "Second snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffFullResultsPackage" ).length );
         assertEquals( 4,
@@ -1133,7 +1133,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testBinaryPackageCompile",
                                                        "SNAP1",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
@@ -1241,7 +1241,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testBinaryPackageCompileBRL",
                                                        "SNAP1",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         pattern.setFactType( "PersonX" );
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
