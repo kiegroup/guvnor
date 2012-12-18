@@ -62,7 +62,7 @@ public class M2RepoServiceImpl
         
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
-/*
+
         int i = 0;
         for(File file : files) {
             if(i>=pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
@@ -76,7 +76,7 @@ public class M2RepoServiceImpl
                 tradeRatePageRowList.add(jarListPageRow);
             }
             i++;            
-        }*/
+        }
         
         response.setPageRowList(tradeRatePageRowList);
         response.setStartRowIndex(pageRequest.getStartRowIndex());

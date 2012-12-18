@@ -16,6 +16,12 @@
 
 package org.kie.guvnor.m2repo.client.editor;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -78,6 +84,18 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                 PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
                 String filters = null;
                 
+
+                List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
+                JarListPageRow jarListPageRow = new JarListPageRow();
+                jarListPageRow.setName("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+                jarListPageRow.setPath("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+                jarListPageRow.setLastModified(new Date());
+                tradeRatePageRowList.add(jarListPageRow);
+                
+                updateRowCount( 1, true );
+                //WONT WORK! Problem with List<JarListPageRow>?
+                //updateRowData( 0, null);
+                
 /*                m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
                     public void callback( final PageResponse<JarListPageRow> response) {
@@ -92,7 +110,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
     }
 
-    //@Override
+    @Override
     protected void addAncillaryColumns(ColumnPicker<JarListPageRow> columnPicker,
                                        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup) {
 
@@ -104,8 +122,20 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         columnPicker.addColumn( nameColumn,
                                 new SortableHeader<JarListPageRow, String>(
                                                                                   sortableHeaderGroup,
-                                                                                  "name",
+                                                                                  "Name",
                                                                                   nameColumn ),
+                                true );
+        
+        TextColumn<JarListPageRow> pathColumn = new TextColumn<JarListPageRow>() {
+            public String getValue(JarListPageRow row) {
+                return row.getName();
+            }
+        };
+        columnPicker.addColumn( pathColumn,
+                                new SortableHeader<JarListPageRow, String>(
+                                                                                  sortableHeaderGroup,
+                                                                                  "Path",
+                                                                                  pathColumn ),
                                 true );
         
         TextColumn<JarListPageRow> lastModifiedColumn = new TextColumn<JarListPageRow>() {
@@ -116,7 +146,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         columnPicker.addColumn( lastModifiedColumn,
                                 new SortableHeader<JarListPageRow, String>(
                                                                                   sortableHeaderGroup,
-                                                                                  "lastModified",
+                                                                                  "LastModified",
                                                                                   lastModifiedColumn ),
                                 true );
 
