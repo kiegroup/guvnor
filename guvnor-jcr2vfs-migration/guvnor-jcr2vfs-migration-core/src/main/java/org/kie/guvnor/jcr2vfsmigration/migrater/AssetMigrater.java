@@ -13,11 +13,11 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.kie.guvnor.factmodel.service.FactModelService;
 
-// TODO Maybe we should make one per asset type? Or delegate to one per asset type?
 @ApplicationScoped
 public class AssetMigrater {
 
@@ -30,7 +30,7 @@ public class AssetMigrater {
     protected RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
-    protected FactModelService vfsFactModelService;
+    protected FactModelsMigrater factModelsMigrater;
 
     public void migrateAll() {
         logger.info("  Asset migration started");
@@ -68,12 +68,11 @@ public class AssetMigrater {
 
     private void migrate(Asset jcrAsset) {
         if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
-            // TODO
-            // vfsFactModelService.save(PathFactory.newPath("default://guvnor-jcr2vfs-migration/foo/bar"), new FactModels()); // TODO remove me
+            factModelsMigrater.migrate(jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("    TODO migrate asset ({}) and format({}).", jcrAsset.getName(), jcrAsset.getFormat());
-            // IF all assetFormats are listed, the last else should throw an IllegalArgumentException
+            // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
         }
     }
 
