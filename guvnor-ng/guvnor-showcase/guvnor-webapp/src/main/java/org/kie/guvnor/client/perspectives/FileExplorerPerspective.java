@@ -15,22 +15,16 @@
  */
 package org.kie.guvnor.client.perspectives;
 
-import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
@@ -42,7 +36,6 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
@@ -56,13 +49,10 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 public class FileExplorerPerspective {
 
     @Inject
-    private IOCBeanManager iocBeanManager;
-
-    @Inject
     private NewResourcePresenter newResourcePresenter;
 
     @Inject
-    private WorkbenchContext context;
+    private NewResourcesMenu newResourcesMenu;
 
     @Inject
     private PlaceManager placeManager;
@@ -116,28 +106,7 @@ public class FileExplorerPerspective {
                                                                   placeManager.goTo( "FileExplorer" );
                                                               }
                                                           } ) );
-
-        final MenuBar subMenuBar = new DefaultMenuBar();
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
-                                                          subMenuBar ) );
-
-        //Dynamic items
-        final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
-        if ( handlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
-                final NewResourceHandler activeHandler = handlerBean.getInstance();
-                final String description = activeHandler.getDescription();
-                subMenuBar.addItem( new DefaultMenuItemCommand( description,
-                                                                new Command() {
-                                                                    @Override
-                                                                    public void execute() {
-                                                                        final Path activePath = context.getActivePath();
-                                                                        newResourcePresenter.show( activeHandler );
-                                                                    }
-                                                                } ) );
-            }
-        }
-
+        this.menuBar.addItem( newResourcesMenu );
     }
 
     private void buildToolBar() {
@@ -147,7 +116,6 @@ public class FileExplorerPerspective {
         final Command command = new Command() {
             @Override
             public void execute() {
-                final Path activePath = context.getActivePath();
                 newResourcePresenter.show();
             }
         };

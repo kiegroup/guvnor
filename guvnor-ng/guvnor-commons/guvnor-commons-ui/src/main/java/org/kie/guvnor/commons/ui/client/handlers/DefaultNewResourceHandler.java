@@ -51,6 +51,11 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         return isValid;
     }
 
+    @Override
+    public boolean requiresProjectPath() {
+        return true;
+    }
+
     protected Path buildFullPathName( final String fileName ) {
         final String pathName = this.pathLabel.getPath().toURI();
         final Path assetPath = PathFactory.newPath( fileName,

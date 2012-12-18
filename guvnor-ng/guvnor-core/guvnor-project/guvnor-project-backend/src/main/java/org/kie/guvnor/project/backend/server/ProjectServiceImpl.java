@@ -20,6 +20,8 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.Paths;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
@@ -31,6 +33,10 @@ import static java.util.Collections.*;
 @ApplicationScoped
 public class ProjectServiceImpl
         implements ProjectService {
+
+    private static final String SOURCE_FILENAME = "src";
+    private static final String POM_FILENAME = "pom.xml";
+    private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
 
     @Override
     public Collection<Path> listProjectResources( final Path project ) {
@@ -46,7 +52,36 @@ public class ProjectServiceImpl
 
     @Override
     public Path resolveProject( final Path resource ) {
-        //TODO {porcelli}
-        return PathFactory.newPath( null );
+
+        //Null resource paths cannot resolve to a Project
+        if ( resource == null ) {
+            return null;
+        }
+
+        //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
+        org.kie.commons.java.nio.file.Path p = Paths.get( resource.toURI() ).normalize();
+        if ( Files.isRegularFile( p ) ) {
+            p = p.getParent();
+        }
+        while ( p.getNameCount() > 0 && !p.getFileName().toString().equals( SOURCE_FILENAME ) ) {
+            p = p.getParent();
+        }
+        if ( p.getNameCount() == 0 ) {
+            return null;
+        }
+        p = p.getParent();
+        if ( p.getNameCount() == 0 || p == null ) {
+            return null;
+        }
+        final org.kie.commons.java.nio.file.Path pomPath = p.resolve( POM_FILENAME );
+        if ( !Files.exists( pomPath ) ) {
+            return null;
+        }
+        final org.kie.commons.java.nio.file.Path kmodulePath = p.resolve( KMODULE_FILENAME );
+        if ( !Files.exists( kmodulePath ) ) {
+            return null;
+        }
+        return PathFactory.newPath( p.toUri().toString() );
     }
+
 }

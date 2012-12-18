@@ -47,4 +47,10 @@ public interface NewResourceHandler {
      */
     public boolean validate();
 
+    /**
+     * Indicates if the NewResourceHandler requires a resolved Project Path
+     * @return
+     */
+    public boolean requiresProjectPath();
+
 }

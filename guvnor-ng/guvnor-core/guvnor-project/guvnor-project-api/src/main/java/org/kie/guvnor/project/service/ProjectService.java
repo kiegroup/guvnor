@@ -32,5 +32,10 @@ public interface ProjectService {
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
+    /**
+     * Given a Path to a resource resolve a Path for the containing Project's pom.xml file
+     * @param resource
+     * @return Path to the Project's pom.xml file or null if the resource was not in a Project
+     */
     Path resolveProject( Path resource );
 }

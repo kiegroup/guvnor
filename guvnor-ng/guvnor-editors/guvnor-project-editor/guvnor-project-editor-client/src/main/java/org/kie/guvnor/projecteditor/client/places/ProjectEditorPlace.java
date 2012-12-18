@@ -16,15 +16,21 @@
 
 package org.kie.guvnor.projecteditor.client.places;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+@Portable
 public class ProjectEditorPlace
         extends DefaultPlaceRequest {
 
-    public ProjectEditorPlace(Path path) {
-        super("projectEditorScreen");
-        addParameter("path:uri", path.toURI());
-        addParameter("path:name", path.getFileName());
+    public ProjectEditorPlace() {
+        super( "projectEditorScreen" );
+    }
+
+    public ProjectEditorPlace( Path path ) {
+        super( "projectEditorScreen" );
+        addParameter( "path:uri", path.toURI() );
+        addParameter( "path:name", path.getFileName() );
     }
 }

@@ -42,7 +42,7 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
 
     private final TextBox fileNameTextBox = new TextBox();
     private final VerticalPanel handlersContainer = new VerticalPanel();
-    private final Map<NewResourceHandler, RadioButton> options = new HashMap<NewResourceHandler, RadioButton>();
+    private final Map<NewResourceHandler, RadioButton> handlers = new HashMap<NewResourceHandler, RadioButton>();
     private final Button okButton = makeOKButton();
 
     @Override
@@ -84,7 +84,7 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
                       okButton );
 
         //Select handler
-        final RadioButton option = options.get( handler );
+        final RadioButton option = handlers.get( handler );
         if ( option != null ) {
             option.setValue( true,
                              true );
@@ -95,8 +95,8 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
     @Override
     public void addHandler( final NewResourceHandler handler ) {
         final RadioButton option = makeOption( handler );
-        options.put( handler,
-                     option );
+        handlers.put( handler,
+                      option );
         handlersContainer.add( option );
     }
 
@@ -110,8 +110,18 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
         Window.alert( NewItemPopupConstants.INSTANCE.MissingName() );
     }
 
+    @Override
+    public void enableHandler( final NewResourceHandler handler,
+                               final boolean enable ) {
+        final RadioButton handlerOption = this.handlers.get( handler );
+        if ( handlerOption == null ) {
+            return;
+        }
+        handlerOption.setEnabled( enable );
+    }
+
     private RadioButton makeOption( final NewResourceHandler handler ) {
-        final RadioButton option = new RadioButton( "options",
+        final RadioButton option = new RadioButton( "handlers",
                                                     handler.getDescription() );
         option.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
