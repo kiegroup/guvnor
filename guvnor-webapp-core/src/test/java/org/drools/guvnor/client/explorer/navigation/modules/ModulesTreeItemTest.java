@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
+import org.drools.guvnor.client.rpc.BuilderResult;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -306,6 +307,16 @@ public class ModulesTreeItemTest {
 
         public void listModules(AsyncCallback<Module[]> cb) {
             cb.onSuccess( packageConfigDatas );
+        }
+
+        @Override
+        public void createModuleSnapshot(String moduleName, String snapshotName, boolean replaceExisting, String comment, String buildMode, String statusOperator, String statusValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String customSelector, AsyncCallback<java.lang.Void> cb) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void createModuleSnapshot(String moduleName, String snapshotName, boolean replaceExisting, String comment, boolean checkIsBinaryUpToDate, String buildMode, String statusOperator, String statusValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String customSelector, AsyncCallback<java.lang.Void> cb) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

@@ -230,7 +230,15 @@ public class PackageBuilderWidget extends Composite {
         snap.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showSnapshotDialog(conf.getName(),
-                        null);
+                        null,
+                        buildMode,
+                        statusOperator.getValue(statusOperator.getSelectedIndex()),
+                        statusValue.getText(),
+                        enableStatusCheckBox.getValue(),
+                        catOperator.getValue(catOperator.getSelectedIndex()),
+                        catChooser.getSelectedPath(),
+                        enableCategoryCheckBox.getValue(),
+                        customSelector.getSelectedIndex() != -1 ? customSelector.getValue(customSelector.getSelectedIndex()) : null);
             }
         });
         layout.addAttribute(Constants.INSTANCE.TakeSnapshot(),
@@ -503,7 +511,15 @@ public class PackageBuilderWidget extends Composite {
      * This will display a dialog for creating a snapshot.
      */
     public static void showSnapshotDialog(final String packageName,
-                                          final Command refreshCmd) {
+                                          final Command refreshCmd,
+                                          final String buildMode,
+                                          final String statusOperator,
+                                          final String statusValue,
+                                          final boolean enableStatusSelector,
+                                          final String categoryOperator,
+                                          final String category,
+                                          final boolean enableCategorySelector,
+                                          final String customSelector) {
         LoadingPopup.showMessage(Constants.INSTANCE.LoadingExistingSnapshots());
         final FormStylePopup form = new FormStylePopup(DroolsGuvnorImages.INSTANCE.snapshot(),
                 Constants.INSTANCE.CreateASnapshotForDeployment());
@@ -579,11 +595,20 @@ public class PackageBuilderWidget extends Composite {
                 }
 
                 LoadingPopup.showMessage(Constants.INSTANCE.PleaseWaitDotDotDot());
+
                 RepositoryServiceFactory.getPackageService().createModuleSnapshot(packageName,
                         name,
                         replace,
                         comment.getText(),
                         true,
+                        buildMode,
+                        statusOperator,
+                        statusValue,
+                        enableStatusSelector,
+                        categoryOperator,
+                        category,
+                        enableCategorySelector,
+                        customSelector,
                         new GenericCallback<java.lang.Void>() {
                             public void onSuccess(Void v) {
                                 Window.alert(Constants.INSTANCE.TheSnapshotCalled0WasSuccessfullyCreated(name));

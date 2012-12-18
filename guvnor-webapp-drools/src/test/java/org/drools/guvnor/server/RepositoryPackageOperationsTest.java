@@ -307,7 +307,7 @@ public class RepositoryPackageOperationsTest {
         this.repositoryPackageOperations.createModuleSnapshot( packageName,
                                                                 snapshotName,
                                                                 true,
-                                                                comment );
+                                                                comment ,false,"","","",false,"","",false,"");
         verify( this.rulesRepository ).removeModuleSnapshot( packageName,
                                                               snapshotName );
         verify( this.rulesRepository ).createModuleSnapshot( packageName,
@@ -329,7 +329,7 @@ public class RepositoryPackageOperationsTest {
         this.repositoryPackageOperations.createModuleSnapshot( packageName,
                                                                 snapshotName,
                                                                 false,
-                                                                comment );
+                                                                comment ,false,"","","",false,"","",false,"");
         verify( this.rulesRepository,
                 never() ).removeModuleSnapshot( packageName,
                                                               snapshotName );

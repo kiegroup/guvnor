@@ -156,7 +156,7 @@ public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
         repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPPY 1",
                 false,
-                "");
+                "",false,"","","",false,"","",false,"");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String fileName = fileManagerService.loadBinaryPackage( pkg.getName(),
@@ -207,7 +207,7 @@ public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
         repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPX",
                 false,
-                "");
+                "",false,"","","",false,"","",false,"");
 
         long lastMod = fileManagerService.getLastModified( pkg.getName(),
                                                      "SNAPPY 1" );
@@ -218,7 +218,7 @@ public class FileManagerServiceIntegrationTest extends GuvnorIntegrationTest {
         repositoryPackageService.createModuleSnapshot(pkg.getName(),
                 "SNAPX",
                 true,
-                "yeah");
+                "yeah",false,"","","",false,"","",false,"");
 
         long lastMod2 = fileManagerService.getLastModified( pkg.getName(),
                                                       "SNAPX" );
