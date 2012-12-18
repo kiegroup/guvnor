@@ -30,6 +30,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.ReleaseId;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
+import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 
@@ -47,7 +48,7 @@ public class M2RepoServiceImpl
 
 
 
-    public void addJar(InputStream is, ReleaseId gav) {
+    public void addJar(InputStream is, GAV gav) {
         repository.addFile(is, gav);
     }
     
@@ -61,7 +62,7 @@ public class M2RepoServiceImpl
         
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
-
+/*
         int i = 0;
         for(File file : files) {
             if(i>=pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
@@ -75,7 +76,7 @@ public class M2RepoServiceImpl
                 tradeRatePageRowList.add(jarListPageRow);
             }
             i++;            
-        }
+        }*/
         
         response.setPageRowList(tradeRatePageRowList);
         response.setStartRowIndex(pageRequest.getStartRowIndex());

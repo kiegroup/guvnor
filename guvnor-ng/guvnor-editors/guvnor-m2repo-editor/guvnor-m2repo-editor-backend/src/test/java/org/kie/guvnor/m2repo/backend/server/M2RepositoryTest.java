@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
-import org.drools.kproject.ReleaseIdImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.builder.ReleaseId;
 import org.kie.guvnor.commons.data.tables.PageResponse;
+import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ public class M2RepositoryTest {
         M2Repository repo = new M2Repository();
         repo.init();
 
-        ReleaseId gav = new ReleaseIdImpl("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");
         
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
@@ -103,11 +103,11 @@ public class M2RepositoryTest {
         M2Repository repo = new M2Repository();
         repo.init();
 
-        ReleaseId gav = new ReleaseIdImpl("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
-        gav = new ReleaseIdImpl("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
+        gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
@@ -138,11 +138,11 @@ public class M2RepositoryTest {
         M2Repository repo = new M2Repository();
         repo.init();
 
-        ReleaseId gav = new ReleaseIdImpl("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
-        gav = new ReleaseIdImpl("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
+        gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
@@ -186,11 +186,11 @@ public class M2RepositoryTest {
         M2Repository repo = new M2Repository();
         repo.init();
 
-        ReleaseId gav = new ReleaseIdImpl("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
-        gav = new ReleaseIdImpl("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
+        gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         

@@ -36,6 +36,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.kie.builder.ReleaseId;
+import org.kie.guvnor.m2repo.model.GAV;
 
 
 @ApplicationScoped
@@ -73,7 +74,7 @@ public class M2Repository {
         }
     }
     
-    public void addFile(InputStream is, ReleaseId gav) {
+    public void addFile(InputStream is, GAV gav) {
         OutputStream outStream = null;
         try {
             //TODO: at the moment, we just assume classifier is null, target repo id is RELEASES
@@ -142,7 +143,7 @@ public class M2Repository {
         return files;
     }
     
-    protected String toURL(final String repository, ReleaseId gav, String classifier) {
+    protected String toURL(final String repository, GAV gav, String classifier) {
         final StringBuilder sb = new StringBuilder(repository);
 
         if (!repository.endsWith(File.separator)) {
@@ -155,7 +156,7 @@ public class M2Repository {
                 .append(File.separator).append(toFileName(gav, classifier)).toString();
     }
 
-    protected String toFileName(ReleaseId gav, String classifier) {
+    protected String toFileName(GAV gav, String classifier) {
         if (classifier != null) {
             return gav.getArtifactId() + "-" + gav.getVersion() + "-" + classifier + "." + getFileExtension();
         }

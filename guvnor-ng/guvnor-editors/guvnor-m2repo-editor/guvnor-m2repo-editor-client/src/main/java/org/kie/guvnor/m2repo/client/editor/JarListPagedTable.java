@@ -78,7 +78,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                 PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
                 String filters = null;
                 
-                m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
+/*                m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
                     public void callback( final PageResponse<JarListPageRow> response) {
                         updateRowCount( response.getTotalRowSize(),
@@ -86,7 +86,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                         updateRowData( response.getStartRowIndex(),
                                response.getPageRowList() );
                     }
-                } ).listJars(request, filters);
+                } ).listJars(request, filters);*/
             }
         } );
 
