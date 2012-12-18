@@ -87,8 +87,6 @@ public interface ProjectEditorConstants
 
     String KBases();
 
-    String KSessions();
-
     String Line();
 
     String Column();
@@ -96,4 +94,10 @@ public interface ProjectEditorConstants
     String Text();
 
     String Level();
+
+    String PomDotXml();
+
+    String KModuleDotXml();
+
+    String Problems();
 }

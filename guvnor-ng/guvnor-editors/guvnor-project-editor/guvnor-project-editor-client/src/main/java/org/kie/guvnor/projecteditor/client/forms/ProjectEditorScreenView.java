@@ -21,15 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ProjectEditorScreenView
         extends IsWidget {
 
-    interface Presenter {
-
-        void onKModuleToggleOn();
-
-    }
-
     String getEnableKieProjectMenuItemText();
-
-    void setPresenter(Presenter presenter);
 
     void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel);
 

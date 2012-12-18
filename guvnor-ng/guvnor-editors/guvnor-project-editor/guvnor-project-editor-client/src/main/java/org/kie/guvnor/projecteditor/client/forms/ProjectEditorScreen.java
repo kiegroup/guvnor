@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -36,8 +39,7 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "xml")
-public class ProjectEditorScreen
-        implements ProjectEditorScreenView.Presenter {
+public class ProjectEditorScreen {
 
     private final ProjectEditorScreenView view;
     private final GroupArtifactVersionEditorPanel gavPanel;
@@ -46,6 +48,7 @@ public class ProjectEditorScreen
     private Path pathToPomXML;
     private Path pathToKModuleXML;
     private final MessageService messageService;
+    private Label title = new InlineLabel(ProjectEditorConstants.INSTANCE.ProjectModel());
 
     @Inject
     public ProjectEditorScreen(ProjectEditorScreenView view,
@@ -59,7 +62,6 @@ public class ProjectEditorScreen
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.messageService = messageService;
 
-        view.setPresenter(this);
         view.setGroupArtifactVersionEditorPanel(gavPanel);
     }
 
@@ -67,7 +69,7 @@ public class ProjectEditorScreen
     public void init(Path path) {
 
         pathToPomXML = path;
-        gavPanel.init(path);
+        gavPanel.init(path, title);
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
@@ -87,26 +89,13 @@ public class ProjectEditorScreen
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        return ProjectEditorConstants.INSTANCE.ProjectModel(); // TODO needs to be set later, to what ever the artifact name is -Rikkola-
+    public IsWidget getTitle() {
+        return title;
     }
 
     @WorkbenchPartView
     public Widget asWidget() {
         return view.asWidget();
-    }
-
-    @Override
-    public void onKModuleToggleOn() {
-        projectEditorServiceCaller.call(
-                new RemoteCallback<Path>() {
-                    @Override
-                    public void callback(Path pathToKProject) {
-                        pathToKModuleXML = pathToKProject;
-                        setUpKProject(pathToKProject);
-                    }
-                }
-        ).setUpKModuleStructure(pathToPomXML);
     }
 
     @WorkbenchMenu
@@ -157,7 +146,15 @@ public class ProjectEditorScreen
                     new Command() {
                         @Override
                         public void execute() {
-                            onKModuleToggleOn();
+                            projectEditorServiceCaller.call(
+                                    new RemoteCallback<Path>() {
+                                        @Override
+                                        public void callback(Path pathToKProject) {
+                                            pathToKModuleXML = pathToKProject;
+                                            setUpKProject(pathToKProject);
+                                        }
+                                    }
+                            ).setUpKModuleStructure(pathToPomXML);
                         }
                     }
             ));

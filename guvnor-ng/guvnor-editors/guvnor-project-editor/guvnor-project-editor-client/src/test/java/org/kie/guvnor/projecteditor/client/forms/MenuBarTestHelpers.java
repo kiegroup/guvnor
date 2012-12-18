@@ -23,20 +23,22 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 public class MenuBarTestHelpers {
 
     public static void clickFirst(MenuBar menuBar) {
-        for (MenuItem menuItem : menuBar.getItems()) {
-            if (menuItem instanceof DefaultMenuItemCommand) {
-                DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
-                defaultMenuItemCommand.getCommand().execute();
-                break;
-            }
-        }
+        click(menuBar, 1);
     }
 
     public static void clickSecond(MenuBar menuBar) {
+        click(menuBar, 2);
+    }
+
+    public static void clickThird(MenuBar menuBar) {
+        click(menuBar, 3);
+    }
+
+    public static void click(MenuBar menuBar, int itemNumber) {
         int i = 0;
         for (MenuItem menuItem : menuBar.getItems()) {
             if (menuItem instanceof DefaultMenuItemCommand) {
-                if (i == 1) {
+                if (i == itemNumber - 1) {
                     DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
                     defaultMenuItemCommand.getCommand().execute();
                     break;

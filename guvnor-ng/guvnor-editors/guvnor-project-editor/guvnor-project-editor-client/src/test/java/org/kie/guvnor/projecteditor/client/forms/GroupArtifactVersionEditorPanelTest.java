@@ -17,13 +17,15 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.HasText;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class GroupArtifactVersionEditorPanelTest {
 
@@ -31,6 +33,7 @@ public class GroupArtifactVersionEditorPanelTest {
     private GroupArtifactVersionEditorPanelView.Presenter presenter;
     private GroupArtifactVersionEditorPanel panel;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
+    private HasText title;
 
     @Before
     public void setUp() throws Exception {
@@ -38,6 +41,7 @@ public class GroupArtifactVersionEditorPanelTest {
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         panel = new GroupArtifactVersionEditorPanel(projectEditorServiceCaller, view);
         presenter = panel;
+        title = mock(HasText.class);
     }
 
     @Test
@@ -50,10 +54,11 @@ public class GroupArtifactVersionEditorPanelTest {
         GroupArtifactVersionModel gavModel = createTestModel("group", "artifact", "1.1.1");
         projectEditorServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
-        panel.init(path);
+        panel.init(path, title);
 
         verify(view).setGroupId("group");
         verify(view).setArtifactId("artifact");
+        verify(title).setText("artifact");
         verify(view).setVersionId("1.1.1");
     }
 
@@ -62,14 +67,16 @@ public class GroupArtifactVersionEditorPanelTest {
         GroupArtifactVersionModel gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
         projectEditorServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
-        panel.init(path);
+        panel.init(path, title);
 
         verify(view).setGroupId("my.group");
         verify(view).setArtifactId("my.artifact");
+        verify(title).setText("my.artifact");
         verify(view).setVersionId("1.0-SNAPSHOT");
 
         presenter.onGroupIdChange("group2");
         presenter.onArtifactIdChange("artifact2");
+        verify(title).setText("artifact2");
         presenter.onVersionIdChange("2.2.2");
 
         panel.save(new Command() {

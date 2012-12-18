@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.client.messages;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -54,7 +55,7 @@ public class MessageScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Messages";
+        return ProjectEditorConstants.INSTANCE.Problems();
     }
 
     @WorkbenchPartView

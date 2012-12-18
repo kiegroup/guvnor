@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.AttachDetachException;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -35,6 +35,7 @@ public class GroupArtifactVersionEditorPanel
     private final GroupArtifactVersionEditorPanelView view;
     private Path path;
     private GroupArtifactVersionModel model;
+    private HasText title;
 
     @Inject
     public GroupArtifactVersionEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
@@ -44,8 +45,9 @@ public class GroupArtifactVersionEditorPanel
         view.setPresenter(this);
     }
 
-    public void init(Path path) {
+    public void init(Path path, final HasText title) {
         this.path = path;
+        this.title = title;
         projectEditorServiceCaller.call(
                 new RemoteCallback<GroupArtifactVersionModel>() {
                     @Override
@@ -53,6 +55,7 @@ public class GroupArtifactVersionEditorPanel
                         GroupArtifactVersionEditorPanel.this.model = gav;
                         view.setGroupId(gav.getGroupId());
                         view.setArtifactId(gav.getArtifactId());
+                        title.setText(gav.getArtifactId());
                         view.setVersionId(gav.getVersion());
                     }
                 }
@@ -67,6 +70,7 @@ public class GroupArtifactVersionEditorPanel
     @Override
     public void onArtifactIdChange(String artifactId) {
         model.setArtifactId(artifactId);
+        title.setText(artifactId);
     }
 
     @Override

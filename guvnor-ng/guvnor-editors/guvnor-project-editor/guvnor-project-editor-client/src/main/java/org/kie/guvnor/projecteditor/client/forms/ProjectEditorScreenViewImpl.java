@@ -19,48 +19,45 @@ package org.kie.guvnor.projecteditor.client.forms;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 public class ProjectEditorScreenViewImpl
         extends MultiPageEditorView
         implements ProjectEditorScreenView {
 
 
+    private final Event<NotificationEvent> notificationEvent;
 
-    public ProjectEditorScreenViewImpl() {
-
-    }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
-        //TODO -Rikkola-
+    @Inject
+    public ProjectEditorScreenViewImpl(Event<NotificationEvent> notificationEvent) {
+        this.notificationEvent = notificationEvent;
     }
 
     @Override
     public void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel) {
-        addPage(new Page(gavPanel, "pom.xml") {
+        addPage(new Page(gavPanel, ProjectEditorConstants.INSTANCE.PomDotXml()) {
             @Override
             public void onFocus() {
-                //TODO -Rikkola-
             }
 
             @Override
             public void onLostFocus() {
-                //TODO -Rikkola-
             }
         });
     }
 
     @Override
     public void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel) {
-        addPage(new Page(kModuleEditorPanel, "kmodule.xml") {
+        addPage(new Page(kModuleEditorPanel, ProjectEditorConstants.INSTANCE.KModuleDotXml()) {
             @Override
             public void onFocus() {
-                //TODO -Rikkola-
             }
 
             @Override
             public void onLostFocus() {
-                //TODO -Rikkola-
             }
         });
     }
@@ -83,6 +80,6 @@ public class ProjectEditorScreenViewImpl
 
     @Override
     public void showBuildSuccessful() {
-        //TODO -Rikkola-
+        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.BuildSuccessful()));
     }
 }
