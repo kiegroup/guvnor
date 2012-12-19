@@ -8,11 +8,11 @@
     <version>5.5.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-as-uberjar</artifactId>
+  <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor JCR to UberFire VFS migration: Drools as uberjar</name>
-  <description>Repackages Drools 5 jars content as an uberjar for the JCR to UberFire VFS migration in Guvnor 6</description>
+  <name>Guvnor JCR to UberFire VFS migration: Guvnor web application Drools as JAR</name>
+  <description>Repackages Guvnor 5 war content as a jar for the JCR to UberFire VFS migration in Guvnor 6</description>
 
   <build>
     <plugins>
@@ -29,17 +29,8 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.drools</groupId>
-                  <artifactId>knowledge-api</artifactId>
-                  <version>${project.version}</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.drools</groupId>
-                  <artifactId>drools-core</artifactId>
-                  <version>${project.version}</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.drools</groupId>
-                  <artifactId>drools-compiler</artifactId>
+                  <artifactId>guvnor-webapp-drools</artifactId>
+                  <type>war</type>
                   <version>${project.version}</version>
                 </artifactItem>
               </artifactItems>
@@ -61,7 +52,7 @@
         </executions>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-drools-as-uberjar.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-war-as-jar.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>

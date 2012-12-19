@@ -15,8 +15,8 @@
   <description>Repackages Guvnor 5 content for the JCR to UberFire VFS migration in Guvnor 6</description>
 
   <modules>
-    <module>drools-as-uberjar</module>
-    <module>guvnor-webapp-drools-as-jar</module>
+    <module>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</module>
+    <module>guvnor-jcr2vfs-migration-webapp-drools-as-jar</module>
   </modules>
 
 </project>
