@@ -164,6 +164,8 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
             public void update(int index,
                     JarListPageRow row,
                                String value) {
+                JarDetailEditor editor = new JarDetailEditor();
+                editor.show();
                  //TODO: Select JAR from list to see information on it:-
                  //                maven info,
                  //                artifact information,
