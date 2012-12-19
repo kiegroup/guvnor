@@ -63,6 +63,16 @@ profile in pom.xml to use that. -->
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>FileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
+  </servlet-mapping>
+  
+    
   <listener>
     <!--
 

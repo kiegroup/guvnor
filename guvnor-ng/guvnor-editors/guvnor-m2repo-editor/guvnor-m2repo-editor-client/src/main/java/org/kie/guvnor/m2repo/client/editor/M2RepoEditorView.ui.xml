@@ -21,7 +21,9 @@
 
   <gwt:HTMLPanel>
     <div style="margin-bottom:20px;">
-      <m2repo:JarListPagedTable ui:field="jarListPagedTable"></m2repo:JarListPagedTable>
+              <gwt:ScrollPanel ui:field="sclTreePanel" width="100%" height="150px">
+                    
+              </gwt:ScrollPanel>
     </div>
   </gwt:HTMLPanel>
 

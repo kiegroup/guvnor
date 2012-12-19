@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.m2repo.client.editor;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,15 +29,21 @@ import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.uberfire.client.common.LoadingPopup;
 
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
@@ -58,17 +59,17 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         UiBinder<Widget, JarListPagedTable> {
     }
 
-    @UiField()
-    protected Button                             uploadJarButton;
+/*    @UiField()
+    protected Button                             uploadJarButton;*/
 
     @UiField()
     protected Button                             deleteSelectedJarButton;
 
-/*    @UiField()
-    protected Button                             refreshButton;*/
+    @UiField()
+    protected Button                             refreshButton;
     
+   
     private static JarListPagedTableBinder uiBinder  = GWT.create( JarListPagedTableBinder.class );
-
 
     // Other stuff
     private static final int                     PAGE_SIZE = 10;    
@@ -85,12 +86,12 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                 String filters = null;
                 
 
-                List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
+/*                List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
                 jarListPageRow.setPath("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
                 jarListPageRow.setLastModified(new Date());
-                tradeRatePageRowList.add(jarListPageRow);
+                tradeRatePageRowList.add(jarListPageRow);*/
                 
                 updateRowCount( 1, true );
                 //WONT WORK! Problem with List<JarListPageRow>?
@@ -149,6 +150,25 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                                                                   "LastModified",
                                                                                   lastModifiedColumn ),
                                 true );
+        
+        // Add "Download" button column
+        Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+            public String getValue(JarListPageRow row) {
+                return "Download";
+            }
+        };
+        downloadColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            public void update(int index,
+                    JarListPageRow row,
+                               String value) {
+                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + "uuid",
+                        "downloading",
+                        "resizable=no,scrollbars=yes,status=no" );
+            }
+        } );
+        columnPicker.addColumn( downloadColumn,
+                new TextHeader( "Download" ),
+                true );       
 
      }
 
@@ -157,19 +177,19 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         return uiBinder.createAndBindUi( this );
     }
 
-    @UiHandler("uploadJarButton")
+/*    @UiHandler("uploadJarButton")
     void uploadJar(ClickEvent e) {
 
-    }
+    }*/
 
     @UiHandler("deleteSelectedJarButton")
     void deleteSelectedJar(ClickEvent e) {
 
-    }
-    
-/*    @UiHandler("refreshButton")
+    }    
+
+    @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
 
-    }*/
-
+    }
+    
 }
