@@ -16,6 +16,12 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
+      <version>${jcrGuvnor.version}</version>
+      <classifier>jars-as-uberjar</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
       <version>${jcrGuvnor.version}</version>
     </dependency>
@@ -52,9 +58,9 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-drools-as-jar</artifactId>
+      <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
       <version>${jcrGuvnor.version}</version>
-      <classifier>as-jar</classifier>
+      <classifier>war-as-jar</classifier>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
