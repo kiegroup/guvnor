@@ -24,7 +24,8 @@
     <gwt:HorizontalPanel>
 <!--       <gwt:Button ui:field="uploadJarButton" text='Upload jar'/> -->
       <gwt:Button ui:field="deleteSelectedJarButton" text='Delete selected jar'/>
-      <gwt:Button ui:field="refreshButton" text='refresh'/>
+      <gwt:Button ui:field="refreshButton" text='Refresh'/>
+      <gwt:Button ui:field="auditButton" text='ViewAuditLog'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/> 
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/> 

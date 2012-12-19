@@ -68,7 +68,9 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     @UiField()
     protected Button                             refreshButton;
     
-   
+    @UiField()
+    protected Button                             auditButton;
+    
     private static JarListPagedTableBinder uiBinder  = GWT.create( JarListPagedTableBinder.class );
 
     // Other stuff
@@ -151,6 +153,28 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                                                                   lastModifiedColumn ),
                                 true );
         
+
+        // Add "Download" button column
+        Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+            public String getValue(JarListPageRow row) {
+                return "Open";
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            public void update(int index,
+                    JarListPageRow row,
+                               String value) {
+                 //TODO: Select JAR from list to see information on it:-
+                 //                maven info,
+                 //                artifact information,
+                 //                maven dependency tree
+            }
+        } );
+        columnPicker.addColumn( openColumn,
+                new TextHeader( "Open" ),
+                true ); 
+        
+        
         // Add "Download" button column
         Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
             public String getValue(JarListPageRow row) {
@@ -192,4 +216,8 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
     }
     
+    @UiHandler("auditButton")
+    void viewAuditLog(ClickEvent e) {
+
+    }   
 }
