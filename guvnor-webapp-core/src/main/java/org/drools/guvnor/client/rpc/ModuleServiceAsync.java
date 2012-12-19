@@ -31,7 +31,6 @@ public interface ModuleServiceAsync {
     public void loadModule(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.Module> cb);
     public void validateModule(org.drools.guvnor.client.rpc.Module p0, AsyncCallback<org.drools.guvnor.client.rpc.ValidatedResponse> cb);
     public void saveModule(org.drools.guvnor.client.rpc.Module p0, AsyncCallback cb);
-    public void createModuleSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3, AsyncCallback cb);
     public void copyOrRemoveSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3, AsyncCallback cb);
     public void buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void buildModuleSource(java.lang.String p0, AsyncCallback<java.lang.String> cb);
@@ -52,5 +51,30 @@ public interface ModuleServiceAsync {
     public void updateDependency(String uuid, String dependencyPath, AsyncCallback cb);
     public void getDependencies(String uuid, AsyncCallback<java.lang.String[]> cb);
     public void loadSnapshotInfo(String packageName, String snapshotName, AsyncCallback<SnapshotInfo> async);
-    public void createModuleSnapshot(java.lang.String p0, java.lang.String p1,	boolean p2, java.lang.String p3, boolean p4, AsyncCallback cb);
+     public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector, AsyncCallback<java.lang.Void> cb)  ;
+    
+   public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment,
+                                     boolean checkIsBinaryUpToDate,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector, AsyncCallback<java.lang.Void> cb) ;
 }

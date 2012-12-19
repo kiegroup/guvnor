@@ -347,13 +347,29 @@ public class RepositoryModuleService
     public void createModuleSnapshot(String moduleName,
                                      String snapshotName,
                                      boolean replaceExisting,
-                                     String comment) throws SerializationException {
+                                     String comment,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
         repositoryModuleOperations.createModuleSnapshot(moduleName,
                 snapshotName,
                 replaceExisting,
                 comment,
-                false);
+                false,
+                buildMode,
+                statusOperator,
+                statusValue,
+                enableStatusSelector,
+                categoryOperator,
+                category,
+                enableCategorySelector,
+                customSelector);
 
     }
     
@@ -363,13 +379,29 @@ public class RepositoryModuleService
                                      String snapshotName,
                                      boolean replaceExisting,
                                      String comment,
-                                     boolean checkIsBinaryUpToDate) throws SerializationException {
+                                     boolean checkIsBinaryUpToDate,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
         repositoryModuleOperations.createModuleSnapshot(moduleName,
                 snapshotName,
                 replaceExisting,
                 comment,
-                checkIsBinaryUpToDate);
+                checkIsBinaryUpToDate,
+                buildMode,
+                statusOperator,
+                statusValue,
+                enableStatusSelector,
+                categoryOperator,
+                category,
+                enableCategorySelector,
+                customSelector);
     }
     
     @WebRemote

@@ -475,18 +475,41 @@ public class RepositoryModuleOperations {
     public void createModuleSnapshot(String moduleName,
             String snapshotName,
             boolean replaceExisting,
-            String comment) throws SerializationException {
-    	createModuleSnapshot(moduleName, snapshotName, replaceExisting, comment, false);
+            String comment,
+            String buildMode,
+            final String statusOperator,
+            final String statusValue,
+            final boolean enableStatusSelector,
+            final String categoryOperator,
+            final String category,
+            final boolean enableCategorySelector,
+            final String customSelector) throws SerializationException {
+    	createModuleSnapshot(moduleName, snapshotName, replaceExisting, comment, false,buildMode,statusOperator,statusValue,enableStatusSelector,categoryOperator,category,enableCategorySelector,customSelector);
     }
     
     public void createModuleSnapshot(String moduleName,
                                          String snapshotName,
                                          boolean replaceExisting,
                                          String comment, 
-                                         boolean checkIsBinaryUpToDate) throws SerializationException {
+                                         boolean checkIsBinaryUpToDate,
+                                         String buildMode,
+                                         final String statusOperator,
+                                         final String statusValue,
+                                         final boolean enableStatusSelector,
+                                         final String categoryOperator,
+                                         final String category,
+                                         final boolean enableCategorySelector,
+                                         final String customSelector) throws SerializationException {
 
         log.info( "USER:" + getCurrentUserName() + " CREATING MODULE SNAPSHOT for module: [" + moduleName + "] snapshot name: [" + snapshotName );
-        
+        ModuleAssemblerConfiguration assemblerConfiguration = createConfiguration( buildMode,
+                            statusOperator,
+                            statusValue,
+                            enableStatusSelector,
+                            categoryOperator,
+                            category,
+                            enableCategorySelector,
+                            customSelector );
         ModuleItem p = rulesRepository.loadModule(moduleName);
         if (checkIsBinaryUpToDate && !p.isBinaryUpToDate()) {
         	throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
@@ -502,6 +525,12 @@ public class RepositoryModuleOperations {
                 snapshotName );
         ModuleItem item = rulesRepository.loadModuleSnapshot( moduleName,
                 snapshotName );
+       ModuleAssembler moduleAssembler = ModuleAssemblerManager.getModuleAssembler(item.getFormat(), item, assemblerConfiguration);
+       List<AssetItem>  listAssets= moduleAssembler.getAllNotToIncludeAssets();
+       for (AssetItem itemToDelete : listAssets){
+           itemToDelete.remove();
+       }
+        
         item.updateCheckinComment( comment );
         rulesRepository.save();
 

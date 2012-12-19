@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.builder;
 
 import java.util.List;
+import org.drools.repository.AssetItem;
 
 import org.drools.repository.ModuleItem;
 
@@ -45,4 +46,5 @@ public interface ModuleAssembler {
     public boolean hasErrors();
     
     public List<ContentAssemblyError> getErrors();
+    public List<AssetItem> getAllNotToIncludeAssets();
 }
