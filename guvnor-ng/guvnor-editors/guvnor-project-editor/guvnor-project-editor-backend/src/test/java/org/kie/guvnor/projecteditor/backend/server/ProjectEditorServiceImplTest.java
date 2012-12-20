@@ -19,6 +19,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
+import org.kie.guvnor.commons.service.builder.BuildService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -44,7 +45,8 @@ public class ProjectEditorServiceImplTest {
         kProjectEditorContentHandler = mock(KModuleEditorContentHandler.class);
         groupArtifactVersionModelContentHandler = mock(GroupArtifactVersionModelContentHandler.class);
         messagesEvent = mock(Event.class);
-        service = new ProjectEditorServiceImpl(ioService, paths, messagesEvent, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler);
+        BuildService buildService = mock(BuildService.class);
+        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, groupArtifactVersionModelContentHandler);
     }
 
     @Test

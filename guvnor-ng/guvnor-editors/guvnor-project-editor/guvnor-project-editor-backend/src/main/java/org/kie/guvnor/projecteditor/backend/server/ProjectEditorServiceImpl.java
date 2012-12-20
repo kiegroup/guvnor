@@ -19,9 +19,11 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.guvnor.commons.service.builder.BuildService;
+import org.kie.guvnor.commons.service.builder.Builder;
+import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -44,6 +46,7 @@ public class ProjectEditorServiceImpl
     private KModuleEditorContentHandler moduleEditorContentHandler;
     private GroupArtifactVersionModelContentHandler gavModelContentHandler;
     private Event<Messages> messagesEvent;
+    private BuildService buildService;
 
 
     public ProjectEditorServiceImpl() {
@@ -53,11 +56,13 @@ public class ProjectEditorServiceImpl
     @Inject
     public ProjectEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
                                     final Paths paths,
+                                    final BuildService buildService,
                                     final Event<Messages> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final GroupArtifactVersionModelContentHandler gavModelContentHandler) {
         this.ioService = ioService;
         this.paths = paths;
+        this.buildService = buildService;
         this.messagesEvent = messagesEvent;
         this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.gavModelContentHandler = gavModelContentHandler;
@@ -113,9 +118,7 @@ public class ProjectEditorServiceImpl
 
     @Override
     public void build(Path pathToKModuleXML) {
-
-        Builder builder = new Builder(getPomDirectoryPath(pathToKModuleXML), loadGav(pathToKModuleXML), ioService, paths, messagesEvent);
-
+        Builder builder = buildService.getBuilder(loadGav(pathToKModuleXML).getArtifactId(), getPomDirectoryPath(pathToKModuleXML));
         builder.build();
     }
 

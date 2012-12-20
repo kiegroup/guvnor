@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.backend.server;
+package org.kie.guvnor.builder;
 
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
@@ -23,14 +23,17 @@ import org.kie.builder.Message;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
+import org.kie.guvnor.commons.service.builder.Builder;
+import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
 
 import javax.enterprise.event.Event;
 
-public class Builder {
+public class BuilderImpl
+        implements Builder {
 
 
     private final KieBuilder kieBuilder;
@@ -39,19 +42,23 @@ public class Builder {
     private final IOService ioService;
     private final Path moduleDirectory;
     private final Paths paths;
-    private final GroupArtifactVersionModel gav;
+    private final String artifactId;
     private final Event<Messages> messagesEvent;
+    private final static String RESOURCE_PATH = "src/main/resources";
+    private final static String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
+    private final SourceServices sourceServices;
 
-
-    public Builder(Path moduleDirectory,
-                   GroupArtifactVersionModel gav,
-                   IOService ioService,
-                   Paths paths,
-                   Event<Messages> messagesEvent) {
+    public BuilderImpl(Path moduleDirectory,
+                       String artifactId,
+                       IOService ioService,
+                       Paths paths,
+                       SourceServicesImpl sourceServices,
+                       Event<Messages> messagesEvent) {
         this.moduleDirectory = moduleDirectory;
-        this.gav = gav;
+        this.artifactId = artifactId;
         this.ioService = ioService;
         this.paths = paths;
+        this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
 
         KieServices kieServices = KieServices.Factory.get();
@@ -70,27 +77,37 @@ public class Builder {
         kieBuilder.buildAll();
 
         Messages messages = new Messages();
-        messages.setArtifactID(gav.getArtifactId());
+        messages.setArtifactID(artifactId);
 
         for (Message message : kieBuilder.getResults().getMessages()) {
-            org.kie.guvnor.projecteditor.model.builder.Message m = new org.kie.guvnor.projecteditor.model.builder.Message();
+            org.kie.guvnor.commons.service.builder.model.Message m = new org.kie.guvnor.commons.service.builder.model.Message();
             switch (message.getLevel()) {
                 case ERROR:
-                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.ERROR);
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR);
                     break;
                 case WARNING:
-                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.WARNING);
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING);
                     break;
                 case INFO:
-                    m.setLevel(org.kie.guvnor.projecteditor.model.builder.Message.Level.INFO);
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.INFO);
                     break;
             }
 
             m.setId(message.getId());
-            m.setArtifactID(gav.getArtifactId());
+            m.setArtifactID(artifactId);
             m.setLine(message.getLine());
             if (message.getPath() != null && !message.getPath().isEmpty()) {
-                m.setPath(paths.convert(moduleDirectory.resolve(message.getPath())));
+                try {
+                    String pathToFile = RESOURCE_PATH + "/" + message.getPath();
+                    System.out.println("Path to error file = " + pathToFile);
+                    if (message.getPath().equals("pom.xml")) {
+                        m.setPath(paths.convert(moduleDirectory.resolve(message.getPath())));
+                    } else {
+                        m.setPath(paths.convert(moduleDirectory.resolve(pathToFile)));
+                    }
+                } catch (NoSuchFileException e) {
+                    // Just to be safe.
+                }
             }
             m.setColumn(message.getColumn());
             m.setText(message.getText());
@@ -106,14 +123,30 @@ public class Builder {
             if (Files.isDirectory(path)) {
                 visitPaths(Files.newDirectoryStream(path));
             } else {
-                if (path.toUri().toString().endsWith("src/main/resources/META-INF/kmodule.xml")) {
+                if (path.toUri().toString().endsWith(KMODULE_PATH)) {
+
                     kieFileSystem.write("META-INF/kmodule.xml", ioService.readAllString(path));
-                } else {
-                    String pathAsString = stripPath(projectName, path);
-                    kieFileSystem.write(pathAsString, ioService.readAllString(path));
+
+                } else if (path.toUri().toString().toLowerCase().endsWith(".drl")) {
+
+                    kieFileSystem.write(stripPath(projectName, path), ioService.readAllString(path));
+
+                } else if (sourceServices.hasServiceFor(getFileExtension(path))) {
+
+                    kieFileSystem.write(stripPath(projectName, path), sourceServices.getServiceFor("gdst").toDRL(path));
+
                 }
             }
         }
+    }
+
+    private String getFileExtension(Path path) {
+        // TODO: Just gdst for now -Rikkola-
+
+        if (path.toUri().toString().endsWith(".gdst")) {
+            return "gdst";
+        }
+        return "TRALALLLALLLAAAA";
     }
 
     private String stripPath(String projectName, org.kie.commons.java.nio.file.Path path) {

@@ -18,8 +18,8 @@ package org.kie.guvnor.projecteditor.client.messages;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.projecteditor.model.builder.Message;
-import org.kie.guvnor.projecteditor.model.builder.Messages;
+import org.kie.guvnor.commons.service.builder.model.Message;
+import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.uberfire.client.mvp.PlaceManager;
 
 import javax.enterprise.context.ApplicationScoped;

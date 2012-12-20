@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.model.builder;
+package org.kie.guvnor.commons.service.builder.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
