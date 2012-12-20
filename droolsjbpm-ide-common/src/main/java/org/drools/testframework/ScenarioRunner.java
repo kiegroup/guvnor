@@ -221,7 +221,7 @@ public class ScenarioRunner {
                 long time = System.currentTimeMillis();
                 this.workingMemory.fireAllRules( listener.getAgendaFilter( ruleList,
                                                                            scenario.isInclusive() ),
-                                                 scenario.getMaxRuleFirings() );
+                                                                           getMaxFireCount());
                 executionTrace.setExecutionTimeResult( System.currentTimeMillis() - time );
                 executionTrace.setNumberOfRulesFired( listener.totalFires );
                 executionTrace.setRulesFired( listener.getRulesFiredSummary() );
@@ -242,6 +242,15 @@ public class ScenarioRunner {
         }
 
         doPopulate( toPopulate );
+    }
+
+    private int getMaxFireCount() {
+        String property = System.getProperty("guvnor.testscenario.maxrulefirings");
+        if (property == null) {
+            return scenario.getMaxRuleFirings();
+        } else {
+            return Integer.parseInt(property);
+        }
     }
 
     private void doPopulate(List<Populate> toPopulate) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {

@@ -27,7 +27,8 @@ public class ApplicationPreferencesInitializer {
         setProperty(preferences, ApplicationPreferences.DATE_FORMAT);
         setProperty(preferences, ApplicationPreferences.DEFAULT_LANGUAGE);
         setProperty(preferences, ApplicationPreferences.DEFAULT_COUNTRY);
-        
+        setProperty(preferences, ApplicationPreferences.GUVNOR_TESTSCENARIO_MAXRULEFIRINGS);
+
         setProperty(preferences, ApplicationPreferences.DESIGNER_URL);
         setProperty(preferences, ApplicationPreferences.DESIGNER_PROFILE);
         setProperty(preferences, ApplicationPreferences.DESIGNER_CONTEXT);
