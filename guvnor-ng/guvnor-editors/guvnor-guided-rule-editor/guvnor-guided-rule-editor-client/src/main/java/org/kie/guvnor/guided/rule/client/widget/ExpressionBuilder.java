@@ -96,7 +96,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( this.expression.isEmpty() ) {
             this.isFactTypeKnown = true;
         } else {
-            this.isFactTypeKnown = getModeller().getSuggestionCompletions().containsFactType( getModeller().getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+            this.isFactTypeKnown = getModeller().getSuggestionCompletions().isFactTypeRecognized( getModeller().getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
         }
 
         if ( readOnly == null ) {
@@ -382,8 +382,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         String factName = getCompletionEngine().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            List<String> methodNames = getCompletionEngine().getMethodFullNames( factName,
-                                                                                 0 );
+            List<String> methodNames = getCompletionEngine().getMethodNames( factName,
+                                                                             0 );
 
             for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
 

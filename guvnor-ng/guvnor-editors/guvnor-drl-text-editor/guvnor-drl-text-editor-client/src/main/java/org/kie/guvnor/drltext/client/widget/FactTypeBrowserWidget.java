@@ -99,7 +99,7 @@ public class FactTypeBrowserWidget
                 it.setUserObject( type + "( )" );
                 tree.addItem( it );
 
-                String[] fields = (String[]) dataModel.getFields( type );
+                String[] fields = dataModel.getFieldCompletions( type );
                 if ( fields != null ) {
                     for ( String field : fields ) {
                         TreeItem fi = new TreeItem();

@@ -30,10 +30,10 @@ public interface DataModelOracle {
 
     String[] getFactTypes();
 
-    String[] getFields( final String typeName );
-
     String[] getEnumValues( final String factType,
                             final String factField );
+
+    boolean hasEnums( String type );
 
     boolean hasEnums( final String factType,
                       final String factField );
@@ -42,11 +42,14 @@ public interface DataModelOracle {
                              final String factField,
                              final String field );
 
+    DropDownData getEnums( final String type,
+                           final String field );
+
     DropDownData getEnums( String factType,
                            String factField,
                            Map<String, String> currentValueMap );
 
-    boolean containsFactType( String lhsBindingType );
+    boolean isFactTypeRecognized( String factType );
 
     boolean isFactTypeAnEvent( String factType );
 
@@ -60,8 +63,10 @@ public interface DataModelOracle {
 
     String getFactNameFromType( String classType );
 
-    List<String> getMethodFullNames( String factName,
-                                     int i );
+    List<String> getMethodNames( String factType );
+
+    List<String> getMethodNames( String factName,
+                                 int i );
 
     String[] getGlobalVariables();
 
@@ -73,8 +78,6 @@ public interface DataModelOracle {
 
     String getFieldType( String variableClass,
                          String fieldName );
-
-    List<String> getMethodNames( String factType );
 
     Collection<? extends String> getMethodParams( String variableClass,
                                                   String methodNameWithParams );
@@ -98,10 +101,5 @@ public interface DataModelOracle {
 
     String getFieldClassName( String factName,
                               String fieldName );
-
-    void setFieldsForTypes( Map<String, ModelField[]> fieldsForType );
-
-    void putDataEnumList( String name,
-                          String[] value );
 
 }

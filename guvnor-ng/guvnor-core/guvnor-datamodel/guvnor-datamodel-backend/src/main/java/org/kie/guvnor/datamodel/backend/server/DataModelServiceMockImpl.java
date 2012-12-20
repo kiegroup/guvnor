@@ -16,12 +16,16 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.guvnor.datamodel.model.DataModelBuilder;
+import org.kie.guvnor.datamodel.model.DefaultDataModel;
+import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.datamodel.model.MockDataModel;
 import org.uberfire.backend.vfs.Path;
 
 @Service
@@ -31,6 +35,32 @@ public class DataModelServiceMockImpl
 
     @Override
     public DataModelOracle getDataModel( final Path project ) {
-        return new MockDataModel();
+        return makeMockModel();
+    }
+
+    private DataModelOracle makeMockModel() {
+        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+                .addFactField( "Driver",
+                               new ModelField( "age",
+                                               Integer.class.getName(),
+                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                               DataType.TYPE_NUMERIC_INTEGER ) )
+                .addFactField( "Driver",
+                               new ModelField( "name",
+                                               String.class.getName(),
+                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                               DataType.TYPE_STRING ) )
+                .addFactField( "Driver",
+                               new ModelField( "date",
+                                               Date.class.getName(),
+                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                               DataType.TYPE_DATE ) )
+                .addFactField( "Driver",
+                               new ModelField( "approved",
+                                               Boolean.class.getName(),
+                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                               DataType.TYPE_BOOLEAN ) )
+                .build();
+        return oracle;
     }
 }

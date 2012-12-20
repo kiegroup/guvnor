@@ -243,7 +243,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
-            this.isFactTypeKnown = this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.getFactPattern().getFactType() );
+            this.isFactTypeKnown = this.getModeller().getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() );
             this.readOnly = !this.isFactTypeKnown;
         }
     }

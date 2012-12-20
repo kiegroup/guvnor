@@ -136,7 +136,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.isAll0WithLabel = isAll0WithLabel;
 
         //if readOnly == null, the RO attribute is calculated.
-        this.isFactTypeKnown = mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
+        this.isFactTypeKnown = mod.getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactType() );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {

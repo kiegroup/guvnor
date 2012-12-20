@@ -22,21 +22,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
- *
+ * An Oracle for all things "CEP" related
  */
+@Portable
 public class CEPOracle {
 
-    private static final String[] WINDOW_CEP_OPERATORS = new String[]{ "over window:time", "over window:length" };
+    //Standard annotations
+    public static final String ANNOTATION_ROLE = "role";
+    public static final String ANNOTATION_ROLE_EVENT = "event";
 
-    private static final String[] SIMPLE_CEP_OPERATORS = new String[]{ "after", "before", "coincides" };
+    //CEP Operators
+    private static final String[] WINDOW_CEP_OPERATORS = new String[]{
+            "over window:time",
+            "over window:length" };
 
-    private static final String[] COMPLEX_CEP_OPERATORS = new String[]{ "during", "finishes", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby" };
+    private static final String[] SIMPLE_CEP_OPERATORS = new String[]{
+            "after",
+            "before",
+            "coincides" };
 
-    private static final String[] SIMPLE_CEP_CONNECTIVES = new String[]{ "|| after", "|| before", "|| coincides", "&& after", "&& before", "&& coincides" };
+    private static final String[] COMPLEX_CEP_OPERATORS = new String[]{
+            "during",
+            "finishes",
+            "finishedby",
+            "includes",
+            "meets",
+            "metby",
+            "overlaps",
+            "overlappedby",
+            "starts",
+            "startedby" };
 
-    private static final String[] COMPLEX_CEP_CONNECTIVES = new String[]{ "|| during", "|| finishes", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
-            "&& during", "&& finishes", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby" };
+    private static final String[] SIMPLE_CEP_CONNECTIVES = new String[]{
+            "|| after",
+            "|| before",
+            "|| coincides",
+            "&& after",
+            "&& before",
+            "&& coincides" };
+
+    private static final String[] COMPLEX_CEP_CONNECTIVES = new String[]{
+            "|| during",
+            "|| finishes",
+            "|| finishedby",
+            "|| includes",
+            "|| meets",
+            "|| metby",
+            "|| overlaps",
+            "|| overlappedby",
+            "|| starts",
+            "|| startedby",
+            "&& during",
+            "&& finishes",
+            "&& finishedby",
+            "&& includes",
+            "&& meets",
+            "&& metby",
+            "&& overlaps",
+            "&& overlappedby",
+            "&& starts",
+            "&& startedby" };
 
     private static final Map<String, List<Integer>> CEP_OPERATORS_PARAMETERS = new HashMap<String, List<Integer>>();
 
@@ -74,15 +122,15 @@ public class CEPOracle {
      * @param operator
      * @return True if the operator is a CEP operator
      */
-    public static boolean isCEPOperator( String operator ) {
+    public static boolean isCEPOperator( final String operator ) {
         if ( operator == null ) {
             return false;
         }
 
-        String[] operators = joinArrays( SIMPLE_CEP_OPERATORS,
-                                         COMPLEX_CEP_OPERATORS,
-                                         SIMPLE_CEP_CONNECTIVES,
-                                         COMPLEX_CEP_CONNECTIVES );
+        String[] operators = OracleUtils.joinArrays( SIMPLE_CEP_OPERATORS,
+                                                     COMPLEX_CEP_OPERATORS,
+                                                     SIMPLE_CEP_CONNECTIVES,
+                                                     COMPLEX_CEP_CONNECTIVES );
 
         for ( int i = 0; i < operators.length; i++ ) {
             if ( operator.equals( operators[ i ] ) ) {
@@ -90,32 +138,6 @@ public class CEPOracle {
             }
         }
         return false;
-    }
-
-    //Join an arbitrary number of arrays together
-    private static String[] joinArrays( String[] first,
-                                        String[]... others ) {
-        int totalLength = first.length;
-        for ( String[] other : others ) {
-            totalLength = totalLength + other.length;
-        }
-        String[] result = new String[ totalLength ];
-
-        System.arraycopy( first,
-                          0,
-                          result,
-                          0,
-                          first.length );
-        int offset = first.length;
-        for ( String[] other : others ) {
-            System.arraycopy( other,
-                              0,
-                              result,
-                              offset,
-                              other.length );
-            offset = offset + other.length;
-        }
-        return result;
     }
 
     /**
@@ -141,6 +163,32 @@ public class CEPOracle {
     }
 
     /**
+     * Return a list of operators applicable to CEP windows
+     * @return
+     */
+    public static List<String> getCEPWindowOperators() {
+        return Arrays.asList( WINDOW_CEP_OPERATORS );
+    }
+
+    /**
+     * Check whether an operator is a CEP 'window' operator
+     * @param operator
+     * @return True if the operator is a CEP 'window' operator
+     */
+    public static boolean isCEPWindowOperator( String operator ) {
+        if ( operator == null ) {
+            return false;
+        }
+
+        for ( String cepWindowOperator : WINDOW_CEP_OPERATORS ) {
+            if ( operator.equals( cepWindowOperator ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if the operator is 'window over:time'
      * @param operator
      * @return if
@@ -162,14 +210,6 @@ public class CEPOracle {
             return false;
         }
         return WINDOW_CEP_OPERATORS[ 1 ].equals( operator );
-    }
-
-    /**
-     * Return a list of operators applicable to CEP windows
-     * @return
-     */
-    public static List<String> getCEPWindowOperators() {
-        return Arrays.asList( WINDOW_CEP_OPERATORS );
     }
 
 }

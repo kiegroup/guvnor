@@ -101,7 +101,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             ErrorPopup.showMessage( Constants.INSTANCE.CouldNotFindTheTypeForVariable0( set.getVariable() ) );
         }
 
-        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
+        this.isFactTypeKnown = completions.isFactTypeRecognized( this.variableClass );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {

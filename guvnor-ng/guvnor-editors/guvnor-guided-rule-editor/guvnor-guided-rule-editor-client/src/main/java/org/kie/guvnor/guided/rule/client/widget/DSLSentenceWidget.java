@@ -314,7 +314,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         if ( !editorReadOnly ) {
             //if no one is forcing us to be in readonly mode, let's see
             //if there is a constraint for the fact type of the custom form
-            editorReadOnly = !this.getModeller().getSuggestionCompletions().containsFactType( factType );
+            editorReadOnly = !this.getModeller().getSuggestionCompletions().isFactTypeRecognized( factType );
         }
 
         if ( customFormConfiguration != null ) {

@@ -16,33 +16,36 @@
 
 package org.kie.guvnor.datamodel.oracle;
 
-public interface DataType {
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+/**
+ * An Oracle for all things "data type" related
+ */
+@Portable
+public class DataType {
 
     /**
      * These are the explicit types supported
      */
-    public static final String TYPE_COLLECTION         = "Collection";
-    public static final String TYPE_COMPARABLE         = "Comparable";
-    public static final String TYPE_STRING             = "String";
-    public static final String TYPE_NUMERIC            = "Numeric";
+    public static final String TYPE_COLLECTION = "Collection";
+    public static final String TYPE_COMPARABLE = "Comparable";
+    public static final String TYPE_STRING = "String";
+    public static final String TYPE_NUMERIC = "Numeric";
     public static final String TYPE_NUMERIC_BIGDECIMAL = "BigDecimal";
     public static final String TYPE_NUMERIC_BIGINTEGER = "BigInteger";
-    public static final String TYPE_NUMERIC_BYTE       = "Byte";
-    public static final String TYPE_NUMERIC_DOUBLE     = "Double";
-    public static final String TYPE_NUMERIC_FLOAT      = "Float";
-    public static final String TYPE_NUMERIC_INTEGER    = "Integer";
-    public static final String TYPE_NUMERIC_LONG       = "Long";
-    public static final String TYPE_NUMERIC_SHORT      = "Short";
-    public static final String TYPE_BOOLEAN            = "Boolean";
-    public static final String TYPE_DATE               = "Date";
-    public static final String TYPE_OBJECT             = "Object";                                                                                                                                                      // for all other unknown
-    public static final String TYPE_FINAL_OBJECT       = "FinalObject";                                                                                                                                                 // for all other unknown
-    public static final String TYPE_THIS               = "this";
+    public static final String TYPE_NUMERIC_BYTE = "Byte";
+    public static final String TYPE_NUMERIC_DOUBLE = "Double";
+    public static final String TYPE_NUMERIC_FLOAT = "Float";
+    public static final String TYPE_NUMERIC_INTEGER = "Integer";
+    public static final String TYPE_NUMERIC_LONG = "Long";
+    public static final String TYPE_NUMERIC_SHORT = "Short";
+    public static final String TYPE_BOOLEAN = "Boolean";
+    public static final String TYPE_DATE = "Date";
+    public static final String TYPE_OBJECT = "Object";                                                                                                                                                      // for all other unknown
+    public static final String TYPE_FINAL_OBJECT = "FinalObject";                                                                                                                                                 // for all other unknown
+    public static final String TYPE_THIS = "this";
 
-    //Standard annotations
-    public static final String ANNOTATION_ROLE       = "role";
-    public static final String ANNOTATION_ROLE_EVENT = "event";
-
+    @Portable
     public enum DataTypes {
         STRING,
         NUMERIC,
@@ -56,6 +59,27 @@ public interface DataType {
         NUMERIC_SHORT,
         DATE,
         BOOLEAN
+    }
+
+    public static boolean isNumeric( final String type ) {
+        if ( type.equals( TYPE_NUMERIC_BIGDECIMAL ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_BIGINTEGER ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_BYTE ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_DOUBLE ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_FLOAT ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_INTEGER ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_LONG ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_SHORT ) ) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -88,7 +88,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
                         continue;
                     }
 
-                    if ( !completions.containsFactType( p.getFactType() ) ) {
+                    if ( !completions.isFactTypeRecognized( p.getFactType() ) ) {
                         this.readOnly = true;
                         this.isFactTypeKnown = false;
                         break;

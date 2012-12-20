@@ -43,7 +43,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         layout.setWidth( "100%" );
         layout.setStyleName( "model-builderInner-Background" );
 
-        this.isFactTypeKnown = modeller.getSuggestionCompletions().containsFactType( modeller.getModel().getLHSBindingType( model.getVariableName() ) );
+        this.isFactTypeKnown = modeller.getSuggestionCompletions().isFactTypeRecognized( modeller.getModel().getLHSBindingType( model.getVariableName() ) );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {

@@ -136,7 +136,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
         }
 
-        this.isFactTypeKnown = completions.containsFactType( this.variableClass );
+        this.isFactTypeKnown = completions.isFactTypeRecognized( this.variableClass );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.guvnor.datamodel.model;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+/**
+ * An annotation on a Fact type
+ */
 @Portable
-public enum FieldAccessorsAndMutators {
+public class ModelAnnotation {
 
-    MUTATOR,
-    ACCESSOR,
-    BOTH;
+    private String annotationName;
+    private Map<String, String> annotationValues = new HashMap<String, String>();
 
-    public static boolean compare( final FieldAccessorsAndMutators field1,
-                                   final FieldAccessorsAndMutators field2 ) {
+    public String getAnnotationName() {
+        return annotationName;
+    }
 
-        if ( field1 == field2 ) {
-            return true;
-        } else if ( field1 == BOTH || field2 == BOTH ) {
-            return true;
-        } else {
-            return false;
-        }
+    public void setAnnotationName( String annotationName ) {
+        this.annotationName = annotationName;
+    }
+
+    public Map<String, String> getAnnotationValues() {
+        return annotationValues;
+    }
+
+    public void setAnnotationValues( Map<String, String> annotationValues ) {
+        this.annotationValues = annotationValues;
     }
 
 }

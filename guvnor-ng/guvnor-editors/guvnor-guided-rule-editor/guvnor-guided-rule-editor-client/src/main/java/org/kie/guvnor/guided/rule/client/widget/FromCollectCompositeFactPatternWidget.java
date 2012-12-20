@@ -310,7 +310,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
             this.readOnly = !( this.getExtraLeftSidePatternFactTypes().containsValue( this.pattern.getFactPattern().getFactType() )
-                    || this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.getFactPattern().getFactType() ) );
+                    || this.getModeller().getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
         }
     }
 

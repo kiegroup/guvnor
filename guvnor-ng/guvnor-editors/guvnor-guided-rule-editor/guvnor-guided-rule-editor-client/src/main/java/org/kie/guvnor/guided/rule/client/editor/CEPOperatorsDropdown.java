@@ -69,7 +69,7 @@ public class CEPOperatorsDropdown extends Composite
     private static final String VISIBLE_PARAMETER_SET = "org.kie.guvnor.guided.editor.visibleParameterSet";
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
-    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.server.util.CEPOperatorParameterDRLBuilder";
+    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.rule.backend.server.util.CEPOperatorParameterDRLBuilder";
 
     public CEPOperatorsDropdown( String[] operators,
                                  HasParameterizedOperator hop ) {
