@@ -17,6 +17,10 @@
 package org.kie.guvnor.m2repo.client.editor;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -76,30 +80,19 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     // Other stuff
     private static final int                     PAGE_SIZE = 10;    
 
-    @Inject
+    //@Inject
     private Caller<M2RepoService> m2RepoService;
     
-    public JarListPagedTable() {
+    public JarListPagedTable(Caller<M2RepoService> repoService) {
         super( PAGE_SIZE );
+        this.m2RepoService = repoService;
 
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
                 PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
                 String filters = null;
                 
-
-/*                List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
-                JarListPageRow jarListPageRow = new JarListPageRow();
-                jarListPageRow.setName("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-                jarListPageRow.setPath("repository" + File.separator + "releases" + File.separator + "org" + File.separator + "kie" + File.separator + "guvnor" + File.separator + "guvnor-m2repo-editor-backend" + File.separator + "6.0.0-SNAPSHOT" + File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-                jarListPageRow.setLastModified(new Date());
-                tradeRatePageRowList.add(jarListPageRow);*/
-                
-                updateRowCount( 1, true );
-                //WONT WORK! Problem with List<JarListPageRow>?
-                //updateRowData( 0, null);
-                
-/*                m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
+                m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
                     public void callback( final PageResponse<JarListPageRow> response) {
                         updateRowCount( response.getTotalRowSize(),
@@ -107,7 +100,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                         updateRowData( response.getStartRowIndex(),
                                response.getPageRowList() );
                     }
-                } ).listJars(request, filters);*/
+                } ).listJars(request, filters);
             }
         } );
 
@@ -131,7 +124,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         
         TextColumn<JarListPageRow> pathColumn = new TextColumn<JarListPageRow>() {
             public String getValue(JarListPageRow row) {
-                return row.getName();
+                return row.getPath();
             }
         };
         columnPicker.addColumn( pathColumn,
@@ -166,10 +159,6 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                String value) {
                 JarDetailEditor editor = new JarDetailEditor();
                 editor.show();
-                 //TODO: Select JAR from list to see information on it:-
-                 //                maven info,
-                 //                artifact information,
-                 //                maven dependency tree
             }
         } );
         columnPicker.addColumn( openColumn,

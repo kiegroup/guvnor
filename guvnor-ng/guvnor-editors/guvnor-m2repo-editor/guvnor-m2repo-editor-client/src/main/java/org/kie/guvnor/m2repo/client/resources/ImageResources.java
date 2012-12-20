@@ -34,5 +34,7 @@ public interface ImageResources
 
     @Source("images/shuffle_down.gif")
     ImageResource shuffleDown();
-
+    
+    @Source("images/model_large.png")
+    ImageResource modelLarge();
 }

@@ -21,6 +21,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnSave;
@@ -44,6 +47,9 @@ public class M2RepoEditorPresenter {
 
     private Path path;
 
+    @Inject
+    private Caller<M2RepoService> m2RepoService;
+    
     @PostConstruct
     public void init() {
     }

@@ -15,6 +15,10 @@
  */
 package org.kie.guvnor.m2repo.client.editor;
 
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.FormStyleLayout;
 
 import com.google.gwt.core.client.GWT;
@@ -44,7 +48,13 @@ public class M2RepoEditorView
     private VerticalPanel       layout;
     private FormPanel           form;
     
-    public M2RepoEditorView() {
+/*    @Inject*/
+    private Caller<M2RepoService> m2RepoService;
+    
+    @Inject
+    public M2RepoEditorView(Caller<M2RepoService> s) {
+        this.m2RepoService = s;
+        
         layout = new VerticalPanel();
         doSearch();
         layout.setWidth( "100%" );
@@ -87,7 +97,7 @@ public class M2RepoEditorView
                     return;
                 }*/
                 resultsP.clear();
-                JarListPagedTable table = new JarListPagedTable();
+                JarListPagedTable table = new JarListPagedTable(m2RepoService);
                 resultsP.add( table );
             }
 
@@ -107,7 +117,7 @@ public class M2RepoEditorView
         container.add( resultsP );
         
         resultsP.clear();
-        JarListPagedTable table = new JarListPagedTable();
+        JarListPagedTable table = new JarListPagedTable(m2RepoService);
         resultsP.add( table );
         
         layout.add(container);

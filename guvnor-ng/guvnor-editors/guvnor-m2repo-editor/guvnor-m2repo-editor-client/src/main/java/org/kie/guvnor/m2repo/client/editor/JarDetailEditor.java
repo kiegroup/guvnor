@@ -21,11 +21,14 @@ import org.uberfire.client.common.FormStylePopup;
 
 import com.google.gwt.user.client.ui.*;
 
-
+//Select JAR from list to see information on it:-
+//                maven info,
+//                artifact information,
+//                maven dependency tree
 public class JarDetailEditor extends FormStylePopup {
 
     public JarDetailEditor() {
-        super(ImageResources.INSTANCE.edit(),
+        super(ImageResources.INSTANCE.modelLarge(),
                "Jar details" );
 
         addAttribute( "maven info:", new HTML(""));
