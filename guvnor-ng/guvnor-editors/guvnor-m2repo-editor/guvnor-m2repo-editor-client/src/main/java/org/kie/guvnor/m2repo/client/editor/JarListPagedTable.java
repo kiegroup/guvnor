@@ -83,14 +83,13 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     //@Inject
     private Caller<M2RepoService> m2RepoService;
     
-    public JarListPagedTable(Caller<M2RepoService> repoService) {
+    public JarListPagedTable(Caller<M2RepoService> repoService, final String searchFilter) {
         super( PAGE_SIZE );
         this.m2RepoService = repoService;
 
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
                 PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
-                String filters = null;
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
@@ -100,7 +99,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                         updateRowData( response.getStartRowIndex(),
                                response.getPageRowList() );
                     }
-                } ).listJars(request, filters);
+                } ).listJars(request, searchFilter);
             }
         } );
 

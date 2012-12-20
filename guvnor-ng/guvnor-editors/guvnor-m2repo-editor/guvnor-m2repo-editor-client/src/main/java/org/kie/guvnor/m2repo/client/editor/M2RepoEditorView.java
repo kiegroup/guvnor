@@ -70,10 +70,9 @@ public class M2RepoEditorView
         
         ts.addAttribute( "Upload new Jar:", doUploadForm() );       
         
-        final TextBox tx = new TextBox();
+        final TextBox searchTextBox = new TextBox();
         //tx.setWidth("100px");
-        ts.addAttribute( "Search for:",
-                         tx );
+        ts.addAttribute( "Find items with a name matching:", searchTextBox );
 /*
         final CheckBox archiveBox = new CheckBox();
         archiveBox.setValue( false );
@@ -92,19 +91,20 @@ public class M2RepoEditorView
         final ClickHandler cl = new ClickHandler() {
 
             public void onClick(ClickEvent arg0) {
-/*                if ( tx.getText().equals( "" ) ) {
-                    Window.alert( constants.PleaseEnterSomeSearchText() );
-                    return;
-                }*/
-                resultsP.clear();
-                JarListPagedTable table = new JarListPagedTable(m2RepoService);
-                resultsP.add( table );
+                resultsP.clear();             
+                if ( searchTextBox.getText() ==null || searchTextBox.getText().equals( "" ) ) {
+                    JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
+                    resultsP.add( table );                    
+                } else {
+                    JarListPagedTable table = new JarListPagedTable(m2RepoService, searchTextBox.getText());
+                    resultsP.add( table );
+                }
             }
 
         };
 
         go.addClickHandler( cl );
-        tx.addKeyPressHandler( new KeyPressHandler() {
+        searchTextBox.addKeyPressHandler( new KeyPressHandler() {
             public void onKeyPress(KeyPressEvent event) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
                     cl.onClick( null );
@@ -117,7 +117,7 @@ public class M2RepoEditorView
         container.add( resultsP );
         
         resultsP.clear();
-        JarListPagedTable table = new JarListPagedTable(m2RepoService);
+        JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
         resultsP.add( table );
         
         layout.add(container);
