@@ -1,0 +1,3 @@
+org.kie.guvnor.builder.SourceServicesImpl
+org.kie.guvnor.builder.BuilderServiceImpl
+org.kie.guvnor.builder.Builder

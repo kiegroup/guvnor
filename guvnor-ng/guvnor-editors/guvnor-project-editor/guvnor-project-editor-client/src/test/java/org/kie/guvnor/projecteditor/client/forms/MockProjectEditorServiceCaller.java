@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -33,10 +33,8 @@ public class MockProjectEditorServiceCaller
     private KModuleModel modelForLoading;
 
     private RemoteCallback callback;
-    private GroupArtifactVersionModel gavModel;
     private GroupArtifactVersionModel savedGav;
     private Path pathToRelatedKModuleFileIfAny;
-    private boolean buildWasCalled = false;
 
     MockProjectEditorServiceCaller() {
 
@@ -66,18 +64,6 @@ public class MockProjectEditorServiceCaller
             public KModuleModel loadKModule(Path path) {
                 callback.callback(modelForLoading);
                 return modelForLoading;
-            }
-
-            @Override
-            public void build(Path path) {
-                callback.callback(null);
-                buildWasCalled = true;
-            }
-
-            @Override
-            public GroupArtifactVersionModel loadGav(Path path) {
-                callback.callback(gavModel);
-                return gavModel;
             }
 
             @Override
@@ -113,10 +99,6 @@ public class MockProjectEditorServiceCaller
         this.modelForLoading = upModelForLoading;
     }
 
-    public void setGav(GroupArtifactVersionModel gavModel) {
-        this.gavModel = gavModel;
-    }
-
     public GroupArtifactVersionModel getSavedGav() {
         return savedGav;
     }
@@ -125,7 +107,4 @@ public class MockProjectEditorServiceCaller
         this.pathToRelatedKModuleFileIfAny = pathToRelatedKModuleFileIfAny;
     }
 
-    public boolean isBuildWasCalled() {
-        return buildWasCalled;
-    }
 }

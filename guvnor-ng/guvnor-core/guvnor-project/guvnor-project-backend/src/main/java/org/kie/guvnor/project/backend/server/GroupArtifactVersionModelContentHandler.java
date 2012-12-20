@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.backend.server;
+package org.kie.guvnor.project.backend.server;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 
 import java.io.IOException;
 import java.io.StringReader;

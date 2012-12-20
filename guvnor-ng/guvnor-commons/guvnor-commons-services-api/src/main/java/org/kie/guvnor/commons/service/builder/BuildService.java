@@ -16,10 +16,11 @@
 
 package org.kie.guvnor.commons.service.builder;
 
-import org.kie.commons.java.nio.file.Path;
+
+import org.uberfire.backend.vfs.Path;
 
 public interface BuildService {
 
-    public Builder getBuilder(String artifactId, Path pomDirectoryPath);
+    void build(Path pathToPom);
 
 }

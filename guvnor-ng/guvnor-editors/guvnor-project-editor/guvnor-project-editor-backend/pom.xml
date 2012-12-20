@@ -44,6 +44,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-commons-io</artifactId>
     </dependency>
@@ -66,11 +71,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
     </dependency>
 
   </dependencies>

@@ -17,6 +17,7 @@
 package org.kie.guvnor.projecteditor.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 
 import java.util.HashMap;
 import java.util.Iterator;

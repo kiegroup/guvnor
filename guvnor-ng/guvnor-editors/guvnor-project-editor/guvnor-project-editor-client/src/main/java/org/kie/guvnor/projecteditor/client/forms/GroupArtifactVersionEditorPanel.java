@@ -17,13 +17,13 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 
@@ -36,18 +36,21 @@ public class GroupArtifactVersionEditorPanel
     private final GroupArtifactVersionEditorPanelView view;
     private Path path;
     private GroupArtifactVersionModel model;
+    private final Caller<ProjectService> projectServiceCaller;
 
     @Inject
     public GroupArtifactVersionEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
+                                           Caller<ProjectService> projectServiceCaller,
                                            GroupArtifactVersionEditorPanelView view) {
         this.projectEditorServiceCaller = projectEditorServiceCaller;
+        this.projectServiceCaller = projectServiceCaller;
         this.view = view;
         view.setPresenter(this);
     }
 
     public void init(Path path) {
         this.path = path;
-        projectEditorServiceCaller.call(
+        projectServiceCaller.call(
                 new RemoteCallback<GroupArtifactVersionModel>() {
                     @Override
                     public void callback(GroupArtifactVersionModel gav) {
@@ -88,9 +91,9 @@ public class GroupArtifactVersionEditorPanel
 
     public void save(final Command callback) {
         projectEditorServiceCaller.call(
-                new RemoteCallback<Object>() {
+                new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Object o) {
+                    public void callback(Path path) {
                         callback.execute();
                         view.showSaveSuccessful("pom.xml");
                     }

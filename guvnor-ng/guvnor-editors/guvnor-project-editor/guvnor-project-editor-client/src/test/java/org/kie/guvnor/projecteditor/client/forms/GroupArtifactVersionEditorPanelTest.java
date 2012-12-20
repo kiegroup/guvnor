@@ -17,10 +17,9 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HasText;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.assertEquals;
@@ -33,12 +32,14 @@ public class GroupArtifactVersionEditorPanelTest {
     private GroupArtifactVersionEditorPanelView.Presenter presenter;
     private GroupArtifactVersionEditorPanel panel;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
+    private MockProjectServiceCaller projectServiceCaller;
 
     @Before
     public void setUp() throws Exception {
         view = mock(GroupArtifactVersionEditorPanelView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
-        panel = new GroupArtifactVersionEditorPanel(projectEditorServiceCaller, view);
+        projectServiceCaller = new MockProjectServiceCaller();
+        panel = new GroupArtifactVersionEditorPanel(projectEditorServiceCaller, projectServiceCaller, view);
         presenter = panel;
     }
 
@@ -50,7 +51,7 @@ public class GroupArtifactVersionEditorPanelTest {
     @Test
     public void testLoad() throws Exception {
         GroupArtifactVersionModel gavModel = createTestModel("group", "artifact", "1.1.1");
-        projectEditorServiceCaller.setGav(gavModel);
+        projectServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 
@@ -63,7 +64,7 @@ public class GroupArtifactVersionEditorPanelTest {
     @Test
     public void testSave() throws Exception {
         GroupArtifactVersionModel gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
-        projectEditorServiceCaller.setGav(gavModel);
+        projectServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 

@@ -76,6 +76,11 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-commons-builder</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-core-services-api</artifactId>
     </dependency>
 

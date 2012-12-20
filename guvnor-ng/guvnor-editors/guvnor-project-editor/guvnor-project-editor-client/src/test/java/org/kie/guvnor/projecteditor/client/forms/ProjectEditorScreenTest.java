@@ -17,16 +17,12 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HasText;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.*;
 import static org.mockito.Matchers.any;
@@ -38,6 +34,7 @@ public class ProjectEditorScreenTest {
     private KModuleEditorPanel kModuleEditorPanel;
     private ProjectEditorScreen screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
+    private MockBuildServiceCaller buildServiceCaller;
 
     @Before
     public void setUp() throws Exception {
@@ -48,7 +45,10 @@ public class ProjectEditorScreenTest {
         gavPanel = mock(GroupArtifactVersionEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
-        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller);
+        buildServiceCaller = new MockBuildServiceCaller();
+        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller
+//                , buildServiceCaller
+        );
     }
 
     @Test
@@ -131,6 +131,6 @@ public class ProjectEditorScreenTest {
         MenuBar menuBar = screen.buildMenuBar();
         clickSecond(menuBar);
 
-        assertTrue(projectEditorServiceCaller.isBuildWasCalled());
+        assertTrue(buildServiceCaller.isBuildWasCalled());
     }
 }

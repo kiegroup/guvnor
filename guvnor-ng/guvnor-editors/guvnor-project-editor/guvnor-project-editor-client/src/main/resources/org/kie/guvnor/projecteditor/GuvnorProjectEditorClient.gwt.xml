@@ -33,6 +33,7 @@
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name='org.kie.guvnor.projecteditor.GuvnorProjectEditorAPI'/>
+  <inherits name='org.kie.guvnor.project.GuvnorProjectAPI'/>
   <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>

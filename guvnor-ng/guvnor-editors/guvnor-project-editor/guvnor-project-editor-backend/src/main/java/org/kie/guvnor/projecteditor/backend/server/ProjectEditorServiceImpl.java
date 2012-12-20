@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.service.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Messages;
-import org.kie.guvnor.projecteditor.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.server.util.Paths;
@@ -44,9 +44,9 @@ public class ProjectEditorServiceImpl
     private IOService ioService;
     private Paths paths;
     private KModuleEditorContentHandler moduleEditorContentHandler;
-    private GroupArtifactVersionModelContentHandler gavModelContentHandler;
     private Event<Messages> messagesEvent;
     private BuildService buildService;
+    private ProjectService projectService;
 
 
     public ProjectEditorServiceImpl() {
@@ -59,13 +59,13 @@ public class ProjectEditorServiceImpl
                                     final BuildService buildService,
                                     final Event<Messages> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
-                                    final GroupArtifactVersionModelContentHandler gavModelContentHandler) {
+                                    final ProjectService projectService) {
         this.ioService = ioService;
         this.paths = paths;
         this.buildService = buildService;
         this.messagesEvent = messagesEvent;
         this.moduleEditorContentHandler = moduleEditorContentHandler;
-        this.gavModelContentHandler = gavModelContentHandler;
+        this.projectService = projectService;
     }
 
 
@@ -104,9 +104,9 @@ public class ProjectEditorServiceImpl
     public Path saveGav(final Path pathToGAV,
                         final GroupArtifactVersionModel gavModel) {
         try {
-            return paths.convert(ioService.write(paths.convert(pathToGAV), gavModelContentHandler.toString(gavModel)));
+            return paths.convert(ioService.write(paths.convert(pathToGAV), new GroupArtifactVersionModelContentHandler().toString(gavModel)));
         } catch (IOException e) {
-            e.printStackTrace();  //TODO -Rikkola-
+            e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
         }
         return null;
     }
@@ -114,25 +114,6 @@ public class ProjectEditorServiceImpl
     @Override
     public KModuleModel loadKModule(final Path path) {
         return moduleEditorContentHandler.toModel(ioService.readAllString(paths.convert(path)));
-    }
-
-    @Override
-    public void build(Path pathToKModuleXML) {
-        Builder builder = buildService.getBuilder(loadGav(pathToKModuleXML).getArtifactId(), getPomDirectoryPath(pathToKModuleXML));
-        builder.build();
-    }
-
-    @Override
-    public GroupArtifactVersionModel loadGav(final Path path) {
-        try {
-            return gavModelContentHandler.toModel(ioService.readAllString(paths.convert(path)));
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO -Rikkola-
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();  //TODO -Rikkola-
-        }
-        return null;
-
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -31,6 +32,8 @@ public interface ProjectService {
     Collection<Path> listProjectResources( final Path project );
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
+
+    GroupArtifactVersionModel loadGav(Path path);
 
     /**
      * Given a Path to a resource resolve a Path for the containing Project's pom.xml file

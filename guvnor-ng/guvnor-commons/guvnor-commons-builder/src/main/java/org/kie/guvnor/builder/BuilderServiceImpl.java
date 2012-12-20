@@ -17,11 +17,12 @@
 package org.kie.guvnor.builder;
 
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.service.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
@@ -35,6 +36,7 @@ public class BuilderServiceImpl
     private Paths paths;
     private SourceServicesImpl sourceServices;
     private Event<Messages> messagesEvent;
+    private ProjectService projectService;
 
     public BuilderServiceImpl() {
         //Empty constructor for Weld
@@ -44,18 +46,21 @@ public class BuilderServiceImpl
     public BuilderServiceImpl(IOService ioService,
                               Paths paths,
                               SourceServicesImpl sourceServices,
+                              ProjectService projectService,
                               Event<Messages> messagesEvent) {
         this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
-
+        this.projectService = projectService;
     }
 
     @Override
-    public Builder getBuilder(String artifactId, Path pomDirectoryPath) {
-        // TODO: This should work with just the pomDirectoryPath -Rikkola-
-        // Perhaps we should get the GAV from ProjectService, need to ask manstis about that.
-        return new BuilderImpl(pomDirectoryPath, artifactId, ioService, paths, sourceServices, messagesEvent);
+    public void build(Path pathToPom) {
+        GroupArtifactVersionModel gav = projectService.loadGav(pathToPom);
+
+        Builder builder = new Builder(paths.convert(pathToPom), gav.getArtifactId(), ioService, paths, sourceServices, messagesEvent);
+
+        builder.build();
     }
 }

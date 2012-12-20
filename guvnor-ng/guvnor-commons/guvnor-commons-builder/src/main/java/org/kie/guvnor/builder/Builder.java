@@ -25,15 +25,13 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
 
 import javax.enterprise.event.Event;
 
-public class BuilderImpl
-        implements Builder {
+public class Builder {
 
 
     private final KieBuilder kieBuilder;
@@ -48,12 +46,12 @@ public class BuilderImpl
     private final static String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
     private final SourceServices sourceServices;
 
-    public BuilderImpl(Path moduleDirectory,
-                       String artifactId,
-                       IOService ioService,
-                       Paths paths,
-                       SourceServicesImpl sourceServices,
-                       Event<Messages> messagesEvent) {
+    public Builder(Path moduleDirectory,
+                   String artifactId,
+                   IOService ioService,
+                   Paths paths,
+                   SourceServicesImpl sourceServices,
+                   Event<Messages> messagesEvent) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.ioService = ioService;
