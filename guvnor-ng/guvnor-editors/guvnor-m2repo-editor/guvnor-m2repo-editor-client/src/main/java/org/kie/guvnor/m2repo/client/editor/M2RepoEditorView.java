@@ -124,7 +124,7 @@ public class M2RepoEditorView
     }
     
     public FormPanel doUploadForm() {
-        FormPanel form = new FormPanel();
+        form = new FormPanel();
         form.setAction(GWT.getModuleBaseURL() + "file");
         form.setEncoding(FormPanel.ENCODING_MULTIPART);
         form.setMethod(FormPanel.METHOD_POST);
