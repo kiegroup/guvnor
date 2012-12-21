@@ -13,6 +13,11 @@
   <name>Guvnor - JCR to UberFire VFS migration</name>
   <description>Migrates the data of Guvnor 5 to Guvnor 6</description>
 
+  <properties>
+    <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
+    <lucene.version>2.4.1</lucene.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
