@@ -46,9 +46,10 @@ public class ProjectEditorScreenTest {
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();
-        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller
+        screen=null;
+//        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller
 //                , buildServiceCaller
-        );
+//        );
     }
 
     @Test

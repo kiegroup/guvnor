@@ -41,24 +41,23 @@ public class ProjectEditorScreen {
     private final GroupArtifactVersionEditorPanel gavPanel;
     private final KModuleEditorPanel kModuleEditorPanel;
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
-//    private final Caller<BuildService> buildServiceCaller;
+    private final Caller<BuildService> buildServiceCaller;
 
     private Path pathToPomXML;
     private Path pathToKModuleXML;
 
     @Inject
-    public ProjectEditorScreen(ProjectEditorScreenView view,
-                               GroupArtifactVersionEditorPanel gavPanel,
-                               KModuleEditorPanel kModuleEditorPanel,
-                               Caller<ProjectEditorService> projectEditorServiceCaller
-//            ,
-//                               Caller<BuildService> buildServiceCaller
-    ) {
+    public ProjectEditorScreen(
+            ProjectEditorScreenView view,
+            GroupArtifactVersionEditorPanel gavPanel,
+            KModuleEditorPanel kModuleEditorPanel,
+            Caller<ProjectEditorService> projectEditorServiceCaller,
+            Caller<BuildService> buildServiceCaller) {
         this.view = view;
         this.gavPanel = gavPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
-//        this.buildServiceCaller = buildServiceCaller;
+        this.buildServiceCaller = buildServiceCaller;
 
         view.setGroupArtifactVersionEditorPanel(gavPanel);
     }
@@ -123,14 +122,14 @@ public class ProjectEditorScreen {
                 new Command() {
                     @Override
                     public void execute() {
-//                        buildServiceCaller.call(
-//                                new RemoteCallback<Void>() {
-//                                    @Override
-//                                    public void callback(Void v) {
-//
-//                                    }
-//                                }
-//                        ).build(pathToPomXML);
+                        buildServiceCaller.call(
+                                new RemoteCallback<Void>() {
+                                    @Override
+                                    public void callback(Void v) {
+
+                                    }
+                                }
+                        ).build(pathToPomXML);
                     }
                 }
         ));

@@ -72,7 +72,9 @@ public class ProjectServiceImpl
     @Override
     public GroupArtifactVersionModel loadGav(final Path path) {
         try {
-            return new GroupArtifactVersionModelContentHandler().toModel(ioService.readAllString(paths.convert(path)));
+            org.kie.commons.java.nio.file.Path convert = paths.convert(path);
+            String propertiesString = ioService.readAllString(convert);
+            return new GroupArtifactVersionModelContentHandler().toModel(propertiesString);
         } catch (IOException e) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
         } catch (XmlPullParserException e) {
