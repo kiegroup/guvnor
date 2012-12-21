@@ -170,7 +170,7 @@ public class Scenario
     }
 
     /**
-     * 
+     *
      * @return A mapping of variable names to their fact data.
      */
     public Map<String, FactData> getFactTypes() {
@@ -190,7 +190,7 @@ public class Scenario
     }
 
     /**
-     * 
+     *
      * @return A mapping of variable names to their fact type.
      */
     public Map<String, String> getVariableTypes() {
@@ -210,7 +210,7 @@ public class Scenario
     }
 
     /**
-     * 
+     *
      * @return A mapping of Fact types to their Fact definitions.
      */
     public Map<String, List<FactData>> getFactTypesToFactData() {
@@ -242,7 +242,7 @@ public class Scenario
     /**
      * This will return a list of fact names that are in scope (including
      * globals).
-     * 
+     *
      * @return List<String>
      */
     public List<String> getFactNamesInScope(ExecutionTrace executionTrace,
@@ -340,7 +340,7 @@ public class Scenario
     }
 
     /**
-     * 
+     *
      * @return int[0] = failures, int[1] = total;
      */
     public int[] countFailuresTotal() {
@@ -382,6 +382,10 @@ public class Scenario
         return maxRuleFirings;
     }
 
+    public void setMaxRuleFirings(int maxRuleFirings) {
+        this.maxRuleFirings=maxRuleFirings;
+    }
+
     public List<FactData> getGlobals() {
         return globals;
     }
@@ -405,5 +409,4 @@ public class Scenario
     public boolean isInclusive() {
         return inclusive;
     }
-
 }

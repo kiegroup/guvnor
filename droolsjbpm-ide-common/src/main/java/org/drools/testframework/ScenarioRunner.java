@@ -246,11 +246,10 @@ public class ScenarioRunner {
 
     private int getMaxFireCount() {
         String property = System.getProperty("guvnor.testscenario.maxrulefirings");
-        if (property == null) {
-            return scenario.getMaxRuleFirings();
-        } else {
-            return Integer.parseInt(property);
+        if (property != null) {
+            scenario.setMaxRuleFirings(Integer.parseInt(property));
         }
+        return scenario.getMaxRuleFirings();
     }
 
     private void doPopulate(List<Populate> toPopulate) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
