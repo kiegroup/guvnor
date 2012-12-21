@@ -55,6 +55,11 @@ public class MigrationPathManager {
                     + path + ") because it has already been registered once. Last time it was for path ("
                     + uuidToPathMap.get(uuid) + "), but even if it's equal, it should never be registered twice.");
         }
+        if (pathToUuidMap.containsKey(path)) {
+            throw new IllegalArgumentException("The path (" + path + ") cannot be registered from uuid ("
+                    + uuid + ") because it has already been registered once. Last time it was for uuid ("
+                    + pathToUuidMap.get(path) + "), but even if it's equal, it should never be registered twice.");
+        }
         uuidToPathMap.put(uuid, path);
         pathToUuidMap.put(path, uuid);
     }
