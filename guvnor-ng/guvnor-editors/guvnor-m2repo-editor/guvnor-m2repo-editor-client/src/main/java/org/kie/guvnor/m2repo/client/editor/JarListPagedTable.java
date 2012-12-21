@@ -20,6 +20,7 @@ package org.kie.guvnor.m2repo.client.editor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -51,6 +52,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.MultiSelectionModel;
 
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
@@ -76,7 +78,9 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     protected Button                             auditButton;
     
     private static JarListPagedTableBinder uiBinder  = GWT.create( JarListPagedTableBinder.class );
-
+    
+    protected MultiSelectionModel<JarListPageRow> selectionModel;
+    
     // Other stuff
     private static final int                     PAGE_SIZE = 10;    
 
@@ -198,16 +202,49 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
     @UiHandler("deleteSelectedJarButton")
     void deleteSelectedJar(ClickEvent e) {
+        if (getSelectedJars() == null) {
+            Window.alert("Please Select A Jar To Delete");
+            return;
+        }
+        if (!Window.confirm("AreYouSureYouWantToDeleteTheseItems")) {
+            return;
+        }
+        m2RepoService.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback(Void v) {
+            }
+        } ).deleteJar(getSelectedJars());
+    }   
+    
+    public String[] getSelectedJars() {
+        Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
 
-    }    
+        // Compatibility with existing API
+        if ( selectedRows.size() == 0 ) {
+            return null;
+        }
 
+        // Create the array of paths
+        String[] paths = new String[selectedRows.size()];
+        int rowCount = 0;
+        for (JarListPageRow row : selectedRows) {
+            paths[rowCount++] = row.getPath();
+        }
+        return paths;
+    }
+    
     @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
-
+        //selectionModel.clear();
+        cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
+                true );
     }
     
     @UiHandler("auditButton")
     void viewAuditLog(ClickEvent e) {
 
     }   
+    
+
+
 }

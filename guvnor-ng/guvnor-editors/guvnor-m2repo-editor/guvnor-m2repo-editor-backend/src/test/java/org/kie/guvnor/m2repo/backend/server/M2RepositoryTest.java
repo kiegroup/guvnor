@@ -215,8 +215,8 @@ public class M2RepositoryTest {
         assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);
         assertTrue("Did not find expected file after calling M2Repository.addFile()", found2);
         
-        boolean result = repo.deleteFile("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        result = repo.deleteFile("repository\\releases\\org\\jboss\\arquillian\\core\\arquillian-core-api\\1.0.2.Final\\arquillian-core-api-1.0.2.Final.jar");
+        boolean result = repo.deleteFile(new String[]{"repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar"});
+        result = repo.deleteFile(new String[]{"repository\\releases\\org\\jboss\\arquillian\\core\\arquillian-core-api\\1.0.2.Final\\arquillian-core-api-1.0.2.Final.jar"});
         
         found1 = false;
         found2 = false;

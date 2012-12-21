@@ -105,12 +105,14 @@ public class M2Repository {
         }
     }
     
-    public boolean deleteFile(String fullPath) {
-        final File file = new File(fullPath);
-        if (file.exists()) {
-            return file.delete();
-        } 
-        return false;
+    public boolean deleteFile(String[] fullPaths) {
+        for (String fullPath : fullPaths) {
+            final File file = new File(fullPath);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        return true;
     }
 
     /**

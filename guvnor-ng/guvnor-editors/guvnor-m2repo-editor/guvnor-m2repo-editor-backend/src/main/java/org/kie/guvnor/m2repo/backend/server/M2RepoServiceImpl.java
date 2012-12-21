@@ -52,7 +52,7 @@ public class M2RepoServiceImpl
         repository.addFile(is, gav);
     }
     
-    public void deleteJar(String path) {
+    public void deleteJar(String[] path) {
         repository.deleteFile(path);
     }
     
