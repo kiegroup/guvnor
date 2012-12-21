@@ -93,7 +93,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged(HasData<JarListPageRow> display) {
-                PageRequest request = new PageRequest( 0/*pager.getPageStart()*/, pageSize );
+                PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
                 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
@@ -235,7 +235,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     
     @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
-        //selectionModel.clear();
+        selectionModel.clear();
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
                 true );
     }

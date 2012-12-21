@@ -18,7 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:cellview='urn:import:com.google.gwt.user.cellview.client'
-             xmlns:m2repo='urn:import:org.kie.guvnor.m2repo.client.editor'>
+             xmlns:m2repo='urn:import:org.kie.guvnor.m2repo.client.editor'
+             xmlns:guvnor-pager='urn:import:org.kie.guvnor.commons.ui.client.tables'>
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
@@ -29,7 +30,7 @@
       <gwt:ToggleButton ui:field="columnPickerButton"/> 
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/> 
-<!--     <guvnor-pager:GuvnorSimplePager ui:field="pager"/> -->
+    <guvnor-pager:GuvnorSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

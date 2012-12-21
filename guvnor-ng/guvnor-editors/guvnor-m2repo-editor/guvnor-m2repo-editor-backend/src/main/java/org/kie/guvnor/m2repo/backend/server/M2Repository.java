@@ -134,7 +134,7 @@ public class M2Repository {
     public Collection<File> listFiles(String filters) {
         String wildcard = "*.*";
         if(filters != null) {
-            wildcard = "*" + filters + "*.*";
+            wildcard = "*" + filters + "*.jar";
         }
         Collection<File> files = FileUtils.listFiles(
                 releasesRepository, 
