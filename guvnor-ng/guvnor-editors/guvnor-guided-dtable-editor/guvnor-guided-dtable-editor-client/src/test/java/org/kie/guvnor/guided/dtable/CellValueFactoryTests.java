@@ -25,7 +25,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.model.DataModelBuilder;
+import org.kie.guvnor.datamodel.backend.server.DataModelBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -73,61 +74,63 @@ public class CellValueFactoryTests {
     @SuppressWarnings("serial")
     public void setup() {
         oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "MyClass",
-                               new ModelField( "bigDecimalField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_BIGDECIMAL ) )
-                .addFactField( "MyClass",
-                               new ModelField( "bigIntegerField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_BIGINTEGER ) )
-                .addFactField( "MyClass",
-                               new ModelField( "byteField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_BYTE ) )
-                .addFactField( "MyClass",
-                               new ModelField( "doubleField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_DOUBLE ) )
-                .addFactField( "MyClass",
-                               new ModelField( "floatField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_FLOAT ) )
-                .addFactField( "MyClass",
-                               new ModelField( "integerField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "MyClass",
-                               new ModelField( "longField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_LONG ) )
-                .addFactField( "MyClass",
-                               new ModelField( "shortField",
-                                               Integer.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_SHORT ) )
-                .addFactField( "MyClass",
-                               new ModelField( "stringField",
-                                               String.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
-                .addFactField( "MyClass",
-                               new ModelField( "dateField",
-                                               Boolean.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_DATE ) )
-                .addFactField( "MyClass",
-                               new ModelField( "booleanField",
-                                               Boolean.class.getName(),
-                                               FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_BOOLEAN ) )
+                .addFact( "MyClass" )
+                .addField( new ModelField( "bigDecimalField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_BIGDECIMAL ) )
+                .addField( new ModelField( "bigIntegerField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_BIGINTEGER ) )
+                .addField( new ModelField( "byteField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_BYTE ) )
+                .addField( new ModelField( "doubleField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_DOUBLE ) )
+                .addField( new ModelField( "floatField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_FLOAT ) )
+                .addField( new ModelField( "integerField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "longField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_LONG ) )
+                .addField( new ModelField( "shortField",
+                                           Integer.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_SHORT ) )
+                .addField( new ModelField( "stringField",
+                                           String.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .addField( new ModelField( "dateField",
+                                           Boolean.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_DATE ) )
+                .addField( new ModelField( "booleanField",
+                                           Boolean.class.getName(),
+                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_BOOLEAN ) )
+                .end()
                 .build();
 
         dt = new GuidedDecisionTable52();

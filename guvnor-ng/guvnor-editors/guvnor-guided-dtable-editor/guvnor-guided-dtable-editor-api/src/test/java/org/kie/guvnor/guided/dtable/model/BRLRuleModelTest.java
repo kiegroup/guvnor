@@ -13,17 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable;
+package org.kie.guvnor.guided.dtable.model;
 
 import org.junit.Test;
 import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.dtable.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
 import org.kie.guvnor.guided.dtable.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
 import org.kie.guvnor.guided.dtable.model.adaptors.Pattern52FactPatternAdaptor;

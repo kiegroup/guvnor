@@ -15,23 +15,26 @@
   <description>Enum Editor Backend</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-enum-editor-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
+
   </dependencies>
 </project>

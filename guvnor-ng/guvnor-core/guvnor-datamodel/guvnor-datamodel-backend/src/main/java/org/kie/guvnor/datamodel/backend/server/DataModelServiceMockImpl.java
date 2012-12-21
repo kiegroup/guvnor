@@ -20,8 +20,8 @@ import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.datamodel.model.DataModelBuilder;
-import org.kie.guvnor.datamodel.model.DefaultDataModel;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
@@ -40,26 +40,48 @@ public class DataModelServiceMockImpl
 
     private DataModelOracle makeMockModel() {
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver",
-                               new ModelField( "age",
-                                               Integer.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver",
-                               new ModelField( "name",
-                                               String.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
-                .addFactField( "Driver",
-                               new ModelField( "date",
-                                               Date.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_DATE ) )
-                .addFactField( "Driver",
-                               new ModelField( "approved",
-                                               Boolean.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_BOOLEAN ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .addField( new ModelField( "date",
+                                           Date.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_DATE ) )
+                .addField( new ModelField( "approved",
+                                           Boolean.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_BOOLEAN ) )
+                .end()
+                .addFact( "Incident" )
+                .addAnnotation( new ModelAnnotation( "role",
+                                                     "value",
+                                                     "event" ) )
+                .addField( new ModelField( "dateOfIncident",
+                                           Date.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_DATE ) )
+                .addField( new ModelField( "typeOfIncident",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .addField( new ModelField( "claimAmount",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .end()
                 .build();
         return oracle;
     }

@@ -29,6 +29,8 @@ public class ModelField {
 
     private String name;
     private String className;
+    private FieldAccessorsAndMutators accessorsAndMutators;
+
     /**
      * parametrized type of clazz
      */
@@ -45,15 +47,18 @@ public class ModelField {
      * @param clazz the class of the field. For fields defined as a type declaration
      * @param fieldClassType tells if this is a field for a regular POJO class or for a object type declaration
      * this clazz should be null.
+     * @param accessorsAndMutators Whether the field has an Accessor, Mutator or both
      * @param type the type of the clazz.
      */
     public ModelField( final String name,
                        final String clazz,
                        final FIELD_CLASS_TYPE fieldClassType,
+                       final FieldAccessorsAndMutators accessorsAndMutators,
                        final String type ) {
         this.name = name;
         this.classType = fieldClassType;
         this.className = clazz;
+        this.accessorsAndMutators = accessorsAndMutators;
         this.type = type;
     }
 
@@ -73,10 +78,18 @@ public class ModelField {
         return classType;
     }
 
+    public FieldAccessorsAndMutators getAccessorsAndMutators() {
+        return accessorsAndMutators;
+    }
+
     @Override
     public String toString() {
-        return "ModelField [classType=" + classType + ", name=" + name
-                + ", type=" + type + ", className=" + className + "]";
+        return "ModelField [classType=" + classType
+                + ", name=" + name
+                + ", type=" + type
+                + ", className=" + className
+                + ", accessorsAndMutators=" + accessorsAndMutators
+                + "]";
     }
 
 }

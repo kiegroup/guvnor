@@ -23,7 +23,6 @@ public class DefaultDataModel implements DataModelOracle {
 
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
     private Map<String, List<MethodInfo>> methodInfos = new HashMap<String, List<MethodInfo>>();
-    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
 
     /**
      * Contains a map of { TypeName.field : String[] } - where a list is valid
@@ -179,10 +178,10 @@ public class DefaultDataModel implements DataModelOracle {
         final ModelField[] fields = modelFields.get( shortName );
         final List<String> fieldNames = new ArrayList<String>();
         for ( int i = 0; i < fields.length; i++ ) {
-            String fieldName = fields[ i ].getName();
+            final ModelField field = fields[ i ];
             if ( FieldAccessorsAndMutators.compare( accessorOrMutator,
-                                                    accessorsAndMutators.get( shortName + "." + fieldName ) ) ) {
-                fieldNames.add( fieldName );
+                                                    field.getAccessorsAndMutators() ) ) {
+                fieldNames.add( field.getName() );
             }
         }
         return fieldNames.toArray( new String[ fieldNames.size() ] );
@@ -685,16 +684,16 @@ public class DefaultDataModel implements DataModelOracle {
     // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
     // ##############################################################################################
 
-    public void setModelFields( final Map<String, ModelField[]> modelFields ) {
+    public void setFactsAndFields( final Map<String, ModelField[]> modelFields ) {
         this.modelFields = modelFields;
     }
 
-    public void setDataEnumLists( final Map<String, String[]> dataEnumLists ) {
-        this.dataEnumLists = dataEnumLists;
+    public void setFactAnnotations( final Map<String, List<ModelAnnotation>> annotationsForTypes ) {
+        this.annotationsForTypes = annotationsForTypes;
     }
 
-    public void setFactFieldAccessorsAndMutators( final Map<String, FieldAccessorsAndMutators> accessorsAndMutators ) {
-        this.accessorsAndMutators = accessorsAndMutators;
+    public void setEnums( final Map<String, String[]> dataEnumLists ) {
+        this.dataEnumLists = dataEnumLists;
     }
 
 }

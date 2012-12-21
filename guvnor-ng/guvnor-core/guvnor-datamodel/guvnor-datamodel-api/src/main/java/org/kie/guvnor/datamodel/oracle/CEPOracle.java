@@ -88,7 +88,7 @@ public class CEPOracle {
 
     private static final Map<String, List<Integer>> CEP_OPERATORS_PARAMETERS = new HashMap<String, List<Integer>>();
 
-    {
+    static {
         CEP_OPERATORS_PARAMETERS.put( "after",
                                       Arrays.asList( new Integer[]{ 0, 1, 2 } ) );
         CEP_OPERATORS_PARAMETERS.put( "before",

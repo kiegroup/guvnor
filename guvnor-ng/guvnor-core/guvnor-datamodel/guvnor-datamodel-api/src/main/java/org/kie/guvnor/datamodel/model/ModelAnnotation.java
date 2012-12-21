@@ -29,6 +29,17 @@ public class ModelAnnotation {
     private String annotationName;
     private Map<String, String> annotationValues = new HashMap<String, String>();
 
+    public ModelAnnotation() {
+    }
+
+    public ModelAnnotation( final String annotationName,
+                            final String annotationKey,
+                            final String annotationValue ) {
+        this.annotationName = annotationName;
+        this.annotationValues.put( annotationKey,
+                                   annotationValue );
+    }
+
     public String getAnnotationName() {
         return annotationName;
     }

@@ -46,6 +46,13 @@
       <artifactId>guvnor-commons-security</artifactId>
     </dependency>
 
+    <!-- Needed for DataModelOracle builder used in tests -->
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-backend</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>

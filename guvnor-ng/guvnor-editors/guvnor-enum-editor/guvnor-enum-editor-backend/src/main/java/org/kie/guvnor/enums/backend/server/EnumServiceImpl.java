@@ -24,6 +24,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.backend.server.DataEnumLoader;
 import org.kie.guvnor.enums.service.EnumService;
 import org.uberfire.backend.vfs.Path;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.enums.backend.server;
+package org.kie.guvnor.datamodel.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,18 +26,18 @@ import java.util.StringTokenizer;
 import org.mvel2.MVEL;
 
 /**
- * Use mvel to load up map/list of valid items for fields - used by the Guided rule editor.
+ * Use MVEL to load up map/list of valid items for fields - used by the Guided rule editor.
  */
 public class DataEnumLoader {
 
-    private final List<String>          errors;
+    private final List<String> errors;
     private final Map<String, String[]> data;
 
     /**
      * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
      */
-    public DataEnumLoader( String mvelSource ) {
-        errors = new ArrayList<String>();
+    public DataEnumLoader( final String mvelSource ) {
+        this.errors = new ArrayList<String>();
         this.data = loadEnum( mvelSource );
     }
 

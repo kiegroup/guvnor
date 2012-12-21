@@ -14,26 +14,18 @@
  * the License.
  */
 
-package org.kie.guvnor.guided.dtable;
+package org.kie.guvnor.guided.dtable.model;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.guvnor.datamodel.model.DataModelBuilder;
+import org.kie.guvnor.datamodel.backend.server.DataModelBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DescriptionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.RowNumberCol52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 
@@ -267,14 +259,18 @@ public class GuidedDecisionTableTest {
     testNumeric() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver", new ModelField( "age",
-                                                         Integer.class.getName(),
-                                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                         DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver", new ModelField( "name",
-                                                         String.class.getName(),
-                                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                         DataType.TYPE_STRING ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .end()
                 .build();
         GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                        dt );
@@ -365,26 +361,28 @@ public class GuidedDecisionTableTest {
     public void testGetType() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver",
-                               new ModelField( "age",
-                                               Integer.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver",
-                               new ModelField( "name",
-                                               String.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
-                .addFactField( "Driver",
-                               new ModelField( "date",
-                                               Date.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_DATE ) )
-                .addFactField( "Driver",
-                               new ModelField( "approved",
-                                               Boolean.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_BOOLEAN ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .addField( new ModelField( "date",
+                                           Date.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_DATE ) )
+                .addField( new ModelField( "approved",
+                                           Boolean.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_BOOLEAN ) )
+                .end()
                 .build();
         GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                        dt );
@@ -518,16 +516,18 @@ public class GuidedDecisionTableTest {
     public void testNoConstraints() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver",
-                               new ModelField( "age",
-                                               Integer.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver",
-                               new ModelField( "name",
-                                               String.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .end()
                 .build();
         GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                        dt );
@@ -623,16 +623,18 @@ public class GuidedDecisionTableTest {
     public void testConditionPredicateChoices() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver",
-                               new ModelField( "age",
-                                               Integer.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver",
-                               new ModelField( "name",
-                                               String.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .end()
                 .build();
         GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                        dt );
@@ -662,16 +664,18 @@ public class GuidedDecisionTableTest {
     public void testConditionFormulaChoices() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
-                .addFactField( "Driver",
-                               new ModelField( "age",
-                                               Integer.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_NUMERIC_INTEGER ) )
-                .addFactField( "Driver",
-                               new ModelField( "name",
-                                               String.class.getName(),
-                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                               DataType.TYPE_STRING ) )
+                .addFact( "Driver" )
+                .addField( new ModelField( "age",
+                                           Integer.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_NUMERIC_INTEGER ) )
+                .addField( new ModelField( "name",
+                                           String.class.getName(),
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           FieldAccessorsAndMutators.BOTH,
+                                           DataType.TYPE_STRING ) )
+                .end()
                 .build();
         GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                        dt );
