@@ -28,6 +28,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Collection;
@@ -50,6 +51,7 @@ public class ProjectServiceImpl
         // Boilerplate sacrifice for Weld
     }
 
+    @Inject
     public ProjectServiceImpl(final @Named("ioStrategy") IOService ioService,
                               final Paths paths) {
         this.ioService = ioService;

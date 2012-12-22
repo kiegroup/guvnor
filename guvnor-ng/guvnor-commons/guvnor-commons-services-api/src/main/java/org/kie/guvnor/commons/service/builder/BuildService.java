@@ -17,8 +17,10 @@
 package org.kie.guvnor.commons.service.builder;
 
 
+import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
+@Remote
 public interface BuildService {
 
     void build(Path pathToPom);

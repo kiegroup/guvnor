@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.builder;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Messages;
@@ -24,12 +25,13 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-@RequestScoped
-public class BuilderServiceImpl
+@Service
+@ApplicationScoped
+public class BuildServiceImpl
         implements BuildService {
 
     private IOService ioService;
@@ -38,16 +40,16 @@ public class BuilderServiceImpl
     private Event<Messages> messagesEvent;
     private ProjectService projectService;
 
-    public BuilderServiceImpl() {
+    public BuildServiceImpl() {
         //Empty constructor for Weld
     }
 
     @Inject
-    public BuilderServiceImpl(IOService ioService,
-                              Paths paths,
-                              SourceServicesImpl sourceServices,
-                              ProjectService projectService,
-                              Event<Messages> messagesEvent) {
+    public BuildServiceImpl(IOService ioService,
+                            Paths paths,
+                            SourceServicesImpl sourceServices,
+                            ProjectService projectService,
+                            Event<Messages> messagesEvent) {
         this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
@@ -59,7 +61,7 @@ public class BuilderServiceImpl
     public void build(Path pathToPom) {
         GroupArtifactVersionModel gav = projectService.loadGav(pathToPom);
 
-        Builder builder = new Builder(paths.convert(pathToPom), gav.getArtifactId(), ioService, paths, sourceServices, messagesEvent);
+        Builder builder = new Builder(paths.convert(pathToPom).getParent(), gav.getArtifactId(), ioService, paths, sourceServices, messagesEvent);
 
         builder.build();
     }
