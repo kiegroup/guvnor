@@ -179,7 +179,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                                                         lastModifiedColumn ),
                                 false );
 
-        // Add "Download" button column
+        // Add "View kjar detail" button column
         Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
             public String getValue(JarListPageRow row) {
                 return "Open";
@@ -187,10 +187,15 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         };
         openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
             public void update(int index,
-                    JarListPageRow row,
+                               JarListPageRow row,
                                String value) {
-                JarDetailEditor editor = new JarDetailEditor();
-                editor.show();
+                m2RepoService.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( final String response) {
+                        JarDetailEditor editor = new JarDetailEditor(response);
+                        editor.show();
+                    }
+                } ).getJarDetails(row.getPath());
             }
         } );
         columnPicker.addColumn( openColumn,

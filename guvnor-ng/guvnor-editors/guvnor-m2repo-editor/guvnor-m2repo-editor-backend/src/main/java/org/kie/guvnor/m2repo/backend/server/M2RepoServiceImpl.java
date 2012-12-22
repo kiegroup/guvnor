@@ -86,4 +86,10 @@ public class M2RepoServiceImpl
         
         return response;
     }
+    
+    @Override
+    public String getJarDetails(String path) {
+        return "";
+    }
+
 }

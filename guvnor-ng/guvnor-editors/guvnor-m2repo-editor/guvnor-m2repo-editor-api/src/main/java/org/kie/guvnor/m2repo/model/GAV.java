@@ -52,6 +52,15 @@ public class GAV {
         return version;
     }
 
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+    public void setVersion(String version) {
+        this.version = version;
+    }
     @Override
     public String toString() {
         return groupId + ":" + artifactId + ":" + version;

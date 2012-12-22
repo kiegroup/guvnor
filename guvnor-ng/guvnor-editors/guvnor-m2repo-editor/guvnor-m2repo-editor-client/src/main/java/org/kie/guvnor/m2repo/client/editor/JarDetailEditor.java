@@ -18,6 +18,7 @@ package org.kie.guvnor.m2repo.client.editor;
 
 import org.kie.guvnor.m2repo.client.resources.ImageResources;
 import org.uberfire.client.common.FormStylePopup;
+import org.uberfire.client.common.ResizableTextArea;
 
 import com.google.gwt.user.client.ui.*;
 
@@ -27,13 +28,17 @@ import com.google.gwt.user.client.ui.*;
 //                maven dependency tree
 public class JarDetailEditor extends FormStylePopup {
 
-    public JarDetailEditor() {
+    public JarDetailEditor(String pomInfo) {
         super(ImageResources.INSTANCE.modelLarge(),
                "Jar details" );
 
-        addAttribute( "maven info:", new HTML(""));
-        addAttribute( "Artifact info:", new HTML(""));
-        addAttribute( "Dependency info:", new HTML(""));
+        ResizableTextArea pomInfoTextArea = new ResizableTextArea();
+        pomInfoTextArea.setText(pomInfo);
+        pomInfoTextArea.setEnabled(false);
+        
+        addAttribute( "KJar Info:", pomInfoTextArea);
+/*        addAttribute( "Artifact info:", new HTML(""));
+        addAttribute( "Dependency info:", new HTML(""));*/
 
     }
 

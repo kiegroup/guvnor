@@ -30,4 +30,6 @@ public interface M2RepoService {
     public void addJar(InputStream is, GAV gav);
     public void deleteJar(String[] path);
     public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters );
+    public String getJarDetails(String path);
+
 }
