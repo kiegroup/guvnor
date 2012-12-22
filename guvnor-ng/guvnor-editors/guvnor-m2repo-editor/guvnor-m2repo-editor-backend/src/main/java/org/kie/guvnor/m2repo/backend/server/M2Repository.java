@@ -132,7 +132,7 @@ public class M2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles(String filters) {
-        String wildcard = "*.*";
+        String wildcard = "*.jar";
         if(filters != null) {
             wildcard = "*" + filters + "*.jar";
         }

@@ -30,6 +30,7 @@ import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.commons.ui.client.tables.AbstractPagedTable;
 import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
+import org.kie.guvnor.commons.ui.client.tables.SelectionColumn;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
@@ -37,13 +38,16 @@ import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.LoadingPopup;
 
 import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
@@ -53,6 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
@@ -108,6 +113,32 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         } );
 
     }
+    @Override
+    protected void doCellTable() {
+
+        ProvidesKey<JarListPageRow> providesKey = new ProvidesKey<JarListPageRow>() {
+            public Object getKey(JarListPageRow row) {
+                return row.getPath();
+            }
+        };
+
+        cellTable = new CellTable<JarListPageRow>( providesKey );
+        selectionModel = new MultiSelectionModel<JarListPageRow>( providesKey );
+        cellTable.setSelectionModel( selectionModel );
+        SelectionColumn.createAndAddSelectionColumn( cellTable );
+
+        ColumnPicker<JarListPageRow> columnPicker = new ColumnPicker<JarListPageRow>( cellTable );
+        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup = new SortableHeaderGroup<JarListPageRow>( cellTable );
+
+
+        // Add any additional columns
+        addAncillaryColumns( columnPicker,
+                sortableHeaderGroup );
+
+
+        cellTable.setWidth( "100%" );
+        columnPickerButton = columnPicker.createToggleButton();
+    }
 
     @Override
     protected void addAncillaryColumns(ColumnPicker<JarListPageRow> columnPicker,
@@ -137,18 +168,16 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                                                                   pathColumn ),
                                 true );
         
-        TextColumn<JarListPageRow> lastModifiedColumn = new TextColumn<JarListPageRow>() {
-            public String getValue(JarListPageRow row) {
-                return row.getLastModified().toString();
+        Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+            public Date getValue(JarListPageRow row) {
+                return row.getLastModified();
             }
         };
         columnPicker.addColumn( lastModifiedColumn,
-                                new SortableHeader<JarListPageRow, String>(
-                                                                                  sortableHeaderGroup,
-                                                                                  "LastModified",
-                                                                                  lastModifiedColumn ),
-                                true );
-        
+                                new SortableHeader<JarListPageRow, Date>( sortableHeaderGroup,
+                                                                        "LastModified",
+                                                                        lastModifiedColumn ),
+                                false );
 
         // Add "Download" button column
         Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
