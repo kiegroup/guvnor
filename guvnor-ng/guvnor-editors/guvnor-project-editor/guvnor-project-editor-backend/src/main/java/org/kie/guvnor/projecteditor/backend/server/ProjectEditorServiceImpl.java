@@ -70,8 +70,8 @@ public class ProjectEditorServiceImpl
 
 
     @Override
-    public Path newProject(String name) {
-        return saveGav(PathFactory.newPath(getGavURI(name)), new GroupArtifactVersionModel());
+    public Path newProject(final String name) {
+        return saveGav(PathFactory.newPath("pom.xml", getGavURI(name)), new GroupArtifactVersionModel());
     }
 
     @Override

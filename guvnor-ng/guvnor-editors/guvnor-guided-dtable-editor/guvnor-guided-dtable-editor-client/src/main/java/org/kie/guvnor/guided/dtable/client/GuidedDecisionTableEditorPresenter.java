@@ -52,7 +52,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "gdst")
+@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
 public class GuidedDecisionTableEditorPresenter {
 
     public interface View

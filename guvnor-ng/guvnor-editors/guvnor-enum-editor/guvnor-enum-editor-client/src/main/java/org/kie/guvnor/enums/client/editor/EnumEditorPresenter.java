@@ -53,7 +53,7 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
  * This is the default rule editor widget (just text editor based) - more to come later.
  */
 @Dependent
-@WorkbenchEditor(identifier = "EnumEditor", fileTypes = "enumeration")
+@WorkbenchEditor(identifier = "EnumEditor", fileTypes = "*.enumeration")
 public class EnumEditorPresenter {
 
     public interface View

@@ -51,7 +51,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "model.drl")
+@WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "*.model.drl")
 public class FactModelsEditorPresenter {
 
     public interface View

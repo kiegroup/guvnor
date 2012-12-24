@@ -34,7 +34,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
-@WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "xml")
+@WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
 public class ProjectEditorScreen {
 
     private final ProjectEditorScreenView view;

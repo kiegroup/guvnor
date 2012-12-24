@@ -16,6 +16,12 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import java.io.IOException;
+import java.util.Collection;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -26,60 +32,53 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.xmlpull.v1.XmlPullParserException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
-import java.util.Collection;
-
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 @Service
 @ApplicationScoped
 public class ProjectServiceImpl
         implements ProjectService {
 
-    private static final String SOURCE_FILENAME = "src";
-    private static final String POM_FILENAME = "pom.xml";
+    private static final String SOURCE_FILENAME  = "src";
+    private static final String POM_FILENAME     = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
     private IOService ioService;
-    private Paths paths;
-
+    private Paths     paths;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
 
     @Inject
-    public ProjectServiceImpl(final @Named("ioStrategy") IOService ioService,
-                              final Paths paths) {
+    public ProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
+                               final Paths paths ) {
         this.ioService = ioService;
         this.paths = paths;
     }
 
-
     @Override
-    public Collection<Path> listProjectResources(final Path project) {
+    public Collection<Path> listProjectResources( final Path project ) {
         //TODO {porcelli}
         return emptyList();
     }
 
     @Override
-    public WorkingSetSettings loadWorkingSetConfig(final Path project) {
+    public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
 
     @Override
-    public GroupArtifactVersionModel loadGav(final Path path) {
+    public GroupArtifactVersionModel loadGav( final Path path ) {
         try {
-            org.kie.commons.java.nio.file.Path convert = paths.convert(path);
-            String propertiesString = ioService.readAllString(convert);
-            return new GroupArtifactVersionModelContentHandler().toModel(propertiesString);
-        } catch (IOException e) {
+            org.kie.commons.java.nio.file.Path convert = paths.convert( path );
+            String propertiesString = ioService.readAllString( convert );
+            return new GroupArtifactVersionModelContentHandler().toModel( propertiesString );
+        } catch ( IOException e ) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
-        } catch (XmlPullParserException e) {
+        } catch ( XmlPullParserException e ) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
         }
         return null;
@@ -87,37 +86,37 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path resolveProject(final Path resource) {
+    public Path resolveProject( final Path resource ) {
 
         //Null resource paths cannot resolve to a Project
-        if (resource == null) {
+        if ( resource == null ) {
             return null;
         }
 
         //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-        org.kie.commons.java.nio.file.Path p = paths.convert(resource).normalize();
-        if (Files.isRegularFile(p)) {
+        org.kie.commons.java.nio.file.Path p = paths.convert( resource ).normalize();
+        if ( Files.isRegularFile( p ) ) {
             p = p.getParent();
         }
-        while (p.getNameCount() > 0 && !p.getFileName().toString().equals(SOURCE_FILENAME)) {
+        while ( p.getNameCount() > 0 && !p.getFileName().toString().equals( SOURCE_FILENAME ) ) {
             p = p.getParent();
         }
-        if (p.getNameCount() == 0) {
+        if ( p.getNameCount() == 0 ) {
             return null;
         }
         p = p.getParent();
-        if (p.getNameCount() == 0 || p == null) {
+        if ( p.getNameCount() == 0 || p == null ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path pomPath = p.resolve(POM_FILENAME);
-        if (!Files.exists(pomPath)) {
+        final org.kie.commons.java.nio.file.Path pomPath = p.resolve( POM_FILENAME );
+        if ( !Files.exists( pomPath ) ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path kmodulePath = p.resolve(KMODULE_FILENAME);
-        if (!Files.exists(kmodulePath)) {
+        final org.kie.commons.java.nio.file.Path kmodulePath = p.resolve( KMODULE_FILENAME );
+        if ( !Files.exists( kmodulePath ) ) {
             return null;
         }
-        return PathFactory.newPath(p.toUri().toString());
+        return PathFactory.newPath( p.getFileName().toString(), p.toUri().toString() );
     }
 
 }

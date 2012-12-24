@@ -24,7 +24,7 @@ public class MigrationPathManager {
     // Generate methods
 
     public Path generatePathForModule(Module jcrModule) {
-        Path path = PathFactory.newPath(
+        Path path = PathFactory.newPath(escapePathEntry(jcrModule.getName()),
                 VFS_PATH_NAMESPACE
                         + escapePathEntry(jcrModule.getName()) + "/");
         register(jcrModule.getUuid(), path);
@@ -32,7 +32,7 @@ public class MigrationPathManager {
     }
 
     public Path generatePathForAsset(Module jcrModule, Asset jcrAsset) {
-        Path path = PathFactory.newPath(
+        Path path = PathFactory.newPath(escapePathEntry(jcrAsset.getName()),
                 VFS_PATH_NAMESPACE
                         + escapePathEntry(jcrModule.getName()) + "/"
                         + escapePathEntry(jcrAsset.getName()) + "/");

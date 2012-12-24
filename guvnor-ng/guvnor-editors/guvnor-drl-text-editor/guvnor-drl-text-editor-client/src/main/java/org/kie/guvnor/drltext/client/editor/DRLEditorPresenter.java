@@ -52,7 +52,7 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
  * This is the default rule editor widget (just text editor based).
  */
 @Dependent
-@WorkbenchEditor(identifier = "DRLEditor", fileTypes = "drl")
+@WorkbenchEditor(identifier = "DRLEditor", fileTypes = "*.drl")
 public class DRLEditorPresenter {
 
     public interface View
