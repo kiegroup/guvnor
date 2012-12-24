@@ -47,13 +47,24 @@ public class M2RepoServiceImpl
     private M2Repository repository;
 
 
-
+    @Override
     public void addJar(InputStream is, GAV gav) {
         repository.addFile(is, gav);
     }
     
+    @Override
+    public InputStream loadJar(String path) {
+        return repository.loadFile(path);
+    }
+    
+    @Override
     public void deleteJar(String[] path) {
         repository.deleteFile(path);
+    }
+    
+    @Override
+    public String loadJarPOM(String path) {
+        return repository.loadPOM(path);
     }
     
     @Override
@@ -87,9 +98,5 @@ public class M2RepoServiceImpl
         return response;
     }
     
-    @Override
-    public String getJarDetails(String path) {
-        return "";
-    }
 
 }

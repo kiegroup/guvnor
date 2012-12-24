@@ -19,11 +19,17 @@ package org.kie.guvnor.m2repo.backend.server;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -143,6 +149,45 @@ public class M2Repository {
               );
         
         return files;
+    }
+    
+    public InputStream loadFile(String path) { 
+        try {
+            return new FileInputStream(new File(path));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public String loadPOM(String path) {
+        try {
+            ZipFile zip = new ZipFile(new File(path));
+
+            for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
+                ZipEntry entry = (ZipEntry)e.nextElement();
+            
+                if(entry.getName().startsWith("META-INF/maven") &&  entry.getName().endsWith("pom.xml")) {
+                    InputStream is = zip.getInputStream(entry);
+                    
+                    InputStreamReader isr = new InputStreamReader(is, "UTF-8");          
+                    StringBuilder sb = new StringBuilder();
+                    for (int c = isr.read(); c != -1; c = isr.read()) {
+                        sb.append((char)c);
+                    }
+                    return sb.toString();
+                }
+            }
+        } catch (ZipException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return null;
     }
     
     protected String toURL(final String repository, GAV gav, String classifier) {

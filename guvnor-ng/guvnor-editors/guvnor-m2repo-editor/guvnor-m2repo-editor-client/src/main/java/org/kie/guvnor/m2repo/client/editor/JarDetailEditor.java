@@ -35,8 +35,9 @@ public class JarDetailEditor extends FormStylePopup {
         ResizableTextArea pomInfoTextArea = new ResizableTextArea();
         pomInfoTextArea.setText(pomInfo);
         pomInfoTextArea.setEnabled(false);
+        pomInfoTextArea.setSize("700px", "500px");
         
-        addAttribute( "KJar Info:", pomInfoTextArea);
+        addAttribute( "", pomInfoTextArea);
 /*        addAttribute( "Artifact info:", new HTML(""));
         addAttribute( "Dependency info:", new HTML(""));*/
 

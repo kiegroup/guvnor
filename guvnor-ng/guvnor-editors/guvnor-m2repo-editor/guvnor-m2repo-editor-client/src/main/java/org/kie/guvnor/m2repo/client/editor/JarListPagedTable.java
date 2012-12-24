@@ -193,9 +193,10 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                     @Override
                     public void callback( final String response) {
                         JarDetailEditor editor = new JarDetailEditor(response);
+                        editor.setSize("800px", "600px");
                         editor.show();
                     }
-                } ).getJarDetails(row.getPath());
+                } ).loadJarPOM(row.getPath());
             }
         } );
         columnPicker.addColumn( openColumn,

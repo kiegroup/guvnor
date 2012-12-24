@@ -234,4 +234,19 @@ public class M2RepositoryTest {
         assertFalse("Found unexpected file after calling M2Repository.deleteFile()", found1);
         assertFalse("Found unexpected file after calling M2Repository.deleteFile()", found2);        
     }
+    
+    @Test
+    public void testLoadPom() throws Exception {
+        M2Repository repo = new M2Repository();
+        repo.init();
+
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        repo.addFile(is, gav);
+        
+        String pom = repo.loadPOM("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        
+        assertNotNull(pom);
+        assertTrue(pom.length() > 0);
+    }
 }
