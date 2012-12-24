@@ -1,18 +1,18 @@
-package org.kie.guvnor.categories.backend.server;
+package org.kie.guvnor.services.backend.metadata;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.categories.model.Categories;
-import org.kie.guvnor.categories.service.CategoryService;
+import org.kie.guvnor.services.metadata.CategoriesService;
+import org.kie.guvnor.services.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
 @Service
 @ApplicationScoped
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoriesService {
 
     private final XStream xt = new XStream();
 

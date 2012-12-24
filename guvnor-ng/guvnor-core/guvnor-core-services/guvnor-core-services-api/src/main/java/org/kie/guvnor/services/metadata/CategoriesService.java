@@ -1,11 +1,11 @@
-package org.kie.guvnor.categories.service;
+package org.kie.guvnor.services.metadata;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.categories.model.Categories;
+import org.kie.guvnor.services.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface CategoryService {
+public interface CategoriesService {
 
     void save( final Path path,
                final Categories content );

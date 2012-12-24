@@ -22,8 +22,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.categories.model.Categories;
-import org.kie.guvnor.categories.service.CategoryService;
+import org.kie.guvnor.services.metadata.CategoriesService;
+import org.kie.guvnor.services.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -65,7 +65,7 @@ public class CategoriesEditorPresenter {
     private View view;
 
     @Inject
-    private Caller<CategoryService> categoryService;
+    private Caller<CategoriesService> categoryService;
 
     private Path path;
 

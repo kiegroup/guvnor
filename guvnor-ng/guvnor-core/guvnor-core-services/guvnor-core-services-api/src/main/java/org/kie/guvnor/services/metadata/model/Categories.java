@@ -1,4 +1,4 @@
-package org.kie.guvnor.categories.model;
+package org.kie.guvnor.services.metadata.model;
 
 import java.util.Iterator;
 

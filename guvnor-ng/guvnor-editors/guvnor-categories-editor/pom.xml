@@ -29,8 +29,6 @@
   <name>Categories Editor</name>
 
   <modules>
-    <module>guvnor-categories-editor-api</module>
     <module>guvnor-categories-editor-client</module>
-    <module>guvnor-categories-editor-backend</module>
   </modules>
 </project>

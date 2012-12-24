@@ -15,6 +15,10 @@
   <description>Guvnor Core Serices API</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.commons</groupId>
