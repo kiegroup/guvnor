@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.m2repo.client.editor;
+package org.kie.guvnor.m2repo.model;
 
 /**
  * This is a central location for all form fields use in HTML forms for submission to the file servlet.
@@ -23,7 +23,7 @@ package org.kie.guvnor.m2repo.client.editor;
 public class HTMLFileManagerFields {
 
     public static final String FORM_FIELD_REPOSITORY = "exportWholeRepository";
-    public static final String FORM_FIELD_UUID = "attachmentUUID";
+    public static final String FORM_FIELD_PATH = "attachmentPath";
     public static final String FILE_UPLOAD_FIELD_NAME_IMPORT = "importFile";
     public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
     public static final String CLASSIC_DRL_IMPORT = "classicDRLFile";

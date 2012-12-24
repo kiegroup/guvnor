@@ -18,6 +18,7 @@ package org.kie.guvnor.m2repo.client.editor;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.FormStyleLayout;
 
@@ -133,7 +134,7 @@ public class M2RepoEditorView
         //up.setWidth("100px");
         up.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add(getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, "uuid"));
+        fields.add(getHiddenField(HTMLFileManagerFields.FORM_FIELD_PATH, "path"));
 
         Button ok = new Button("upload");
         ok.addClickHandler(new ClickHandler() {

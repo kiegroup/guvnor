@@ -33,6 +33,7 @@ import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
 import org.kie.guvnor.commons.ui.client.tables.SelectionColumn;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
+import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.LoadingPopup;
@@ -214,7 +215,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
             public void update(int index,
                     JarListPageRow row,
                                String value) {
-                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + "uuid",
+                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_PATH + "=" + row.getPath(),
                         "downloading",
                         "resizable=no,scrollbars=yes,status=no" );
             }

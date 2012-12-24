@@ -58,6 +58,11 @@ public class M2RepoServiceImpl
     }
     
     @Override
+    public String getJarName(String path) {
+        return repository.getFileName(path);
+    }
+    
+    @Override
     public void deleteJar(String[] path) {
         repository.deleteFile(path);
     }

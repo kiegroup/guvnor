@@ -16,9 +16,11 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,9 +35,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.drools.kproject.ReleaseIdImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 
 
@@ -128,4 +132,37 @@ public class FileServlet extends HttpServlet {
         m2RepoService.addJar(fileData, gav);
         uploadItem.getFile().getInputStream().close();
     }    
+    
+    /**
+     * doGet acting like a dispatcher.
+     */
+    protected void doGet(HttpServletRequest req,
+                         HttpServletResponse res) throws ServletException,
+                                                 IOException {
+
+        String path = req.getParameter( HTMLFileManagerFields.FORM_FIELD_PATH );
+
+        if ( path != null ) {
+            processAttachmentDownload( path,
+                                       res );
+        } else {
+            res.sendError( HttpServletResponse.SC_BAD_REQUEST );
+        }
+    }
+
+    protected void processAttachmentDownload(String path,
+                                             HttpServletResponse response) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        IOUtils.copy(m2RepoService.loadJar(path), output);
+        
+        String fileName = m2RepoService.getJarName(path);
+        
+        response.setContentType( "application/x-download" );
+        response.setHeader( "Content-Disposition",
+                            "attachment; filename=" + fileName + ";" );
+        response.setContentLength( output.size() );
+        response.getOutputStream().write( output.toByteArray() );
+        response.getOutputStream().flush();
+    }
+
 }

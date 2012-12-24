@@ -161,6 +161,10 @@ public class M2Repository {
         return null;
     }
     
+    public String getFileName(String path) { 
+        return (new File(path)).getName();        
+    }
+    
     public String loadPOM(String path) {
         try {
             ZipFile zip = new ZipFile(new File(path));

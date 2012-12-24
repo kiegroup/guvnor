@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.m2repo.client.editor;
 
+import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.uberfire.client.common.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
@@ -51,7 +52,7 @@ public class AttachmentFileWidget extends Composite {
         FileUpload up = new FileUpload();
         up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_UUID,
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
                                     "uuid" ) );
 
         Button ok = new Button( "upload");

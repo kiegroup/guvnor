@@ -29,6 +29,7 @@ import org.kie.guvnor.m2repo.model.JarListPageRow;
 public interface M2RepoService {
     public void addJar(InputStream is, GAV gav);
     public InputStream loadJar(String path);
+    public String getJarName(String path);
     public void deleteJar(String[] path);
     public String loadJarPOM(String path);
     public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters );
