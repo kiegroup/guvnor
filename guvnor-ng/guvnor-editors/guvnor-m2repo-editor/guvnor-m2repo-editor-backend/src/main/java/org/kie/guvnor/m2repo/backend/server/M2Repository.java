@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -113,8 +114,10 @@ public class M2Repository {
     
     public boolean deleteFile(String[] fullPaths) {
         for (String fullPath : fullPaths) {
+            System.out.println("-------deleting: " + fullPath);
             final File file = new File(fullPath);
             if (file.exists()) {
+                System.out.println("-------deleted: " + fullPath);
                 file.delete();
             }
         }
@@ -194,6 +197,33 @@ public class M2Repository {
         return null;
     }
     
+    public static String loadPOM(InputStream is) {
+        try {
+            ZipInputStream zis = new ZipInputStream(is);
+            ZipEntry entry;
+
+            while ((entry = zis.getNextEntry()) != null)  {
+                System.out.println("entry: " + entry.getName() + ", " + entry.getSize());
+                        // consume all the data from this entry
+                if(entry.getName().startsWith("META-INF/maven") &&  entry.getName().endsWith("pom.xml")) {
+                    InputStreamReader isr = new InputStreamReader(zis, "UTF-8");          
+                    StringBuilder sb = new StringBuilder();
+                    for (int c = isr.read(); c != -1; c = isr.read()) {
+                        sb.append((char)c);
+                    }
+                    return sb.toString();
+                }
+            }
+        } catch (ZipException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
     protected String toURL(final String repository, GAV gav, String classifier) {
         final StringBuilder sb = new StringBuilder(repository);
 

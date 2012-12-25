@@ -114,6 +114,16 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         } );
 
     }
+    
+    /**
+     * Refresh table programmatically
+     */
+    public void refresh() {
+        selectionModel.clear();
+        cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
+                true );
+    }
+    
     @Override
     protected void doCellTable() {
 
@@ -248,6 +258,8 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         m2RepoService.call( new RemoteCallback<Void>() {
             @Override
             public void callback(Void v) {
+                Window.alert("Deleted successfully");
+                refresh();
             }
         } ).deleteJar(getSelectedJars());
     }   
@@ -271,9 +283,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
     
     @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
-        selectionModel.clear();
-        cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
-                true );
+        refresh();
     }
     
     @UiHandler("auditButton")

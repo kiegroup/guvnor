@@ -249,4 +249,18 @@ public class M2RepositoryTest {
         assertNotNull(pom);
         assertTrue(pom.length() > 0);
     }
+    
+    @Test
+    public void testLoadPomFromInputStream() throws Exception {
+        M2Repository repo = new M2Repository();
+        repo.init();
+
+        GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
+        InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        
+        String pom = repo.loadPOM(is);
+        
+        assertNotNull(pom);
+        assertTrue(pom.length() > 0);
+    }
 }

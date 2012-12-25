@@ -16,11 +16,13 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,12 +38,14 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.drools.kproject.ReleaseIdImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -53,6 +57,9 @@ public class FileServlet extends HttpServlet {
 
     @Inject
     private M2RepoService m2RepoService;
+    
+    @Inject
+    private M2Repository repository;
     /**
      * Posting accepts content of various types -
      * may be an attachement for an asset, or perhaps a repository import to process.
@@ -64,38 +71,39 @@ public class FileServlet extends HttpServlet {
         response.setContentType( "text/html" );
         FormData uploadItem = getFormData(request);
 
-        if ( uploadItem.getFile() != null /*&& uploadItem.getUuid() != null*/ ) {
+        
+        if ( uploadItem.getFile() != null) {
             response.getWriter().write( processUpload( uploadItem ) );
-
             return;
         }
+        
         response.getWriter().write( "NO-SCRIPT-DATA" );
-
     }
 
     private String processUpload(FormData uploadItem) throws IOException {
 
         // If the file it doesn't exist.
-        if ( "".equals( uploadItem.getFile().getName() ) ) {
-            throw new IOException( "No file selected." );
+        if ("".equals(uploadItem.getFile().getName())) {
+            throw new IOException("No file selected.");
         }
 
-        uploadFile( uploadItem );
+        String processResult = uploadFile(uploadItem);
         uploadItem.getFile().getInputStream().close();
-
-        return "OK";
+        
+        return processResult;
     }
     
     /**
      * Get the form data from the inbound request.
      */
     @SuppressWarnings("rawtypes")
-    public static FormData getFormData(HttpServletRequest request) {
+    public static FormData getFormData(HttpServletRequest request) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
         upload.setHeaderEncoding( "UTF-8" );
 
         FormData data = new FormData();
+        GAV emptyGAV = new GAV();
         try {
             List items = upload.parseRequest( request );
             Iterator it = items.iterator();
@@ -104,12 +112,22 @@ public class FileServlet extends HttpServlet {
                 if ( !item.isFormField() ) {
                     data.setFile( item );
                 }
-/*                if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_UUID ) ) {
-                    data.setUuid( item.getString() );
-                } else if ( !item.isFormField() ) {
-                    data.setFile( item );
-                }*/
+                
+                if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.GROUP_ID ) ) {
+                    emptyGAV.setGroupId(item.getString());
+                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
+                    emptyGAV.setArtifactId(item.getString());
+                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION ) ) {
+                    emptyGAV.setVersion(item.getString());
+                }
             }
+            
+            if(emptyGAV.getArtifactId() == null || emptyGAV.getGroupId() == null || emptyGAV.getVersion() == null) {
+                data.setGav(null);
+            } else {
+                data.setGav(emptyGAV);
+            }
+
             return data;
         } catch ( FileUploadException e ) {
             //TODO
@@ -119,18 +137,40 @@ public class FileServlet extends HttpServlet {
         return null;
     }
     
-    /**
-     * This attach a file to an asset.
-     */
-    public void uploadFile(FormData uploadItem) throws IOException {
+    public String uploadFile(FormData uploadItem) throws IOException {
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
-        
-        //TODO: Get GAV from client
-        GAV gav = new GAV("", "", "");
+        GAV gav = uploadItem.getGav();
 
-        m2RepoService.addJar(fileData, gav);
-        uploadItem.getFile().getInputStream().close();
+        try {
+            if (gav == null) {
+                if (!fileData.markSupported()) {
+                    fileData = new BufferedInputStream(fileData);
+                }
+
+                fileData.mark(fileData.available()); // is available() safe?
+                String pom = M2Repository.loadPOM(fileData);
+                fileData.reset();
+
+                if (pom != null) {
+                    Model model = new MavenXpp3Reader().read(new StringReader(pom));
+                    gav = new GAV(model.getGroupId(), model.getArtifactId(),  model.getVersion());
+                }
+
+                if (gav != null) {
+                    m2RepoService.addJar(fileData, uploadItem.getGav());
+                    uploadItem.getFile().getInputStream().close();
+
+                    return "OK";
+                } else {
+                    return "NO VALID POM";
+                }
+            }
+        } catch (XmlPullParserException e) {
+        } catch (IOException ioe) {
+        }
+
+        return "INTERNAL ERROR";
     }    
     
     /**

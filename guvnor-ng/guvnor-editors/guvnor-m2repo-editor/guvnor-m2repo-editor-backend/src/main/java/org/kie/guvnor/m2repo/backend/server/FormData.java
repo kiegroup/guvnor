@@ -17,10 +17,11 @@
 package org.kie.guvnor.m2repo.backend.server;
 
 import org.apache.commons.fileupload.FileItem;
+import org.kie.guvnor.m2repo.model.GAV;
 
 public class FormData {
     private FileItem file;
-    //private String   uuid;
+    private GAV   gav;
 
     public FileItem getFile() {
         return file;
@@ -31,6 +32,14 @@ public class FormData {
     }
 
     public void closeFile() {
+    }
+
+    public GAV getGav() {
+        return gav;
+    }
+
+    public void setGav(GAV gav) {
+        this.gav = gav;
     }
 
 }
