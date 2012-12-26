@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.config;
-
-import java.util.Map;
-
-import org.jboss.errai.bus.server.annotations.Remote;
+package org.kie.guvnor.metadata.client.widget;
 
 /**
- *
+ * This represents an event of a category being selected.
+ * This means the category widget can be used in several different places.
  */
-@Remote
-public interface ConfigurationService {
+public interface CategorySelectHandler {
 
-    Map<String, String> loadPreferences();
+    /**
+     * When a category is selected.
+     */
+    public void selected( final String selectedPath );
 
-    long getTimestamp();
 }

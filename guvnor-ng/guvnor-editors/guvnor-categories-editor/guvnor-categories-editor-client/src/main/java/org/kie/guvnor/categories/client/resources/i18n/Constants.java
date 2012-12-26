@@ -28,12 +28,6 @@ public interface Constants
 
     public static final Constants INSTANCE = GWT.create( Constants.class );
 
-    String NoCategoriesCreatedYetTip();
-
-    String Refresh();
-
-    String PleaseWait();
-
     String EditCategories();
 
     String CategoriesPurposeTip();

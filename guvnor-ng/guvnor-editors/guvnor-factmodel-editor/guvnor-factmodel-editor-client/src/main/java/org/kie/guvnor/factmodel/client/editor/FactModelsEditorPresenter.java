@@ -32,6 +32,9 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
@@ -75,10 +78,15 @@ public class FactModelsEditorPresenter {
     private Caller<FactModelService> factModelService;
 
     @Inject
+    private Caller<MetadataService> metadataService;
+
+    @Inject
     private View view;
 
     @Inject
     private ViewSourceView viewSource;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
 
     @Inject
     private MultiPageEditor multiPage;
@@ -107,6 +115,25 @@ public class FactModelsEditorPresenter {
             @Override
             public void onLostFocus() {
                 viewSource.clear();
+            }
+        } );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                if ( metadataWidget.getContent() == null ) {
+                    metadataService.call( new RemoteCallback<Metadata>() {
+                        @Override
+                        public void callback( final Metadata metadata ) {
+                            metadataWidget.setContent( metadata, false );
+                        }
+                    } ).getMetadata( path );
+                }
+            }
+
+            @Override
+            public void onLostFocus() {
             }
         } );
     }
@@ -140,8 +167,7 @@ public class FactModelsEditorPresenter {
                 view.setNotDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).save( path,
-                  view.getContent() );
+        } ).save( path, view.getContent() /*, metadataWidget.getContent() */ );
     }
 
     @WorkbenchPartView

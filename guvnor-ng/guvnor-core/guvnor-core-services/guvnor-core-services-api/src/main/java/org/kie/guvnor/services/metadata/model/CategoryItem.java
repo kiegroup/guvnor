@@ -92,4 +92,20 @@ public class CategoryItem {
     public void setName( final String name ) {
         this.name = name;
     }
+
+    public String getFullPath() {
+        if ( getName() == null ) {
+            return "";
+        }
+
+        if ( getParent() == null ) {
+            return getName();
+        }
+        final String parent = getParent().getFullPath();
+        if ( parent.equals( "" ) ) {
+            return getName();
+        }
+
+        return parent + "/" + getName();
+    }
 }

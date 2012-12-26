@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.config;
+package org.kie.guvnor.metadata.client.resources;
 
-import java.util.Map;
-
-import org.jboss.errai.bus.server.annotations.Remote;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  *
  */
-@Remote
-public interface ConfigurationService {
+public interface ImageResources
+        extends ClientBundle {
 
-    Map<String, String> loadPreferences();
+    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    long getTimestamp();
+    @Source("images/category_small.gif")
+    ImageResource categorySmall();
+
+    @Source("images/desc.gif")
+    ImageResource desc();
+
+    @Source("images/trash.gif")
+    ImageResource trash();
+
+    @Source("images/spinner.gif")
+    ImageResource spinner();
 }

@@ -78,6 +78,8 @@ public interface CommonConstants
 
     String SourceTabTitle();
 
+    String MetadataTabTitle();
+
     String DiscardUnsavedData();
 
     String ItemCreatedSuccessfully();

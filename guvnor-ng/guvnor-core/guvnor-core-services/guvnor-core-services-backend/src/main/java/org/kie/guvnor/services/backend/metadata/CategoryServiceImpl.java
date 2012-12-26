@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.services.metadata.model.Categories;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
@@ -18,6 +19,9 @@ public class CategoryServiceImpl implements CategoriesService {
 
     @Inject
     private VFSService vfs;
+
+    @Inject
+    private Paths paths;
 
     @Override
     public void save( final Path path,
@@ -43,6 +47,8 @@ public class CategoryServiceImpl implements CategoriesService {
 
     @Override
     public Categories getCategoriesFromResouce( final Path resource ) {
-        return null;
+        final org.kie.commons.java.nio.file.Path categoriesPath = paths.convert( resource ).getRoot().resolve( "categories.xml" );
+
+        return getContent( paths.convert( categoriesPath ) );
     }
 }

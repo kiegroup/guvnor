@@ -32,5 +32,6 @@
     <module>guvnor-decorated-grid-widget</module>
     <module>guvnor-view-source-widget</module>
     <module>guvnor-error-messages-widget</module>
+    <module>guvnor-metadata-widget</module>
   </modules>
 </project>

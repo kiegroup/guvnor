@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.config;
-
-import java.util.Map;
+package org.kie.guvnor.services.metadata;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.vfs.Path;
 
 /**
  *
  */
 @Remote
-public interface ConfigurationService {
+public interface MetadataService {
 
-    Map<String, String> loadPreferences();
+    Metadata getMetadata( final Path resource );
 
-    long getTimestamp();
 }

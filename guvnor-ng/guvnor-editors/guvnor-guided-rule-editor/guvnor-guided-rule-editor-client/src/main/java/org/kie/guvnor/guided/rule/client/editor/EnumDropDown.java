@@ -27,8 +27,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ListBox;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.client.common.DropDownValueChanged;
@@ -121,7 +121,7 @@ public class EnumDropDown
                             fillDropDown( currentValue, response );
                         }
                     }, GuidedRuleEditorService.class ).loadDropDownExpression( dropData.getValuePairs(),
-                                                                           dropData.getQueryExpression() );
+                                                                               dropData.getQueryExpression() );
                 }
             } );
 

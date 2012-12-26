@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend.config;
+package org.kie.guvnor.services.backend.metadata;
 
-import java.util.Date;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.services.config.ConfigurationService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
-public class ConfigurationServiceImpl implements ConfigurationService {
+public class MetadataServiceImpl implements MetadataService {
 
     @Override
-    public Map<String, String> loadPreferences() {
-        Map<String, String> preferences = ApplicationPreferencesLoader.load();
-        ApplicationPreferencesInitializer.setSystemProperties( preferences );
-        return preferences;
-
-    }
-
-    @Override
-    public long getTimestamp() {
-        return new Date().getTime();
+    public Metadata getMetadata( final Path resource ) {
+        final Metadata metadata = new Metadata();
+        metadata.setPath( resource );
+        return metadata;
     }
 }
