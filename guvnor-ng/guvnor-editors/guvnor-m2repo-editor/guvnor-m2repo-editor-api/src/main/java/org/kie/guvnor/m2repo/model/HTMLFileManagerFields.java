@@ -30,6 +30,6 @@ public class HTMLFileManagerFields {
     public static final String REPO_CONFIG_REPOSITORY = "exportRepositoryConfig";
     public static final String GROUP_ID = "groupId";   
     public static final String ARTIFACT_ID = "artifactId";   
-    public static final String VERSION = "version";   
+    public static final String VERSION_ID = "versionId";   
    
 }

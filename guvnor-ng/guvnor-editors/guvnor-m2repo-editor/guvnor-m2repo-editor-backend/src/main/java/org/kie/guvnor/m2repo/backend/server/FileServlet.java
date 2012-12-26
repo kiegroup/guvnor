@@ -117,7 +117,7 @@ public class FileServlet extends HttpServlet {
                     emptyGAV.setGroupId(item.getString());
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
                     emptyGAV.setArtifactId(item.getString());
-                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION ) ) {
+                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION_ID ) ) {
                     emptyGAV.setVersion(item.getString());
                 }
             }

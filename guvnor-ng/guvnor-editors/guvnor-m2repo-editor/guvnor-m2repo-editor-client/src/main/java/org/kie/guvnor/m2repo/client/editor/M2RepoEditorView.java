@@ -21,6 +21,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.FormStyleLayout;
+import org.uberfire.client.common.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,10 +31,14 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -134,7 +139,9 @@ public class M2RepoEditorView
         //up.setWidth("100px");
         up.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add(getHiddenField(HTMLFileManagerFields.FORM_FIELD_PATH, "path"));
+/*        fields.add(getHiddenField(HTMLFileManagerFields.GROUP_ID, ""));
+        fields.add(getHiddenField(HTMLFileManagerFields.ARTIFACT_ID, ""));
+        fields.add(getHiddenField(HTMLFileManagerFields.VERSION_ID, ""));*/
 
         Button ok = new Button("upload");
         ok.addClickHandler(new ClickHandler() {
@@ -144,6 +151,24 @@ public class M2RepoEditorView
             }
         });
 
+        form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+            public void onSubmitComplete(SubmitCompleteEvent event) {
+                if("OK".equalsIgnoreCase(event.getResults())) {
+                    LoadingPopup.close();
+                    Window.alert("Uploaded successfully");
+                } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {
+                    LoadingPopup.close();
+                    Window.alert("The Jar does not contain a valid POM file. Please specify GAV info manually.");
+                    GAVEditor gavEditor = new GAVEditor(form);
+                    gavEditor.show();
+                } else {
+                    LoadingPopup.close();
+                    Window.alert("Upload failed:" + event.getResults());              
+                }
+
+            }
+        });
+        
         fields.add(up);
         fields.add(ok);
 
