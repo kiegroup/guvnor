@@ -215,8 +215,8 @@ public class M2RepositoryTest {
         assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);
         assertTrue("Did not find expected file after calling M2Repository.addFile()", found2);
         
-        boolean result = repo.deleteFile(new String[]{"repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar"});
-        result = repo.deleteFile(new String[]{"repository\\releases\\org\\jboss\\arquillian\\core\\arquillian-core-api\\1.0.2.Final\\arquillian-core-api-1.0.2.Final.jar"});
+        boolean result = repo.deleteFile(new String[]{"repository"+ File.separator + "releases"+ File.separator + "org"+ File.separator + "kie"+ File.separator + "guvnor"+ File.separator + "guvnor-m2repo-editor-backend"+ File.separator + "6.0.0-SNAPSHOT"+ File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar"});
+        result = repo.deleteFile(new String[]{"repository"+ File.separator + "releases"+ File.separator + "org"+ File.separator + "jboss"+ File.separator + "arquillian"+ File.separator + "core"+ File.separator + "arquillian-core-api"+ File.separator + "1.0.2.Final"+ File.separator + "arquillian-core-api-1.0.2.Final.jar"});
         
         found1 = false;
         found2 = false;
@@ -244,7 +244,7 @@ public class M2RepositoryTest {
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         repo.addFile(is, gav);
         
-        String pom = repo.loadPOM("repository\\releases\\org\\kie\\guvnor\\guvnor-m2repo-editor-backend\\6.0.0-SNAPSHOT\\guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
+        String pom = repo.loadPOM("repository"+ File.separator + "releases"+ File.separator + "org"+ File.separator + "kie"+ File.separator + "guvnor"+ File.separator + "guvnor-m2repo-editor-backend"+ File.separator + "6.0.0-SNAPSHOT"+ File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         
         assertNotNull(pom);
         assertTrue(pom.length() > 0);
