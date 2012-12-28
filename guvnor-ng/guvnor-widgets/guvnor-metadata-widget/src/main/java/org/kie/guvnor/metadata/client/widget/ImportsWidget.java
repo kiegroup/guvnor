@@ -33,10 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.header.HeaderConfig;
-import org.kie.guvnor.commons.data.header.HeaderConfigAdvanced;
-import org.kie.guvnor.commons.data.header.HeaderConfigBasic;
-import org.kie.guvnor.commons.data.header.HeaderConfigHelper;
+import org.kie.guvnor.commons.data.imports.ImportsConfig;
+import org.kie.guvnor.commons.data.imports.ImportsConfigBuilder;
+import org.kie.guvnor.commons.data.imports.ImportsConfigHelper;
 import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -49,9 +48,8 @@ import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
-import static org.kie.guvnor.commons.data.header.HeaderType.*;
 
-public class HeaderConfigWidget extends DirtyableComposite {
+public class ImportsWidget extends DirtyableComposite {
 
     private final Metadata    metadata;
     private final SimplePanel layout;
@@ -60,21 +58,13 @@ public class HeaderConfigWidget extends DirtyableComposite {
 
     private ProjectResources projectResources = null;
 
-    public HeaderConfigWidget( final Metadata metadata,
-                               final boolean readOnly ) {
+    public ImportsWidget( final Metadata metadata,
+                          final boolean readOnly ) {
         this.metadata = checkNotNull( "metadata", metadata );
         this.readOnly = readOnly;
         this.layout = new SimplePanel();
 
-        if ( metadata.getHeaderType().equals( NONE ) ) {
-            metadata.setHeaderConfig( new HeaderConfigBasic() );
-        }
-
-        if ( metadata.getHeaderType().equals( BASIC ) ) {
-            setupBasic();
-        } else {
-            setupAdvanced();
-        }
+        setupBasic();
 
         initWidget( layout );
     }
@@ -126,7 +116,7 @@ public class HeaderConfigWidget extends DirtyableComposite {
                                     if ( importList.isItemSelected( i ) ) {
                                         makeDirty();
                                         importList.removeItem( i );
-                                        ( (HeaderConfigBasic) metadata.getHeaderConfig() ).removeImport( i );
+                                        metadata.getImportsConfig().removeImport( i );
                                         i--;
                                     }
                                 }
@@ -162,7 +152,7 @@ public class HeaderConfigWidget extends DirtyableComposite {
     private void setupAdvanced() {
         layout.clear();
 
-        final String originalContent = metadata.getHeaderConfig().toString();
+        final String originalContent = metadata.getImportsConfig().toString();
         final VerticalPanel main = new VerticalPanel();
 
         final DecoratedTextArea area = new DecoratedTextArea();
@@ -172,15 +162,11 @@ public class HeaderConfigWidget extends DirtyableComposite {
         area.setWidth( "95%" );
         area.setVisibleLines( 8 );
 
-        area.setText( metadata.getHeaderConfig().toString() );
+        area.setText( originalContent );
         area.addChangeHandler( new ChangeHandler() {
             public void onChange( final ChangeEvent event ) {
                 makeDirty();
-                if ( metadata.getHeaderType().equals( ADVANCED ) ) {
-                    ( (HeaderConfigAdvanced) metadata.getHeaderConfig() ).setContent( area.getText() );
-                } else {
-                    metadata.setHeaderConfig( new HeaderConfigAdvanced( area.getText() ) );
-                }
+                metadata.setImportsConfig( area.getText() );
             }
         } );
 
@@ -191,17 +177,17 @@ public class HeaderConfigWidget extends DirtyableComposite {
                 public void onClick( ClickEvent event ) {
                     if ( !originalContent.equals( area.getText() ) ) {
                         makeDirty();
-                        final HeaderConfig config = HeaderConfigHelper.parseHeaderConfig( area.getText() );
-                        if ( config == null || config.getType().equals( NONE ) ) {
+                        final ImportsConfigBuilder builder = ImportsConfigHelper.parseImports( area.getText() );
+                        if ( builder == null ) {
                             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicView() );
-                        } else if ( config.getType().equals( ADVANCED ) && ( (HeaderConfigAdvanced) config ).hasDeclaredTypes() ) {
+                        } else if ( builder.hasDeclaredTypes() ) {
                             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewDeclaredTypes() );
-                        } else if ( config.getType().equals( ADVANCED ) && ( (HeaderConfigAdvanced) config ).hasFunctions() ) {
+                        } else if ( builder.hasFunctions() ) {
                             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewFunctions() );
-                        } else if ( config.getType().equals( ADVANCED ) && ( (HeaderConfigAdvanced) config ).hasRules() ) {
+                        } else if ( builder.hasRules() ) {
                             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewRules() );
                         } else if ( Window.confirm( Constants.INSTANCE.SwitchToGuidedModeForPackageEditing() ) ) {
-                            metadata.setHeaderConfig( config );
+                            metadata.setImportsConfig( builder.build() );
                             setupBasic();
                         }
                     } else {
@@ -219,7 +205,7 @@ public class HeaderConfigWidget extends DirtyableComposite {
 
     private void doImports() {
         importList.clear();
-        for ( final HeaderConfigBasic.Import i : ( (HeaderConfigBasic) metadata.getHeaderConfig() ).getImports() ) {
+        for ( final ImportsConfig.Import i : metadata.getImportsConfig().getImports() ) {
             importList.addItem( i.getType() );
         }
     }
@@ -261,7 +247,7 @@ public class HeaderConfigWidget extends DirtyableComposite {
                 public void onClick( ClickEvent event ) {
                     makeDirty();
                     final String type = ( !"".equals( className.getText() ) ) ? className.getText() : factList.getItemText( factList.getSelectedIndex() );
-                    ( (HeaderConfigBasic) metadata.getHeaderConfig() ).addImport( new HeaderConfigBasic.Import( type ) );
+                    metadata.getImportsConfig().addImport( new ImportsConfig.Import( type ) );
                     doImports();
                     pop.hide();
                 }

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.commons.data.header;
+package org.kie.guvnor.commons.data.imports;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,20 +21,18 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.kie.guvnor.commons.data.header.HeaderType.*;
-
 @Portable
-public class HeaderConfigBasic implements HeaderConfig {
+public class ImportsConfig {
 
     private List<Import> imports = new ArrayList<Import>();
     private List<Global> globals = new ArrayList<Global>();
 
-    public HeaderConfigBasic() {
+    public ImportsConfig() {
 
     }
 
-    public HeaderConfigBasic( final List<Import> imports,
-                              final List<Global> globals ) {
+    public ImportsConfig( final List<Import> imports,
+                          final List<Global> globals ) {
         this.imports = new ArrayList<Import>( imports );
         this.globals = new ArrayList<Global>( globals );
     }
@@ -54,7 +52,7 @@ public class HeaderConfigBasic implements HeaderConfig {
         }
 
         for ( final Iterator<Global> it = globals.iterator(); it.hasNext(); ) {
-            final HeaderConfigBasic.Global g = it.next();
+            final ImportsConfig.Global g = it.next();
             sb.append( "global " ).append( g.getType() ).append( ' ' ).append( g.getName() );
             if ( it.hasNext() ) {
                 sb.append( '\n' );
@@ -62,11 +60,6 @@ public class HeaderConfigBasic implements HeaderConfig {
         }
 
         return sb.toString();
-    }
-
-    @Override
-    public HeaderType getType() {
-        return BASIC;
     }
 
     public void removeImport( final int i ) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.data.header;
+package org.kie.guvnor.commons.data.imports;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +22,24 @@ import java.util.List;
 /**
  *
  */
-public class HeaderConfigBuilder {
+public class ImportsConfigBuilder {
 
-    private List<HeaderConfigBasic.Import> imports          = new ArrayList<HeaderConfigBasic.Import>();
-    private List<HeaderConfigBasic.Global> globals          = new ArrayList<HeaderConfigBasic.Global>();
-    private boolean                        hasRules         = false;
-    private boolean                        hasDeclaredTypes = false;
-    private boolean                        hasFunctions     = false;
-    private String                         content          = null;
+    private List<ImportsConfig.Import> imports          = new ArrayList<ImportsConfig.Import>();
+    private List<ImportsConfig.Global> globals          = new ArrayList<ImportsConfig.Global>();
+    private boolean                    hasRules         = false;
+    private boolean                    hasDeclaredTypes = false;
+    private boolean                    hasFunctions     = false;
+    private String                     content          = null;
 
-    public HeaderConfigBuilder( final String content ) {
+    public ImportsConfigBuilder( final String content ) {
         this.content = content;
     }
 
-    public void addImport( final HeaderConfigBasic.Import i ) {
+    public void addImport( final ImportsConfig.Import i ) {
         imports.add( i );
     }
 
-    public void addGlobal( final HeaderConfigBasic.Global global ) {
+    public void addGlobal( final ImportsConfig.Global global ) {
         globals.add( global );
     }
 
@@ -55,10 +55,22 @@ public class HeaderConfigBuilder {
         hasFunctions = true;
     }
 
-    public HeaderConfig build() {
+    public boolean hasRules() {
+        return hasRules;
+    }
+
+    public boolean hasDeclaredTypes() {
+        return hasDeclaredTypes;
+    }
+
+    public boolean hasFunctions() {
+        return hasFunctions;
+    }
+
+    public ImportsConfig build() {
         if ( hasRules || hasDeclaredTypes || hasFunctions ) {
-            return new HeaderConfigAdvanced( content, hasRules, hasDeclaredTypes, hasFunctions );
+            return null;
         }
-        return new HeaderConfigBasic( imports, globals );
+        return new ImportsConfig( imports, globals );
     }
 }

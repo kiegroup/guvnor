@@ -164,7 +164,7 @@ public class MetadataWidget extends Composite {
 
         startSection( Constants.INSTANCE.ConfigurationSection() );
 
-        addRow( new HeaderConfigWidget( metadata, readOnly ) );
+        addRow( new ImportsWidget( metadata, readOnly ) );
 
         endSection( true );
 

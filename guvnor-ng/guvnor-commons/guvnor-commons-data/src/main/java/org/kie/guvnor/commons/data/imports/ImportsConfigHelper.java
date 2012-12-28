@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.data.header;
+package org.kie.guvnor.commons.data.imports;
 
 /**
- * Utility methods to parse a Module Header
+ * Utility methods to parse an Imports Config
  */
-public final class HeaderConfigHelper {
+public final class ImportsConfigHelper {
 
-    private HeaderConfigHelper() {
+    private ImportsConfigHelper() {
 
     }
 
-    /**
-     * Attempt to parse out a model, if it can't, it will return null in which
-     * case an "advanced" editor should be used.
-     */
-    public static HeaderConfig parseHeaderConfig( final String header ) {
-        if ( header == null || header.trim().equals( "" ) ) {
-            return new HeaderConfigBasic();
+    public static ImportsConfigBuilder parseImports( final String content ) {
+        if ( content == null || content.trim().equals( "" ) ) {
+            return new ImportsConfigBuilder( "" );
         } else {
-            final HeaderConfigBuilder builder = new HeaderConfigBuilder( header );
+            final ImportsConfigBuilder builder = new ImportsConfigBuilder( content );
 
-            final String[] lines = header.split( "\\n" );
+            final String[] lines = content.split( "\\n" );
 
             for ( int i = 0; i < lines.length; i++ ) {
                 String tk = lines[ i ].trim();
@@ -45,14 +41,14 @@ public final class HeaderConfigHelper {
                         if ( tk.endsWith( ";" ) ) {
                             tk = tk.substring( 0, tk.length() - 1 );
                         }
-                        builder.addImport( new HeaderConfigBasic.Import( tk ) );
+                        builder.addImport( new ImportsConfig.Import( tk ) );
                     } else if ( tk.startsWith( "global" ) ) {
                         tk = tk.substring( 6 ).trim();
                         if ( tk.endsWith( ";" ) ) {
                             tk = tk.substring( 0, tk.length() - 1 );
                         }
                         final String[] gt = tk.split( "\\s+" );
-                        builder.addGlobal( new HeaderConfigBasic.Global( gt[ 0 ], gt[ 1 ] ) );
+                        builder.addGlobal( new ImportsConfig.Global( gt[ 0 ], gt[ 1 ] ) );
                     } else if ( tk.startsWith( "rule" ) ) {
                         builder.setHasRules();
                         break;
@@ -68,7 +64,7 @@ public final class HeaderConfigHelper {
                 }
             }
 
-            return builder.build();
+            return builder;
         }
 
     }
