@@ -24,6 +24,7 @@
 
   <source path='events'/>
   <source path='factconstraints'/>
+  <source path='header'/>
   <source path='project'/>
   <source path='workingset'/>
   <source path='tables'/>

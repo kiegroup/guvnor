@@ -39,4 +39,10 @@ public interface ImageResources
 
     @Source("images/spinner.gif")
     ImageResource spinner();
+
+    @Source("images/new_item_disabled.gif")
+    ImageResource newItemDisabled();
+
+    @Source("images/home_icon.gif")
+    ImageResource homeIcon();
 }

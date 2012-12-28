@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.commons.data.header.HeaderConfig;
+import org.kie.guvnor.commons.data.header.HeaderType;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -47,6 +49,8 @@ public class Metadata {
 
     private List<String>           categories = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
+
+    private HeaderConfig headerConfig = null;
 
     public Path getPath() {
         return path;
@@ -150,5 +154,20 @@ public class Metadata {
 
     public void eraseDiscussion() {
         discussion.clear();
+    }
+
+    public HeaderType getHeaderType() {
+        if ( headerConfig == null ) {
+            return HeaderType.NONE;
+        }
+        return headerConfig.getType();
+    }
+
+    public HeaderConfig getHeaderConfig() {
+        return headerConfig;
+    }
+
+    public void setHeaderConfig( final HeaderConfig headerConfig ) {
+        this.headerConfig = headerConfig;
     }
 }

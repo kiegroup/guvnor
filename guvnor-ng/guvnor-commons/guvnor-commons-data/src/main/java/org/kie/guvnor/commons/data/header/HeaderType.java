@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.service;
+package org.kie.guvnor.commons.data.header;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.uberfire.backend.vfs.Path;
-
-@Remote
-public interface DataModelService {
-
-    DataModelOracle getDataModel( final Path project );
-
-    String[] getFactTypes( final Path project );
-
+public enum HeaderType {
+    NONE, BASIC, ADVANCED;
 }

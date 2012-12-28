@@ -27,15 +27,32 @@ public class Images {
     }
 
     public Image NewItem() {
-        Image image = new Image( ItemImages.INSTANCE.newItem() );
+        final Image image = new Image( ItemImages.INSTANCE.newItem() );
         image.setAltText( Constants.INSTANCE.NewItem() );
         return image;
     }
 
     public Image Trash() {
-        Image image = new Image( ImageResources.INSTANCE.trash() );
+        final Image image = new Image( ImageResources.INSTANCE.trash() );
         image.setAltText( Constants.INSTANCE.Trash() );
         return image;
     }
 
+    public Image NewItemDisabled() {
+        final Image image = new Image( ImageResources.INSTANCE.newItemDisabled() );
+        image.setAltText( Constants.INSTANCE.NewItemDisabled() );
+        return image;
+    }
+
+    public Image TrashDisabled() {
+        final Image image = new Image( ImageResources.INSTANCE.trash() );
+        image.setAltText( Constants.INSTANCE.Trash() );
+        return image;
+    }
+
+    public Image Home() {
+        final Image image = new Image( ImageResources.INSTANCE.homeIcon() );
+        image.setAltText( Constants.INSTANCE.Home() );
+        return image;
+    }
 }

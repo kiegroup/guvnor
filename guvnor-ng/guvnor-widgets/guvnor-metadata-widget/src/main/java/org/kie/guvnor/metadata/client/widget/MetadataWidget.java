@@ -162,6 +162,12 @@ public class MetadataWidget extends Composite {
 
         endSection( true );
 
+        startSection( Constants.INSTANCE.ConfigurationSection() );
+
+        addRow( new HeaderConfigWidget( metadata, readOnly ) );
+
+        endSection( true );
+
         startSection( Constants.INSTANCE.VersionHistory() );
 
         if ( !readOnly ) {
@@ -176,9 +182,9 @@ public class MetadataWidget extends Composite {
         layout.add( new RuleDocumentWidget( metadata, readOnly ) );
     }
 
-//    private void addRow( Widget widget ) {
-//        this.currentSection.addRow( widget );
-//    }
+    private void addRow( Widget widget ) {
+        this.currentSection.addRow( widget );
+    }
 
     private void addAttribute( final String string,
                                final Widget widget ) {
