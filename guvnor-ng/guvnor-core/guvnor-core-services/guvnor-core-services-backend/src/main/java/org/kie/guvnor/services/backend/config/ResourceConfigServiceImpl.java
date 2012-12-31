@@ -16,27 +16,19 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import java.util.Date;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.services.config.ConfigurationService;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
-public class ConfigurationServiceImpl implements ConfigurationService {
+public class ResourceConfigServiceImpl implements ResourceConfigService {
 
     @Override
-    public Map<String, String> loadPreferences() {
-        Map<String, String> preferences = ApplicationPreferencesLoader.load();
-        ApplicationPreferencesInitializer.setSystemProperties( preferences );
-        return preferences;
-
-    }
-
-    @Override
-    public long getTimestamp() {
-        return new Date().getTime();
+    public ResourceConfig getConfig( final Path resource ) {
+        return new ResourceConfig();
     }
 }

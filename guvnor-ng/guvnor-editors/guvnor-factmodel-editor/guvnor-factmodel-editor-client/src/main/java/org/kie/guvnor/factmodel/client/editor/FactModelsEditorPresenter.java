@@ -27,12 +27,15 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -81,10 +84,15 @@ public class FactModelsEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
+    private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
     private View view;
 
     @Inject
     private ViewSourceView viewSource;
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -100,6 +108,7 @@ public class FactModelsEditorPresenter {
     public void init() {
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
+
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
@@ -115,6 +124,25 @@ public class FactModelsEditorPresenter {
             @Override
             public void onLostFocus() {
                 viewSource.clear();
+            }
+        } );
+
+        multiPage.addPage( new Page( resourceConfigWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
+            @Override
+            public void onFocus() {
+                if ( resourceConfigWidget.getContent() == null ) {
+                    resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+                        @Override
+                        public void callback( final ResourceConfig config ) {
+                            resourceConfigWidget.setContent( config, false );
+                        }
+                    } ).getConfig( path );
+                }
+            }
+
+            @Override
+            public void onLostFocus() {
             }
         } );
 

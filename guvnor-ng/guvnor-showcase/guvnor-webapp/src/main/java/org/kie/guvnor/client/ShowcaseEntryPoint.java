@@ -37,7 +37,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.services.config.ConfigurationService;
+import org.kie.guvnor.services.config.AppConfigService;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
@@ -58,7 +58,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 public class ShowcaseEntryPoint {
 
     @Inject
-    private Caller<ConfigurationService> configService;
+    private Caller<AppConfigService> appConfigService;
 
     @Inject
     private WorkbenchMenuBarPresenter menubar;
@@ -80,7 +80,7 @@ public class ShowcaseEntryPoint {
     }
 
     private void loadPreferences() {
-        configService.call( new RemoteCallback<Map<String, String>>() {
+        appConfigService.call( new RemoteCallback<Map<String, String>>() {
             @Override
             public void callback( final Map<String, String> response ) {
                 ApplicationPreferences.setUp( response );

@@ -162,12 +162,6 @@ public class MetadataWidget extends Composite {
 
         endSection( true );
 
-        startSection( Constants.INSTANCE.ConfigurationSection() );
-
-        addRow( new ImportsWidget( metadata, readOnly ) );
-
-        endSection( true );
-
         startSection( Constants.INSTANCE.VersionHistory() );
 
         if ( !readOnly ) {
@@ -179,7 +173,9 @@ public class MetadataWidget extends Composite {
 
         endSection( true );
 
-        layout.add( new RuleDocumentWidget( metadata, readOnly ) );
+        layout.add( new CommentWidget( metadata, readOnly ) );
+
+        layout.add( new DiscussionWidget( metadata, readOnly ) );
     }
 
     private void addRow( Widget widget ) {

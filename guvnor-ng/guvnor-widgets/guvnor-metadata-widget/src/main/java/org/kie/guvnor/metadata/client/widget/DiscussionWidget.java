@@ -22,7 +22,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -36,10 +35,11 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.security.AppRoles;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.i18n.Constants;
-import org.kie.guvnor.services.config.ConfigurationService;
+import org.kie.guvnor.services.config.AppConfigService;
 import org.kie.guvnor.services.metadata.model.DiscussionRecord;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
+import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
@@ -49,7 +49,8 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 /**
  * Does the discussion panel for artifacts.
  */
-public class DiscussionWidget extends Composite {
+public class DiscussionWidget
+        extends DirtyableComposite {
 
     private final Identity identity;
     private VerticalPanel commentList      = new VerticalPanel();
@@ -136,6 +137,7 @@ public class DiscussionWidget extends Composite {
                 public void onClick( final ClickEvent sender ) {
                     if ( Window.confirm( Constants.INSTANCE.EraseAllCommentsWarning() ) ) {
                         metadata.eraseDiscussion();
+                        makeDirty();
                         updateCommentList();
                     }
                 }
@@ -190,8 +192,9 @@ public class DiscussionWidget extends Composite {
             public void callback( final Long timestamp ) {
                 showNewCommentButton();
                 metadata.addDiscussion( new DiscussionRecord( timestamp, identity.getName(), text ) );
+                makeDirty();
                 updateCommentList();
             }
-        }, ConfigurationService.class ).getTimestamp();
+        }, AppConfigService.class ).getTimestamp();
     }
 }

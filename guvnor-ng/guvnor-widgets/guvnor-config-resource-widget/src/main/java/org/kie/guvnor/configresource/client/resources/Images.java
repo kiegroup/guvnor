@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.metadata.client.resources;
+package org.kie.guvnor.configresource.client.resources;
 
 import com.google.gwt.user.client.ui.Image;
 import org.kie.guvnor.commons.ui.client.resources.ItemImages;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.configresource.client.resources.i18n.Constants;
 
 public class Images {
 
@@ -38,4 +38,21 @@ public class Images {
         return image;
     }
 
+    public Image NewItemDisabled() {
+        final Image image = new Image( ImageResources.INSTANCE.newItemDisabled() );
+        image.setAltText( Constants.INSTANCE.NewItemDisabled() );
+        return image;
+    }
+
+    public Image TrashDisabled() {
+        final Image image = new Image( ImageResources.INSTANCE.trash() );
+        image.setAltText( Constants.INSTANCE.Trash() );
+        return image;
+    }
+
+    public Image Home() {
+        final Image image = new Image( ImageResources.INSTANCE.homeIcon() );
+        image.setAltText( Constants.INSTANCE.Home() );
+        return image;
+    }
 }

@@ -33,5 +33,6 @@
     <module>guvnor-view-source-widget</module>
     <module>guvnor-error-messages-widget</module>
     <module>guvnor-metadata-widget</module>
+    <module>guvnor-config-resource-widget</module>
   </modules>
 </project>

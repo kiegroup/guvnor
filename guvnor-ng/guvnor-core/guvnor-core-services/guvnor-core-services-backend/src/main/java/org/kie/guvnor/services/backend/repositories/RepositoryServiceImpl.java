@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.guvnor.services.config.ConfigurationService;
+import org.kie.guvnor.services.config.AppConfigService;
 import org.kie.guvnor.services.repositories.Repository;
 import org.kie.guvnor.services.repositories.RepositoryService;
 
@@ -19,13 +19,13 @@ import org.kie.guvnor.services.repositories.RepositoryService;
 public class RepositoryServiceImpl implements RepositoryService {
 
     private final String PREFERENCE_REPOSITORY = "repository";
-    private final String PREFERENCE_BOOTSTRAP = "bootstrap";
-    private final String PREFERENCE_SCHEME = "scheme";
+    private final String PREFERENCE_BOOTSTRAP  = "bootstrap";
+    private final String PREFERENCE_SCHEME     = "scheme";
 
     private List<Repository> repositories = null;
 
     @Inject
-    private ConfigurationService configService;
+    private AppConfigService appConfigService;
 
     @Inject
     private RepositoryFactory repositoryFactory;
@@ -41,7 +41,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     private void initialiseRepositories() {
         this.repositories = new LinkedList<Repository>();
         final Map<String, Map<String, String>> repositoriesParameters = new HashMap<String, Map<String, String>>();
-        final Map<String, String> preferences = configService.loadPreferences();
+        final Map<String, String> preferences = appConfigService.loadPreferences();
 
         //Collate repository definitions
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {

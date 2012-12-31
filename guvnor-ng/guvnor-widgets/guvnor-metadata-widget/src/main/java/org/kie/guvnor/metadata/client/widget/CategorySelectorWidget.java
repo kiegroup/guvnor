@@ -37,7 +37,8 @@ import org.uberfire.client.common.SmallLabel;
  * <p/>
  * It is intended to work with the meta data form.
  */
-public class CategorySelectorWidget extends DirtyableComposite {
+public class CategorySelectorWidget
+        extends DirtyableComposite {
 
     private Metadata data;
     private DirtyableFlexTable layout = new DirtyableFlexTable();

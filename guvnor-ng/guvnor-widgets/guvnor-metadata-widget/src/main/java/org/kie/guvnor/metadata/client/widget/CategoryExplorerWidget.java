@@ -186,13 +186,4 @@ public class CategoryExplorerWidget
     private String getPath( final TreeItem item ) {
         return (String) item.getUserObject();
     }
-
-    public String getSelectedPath() {
-        return this.selectedPath;
-    }
-
-    public boolean isSelected() {
-        return this.selectedPath != null;
-    }
-
 }

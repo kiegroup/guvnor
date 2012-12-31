@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.commons.data.imports.ImportsConfig;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -48,9 +47,6 @@ public class Metadata {
 
     private List<String>           categories = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
-
-    private ImportsConfig importsConfig        = new ImportsConfig();
-    private String        importsConfigContent = null;
 
     public Path getPath() {
         return path;
@@ -154,17 +150,5 @@ public class Metadata {
 
     public void eraseDiscussion() {
         discussion.clear();
-    }
-
-    public ImportsConfig getImportsConfig() {
-        return importsConfig;
-    }
-
-    public void setImportsConfig( final ImportsConfig importsConfig ) {
-        this.importsConfig = importsConfig;
-    }
-
-    public void setImportsConfig( final String text ) {
-        this.importsConfigContent = text;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.metadata.client.widget;
+package org.kie.guvnor.configresource.client.widget;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -33,15 +33,15 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.imports.ImportsConfig;
-import org.kie.guvnor.commons.data.imports.ImportsConfigBuilder;
-import org.kie.guvnor.commons.data.imports.ImportsConfigHelper;
 import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
+import org.kie.guvnor.configresource.client.resources.Images;
+import org.kie.guvnor.configresource.client.resources.i18n.Constants;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.metadata.client.resources.Images;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.config.model.imports.ImportsConfig;
+import org.kie.guvnor.services.config.model.imports.ImportsConfigBuilder;
+import org.kie.guvnor.services.config.model.imports.ImportsConfigHelper;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -51,16 +51,16 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidget extends DirtyableComposite {
 
-    private final Metadata    metadata;
-    private final SimplePanel layout;
-    private final boolean     readOnly;
-    private       ListBox     importList;
+    private final ResourceConfig config;
+    private final SimplePanel    layout;
+    private final boolean        readOnly;
+    private       ListBox        importList;
 
     private ProjectResources projectResources = null;
 
-    public ImportsWidget( final Metadata metadata,
+    public ImportsWidget( final ResourceConfig config,
                           final boolean readOnly ) {
-        this.metadata = checkNotNull( "metadata", metadata );
+        this.config = checkNotNull( "config", config );
         this.readOnly = readOnly;
         this.layout = new SimplePanel();
 
@@ -116,7 +116,7 @@ public class ImportsWidget extends DirtyableComposite {
                                     if ( importList.isItemSelected( i ) ) {
                                         makeDirty();
                                         importList.removeItem( i );
-                                        metadata.getImportsConfig().removeImport( i );
+                                        config.getImportsConfig().removeImport( i );
                                         i--;
                                     }
                                 }
@@ -152,7 +152,7 @@ public class ImportsWidget extends DirtyableComposite {
     private void setupAdvanced() {
         layout.clear();
 
-        final String originalContent = metadata.getImportsConfig().toString();
+        final String originalContent = config.getImportsConfig().toString();
         final VerticalPanel main = new VerticalPanel();
 
         final DecoratedTextArea area = new DecoratedTextArea();
@@ -166,7 +166,7 @@ public class ImportsWidget extends DirtyableComposite {
         area.addChangeHandler( new ChangeHandler() {
             public void onChange( final ChangeEvent event ) {
                 makeDirty();
-                metadata.setImportsConfig( area.getText() );
+                config.setImportsConfig( area.getText() );
             }
         } );
 
@@ -187,7 +187,7 @@ public class ImportsWidget extends DirtyableComposite {
                         } else if ( builder.hasRules() ) {
                             Window.alert( Constants.INSTANCE.CanNotSwitchToBasicViewRules() );
                         } else if ( Window.confirm( Constants.INSTANCE.SwitchToGuidedModeForPackageEditing() ) ) {
-                            metadata.setImportsConfig( builder.build() );
+                            config.setImportsConfig( builder.build() );
                             setupBasic();
                         }
                     } else {
@@ -205,7 +205,7 @@ public class ImportsWidget extends DirtyableComposite {
 
     private void doImports() {
         importList.clear();
-        for ( final ImportsConfig.Import i : metadata.getImportsConfig().getImports() ) {
+        for ( final ImportsConfig.Import i : config.getImportsConfig().getImports() ) {
             importList.addItem( i.getType() );
         }
     }
@@ -226,7 +226,7 @@ public class ImportsWidget extends DirtyableComposite {
                     }
                 }
             }
-        }, DataModelService.class ).getFactTypes( getProjectResources().getProject( metadata.getPath() ) );
+        }, DataModelService.class ).getFactTypes( getProjectResources().getProject( config.getPath() ) );
 
         final InfoPopup info = new InfoPopup( Constants.INSTANCE.TypesInThePackage(),
                                               Constants.INSTANCE.IfNoTypesTip() );
@@ -247,7 +247,7 @@ public class ImportsWidget extends DirtyableComposite {
                 public void onClick( ClickEvent event ) {
                     makeDirty();
                     final String type = ( !"".equals( className.getText() ) ) ? className.getText() : factList.getItemText( factList.getSelectedIndex() );
-                    metadata.getImportsConfig().addImport( new ImportsConfig.Import( type ) );
+                    config.getImportsConfig().addImport( new ImportsConfig.Import( type ) );
                     doImports();
                     pop.hide();
                 }

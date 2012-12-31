@@ -26,7 +26,8 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 
-public class CommentWidget extends DirtyableComposite {
+public class CommentWidget
+        extends DirtyableComposite {
 
     private final DecoratedTextArea text;
 

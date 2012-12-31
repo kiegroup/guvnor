@@ -80,6 +80,8 @@ public interface CommonConstants
 
     String MetadataTabTitle();
 
+    String ConfigTabTitle();
+
     String DiscardUnsavedData();
 
     String ItemCreatedSuccessfully();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.data.imports;
+package org.kie.guvnor.services.config.model.imports;
 
 /**
  * Utility methods to parse an Imports Config

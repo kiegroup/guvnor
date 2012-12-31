@@ -16,17 +16,16 @@
 
 package org.kie.guvnor.services.config;
 
-import java.util.Map;
-
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.uberfire.backend.vfs.Path;
 
 /**
  *
  */
 @Remote
-public interface ConfigurationService {
+public interface ResourceConfigService {
 
-    Map<String, String> loadPreferences();
+    ResourceConfig getConfig( final Path resource );
 
-    long getTimestamp();
 }
