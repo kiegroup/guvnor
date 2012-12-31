@@ -32,7 +32,6 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.xmlpull.v1.XmlPullParserException;
 
 import static java.util.Collections.*;
 
