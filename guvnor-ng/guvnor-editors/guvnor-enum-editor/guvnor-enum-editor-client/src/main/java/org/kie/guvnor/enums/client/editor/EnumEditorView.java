@@ -188,9 +188,6 @@ public class EnumEditorView
 
     @Override
     public boolean confirmClose() {
-        if ( isDirty() ) {
-            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-        }
-        return true;
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 }

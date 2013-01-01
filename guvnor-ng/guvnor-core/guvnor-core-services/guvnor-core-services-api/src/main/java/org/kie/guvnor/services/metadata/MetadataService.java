@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.services.metadata;
 
+import java.util.Map;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
@@ -28,4 +30,5 @@ public interface MetadataService {
 
     Metadata getMetadata( final Path resource );
 
+    Map<String, Object> toMap( final Metadata metadata );
 }

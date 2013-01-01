@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,22 @@
 
 package org.kie.guvnor.configresource.client.widget;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.configresource.client.resources.i18n.Constants;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
+import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
- * This displays the metadata for a versionable artifact. It also captures
+ * This displays the resource config. It also captures
  * edits, but it does not load or save anything itself.
  */
-public class ResourceConfigWidget extends Composite {
+public class ResourceConfigWidget
+        extends DirtyableComposite {
 
     private ResourceConfig config = null;
     private boolean readOnly;
@@ -38,6 +39,7 @@ public class ResourceConfigWidget extends Composite {
 
     private FormStyleLayout currentSection;
     private String          currentSectionName;
+    private ImportsWidget   importsWidget;
 
     public ResourceConfigWidget() {
         layout.setWidth( "100%" );
@@ -54,10 +56,24 @@ public class ResourceConfigWidget extends Composite {
         loadData();
     }
 
+    public boolean isDirty() {
+        return importsWidget.isDirty();
+    }
+
+    public void resetDirty() {
+        importsWidget.resetDirty();
+    }
+
+    public void makeDirty() {
+        importsWidget.makeDirty();
+    }
+
     private void loadData() {
         startSection( Constants.INSTANCE.ImportsSection() );
 
-        addRow( new ImportsWidget( config, readOnly ) );
+        this.importsWidget = new ImportsWidget( config, readOnly );
+
+        addRow( importsWidget );
 
         endSection( false );
     }

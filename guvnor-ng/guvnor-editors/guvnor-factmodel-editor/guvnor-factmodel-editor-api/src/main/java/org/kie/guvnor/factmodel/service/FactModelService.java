@@ -22,6 +22,8 @@ import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -34,4 +36,9 @@ public interface FactModelService
 
     void save( final Path path,
                final FactModels factModels );
+
+    void save( final Path path,
+               final FactModels content,
+               final ResourceConfig config,
+               final Metadata metadata );
 }

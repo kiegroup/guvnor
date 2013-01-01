@@ -37,7 +37,7 @@ public class GuidedDecisionTableEditorView
     private final EventBus localBus = new SimpleEventBus();
 
     private final VerticalPanel panel = new VerticalPanel();
-    private GuidedDecisionTable52 model;
+    private GuidedDecisionTable52     model;
     private GuidedDecisionTableWidget editor;
 
     @Inject
@@ -77,9 +77,6 @@ public class GuidedDecisionTableEditorView
 
     @Override
     public boolean confirmClose() {
-        if ( isDirty() ) {
-            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-        }
-        return true;
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 }

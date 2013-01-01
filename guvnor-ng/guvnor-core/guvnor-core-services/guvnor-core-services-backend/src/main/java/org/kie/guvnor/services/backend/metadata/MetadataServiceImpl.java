@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.services.backend.metadata;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
@@ -32,5 +34,12 @@ public class MetadataServiceImpl implements MetadataService {
         final Metadata metadata = new Metadata();
         metadata.setPath( resource );
         return metadata;
+    }
+
+    @Override
+    public Map<String, Object> toMap( final Metadata metadata ) {
+        return new HashMap<String, Object>() {{
+            put( "some", "content" );
+        }};
     }
 }

@@ -99,10 +99,7 @@ public class FactModelsEditorView
 
     @Override
     public boolean confirmClose() {
-        if ( isDirty() ) {
-            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-        }
-        return true;
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 
     private void addFactModelToStackPanel( final FactMetaModel factMetaModel ) {

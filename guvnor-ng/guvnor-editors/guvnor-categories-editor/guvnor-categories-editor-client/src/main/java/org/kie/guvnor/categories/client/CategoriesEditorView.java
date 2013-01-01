@@ -147,10 +147,7 @@ public class CategoriesEditorView
 
     @Override
     public boolean confirmClose() {
-        if ( isDirty() ) {
-            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-        }
-        return true;
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 
     public class CategoryEditor extends FormStylePopup {

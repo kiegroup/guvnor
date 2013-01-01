@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.services.config;
 
+import java.util.Map;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.uberfire.backend.vfs.Path;
@@ -28,4 +30,5 @@ public interface ResourceConfigService {
 
     ResourceConfig getConfig( final Path resource );
 
+    Map<String, Object> toMap( final ResourceConfig config );
 }

@@ -40,7 +40,9 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -131,14 +133,6 @@ public class FactModelsEditorPresenter {
                                      CommonConstants.INSTANCE.ConfigTabTitle() ) {
             @Override
             public void onFocus() {
-                if ( resourceConfigWidget.getContent() == null ) {
-                    resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
-                        @Override
-                        public void callback( final ResourceConfig config ) {
-                            resourceConfigWidget.setContent( config, false );
-                        }
-                    } ).getConfig( path );
-                }
             }
 
             @Override
@@ -150,14 +144,6 @@ public class FactModelsEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                if ( metadataWidget.getContent() == null ) {
-                    metadataService.call( new RemoteCallback<Metadata>() {
-                        @Override
-                        public void callback( final Metadata metadata ) {
-                            metadataWidget.setContent( metadata, false );
-                        }
-                    } ).getMetadata( path );
-                }
             }
 
             @Override
@@ -185,17 +171,31 @@ public class FactModelsEditorPresenter {
                                  modelNameHelper );
             }
         } ).loadContent( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata, false );
+            }
+        } ).getMetadata( path );
+
+        resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+            @Override
+            public void callback( final ResourceConfig config ) {
+                resourceConfigWidget.setContent( config, false );
+            }
+        } ).getConfig( path );
     }
 
     @OnSave
     public void onSave() {
         factModelService.call( new RemoteCallback<Path>() {
             @Override
-            public void callback( Path response ) {
+            public void callback( final Path response ) {
                 view.setNotDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).save( path, view.getContent() /*, metadataWidget.getContent() */ );
+        } ).save( path, view.getContent(), resourceConfigWidget.getContent(), metadataWidget.getContent() );
     }
 
     @WorkbenchPartView
@@ -206,6 +206,19 @@ public class FactModelsEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
+    }
+
+    @IsDirty
+    public boolean isDirty() {
+        return ( view.isDirty() || resourceConfigWidget.isDirty() || metadataWidget.isDirty() );
+    }
+
+    @OnMayClose
+    public boolean checkIfDirty() {
+        if ( isDirty() ) {
+            return view.confirmClose();
+        }
+        return true;
     }
 
     @WorkbenchPartTitle

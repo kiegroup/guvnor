@@ -34,8 +34,8 @@ public class GuidedRuleEditorView
 
     private final EventBus localBus = new SimpleEventBus();
 
-    private final VerticalPanel panel = new VerticalPanel();
-    private RuleModeller modeller = null;
+    private final VerticalPanel panel    = new VerticalPanel();
+    private       RuleModeller  modeller = null;
 
     public GuidedRuleEditorView() {
         panel.setWidth( "100%" );
@@ -70,10 +70,6 @@ public class GuidedRuleEditorView
 
     @Override
     public boolean confirmClose() {
-        if ( isDirty() ) {
-            return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-        }
-        return true;
-
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 }

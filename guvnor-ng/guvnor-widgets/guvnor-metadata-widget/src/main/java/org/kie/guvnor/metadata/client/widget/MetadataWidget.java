@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -24,7 +26,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -33,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.metadata.client.resources.i18n.Constants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
+import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.SmallLabel;
 
@@ -42,7 +44,8 @@ import static org.kie.commons.validation.PortablePreconditions.*;
  * This displays the metadata for a versionable artifact. It also captures
  * edits, but it does not load or save anything itself.
  */
-public class MetadataWidget extends Composite {
+public class MetadataWidget
+        extends DirtyableComposite {
 
     private Metadata metadata = null;
     private boolean readOnly;
@@ -50,6 +53,8 @@ public class MetadataWidget extends Composite {
 
     private FormStyleLayout currentSection;
     private String          currentSectionName;
+
+    private List<DirtyableComposite> compositeList = new ArrayList<DirtyableComposite>();
 
     public MetadataWidget() {
         layout.setWidth( "100%" );
@@ -100,6 +105,7 @@ public class MetadataWidget extends Composite {
                           }
 
                           public void setValue( final boolean val ) {
+                              makeDirty();
                               metadata.setDisabled( val );
                           }
                       }, Constants.INSTANCE.DisableTip() ) );
@@ -120,6 +126,7 @@ public class MetadataWidget extends Composite {
                           }
 
                           public void setValue( final String val ) {
+                              makeDirty();
                               metadata.setSubject( val );
                           }
                       }, Constants.INSTANCE.AShortDescriptionOfTheSubjectMatter() ) );
@@ -131,6 +138,7 @@ public class MetadataWidget extends Composite {
                           }
 
                           public void setValue( final String val ) {
+                              makeDirty();
                               metadata.setType( val );
                           }
 
@@ -143,6 +151,7 @@ public class MetadataWidget extends Composite {
                           }
 
                           public void setValue( final String val ) {
+                              makeDirty();
                               metadata.setExternalRelation( val );
                           }
 
@@ -155,6 +164,7 @@ public class MetadataWidget extends Composite {
                           }
 
                           public void setValue( final String val ) {
+                              makeDirty();
                               metadata.setExternalSource( val );
                           }
 
@@ -173,9 +183,23 @@ public class MetadataWidget extends Composite {
 
         endSection( true );
 
-        layout.add( new CommentWidget( metadata, readOnly ) );
+        layout.add( commentWidget() );
 
-        layout.add( new DiscussionWidget( metadata, readOnly ) );
+        layout.add( discussionWidget() );
+    }
+
+    private Widget commentWidget() {
+        final CommentWidget widget = new CommentWidget( metadata, readOnly );
+        compositeList.add( widget );
+
+        return widget;
+    }
+
+    private Widget discussionWidget() {
+        final DiscussionWidget widget = new DiscussionWidget( metadata, readOnly );
+        compositeList.add( widget );
+
+        return widget;
     }
 
     private void addRow( Widget widget ) {
@@ -216,6 +240,23 @@ public class MetadataWidget extends Composite {
 
     private Widget categories() {
         return new CategorySelectorWidget( metadata, this.readOnly );
+    }
+
+    public boolean isDirty() {
+        for ( final DirtyableComposite widget : compositeList ) {
+            if ( widget.isDirty() ) {
+                return true;
+            }
+        }
+
+        return dirtyflag;
+    }
+
+    public void resetDirty() {
+        for ( final DirtyableComposite widget : compositeList ) {
+            widget.resetDirty();
+        }
+        this.dirtyflag = false;
     }
 
     /**

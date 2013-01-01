@@ -17,10 +17,12 @@
 package org.kie.guvnor.factmodel.backend.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -29,6 +31,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
@@ -37,8 +40,12 @@ import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 import static java.util.Collections.*;
 
@@ -51,12 +58,22 @@ public class FactModelServiceImpl
         implements FactModelService {
 
     @Inject
-    private VFSService vfs;
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
+
+    @Inject
+    private MetadataService metadataService;
+
+    @Inject
+    private ResourceConfigService resourceConfigService;
 
     @Override
     public FactModelContent loadContent( final Path path ) {
         try {
-            final List<FactMetaModel> models = toModel( vfs.readAllString( path ) );
+            final List<FactMetaModel> models = toModel( ioService.readAllString( paths.convert( path ) ) );
             final FactModels ms = new FactModels();
             ms.getModels().addAll( models );
 
@@ -80,7 +97,19 @@ public class FactModelServiceImpl
     @Override
     public void save( final Path path,
                       final FactModels factModels ) {
-        vfs.write( path, toDRL( factModels ) );
+        save( path, factModels, null, null );
+    }
+
+    @Override
+    public void save( final Path path,
+                      final FactModels content,
+                      final ResourceConfig config,
+                      final Metadata metadata ) {
+
+        final Map<String, Object> attrs = new HashMap<String, Object>( resourceConfigService.toMap( config ) );
+        attrs.putAll( metadataService.toMap( metadata ) );
+
+        ioService.write( paths.convert( path ), toDRL( content ), attrs );
     }
 
     @Override
