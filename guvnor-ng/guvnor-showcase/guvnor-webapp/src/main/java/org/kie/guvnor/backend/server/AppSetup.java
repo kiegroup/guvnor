@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend;
+package org.kie.guvnor.backend.server;
 
 import java.net.URI;
 import java.util.Collection;
