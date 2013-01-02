@@ -57,15 +57,22 @@ public class ResourceConfigWidget
     }
 
     public boolean isDirty() {
+        if ( importsWidget == null ) {
+            return false;
+        }
         return importsWidget.isDirty();
     }
 
     public void resetDirty() {
-        importsWidget.resetDirty();
+        if ( importsWidget != null ) {
+            importsWidget.resetDirty();
+        }
     }
 
     public void makeDirty() {
-        importsWidget.makeDirty();
+        if ( importsWidget != null ) {
+            importsWidget.makeDirty();
+        }
     }
 
     private void loadData() {

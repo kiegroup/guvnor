@@ -16,7 +16,6 @@
 package org.kie.guvnor.services.config.model.imports;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,38 +24,23 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ImportsConfig {
 
     private List<Import> imports = new ArrayList<Import>();
-    private List<Global> globals = new ArrayList<Global>();
 
     public ImportsConfig() {
 
     }
 
-    public ImportsConfig( final List<Import> imports,
-                          final List<Global> globals ) {
+    public ImportsConfig( final List<Import> imports ) {
         this.imports = new ArrayList<Import>( imports );
-        this.globals = new ArrayList<Global>( globals );
     }
 
     public List<Import> getImports() {
         return imports;
     }
 
-    public List<Global> getGlobals() {
-        return globals;
-    }
-
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         for ( final Import i : imports ) {
             sb.append( "import " ).append( i.getType() ).append( '\n' );
-        }
-
-        for ( final Iterator<Global> it = globals.iterator(); it.hasNext(); ) {
-            final ImportsConfig.Global g = it.next();
-            sb.append( "global " ).append( g.getType() ).append( ' ' ).append( g.getName() );
-            if ( it.hasNext() ) {
-                sb.append( '\n' );
-            }
         }
 
         return sb.toString();
@@ -68,32 +52,6 @@ public class ImportsConfig {
 
     public void addImport( final Import i ) {
         imports.add( i );
-    }
-
-    @Portable
-    public static class Global {
-
-        private String type;
-        private String name;
-
-        public Global() {
-
-        }
-
-        public Global( final String type,
-                       final String name ) {
-            this.type = type;
-            this.name = name;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
-
     }
 
     @Portable

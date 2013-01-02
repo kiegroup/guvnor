@@ -32,6 +32,7 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
@@ -101,15 +102,29 @@ public class FactModelServiceImpl
     }
 
     @Override
-    public void save( final Path path,
+    public void save( final Path resource,
                       final FactModels content,
                       final ResourceConfig config,
                       final Metadata metadata ) {
 
-        final Map<String, Object> attrs = new HashMap<String, Object>( resourceConfigService.toMap( config ) );
-        attrs.putAll( metadataService.toMap( metadata ) );
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        ioService.write( paths.convert( path ), toDRL( content ), attrs );
+        Map<String, Object> attrs;
+
+        try {
+            attrs = ioService.readAttributes( path );
+        } catch ( final NoSuchFileException ex ) {
+            attrs = new HashMap<String, Object>();
+        }
+
+        if ( config != null ) {
+            attrs = resourceConfigService.configAttrs( attrs, config );
+        }
+        if ( metadata != null ) {
+            attrs = metadataService.configAttrs( attrs, metadata );
+        }
+
+        ioService.write( path, toDRL( content ), attrs );
     }
 
     @Override

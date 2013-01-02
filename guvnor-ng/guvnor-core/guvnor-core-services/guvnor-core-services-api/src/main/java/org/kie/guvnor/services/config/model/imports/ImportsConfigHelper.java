@@ -43,12 +43,7 @@ public final class ImportsConfigHelper {
                         }
                         builder.addImport( new ImportsConfig.Import( tk ) );
                     } else if ( tk.startsWith( "global" ) ) {
-                        tk = tk.substring( 6 ).trim();
-                        if ( tk.endsWith( ";" ) ) {
-                            tk = tk.substring( 0, tk.length() - 1 );
-                        }
-                        final String[] gt = tk.split( "\\s+" );
-                        builder.addGlobal( new ImportsConfig.Global( gt[ 0 ], gt[ 1 ] ) );
+                        builder.setHasGlobal();
                     } else if ( tk.startsWith( "rule" ) ) {
                         builder.setHasRules();
                         break;

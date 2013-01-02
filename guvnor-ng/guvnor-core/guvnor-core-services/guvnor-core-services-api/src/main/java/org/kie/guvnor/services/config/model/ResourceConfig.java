@@ -28,8 +28,9 @@ public class ResourceConfig {
 
     private Path path;
 
-    private ImportsConfig importsConfig        = new ImportsConfig();
-    private String        importsConfigContent = null;
+    private ImportsConfig importsConfig = new ImportsConfig();
+
+    private String importsConfigContent = null;
 
     public Path getPath() {
         return path;
@@ -37,6 +38,10 @@ public class ResourceConfig {
 
     public ImportsConfig getImportsConfig() {
         return importsConfig;
+    }
+
+    public String getStringContent() {
+        return importsConfigContent;
     }
 
     public void setImportsConfig( final ImportsConfig importsConfig ) {

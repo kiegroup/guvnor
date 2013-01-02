@@ -16,30 +16,130 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.kie.guvnor.services.backend.config.attribute.ConfigAttributes;
+import org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil;
+import org.kie.guvnor.services.backend.config.attribute.ConfigView;
 import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.config.model.imports.ImportsConfig;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static java.util.Collections.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil.*;
 
 @Service
 @ApplicationScoped
 public class ResourceConfigServiceImpl implements ResourceConfigService {
 
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
+
     @Override
     public ResourceConfig getConfig( final Path resource ) {
-        return new ResourceConfig();
+        checkNotNull( "resource", resource );
+
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+        ioService.readAttributes( path );
+
+        final ConfigView configView = ioService.getFileAttributeView( path, ConfigView.class );
+
+        final ImportsConfig importsConfig = new ImportsConfig();
+        for ( final String i : configView.readAttributes().imports() ) {
+            importsConfig.addImport( new ImportsConfig.Import( i ) );
+        }
+
+        final ResourceConfig result = new ResourceConfig();
+        result.setImportsConfig( importsConfig );
+        result.setImportsConfig( configView.readAttributes().content() );
+
+        return result;
     }
 
     @Override
-    public Map<String, Object> toMap( final ResourceConfig config ) {
-        return new HashMap<String, Object>() {{
-            put( "other", "content" );
+    public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
+                                            final ResourceConfig config ) {
+        checkNotNull( "config", config );
+
+        final List<String> imports = new ArrayList<String>() {{
+            for ( int i = 0; i < config.getImportsConfig().getImports().size(); i++ ) {
+                add( i, config.getImportsConfig().getImports().get( i ).getType() );
+            }
         }};
+
+        final Map<String, Object> attrs = cleanup( _attrs );
+
+        attrs.putAll( ConfigAttributesUtil.toMap( new ConfigAttributes() {
+            @Override
+            public List<String> imports() {
+                return imports;
+            }
+
+            @Override
+            public String content() {
+                return config.getStringContent();
+            }
+
+            @Override
+            public FileTime lastModifiedTime() {
+                return null;
+            }
+
+            @Override
+            public FileTime lastAccessTime() {
+                return null;
+            }
+
+            @Override
+            public FileTime creationTime() {
+                return null;
+            }
+
+            @Override
+            public boolean isRegularFile() {
+                return false;
+            }
+
+            @Override
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Override
+            public boolean isSymbolicLink() {
+                return false;
+            }
+
+            @Override
+            public boolean isOther() {
+                return false;
+            }
+
+            @Override
+            public long size() {
+                return 0;
+            }
+
+            @Override
+            public Object fileKey() {
+                return null;
+            }
+        }, "*" ) );
+
+        return attrs;
     }
 }

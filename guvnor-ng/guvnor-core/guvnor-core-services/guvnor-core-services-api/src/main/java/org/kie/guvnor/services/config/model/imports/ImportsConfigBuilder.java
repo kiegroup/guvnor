@@ -25,10 +25,10 @@ import java.util.List;
 public class ImportsConfigBuilder {
 
     private List<ImportsConfig.Import> imports          = new ArrayList<ImportsConfig.Import>();
-    private List<ImportsConfig.Global> globals          = new ArrayList<ImportsConfig.Global>();
     private boolean                    hasRules         = false;
     private boolean                    hasDeclaredTypes = false;
     private boolean                    hasFunctions     = false;
+    private boolean                    hasGlobal        = false;
     private String                     content          = null;
 
     public ImportsConfigBuilder( final String content ) {
@@ -37,10 +37,6 @@ public class ImportsConfigBuilder {
 
     public void addImport( final ImportsConfig.Import i ) {
         imports.add( i );
-    }
-
-    public void addGlobal( final ImportsConfig.Global global ) {
-        globals.add( global );
     }
 
     public void setHasRules() {
@@ -53,6 +49,14 @@ public class ImportsConfigBuilder {
 
     public void setHasFunctions() {
         hasFunctions = true;
+    }
+
+    public void setHasGlobal() {
+        hasGlobal = true;
+    }
+
+    public boolean hasGlobal() {
+        return hasGlobal;
     }
 
     public boolean hasRules() {
@@ -68,9 +72,10 @@ public class ImportsConfigBuilder {
     }
 
     public ImportsConfig build() {
-        if ( hasRules || hasDeclaredTypes || hasFunctions ) {
+        if ( hasRules || hasDeclaredTypes || hasFunctions || hasGlobal ) {
             return null;
         }
-        return new ImportsConfig( imports, globals );
+        return new ImportsConfig( imports );
     }
+
 }

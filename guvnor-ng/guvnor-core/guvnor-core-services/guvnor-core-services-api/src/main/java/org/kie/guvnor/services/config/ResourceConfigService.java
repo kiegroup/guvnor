@@ -30,5 +30,6 @@ public interface ResourceConfigService {
 
     ResourceConfig getConfig( final Path resource );
 
-    Map<String, Object> toMap( final ResourceConfig config );
+    Map<String, Object> configAttrs( final Map<String, Object> attrs,
+                                     final ResourceConfig config );
 }

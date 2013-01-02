@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.metadata;
+package org.kie.guvnor.services.backend.config.attribute;
 
-import java.util.Map;
+import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.services.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
+import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 
 /**
  *
  */
-@Remote
-public interface MetadataService {
+public interface ConfigAttributes extends BasicFileAttributes {
 
-    Metadata getMetadata( final Path resource );
+    List<String> imports();
 
-    Map<String, Object> configAttrs( final Map<String, Object> attrs,
-                                     final Metadata metadata );
+    String content();
 }
