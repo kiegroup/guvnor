@@ -37,6 +37,7 @@ import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
 import org.kie.guvnor.configresource.client.resources.Images;
 import org.kie.guvnor.configresource.client.resources.i18n.Constants;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.config.model.imports.ImportsConfig;
@@ -52,9 +53,9 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 public class ImportsWidget extends DirtyableComposite {
 
     private final ResourceConfig config;
-    private final SimplePanel    layout;
-    private final boolean        readOnly;
-    private       ListBox        importList;
+    private final SimplePanel layout;
+    private final boolean readOnly;
+    private ListBox importList;
 
     private ProjectResources projectResources = null;
 
@@ -217,16 +218,17 @@ public class ImportsWidget extends DirtyableComposite {
         final ListBox factList = new ListBox();
         factList.addItem( Constants.INSTANCE.loadingList() );
 
-        MessageBuilder.createCall( new RemoteCallback<String[]>() {
-            public void callback( final String[] types ) {
+        MessageBuilder.createCall( new RemoteCallback<DataModelOracle>() {
+            public void callback( final DataModelOracle oracle ) {
                 factList.clear();
+                final String[] types = oracle.getFactTypes();
                 for ( int i = 0; i < types.length; i++ ) {
                     if ( types[ i ].indexOf( '.' ) > -1 ) {
                         factList.addItem( types[ i ] );
                     }
                 }
             }
-        }, DataModelService.class ).getFactTypes( getProjectResources().getProject( config.getPath() ) );
+        }, DataModelService.class ).getDataModel( getProjectResources().getProject( config.getPath() ) );
 
         final InfoPopup info = new InfoPopup( Constants.INSTANCE.TypesInThePackage(),
                                               Constants.INSTANCE.IfNoTypesTip() );

@@ -25,6 +25,4 @@ public interface DataModelService {
 
     DataModelOracle getDataModel( final Path project );
 
-    String[] getFactTypes( final Path project );
-
 }

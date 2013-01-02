@@ -38,11 +38,6 @@ public class DataModelServiceMockImpl
         return makeMockModel();
     }
 
-    @Override
-    public String[] getFactTypes( final Path project ) {
-        return new String[]{ "a.b.c.D", "a.c.x.Y" };
-    }
-
     private DataModelOracle makeMockModel() {
         DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
                 .addFact( "Driver" )
