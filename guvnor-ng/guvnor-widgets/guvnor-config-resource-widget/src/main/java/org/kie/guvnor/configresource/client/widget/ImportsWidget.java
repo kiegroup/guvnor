@@ -218,17 +218,16 @@ public class ImportsWidget extends DirtyableComposite {
         final ListBox factList = new ListBox();
         factList.addItem( Constants.INSTANCE.loadingList() );
 
-        MessageBuilder.createCall( new RemoteCallback<DataModelOracle>() {
-            public void callback( final DataModelOracle oracle ) {
+        MessageBuilder.createCall( new RemoteCallback<String[]>() {
+            public void callback( final String[] types ) {
                 factList.clear();
-                final String[] types = oracle.getFactTypes();
                 for ( int i = 0; i < types.length; i++ ) {
                     if ( types[ i ].indexOf( '.' ) > -1 ) {
                         factList.addItem( types[ i ] );
                     }
                 }
             }
-        }, DataModelService.class ).getDataModel( getProjectResources().getProject( config.getPath() ) );
+        }, DataModelService.class ).getFactTypes( getProjectResources().getProject( config.getPath() ) );
 
         final InfoPopup info = new InfoPopup( Constants.INSTANCE.TypesInThePackage(),
                                               Constants.INSTANCE.IfNoTypesTip() );

@@ -33,13 +33,24 @@ import org.uberfire.backend.vfs.Path;
 public class DataModelServiceMockImpl
         implements DataModelService {
 
-    @Override
-    public DataModelOracle getDataModel( final Path project ) {
-        return makeMockModel();
+    private DataModelOracle oracle;
+
+    public DataModelServiceMockImpl() {
+        makeMockModel();
     }
 
-    private DataModelOracle makeMockModel() {
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+    @Override
+    public String[] getFactTypes( final Path project ) {
+        return this.oracle.getFactTypes();
+    }
+
+    @Override
+    public DataModelOracle getDataModel( final Path project ) {
+        return this.oracle;
+    }
+
+    private void makeMockModel() {
+        oracle = DataModelBuilder.newDataModelBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -83,6 +94,5 @@ public class DataModelServiceMockImpl
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .end()
                 .build();
-        return oracle;
     }
 }
