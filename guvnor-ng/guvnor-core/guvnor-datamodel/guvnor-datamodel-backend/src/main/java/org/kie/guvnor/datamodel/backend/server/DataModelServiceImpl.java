@@ -18,8 +18,10 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
@@ -30,27 +32,40 @@ import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
-public class DataModelServiceMockImpl
+public class DataModelServiceImpl
         implements DataModelService {
 
-    private DataModelOracle oracle;
-
-    public DataModelServiceMockImpl() {
-        makeMockModel();
-    }
+    @Inject
+    private DataModelOracleCache cache;
 
     @Override
     public String[] getFactTypes( final Path project ) {
-        return this.oracle.getFactTypes();
+        PortablePreconditions.checkNotNull( "project",
+                                            project );
+        assertDataModelOracle( project );
+        return cache.getDataModelOracle( project ).getFactTypes();
     }
 
     @Override
     public DataModelOracle getDataModel( final Path project ) {
-        return this.oracle;
+        PortablePreconditions.checkNotNull( "project",
+                                            project );
+        assertDataModelOracle( project );
+        return cache.getDataModelOracle( project );
     }
 
-    private void makeMockModel() {
-        oracle = DataModelBuilder.newDataModelBuilder()
+    private void assertDataModelOracle( final Path project ) {
+        DataModelOracle oracle = cache.getDataModelOracle( project );
+        if ( oracle == null ) {
+            oracle = makeMockModel( project );
+            cache.setDataModelOracle( project,
+                                      oracle );
+        }
+    }
+
+    private DataModelOracle makeMockModel( final Path project ) {
+
+        return DataModelBuilder.newDataModelBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),

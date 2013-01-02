@@ -24,5 +24,6 @@
   <source path='model'/>
   <source path='oracle'/>
   <source path='service'/>
+  <source path='events'/>
 
 </module>
