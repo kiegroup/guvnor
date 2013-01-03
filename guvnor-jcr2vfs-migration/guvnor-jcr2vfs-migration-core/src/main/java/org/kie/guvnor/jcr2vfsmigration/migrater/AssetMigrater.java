@@ -14,6 +14,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.kie.guvnor.factmodel.service.FactModelService;
@@ -31,7 +32,10 @@ public class AssetMigrater {
 
     @Inject
     protected FactModelsMigrater factModelsMigrater;
-
+    
+    @Inject
+    protected GuidedEditorMigrater guidedEditorMigrater;
+    
     public void migrateAll() {
         logger.info("  Asset migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
@@ -70,6 +74,8 @@ public class AssetMigrater {
     private void migrate(Module jcrModule, Asset jcrAsset) {
         if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
             factModelsMigrater.migrate(jcrModule, jcrAsset);
+        } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
+            guidedEditorMigrater.migrate(jcrModule, jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
