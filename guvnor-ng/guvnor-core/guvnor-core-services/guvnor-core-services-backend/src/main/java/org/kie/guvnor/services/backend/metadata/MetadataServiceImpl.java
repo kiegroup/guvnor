@@ -18,26 +18,45 @@ package org.kie.guvnor.services.backend.metadata;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.attribute.DublinCoreView;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
 public class MetadataServiceImpl implements MetadataService {
 
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
+
     @Override
     public Metadata getMetadata( final Path resource ) {
+
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+
+        final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
+
         final Metadata metadata = new Metadata();
-        metadata.setPath( resource );
+        metadata.setPath( paths.convert( path.toRealPath() ) );
         return metadata;
     }
 
     @Override
     public Map<String, Object> configAttrs( final Map<String, Object> attrs,
                                             final Metadata metadata ) {
+        //cleanup existing attrs -> looking for key's that should be removed
+        //build atts
         return attrs;
     }
 }

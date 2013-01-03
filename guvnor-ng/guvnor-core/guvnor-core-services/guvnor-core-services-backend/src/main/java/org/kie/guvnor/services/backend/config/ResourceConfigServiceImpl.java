@@ -27,7 +27,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.attribute.FileTime;
 import org.kie.guvnor.services.backend.config.attribute.ConfigAttributes;
-import org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil;
 import org.kie.guvnor.services.backend.config.attribute.ConfigView;
 import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
@@ -53,8 +52,7 @@ public class ResourceConfigServiceImpl implements ResourceConfigService {
     public ResourceConfig getConfig( final Path resource ) {
         checkNotNull( "resource", resource );
 
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-        ioService.readAttributes( path );
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
         final ConfigView configView = ioService.getFileAttributeView( path, ConfigView.class );
 
@@ -83,7 +81,7 @@ public class ResourceConfigServiceImpl implements ResourceConfigService {
 
         final Map<String, Object> attrs = cleanup( _attrs );
 
-        attrs.putAll( ConfigAttributesUtil.toMap( new ConfigAttributes() {
+        attrs.putAll( toMap( new ConfigAttributes() {
             @Override
             public List<String> imports() {
                 return imports;

@@ -36,17 +36,18 @@ public class Metadata {
     private boolean disabled;
 
     private String lastContributor  = "manstis";
-    private String checkinComment   = "cool";
     private String creator          = "porcelli";
-    private String format           = "my format";
+    private String format           = "model.drl";
     private String subject          = "subject here";
-    private String type             = "drools";
+    private String type             = "some content";
     private String externalRelation = "external relation";
     private String externalSource   = "external content";
     private String description;
 
-    private List<String>           categories = new ArrayList<String>();
-    private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
+    //not dcore
+    private String                 checkinComment = "cool";
+    private List<String>           categories     = new ArrayList<String>();
+    private List<DiscussionRecord> discussion     = new ArrayList<DiscussionRecord>();
 
     public Path getPath() {
         return path;
