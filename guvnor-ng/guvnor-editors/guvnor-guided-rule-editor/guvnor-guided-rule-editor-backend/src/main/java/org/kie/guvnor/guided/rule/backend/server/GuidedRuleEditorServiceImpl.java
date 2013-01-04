@@ -56,10 +56,8 @@ public class GuidedRuleEditorServiceImpl
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
         final BRLPersistence p = BRXMLPersistence.getInstance();
-
         final RuleModel model = p.unmarshal( vfs.readAllString( path ) );
-        final DataModelOracle dataModel = dataModelService.getDataModel( projectService.resolveProject( path ) );
-
+        final DataModelOracle dataModel = dataModelService.getDataModel( path );
         return new GuidedEditorContent( dataModel, model );
     }
 

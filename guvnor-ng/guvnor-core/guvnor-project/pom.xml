@@ -30,7 +30,6 @@
 
   <modules>
     <module>guvnor-project-api</module>
-    <module>guvnor-project-client</module>
     <module>guvnor-project-backend</module>
   </modules>
 </project>

@@ -16,16 +16,16 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.uberfire.client.mvp.PlaceManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -39,21 +39,21 @@ public class MessageService {
     private ListDataProvider<Message> dataProvider = new ListDataProvider<Message>();
 
     @Inject
-    public MessageService(PlaceManager placeManager) {
+    public MessageService( PlaceManager placeManager ) {
         this.placeManager = placeManager;
     }
 
-    public void addMessages(@Observes Messages messages) {
+    public void addMessages( @Observes Messages messages ) {
         List<Message> list = dataProvider.getList();
         list.clear();
-        for (Message message : messages) {
-            list.add(message);
+        for ( Message message : messages ) {
+            list.add( message );
         }
 
-        placeManager.goTo("org.kie.guvnor.Messages");
+        placeManager.goTo( "org.kie.guvnor.Messages" );
     }
 
-    public void addDataDisplay(HasData<Message> display) {
-        dataProvider.addDataDisplay(display);
+    public void addDataDisplay( HasData<Message> display ) {
+        dataProvider.addDataDisplay( display );
     }
 }

@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -84,9 +83,6 @@ public class DRLEditorPresenter {
     private Caller<DRLTextEditorService> drlTextEditorService;
 
     @Inject
-    private ProjectResources projectResources;
-
-    @Inject
     private Event<NotificationEvent> notification;
 
     private Path path;
@@ -111,7 +107,7 @@ public class DRLEditorPresenter {
                     }
                 } ).readAllString( path );
             }
-        } ).getDataModel( projectResources.getProject( path ) );
+        } ).getDataModel( path );
 
     }
 

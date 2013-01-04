@@ -24,11 +24,8 @@ import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
-import java.util.Collection;
-
 public class MockProjectServiceCaller
         implements Caller<ProjectService> {
-
 
     private GroupArtifactVersionModel gavModel;
     private final ProjectService service;
@@ -38,41 +35,37 @@ public class MockProjectServiceCaller
         service = new ProjectService() {
 
             @Override
-            public Collection<Path> listProjectResources(Path project) {
+            public WorkingSetSettings loadWorkingSetConfig( Path project ) {
                 return null;  //TODO -Rikkola-
             }
 
             @Override
-            public WorkingSetSettings loadWorkingSetConfig(Path project) {
-                return null;  //TODO -Rikkola-
-            }
-
-            @Override
-            public GroupArtifactVersionModel loadGav(Path path) {
-                callback.callback(gavModel);
+            public GroupArtifactVersionModel loadGav( Path path ) {
+                callback.callback( gavModel );
                 return gavModel;
             }
 
             @Override
-            public Path resolveProject(Path resource) {
+            public Path resolveProject( Path resource ) {
                 return null;  //TODO -Rikkola-
             }
         };
     }
 
     @Override
-    public ProjectService call(RemoteCallback<?> remoteCallback) {
+    public ProjectService call( RemoteCallback<?> remoteCallback ) {
         callback = remoteCallback;
         return service;
     }
 
     @Override
-    public ProjectService call(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
+    public ProjectService call( RemoteCallback<?> remoteCallback,
+                                ErrorCallback errorCallback ) {
         callback = remoteCallback;
         return service;
     }
 
-    public void setGav(GroupArtifactVersionModel gavModel) {
+    public void setGav( GroupArtifactVersionModel gavModel ) {
         this.gavModel = gavModel;
     }
 }

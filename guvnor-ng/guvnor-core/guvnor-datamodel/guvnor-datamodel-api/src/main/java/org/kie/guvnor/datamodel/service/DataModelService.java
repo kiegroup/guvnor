@@ -23,8 +23,8 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataModelService {
 
-    DataModelOracle getDataModel( final Path project );
+    DataModelOracle getDataModel( final Path resourcePath );
 
-    String[] getFactTypes( final Path project );
+    String[] getFactTypes( final Path resourcePath );
 
 }

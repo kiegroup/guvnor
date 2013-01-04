@@ -32,12 +32,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
 import org.kie.guvnor.configresource.client.resources.Images;
 import org.kie.guvnor.configresource.client.resources.i18n.Constants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.config.model.imports.ImportsConfig;
@@ -56,8 +53,6 @@ public class ImportsWidget extends DirtyableComposite {
     private final SimplePanel layout;
     private final boolean readOnly;
     private ListBox importList;
-
-    private ProjectResources projectResources = null;
 
     public ImportsWidget( final ResourceConfig config,
                           final boolean readOnly ) {
@@ -227,7 +222,7 @@ public class ImportsWidget extends DirtyableComposite {
                     }
                 }
             }
-        }, DataModelService.class ).getFactTypes( getProjectResources().getProject( config.getPath() ) );
+        }, DataModelService.class ).getFactTypes( config.getPath() );
 
         final InfoPopup info = new InfoPopup( Constants.INSTANCE.TypesInThePackage(),
                                               Constants.INSTANCE.IfNoTypesTip() );
@@ -277,13 +272,6 @@ public class ImportsWidget extends DirtyableComposite {
         }
 
         return horizontalPanel;
-    }
-
-    private ProjectResources getProjectResources() {
-        if ( projectResources == null ) {
-            projectResources = IOC.getBeanManager().lookupBean( ProjectResources.class ).getInstance();
-        }
-        return projectResources;
     }
 
 }

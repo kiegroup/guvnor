@@ -16,19 +16,33 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
+import org.kie.guvnor.builder.Builder;
+import org.kie.guvnor.builder.SourceServicesImpl;
+import org.kie.guvnor.commons.service.builder.model.Message;
+import org.kie.guvnor.commons.service.builder.model.Messages;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.service.ProjectService;
+import org.kie.scanner.KieModuleMetaData;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 
 @Service
 @ApplicationScoped
@@ -38,35 +52,118 @@ public class DataModelServiceImpl
     @Inject
     private DataModelOracleCache cache;
 
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
+
+    @Inject
+    private SourceServicesImpl sourceServices;
+
+    @Inject
+    private Event<Messages> messagesEvent;
+
     @Override
-    public String[] getFactTypes( final Path project ) {
-        PortablePreconditions.checkNotNull( "project",
-                                            project );
-        assertDataModelOracle( project );
-        return cache.getDataModelOracle( project ).getFactTypes();
+    public String[] getFactTypes( final Path resourcePath ) {
+        PortablePreconditions.checkNotNull( "resourcePath",
+                                            resourcePath );
+        final Path projectPath = resolveProjectPath( resourcePath );
+
+        //Resource was not within a Project structure
+        if ( projectPath == null ) {
+            return new String[ 0 ];
+        }
+
+        assertDataModelOracle( projectPath );
+        return cache.getDataModelOracle( projectPath ).getFactTypes();
     }
 
     @Override
-    public DataModelOracle getDataModel( final Path project ) {
-        PortablePreconditions.checkNotNull( "project",
-                                            project );
-        assertDataModelOracle( project );
-        return cache.getDataModelOracle( project );
+    public DataModelOracle getDataModel( final Path resourcePath ) {
+        PortablePreconditions.checkNotNull( "resourcePath",
+                                            resourcePath );
+        final Path projectPath = resolveProjectPath( resourcePath );
+
+        //Resource was not within a Project structure
+        if ( projectPath == null ) {
+            return makeEmptyDataModelOracle();
+        }
+
+        assertDataModelOracle( projectPath );
+        return cache.getDataModelOracle( projectPath );
     }
 
-    private void assertDataModelOracle( final Path project ) {
-        DataModelOracle oracle = cache.getDataModelOracle( project );
+    //Check the DataModelOracle for the Project has been created, otherwise create one!
+    private void assertDataModelOracle( final Path projectPath ) {
+        DataModelOracle oracle = cache.getDataModelOracle( projectPath );
         if ( oracle == null ) {
-            oracle = makeMockModel( project );
-            cache.setDataModelOracle( project,
+            oracle = makeDataModelOracle( projectPath );
+            cache.setDataModelOracle( projectPath,
                                       oracle );
         }
     }
 
-    private DataModelOracle makeMockModel( final Path project ) {
+    private Path resolveProjectPath( final Path resourcePath ) {
+        return projectService.resolveProject( resourcePath );
+    }
 
-        return DataModelBuilder.newDataModelBuilder()
-                .addFact( "Driver" )
+    private DataModelOracle makeEmptyDataModelOracle() {
+        return DataModelBuilder.newDataModelBuilder().build();
+    }
+
+    private DataModelOracle makeDataModelOracle( final Path projectPath ) {
+        //Build the project to get all available classes
+        final Path pomPath = PathFactory.newPath( "pom.xml",
+                                                  projectPath.toURI() + File.separator + "pom.xml" );
+        final GroupArtifactVersionModel gav = projectService.loadGav( pomPath );
+        final Builder builder = new Builder( paths.convert( projectPath ),
+                                             gav.getArtifactId(),
+                                             ioService,
+                                             paths,
+                                             sourceServices );
+        builder.build();
+
+        //If the Project had errors report them to the user and return an empty DataModelOracle
+        final Messages messages = builder.getMessages();
+        if ( !messages.isEmpty() ) {
+            messagesEvent.fire( messages );
+            return makeEmptyDataModelOracle();
+        }
+
+        //Otherwise create a DataModelOracle...
+        final KieModuleMetaData metaData = builder.getMetaData();
+        final DataModelBuilder dmoBuilder = DataModelBuilder.newDataModelBuilder();
+
+        //TODO {manstis}
+        //TODO - Add all classes from the KieModule metaData
+        for ( final String packageName : metaData.getPackages() ) {
+            for ( final String className : metaData.getClasses( packageName ) ) {
+                final Class clazz = metaData.getClass( packageName,
+                                                       className );
+                try {
+                    dmoBuilder.addClass( clazz );
+                } catch ( IOException ioe ) {
+                    messages.getMessages().add( makeMessage( ioe ) );
+                }
+            }
+        }
+        //TODO - Add Guvnor enumerations
+        //TODO - Add DSLs
+        //TODO - Add Globals
+
+        //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
+        if ( !messages.isEmpty() ) {
+            messagesEvent.fire( messages );
+            return makeEmptyDataModelOracle();
+        }
+
+        //Mock DMO for now... until the above is complete
+        dmoBuilder.addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -107,7 +204,15 @@ public class DataModelServiceImpl
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
-                .end()
-                .build();
+                .end();
+        return dmoBuilder.build();
     }
+
+    private Message makeMessage( final Exception e ) {
+        final Message message = new Message();
+        message.setLevel( Message.Level.ERROR );
+        message.setText( e.getMessage() );
+        return message;
+    }
+
 }

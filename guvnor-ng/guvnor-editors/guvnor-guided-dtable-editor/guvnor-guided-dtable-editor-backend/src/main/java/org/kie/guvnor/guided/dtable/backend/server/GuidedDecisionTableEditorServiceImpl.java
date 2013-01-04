@@ -64,7 +64,7 @@ public class GuidedDecisionTableEditorServiceImpl
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
         final GuidedDecisionTable52 model = p.unmarshal( vfs.readAllString( path ) );
-        final DataModelOracle dataModel = dataModelService.getDataModel( projectService.resolveProject( path ) );
+        final DataModelOracle dataModel = dataModelService.getDataModel( path );
         return new GuidedDecisionTableEditorContent( dataModel,
                                                      model );
     }

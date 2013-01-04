@@ -27,27 +27,23 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-//import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.data.events.OnWorkingSetApplied;
 import org.kie.guvnor.commons.data.events.OnWorkingSetDisabled;
 import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.data.factconstraints.helper.CustomFormsContainer;
-import org.kie.guvnor.commons.data.project.ProjectResources;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
+//import org.kie.commons.data.Pair;
+
 @ApplicationScoped
 public class WorkingSetManager {
 
     private Map<Path, WorkingSetSettings> projectSettings = new HashMap<Path, WorkingSetSettings>();
-
-    @Inject
-    private ProjectResources projectResources;
 
     @Inject
     private Caller<ProjectService> projectService;
@@ -99,19 +95,19 @@ public class WorkingSetManager {
 //    }
 
     public WorkingSetSettings getActiveSettings( final Path resource ) {
-        final Path projectReference = projectResources.getProject( resource );
-        if ( projectReference == null ) {
-            return null;
-        }
-
-        return projectSettings.get( projectReference );
+//        final Path projectReference = projectResources.getProject( resource );
+//        if ( projectReference == null ) {
+//            return null;
+//        }
+//        return projectSettings.get( projectReference );
+        return null;
     }
 
     public void removeWorkingSets( final Path resource ) {
-        final Path projectReference = projectResources.getProject( resource );
-        if ( projectReference != null ) {
-            projectSettings.remove( projectReference );
-        }
+//        final Path projectReference = projectResources.getProject( resource );
+//        if ( projectReference != null ) {
+//            projectSettings.remove( projectReference );
+//        }
     }
 
     /**

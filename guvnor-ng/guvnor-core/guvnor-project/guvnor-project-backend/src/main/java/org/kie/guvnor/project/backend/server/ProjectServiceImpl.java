@@ -17,7 +17,6 @@
 package org.kie.guvnor.project.backend.server;
 
 import java.io.IOException;
-import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,18 +32,16 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
-import static java.util.Collections.*;
-
 @Service
 @ApplicationScoped
 public class ProjectServiceImpl
         implements ProjectService {
 
-    private static final String SOURCE_FILENAME  = "src";
-    private static final String POM_FILENAME     = "pom.xml";
+    private static final String SOURCE_FILENAME = "src";
+    private static final String POM_FILENAME = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
     private IOService ioService;
-    private Paths     paths;
+    private Paths paths;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -55,12 +52,6 @@ public class ProjectServiceImpl
                                final Paths paths ) {
         this.ioService = ioService;
         this.paths = paths;
-    }
-
-    @Override
-    public Collection<Path> listProjectResources( final Path project ) {
-        //TODO {porcelli}
-        return emptyList();
     }
 
     @Override
@@ -92,30 +83,44 @@ public class ProjectServiceImpl
             return null;
         }
 
+        //Check if resource is the project root
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        if ( hasPom( path ) && hasKModule( path ) ) {
+            return resource;
+        }
+
         //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-        org.kie.commons.java.nio.file.Path p = paths.convert( resource ).normalize();
-        if ( Files.isRegularFile( p ) ) {
-            p = p.getParent();
+        if ( Files.isRegularFile( path ) ) {
+            path = path.getParent();
         }
-        while ( p.getNameCount() > 0 && !p.getFileName().toString().equals( SOURCE_FILENAME ) ) {
-            p = p.getParent();
+        while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
+            path = path.getParent();
         }
-        if ( p.getNameCount() == 0 ) {
+        if ( path.getNameCount() == 0 ) {
             return null;
         }
-        p = p.getParent();
-        if ( p.getNameCount() == 0 || p == null ) {
+        path = path.getParent();
+        if ( path.getNameCount() == 0 || path == null ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path pomPath = p.resolve( POM_FILENAME );
-        if ( !Files.exists( pomPath ) ) {
+        if ( !hasPom( path ) ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path kmodulePath = p.resolve( KMODULE_FILENAME );
-        if ( !Files.exists( kmodulePath ) ) {
+        if ( !hasKModule( path ) ) {
             return null;
         }
-        return PathFactory.newPath( p.getFileName().toString(), p.toUri().toString() );
+        return PathFactory.newPath( path.getFileName().toString(),
+                                    path.toUri().toString() );
+    }
+
+    private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
+        final org.kie.commons.java.nio.file.Path pomPath = path.resolve( POM_FILENAME );
+        return Files.exists( pomPath );
+    }
+
+    private boolean hasKModule( final org.kie.commons.java.nio.file.Path path ) {
+        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_FILENAME );
+        return Files.exists( kmodulePath );
     }
 
 }
