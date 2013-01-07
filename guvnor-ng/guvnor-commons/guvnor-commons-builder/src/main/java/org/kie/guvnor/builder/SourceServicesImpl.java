@@ -42,11 +42,31 @@ public class SourceServicesImpl
     }
 
     @Override
-    public boolean hasServiceFor(String fileExtension) {
-        return sourceServices.containsKey(fileExtension);
+    public boolean hasServiceFor(String filePath) {
+
+        if (getFileExtension(filePath) == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    public SourceService getServiceFor(String fileExtension) {
-        return sourceServices.get(fileExtension);
+    public SourceService getServiceFor(String filePath) {
+        return sourceServices.get(getFileExtension(filePath));
+    }
+
+    private String getFileExtension(String filePath) {
+
+        String result = null;
+
+        for (String extension : sourceServices.keySet()) {
+            if (filePath.endsWith(extension)) {
+                if (result == null || result.length() < extension.length()) {
+                    result = extension;
+                }
+            }
+        }
+
+        return result;
     }
 }

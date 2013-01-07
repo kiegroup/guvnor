@@ -18,8 +18,8 @@ package org.kie.guvnor.commons.service.source;
 
 public interface SourceServices {
 
-    boolean hasServiceFor(String fileExtension);
+    boolean hasServiceFor(String filePath);
 
-    SourceService getServiceFor(String fileExtension);
+    SourceService getServiceFor(String filePath);
 
 }

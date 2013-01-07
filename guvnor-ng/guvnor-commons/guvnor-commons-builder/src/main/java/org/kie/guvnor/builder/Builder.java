@@ -69,7 +69,7 @@ public class Builder {
         kieBuilder.buildAll();
     }
 
-    public KieModule getKieModule(){
+    public KieModule getKieModule() {
         return kieBuilder.getKieModule();
     }
 
@@ -91,22 +91,12 @@ public class Builder {
 
                     kieFileSystem.write(stripPath(projectName, path), ioService.readAllString(path));
 
-                } else if (sourceServices.hasServiceFor(getFileExtension(path))) {
+                } else if (sourceServices.hasServiceFor(path.toUri().toString())) {
 
-                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor("gdst").getSource(path));
+                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor(path.toUri().toString()).getSource(path));
 
                 }
             }
-        }
-    }
-
-    private String getFileExtension(final Path path) {
-        // TODO: Just gdst for now -Rikkola-
-
-        if (path.toUri().toString().endsWith(".gdst")) {
-            return "gdst";
-        } else {
-            return "TRALALLLALLLAAAA";
         }
     }
 
