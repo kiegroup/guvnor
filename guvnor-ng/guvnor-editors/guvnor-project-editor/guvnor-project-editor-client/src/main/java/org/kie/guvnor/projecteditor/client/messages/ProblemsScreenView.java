@@ -18,7 +18,7 @@ package org.kie.guvnor.projecteditor.client.messages;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface MessageScreenView
+public interface ProblemsScreenView
         extends IsWidget {
 
     interface Presenter {

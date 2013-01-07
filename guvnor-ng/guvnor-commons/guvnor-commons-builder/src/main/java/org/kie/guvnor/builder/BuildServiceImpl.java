@@ -16,19 +16,18 @@
 
 package org.kie.guvnor.builder;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 @Service
 @ApplicationScoped
@@ -38,7 +37,7 @@ public class BuildServiceImpl
     private IOService ioService;
     private Paths paths;
     private SourceServicesImpl sourceServices;
-    private Event<Messages> messagesEvent;
+    private Event<Results> messagesEvent;
     private ProjectService projectService;
 
     public BuildServiceImpl() {
@@ -46,11 +45,11 @@ public class BuildServiceImpl
     }
 
     @Inject
-    public BuildServiceImpl( final @Named("ioStrategy") IOService ioService,
-                             final Paths paths,
-                             final SourceServicesImpl sourceServices,
-                             final ProjectService projectService,
-                             final Event<Messages> messagesEvent ) {
+    public BuildServiceImpl(IOService ioService,
+                            Paths paths,
+                            SourceServicesImpl sourceServices,
+                            ProjectService projectService,
+                            Event<Results> messagesEvent) {
         this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
@@ -59,17 +58,11 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void build( final Path pathToPom ) {
-        final GroupArtifactVersionModel gav = projectService.loadGav( pathToPom );
-        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
-                                             gav.getArtifactId(),
-                                             ioService,
-                                             paths,
-                                             sourceServices );
+    public void build(Path pathToPom) {
+        GroupArtifactVersionModel gav = projectService.loadGav(pathToPom);
+
+        Builder builder = new Builder(paths.convert(pathToPom).getParent(), gav.getArtifactId(), ioService, paths, sourceServices, messagesEvent);
+
         builder.build();
-        final Messages messages = builder.getMessages();
-        if ( !messages.isEmpty() ) {
-            messagesEvent.fire( messages );
-        }
     }
 }

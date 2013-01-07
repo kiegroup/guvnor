@@ -29,21 +29,21 @@ import org.uberfire.client.workbench.Position;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "org.kie.guvnor.Messages")
-public class MessageScreen
-        implements MessageScreenView.Presenter {
+@WorkbenchScreen(identifier = "org.kie.guvnor.Problems")
+public class ProblemsScreen
+        implements ProblemsScreenView.Presenter {
 
     private final PlaceManager placeManager;
-    private final MessageScreenView view;
-    private final MessageService messageService;
+    private final ProblemsScreenView view;
+    private final ProblemsService problemsService;
 
     @Inject
-    public MessageScreen(MessageScreenView view,
-                         PlaceManager placeManager,
-                         MessageService messageService) {
+    public ProblemsScreen(ProblemsScreenView view,
+                          PlaceManager placeManager,
+                          ProblemsService problemsService) {
         this.view = view;
         this.placeManager = placeManager;
-        this.messageService = messageService;
+        this.problemsService = problemsService;
 
         view.setPresenter(this);
     }

@@ -24,33 +24,50 @@ import javax.inject.Inject;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.commons.service.builder.model.Results;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
  * This listens to Messages and if the Console is not open it opens it.
  */
 @ApplicationScoped
-public class MessageService {
+public class ProblemsService {
 
     private final PlaceManager placeManager;
 
     private ListDataProvider<Message> dataProvider = new ListDataProvider<Message>();
+    private final Event<NotificationEvent> notificationEvent;
+    private final ProblemsServiceView view;
 
     @Inject
-    public MessageService( PlaceManager placeManager ) {
+    public ProblemsService(ProblemsServiceView view,
+                           PlaceManager placeManager,
+                           Event<NotificationEvent> notificationEvent) {
+        this.view = view;
         this.placeManager = placeManager;
+        this.notificationEvent = notificationEvent;
     }
 
-    public void addMessages( @Observes Messages messages ) {
-        List<Message> list = dataProvider.getList();
-        list.clear();
-        for ( Message message : messages ) {
-            list.add( message );
+    public void addMessages(@Observes Results results) {
+        if (results.isEmpty()) {
+            notificationEvent.fire(new NotificationEvent(view.showBuildSuccessful()));
         }
 
-        placeManager.goTo( "org.kie.guvnor.Messages" );
+        List<Message> list = dataProvider.getList();
+        list.clear();
+        for (Message message : results) {
+            list.add(message);
+        }
+
+        placeManager.goTo("org.kie.guvnor.Problems");
     }
 
     public void addDataDisplay( HasData<Message> display ) {

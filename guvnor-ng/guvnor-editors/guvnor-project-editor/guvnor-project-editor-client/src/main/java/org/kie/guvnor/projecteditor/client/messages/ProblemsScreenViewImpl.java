@@ -40,16 +40,16 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import javax.inject.Inject;
 
-public class MessageScreenViewImpl
+public class ProblemsScreenViewImpl
         extends Composite
-        implements MessageScreenView,
+        implements ProblemsScreenView,
         RequiresResize {
 
     private static Binder uiBinder = GWT.create(Binder.class);
     private Presenter presenter;
     private final PlaceManager placeManager;
 
-    interface Binder extends UiBinder<Widget, MessageScreenViewImpl> {
+    interface Binder extends UiBinder<Widget, ProblemsScreenViewImpl> {
 
     }
 
@@ -67,7 +67,7 @@ public class MessageScreenViewImpl
     };
 
     @Inject
-    public MessageScreenViewImpl(MessageService messageService, PlaceManager placeManager) {
+    public ProblemsScreenViewImpl(ProblemsService problemsService, PlaceManager placeManager) {
         this.placeManager = placeManager;
         dataGrid = new DataGrid<Message>(KEY_PROVIDER);
         dataGrid.setWidth("100%");
@@ -78,7 +78,7 @@ public class MessageScreenViewImpl
 
         setUpColumns();
 
-        messageService.addDataDisplay(dataGrid);
+        problemsService.addDataDisplay(dataGrid);
 
         initWidget(uiBinder.createAndBindUi(this));
     }

@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Portable
-public class Messages
+public class Results
         implements Iterable<Message> {
 
     private ArrayList<Message> messages = new ArrayList<Message>();

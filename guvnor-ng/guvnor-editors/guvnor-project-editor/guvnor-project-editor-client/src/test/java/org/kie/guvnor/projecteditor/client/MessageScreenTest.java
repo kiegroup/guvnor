@@ -16,28 +16,20 @@
 
 package org.kie.guvnor.projecteditor.client;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Messages;
-import org.uberfire.client.mvp.PlaceManager;
-
-import static org.mockito.Mockito.*;
-
 public class MessageScreenTest {
 
 //    private PlaceManager placeManager;
 //    private MessageScreenView view;
 //    private MessageScreenView.Presenter presenter;
 //    private MessageScreen screen;
-//    private MessageService messageService;
+//    private ProblemsService messageService;
 //    private Messages messages;
 //
 //    @Before
 //    public void setUp() throws Exception {
 //        placeManager = mock(PlaceManager.class);
 //        view = mock(MessageScreenView.class);
-//        messageService = mock(MessageService.class);
+//        messageService = mock(ProblemsService.class);
 //        screen = new MessageScreen(view, placeManager, messageService);
 //        presenter = screen;
 //        messages = new Messages();

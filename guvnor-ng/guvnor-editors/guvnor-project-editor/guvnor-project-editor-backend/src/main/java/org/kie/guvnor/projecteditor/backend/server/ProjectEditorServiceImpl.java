@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
@@ -44,7 +44,7 @@ public class ProjectEditorServiceImpl
     private IOService ioService;
     private Paths paths;
     private KModuleEditorContentHandler moduleEditorContentHandler;
-    private Event<Messages> messagesEvent;
+    private Event<Results> messagesEvent;
     private BuildService buildService;
     private ProjectService projectService;
 
@@ -57,7 +57,7 @@ public class ProjectEditorServiceImpl
     public ProjectEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
                                     final Paths paths,
                                     final BuildService buildService,
-                                    final Event<Messages> messagesEvent,
+                                    final Event<Results> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final ProjectService projectService) {
         this.ioService = ioService;
@@ -131,7 +131,8 @@ public class ProjectEditorServiceImpl
 
     private void saveKModule(final org.kie.commons.java.nio.file.Path path,
                              final KModuleModel model) {
-        ioService.write(path, moduleEditorContentHandler.toString(model));
+        String content = moduleEditorContentHandler.toString(model);
+        ioService.write(path, content);
     }
 
     private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
