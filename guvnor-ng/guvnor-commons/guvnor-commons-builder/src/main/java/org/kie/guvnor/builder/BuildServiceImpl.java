@@ -61,8 +61,15 @@ public class BuildServiceImpl
     public void build(Path pathToPom) {
         GroupArtifactVersionModel gav = projectService.loadGav(pathToPom);
 
-        Builder builder = new Builder(paths.convert(pathToPom).getParent(), gav.getArtifactId(), ioService, paths, sourceServices, messagesEvent);
+        Builder builder = new Builder(paths.convert(pathToPom).getParent(), gav.getArtifactId(), ioService, paths, sourceServices);
 
         builder.build();
+
+        // TODO: Save this into the M2_REPO
+        builder.getKieModule();
+
+        messagesEvent.fire(builder.getResults());
+
+
     }
 }

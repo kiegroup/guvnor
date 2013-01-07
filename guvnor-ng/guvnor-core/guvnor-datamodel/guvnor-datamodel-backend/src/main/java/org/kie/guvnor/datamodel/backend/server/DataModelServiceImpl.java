@@ -30,7 +30,7 @@ import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.builder.SourceServicesImpl;
 import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Messages;
+import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
@@ -66,7 +66,7 @@ public class DataModelServiceImpl
     private SourceServicesImpl sourceServices;
 
     @Inject
-    private Event<Messages> messagesEvent;
+    private Event<Results> messagesEvent;
 
     @Override
     public String[] getFactTypes( final Path resourcePath ) {
@@ -129,14 +129,14 @@ public class DataModelServiceImpl
         builder.build();
 
         //If the Project had errors report them to the user and return an empty DataModelOracle
-        final Messages messages = builder.getMessages();
-        if ( !messages.isEmpty() ) {
-            messagesEvent.fire( messages );
+        final Results results = builder.getResults();
+        if ( !results.isEmpty() ) {
+            messagesEvent.fire( results );
             return makeEmptyDataModelOracle();
         }
 
         //Otherwise create a DataModelOracle...
-        final KieModuleMetaData metaData = builder.getMetaData();
+        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
         final DataModelBuilder dmoBuilder = DataModelBuilder.newDataModelBuilder();
 
         //TODO {manstis}
@@ -148,7 +148,7 @@ public class DataModelServiceImpl
                 try {
                     dmoBuilder.addClass( clazz );
                 } catch ( IOException ioe ) {
-                    messages.getMessages().add( makeMessage( ioe ) );
+                    results.getMessages().add( makeMessage( ioe ) );
                 }
             }
         }
@@ -157,8 +157,8 @@ public class DataModelServiceImpl
         //TODO - Add Globals
 
         //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
-        if ( !messages.isEmpty() ) {
-            messagesEvent.fire( messages );
+        if ( !results.isEmpty() ) {
+            messagesEvent.fire( results );
             return makeEmptyDataModelOracle();
         }
 

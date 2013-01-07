@@ -40,7 +40,6 @@ public class Builder {
     private final Path moduleDirectory;
     private final Paths paths;
     private final String artifactId;
-    private final Event<Results> messagesEvent;
     private final static String RESOURCE_PATH = "src/main/resources";
     private final static String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
     private final SourceServices sourceServices;
@@ -49,14 +48,12 @@ public class Builder {
                    String artifactId,
                    IOService ioService,
                    Paths paths,
-                   SourceServicesImpl sourceServices,
-                   Event<Results> messagesEvent) {
+                   SourceServicesImpl sourceServices) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
-        this.messagesEvent = messagesEvent;
 
         KieServices kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
@@ -69,46 +66,92 @@ public class Builder {
         kieBuilder = kieServices.newKieBuilder(kieFileSystem);
     }
 
-    public KieModuleMetaData getMetaData() {
-        final KieModule module = kieBuilder.getKieModule();
-        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( module );
-        return metaData;
-    }
-
     public void build() {
         kieBuilder.buildAll();
     }
 
+    public KieModule getKieModule(){
+        return kieBuilder.getKieModule();
+    }
+
+
+    //TODO This should really look for a SourceService for *all* file types. If none found don't add the file.
+    private void visitPaths(final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {
+        for (org.kie.commons.java.nio.file.Path path : directoryStream) {
+            if (Files.isDirectory(path)) {
+                visitPaths(Files.newDirectoryStream(path));
+            } else {
+                final String fileName = path.getFileName().toString();
+                final String uri = path.toUri().toString().toLowerCase();
+                if (uri.endsWith(KMODULE_PATH)) {
+
+                    kieFileSystem.write("META-INF/kmodule.xml", ioService.readAllString(path));
+
+                } else if (!fileName.startsWith(".") && uri.endsWith(".drl")) {
+                    //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
+
+                    kieFileSystem.write(stripPath(projectName, path), ioService.readAllString(path));
+
+                } else if (sourceServices.hasServiceFor(getFileExtension(path))) {
+
+                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor("gdst").toDRL(path));
+
+                }
+            }
+        }
+    }
+
+    private String getFileExtension(final Path path) {
+        // TODO: Just gdst for now -Rikkola-
+
+        if (path.toUri().toString().endsWith(".gdst")) {
+            return "gdst";
+        } else {
+            return "TRALALLLALLLAAAA";
+        }
+    }
+
+    private String stripPath(final String projectName,
+                             final org.kie.commons.java.nio.file.Path path) {
+        return path.toString().substring(projectName.length() + 2);
+    }
+
+    private String getProjectName(final Path path) {
+        String substring = path.toUri().toString();
+        return substring.substring(substring.indexOf("uf-playground/") + "uf-playground/".length());
+    }
+
+    public Results getResults() {
         Results results = new Results();
         results.setArtifactID(artifactId);
 
-        for ( final Message message : kieBuilder.getResults().getMessages() ) {
+        for (final Message message : kieBuilder.getResults().getMessages()) {
             final org.kie.guvnor.commons.service.builder.model.Message m = new org.kie.guvnor.commons.service.builder.model.Message();
-            switch ( message.getLevel() ) {
+            switch (message.getLevel()) {
                 case ERROR:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR);
                     break;
                 case WARNING:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING);
                     break;
                 case INFO:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.INFO );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.INFO);
                     break;
             }
 
-            m.setId( message.getId() );
-            m.setArtifactID( artifactId );
-            m.setLine( message.getLine() );
-            if ( message.getPath() != null && !message.getPath().isEmpty() ) {
+            m.setId(message.getId());
+            m.setArtifactID(artifactId);
+            m.setLine(message.getLine());
+            if (message.getPath() != null && !message.getPath().isEmpty()) {
                 try {
                     String pathToFile = RESOURCE_PATH + "/" + message.getPath();
-                    System.out.println( "Path to error file = " + pathToFile );
-                    if ( message.getPath().equals( "pom.xml" ) ) {
-                        m.setPath( paths.convert( moduleDirectory.resolve( message.getPath() ) ) );
+                    System.out.println("Path to error file = " + pathToFile);
+                    if (message.getPath().equals("pom.xml")) {
+                        m.setPath(paths.convert(moduleDirectory.resolve(message.getPath())));
                     } else {
-                        m.setPath( paths.convert( moduleDirectory.resolve( pathToFile ) ) );
+                        m.setPath(paths.convert(moduleDirectory.resolve(pathToFile)));
                     }
-                } catch ( NoSuchFileException e ) {
+                } catch (NoSuchFileException e) {
                     // Just to be safe.
                 }
             }
@@ -118,54 +161,6 @@ public class Builder {
             results.getMessages().add(m);
         }
 
-        messagesEvent.fire(results);
-    }
-
-    //TODO This should really look for a SourceService for *all* file types. If none found don't add the file.
-    private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
-        for ( org.kie.commons.java.nio.file.Path path : directoryStream ) {
-            if ( Files.isDirectory( path ) ) {
-                visitPaths( Files.newDirectoryStream( path ) );
-            } else {
-                final String fileName = path.getFileName().toString();
-                final String uri = path.toUri().toString().toLowerCase();
-                if ( uri.endsWith( KMODULE_PATH ) ) {
-
-                    kieFileSystem.write( "META-INF/kmodule.xml", ioService.readAllString( path ) );
-
-                } else if ( uri.endsWith( ".drl" ) ) {
-
-                    //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
-                    if ( !fileName.startsWith( "." ) ) {
-                        kieFileSystem.write( stripPath( projectName, path ), ioService.readAllString( path ) );
-                    }
-
-                } else if ( sourceServices.hasServiceFor( getFileExtension( path ) ) ) {
-
-                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor("gdst").toDRL(path));
-
-                }
-            }
-        }
-    }
-
-    private String getFileExtension( final Path path ) {
-        // TODO: Just gdst for now -Rikkola-
-
-        if ( path.toUri().toString().endsWith( ".gdst" ) ) {
-            return "gdst";
-        } else {
-            return "TRALALLLALLLAAAA";
-        }
-    }
-
-    private String stripPath( final String projectName,
-                              final org.kie.commons.java.nio.file.Path path ) {
-        return path.toString().substring( projectName.length() + 2 );
-    }
-
-    private String getProjectName( final Path path ) {
-        String substring = path.toUri().toString();
-        return substring.substring( substring.indexOf( "uf-playground/" ) + "uf-playground/".length() );
+        return results;
     }
 }
