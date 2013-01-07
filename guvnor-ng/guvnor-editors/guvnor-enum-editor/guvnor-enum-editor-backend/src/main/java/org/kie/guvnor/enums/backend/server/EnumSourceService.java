@@ -32,7 +32,7 @@ public class EnumSourceService
 
     @Override
     public String getSupportedFileExtension() {
-        return "*.enumeration";
+        return ".enumeration";
     }
 
     @Override
