@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend.config.attribute;
+package org.kie.guvnor.services.backend.metadata.attribute;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.config.attribute.ConfigView.*;
 
 /**
  *
  */
-public final class ConfigAttributesUtil {
+public final class OtherMetaAttributesUtil {
 
-    private ConfigAttributesUtil() {
-
+    private OtherMetaAttributesUtil() {
     }
 
     public static Map<String, Object> cleanup( final Map<String, Object> _attrs ) {
         final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
 
         for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( IMPORT ) || key.equals( CONTENT ) ) {
+            if ( key.startsWith( OtherMetaView.CATEGORY ) || key.equals( OtherMetaView.MODE ) ) {
                 attrs.put( key, null );
             }
         }
@@ -43,26 +41,27 @@ public final class ConfigAttributesUtil {
         return attrs;
     }
 
-    public static Map<String, Object> toMap( final ConfigAttributes attrs,
+    public static Map<String, Object> toMap( final OtherMetaAttributes attrs,
                                              final String... attributes ) {
-        return new HashMap<String, Object>() {{
-            for ( final String attribute : attributes ) {
-                checkNotEmpty( "attribute", attribute );
+        return new HashMap<String, Object>() {
+            {
+                for ( final String attribute : attributes ) {
+                    checkNotEmpty( "attribute", attribute );
 
-                if ( attribute.equals( "*" ) || attribute.equals( IMPORT ) ) {
-                    for ( int i = 0; i < attrs.imports().size(); i++ ) {
-                        final String content = attrs.imports().get( i );
-                        put( buildAttrName( IMPORT, i ), content );
+                    if ( attribute.equals( "*" ) || attribute.equals( OtherMetaView.CATEGORY ) ) {
+                        for ( int i = 0; i < attrs.categories().size(); i++ ) {
+                            put( buildAttrName( OtherMetaView.CATEGORY, i ), attrs.categories().get( i ) );
+                        }
+                    }
+                    if ( attribute.equals( "*" ) || attribute.equals( OtherMetaView.MODE ) ) {
+                        put( OtherMetaView.MODE, attrs.mode() );
+                    }
+                    if ( attribute.equals( "*" ) ) {
+                        break;
                     }
                 }
-                if ( attribute.equals( "*" ) || attribute.equals( CONTENT ) ) {
-                    put( CONTENT, attrs.content() );
-                }
-                if ( attribute.equals( "*" ) ) {
-                    break;
-                }
             }
-        }};
+        };
     }
 
     private static String buildAttrName( final String title,

@@ -172,16 +172,11 @@ public class MetadataWidget
 
         endSection( true );
 
-        startSection( Constants.INSTANCE.VersionHistory() );
-
         if ( !readOnly ) {
-////            addRow( new VersionBrowser( clientFactory,
-////                                        eventBus,
-////                                        this.uuid,
-////                                        !( artifact instanceof Asset ) ) );
+            startSection( Constants.INSTANCE.VersionHistory() );
+            addRow( new VersionBrowser( metadata ) );
+            endSection( true );
         }
-
-        endSection( true );
 
         layout.add( commentWidget() );
 

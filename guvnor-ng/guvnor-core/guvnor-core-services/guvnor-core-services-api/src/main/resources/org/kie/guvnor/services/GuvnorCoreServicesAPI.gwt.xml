@@ -25,5 +25,6 @@
 
   <source path='config'/>
   <source path='metadata'/>
+  <source path='version'/>
 
 </module>

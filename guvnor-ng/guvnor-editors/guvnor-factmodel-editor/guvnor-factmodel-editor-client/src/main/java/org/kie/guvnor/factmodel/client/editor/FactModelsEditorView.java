@@ -75,6 +75,7 @@ public class FactModelsEditorView
         this.factModels = content;
         this.superTypeFactModels = superTypeFactModels;
         this.modelNameHelper = modelNameHelper;
+        this.factModelsPanel.clean();
 
         for ( final FactMetaModel factMetaModel : factModels.getModels() ) {
             addFactModelToStackPanel( factMetaModel );
@@ -100,6 +101,11 @@ public class FactModelsEditorView
     @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
+
+    @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     private void addFactModelToStackPanel( final FactMetaModel factMetaModel ) {
@@ -143,8 +149,7 @@ public class FactModelsEditorView
                 int editingFactIndex = factModels.getModels().indexOf( factMetaModel );
                 int newIndex = editingFactIndex - 1;
 
-                swap( editingFactIndex,
-                      newIndex );
+                swap( editingFactIndex, newIndex );
 
                 renderEditorArrows();
             }
@@ -169,12 +174,9 @@ public class FactModelsEditorView
 
     private void swap( int editingFactIndex,
                        int newIndex ) {
-        Collections.swap( factModels.getModels(),
-                          editingFactIndex,
-                          newIndex );
+        Collections.swap( factModels.getModels(), editingFactIndex, newIndex );
 
-        factModelsPanel.swap( editingFactIndex,
-                              newIndex );
+        factModelsPanel.swap( editingFactIndex, newIndex );
     }
 
     private void renderEditorArrows() {

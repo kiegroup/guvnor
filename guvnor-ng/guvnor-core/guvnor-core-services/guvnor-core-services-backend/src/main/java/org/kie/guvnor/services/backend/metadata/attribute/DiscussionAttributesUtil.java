@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend.config.attribute;
+package org.kie.guvnor.services.backend.metadata.attribute;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.guvnor.services.metadata.model.DiscussionRecord;
+
 import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.config.attribute.ConfigView.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionView.*;
 
 /**
  *
  */
-public final class ConfigAttributesUtil {
+public final class DiscussionAttributesUtil {
 
-    private ConfigAttributesUtil() {
-
+    private DiscussionAttributesUtil() {
     }
 
     public static Map<String, Object> cleanup( final Map<String, Object> _attrs ) {
         final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
 
         for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( IMPORT ) || key.equals( CONTENT ) ) {
+            if ( key.startsWith( TIMESTAMP ) || key.startsWith( AUTHOR ) || key.startsWith( NOTE ) ) {
                 attrs.put( key, null );
             }
         }
@@ -43,20 +44,19 @@ public final class ConfigAttributesUtil {
         return attrs;
     }
 
-    public static Map<String, Object> toMap( final ConfigAttributes attrs,
+    public static Map<String, Object> toMap( final DiscussionAttributes attrs,
                                              final String... attributes ) {
         return new HashMap<String, Object>() {{
             for ( final String attribute : attributes ) {
                 checkNotEmpty( "attribute", attribute );
 
-                if ( attribute.equals( "*" ) || attribute.equals( IMPORT ) ) {
-                    for ( int i = 0; i < attrs.imports().size(); i++ ) {
-                        final String content = attrs.imports().get( i );
-                        put( buildAttrName( IMPORT, i ), content );
+                if ( attribute.equals( "*" ) || attribute.equals( DISCUSS ) ) {
+                    for ( int i = 0; i < attrs.discussion().size(); i++ ) {
+                        final DiscussionRecord record = attrs.discussion().get( i );
+                        put( buildAttrName( TIMESTAMP, i ), record.getTimestamp() );
+                        put( buildAttrName( AUTHOR, i ), record.getAuthor() );
+                        put( buildAttrName( NOTE, i ), record.getNote() );
                     }
-                }
-                if ( attribute.equals( "*" ) || attribute.equals( CONTENT ) ) {
-                    put( CONTENT, attrs.content() );
                 }
                 if ( attribute.equals( "*" ) ) {
                     break;

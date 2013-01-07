@@ -38,4 +38,10 @@ public class Images {
         return image;
     }
 
+    public Image Refresh() {
+        final Image image = new Image( ImageResources.INSTANCE.refresh() );
+        image.setAltText( Constants.INSTANCE.Refresh() );
+        return image;
+    }
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend.config.attribute;
+package org.kie.guvnor.services.backend.metadata.attribute;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,55 +35,54 @@ import org.kie.commons.java.nio.file.attribute.FileTime;
 
 import static org.kie.commons.data.Pair.*;
 import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil.*;
 
-/**
- *
- */
-public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
+public class OtherMetaView
+        extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
-    public static final String IMPORT  = "config.import";
-    public static final String CONTENT = "config.content";
+    public static final String CATEGORY = "othermeta.category";
+    public static final String MODE     = "othermeta.mode";
 
     private static final Set<String> PROPERTIES = new HashSet<String>() {{
-        add( IMPORT );
-        add( CONTENT );
+        add( CATEGORY );
+        add( MODE );
     }};
 
-    private final ConfigAttributes attrs;
+    private final OtherMetaAttributes attrs;
 
-    public ConfigView( final AbstractPath path ) {
+    public OtherMetaView( final AbstractPath path ) {
         super( path );
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
-        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
-
-        final Map<Integer, String> _imports = new TreeMap<Integer, String>();
-
-        String _configContent = null;
+        final Map<Integer, String> _categories = new TreeMap<Integer, String>();
+        Mode _mode = Mode.ENABLED;
 
         for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
-            if ( entry.getKey().startsWith( IMPORT ) ) {
-                final Pair<Integer, String> result = extractValue( entry );
-                _imports.put( result.getK1(), result.getK2() );
-            } else if ( entry.getKey().equals( CONTENT ) ) {
-                _configContent = entry.getValue().toString();
+            if ( entry.getKey().startsWith( CATEGORY ) ) {
+                final Pair<Integer, Object> result = extractValue( entry );
+                _categories.put( result.getK1(), result.getK2().toString() );
+            } else if ( entry.getKey().equals( MODE ) ) {
+                _mode = Mode.valueOf( entry.getValue().toString() );
             }
         }
 
-        final String configContent = _configContent;
-        final List<String> imports = new ArrayList<String>( _imports.values() );
+        final Mode mode = _mode;
 
-        this.attrs = new ConfigAttributes() {
+        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
+
+        final List<String> categories = new ArrayList<String>( _categories.values() );
+
+        this.attrs = new OtherMetaAttributes() {
+
             @Override
-            public List<String> imports() {
-                return imports;
+            public List<String> categories() {
+                return categories;
             }
 
             @Override
-            public String content() {
-                return configContent;
+            public Mode mode() {
+                return mode;
             }
 
             @Override
@@ -133,23 +132,23 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
         };
     }
 
-    private Pair<Integer, String> extractValue( final Map.Entry<String, Object> entry ) {
+    private Pair<Integer, Object> extractValue( final Map.Entry<String, Object> entry ) {
         int start = entry.getKey().indexOf( '[' );
         if ( start < 0 ) {
-            return newPair( 0, entry.getValue().toString() );
+            return newPair( 0, entry.getValue() );
         }
         int end = entry.getKey().indexOf( ']' );
 
-        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue().toString() );
+        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue() );
     }
 
     @Override
     public String name() {
-        return "config";
+        return "othermeta";
     }
 
     @Override
-    public ConfigAttributes readAttributes() throws IOException {
+    public OtherMetaAttributes readAttributes() throws IOException {
         return attrs;
     }
 
@@ -160,7 +159,7 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ ConfigView.class };
+        return new Class[]{ OtherMetaView.class };
     }
 
     @Override

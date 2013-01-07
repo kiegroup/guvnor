@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.backend.config.attribute;
+package org.kie.guvnor.services.backend.metadata.attribute;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.kie.commons.data.Pair;
 import org.kie.commons.java.nio.IOException;
@@ -32,58 +32,70 @@ import org.kie.commons.java.nio.base.NotImplementedException;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.kie.guvnor.services.metadata.model.DiscussionRecord;
 
 import static org.kie.commons.data.Pair.*;
 import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributesUtil.*;
 
 /**
  *
  */
-public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
+public class DiscussionView
+        extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
-    public static final String IMPORT  = "config.import";
-    public static final String CONTENT = "config.content";
+    public static final String DISCUSS   = "discuss";
+    public static final String TIMESTAMP = DISCUSS + ".ts";
+    public static final String AUTHOR    = DISCUSS + ".author";
+    public static final String NOTE      = DISCUSS + ".note";
 
-    private static final Set<String> PROPERTIES = new HashSet<String>() {{
-        add( IMPORT );
-        add( CONTENT );
-    }};
+    private final DiscussionAttributes attrs;
 
-    private final ConfigAttributes attrs;
-
-    public ConfigView( final AbstractPath path ) {
+    public DiscussionView( final AbstractPath path ) {
         super( path );
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
-        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
-
-        final Map<Integer, String> _imports = new TreeMap<Integer, String>();
-
-        String _configContent = null;
+        final Map<Integer, Long> timestamps = new HashMap<Integer, Long>( content.size() );
+        final Map<Integer, String> authors = new HashMap<Integer, String>( content.size() );
+        final Map<Integer, String> notes = new HashMap<Integer, String>( content.size() );
 
         for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
-            if ( entry.getKey().startsWith( IMPORT ) ) {
-                final Pair<Integer, String> result = extractValue( entry );
-                _imports.put( result.getK1(), result.getK2() );
-            } else if ( entry.getKey().equals( CONTENT ) ) {
-                _configContent = entry.getValue().toString();
+            if ( entry.getKey().startsWith( TIMESTAMP ) ) {
+                final Pair<Integer, Object> result = extractValue( entry );
+                timestamps.put( result.getK1(), (Long) result.getK2() );
+            } else if ( entry.getKey().startsWith( AUTHOR ) ) {
+                final Pair<Integer, Object> result = extractValue( entry );
+                authors.put( result.getK1(), result.getK2().toString() );
+            } else if ( entry.getKey().startsWith( NOTE ) ) {
+                final Pair<Integer, Object> result = extractValue( entry );
+                notes.put( result.getK1(), result.getK2().toString() );
             }
         }
 
-        final String configContent = _configContent;
-        final List<String> imports = new ArrayList<String>( _imports.values() );
+        final List<DiscussionRecord> result = new ArrayList<DiscussionRecord>( timestamps.size() );
 
-        this.attrs = new ConfigAttributes() {
+        for ( int i = 0; i < timestamps.size(); i++ ) {
+            final Long ts = timestamps.get( i );
+            final String author = authors.get( i );
+            final String note = notes.get( i );
+            result.add( new DiscussionRecord( ts, author, note ) );
+        }
+
+        Collections.sort( result, new Comparator<DiscussionRecord>() {
             @Override
-            public List<String> imports() {
-                return imports;
+            public int compare( final DiscussionRecord o1,
+                                final DiscussionRecord o2 ) {
+                return o1.getTimestamp().compareTo( o2.getTimestamp() );
             }
+        } );
 
+        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
+
+        this.attrs = new DiscussionAttributes() {
             @Override
-            public String content() {
-                return configContent;
+            public List<DiscussionRecord> discussion() {
+                return result;
             }
 
             @Override
@@ -133,23 +145,23 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
         };
     }
 
-    private Pair<Integer, String> extractValue( final Map.Entry<String, Object> entry ) {
+    private Pair<Integer, Object> extractValue( final Map.Entry<String, Object> entry ) {
         int start = entry.getKey().indexOf( '[' );
         if ( start < 0 ) {
-            return newPair( 0, entry.getValue().toString() );
+            return newPair( 0, entry.getValue() );
         }
         int end = entry.getKey().indexOf( ']' );
 
-        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue().toString() );
+        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue() );
     }
 
     @Override
     public String name() {
-        return "config";
+        return DISCUSS;
     }
 
     @Override
-    public ConfigAttributes readAttributes() throws IOException {
+    public DiscussionAttributes readAttributes() throws IOException {
         return attrs;
     }
 
@@ -160,14 +172,14 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ ConfigView.class };
+        return new Class[]{ DiscussionView.class };
     }
 
     @Override
     public void setAttribute( final String attribute,
                               final Object value ) throws IOException {
         checkNotEmpty( "attribute", attribute );
-        checkCondition( "invalid attribute", PROPERTIES.contains( attribute ) );
+        checkCondition( "invalid attribute", attribute.equals( name() ) );
 
         throw new NotImplementedException();
     }

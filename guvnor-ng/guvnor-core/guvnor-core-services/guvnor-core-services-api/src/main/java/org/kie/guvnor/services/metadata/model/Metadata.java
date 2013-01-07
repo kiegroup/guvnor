@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -30,126 +31,170 @@ import org.uberfire.backend.vfs.Path;
 public class Metadata {
 
     private Path path;
-    private Date lastModified = new Date();
-    private Date dateCreated  = new Date();
 
-    private boolean disabled;
+    //automatic by file extension
+    private String format = "model.drl";
 
-    private String lastContributor  = "manstis";
-    private String creator          = "porcelli";
-    private String format           = "model.drl";
-    private String subject          = "subject here";
-    private String type             = "some content";
-    private String externalRelation = "external relation";
-    private String externalSource   = "external content";
+    //git info
+    private String checkinComment;
+    private String lastContributor;
+    private String creator;
+    //git -> basic file attrs
+    private Date   lastModified;
+    private Date   dateCreated;
+
+    //pure dcore
+    private String subject;
+    private String type;
+    private String externalRelation;
+    private String externalSource;
     private String description;
 
     //not dcore
-    private String                 checkinComment = "cool";
-    private List<String>           categories     = new ArrayList<String>();
-    private List<DiscussionRecord> discussion     = new ArrayList<DiscussionRecord>();
+    private boolean disabled;
+    private List<String>           categories = new ArrayList<String>();
+    private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
+    private List<VersionRecord>    version    = new ArrayList<VersionRecord>();
+
+    public Metadata() {
+
+    }
+
+    public Metadata( final Path path,
+                     final String format,
+                     final String checkinComment,
+                     final String lastContributor,
+                     final String creator,
+                     final Date lastModified,
+                     final Date dateCreated,
+                     final String subject,
+                     final String type,
+                     final String externalRelation,
+                     final String externalSource,
+                     final String description,
+                     final boolean disabled,
+                     final List<String> categories,
+                     final List<DiscussionRecord> discussion,
+                     final List<VersionRecord> version ) {
+        this.path = path;
+        this.format = format;
+        this.checkinComment = checkinComment;
+        this.lastContributor = lastContributor;
+        this.creator = creator;
+        this.lastModified = lastModified;
+        this.dateCreated = dateCreated;
+        this.subject = subject;
+        this.type = type;
+        this.externalRelation = externalRelation;
+        this.externalSource = externalSource;
+        this.description = description;
+        this.disabled = disabled;
+        this.categories = categories;
+        this.discussion = discussion;
+        this.version = version;
+    }
 
     public Path getPath() {
         return path;
-    }
-
-    public void setPath( final Path path ) {
-        this.path = path;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public String getLastContributor() {
-        return lastContributor;
-    }
-
-    public String getCheckinComment() {
-        return checkinComment;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled( final boolean disabled ) {
-        this.disabled = disabled;
     }
 
     public String getFormat() {
         return format;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getCheckinComment() {
+        return checkinComment;
     }
 
-    public void setSubject( final String subject ) {
-        this.subject = subject;
+    public String getLastContributor() {
+        return lastContributor;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public String getSubject() {
+        return subject;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType( final String type ) {
-        this.type = type;
-    }
-
     public String getExternalRelation() {
         return externalRelation;
-    }
-
-    public void setExternalRelation( final String externalRelation ) {
-        this.externalRelation = externalRelation;
     }
 
     public String getExternalSource() {
         return externalSource;
     }
 
-    public void setExternalSource( final String externalSource ) {
-        this.externalSource = externalSource;
+    public String getDescription() {
+        return description;
     }
 
-    public void addCategory( final String category ) {
-        categories.add( category );
+    public boolean isDisabled() {
+        return disabled;
     }
 
     public List<String> getCategories() {
         return categories;
     }
 
-    public void removeCategory( final int idx ) {
-        categories.remove( idx );
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription( final String description ) {
-        this.description = description;
-    }
-
     public List<DiscussionRecord> getDiscussion() {
         return discussion;
     }
 
+    public List<VersionRecord> getVersion() {
+        return version;
+    }
+
+    public void setDisabled( final boolean disabled ) {
+        this.disabled = disabled;
+    }
+
+    public void setSubject( final String subject ) {
+        this.subject = subject;
+    }
+
+    public void setType( final String type ) {
+        this.type = type;
+    }
+
+    public void setExternalRelation( final String externalRelation ) {
+        this.externalRelation = externalRelation;
+    }
+
+    public void setExternalSource( final String externalSource ) {
+        this.externalSource = externalSource;
+    }
+
     public void addDiscussion( final DiscussionRecord discussionRecord ) {
-        discussion.add( discussionRecord );
+        this.discussion.add( discussionRecord );
     }
 
     public void eraseDiscussion() {
-        discussion.clear();
+        this.discussion.clear();
+    }
+
+    public void addCategory( final String category ) {
+        categories.add( category );
+    }
+
+    public void removeCategory( final int idx ) {
+        categories.remove( idx );
+    }
+
+    public void setDescription( final String description ) {
+        this.description = description;
     }
 }

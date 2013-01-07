@@ -34,7 +34,7 @@ import org.kie.guvnor.services.config.model.imports.ImportsConfig;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.Preconditions.*;
 import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil.*;
 
 @Service
@@ -72,14 +72,15 @@ public class ResourceConfigServiceImpl implements ResourceConfigService {
     public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
                                             final ResourceConfig config ) {
         checkNotNull( "config", config );
+        checkNotNull( "_attrs", _attrs );
+
+        final Map<String, Object> attrs = cleanup( _attrs );
 
         final List<String> imports = new ArrayList<String>() {{
             for ( int i = 0; i < config.getImportsConfig().getImports().size(); i++ ) {
                 add( i, config.getImportsConfig().getImports().get( i ).getType() );
             }
         }};
-
-        final Map<String, Object> attrs = cleanup( _attrs );
 
         attrs.putAll( toMap( new ConfigAttributes() {
             @Override

@@ -36,7 +36,8 @@ public final class ResourceMenuBuilder {
     private ResourceMenuBuilder() {
     }
 
-    private Command saveCommand = null;
+    private Command saveCommand     = null;
+    private Command restoreCommand  = null;
     private Command validateCommand = null;
 
     public ResourceMenuBuilder addValidation( final Command command ) {
@@ -46,6 +47,11 @@ public final class ResourceMenuBuilder {
 
     public ResourceMenuBuilder addSave( final Command command ) {
         this.saveCommand = command;
+        return this;
+    }
+
+    public ResourceMenuBuilder addRestoreVersion( final Command command ) {
+        this.restoreCommand = command;
         return this;
     }
 
@@ -65,6 +71,12 @@ public final class ResourceMenuBuilder {
             final MenuItem save = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Save(),
                                                               saveCommand );
             subMenuBar.addItem( save );
+        }
+
+        if ( restoreCommand != null ) {
+            final MenuItem restore = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Restore(),
+                                                                 restoreCommand );
+            subMenuBar.addItem( restore );
         }
 
         return menuBar;

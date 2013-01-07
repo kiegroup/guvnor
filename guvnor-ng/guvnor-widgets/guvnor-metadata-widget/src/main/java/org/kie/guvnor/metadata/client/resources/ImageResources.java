@@ -40,4 +40,9 @@ public interface ImageResources
     @Source("images/spinner.gif")
     ImageResource spinner();
 
+    @Source("images/searching.gif")
+    ImageResource searching();
+
+    @Source("images/refresh.gif")
+    ImageResource refresh();
 }

@@ -20,12 +20,14 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -33,11 +35,13 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.metadata.client.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -55,6 +59,7 @@ import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
@@ -77,6 +82,8 @@ public class FactModelsEditorPresenter {
         void setNotDirty();
 
         boolean confirmClose();
+
+        void alertReadOnly();
     }
 
     @Inject
@@ -87,6 +94,9 @@ public class FactModelsEditorPresenter {
 
     @Inject
     private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
+    private Caller<VersionService> versionService;
 
     @Inject
     private View view;
@@ -104,7 +114,11 @@ public class FactModelsEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Path path;
+    @Inject
+    private Event<RestoreEvent> restoreEvent;
+
+    private Path    path;
+    private boolean isReadOnly;
 
     @PostConstruct
     public void init() {
@@ -153,8 +167,15 @@ public class FactModelsEditorPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest request ) {
         this.path = path;
+        this.isReadOnly = (Boolean) request.getParameter( "readOnly", false );
+
+        loadContent();
+    }
+
+    private void loadContent() {
         factModelService.call( new RemoteCallback<FactModelContent>() {
             @Override
             public void callback( final FactModelContent content ) {
@@ -175,24 +196,31 @@ public class FactModelsEditorPresenter {
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
             public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata, false );
+                metadataWidget.setContent( metadata, isReadOnly );
             }
         } ).getMetadata( path );
 
         resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
             @Override
             public void callback( final ResourceConfig config ) {
-                resourceConfigWidget.setContent( config, false );
+                resourceConfigWidget.setContent( config, isReadOnly );
             }
         } ).getConfig( path );
     }
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         factModelService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path response ) {
                 view.setNotDirty();
+                resourceConfigWidget.resetDirty();
+                metadataWidget.resetDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         } ).save( path, view.getContent(), resourceConfigWidget.getContent(), metadataWidget.getContent() );
@@ -210,6 +238,9 @@ public class FactModelsEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
+        if ( isReadOnly ) {
+            return false;
+        }
         return ( view.isDirty() || resourceConfigWidget.isDirty() || metadataWidget.isDirty() );
     }
 
@@ -223,12 +254,15 @@ public class FactModelsEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
+        if ( isReadOnly ) {
+            return "Read Only Fact Models Viewer [" + path.getFileName() + "]";
+        }
         return "Fact Models Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation( new Command() {
+        final ResourceMenuBuilder builder = newResourceMenuBuilder().addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
@@ -241,12 +275,38 @@ public class FactModelsEditorPresenter {
                     }
                 } ).validate( path, view.getContent() );
             }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).build();
+        } );
+
+        if ( isReadOnly ) {
+            builder.addRestoreVersion( new Command() {
+                @Override
+                public void execute() {
+                    versionService.call( new RemoteCallback<Path>() {
+                        @Override
+                        public void callback( final Path restored ) {
+                            //TODO {porcelli} howto close current?
+                            restoreEvent.fire( new RestoreEvent( restored ) );
+                        }
+                    } ).restore( path );
+                }
+            } );
+        } else {
+            builder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } );
+        }
+
+        return builder.build();
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

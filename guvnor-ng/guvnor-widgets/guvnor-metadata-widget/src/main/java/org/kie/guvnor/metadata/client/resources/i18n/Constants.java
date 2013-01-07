@@ -94,4 +94,15 @@ public interface Constants extends
     String smallCommentBy0On1Small( final String author,
                                     final Date date );
 
+    String VersionHistory1();
+
+    String NoHistory();
+
+    String View();
+
+    String property0ModifiedOn1By23( final String version,
+                                     final String lastModifier,
+                                     final String lastModifiedDate,
+                                     final String lastModifiedComment );
+
 }

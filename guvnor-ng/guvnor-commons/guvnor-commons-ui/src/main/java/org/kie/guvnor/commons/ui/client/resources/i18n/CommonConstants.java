@@ -74,6 +74,8 @@ public interface CommonConstants
 
     String Validate();
 
+    String Restore();
+
     String EditTabTitle();
 
     String SourceTabTitle();
@@ -83,6 +85,8 @@ public interface CommonConstants
     String ConfigTabTitle();
 
     String DiscardUnsavedData();
+
+    String CantSaveReadOnly();
 
     String ItemCreatedSuccessfully();
 
@@ -94,4 +98,9 @@ public interface CommonConstants
 
     String MissingPath();
 
+    String ItemRestored();
+
+    String AddAnOptionalCheckInComment();
+
+    String CheckIn();
 }
