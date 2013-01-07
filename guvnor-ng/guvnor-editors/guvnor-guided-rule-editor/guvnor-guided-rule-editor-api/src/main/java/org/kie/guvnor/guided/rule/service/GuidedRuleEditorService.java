@@ -46,4 +46,5 @@ public interface GuidedRuleEditorService
     String[] loadDropDownExpression( final String[] valuePairs,
                                      final String expression );
 
+    RuleModel loadRuleModel(Path path);
 }
