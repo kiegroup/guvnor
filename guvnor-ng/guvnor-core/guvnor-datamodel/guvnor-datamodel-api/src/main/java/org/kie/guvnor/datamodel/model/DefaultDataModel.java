@@ -164,13 +164,7 @@ public class DefaultDataModel implements DataModelOracle {
 
     public String[] getFieldCompletions( final FieldAccessorsAndMutators accessorOrMutator,
                                          final String factType ) {
-        return getModelFields( accessorOrMutator,
-                               factType );
-    }
-
-    private String[] getModelFields( final FieldAccessorsAndMutators accessorOrMutator,
-                                     final String modelClassName ) {
-        final String shortName = getFactNameFromType( modelClassName );
+        final String shortName = getFactNameFromType( factType );
         if ( !modelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
