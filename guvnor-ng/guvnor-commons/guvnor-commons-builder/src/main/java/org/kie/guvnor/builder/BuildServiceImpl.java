@@ -16,12 +16,23 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.builder.KieModule;
+import org.kie.builder.impl.InternalKieModule;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -39,6 +50,7 @@ public class BuildServiceImpl
     private SourceServicesImpl sourceServices;
     private Event<Results> messagesEvent;
     private ProjectService projectService;
+    private M2RepoService m2RepoService;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -49,12 +61,14 @@ public class BuildServiceImpl
                             Paths paths,
                             SourceServicesImpl sourceServices,
                             ProjectService projectService,
+                            M2RepoService m2RepoService,
                             Event<Results> messagesEvent) {
         this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
         this.projectService = projectService;
+        this.m2RepoService = m2RepoService;
     }
 
     @Override
@@ -65,11 +79,12 @@ public class BuildServiceImpl
 
         builder.build();
 
-        // TODO: Save this into the M2_REPO
-        builder.getKieModule();
+        InternalKieModule kieModule = (InternalKieModule )builder.getKieModule();
+        ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
 
+        //Refactor GAV later
+        GAV anotherGav = new GAV(gav.getArtifactId(), gav.getGroupId(), gav.getVersion());
+        m2RepoService.addJar(input, anotherGav);
         messagesEvent.fire(builder.getResults());
-
-
     }
 }
