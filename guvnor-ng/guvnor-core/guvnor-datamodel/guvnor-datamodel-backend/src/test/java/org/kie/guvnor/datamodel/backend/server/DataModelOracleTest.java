@@ -1,7 +1,12 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import org.junit.Ignore;
+import java.io.IOException;
+
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestDataTypes;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestDelegatedClass;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestSubClass;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestSuperClass;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 
@@ -13,14 +18,22 @@ import static org.junit.Assert.*;
 public class DataModelOracleTest {
 
     @Test
-    @Ignore("Need to add loading Model from .class file")
-    public void testDataTypes() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder().build();
-//        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
-//                .addFact( TestDataTypes.class )
-//                .end()
-//                .build();
+    public void testDataTypes() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestDataTypes.class )
+                .build();
 
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestDataTypes",
+                      dmo.getFactTypes()[ 0 ] );
+
+        assertEquals( 20,
+                      dmo.getFieldCompletions( "TestDataTypes" ).length );
+
+        assertEquals( DataType.TYPE_THIS,
+                      dmo.getFieldType( "TestDataTypes",
+                                        "this" ) );
         assertEquals( DataType.TYPE_STRING,
                       dmo.getFieldType( "TestDataTypes",
                                         "fieldString" ) );
@@ -57,7 +70,6 @@ public class DataModelOracleTest {
         assertEquals( DataType.TYPE_NUMERIC_SHORT,
                       dmo.getFieldType( "TestDataTypes",
                                         "fieldShortObject" ) );
-
         assertEquals( DataType.TYPE_BOOLEAN,
                       dmo.getFieldType( "TestDataTypes",
                                         "fieldBooleanPrimitive" ) );
@@ -79,7 +91,75 @@ public class DataModelOracleTest {
         assertEquals( DataType.TYPE_NUMERIC_SHORT,
                       dmo.getFieldType( "TestDataTypes",
                                         "fieldShortPrimitive" ) );
+    }
 
+    @Test
+    public void testSuperClass() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestSuperClass.class )
+                .build();
+
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestSuperClass",
+                      dmo.getFactTypes()[ 0 ] );
+
+        assertEquals( 2,
+                      dmo.getFieldCompletions( "TestSuperClass" ).length );
+
+        assertEquals( DataType.TYPE_THIS,
+                      dmo.getFieldType( "TestSuperClass",
+                                        "this" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      dmo.getFieldType( "TestSuperClass",
+                                        "field1" ) );
+    }
+
+    @Test
+    public void testSubClass() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestSubClass.class )
+                .build();
+
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestSubClass",
+                      dmo.getFactTypes()[ 0 ] );
+
+        assertEquals( 3,
+                      dmo.getFieldCompletions( "TestSubClass" ).length );
+
+        assertEquals( DataType.TYPE_THIS,
+                      dmo.getFieldType( "TestSubClass",
+                                        "this" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      dmo.getFieldType( "TestSubClass",
+                                        "field1" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      dmo.getFieldType( "TestSubClass",
+                                        "field2" ) );
+    }
+
+    @Test
+    public void testDelegatedClass() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestDelegatedClass.class )
+                .build();
+
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestDelegatedClass",
+                      dmo.getFactTypes()[ 0 ] );
+
+        assertEquals( 2,
+                      dmo.getFieldCompletions( "TestDelegatedClass" ).length );
+
+        assertEquals( DataType.TYPE_THIS,
+                      dmo.getFieldType( "TestDelegatedClass",
+                                        "this" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      dmo.getFieldType( "TestDelegatedClass",
+                                        "field1" ) );
     }
 
 }

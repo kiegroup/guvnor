@@ -96,7 +96,7 @@ public interface DataModelOracle {
 
     List<MethodInfo> getMethodInfosForGlobalVariable( String variable );
 
-    MethodInfo getMethodinfo( String factName,
+    MethodInfo getMethodInfo( String factName,
                               String methodName );
 
     String getFieldClassName( String factName,

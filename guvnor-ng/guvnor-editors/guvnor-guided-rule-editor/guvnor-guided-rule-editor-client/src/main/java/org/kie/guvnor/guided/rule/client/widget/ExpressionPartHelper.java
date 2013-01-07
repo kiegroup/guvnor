@@ -30,7 +30,7 @@ public class ExpressionPartHelper {
     public static ExpressionPart getExpressionPartForMethod( DataModelOracle sce,
                                                              String factName,
                                                              String methodName ) {
-        MethodInfo mi = sce.getMethodinfo( factName, methodName );
+        MethodInfo mi = sce.getMethodInfo( factName, methodName );
         if ( DataType.TYPE_COLLECTION.equals( mi.getGenericType() ) ) {
             return new ExpressionCollection( methodName, mi.getReturnClassType(),
                                              mi.getGenericType(), mi.getParametricReturnType() );

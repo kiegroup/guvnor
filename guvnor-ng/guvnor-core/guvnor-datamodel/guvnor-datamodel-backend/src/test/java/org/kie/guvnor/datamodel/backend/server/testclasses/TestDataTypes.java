@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.testclasses;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
+/**
+ * Test class to check data-types are extracted correctly by DataModelBuilder
+ */
 public class TestDataTypes {
 
     private String     fieldString;

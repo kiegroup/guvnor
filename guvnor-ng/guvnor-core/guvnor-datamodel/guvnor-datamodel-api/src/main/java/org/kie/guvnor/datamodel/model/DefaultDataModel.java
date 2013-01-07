@@ -21,44 +21,34 @@ import org.kie.guvnor.datamodel.oracle.OracleUtils;
 @Portable
 public class DefaultDataModel implements DataModelOracle {
 
+    // Details of Fact Types and their corresponding fields
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
-    private Map<String, List<MethodInfo>> methodInfos = new HashMap<String, List<MethodInfo>>();
 
-    /**
-     * Contains a map of { TypeName.field : String[] } - where a list is valid
-     * values to display in a drop down for a given Type.field combination.
-     */
-    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();
-
-    /**
-     * This is used to calculate what fields an enum list may depend on.
-     */
-    private transient Map<String, Object> dataEnumLookupFields;
-
-    /**
-     * Contains a map of globals (name is key) and their type (value).
-     */
-    private Map<String, String> globalTypes = new HashMap<String, String>();
-
-    /**
-     * This will show the names of globals that are a collection type.
-     */
-    private String[] globalCollections;
-
-    /**
-     * A map of the field that contains the parametrized type of a collection
-     * List<String> name key = "name" value = "String"
-     */
-    private Map<String, String> fieldParametersType = new HashMap<String, String>();
-
-    /**
-     * A map of Annotations for FactTypes. Key is FactType, value is list of annotations
-     */
+    // A map of Annotations for FactTypes. Key is FactType, value is list of annotations
     private Map<String, List<ModelAnnotation>> annotationsForTypes = new HashMap<String, List<ModelAnnotation>>();
 
-    /**
-     * DSL language extensions, if needed, if provided by the package.
-     */
+    // A map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
+    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();
+
+    // This is used to calculate what fields an enum list may depend on.
+    private transient Map<String, Object> dataEnumLookupFields;
+
+    // Details of Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
+    private Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+
+    // A map of the field that contains the parametrized type of a collection
+    // for example given "List<String> name", key = "name" value = "String"
+    private Map<String, String> fieldParametersType = new HashMap<String, String>();
+
+    //TODO {manstis} The following are not setup by DataModelBuilder
+
+    // A map of globals (name is key) and their type (value).
+    private Map<String, String> globalTypes = new HashMap<String, String>();
+
+    // Globals that are a collection type.
+    private String[] globalCollections = new String[ 0 ];
+
+    // DSL language extensions, if needed, if provided by the package.
     private DSLSentence[] conditionDSLSentences = new DSLSentence[ 0 ];
     private DSLSentence[] actionDSLSentences = new DSLSentence[ 0 ];
 
@@ -304,7 +294,7 @@ public class DefaultDataModel implements DataModelOracle {
 
     public List<MethodInfo> getMethodInfosForGlobalVariable( final String varName ) {
         final String type = getGlobalVariable( varName );
-        return methodInfos.get( type );
+        return methodInformation.get( type );
     }
 
     public String getGlobalVariable( final String name ) {
@@ -604,7 +594,7 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public List<String> getMethodNames( final String factType,
                                         final int paramCount ) {
-        final List<MethodInfo> infos = methodInfos.get( factType );
+        final List<MethodInfo> infos = methodInformation.get( factType );
         final List<String> methodList = new ArrayList<String>();
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
@@ -624,7 +614,7 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public List<String> getMethodParams( final String factType,
                                          final String methodNameWithParams ) {
-        final List<MethodInfo> infos = methodInfos.get( factType );
+        final List<MethodInfo> infos = methodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
@@ -641,9 +631,9 @@ public class DefaultDataModel implements DataModelOracle {
      * @param methodFullName
      * @return
      */
-    public MethodInfo getMethodinfo( final String factType,
+    public MethodInfo getMethodInfo( final String factType,
                                      final String methodFullName ) {
-        final List<MethodInfo> infos = methodInfos.get( factType );
+        final List<MethodInfo> infos = methodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().equals( methodFullName ) ) {
@@ -678,16 +668,24 @@ public class DefaultDataModel implements DataModelOracle {
     // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
     // ##############################################################################################
 
-    public void setFactsAndFields( final Map<String, ModelField[]> modelFields ) {
-        this.modelFields = modelFields;
+    public void addFactsAndFields( final Map<String, ModelField[]> modelFields ) {
+        this.modelFields.putAll( modelFields );
     }
 
-    public void setFactAnnotations( final Map<String, List<ModelAnnotation>> annotationsForTypes ) {
-        this.annotationsForTypes = annotationsForTypes;
+    public void addFactAnnotations( final Map<String, List<ModelAnnotation>> annotationsForTypes ) {
+        this.annotationsForTypes.putAll( annotationsForTypes );
     }
 
-    public void setEnums( final Map<String, String[]> dataEnumLists ) {
-        this.dataEnumLists = dataEnumLists;
+    public void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
+        this.methodInformation.putAll( methodInformation );
+    }
+
+    public void addFieldParametersType( final Map<String, String> fieldParametersType ) {
+        this.fieldParametersType.putAll( fieldParametersType );
+    }
+
+    public void addEnums( final Map<String, String[]> dataEnumLists ) {
+        this.dataEnumLists.putAll( dataEnumLists );
     }
 
 }
