@@ -35,9 +35,10 @@ public interface GuidedDecisionTableEditorService
 
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
+    GuidedDecisionTable52 loadRuleModel(Path path);
+
     void save( final Path path,
                final GuidedDecisionTable52 model );
 
     Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
-
 }

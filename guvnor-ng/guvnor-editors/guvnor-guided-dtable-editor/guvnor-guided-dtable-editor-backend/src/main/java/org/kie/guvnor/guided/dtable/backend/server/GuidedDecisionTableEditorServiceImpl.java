@@ -62,11 +62,15 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
-        final GuidedDecisionTable52 model = p.unmarshal( vfs.readAllString( path ) );
+        final GuidedDecisionTable52 model = loadRuleModel( path  );
         final DataModelOracle dataModel = dataModelService.getDataModel( path );
         return new GuidedDecisionTableEditorContent( dataModel,
                                                      model );
+    }
+
+    @Override
+    public GuidedDecisionTable52 loadRuleModel(Path path) {
+        return GuidedDTXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
     }
 
     @Override
