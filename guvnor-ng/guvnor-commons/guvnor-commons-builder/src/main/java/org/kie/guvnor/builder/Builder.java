@@ -28,7 +28,6 @@ import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
@@ -94,7 +93,7 @@ public class Builder {
 
                 } else if (sourceServices.hasServiceFor(getFileExtension(path))) {
 
-                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor("gdst").toDRL(path));
+                    kieFileSystem.write(stripPath(projectName, path) + ".drl", sourceServices.getServiceFor("gdst").getSource(path));
 
                 }
             }

@@ -48,7 +48,7 @@ public class GuidedDecisionTableSourceService
     }
 
     @Override
-    public String toDRL(Path path) {
+    public String getSource(Path path) {
         return guidedDecisionTableEditorService.toSource(guidedDecisionTableEditorService.loadRuleModel(paths.convert(path)));
     }
 }

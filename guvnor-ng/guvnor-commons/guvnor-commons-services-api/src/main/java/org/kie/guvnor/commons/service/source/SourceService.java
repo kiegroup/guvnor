@@ -22,5 +22,5 @@ public interface SourceService {
 
     String getSupportedFileExtension();
 
-    String toDRL(Path path);
+    String getSource(Path path);
 }
