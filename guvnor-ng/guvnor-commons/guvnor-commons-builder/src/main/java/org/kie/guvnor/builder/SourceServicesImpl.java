@@ -16,15 +16,19 @@
 
 package org.kie.guvnor.builder;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.service.source.SourceService;
 import org.kie.guvnor.commons.service.source.SourceServices;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
+@ApplicationScoped
 public class SourceServicesImpl
         implements SourceServices {
 

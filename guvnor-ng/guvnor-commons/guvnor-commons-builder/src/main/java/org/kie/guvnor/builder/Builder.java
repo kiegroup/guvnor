@@ -48,7 +48,7 @@ public class Builder {
                    String artifactId,
                    IOService ioService,
                    Paths paths,
-                   SourceServicesImpl sourceServices) {
+                   SourceServices sourceServices) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.ioService = ioService;

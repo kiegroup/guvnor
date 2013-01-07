@@ -28,9 +28,9 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
-import org.kie.guvnor.builder.SourceServicesImpl;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
@@ -63,7 +63,7 @@ public class DataModelServiceImpl
     private Paths paths;
 
     @Inject
-    private SourceServicesImpl sourceServices;
+    private SourceServices sourceServices;
 
     @Inject
     private Event<Results> messagesEvent;

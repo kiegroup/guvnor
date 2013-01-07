@@ -119,36 +119,20 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-factmodel-editor-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-factmodel-editor-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-rule-editor-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-rule-editor-backend</artifactId>
-    </dependency>    
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-drl-text-editor-api</artifactId>
-    </dependency>
+    </dependency>      
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-drl-text-editor-backend</artifactId>
     </dependency>   
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-enum-editor-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-enum-editor-backend</artifactId>
-    </dependency>         
+    </dependency>      
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-jgit</artifactId>
