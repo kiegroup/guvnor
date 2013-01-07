@@ -16,18 +16,32 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
 public class DRLTextEditorServiceImpl implements DRLTextEditorService {
-
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+    
+    @Inject
+    private Paths paths;
+    
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
@@ -46,5 +60,28 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                                   String content ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
+    }
+    
+    @Override
+    public void save( final Path resource,
+                      final String content) {
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+        
+        Map<String, Object> attrs;
+
+        try {
+            attrs = ioService.readAttributes( path );
+        } catch ( final NoSuchFileException ex ) {
+            attrs = new HashMap<String, Object>();
+        }
+
+/*        if ( config != null ) {
+            attrs = resourceConfigService.configAttrs( attrs, config );
+        }
+        if ( metadata != null ) {
+            attrs = metadataService.configAttrs( attrs, metadata );
+        }*/
+
+        ioService.write( path, content, attrs );
     }
 }

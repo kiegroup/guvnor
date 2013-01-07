@@ -1,6 +1,6 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater;
 
-import java.util.Arrays;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -13,11 +13,13 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DRLEditorMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.EnumEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.kie.guvnor.factmodel.service.FactModelService;
+
 
 @ApplicationScoped
 public class AssetMigrater {
@@ -31,11 +33,15 @@ public class AssetMigrater {
     protected RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
-    protected FactModelsMigrater factModelsMigrater;
-    
+    protected FactModelsMigrater factModelsMigrater;    
     @Inject
     protected GuidedEditorMigrater guidedEditorMigrater;
+    @Inject
+    protected DRLEditorMigrater drlEditorMigrater;
+    @Inject
+    protected EnumEditorMigrater enumEditorMigrater;
     
+
     public void migrateAll() {
         logger.info("  Asset migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
@@ -76,6 +82,10 @@ public class AssetMigrater {
             factModelsMigrater.migrate(jcrModule, jcrAsset);
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
             guidedEditorMigrater.migrate(jcrModule, jcrAsset);
+        } else if (AssetFormats.DRL.equals(jcrAsset.getFormat())) {
+            drlEditorMigrater.migrate(jcrModule, jcrAsset);
+        } else if (AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())) {
+            enumEditorMigrater.migrate(jcrModule, jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
