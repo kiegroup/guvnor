@@ -18,6 +18,7 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -37,6 +38,7 @@ import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.scanner.KieModuleMetaData;
@@ -67,6 +69,9 @@ public class DataModelServiceImpl
 
     @Inject
     private Event<Results> messagesEvent;
+
+    @Inject
+    private FileDiscoveryService fileDiscoveryService;
 
     @Override
     public String[] getFactTypes( final Path resourcePath ) {
@@ -139,8 +144,7 @@ public class DataModelServiceImpl
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
         final DataModelBuilder dmoBuilder = DataModelBuilder.newDataModelBuilder();
 
-        //TODO {manstis}
-        //TODO - Add all classes from the KieModule metaData
+        //Add all classes from the KieModule metaData
         for ( final String packageName : metaData.getPackages() ) {
             for ( final String className : metaData.getClasses( packageName ) ) {
                 final Class clazz = metaData.getClass( packageName,
@@ -152,9 +156,16 @@ public class DataModelServiceImpl
                 }
             }
         }
-        //TODO - Add Guvnor enumerations
-        //TODO - Add DSLs
-        //TODO - Add Globals
+
+        //TODO {manstis} - Add Guvnor enumerations
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectPath );
+        final Collection<org.kie.commons.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioProjectPath,
+                                                                                                             ".enumeration" );
+
+        //TODO {manstis} - Add DSLs
+        final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioProjectPath,
+                                                                                                            ".dsl" );
+        //TODO {manstis} - Add Globals
 
         //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
         if ( !results.isEmpty() ) {

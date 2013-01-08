@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.enums.backend.server;
+package org.kie.guvnor.dsltext.backend.server;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.SourceService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-public class EnumSourceService
+public class DSLSourceService
         implements SourceService {
 
     @Inject
@@ -32,11 +32,11 @@ public class EnumSourceService
 
     @Override
     public String getSupportedFileExtension() {
-        return ".enumeration";
+        return ".dsl";
     }
 
     @Override
-    public String getSource(Path path) {
-        return ioService.readAllString(path);
+    public String getSource( Path path ) {
+        return ioService.readAllString( path );
     }
 }
