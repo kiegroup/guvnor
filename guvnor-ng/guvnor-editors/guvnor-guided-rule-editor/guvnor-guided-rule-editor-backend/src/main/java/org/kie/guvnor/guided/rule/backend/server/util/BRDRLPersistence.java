@@ -71,7 +71,6 @@ import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
 /**
  * This class persists the rule model to DRL and back
  */
-@ApplicationScoped
 public class BRDRLPersistence
         implements
         BRLPersistence {

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class persists a {@link TemplateModel} to DRL template
  */
-@ApplicationScoped
 public class BRDRTPersistence
         extends BRDRLPersistence {
 

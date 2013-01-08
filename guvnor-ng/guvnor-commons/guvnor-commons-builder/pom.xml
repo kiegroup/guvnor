@@ -41,7 +41,7 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <artifactId>guvnor-project-backend</artifactId>
     </dependency>
     
     <dependency>

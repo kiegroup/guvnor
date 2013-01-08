@@ -17,18 +17,13 @@
 package org.kie.guvnor.builder;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.builder.KieModule;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.m2repo.model.GAV;
@@ -47,7 +42,7 @@ public class BuildServiceImpl
 
     private IOService ioService;
     private Paths paths;
-    private SourceServicesImpl sourceServices;
+    private SourceServices sourceServices;
     private Event<Results> messagesEvent;
     private ProjectService projectService;
     private M2RepoService m2RepoService;
@@ -59,7 +54,7 @@ public class BuildServiceImpl
     @Inject
     public BuildServiceImpl(IOService ioService,
                             Paths paths,
-                            SourceServicesImpl sourceServices,
+                            SourceServices sourceServices,
                             ProjectService projectService,
                             M2RepoService m2RepoService,
                             Event<Results> messagesEvent) {

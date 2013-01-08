@@ -29,7 +29,7 @@ public class EnumEditorMigrater {
     protected MigrationPathManager migrationPathManager;
 
     public void migrate(Module jcrModule, Asset jcrAsset) {
-        if (!AssetFormats.DRL.equals(jcrAsset.getFormat())) {
+        if (!AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
                     + ") has the wrong format (" + jcrAsset.getFormat() + ").");
         }

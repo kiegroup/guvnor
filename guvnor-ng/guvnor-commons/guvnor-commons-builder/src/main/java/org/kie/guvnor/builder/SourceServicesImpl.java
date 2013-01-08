@@ -34,6 +34,10 @@ public class SourceServicesImpl
 
     private Map<String, SourceService> sourceServices = new HashMap<String, SourceService>();
 
+    public SourceServicesImpl() {
+        //Empty constructor for Weld
+    }
+    
     @Inject
     public SourceServicesImpl(@Any Instance<SourceService> sourceServiceList) {
         for (SourceService sourceService : sourceServiceList) {

@@ -63,13 +63,13 @@ public class GuidedEditorMigrater {
         }
         vfsRuleModel.metadataList = ruleMetadata;
         
-        IPattern[] iPattern = new IPattern[jcrRuleModel.metadataList.length];
+        IPattern[] iPattern = new IPattern[jcrRuleModel.lhs.length];
         for(int i = 0; i< jcrRuleModel.lhs.length; i++) {
             iPattern[i] = convertIPattern(jcrRuleModel.lhs[i]);
         }        
         vfsRuleModel.lhs = iPattern;
         
-        IAction[] iAction = new IAction[jcrRuleModel.metadataList.length];
+        IAction[] iAction = new IAction[jcrRuleModel.rhs.length];
         for(int i = 0; i< jcrRuleModel.rhs.length; i++) {
             iAction[i] = convertIAction(jcrRuleModel.rhs[i]);
         }  
