@@ -14,8 +14,10 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DRLEditorMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DSLEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.EnumEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FormDefEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,10 @@ public class AssetMigrater {
     protected DRLEditorMigrater drlEditorMigrater;
     @Inject
     protected EnumEditorMigrater enumEditorMigrater;
-    
+    @Inject
+    protected DSLEditorMigrater dslEditorMigrater;    
+    @Inject
+    protected FormDefEditorMigrater formDefEditorMigrater;        
 
     public void migrateAll() {
         logger.info("  Asset migration started");
@@ -86,6 +91,10 @@ public class AssetMigrater {
             drlEditorMigrater.migrate(jcrModule, jcrAsset);
         } else if (AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())) {
             enumEditorMigrater.migrate(jcrModule, jcrAsset);
+        } else if (AssetFormats.DSL.equals(jcrAsset.getFormat()) || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())) {
+            dslEditorMigrater.migrate(jcrModule, jcrAsset);
+        } else if (AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())) {
+            formDefEditorMigrater.migrate(jcrModule, jcrAsset);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
