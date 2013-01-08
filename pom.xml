@@ -22,7 +22,7 @@
     <module>guvnor-ng</module>
     <module>guvnor-examples</module>
     <module>guvnor-bulk-importer</module>
-    <!--module>guvnor-jcr2vfs-migration</module-->
+    <module>guvnor-jcr2vfs-migration</module>
   </modules>
 
   <profiles>

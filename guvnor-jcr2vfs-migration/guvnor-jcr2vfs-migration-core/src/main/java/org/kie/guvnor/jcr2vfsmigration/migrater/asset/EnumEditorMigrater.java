@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.enums.service.EnumService;
@@ -35,7 +36,7 @@ public class EnumEditorMigrater {
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
 
-        enumService.save(path, jcrAsset.getContent().toString());
+        enumService.save(path, ((RuleContentText)jcrAsset.getContent()).content);
     }
 
  }

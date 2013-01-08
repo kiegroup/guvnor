@@ -32,7 +32,7 @@ public class MigrationPathManager {
     }
 
     public Path generatePathForAsset(Module jcrModule, Asset jcrAsset) {
-        Path path = PathFactory.newPath(escapePathEntry(jcrAsset.getName()),
+        Path path = PathFactory.newPath(escapePathEntry(jcrAsset.getName()) + "." + jcrAsset.getFormat(),
                 VFS_PATH_NAMESPACE
                         + escapePathEntry(jcrModule.getName()) + "/"
                         + escapePathEntry(jcrAsset.getName()) + "/");
