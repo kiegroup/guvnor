@@ -105,7 +105,8 @@ public class M2RepoServiceImpl
     
     @Override
     public String getRepositoryURL() {
-        return "file://" + repository.getM2RepositoryRootDir();
+        File file = new File(repository.getM2RepositoryRootDir());
+        return "file://" + file.getAbsolutePath();
     }
     
 
