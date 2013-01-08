@@ -48,8 +48,8 @@ public class M2RepoServiceImpl
 
 
     @Override
-    public void addJar(InputStream is, GAV gav) {
-        repository.addFile(is, gav);
+    public void deployJar(InputStream is, GAV gav) {
+        repository.deployArtifact(is, gav);
     }
     
     @Override
@@ -101,6 +101,11 @@ public class M2RepoServiceImpl
         //response.setLastPage(true);
         
         return response;
+    }
+    
+    @Override
+    public String getRepositoryURL() {
+        return "file://" + repository.getM2RepositoryRootDir();
     }
     
 

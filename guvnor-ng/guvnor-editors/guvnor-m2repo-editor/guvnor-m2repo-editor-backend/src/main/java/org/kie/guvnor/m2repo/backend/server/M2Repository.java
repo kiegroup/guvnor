@@ -81,7 +81,8 @@ public class M2Repository {
         }
     }
     
-    public void addFile(InputStream is, GAV gav) {
+    public void deployArtifact(InputStream is, GAV gav) {
+        System.out.println("-------deployArtifact: " + gav);
         OutputStream outStream = null;
         try {
             //TODO: at the moment, we just assume classifier is null, target repo id is RELEASES

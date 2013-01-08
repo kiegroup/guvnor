@@ -80,7 +80,7 @@ public class M2RepositoryTest {
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");
         
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         Collection<File> files = repo.listFiles();
 
@@ -105,11 +105,11 @@ public class M2RepositoryTest {
 
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         Collection<File> files = repo.listFiles();
 
@@ -140,11 +140,11 @@ public class M2RepositoryTest {
 
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         //filter with version number
         Collection<File> files = repo.listFiles("1.0.2");
@@ -188,11 +188,11 @@ public class M2RepositoryTest {
 
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         gav = new GAV("org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final");        
         is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         Collection<File> files = repo.listFiles();
 
@@ -242,7 +242,7 @@ public class M2RepositoryTest {
 
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT");        
         InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
-        repo.addFile(is, gav);
+        repo.deployArtifact(is, gav);
         
         String pom = repo.loadPOM("repository"+ File.separator + "releases"+ File.separator + "org"+ File.separator + "kie"+ File.separator + "guvnor"+ File.separator + "guvnor-m2repo-editor-backend"+ File.separator + "6.0.0-SNAPSHOT"+ File.separator + "guvnor-m2repo-editor-backend-6.0.0-SNAPSHOT.jar");
         

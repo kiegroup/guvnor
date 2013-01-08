@@ -79,7 +79,7 @@ public class BuildServiceImpl
 
         //Refactor GAV later
         GAV anotherGav = new GAV(gav.getArtifactId(), gav.getGroupId(), gav.getVersion());
-        m2RepoService.addJar(input, anotherGav);
+        m2RepoService.deployJar(input, anotherGav);
         messagesEvent.fire(builder.getResults());
     }
 }

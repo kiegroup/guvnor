@@ -20,6 +20,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
@@ -48,7 +49,9 @@ public class ProjectEditorServiceImpl
     private BuildService buildService;
     private ProjectService projectService;
 
-
+    @Inject
+    GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    
     public ProjectEditorServiceImpl() {
         // Weld needs this for proxying.
     }
@@ -104,7 +107,8 @@ public class ProjectEditorServiceImpl
     public Path saveGav(final Path pathToGAV,
                         final GroupArtifactVersionModel gavModel) {
         try {
-            return paths.convert(ioService.write(paths.convert(pathToGAV), new GroupArtifactVersionModelContentHandler().toString(gavModel)));
+            System.out.println("------------------------:" + groupArtifactVersionModelContentHandler.toString(gavModel));
+            return paths.convert(ioService.write(paths.convert(pathToGAV), groupArtifactVersionModelContentHandler.toString(gavModel)));
         } catch (IOException e) {
             e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
         }

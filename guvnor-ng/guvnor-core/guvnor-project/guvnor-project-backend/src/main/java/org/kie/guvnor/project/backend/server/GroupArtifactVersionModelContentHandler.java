@@ -17,16 +17,28 @@
 package org.kie.guvnor.project.backend.server;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
 public class GroupArtifactVersionModelContentHandler {
+    @Inject
+    private M2RepoService m2RepoService;
+    
+    public GroupArtifactVersionModelContentHandler() {
+        // Weld needs this for proxying.       
+    }
 
     public String toString(GroupArtifactVersionModel gavModel)
             throws IOException {
@@ -35,6 +47,12 @@ public class GroupArtifactVersionModelContentHandler {
         model.setGroupId(gavModel.getGroupId());
         model.setArtifactId(gavModel.getArtifactId());
         model.setVersion(gavModel.getVersion());
+        
+        Repository repo = new Repository();
+        repo.setId("guvnor-m2-repo");
+        repo.setName("Guvnor M2 Repo");
+        repo.setUrl(m2RepoService.getRepositoryURL());
+        model.addRepository(repo);
 
         StringWriter stringWriter = new StringWriter();
         new MavenXpp3Writer().write(stringWriter, model);

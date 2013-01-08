@@ -158,7 +158,7 @@ public class FileServlet extends HttpServlet {
                 }
 
                 if (gav != null) {
-                    m2RepoService.addJar(fileData, uploadItem.getGav());
+                    m2RepoService.deployJar(fileData, uploadItem.getGav());
                     uploadItem.getFile().getInputStream().close();
 
                     return "OK";
