@@ -21,19 +21,21 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.project.model.Dependency;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.List;
 
 public class GroupArtifactVersionEditorPanelViewImpl
-        extends Composite
+        extends ResizeComposite
         implements GroupArtifactVersionEditorPanelView {
 
 
@@ -59,8 +61,13 @@ public class GroupArtifactVersionEditorPanelViewImpl
     @UiField
     TextBox versionIdTextBox;
 
+    @UiField(provided = true)
+    DependencyGrid dependencyGrid;
+
     @Inject
-    public GroupArtifactVersionEditorPanelViewImpl(Event<NotificationEvent> notificationEvent) {
+    public GroupArtifactVersionEditorPanelViewImpl(Event<NotificationEvent> notificationEvent,
+                                                   DependencyGrid dependencyGrid) {
+        this.dependencyGrid = dependencyGrid;
         initWidget(uiBinder.createAndBindUi(this));
         this.notificationEvent = notificationEvent;
     }
@@ -111,7 +118,19 @@ public class GroupArtifactVersionEditorPanelViewImpl
     }
 
     @Override
+    public void setDependencies(List<Dependency> dependencies) {
+        dependencyGrid.fillList(dependencies);
+    }
+
+    @Override
     public void setTitleText(String titleText) {
         tabTitleLabel.setText(titleText);
+    }
+
+    @Override
+    public void onResize() {
+        setPixelSize(getParent().getOffsetWidth(),
+                getParent().getOffsetHeight());
+        super.onResize();
     }
 }

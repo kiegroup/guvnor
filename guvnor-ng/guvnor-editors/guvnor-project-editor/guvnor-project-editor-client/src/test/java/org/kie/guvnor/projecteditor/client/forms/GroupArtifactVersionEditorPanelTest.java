@@ -59,6 +59,7 @@ public class GroupArtifactVersionEditorPanelTest {
         verify(view).setArtifactId("artifact");
         verify(view).setTitleText("artifact");
         verify(view).setVersionId("1.1.1");
+        verify(view).setDependencies(gavModel.getDependencies());
     }
 
     @Test

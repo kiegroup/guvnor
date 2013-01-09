@@ -108,4 +108,6 @@ public interface ProjectEditorConstants
     String ArtifactID();
 
     String VersionID();
+
+    String Dependencies();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,29 +18,12 @@ package org.kie.guvnor.project.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Portable
-public class GroupArtifactVersionModel {
+public class Dependency {
 
-    private String groupId = "";
-    private String artifactId = "";
-    private String version = "";
-
-    private List<Dependency> dependencies = new ArrayList<Dependency>();
-
-    public GroupArtifactVersionModel() {
-    }
-
-    public GroupArtifactVersionModel(String groupId,
-                                     String artifactId,
-                                     String version) {
-        super();
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
-    }
+    private String groupId;
+    private String artifactId;
+    private String version;
 
     public String getGroupId() {
         return groupId;
@@ -64,9 +47,5 @@ public class GroupArtifactVersionModel {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public List<Dependency> getDependencies() {
-        return dependencies;
     }
 }

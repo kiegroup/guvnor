@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,31 +21,15 @@ import org.kie.guvnor.project.model.Dependency;
 
 import java.util.List;
 
-public interface GroupArtifactVersionEditorPanelView
+public interface DependencyGridView
         extends IsWidget {
 
     interface Presenter {
 
-        void onGroupIdChange(String groupId);
-
-        void onArtifactIdChange(String artifactId);
-
-        void onVersionIdChange(String versionId);
+        void onAddDependencyButton();
 
     }
-
     void setPresenter(Presenter presenter);
 
-    void setGroupId(String id);
-    void setArtifactId(String id);
-
-    void setVersionId(String versionId);
-
-    IsWidget getTitleWidget();
-
-    void setTitleText(String titleText);
-
-    void showSaveSuccessful(String fileName);
-
-    void setDependencies(List<Dependency> dependencies);
+    void setList(List<Dependency> dependencies);
 }

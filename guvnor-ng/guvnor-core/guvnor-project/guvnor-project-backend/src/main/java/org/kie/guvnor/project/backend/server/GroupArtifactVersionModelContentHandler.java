@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -54,6 +55,10 @@ public class GroupArtifactVersionModelContentHandler {
         repo.setUrl(m2RepoService.getRepositoryURL());
         model.addRepository(repo);
 
+        for (org.kie.guvnor.project.model.Dependency dependency : gavModel.getDependencies()) {
+            model.addDependency(fromClientModelToPom(dependency));
+        }
+
         StringWriter stringWriter = new StringWriter();
         new MavenXpp3Writer().write(stringWriter, model);
 
@@ -64,9 +69,36 @@ public class GroupArtifactVersionModelContentHandler {
             throws IOException, XmlPullParserException {
         Model model = new MavenXpp3Reader().read(new StringReader(propertiesString));
 
-        return new GroupArtifactVersionModel(
+
+        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel(
                 model.getGroupId(),
                 model.getArtifactId(),
                 model.getVersion());
+
+        for (Dependency dependency : model.getDependencies()) {
+            gavModel.getDependencies().add(fromPomModelToClientModel(dependency));
+        }
+
+        return gavModel;
+    }
+
+    private org.kie.guvnor.project.model.Dependency fromPomModelToClientModel(Dependency from) {
+        org.kie.guvnor.project.model.Dependency dependency = new org.kie.guvnor.project.model.Dependency();
+
+        dependency.setArtifactId(from.getArtifactId());
+        dependency.setGroupId(from.getGroupId());
+        dependency.setVersion(from.getVersion());
+
+        return dependency;
+    }
+
+    private Dependency fromClientModelToPom(org.kie.guvnor.project.model.Dependency from) {
+        Dependency dependency = new Dependency();
+
+        dependency.setArtifactId(from.getArtifactId());
+        dependency.setGroupId(from.getGroupId());
+        dependency.setVersion(from.getVersion());
+
+        return dependency;
     }
 }

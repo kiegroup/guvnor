@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -45,6 +46,7 @@ public class GroupArtifactVersionEditorPanel
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.projectServiceCaller = projectServiceCaller;
         this.view = view;
+
         view.setPresenter(this);
     }
 
@@ -60,6 +62,8 @@ public class GroupArtifactVersionEditorPanel
 
                         setTitle(gav.getArtifactId());
                         view.setVersionId(gav.getVersion());
+
+                        view.setDependencies(model.getDependencies());
                     }
                 }
         ).loadGav(path);
