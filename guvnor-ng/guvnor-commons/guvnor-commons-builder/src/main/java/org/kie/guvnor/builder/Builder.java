@@ -89,7 +89,11 @@ public class Builder {
                     //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
 
                     if ( uri.endsWith( ".drl" ) ) {
+                        kieFileSystem.write( stripPath( projectName,
+                                                        path ), ioService.readAllString( path ) );
 
+                    } else if ( uri.endsWith( ".dsl" ) ) {
+                        //Hack for DSLs for now..
                         kieFileSystem.write( stripPath( projectName,
                                                         path ), ioService.readAllString( path ) );
 

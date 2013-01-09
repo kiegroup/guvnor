@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.kie.guvnor.datamodel.model.DefaultDataModel;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataType;
 
@@ -19,12 +18,21 @@ public abstract class BaseFactBuilder implements FactBuilder {
     private final DataModelBuilder builder;
     private final String factType;
     private final List<ModelField> fields = new ArrayList<ModelField>();
-    private final List<ModelAnnotation> annotations = new ArrayList<ModelAnnotation>();
+    private final boolean isEvent;
 
     public BaseFactBuilder( final DataModelBuilder builder,
                             final String factType ) {
+        this( builder,
+              factType,
+              false );
+    }
+
+    public BaseFactBuilder( final DataModelBuilder builder,
+                            final String factType,
+                            final boolean isEvent ) {
         this.builder = builder;
         this.factType = factType;
+        this.isEvent = isEvent;
         addField( new ModelField( DataType.TYPE_THIS,
                                   factType,
                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -37,11 +45,6 @@ public abstract class BaseFactBuilder implements FactBuilder {
         return this;
     }
 
-    protected FactBuilder addAnnotation( final ModelAnnotation annotation ) {
-        this.annotations.add( annotation );
-        return this;
-    }
-
     @Override
     public DataModelBuilder end() {
         return builder;
@@ -50,7 +53,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
     @Override
     public void build( final DefaultDataModel oracle ) {
         oracle.addFactsAndFields( buildFactsAndFields() );
-        oracle.addFactAnnotations( buildFactAnnotations() );
+        oracle.addEventType( buildEventTypes() );
     }
 
     private Map<String, ModelField[]> buildFactsAndFields() {
@@ -62,13 +65,10 @@ public abstract class BaseFactBuilder implements FactBuilder {
         return loadableFactsAndFields;
     }
 
-    private Map<String, List<ModelAnnotation>> buildFactAnnotations() {
-        final Map<String, List<ModelAnnotation>> loadableFactAnnotations = new HashMap<String, List<ModelAnnotation>>();
-        if ( annotations.size() > 0 ) {
-            loadableFactAnnotations.put( factType,
-                                         annotations );
-        }
-        return loadableFactAnnotations;
+    private Map<String, Boolean> buildEventTypes() {
+        final Map<String, Boolean> loadableEventTypes = new HashMap<String, Boolean>();
+        loadableEventTypes.put( factType, isEvent );
+        return loadableEventTypes;
     }
 
 }

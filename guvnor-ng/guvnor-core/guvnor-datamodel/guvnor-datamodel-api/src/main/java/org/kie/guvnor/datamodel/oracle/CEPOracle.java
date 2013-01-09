@@ -30,10 +30,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class CEPOracle {
 
-    //Standard annotations
-    public static final String ANNOTATION_ROLE = "role";
-    public static final String ANNOTATION_ROLE_EVENT = "event";
-
     //CEP Operators
     private static final String[] WINDOW_CEP_OPERATORS = new String[]{
             "over window:time",

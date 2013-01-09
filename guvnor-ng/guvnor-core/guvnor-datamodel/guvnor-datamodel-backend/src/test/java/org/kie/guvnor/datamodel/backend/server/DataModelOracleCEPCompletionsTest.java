@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -28,10 +27,8 @@ public class DataModelOracleCEPCompletionsTest {
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
-                .addFact( "AnEvent" )
-                .addAnnotation( new ModelAnnotation( "role",
-                                                     "value",
-                                                     "event" ) )
+                .addFact( "AnEvent",
+                          true )
                 .addField( new ModelField( "this",
                                            Object.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,

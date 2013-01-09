@@ -2,7 +2,6 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import java.beans.Introspector;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -20,7 +19,6 @@ import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
 import org.kie.guvnor.datamodel.model.DefaultDataModel;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 
 /**
@@ -35,9 +33,17 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     public ClassFactBuilder( final DataModelBuilder builder,
                              final Class<?> clazz ) throws IOException {
+        this( builder,
+              clazz,
+              false );
+    }
+
+    public ClassFactBuilder( final DataModelBuilder builder,
+                             final Class<?> clazz,
+                             final boolean isEvent ) throws IOException {
         super( builder,
-               clazz.getSimpleName() );
-        loadClassAnnotations( clazz );
+               clazz.getSimpleName(),
+               isEvent );
         loadClassFields( clazz );
     }
 
@@ -62,14 +68,6 @@ public class ClassFactBuilder extends BaseFactBuilder {
             loadableFieldParametersType.putAll( fieldParametersType );
         }
         return loadableFieldParametersType;
-    }
-
-    private void loadClassAnnotations( final Class<?> clazz ) {
-        //TODO {manstis} Extract name and values from java.lang.annotations.Annotation
-        for ( final Annotation annotation : clazz.getAnnotations() ) {
-            final ModelAnnotation modelAnnotation = new ModelAnnotation();
-            addAnnotation( modelAnnotation );
-        }
     }
 
     private void loadClassFields( final Class<?> clazz ) throws IOException {

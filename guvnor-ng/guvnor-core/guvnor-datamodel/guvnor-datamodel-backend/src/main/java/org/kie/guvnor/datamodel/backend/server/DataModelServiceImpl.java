@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
@@ -149,8 +150,10 @@ public class DataModelServiceImpl
             for ( final String className : metaData.getClasses( packageName ) ) {
                 final Class clazz = metaData.getClass( packageName,
                                                        className );
+                final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 try {
-                    dmoBuilder.addClass( clazz );
+                    dmoBuilder.addClass( clazz,
+                                         typeMetaInfo.isEvent() );
                 } catch ( IOException ioe ) {
                     results.getMessages().add( makeMessage( ioe ) );
                 }
@@ -196,10 +199,8 @@ public class DataModelServiceImpl
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
-                .addFact( "Incident" )
-                .addAnnotation( new ModelAnnotation( "role",
-                                                     "value",
-                                                     "event" ) )
+                .addFact( "Incident",
+                          true )
                 .addField( new ModelField( "dateOfIncident",
                                            Date.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,

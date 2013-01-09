@@ -30,15 +30,29 @@ public final class DataModelBuilder {
     }
 
     public SimpleFactBuilder addFact( final String factType ) {
+        return addFact( factType,
+                        false );
+    }
+
+    public SimpleFactBuilder addFact( final String factType,
+                                      final boolean isEvent ) {
         final SimpleFactBuilder builder = new SimpleFactBuilder( this,
-                                                                 factType );
+                                                                 factType,
+                                                                 isEvent );
         factTypeBuilders.add( builder );
         return builder;
     }
 
     public DataModelBuilder addClass( final Class clazz ) throws IOException {
+        return addClass( clazz,
+                         false);
+    }
+
+    public DataModelBuilder addClass( final Class clazz,
+                                      final boolean isEvent ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
-                                                          clazz );
+                                                          clazz,
+                                                          isEvent );
         factTypeBuilders.add( builder );
         return this;
     }

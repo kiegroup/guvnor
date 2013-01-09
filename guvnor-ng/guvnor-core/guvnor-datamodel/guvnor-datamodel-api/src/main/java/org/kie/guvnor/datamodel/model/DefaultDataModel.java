@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
@@ -24,8 +23,8 @@ public class DefaultDataModel implements DataModelOracle {
     // Details of Fact Types and their corresponding fields
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
 
-    // A map of Annotations for FactTypes. Key is FactType, value is list of annotations
-    private Map<String, List<ModelAnnotation>> annotationsForTypes = new HashMap<String, List<ModelAnnotation>>();
+    // A map of FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
+    private Map<String, Boolean> eventTypes = new HashMap<String, Boolean>();
 
     // A map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();
@@ -93,25 +92,15 @@ public class DefaultDataModel implements DataModelOracle {
     }
 
     /**
-     * Check whether a given FactType has been annotated as an Event
+     * Check whether a given FactType is an Event for CEP purposes
      * @param factType
      * @return
      */
     public boolean isFactTypeAnEvent( final String factType ) {
-        final List<ModelAnnotation> annotations = annotationsForTypes.get( factType );
-        if ( annotations == null || annotations.size() == 0 ) {
+        if ( !eventTypes.containsKey( factType ) ) {
             return false;
         }
-        for ( ModelAnnotation ma : annotations ) {
-            if ( ma.getAnnotationName().equals( CEPOracle.ANNOTATION_ROLE ) ) {
-                for ( String v : ma.getAnnotationValues().values() ) {
-                    if ( v.equals( CEPOracle.ANNOTATION_ROLE_EVENT ) ) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return eventTypes.get( factType );
     }
 
     /**
@@ -672,8 +661,8 @@ public class DefaultDataModel implements DataModelOracle {
         this.modelFields.putAll( modelFields );
     }
 
-    public void addFactAnnotations( final Map<String, List<ModelAnnotation>> annotationsForTypes ) {
-        this.annotationsForTypes.putAll( annotationsForTypes );
+    public void addEventType( final Map<String, Boolean> eventTypes ) {
+        this.eventTypes.putAll( eventTypes );
     }
 
     public void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
