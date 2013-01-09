@@ -13,4 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+.default-text-Area {
+    border: 1px solid #aa9;
+    background: #FFFFF0;
+}

@@ -25,4 +25,7 @@ public interface StylesCss
         extends
         CssResource {
 
+    @ClassName("default-text-Area")
+    String defaultTextArea();
+
 }

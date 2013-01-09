@@ -16,38 +16,105 @@
 
 package org.kie.guvnor.dsltext.client.editor;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.dsltext.client.resources.Resources;
+import org.uberfire.client.common.ResizableTextArea;
 
 /**
  * The view for the Domain Specific Language editor
  */
 public class DSLEditorView
         extends Composite
-        implements DSLEditorPresenter.View {
+        implements RequiresResize,
+                   DSLEditorPresenter.View {
 
-    @Override
-    public void setContent( String content ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    private final ResizableTextArea dslText = new ResizableTextArea();
+
+    private boolean isDirty;
+
+    public DSLEditorView() {
+        dslText.setWidth( "100%" );
+        dslText.getElement().setAttribute( "spellcheck",
+                                           "false" );
+        dslText.setStyleName( Resources.INSTANCE.CSS().defaultTextArea() );
+
+        dslText.addChangeHandler( new ChangeHandler() {
+            public void onChange( ChangeEvent event ) {
+                isDirty = true;
+            }
+        } );
+
+        dslText.addKeyDownHandler( new KeyDownHandler() {
+
+            public void onKeyDown( KeyDownEvent event ) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
+                    int pos = dslText.getCursorPos();
+                    insertText( "\t" );
+                    dslText.setCursorPos( pos + 1 );
+                    dslText.cancelKey();
+                    dslText.setFocus( true );
+                }
+            }
+        } );
+
+        initWidget( dslText );
+    }
+
+    private void insertText( final String ins ) {
+        final int i = dslText.getCursorPos();
+        final String left = dslText.getText().substring( 0,
+                                                         i );
+        final String right = dslText.getText().substring( i,
+                                                          dslText.getText().length() );
+        dslText.setText( left + ins + right );
     }
 
     @Override
-    public String getContent() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void setContent( final String input ) {
+        final String content;
+        if ( input == null ) {
+            content = "";
+        } else {
+            content = input;
+        }
+        dslText.setText( content );
     }
 
     @Override
     public boolean isDirty() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return isDirty;
     }
 
     @Override
     public void setNotDirty() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.isDirty = false;
+    }
+
+    @Override
+    public String getContent() {
+        return dslText.getValue();
     }
 
     @Override
     public boolean confirmClose() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
+
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize( width,
+                      height );
+        dslText.onResize();
     }
 
 }
