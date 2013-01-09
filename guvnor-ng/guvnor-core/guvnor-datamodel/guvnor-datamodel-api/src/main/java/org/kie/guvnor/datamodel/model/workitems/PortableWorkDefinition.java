@@ -15,13 +15,15 @@
  */
 package org.kie.guvnor.datamodel.model.workitems;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * A WorkDefinition used in Guvnor.
@@ -32,7 +34,7 @@ public class PortableWorkDefinition {
 
     private String name;
     private String displayName;
-    private Map<String, PortableParameterDefinition> parameters = new HashMap<String, PortableParameterDefinition>();
+    private Map<String, PortableParameterDefinition> parameters = new LinkedHashMap<String, PortableParameterDefinition>();
     private Map<String, PortableParameterDefinition> results    = new HashMap<String, PortableParameterDefinition>();
 
     public String getName() {
@@ -51,11 +53,11 @@ public class PortableWorkDefinition {
         this.displayName = displayName;
     }
 
-    public Set<PortableParameterDefinition> getParameters() {
-        return new HashSet<PortableParameterDefinition>( parameters.values() );
+    public Collection<PortableParameterDefinition> getParameters() {
+        return parameters.values();
     }
 
-    public void setParameters( Set<PortableParameterDefinition> parameters ) {
+    public void setParameters( Collection<PortableParameterDefinition> parameters ) {
         this.parameters.clear();
         Iterator<PortableParameterDefinition> iterator = parameters.iterator();
         while ( iterator.hasNext() ) {

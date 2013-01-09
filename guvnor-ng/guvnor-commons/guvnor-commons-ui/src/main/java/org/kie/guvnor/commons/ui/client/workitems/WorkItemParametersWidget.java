@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.commons.ui.client.workitems;
 
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.kie.guvnor.datamodel.model.workitems.PortableParameterDefinition;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.datamodel.model.workitems.PortableParameterDefinition;
 
 /**
  * A Widget to display a list of Work Item parameters
@@ -41,7 +41,7 @@ public class WorkItemParametersWidget extends VerticalPanel {
         this.isReadOnly = isReadOnly;
     }
 
-    public void setParameters( Set<PortableParameterDefinition> parameters ) {
+    public void setParameters( Collection<PortableParameterDefinition> parameters ) {
         this.clear();
         this.parameters = sort( parameters );
         for ( PortableParameterDefinition ppd : this.parameters ) {
@@ -52,7 +52,7 @@ public class WorkItemParametersWidget extends VerticalPanel {
         }
     }
 
-    private List<PortableParameterDefinition> sort( Set<PortableParameterDefinition> parameters ) {
+    private List<PortableParameterDefinition> sort( Collection<PortableParameterDefinition> parameters ) {
         List<PortableParameterDefinition> sortedParameters = new ArrayList<PortableParameterDefinition>();
         sortedParameters.addAll( parameters );
         Collections.sort( sortedParameters,

@@ -15,12 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,6 +43,13 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
+
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A popup to define an Action to execute a Work Item
@@ -192,7 +193,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         return clone;
     }
 
-    private Set<PortableParameterDefinition> cloneParameters( Set<PortableParameterDefinition> parameters ) {
+    private Set<PortableParameterDefinition> cloneParameters( Collection<PortableParameterDefinition> parameters ) {
         Set<PortableParameterDefinition> clone = new HashSet<PortableParameterDefinition>();
         for ( PortableParameterDefinition ppd : parameters ) {
             clone.add( cloneParameter( ppd ) );
