@@ -53,6 +53,13 @@ public class M2RepoEditorView
 
     private VerticalPanel       layout;
     private FormPanel           form;
+    //private FormStyleLayout       emptyGAVPanel = new FormStyleLayout();
+    private TextBox hiddenGroupIdField = new TextBox();
+    private TextBox hiddenArtifactIdField = new TextBox();
+    private TextBox hiddenVersionIdField = new TextBox();
+    
+    FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
+    final SimplePanel resultsP = new SimplePanel();
     
 /*    @Inject*/
     private Caller<M2RepoService> m2RepoService;
@@ -60,7 +67,7 @@ public class M2RepoEditorView
     @Inject
     public M2RepoEditorView(Caller<M2RepoService> s) {
         this.m2RepoService = s;
-        
+
         layout = new VerticalPanel();
         doSearch();
         layout.setWidth( "100%" );
@@ -79,12 +86,7 @@ public class M2RepoEditorView
         final TextBox searchTextBox = new TextBox();
         //tx.setWidth("100px");
         ts.addAttribute( "Find items with a name matching:", searchTextBox );
-/*
-        final CheckBox archiveBox = new CheckBox();
-        archiveBox.setValue( false );
-        ts.addAttribute( constants.IncludeArchivedAssetsInResults(),
-                         archiveBox );
-*/
+
         Button go = new Button();
         go.setText( "Search" );
         ts.addAttribute( "",
@@ -93,7 +95,6 @@ public class M2RepoEditorView
         
         ts.setWidth( "100%" );
 
-        final SimplePanel resultsP = new SimplePanel();
         final ClickHandler cl = new ClickHandler() {
 
             public void onClick(ClickEvent arg0) {
@@ -138,11 +139,8 @@ public class M2RepoEditorView
         FileUpload up = new FileUpload();
         //up.setWidth("100px");
         up.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
-        HorizontalPanel fields = new HorizontalPanel();
-/*        fields.add(getHiddenField(HTMLFileManagerFields.GROUP_ID, ""));
-        fields.add(getHiddenField(HTMLFileManagerFields.ARTIFACT_ID, ""));
-        fields.add(getHiddenField(HTMLFileManagerFields.VERSION_ID, ""));*/
-
+         
+       
         Button ok = new Button("upload");
         ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -151,28 +149,66 @@ public class M2RepoEditorView
             }
         });
 
+       
+        //form.add(fields);
+        
         form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 if("OK".equalsIgnoreCase(event.getResults())) {
                     LoadingPopup.close();
                     Window.alert("Uploaded successfully");
+                    hiddenFieldsPanel.setVisible(false);
+                    hiddenArtifactIdField.setText(null);
+                    hiddenGroupIdField.setText(null);
+                    hiddenVersionIdField.setText(null);   
+                    
+                    resultsP.clear();             
+                    JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
+                    resultsP.add( table );                  
+                        
                 } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {
                     LoadingPopup.close();
                     Window.alert("The Jar does not contain a valid POM file. Please specify GAV info manually.");
-                    GAVEditor gavEditor = new GAVEditor(form);
-                    gavEditor.show();
+                    hiddenFieldsPanel.setVisible(true);
                 } else {
                     LoadingPopup.close();
-                    Window.alert("Upload failed:" + event.getResults());              
+                    Window.alert("Upload failed:" + event.getResults()); 
+                    
+                    hiddenFieldsPanel.setVisible(false);
+                    hiddenArtifactIdField.setText(null);
+                    hiddenGroupIdField.setText(null);
+                    hiddenVersionIdField.setText(null);  
                 }
 
             }
         });
         
+        HorizontalPanel fields = new HorizontalPanel();
         fields.add(up);
         fields.add(ok);
 
-        form.add(fields);
+        hiddenGroupIdField.setName(HTMLFileManagerFields.GROUP_ID);
+        hiddenGroupIdField.setText(null);
+        //hiddenGroupIdField.setVisible(false);
+
+        hiddenArtifactIdField.setName(HTMLFileManagerFields.ARTIFACT_ID);
+        hiddenArtifactIdField.setText(null);
+        //hiddenArtifactIdField.setVisible(false);
+
+        hiddenVersionIdField.setName(HTMLFileManagerFields.VERSION_ID);
+        hiddenVersionIdField.setText(null);
+        //hiddenVersionIdField.setVisible(false);
+        
+        hiddenFieldsPanel.setVisible(false);
+        hiddenFieldsPanel.addAttribute("GroupID:", hiddenGroupIdField);
+        hiddenFieldsPanel.addAttribute("ArtifactID:", hiddenArtifactIdField);
+        hiddenFieldsPanel.addAttribute("VersionID:", hiddenVersionIdField);
+        
+        VerticalPanel allFields = new VerticalPanel();
+        allFields.add(fields);
+        allFields.add(hiddenFieldsPanel);
+        
+        form.add(allFields);
 
         return form;
     }
@@ -183,13 +219,5 @@ public class M2RepoEditorView
 
     protected void showUploadingBusy() {
         // LoadingPopup.showMessage( "Uploading...");
-    }
-
-    private TextBox getHiddenField(String name, String value) {
-        TextBox t = new TextBox();
-        t.setName(name);
-        t.setText(value);
-        t.setVisible(false);
-        return t;
     }
 }

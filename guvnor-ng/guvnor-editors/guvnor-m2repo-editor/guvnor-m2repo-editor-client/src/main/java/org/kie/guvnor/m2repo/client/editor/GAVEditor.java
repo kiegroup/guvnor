@@ -41,6 +41,7 @@ public class GAVEditor extends FormStylePopup {
         Button ok = new Button("upload");
         ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
+                form.reset();
                 HorizontalPanel fields = new HorizontalPanel();
                 fields.add(getHiddenField(HTMLFileManagerFields.GROUP_ID, ""));
                 fields.add(getHiddenField(HTMLFileManagerFields.ARTIFACT_ID, ""));

@@ -113,16 +113,25 @@ public class FileServlet extends HttpServlet {
                     data.setFile( item );
                 }
                 
+                
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.GROUP_ID ) ) {
+                    System.out.println("GROUP_ID:" + item.getString());
                     emptyGAV.setGroupId(item.getString());
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
+                    System.out.println("ARTIFACT_ID:" + item.getString());
                     emptyGAV.setArtifactId(item.getString());
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION_ID ) ) {
+                    System.out.println("VERSION_ID:" + item.getString());
                     emptyGAV.setVersion(item.getString());
                 }
             }
             
-            if(emptyGAV.getArtifactId() == null || emptyGAV.getGroupId() == null || emptyGAV.getVersion() == null) {
+            if(emptyGAV.getArtifactId() == null 
+                    || "".equals(emptyGAV.getArtifactId()) 
+                    || emptyGAV.getArtifactId() == null 
+                    || "".equals(emptyGAV.getArtifactId()) 
+                    || emptyGAV.getVersion() == null
+                    || "".equals(emptyGAV.getVersion()) ) {
                 data.setGav(null);
             } else {
                 data.setGav(emptyGAV);
@@ -155,17 +164,15 @@ public class FileServlet extends HttpServlet {
                 if (pom != null) {
                     Model model = new MavenXpp3Reader().read(new StringReader(pom));
                     gav = new GAV(model.getGroupId(), model.getArtifactId(),  model.getVersion());
-                }
-
-                if (gav != null) {
-                    m2RepoService.deployJar(fileData, uploadItem.getGav());
-                    uploadItem.getFile().getInputStream().close();
-
-                    return "OK";
                 } else {
-                    return "NO VALID POM";
+                    return "NO VALID POM";                   
                 }
             }
+            
+            m2RepoService.deployJar(fileData, uploadItem.getGav());
+            uploadItem.getFile().getInputStream().close();
+
+            return "OK";
         } catch (XmlPullParserException e) {
         } catch (IOException ioe) {
         }
