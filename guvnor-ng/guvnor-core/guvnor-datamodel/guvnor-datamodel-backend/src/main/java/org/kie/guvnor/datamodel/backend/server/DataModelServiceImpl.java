@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -45,7 +44,6 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 
 @Service
 @ApplicationScoped
@@ -124,8 +122,8 @@ public class DataModelServiceImpl
 
     private DataModelOracle makeDataModelOracle( final Path projectPath ) {
         //Build the project to get all available classes
-        final Path pomPath = PathFactory.newPath( "pom.xml",
-                                                  projectPath.toURI() + File.separator + "pom.xml" );
+
+        final Path pomPath = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
         final GroupArtifactVersionModel gav = projectService.loadGav( pomPath );
         final Builder builder = new Builder( paths.convert( projectPath ),
                                              gav.getArtifactId(),

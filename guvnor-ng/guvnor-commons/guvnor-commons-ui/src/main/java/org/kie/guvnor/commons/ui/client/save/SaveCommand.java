@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.services.version;
-
-import java.util.List;
-
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.commons.java.nio.base.version.VersionRecord;
-import org.uberfire.backend.vfs.Path;
+package org.kie.guvnor.commons.ui.client.save;
 
 /**
  *
  */
-@Remote
-public interface VersionService {
+public interface SaveCommand {
 
-    List<VersionRecord> getVersion( final Path path );
-
-    Path restore( final Path path,
-                  final String comment );
-
+    void execute( final String comment );
 }

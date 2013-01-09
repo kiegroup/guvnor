@@ -58,8 +58,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     protected Path buildFullPathName( final String fileName ) {
         final String pathName = this.pathLabel.getPath().toURI();
-        final Path assetPath = PathFactory.newPath( fileName,
-                                                    pathName + "/" + fileName );
+        final Path assetPath = PathFactory.newPath( pathLabel.getPath().getFileSystem(), fileName, pathName + "/" + fileName );
         return assetPath;
     }
 

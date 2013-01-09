@@ -41,7 +41,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PathPlaceRequest;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
 import static org.kie.commons.validation.PortablePreconditions.*;
@@ -134,8 +134,8 @@ public class VersionBrowser extends Composite {
         open.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                final Path path = PathFactory.newPath( metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
-                placeManager().goTo( path, new DefaultPlaceRequest().addParameter( "readOnly", true ) );
+                final Path path = PathFactory.newPath( metadata.getPath().getFileSystem(), metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
+                placeManager().goTo( new PathPlaceRequest( path ).addParameter( "readOnly", "yes" ) );
             }
 
         } );

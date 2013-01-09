@@ -32,6 +32,7 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -47,6 +48,7 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 import static java.util.Collections.*;
 
@@ -70,6 +72,9 @@ public class FactModelServiceImpl
 
     @Inject
     private ResourceConfigService resourceConfigService;
+
+    @Inject
+    private Identity identity;
 
     @Override
     public FactModelContent loadContent( final Path path ) {
@@ -97,15 +102,17 @@ public class FactModelServiceImpl
 
     @Override
     public void save( final Path path,
-                      final FactModels factModels ) {
-        save( path, factModels, null, null );
+                      final FactModels factModels,
+                      final String comment ) {
+        save( path, factModels, null, null, comment );
     }
 
     @Override
     public void save( final Path resource,
                       final FactModels content,
                       final ResourceConfig config,
-                      final Metadata metadata ) {
+                      final Metadata metadata,
+                      final String comment ) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -124,7 +131,7 @@ public class FactModelServiceImpl
             attrs = metadataService.configAttrs( attrs, metadata );
         }
 
-        ioService.write( path, toDRL( content ), attrs );
+        ioService.write( path, toDRL( content ), attrs, new CommentedOption( identity.getName(), comment ) );
     }
 
     @Override

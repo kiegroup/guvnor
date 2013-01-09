@@ -24,12 +24,14 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.model.PortableVersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 import static org.kie.commons.java.nio.file.StandardCopyOption.*;
 
@@ -43,6 +45,9 @@ public class VersionServiceImpl implements VersionService {
 
     @Inject
     private Paths paths;
+
+    @Inject
+    private Identity identity;
 
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
@@ -59,11 +64,12 @@ public class VersionServiceImpl implements VersionService {
     }
 
     @Override
-    public Path restore( final Path _path ) {
+    public Path restore( final Path _path,
+                         final String comment ) {
         final org.kie.commons.java.nio.file.Path path = paths.convert( _path );
 
         final org.kie.commons.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-        return paths.convert( ioService.copy( path, target, REPLACE_EXISTING ) );
+        return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( identity.getName(), comment ) ) );
     }
 }

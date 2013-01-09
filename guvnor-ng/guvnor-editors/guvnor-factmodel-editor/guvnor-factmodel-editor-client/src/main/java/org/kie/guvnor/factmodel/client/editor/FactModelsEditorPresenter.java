@@ -29,6 +29,8 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
@@ -170,7 +172,7 @@ public class FactModelsEditorPresenter {
     public void onStart( final Path path,
                          final PlaceRequest request ) {
         this.path = path;
-        this.isReadOnly = (Boolean) request.getParameter( "readOnly", false );
+        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
 
         loadContent();
     }
@@ -215,15 +217,20 @@ public class FactModelsEditorPresenter {
             return;
         }
 
-        factModelService.call( new RemoteCallback<Path>() {
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( final Path response ) {
-                view.setNotDirty();
-                resourceConfigWidget.resetDirty();
-                metadataWidget.resetDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute( final String comment ) {
+                factModelService.call( new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( final Path response ) {
+                        view.setNotDirty();
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                    }
+                } ).save( path, view.getContent(), resourceConfigWidget.getContent(), metadataWidget.getContent(), comment );
             }
-        } ).save( path, view.getContent(), resourceConfigWidget.getContent(), metadataWidget.getContent() );
+        } ).save();
     }
 
     @WorkbenchPartView
@@ -281,13 +288,18 @@ public class FactModelsEditorPresenter {
             builder.addRestoreVersion( new Command() {
                 @Override
                 public void execute() {
-                    versionService.call( new RemoteCallback<Path>() {
+                    new SaveOpWrapper( path, new SaveCommand() {
                         @Override
-                        public void callback( final Path restored ) {
-                            //TODO {porcelli} howto close current?
-                            restoreEvent.fire( new RestoreEvent( restored ) );
+                        public void execute( final String comment ) {
+                            versionService.call( new RemoteCallback<Path>() {
+                                @Override
+                                public void callback( final Path restored ) {
+                                    //TODO {porcelli} close current?
+                                    restoreEvent.fire( new RestoreEvent( restored ) );
+                                }
+                            } ).restore( path, comment );
                         }
-                    } ).restore( path );
+                    } ).save();
                 }
             } );
         } else {
@@ -303,6 +315,9 @@ public class FactModelsEditorPresenter {
     }
 
     public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
         if ( path.equals( restore.getPath() ) ) {
             loadContent();
             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );

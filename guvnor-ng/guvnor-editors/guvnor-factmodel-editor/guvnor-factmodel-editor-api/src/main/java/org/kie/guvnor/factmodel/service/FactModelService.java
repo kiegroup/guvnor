@@ -35,10 +35,12 @@ public interface FactModelService
     FactModelContent loadContent( final Path path );
 
     void save( final Path path,
-               final FactModels factModels );
+               final FactModels factModels,
+               final String comment );
 
     void save( final Path path,
                final FactModels content,
                final ResourceConfig config,
-               final Metadata metadata );
+               final Metadata metadata,
+               final String comment );
 }

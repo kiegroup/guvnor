@@ -30,8 +30,8 @@ public interface ProjectEditorService {
     public void saveKModule(Path path,
                             KModuleModel model);
 
-    public Path saveGav(Path path,
-                        GroupArtifactVersionModel gav);
+    public Path saveGav(final Path path,
+                        final GroupArtifactVersionModel gav);
 
     public KModuleModel loadKModule(Path path);
 

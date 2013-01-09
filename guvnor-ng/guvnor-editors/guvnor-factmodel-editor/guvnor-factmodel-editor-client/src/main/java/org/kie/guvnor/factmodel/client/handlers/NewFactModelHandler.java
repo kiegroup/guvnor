@@ -8,14 +8,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.factmodel.client.resources.ImageResources;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Fact Models
@@ -50,19 +51,20 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final FactModels factModel = new FactModels();
-        factModelService.call( new RemoteCallback<Void>() {
+
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( Void aVoid ) {
-                notifySuccess();
-                final PlaceRequest place = new DefaultPlaceRequest( "FactModelsEditor" );
-                place.addParameter( "path:uri",
-                                    path.toURI() );
-                place.addParameter( "path:name",
-                                    path.getFileName() );
-                placeManager.goTo( place );
+            public void execute( final String comment ) {
+                factModelService.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void aVoid ) {
+                        notifySuccess();
+
+                        placeManager.goTo( new PathPlaceRequest( path, "FactModelsEditor" ) );
+                    }
+                } ).save( path, factModel, comment );
             }
-        } ).save( path,
-                  factModel );
+        } );
     }
 
 }

@@ -28,16 +28,14 @@ import javax.inject.Singleton;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.guvnor.services.repositories.Repository;
 import org.kie.guvnor.services.repositories.RepositoryService;
 import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
 
-import static java.util.Arrays.*;
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 @Singleton
@@ -54,7 +52,7 @@ public class AppSetup {
 
         final Collection<Repository> repositories = repositoryService.getRepositories();
 
-        for ( Repository repository : repositories ) {
+        for ( final Repository repository : repositories ) {
             if ( repository.isValid() ) {
                 final String alias = repository.getAlias();
                 final String scheme = repository.getScheme();
@@ -67,25 +65,31 @@ public class AppSetup {
                     env.put( e.getKey(), e.getValue() );
                 }
 
+                FileSystem fs = null;
+
                 try {
                     if ( bootstrap ) {
-                        ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
+                        fs = ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
                     } else {
-                        ioService.newFileSystem( fsURI, env );
+                        fs = ioService.newFileSystem( fsURI, env );
                     }
                 } catch ( FileSystemAlreadyExistsException ex ) {
+                    fs = ioService.getFileSystem( fsURI );
                 }
 
                 if ( bootstrap ) {
-                    final Path root = PathFactory.newPath( alias, "default://" + alias );
-                    fileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
+
+                    fileSystems.addBootstrapFileSystem( FileSystemFactory.newFS( new HashMap<String, String>() {{
+                        put( "default://" + alias, alias );
+                    }}, fs.supportedFileAttributeViews() ) );
+
                 } else {
-                    final Path fs = PathFactory.newPath( alias, scheme + "://" + alias );
-                    fileSystems.addFileSystem( new FileSystemImpl( asList( fs ) ) );
+                    fileSystems.addFileSystem( FileSystemFactory.newFS( new HashMap<String, String>() {{
+                        put( scheme + "://" + alias, alias );
+                    }}, fs.supportedFileAttributeViews() ) );
                 }
             }
         }
-
     }
 
     @Produces

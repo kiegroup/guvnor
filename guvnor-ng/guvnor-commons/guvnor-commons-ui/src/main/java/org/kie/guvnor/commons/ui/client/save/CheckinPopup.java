@@ -24,15 +24,21 @@ import com.google.gwt.user.client.ui.TextArea;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
 
+import static org.kie.commons.validation.PortablePreconditions.*;
+
 /**
  * A popup and confirmation dialog for committing an asset.
  */
 public class CheckinPopup extends FormStylePopup {
 
-    private TextArea comment;
-    private Button   save;
+    private final TextArea    comment;
+    private final Button      save;
+    private final SaveCommand command;
 
-    public CheckinPopup( String message ) {
+    public CheckinPopup( final String message,
+                         final SaveCommand command ) {
+        this.command = checkNotNull( "command", command );
+
         setTitle( message );
         comment = new TextArea();
         comment.setWidth( "100%" );
@@ -42,6 +48,7 @@ public class CheckinPopup extends FormStylePopup {
         save.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 hide();
+                command.execute( getCheckinComment() );
             }
         } );
 
