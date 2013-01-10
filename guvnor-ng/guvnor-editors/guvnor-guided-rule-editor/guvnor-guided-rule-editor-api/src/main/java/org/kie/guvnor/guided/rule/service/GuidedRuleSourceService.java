@@ -16,28 +16,52 @@
 
 package org.kie.guvnor.guided.rule.service;
 
-import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.SourceService;
-import org.uberfire.backend.server.util.Paths;
-
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import javax.inject.Inject;
 
-public class GuidedRuleSourceService
-        implements SourceService {
+import org.kie.commons.java.nio.file.Path;
+import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.SourceContext;
+import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.uberfire.backend.server.util.Paths;
+
+public class GuidedRuleSourceService extends AbstractSourceService {
+
+    private static final String PATTERN = ".brl";
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private GuidedRuleEditorService guidedRuleEditorService;
 
-    @Inject
-    Paths paths;
-
     @Override
-    public String getSupportedFileExtension() {
-        return ".brl";
+    public String getPattern() {
+        return PATTERN;
     }
 
     @Override
-    public String getSource(Path path) {
-        return guidedRuleEditorService.toSource(guidedRuleEditorService.loadRuleModel(paths.convert(path)));
+    public boolean accepts( final Path path ) {
+        return false;
     }
+
+    @Override
+    public SourceContext getSource( final Path path ) {
+        //Load model and convert to DRL
+        final RuleModel model = guidedRuleEditorService.loadRuleModel( paths.convert( path ) );
+        final String drl = guidedRuleEditorService.toSource( model );
+        final boolean hasDSL = model.hasDSLSentences();
+
+        //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
+        String destinationPath = stripProjectPrefix( path );
+        destinationPath = correctFileName( destinationPath,
+                                           ( hasDSL ? ".dslr" : ".drl" ) );
+        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        final SourceContext context = new SourceContext( bis,
+                                                         destinationPath );
+        return context;
+    }
+
 }

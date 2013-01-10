@@ -20,7 +20,10 @@ import org.kie.commons.java.nio.file.Path;
 
 public interface SourceService {
 
-    String getSupportedFileExtension();
+    boolean accepts( final Path path );
 
-    String getSource(Path path);
+    SourceContext getSource( final Path path );
+
+    String getPattern();
+
 }

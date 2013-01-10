@@ -16,27 +16,37 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.SourceService;
+import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.SourceContext;
 
-public class DSLSourceService
-        implements SourceService {
+public class DSLSourceService extends AbstractSourceService {
+
+    private static final String PATTERN = ".dsl";
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Override
-    public String getSupportedFileExtension() {
-        return ".dsl";
+    public SourceContext getSource( final Path path ) {
+        final String drl = ioService.readAllString( path );
+        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        final SourceContext context = new SourceContext( bis,
+                                                         stripProjectPrefix( path ) );
+        return context;
     }
 
     @Override
-    public String getSource( Path path ) {
-        return ioService.readAllString( path );
+    public String getPattern() {
+        return PATTERN;
     }
+
 }

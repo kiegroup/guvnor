@@ -16,27 +16,39 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.SourceService;
-
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-public class DRLSourceService
-        implements SourceService {
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.SourceContext;
+
+public class DRLSourceService extends AbstractSourceService {
+
+    private static final String PATTERN = ".drl";
+
+    private static final String PREFIX = "src/resources";
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Override
-    public String getSupportedFileExtension() {
-        return ".drl";
+    public SourceContext getSource( final Path path ) {
+        final String drl = ioService.readAllString( path );
+        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        final SourceContext context = new SourceContext( bis,
+                                                         stripProjectPrefix( path ) );
+        return context;
     }
 
     @Override
-    public String getSource(Path path) {
-        return ioService.readAllString(path);
+    public String getPattern() {
+        return PATTERN;
     }
+
 }

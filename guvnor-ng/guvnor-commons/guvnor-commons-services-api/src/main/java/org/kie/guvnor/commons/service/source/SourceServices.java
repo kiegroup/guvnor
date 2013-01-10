@@ -16,10 +16,12 @@
 
 package org.kie.guvnor.commons.service.source;
 
+import org.kie.commons.java.nio.file.Path;
+
 public interface SourceServices {
 
-    boolean hasServiceFor(String filePath);
+    boolean hasServiceFor( final Path path );
 
-    SourceService getServiceFor(String filePath);
+    SourceService getServiceFor( final Path path );
 
 }

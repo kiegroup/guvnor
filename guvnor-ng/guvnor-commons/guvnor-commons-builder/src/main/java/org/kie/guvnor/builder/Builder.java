@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.InputStream;
+
+import org.drools.io.impl.InputStreamResource;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -27,6 +30,8 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.source.SourceContext;
+import org.kie.guvnor.commons.service.source.SourceService;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
 
@@ -75,42 +80,65 @@ public class Builder {
 
     //TODO This should really look for a SourceService for *all* file types. If none found don't add the file.
     private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
-        for ( org.kie.commons.java.nio.file.Path path : directoryStream ) {
+        for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( Files.newDirectoryStream( path ) );
+
             } else {
+
                 final String fileName = path.getFileName().toString();
-                final String uri = path.toUri().toString();
-                if ( uri.endsWith( KMODULE_PATH ) ) {
 
-                    kieFileSystem.write( "META-INF/kmodule.xml", ioService.readAllString( path ) );
+                //Don't process MetaData files
+                if ( !fileName.startsWith( "." ) ) {
 
-                } else if ( !fileName.startsWith( "." ) ) {
-                    //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
-
-                    if ( uri.endsWith( ".drl" ) ) {
-                        kieFileSystem.write( stripPath( projectName,
-                                                        path ), ioService.readAllString( path ) );
-
-                    } else if ( uri.endsWith( ".dsl" ) ) {
-                        //Hack for DSLs for now..
-                        kieFileSystem.write( stripPath( projectName,
-                                                        path ), ioService.readAllString( path ) );
-
-                    } else if ( sourceServices.hasServiceFor( path.toUri().toString() ) ) {
-
-                        kieFileSystem.write( stripPath( projectName,
-                                                        path ) + ".drl", sourceServices.getServiceFor( path.toUri().toString() ).getSource( path ) );
-
+                    if ( sourceServices.hasServiceFor( path ) ) {
+                        final SourceService service = sourceServices.getServiceFor( path );
+                        final SourceContext context = service.getSource( path );
+                        final InputStream is = context.getInputSteam();
+                        final String destinationPath = context.getDestination();
+                        final InputStreamResource isr = new InputStreamResource( is );
+                        kieFileSystem.write( destinationPath,
+                                             isr );
                     }
+
                 }
             }
+
+//                final String fileName = path.getFileName().toString();
+//                final String uri = path.toUri().toString();
+//                if ( uri.endsWith( KMODULE_PATH ) ) {
+//
+//                    kieFileSystem.write( "META-INF/kmodule.xml", ioService.readAllString( path ) );
+//
+//                } else if ( !fileName.startsWith( "." ) ) {
+//                    //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
+//
+//                    if ( uri.endsWith( ".drl" ) ) {
+//                        kieFileSystem.write( stripPath( projectName,
+//                                                        path ), ioService.readAllString( path ) );
+//
+//                    } else if ( uri.endsWith( ".dsl" ) ) {
+//                        //Hack for DSLs for now..
+//                        kieFileSystem.write( stripPath( projectName,
+//                                                        path ), ioService.readAllString( path ) );
+//
+//                    } else if ( sourceServices.hasServiceFor( path.toUri().toString() ) ) {
+//                        final SourceContext context = sourceServices.getServiceFor( path.toUri().toString() ).getSource( path );
+//                        final InputStream is = context.getInputSteam();
+//                        final Path destinationPath = context.getDestination();
+//                        final InputStreamResource isr = new InputStreamResource( is );
+//                        kieFileSystem.write( stripPath( projectName,
+//                                                        destinationPath ) + ".drl",
+//                                             isr );
+//                    }
+//                }
+//            }
         }
     }
 
     private String stripPath( final String projectName,
-                              final org.kie.commons.java.nio.file.Path path ) {
-        return path.toString().substring( projectName.length() + 2 );
+                              final String path ) {
+        return path.substring( projectName.length() + 2 );
     }
 
     private String getProjectName( final Path path ) {

@@ -16,61 +16,77 @@
 
 package org.kie.guvnor.builder;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.commons.service.source.SourceService;
-import org.kie.guvnor.commons.service.source.SourceServices;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.guvnor.commons.service.source.SourceService;
+import org.kie.guvnor.commons.service.source.SourceServices;
 
 @Service
 @ApplicationScoped
 public class SourceServicesImpl
         implements SourceServices {
 
-    private Map<String, SourceService> sourceServices = new HashMap<String, SourceService>();
+    private Set<SourceService> sourceServices = new HashSet<SourceService>();
 
     public SourceServicesImpl() {
         //Empty constructor for Weld
     }
-    
+
     @Inject
-    public SourceServicesImpl(@Any Instance<SourceService> sourceServiceList) {
-        for (SourceService sourceService : sourceServiceList) {
-            sourceServices.put(sourceService.getSupportedFileExtension(), sourceService);
+    public SourceServicesImpl( @Any Instance<SourceService> sourceServiceList ) {
+        for ( SourceService sourceService : sourceServiceList ) {
+            sourceServices.add( sourceService );
         }
     }
 
     @Override
-    public boolean hasServiceFor(String filePath) {
+    public boolean hasServiceFor( final Path path ) {
+        final SourceService sourceService = getMatchingSourceService( path );
+        return sourceService != null;
+    }
 
-        if (getFileExtension(filePath) == null) {
-            return false;
-        } else {
-            return true;
+    @Override
+    public SourceService getServiceFor( final Path path ) {
+        final SourceService sourceService = getMatchingSourceService( path );
+        if ( sourceService == null ) {
+            throw new IllegalArgumentException( "No SourceService found for '" + path + "'." );
         }
+        return sourceService;
     }
 
-    public SourceService getServiceFor(String filePath) {
-        return sourceServices.get(getFileExtension(filePath));
-    }
+    private SourceService getMatchingSourceService( final Path path ) {
+        //Find all matching services
+        final List<SourceService> matchingServices = new ArrayList<SourceService>();
+        for ( final SourceService service : sourceServices ) {
+            if ( service.accepts( path ) ) {
+                matchingServices.add( service );
+            }
+        }
+        if ( matchingServices.isEmpty() ) {
+            return null;
+        }
 
-    private String getFileExtension(String filePath) {
-
-        String result = null;
-
-        for (String extension : sourceServices.keySet()) {
-            if (filePath.endsWith(extension)) {
-                if (result == null || result.length() < extension.length()) {
-                    result = extension;
+        //Find the service that matches the longest pattern. This will be the more specific service
+        SourceService specificMatchingService = null;
+        for ( final SourceService service : matchingServices ) {
+            if ( specificMatchingService == null ) {
+                specificMatchingService = service;
+            } else {
+                if ( service.getPattern().length() > specificMatchingService.getPattern().length() ) {
+                    specificMatchingService = service;
                 }
             }
         }
-
-        return result;
+        return specificMatchingService;
     }
+
 }
