@@ -7,7 +7,7 @@ import org.kie.commons.java.nio.file.Path;
  */
 public abstract class AbstractSourceService implements SourceService {
 
-    private static final String PREFIX = "src/resources";
+    private static final String PREFIX = "/src/main/resources";
 
     @Override
     public boolean accepts( final Path path ) {

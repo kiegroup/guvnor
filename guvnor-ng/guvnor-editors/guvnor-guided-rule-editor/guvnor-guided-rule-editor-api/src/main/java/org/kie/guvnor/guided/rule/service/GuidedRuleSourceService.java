@@ -42,11 +42,6 @@ public class GuidedRuleSourceService extends AbstractSourceService {
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return false;
-    }
-
-    @Override
     public SourceContext getSource( final Path path ) {
         //Load model and convert to DRL
         final RuleModel model = guidedRuleEditorService.loadRuleModel( paths.convert( path ) );

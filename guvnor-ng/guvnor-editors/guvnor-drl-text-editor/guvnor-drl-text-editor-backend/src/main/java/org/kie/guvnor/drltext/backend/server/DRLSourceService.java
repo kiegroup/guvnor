@@ -30,8 +30,6 @@ public class DRLSourceService extends AbstractSourceService {
 
     private static final String PATTERN = ".drl";
 
-    private static final String PREFIX = "src/resources";
-
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
