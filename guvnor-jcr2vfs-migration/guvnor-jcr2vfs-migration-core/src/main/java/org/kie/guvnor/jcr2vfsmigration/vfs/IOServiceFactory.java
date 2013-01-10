@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.commons.java.nio.file.FileSystem;
 
 import static org.kie.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
@@ -33,6 +34,7 @@ import static org.kie.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 public class IOServiceFactory {
 
     private final IOService ioService = new IOServiceDotFileImpl();
+    private FileSystem fs;
 
     public static enum Migration implements FileSystemType {
 
@@ -46,13 +48,19 @@ public class IOServiceFactory {
     @PostConstruct
     public void onStartup() {
         String name = "guvnor-jcr2vfs-migration";
-        ioService.newFileSystem( URI.create( "git://" + name ), new HashMap<String, Object>(), MIGRATION_INSTANCE );
+        this.fs = ioService.newFileSystem( URI.create( "git://" + name ), new HashMap<String, Object>(), MIGRATION_INSTANCE );
     }
 
     @Produces
     @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
+    }
+
+    @Produces
+    @Named("migrationFS")
+    public FileSystem migrationFS() {
+        return fs;
     }
 
 }

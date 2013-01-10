@@ -50,7 +50,7 @@ public class GuidedEditorMigrater {
         vfsRuleModel.name = jcrRuleModel.name;
         vfsRuleModel.modelVersion = jcrRuleModel.modelVersion;
         vfsRuleModel.parentName = jcrRuleModel.parentName;
-        
+
         RuleAttribute[] ruleAttribute = new RuleAttribute[jcrRuleModel.attributes.length];
         for(int i = 0; i< jcrRuleModel.attributes.length; i++) {
             ruleAttribute[i] = convertRuleAttribute(jcrRuleModel.attributes[i]);
@@ -62,44 +62,44 @@ public class GuidedEditorMigrater {
             ruleMetadata[i] = convertRuleMetadata(jcrRuleModel.metadataList[i]);
         }
         vfsRuleModel.metadataList = ruleMetadata;
-        
+
         IPattern[] iPattern = new IPattern[jcrRuleModel.lhs.length];
         for(int i = 0; i< jcrRuleModel.lhs.length; i++) {
             iPattern[i] = convertIPattern(jcrRuleModel.lhs[i]);
-        }        
+        }
         vfsRuleModel.lhs = iPattern;
-        
+
         IAction[] iAction = new IAction[jcrRuleModel.rhs.length];
         for(int i = 0; i< jcrRuleModel.rhs.length; i++) {
             iAction[i] = convertIAction(jcrRuleModel.rhs[i]);
-        }  
+        }
         vfsRuleModel.rhs = iAction;
-        
+
         return vfsRuleModel;
     }
-    
+
     private RuleAttribute convertRuleAttribute(org.drools.ide.common.client.modeldriven.brl.RuleAttribute r) {
         RuleAttribute ruleAttribute = new RuleAttribute();
         ruleAttribute.setAttributeName(r.attributeName);
         ruleAttribute.setValue(r.value);
-        return ruleAttribute;        
+        return ruleAttribute;
     }
-    
+
     private RuleMetadata convertRuleMetadata(org.drools.ide.common.client.modeldriven.brl.RuleMetadata m) {
         RuleMetadata ruleMetadata = new RuleMetadata();
         ruleMetadata.setAttributeName(m.attributeName);
         ruleMetadata.setValue(m.value);
-        return ruleMetadata;        
+        return ruleMetadata;
     }
-    
+
     private IPattern convertIPattern(org.drools.ide.common.client.modeldriven.brl.IPattern m) {
 /*        IPattern iPattern = new IPattern();
-        return iPattern;  */      
+        return iPattern;  */
         return null;
     }
-    
+
     private IAction convertIAction(org.drools.ide.common.client.modeldriven.brl.IAction m) {
- 
+
         return null;
     }
 }
