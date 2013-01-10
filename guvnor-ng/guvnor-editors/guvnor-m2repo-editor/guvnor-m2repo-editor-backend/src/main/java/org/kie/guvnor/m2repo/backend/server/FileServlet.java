@@ -59,7 +59,7 @@ public class FileServlet extends HttpServlet {
     private M2RepoService m2RepoService;
     
     @Inject
-    private M2Repository repository;
+    private GuvnorM2Repository repository;
     /**
      * Posting accepts content of various types -
      * may be an attachement for an asset, or perhaps a repository import to process.
@@ -158,7 +158,7 @@ public class FileServlet extends HttpServlet {
                 }
 
                 fileData.mark(fileData.available()); // is available() safe?
-                String pom = M2Repository.loadPOM(fileData);
+                String pom = GuvnorM2Repository.loadPOMFromJar(fileData);
                 fileData.reset();
 
                 if (pom != null) {

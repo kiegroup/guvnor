@@ -31,7 +31,7 @@ public interface M2RepoService {
     public InputStream loadJar(String path);
     public String getJarName(String path);
     public void deleteJar(String[] path);
-    public String loadJarPOM(String path);
+    public String loadPOMFromJar(String path);
     public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters );
     public String getRepositoryURL();
 }

@@ -25,12 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -42,12 +45,23 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.codehaus.plexus.util.IOUtil;
 import org.kie.builder.ReleaseId;
+import org.kie.scanner.Aether;
 import org.kie.guvnor.m2repo.model.GAV;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.deployment.DeployRequest;
+import org.sonatype.aether.deployment.DeploymentException;
+import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.sonatype.aether.util.artifact.SubArtifact;
 
 
 @ApplicationScoped
-public class M2Repository {
+public class GuvnorM2Repository {
     
     public static final String M2_REPO_ROOT = "repository";
     public static final String REPO_ID_SNAPSHOTS = "snapshots";
@@ -56,6 +70,8 @@ public class M2Repository {
     
     private File snapshotsRepository;
     private File releasesRepository;
+    
+    private final Aether aether = Aether.DEFUALT_AETHER;
     
     @PostConstruct
     protected void init() {
@@ -81,36 +97,72 @@ public class M2Repository {
         }
     }
     
+    public String getRepositoryURL() {
+        File file = new File(getM2RepositoryRootDir());
+        return "file://" + file.getAbsolutePath();
+    }
+    
     public void deployArtifact(InputStream is, GAV gav) {
-        System.out.println("-------deployArtifact: " + gav);
-        OutputStream outStream = null;
+        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(gav, null, "jar"));
+        
         try {
-            //TODO: at the moment, we just assume classifier is null, target repo id is RELEASES
-            String classifier = null;
-            String fullPathToLocalFile = toURL(getM2RepositoryRootDir() + REPO_ID_RELEASES, gav, classifier);
-            final File file = new File(fullPathToLocalFile);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
+            if (!jarFile.exists()) {
+                jarFile.getParentFile().mkdirs();
+                jarFile.createNewFile();
             } 
-            file.isDirectory();
-            outStream = new BufferedOutputStream(new FileOutputStream(file));
+            FileOutputStream fos = new FileOutputStream(jarFile);
+            
             final byte[] buf = new byte[BUFFER_SIZE];
             int byteRead = 0;
             while ((byteRead = is.read(buf)) != -1) {
-                outStream.write(buf, 0, byteRead);
-            }        
-            
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                }
-            } catch (IOException e) {
-            }
+                fos.write(buf, 0, byteRead);
+            }       
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        
+        String pom = loadPOMFromJar(jarFile.getPath());
+        if(pom == null) {
+            pom =  generatePOM(gav);
+            jarFile = appendPOMToJar(pom, jarFile.getPath(), gav);
+        }
+        File pomFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(gav, null, "pom"));
+
+        deployArtifact(gav, jarFile, pomFile);
+    }
+
+    public void deployArtifact(GAV gav, File jarFile, File pomfile) {
+        Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(), gav.getArtifactId(), "jar", gav.getVersion() );
+        jarArtifact = jarArtifact.setFile( jarFile );
+
+        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
+        pomArtifact = pomArtifact.setFile( pomfile );
+
+        DeployRequest deployRequest = new DeployRequest();
+        deployRequest
+                .addArtifact( jarArtifact )
+                .addArtifact( pomArtifact )
+                .setRepository(getGuvnorM2Repository());
+
+        try {
+            aether.getSystem().deploy(aether.getSession(), deployRequest);
+        } catch (DeploymentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private RemoteRepository getGuvnorM2Repository() {
+        File m2RepoDir = new File( M2_REPO_ROOT );
+        if (!m2RepoDir.exists()) {
+            return null;
+        }
+        try {
+            String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
+            return new RemoteRepository( "guvnor-m2-repo", "default", localRepositoryUrl );
+        } catch (MalformedURLException e) { }
+        return null;
     }
     
     public boolean deleteFile(String[] fullPaths) {
@@ -147,7 +199,7 @@ public class M2Repository {
             wildcard = "*" + filters + "*.jar";
         }
         Collection<File> files = FileUtils.listFiles(
-                releasesRepository, 
+                new File(M2_REPO_ROOT), 
                 new WildcardFileFilter(wildcard, IOCase.INSENSITIVE),
                 DirectoryFileFilter.DIRECTORY
               );
@@ -169,9 +221,9 @@ public class M2Repository {
         return (new File(path)).getName();        
     }
     
-    public String loadPOM(String path) {
+    public static String loadPOMFromJar(String jarPath) {
         try {
-            ZipFile zip = new ZipFile(new File(path));
+            ZipFile zip = new ZipFile(new File(jarPath));
 
             for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry)e.nextElement();
@@ -198,9 +250,9 @@ public class M2Repository {
         return null;
     }
     
-    public static String loadPOM(InputStream is) {
+    public static String loadPOMFromJar(InputStream jarInputStream) {
         try {
-            ZipInputStream zis = new ZipInputStream(is);
+            ZipInputStream zis = new ZipInputStream(jarInputStream);
             ZipEntry entry;
 
             while ((entry = zis.getNextEntry()) != null)  {
@@ -225,6 +277,51 @@ public class M2Repository {
         
         return null;
     }
+    
+    public File appendPOMToJar(String pom, String jarPath, GAV gav) {
+        File originalJarFile = new File(jarPath);
+        File appendedJarFile = new File(jarPath+".tmp");   
+
+        try {
+            ZipFile war = new ZipFile(originalJarFile);
+
+        ZipOutputStream append = new ZipOutputStream(new FileOutputStream(appendedJarFile));
+
+        // first, copy contents from existing war
+        Enumeration<? extends ZipEntry> entries = war.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry e = entries.nextElement();
+            System.out.println("copy: " + e.getName());
+            append.putNextEntry(e);
+            if (!e.isDirectory()) {
+                IOUtil.copy(war.getInputStream(e), append);
+            }
+            append.closeEntry();
+        }
+
+        //append pom.
+        ZipEntry e = new ZipEntry(getPomXmlPath(gav));
+        System.out.println("append: " + e.getName());
+        append.putNextEntry(e);
+        append.write(pom.getBytes());
+        append.closeEntry();
+
+        // close
+        war.close();
+        append.close();       
+        } catch (ZipException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        //originalJarFile.delete();
+        //appendedJarFile.renameTo(originalJarFile);
+        return appendedJarFile;
+    }
+    
     protected String toURL(final String repository, GAV gav, String classifier) {
         final StringBuilder sb = new StringBuilder(repository);
 
@@ -235,21 +332,18 @@ public class M2Repository {
         return sb.append(gav.getGroupId().replace(".", File.separator))
                 .append(File.separator).append(gav.getArtifactId())
                 .append(File.separator).append(gav.getVersion())
-                .append(File.separator).append(toFileName(gav, classifier)).toString();
+                .append(File.separator).append(toFileName(gav, classifier, "jar")).toString();
     }
 
-    protected String toFileName(GAV gav, String classifier) {
+    protected String toFileName(GAV gav, String classifier, String fileType) {
         if (classifier != null) {
-            return gav.getArtifactId() + "-" + gav.getVersion() + "-" + classifier + "." + getFileExtension();
+            return gav.getArtifactId() + "-" + gav.getVersion() + "-" + classifier + "." + getFileExtension(fileType);
         }
 
-        return gav.getArtifactId() + "-" + gav.getVersion() + "." + getFileExtension();
+        return gav.getArtifactId() + "-" + gav.getVersion() + "." + getFileExtension(fileType);
     }
     
-    private String getFileExtension() {
-        //TODO: at the moment, we just assume extension type is jar
-        String type = "jar";
-        
+    private String getFileExtension(String type) {       
         if (type.equalsIgnoreCase("ear")) {
             return "ear";
         } else if (type.equalsIgnoreCase("pom")) {
@@ -260,4 +354,53 @@ public class M2Repository {
 
         return "jar";
     }
+    
+    public String generatePOM(GAV gav) {
+        Model model = new Model();
+        model.setGroupId(gav.getGroupId());
+        model.setArtifactId(gav.getArtifactId());
+        model.setVersion(gav.getVersion());
+        
+/*        Repository repo = new Repository();
+        repo.setId("guvnor-m2-repo");
+        repo.setName("Guvnor M2 Repo");
+        repo.setUrl(getRepositoryURL());
+        model.addRepository(repo);*/
+
+        StringWriter stringWriter = new StringWriter();
+        try {
+            new MavenXpp3Writer().write(stringWriter, model);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return stringWriter.toString();
+    }
+    
+
+    public static String generatePomProperties(GAV gav) {
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append( "groupId=" );
+        sBuilder.append( gav.getGroupId() );
+        sBuilder.append( "\n" );
+
+        sBuilder.append( "artifactId=" );
+        sBuilder.append( gav.getArtifactId() );
+        sBuilder.append( "\n" );
+
+        sBuilder.append( "version=" );
+        sBuilder.append( gav.getVersion() );
+        sBuilder.append( "\n" );
+
+        return sBuilder.toString();
+    }
+    
+    public String getPomXmlPath(GAV gav) {
+        return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.xml";
+    }
+
+    public String getPomPropertiesPath(GAV gav) {
+        return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.properties";
+    } 
 }

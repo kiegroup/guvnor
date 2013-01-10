@@ -27,7 +27,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.builder.ReleaseId;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.GAV;
@@ -44,7 +43,7 @@ public class M2RepoServiceImpl
         implements M2RepoService {
 
     @Inject
-    private M2Repository repository;
+    private GuvnorM2Repository repository;
 
 
     @Override
@@ -68,8 +67,8 @@ public class M2RepoServiceImpl
     }
     
     @Override
-    public String loadJarPOM(String path) {
-        return repository.loadPOM(path);
+    public String loadPOMFromJar(String path) {
+        return repository.loadPOMFromJar(path);
     }
     
     @Override
@@ -105,8 +104,7 @@ public class M2RepoServiceImpl
     
     @Override
     public String getRepositoryURL() {
-        File file = new File(repository.getM2RepositoryRootDir());
-        return "file://" + file.getAbsolutePath();
+        return repository.getRepositoryURL();
     }
     
 

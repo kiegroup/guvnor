@@ -207,7 +207,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                         editor.setSize("800px", "600px");
                         editor.show();
                     }
-                } ).loadJarPOM(row.getPath());
+                } ).loadPOMFromJar(row.getPath());
             }
         } );
         columnPicker.addColumn( openColumn,
