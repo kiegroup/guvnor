@@ -37,5 +37,5 @@ public interface ProjectEditorService {
 
     public Path pathToRelatedKModuleFileIfAny(Path pathToPomXML);
 
-    public Path newProject(String name);
+    public Path newProject(Path activePath, String name);
 }

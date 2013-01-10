@@ -73,7 +73,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path newProject(String name) {
+            public Path newProject(Path activePath, String name) {
                 return null;  //TODO -Rikkola-
             }
         };

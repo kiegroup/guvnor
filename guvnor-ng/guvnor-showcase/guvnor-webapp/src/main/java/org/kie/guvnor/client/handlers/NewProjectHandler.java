@@ -1,10 +1,5 @@
 package org.kie.guvnor.client.handlers;
 
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -17,8 +12,15 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.ErrorPopup;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Handler for the creation of new Projects
@@ -27,6 +29,9 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 public class NewProjectHandler implements NewResourceHandler {
 
     private static String FILE_TYPE = null;
+
+    @Inject
+    protected WorkbenchContext context;
 
     @Inject
     private PlaceManager placeManager;
@@ -49,19 +54,25 @@ public class NewProjectHandler implements NewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.newProjectIcon() );
+        return new Image(ImageResources.INSTANCE.newProjectIcon());
     }
 
     @Override
-    public void create( final String fileName ) {
-        projectEditorServiceCaller.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( Path pathToPom ) {
+    public void create(final String projectName) {
+        Path activePath = context.getActivePath();
+        if (activePath != null) {
+            projectEditorServiceCaller.call(new RemoteCallback<Path>() {
+                @Override
+                public void callback(Path pathToPom) {
 
-                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
-            }
-        } ).newProject( fileName );
+                    notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully()));
+                    placeManager.goTo(new ProjectEditorPlace(pathToPom));
+                }
+            }).newProject(activePath, projectName);
+        } else {
+            ErrorPopup.showMessage(Constants.INSTANCE.NoRepositorySelectedPleaseSelectARepository());
+        }
+
     }
 
     @Override

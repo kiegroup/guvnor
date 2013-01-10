@@ -18,19 +18,18 @@ package org.kie.guvnor.projecteditor.client.places;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PathPlaceRequest;
 
 @Portable
 public class ProjectEditorPlace
-        extends DefaultPlaceRequest {
+        extends PathPlaceRequest {
 
+    @Deprecated
     public ProjectEditorPlace() {
-        super( "projectEditorScreen" );
+        // Errai needs an empty one. Do not use this.
     }
 
-    public ProjectEditorPlace( Path path ) {
-        super( "projectEditorScreen" );
-        addParameter( "path:uri", path.toURI() );
-        addParameter( "path:name", path.getFileName() );
+    public ProjectEditorPlace(Path path) {
+        super(path);
     }
 }
