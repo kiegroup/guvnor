@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -123,13 +124,28 @@ public class GuvnorM2Repository {
             throw new RuntimeException(e);
         }
         
+        //Prepare pom file
         String pom = loadPOMFromJar(jarFile.getPath());
         if(pom == null) {
             pom =  generatePOM(gav);
             jarFile = appendPOMToJar(pom, jarFile.getPath(), gav);
         }
         File pomFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(gav, null, "pom"));
-
+        try {
+            if (!pomFile.exists()) {
+                pomFile.getParentFile().mkdirs();
+                pomFile.createNewFile();
+            } 
+            
+            FileOutputStream fos = new FileOutputStream(pomFile);
+            IOUtils.write(pom, fos);
+     
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
         deployArtifact(gav, jarFile, pomFile);
     }
 
