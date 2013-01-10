@@ -16,24 +16,23 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.ByteArrayInputStream;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
-import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 
 @Service
 @ApplicationScoped
@@ -74,12 +73,15 @@ public class BuildServiceImpl
 
         builder.build();
 
-        InternalKieModule kieModule = (InternalKieModule )builder.getKieModule();
-        ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
+        if (builder.getResults().isEmpty()) {
 
-        //Refactor GAV later
-        GAV anotherGav = new GAV(gav.getArtifactId(), gav.getGroupId(), gav.getVersion());
-        m2RepoService.deployJar(input, anotherGav);
+            InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+            ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
+
+            //Refactor GAV later
+            GAV anotherGav = new GAV(gav.getArtifactId(), gav.getGroupId(), gav.getVersion());
+            m2RepoService.deployJar(input, anotherGav);
+        }
         messagesEvent.fire(builder.getResults());
     }
 }
