@@ -23,10 +23,10 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 
-public class DSLSourceService extends AbstractSourceService {
+public class DSLSourceService extends BaseSourceService {
 
     private static final String PATTERN = ".dsl";
 

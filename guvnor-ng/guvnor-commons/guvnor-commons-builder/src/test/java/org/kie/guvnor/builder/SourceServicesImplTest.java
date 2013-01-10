@@ -17,8 +17,10 @@
 package org.kie.guvnor.builder;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.inject.Instance;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Files;
@@ -32,12 +34,21 @@ import static org.mockito.Mockito.*;
 public class SourceServicesImplTest {
 
     private Instance instance;
-    private ArrayList<SourceService> list;
+    private List<SourceService> sourceServices;
+    private List<Path> pathsToDelete;
 
     @Before
     public void setUp() throws Exception {
         instance = mock( Instance.class );
-        list = new ArrayList<SourceService>();
+        sourceServices = new ArrayList<SourceService>();
+        pathsToDelete = new ArrayList<Path>();
+    }
+
+    @After
+    public void clearDown() {
+        for ( final Path p : pathsToDelete ) {
+            Files.delete( p );
+        }
     }
 
     @Test
@@ -63,7 +74,7 @@ public class SourceServicesImplTest {
         assertEquals( DRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
                                                                                        ".drl" ) ) );
 
-        list.clear();
+        sourceServices.clear();
 
         addToList( modelDRL, DRL );
 
@@ -81,7 +92,7 @@ public class SourceServicesImplTest {
         assertEquals( modelDRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
                                                                                             ".model.drl" ) ) );
 
-        list.clear();
+        sourceServices.clear();
 
         addToList( modelDRL,
                    DRL );
@@ -114,20 +125,22 @@ public class SourceServicesImplTest {
     private void addToList( SourceService... services ) {
 
         for ( SourceService service : services ) {
-            list.add( service );
+            sourceServices.add( service );
         }
 
         when(
                 instance.iterator()
             ).thenReturn(
-                list.iterator()
+                sourceServices.iterator()
                         );
     }
 
     private Path makePath( final String prefix,
                            final String suffix ) {
-        return Files.createTempFile( prefix,
-                                     suffix );
+        final Path p = Files.createTempFile( prefix,
+                                             suffix );
+        pathsToDelete.add( p );
+        return p;
     }
 
 }

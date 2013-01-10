@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream;
 import javax.inject.Inject;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.IAction;
@@ -35,7 +35,7 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.server.util.Paths;
 
-public class GuidedDecisionTableSourceService extends AbstractSourceService {
+public class GuidedDecisionTableSourceService extends BaseSourceService {
 
     private static final String PATTERN = ".gdst";
 

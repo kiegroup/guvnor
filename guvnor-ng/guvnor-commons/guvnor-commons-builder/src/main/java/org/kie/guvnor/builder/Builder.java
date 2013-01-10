@@ -37,6 +37,8 @@ import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
 
+    private final static String RESOURCE_PATH = "src/main/resources";
+
     private final KieBuilder kieBuilder;
     private final String projectName;
     private final KieFileSystem kieFileSystem;
@@ -44,8 +46,6 @@ public class Builder {
     private final Path moduleDirectory;
     private final Paths paths;
     private final String artifactId;
-    private final static String RESOURCE_PATH = "src/main/resources";
-    private final static String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
     private final SourceServices sourceServices;
 
     public Builder( Path moduleDirectory,
@@ -78,7 +78,6 @@ public class Builder {
         return kieBuilder.getKieModule();
     }
 
-    //TODO This should really look for a SourceService for *all* file types. If none found don't add the file.
     private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
         for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
@@ -103,36 +102,6 @@ public class Builder {
 
                 }
             }
-
-//                final String fileName = path.getFileName().toString();
-//                final String uri = path.toUri().toString();
-//                if ( uri.endsWith( KMODULE_PATH ) ) {
-//
-//                    kieFileSystem.write( "META-INF/kmodule.xml", ioService.readAllString( path ) );
-//
-//                } else if ( !fileName.startsWith( "." ) ) {
-//                    //TODO Hack to exclude meta-data. If we had a SourceService for all file types this would not be required.
-//
-//                    if ( uri.endsWith( ".drl" ) ) {
-//                        kieFileSystem.write( stripPath( projectName,
-//                                                        path ), ioService.readAllString( path ) );
-//
-//                    } else if ( uri.endsWith( ".dsl" ) ) {
-//                        //Hack for DSLs for now..
-//                        kieFileSystem.write( stripPath( projectName,
-//                                                        path ), ioService.readAllString( path ) );
-//
-//                    } else if ( sourceServices.hasServiceFor( path.toUri().toString() ) ) {
-//                        final SourceContext context = sourceServices.getServiceFor( path.toUri().toString() ).getSource( path );
-//                        final InputStream is = context.getInputSteam();
-//                        final Path destinationPath = context.getDestination();
-//                        final InputStreamResource isr = new InputStreamResource( is );
-//                        kieFileSystem.write( stripPath( projectName,
-//                                                        destinationPath ) + ".drl",
-//                                             isr );
-//                    }
-//                }
-//            }
         }
     }
 

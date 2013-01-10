@@ -23,10 +23,10 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 
-public class DRLSourceService extends AbstractSourceService {
+public class DRLSourceService extends BaseSourceService {
 
     private static final String PATTERN = ".drl";
 

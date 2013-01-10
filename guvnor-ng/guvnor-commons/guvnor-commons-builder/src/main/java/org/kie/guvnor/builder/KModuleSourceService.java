@@ -7,13 +7,13 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.AbstractSourceService;
+import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 
 /**
  * Source provider for KModule.xml
  */
-public class KModuleSourceService extends AbstractSourceService {
+public class KModuleSourceService extends BaseSourceService {
 
     private static final String PATTERN = "src/main/resources/META-INF/kmodule.xml";
 

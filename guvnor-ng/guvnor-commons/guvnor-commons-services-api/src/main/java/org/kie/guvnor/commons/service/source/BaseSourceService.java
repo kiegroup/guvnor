@@ -5,7 +5,7 @@ import org.kie.commons.java.nio.file.Path;
 /**
  * Base implementation of all SourceServices
  */
-public abstract class AbstractSourceService implements SourceService {
+public abstract class BaseSourceService implements SourceService {
 
     private static final String PREFIX = "/src/main/resources";
 
