@@ -188,7 +188,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
                                 new SortableHeader<JarListPageRow, Date>( sortableHeaderGroup,
                                                                         "LastModified",
                                                                         lastModifiedColumn ),
-                                false );
+                                true );
 
         // Add "View kjar detail" button column
         Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
@@ -211,7 +211,7 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
             }
         } );
         columnPicker.addColumn( openColumn,
-                new TextHeader( "Open" ),
+                new TextHeader( "View Artifact Detail" ),
                 true ); 
         
         
