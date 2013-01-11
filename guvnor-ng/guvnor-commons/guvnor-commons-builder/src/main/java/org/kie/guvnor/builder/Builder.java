@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.File;
 import java.io.InputStream;
 
 import org.drools.io.impl.InputStreamResource;
@@ -24,7 +25,6 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.Message;
-import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -37,25 +37,21 @@ import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
 
-    private final static String RESOURCE_PATH = "src/main/resources";
+    private final static String RESOURCE_PATH = "src" + File.separator + "main" + File.separator + "resources";
 
     private final KieBuilder kieBuilder;
-    private final String projectName;
     private final KieFileSystem kieFileSystem;
-    private final IOService ioService;
     private final Path moduleDirectory;
     private final Paths paths;
     private final String artifactId;
     private final SourceServices sourceServices;
 
-    public Builder( Path moduleDirectory,
-                    String artifactId,
-                    IOService ioService,
-                    Paths paths,
-                    SourceServices sourceServices ) {
+    public Builder( final Path moduleDirectory,
+                    final String artifactId,
+                    final Paths paths,
+                    final SourceServices sourceServices ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
-        this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
 
@@ -64,14 +60,14 @@ public class Builder {
 
         DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
 
-        projectName = getProjectName( moduleDirectory );
         visitPaths( directoryStream );
 
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
     }
 
-    public void build() {
+    public Results build() {
         kieBuilder.buildAll();
+        return getResults();
     }
 
     public KieModule getKieModule() {
@@ -105,18 +101,8 @@ public class Builder {
         }
     }
 
-    private String stripPath( final String projectName,
-                              final String path ) {
-        return path.substring( projectName.length() + 2 );
-    }
-
-    private String getProjectName( final Path path ) {
-        String substring = path.toUri().toString();
-        return substring.substring( substring.indexOf( "uf-playground/" ) + "uf-playground/".length() );
-    }
-
-    public Results getResults() {
-        Results results = new Results();
+    private Results getResults() {
+        final Results results = new Results();
         results.setArtifactID( artifactId );
 
         for ( final Message message : kieBuilder.getResults().getMessages() ) {

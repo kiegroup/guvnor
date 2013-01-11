@@ -20,11 +20,9 @@ import java.io.ByteArrayInputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.impl.InternalKieModule;
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
@@ -40,7 +38,6 @@ import org.uberfire.backend.vfs.Path;
 public class BuildServiceImpl
         implements BuildService {
 
-    private IOService ioService;
     private Paths paths;
     private SourceServices sourceServices;
     private Event<Results> messagesEvent;
@@ -52,13 +49,11 @@ public class BuildServiceImpl
     }
 
     @Inject
-    public BuildServiceImpl( final @Named("ioStrategy") IOService ioService,
-                             final Paths paths,
+    public BuildServiceImpl( final Paths paths,
                              final SourceServices sourceServices,
                              final ProjectService projectService,
                              final M2RepoService m2RepoService,
                              final Event<Results> messagesEvent ) {
-        this.ioService = ioService;
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
@@ -67,22 +62,27 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void build( Path pathToPom ) {
-        GroupArtifactVersionModel gav = projectService.loadGav( pathToPom );
+    public void build( final Path pathToPom ) {
+        final GroupArtifactVersionModel gav = projectService.loadGav( pathToPom );
 
-        Builder builder = new Builder( paths.convert( pathToPom ).getParent(), gav.getArtifactId(), ioService, paths, sourceServices );
+        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
+                                             gav.getArtifactId(),
+                                             paths,
+                                             sourceServices );
 
-        builder.build();
+        final Results results = builder.build();
+        if ( results.isEmpty() ) {
 
-        if ( builder.getResults().isEmpty() ) {
-
-            InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
-            ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
+            final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+            final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
 
             //Refactor GAV later
-            GAV anotherGav = new GAV( gav.getArtifactId(), gav.getGroupId(), gav.getVersion() );
-            m2RepoService.deployJar( input, anotherGav );
+            final GAV anotherGav = new GAV( gav.getArtifactId(),
+                                            gav.getGroupId(),
+                                            gav.getVersion() );
+            m2RepoService.deployJar( input,
+                                     anotherGav );
         }
-        messagesEvent.fire( builder.getResults() );
+        messagesEvent.fire( results );
     }
 }

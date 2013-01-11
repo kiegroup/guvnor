@@ -22,18 +22,15 @@ import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelAnnotation;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
@@ -55,10 +52,6 @@ public class DataModelServiceImpl
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
 
     @Inject
     private Paths paths;
@@ -122,18 +115,15 @@ public class DataModelServiceImpl
 
     private DataModelOracle makeDataModelOracle( final Path projectPath ) {
         //Build the project to get all available classes
-
         final Path pomPath = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
         final GroupArtifactVersionModel gav = projectService.loadGav( pomPath );
         final Builder builder = new Builder( paths.convert( projectPath ),
                                              gav.getArtifactId(),
-                                             ioService,
                                              paths,
                                              sourceServices );
-        builder.build();
 
         //If the Project had errors report them to the user and return an empty DataModelOracle
-        final Results results = builder.getResults();
+        final Results results = builder.build();
         if ( !results.isEmpty() ) {
             messagesEvent.fire( results );
             return makeEmptyDataModelOracle();

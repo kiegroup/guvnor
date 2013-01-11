@@ -16,34 +16,33 @@
 
 package org.kie.guvnor.builder;
 
+import javax.enterprise.event.Event;
+
 import org.junit.Before;
-import org.junit.Test;
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.event.Event;
-
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class BuildServiceImplTest {
-
 
     private BuildService service;
 
     @Before
     public void setUp() throws Exception {
-        IOService ioService = mock(IOService.class);
-        Paths paths = mock(Paths.class);
-        SourceServices sourceServices = mock(SourceServices.class);
-        ProjectService projectService = mock(ProjectService.class);
-        M2RepoService m2RepoService = mock(M2RepoService.class);
-        Event messagesEvent = mock(Event.class);
+        final Paths paths = mock( Paths.class );
+        final SourceServices sourceServices = mock( SourceServices.class );
+        final ProjectService projectService = mock( ProjectService.class );
+        final M2RepoService m2RepoService = mock( M2RepoService.class );
+        final Event messagesEvent = mock( Event.class );
 
-        service = new BuildServiceImpl(ioService, paths, sourceServices, projectService, m2RepoService, messagesEvent);
+        service = new BuildServiceImpl( paths,
+                                        sourceServices,
+                                        projectService,
+                                        m2RepoService,
+                                        messagesEvent );
     }
 }
