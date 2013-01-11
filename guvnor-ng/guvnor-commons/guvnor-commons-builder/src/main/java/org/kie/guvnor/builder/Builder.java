@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.File;
-import java.io.InputStream;
-
 import org.drools.io.impl.InputStreamResource;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
@@ -27,7 +24,6 @@ import org.kie.builder.KieModule;
 import org.kie.builder.Message;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceContext;
@@ -35,9 +31,14 @@ import org.kie.guvnor.commons.service.source.SourceService;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Builder {
 
-    private final static String RESOURCE_PATH = "src" + File.separator + "main" + File.separator + "resources";
+    private final static String RESOURCE_PATH = "/src" + File.separator + "main" + File.separator + "resources";
 
     private final KieBuilder kieBuilder;
     private final KieFileSystem kieFileSystem;
@@ -45,11 +46,12 @@ public class Builder {
     private final Paths paths;
     private final String artifactId;
     private final SourceServices sourceServices;
+    private Map<String, Path> handles = new HashMap<String, Path>();
 
-    public Builder( final Path moduleDirectory,
-                    final String artifactId,
-                    final Paths paths,
-                    final SourceServices sourceServices ) {
+    public Builder(final Path moduleDirectory,
+                   final String artifactId,
+                   final Paths paths,
+                   final SourceServices sourceServices) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;
@@ -58,11 +60,11 @@ public class Builder {
         KieServices kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
-        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
+        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream(moduleDirectory);
 
-        visitPaths( directoryStream );
+        visitPaths(directoryStream);
 
-        kieBuilder = kieServices.newKieBuilder( kieFileSystem );
+        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
     }
 
     public Results build() {
@@ -74,26 +76,28 @@ public class Builder {
         return kieBuilder.getKieModule();
     }
 
-    private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
-        for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
-            if ( Files.isDirectory( path ) ) {
-                visitPaths( Files.newDirectoryStream( path ) );
+    private void visitPaths(final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream) {
+        for (final org.kie.commons.java.nio.file.Path path : directoryStream) {
+            if (Files.isDirectory(path)) {
+                visitPaths(Files.newDirectoryStream(path));
 
             } else {
 
                 final String fileName = path.getFileName().toString();
 
                 //Don't process MetaData files
-                if ( !fileName.startsWith( "." ) ) {
+                if (!fileName.startsWith(".")) {
 
-                    if ( sourceServices.hasServiceFor( path ) ) {
-                        final SourceService service = sourceServices.getServiceFor( path );
-                        final SourceContext context = service.getSource( path );
+                    if (sourceServices.hasServiceFor(path)) {
+                        final SourceService service = sourceServices.getServiceFor(path);
+                        final SourceContext context = service.getSource(path);
                         final InputStream is = context.getInputSteam();
                         final String destinationPath = context.getDestination();
-                        final InputStreamResource isr = new InputStreamResource( is );
-                        kieFileSystem.write( destinationPath,
-                                             isr );
+                        final InputStreamResource isr = new InputStreamResource(is);
+
+                        handles.put(destinationPath, path);
+                        kieFileSystem.write(destinationPath,
+                                isr);
                     }
 
                 }
@@ -103,42 +107,33 @@ public class Builder {
 
     private Results getResults() {
         final Results results = new Results();
-        results.setArtifactID( artifactId );
+        results.setArtifactID(artifactId);
 
-        for ( final Message message : kieBuilder.getResults().getMessages() ) {
+        for (final Message message : kieBuilder.getResults().getMessages()) {
             final org.kie.guvnor.commons.service.builder.model.Message m = new org.kie.guvnor.commons.service.builder.model.Message();
-            switch ( message.getLevel() ) {
+            switch (message.getLevel()) {
                 case ERROR:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR);
                     break;
                 case WARNING:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING);
                     break;
                 case INFO:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.INFO );
+                    m.setLevel(org.kie.guvnor.commons.service.builder.model.Message.Level.INFO);
                     break;
             }
 
-            m.setId( message.getId() );
-            m.setArtifactID( artifactId );
-            m.setLine( message.getLine() );
-            if ( message.getPath() != null && !message.getPath().isEmpty() ) {
-                try {
-                    String pathToFile = RESOURCE_PATH + "/" + message.getPath();
-                    System.out.println( "Path to error file = " + pathToFile );
-                    if ( message.getPath().equals( "pom.xml" ) ) {
-                        m.setPath( paths.convert( moduleDirectory.resolve( message.getPath() ) ) );
-                    } else {
-                        m.setPath( paths.convert( moduleDirectory.resolve( pathToFile ) ) );
-                    }
-                } catch ( NoSuchFileException e ) {
-                    // Just to be safe.
-                }
-            }
-            m.setColumn( message.getColumn() );
-            m.setText( message.getText() );
+            m.setId(message.getId());
+            m.setArtifactID(artifactId);
+            m.setLine(message.getLine());
+            if (message.getPath() != null && !message.getPath().isEmpty()) {
+                m.setPath(paths.convert(handles.get(RESOURCE_PATH + "/" + message.getPath())));
 
-            results.getMessages().add( m );
+            }
+            m.setColumn(message.getColumn());
+            m.setText(message.getText());
+
+            results.getMessages().add(m);
         }
 
         return results;
