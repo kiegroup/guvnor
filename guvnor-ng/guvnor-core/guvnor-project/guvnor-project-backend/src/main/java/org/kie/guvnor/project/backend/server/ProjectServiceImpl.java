@@ -37,15 +37,15 @@ import org.uberfire.backend.vfs.PathFactory;
 public class ProjectServiceImpl
         implements ProjectService {
 
-    private static final String SOURCE_FILENAME  = "src";
-    private static final String POM_FILENAME     = "pom.xml";
+    private static final String SOURCE_FILENAME = "src";
+    private static final String POM_FILENAME = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
     private IOService ioService;
-    private Paths     paths;
+    private Paths paths;
 
     @Inject
     GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
-    
+
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
@@ -112,6 +112,27 @@ public class ProjectServiceImpl
         if ( !hasKModule( path ) ) {
             return null;
         }
+        return PathFactory.newPath( paths.convert( path.getFileSystem() ),
+                                    path.getFileName().toString(),
+                                    path.toUri().toString() );
+    }
+
+    @Override
+    public Path resolvePackage( final Path resource ) {
+
+        //Null resource paths cannot resolve to a Project
+        if ( resource == null ) {
+            return null;
+        }
+
+        //A resource is already a folder simply return it
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        if ( Files.isDirectory( path ) ) {
+            return resource;
+        }
+
+        path = path.getParent();
+
         return PathFactory.newPath( paths.convert( path.getFileSystem() ),
                                     path.getFileName().toString(),
                                     path.toUri().toString() );

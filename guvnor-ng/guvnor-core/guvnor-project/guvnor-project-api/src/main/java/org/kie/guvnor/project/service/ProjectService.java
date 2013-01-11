@@ -37,4 +37,11 @@ public interface ProjectService {
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
     Path resolveProject( final Path resource );
+
+    /**
+     * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
+     * @param resource
+     * @return Path to the folder containing the resource file.
+     */
+    Path resolvePackage( final Path resource );
 }

@@ -45,7 +45,8 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
         final DirectoryStream<Path> files = Files.newDirectoryStream( pathToSearch, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
-                return entry.endsWith( fileExtension );
+                final String uri = entry.toUri().toString();
+                return uri.endsWith( fileExtension );
             }
         } );
         for ( final Path file : files ) {

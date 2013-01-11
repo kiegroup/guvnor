@@ -49,6 +49,12 @@ public class MockProjectServiceCaller
             public Path resolveProject( Path resource ) {
                 return null;  //TODO -Rikkola-
             }
+
+            @Override
+            public Path resolvePackage( Path resource ) {
+                return null;  //TODO -Rikkola-
+            }
+
         };
     }
 

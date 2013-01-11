@@ -18,22 +18,20 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
@@ -65,19 +63,25 @@ public class DataModelServiceImpl
     @Inject
     private FileDiscoveryService fileDiscoveryService;
 
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
     @Override
     public String[] getFactTypes( final Path resourcePath ) {
         PortablePreconditions.checkNotNull( "resourcePath",
                                             resourcePath );
         final Path projectPath = resolveProjectPath( resourcePath );
+        final Path packagePath = resolvePackagePath( resourcePath );
 
         //Resource was not within a Project structure
         if ( projectPath == null ) {
             return new String[ 0 ];
         }
 
-        assertDataModelOracle( projectPath );
-        return cache.getDataModelOracle( projectPath ).getFactTypes();
+        assertDataModelOracle( projectPath,
+                               packagePath );
+        return cache.getDataModelOracle( packagePath ).getFactTypes();
     }
 
     @Override
@@ -85,22 +89,26 @@ public class DataModelServiceImpl
         PortablePreconditions.checkNotNull( "resourcePath",
                                             resourcePath );
         final Path projectPath = resolveProjectPath( resourcePath );
+        final Path packagePath = resolvePackagePath( resourcePath );
 
         //Resource was not within a Project structure
         if ( projectPath == null ) {
             return makeEmptyDataModelOracle();
         }
 
-        assertDataModelOracle( projectPath );
-        return cache.getDataModelOracle( projectPath );
+        assertDataModelOracle( projectPath,
+                               packagePath );
+        return cache.getDataModelOracle( packagePath );
     }
 
     //Check the DataModelOracle for the Project has been created, otherwise create one!
-    private void assertDataModelOracle( final Path projectPath ) {
-        DataModelOracle oracle = cache.getDataModelOracle( projectPath );
+    private void assertDataModelOracle( final Path projectPath,
+                                        final Path packagePath ) {
+        DataModelOracle oracle = cache.getDataModelOracle( packagePath );
         if ( oracle == null ) {
-            oracle = makeDataModelOracle( projectPath );
-            cache.setDataModelOracle( projectPath,
+            oracle = makeDataModelOracle( projectPath,
+                                          packagePath );
+            cache.setDataModelOracle( packagePath,
                                       oracle );
         }
     }
@@ -109,11 +117,16 @@ public class DataModelServiceImpl
         return projectService.resolveProject( resourcePath );
     }
 
+    private Path resolvePackagePath( final Path resourcePath ) {
+        return projectService.resolvePackage( resourcePath );
+    }
+
     private DataModelOracle makeEmptyDataModelOracle() {
         return DataModelBuilder.newDataModelBuilder().build();
     }
 
-    private DataModelOracle makeDataModelOracle( final Path projectPath ) {
+    private DataModelOracle makeDataModelOracle( final Path projectPath,
+                                                 final Path packagePath ) {
         //Build the project to get all available classes
         final Path pomPath = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
         final GroupArtifactVersionModel gav = projectService.loadGav( pomPath );
@@ -148,14 +161,14 @@ public class DataModelServiceImpl
             }
         }
 
-        //TODO {manstis} - Add Guvnor enumerations
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectPath );
-        final Collection<org.kie.commons.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioProjectPath,
-                                                                                                             ".enumeration" );
+        //Add Guvnor enumerations
+        loadEnumsForPackage( dmoBuilder,
+                             packagePath );
 
-        //TODO {manstis} - Add DSLs
-        final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioProjectPath,
-                                                                                                            ".dsl" );
+        //Add DSLs
+        loadDslsForPackage( dmoBuilder,
+                            packagePath );
+
         //TODO {manstis} - Add Globals
 
         //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
@@ -164,47 +177,6 @@ public class DataModelServiceImpl
             return makeEmptyDataModelOracle();
         }
 
-        //Mock DMO for now... until the above is complete
-        dmoBuilder.addFact( "Driver" )
-                .addField( new ModelField( "age",
-                                           Integer.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_NUMERIC_INTEGER ) )
-                .addField( new ModelField( "name",
-                                           String.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_STRING ) )
-                .addField( new ModelField( "date",
-                                           Date.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_DATE ) )
-                .addField( new ModelField( "approved",
-                                           Boolean.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_BOOLEAN ) )
-                .end()
-                .addFact( "Incident",
-                          true )
-                .addField( new ModelField( "dateOfIncident",
-                                           Date.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_DATE ) )
-                .addField( new ModelField( "typeOfIncident",
-                                           String.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_STRING ) )
-                .addField( new ModelField( "claimAmount",
-                                           Integer.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_NUMERIC_INTEGER ) )
-                .end();
         return dmoBuilder.build();
     }
 
@@ -213,6 +185,28 @@ public class DataModelServiceImpl
         message.setLevel( Message.Level.ERROR );
         message.setText( e.getMessage() );
         return message;
+    }
+
+    private void loadEnumsForPackage( final DataModelBuilder dmoBuilder,
+                                      final Path packagePath ) {
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final Collection<org.kie.commons.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
+                                                                                                             ".enumeration" );
+        for ( final org.kie.commons.java.nio.file.Path path : enumFiles ) {
+            final String enumDefinition = ioService.readAllString( path );
+            dmoBuilder.addEnum( enumDefinition );
+        }
+    }
+
+    private void loadDslsForPackage( final DataModelBuilder dmoBuilder,
+                                     final Path packagePath ) {
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
+                                                                                                            ".dsl" );
+        for ( final org.kie.commons.java.nio.file.Path path : dslFiles ) {
+            //TODO {manstis} Load DSL
+        }
+
     }
 
 }

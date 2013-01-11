@@ -56,6 +56,10 @@ public abstract class BaseFactBuilder implements FactBuilder {
         oracle.addEventType( buildEventTypes() );
     }
 
+    public DataModelBuilder getDataModelBuilder() {
+        return this.builder;
+    }
+
     private Map<String, ModelField[]> buildFactsAndFields() {
         final Map<String, ModelField[]> loadableFactsAndFields = new HashMap<String, ModelField[]>();
         final ModelField[] loadableFields = new ModelField[ fields.size() ];

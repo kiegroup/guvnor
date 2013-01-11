@@ -1,9 +1,12 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestJavaEnum1;
+import org.kie.guvnor.datamodel.backend.server.testclasses.TestJavaEnum2;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
@@ -417,6 +420,78 @@ public class DataModelOracleEnumTest {
         assertFalse( dmo.isDependentEnum( "Fact",
                                           "field1",
                                           "field4" ) );
+    }
+
+    @Test
+    public void testJavaEnum1() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestJavaEnum1.class )
+                .build();
+
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestJavaEnum1",
+                      dmo.getFactTypes()[ 0 ] );
+
+        final DropDownData dd = dmo.getEnums( "TestJavaEnum1",
+                                              "field1" );
+        assertNotNull( dd );
+        assertEquals( 3,
+                      dd.getFixedList().length );
+        assertEquals( "TestEnum.ZERO=TestEnum.ZERO",
+                      dd.getFixedList()[ 0 ] );
+        assertEquals( "TestEnum.ONE=TestEnum.ONE",
+                      dd.getFixedList()[ 1 ] );
+        assertEquals( "TestEnum.TWO=TestEnum.TWO",
+                      dd.getFixedList()[ 2 ] );
+
+        final String[] ddValues = dmo.getEnumValues( "TestJavaEnum1",
+                                                     "field1" );
+        assertNotNull( ddValues );
+        assertEquals( 3,
+                      ddValues.length );
+        assertEquals( "TestEnum.ZERO=TestEnum.ZERO",
+                      ddValues[ 0 ] );
+        assertEquals( "TestEnum.ONE=TestEnum.ONE",
+                      ddValues[ 1 ] );
+        assertEquals( "TestEnum.TWO=TestEnum.TWO",
+                      ddValues[ 2 ] );
+    }
+
+    @Test
+    public void testJavaEnum2() throws IOException {
+        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+                .addClass( TestJavaEnum2.class )
+                .build();
+
+        assertEquals( 1,
+                      dmo.getFactTypes().length );
+        assertEquals( "TestJavaEnum2",
+                      dmo.getFactTypes()[ 0 ] );
+
+        final DropDownData dd = dmo.getEnums( "TestJavaEnum2",
+                                              "field1" );
+        assertNotNull( dd );
+        assertEquals( 3,
+                      dd.getFixedList().length );
+        assertEquals( "TestExternalEnum.ZERO=TestExternalEnum.ZERO",
+                      dd.getFixedList()[ 0 ] );
+        assertEquals( "TestExternalEnum.ONE=TestExternalEnum.ONE",
+                      dd.getFixedList()[ 1 ] );
+        assertEquals( "TestExternalEnum.TWO=TestExternalEnum.TWO",
+                      dd.getFixedList()[ 2 ] );
+
+        final String[] ddValues = dmo.getEnumValues( "TestJavaEnum2",
+                                                     "field1" );
+        assertNotNull( ddValues );
+        assertEquals( 3,
+                      ddValues.length );
+        assertEquals( "TestExternalEnum.ZERO=TestExternalEnum.ZERO",
+                      ddValues[ 0 ] );
+        assertEquals( "TestExternalEnum.ONE=TestExternalEnum.ONE",
+                      ddValues[ 1 ] );
+        assertEquals( "TestExternalEnum.TWO=TestExternalEnum.TWO",
+                      ddValues[ 2 ] );
     }
 
 }

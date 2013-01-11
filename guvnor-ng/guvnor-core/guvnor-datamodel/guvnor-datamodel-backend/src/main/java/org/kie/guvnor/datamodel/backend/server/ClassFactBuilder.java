@@ -104,6 +104,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                               methodSignatures.get( qualifiedName ).accessorAndMutator,
                                               genericReturnType ) );
+
+                    addEnumsForField( factType,
+                                      fieldName,
+                                      returnType );
+
                 }
             } else {
 
@@ -116,7 +121,12 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                           methodSignatures.get( qualifiedName ).accessorAndMutator,
                                           genericReturnType ) );
+
+                addEnumsForField( factType,
+                                  fieldName,
+                                  returnType );
             }
+
         }
 
         //Methods for use in ActionCallMethod's
@@ -234,4 +244,29 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     }
 
+    private void addEnumsForField( final String className,
+                                   final String fieldName,
+                                   final Class<?> fieldClazz ) {
+        if ( fieldClazz.isEnum() ) {
+            final Field[] enumFields = fieldClazz.getDeclaredFields();
+            final List<String> enumValues = new ArrayList<String>();
+            int i = 0;
+            for ( final Field enumField : enumFields ) {
+                if ( enumField.isEnumConstant() ) {
+                    String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
+                    if ( shortName.contains( "$" ) ) {
+                        shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
+                    }
+                    enumValues.add( shortName + "=" + shortName );
+                    i++;
+                }
+            }
+            final String qualifiedFactField = className + "." + fieldName;
+            final String a[] = new String[ enumValues.size() ];
+            enumValues.toArray( a );
+            getDataModelBuilder().addEnum( qualifiedFactField,
+                                           a );
+        }
+
+    }
 }
