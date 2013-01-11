@@ -4,6 +4,7 @@ import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,6 +110,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                       fieldName,
                                       returnType );
 
+                    addParametricTypeForField( factType,
+                                               fieldName,
+                                               returnType );
+
                 }
             } else {
 
@@ -125,6 +130,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 addEnumsForField( factType,
                                   fieldName,
                                   returnType );
+
+                addParametricTypeForField( factType,
+                                           fieldName,
+                                           returnType );
             }
 
         }
@@ -230,17 +239,17 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     private static class MethodSignature {
 
-        MethodSignature( final FieldAccessorsAndMutators accessorAndMutator,
-                         final Type genericType,
-                         final Class<?> returnType ) {
+        private MethodSignature( final FieldAccessorsAndMutators accessorAndMutator,
+                                 final Type genericType,
+                                 final Class<?> returnType ) {
             this.accessorAndMutator = accessorAndMutator;
             this.genericType = genericType;
             this.returnType = returnType;
         }
 
-        FieldAccessorsAndMutators accessorAndMutator;
-        Type genericType;
-        Class<?> returnType;
+        private FieldAccessorsAndMutators accessorAndMutator;
+        private Type genericType;
+        private Class<?> returnType;
 
     }
 
@@ -267,6 +276,34 @@ public class ClassFactBuilder extends BaseFactBuilder {
             getDataModelBuilder().addEnum( qualifiedFactField,
                                            a );
         }
-
     }
+
+    private void addParametricTypeForField( final String className,
+                                            final String fieldName,
+                                            final Class<?> fieldClazz ) {
+        final String qualifiedFactFieldName = className + "." + fieldName;
+        final String parametricType = getParametricType( fieldClazz );
+        if ( parametricType != null ) {
+            fieldParametersType.put( qualifiedFactFieldName,
+                                     parametricType );
+        }
+    }
+
+    private String getParametricType( final Type type ) {
+        if ( type instanceof ParameterizedType ) {
+            final ParameterizedType pt = (ParameterizedType) type;
+            Type goodType = null;
+            for ( final Type t : pt.getActualTypeArguments() ) {
+                goodType = t;
+            }
+            if ( goodType != null ) {
+                int index = goodType.toString().lastIndexOf( "." );
+                return goodType.toString().substring( index + 1 );
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
 }

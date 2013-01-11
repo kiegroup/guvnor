@@ -2,6 +2,7 @@ package org.kie.guvnor.datamodel.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,10 @@ public class DefaultDataModel implements DataModelOracle {
     // for example given "List<String> name", key = "name" value = "String"
     private Map<String, String> fieldParametersType = new HashMap<String, String>();
 
+    // DSL language extensions, if needed, if provided by the package.
+    private List<DSLSentence> dslConditionSentences = new ArrayList<DSLSentence>();
+    private List<DSLSentence> dslActionSentences = new ArrayList<DSLSentence>();
+
     //TODO {manstis} The following are not setup by DataModelBuilder
 
     // A map of globals (name is key) and their type (value).
@@ -46,10 +51,6 @@ public class DefaultDataModel implements DataModelOracle {
 
     // Globals that are a collection type.
     private String[] globalCollections = new String[ 0 ];
-
-    // DSL language extensions, if needed, if provided by the package.
-    private DSLSentence[] conditionDSLSentences = new DSLSentence[ 0 ];
-    private DSLSentence[] actionDSLSentences = new DSLSentence[ 0 ];
 
     //Public constructor is needed for Errai Marshaller :(
     public DefaultDataModel() {
@@ -306,12 +307,12 @@ public class DefaultDataModel implements DataModelOracle {
     // DSLs
     // ####################################
 
-    public DSLSentence[] getDSLConditions() {
-        return conditionDSLSentences;
+    public List<DSLSentence> getDSLConditions() {
+        return Collections.unmodifiableList( dslConditionSentences );
     }
 
-    public DSLSentence[] getDSLActions() {
-        return actionDSLSentences;
+    public List<DSLSentence> getDSLActions() {
+        return Collections.unmodifiableList( dslActionSentences );
     }
 
     // ####################################
@@ -675,6 +676,14 @@ public class DefaultDataModel implements DataModelOracle {
 
     public void addEnums( final Map<String, String[]> dataEnumLists ) {
         this.dataEnumLists.putAll( dataEnumLists );
+    }
+
+    public void addDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
+        this.dslConditionSentences.addAll( dslConditionSentences );
+    }
+
+    public void addDslActionSentences( final List<DSLSentence> dslActionSentences ) {
+        this.dslActionSentences.addAll( dslActionSentences );
     }
 
 }

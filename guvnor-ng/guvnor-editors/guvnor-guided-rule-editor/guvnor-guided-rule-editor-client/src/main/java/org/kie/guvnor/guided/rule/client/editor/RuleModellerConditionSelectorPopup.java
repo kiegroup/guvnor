@@ -29,8 +29,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.DSLSentence;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
@@ -77,7 +77,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             positionCbo.setSelectedIndex( 0 );
         }
 
-        if ( completions.getDSLConditions().length == 0 && completions.getFactTypes().length == 0 ) {
+        if ( completions.getDSLConditions().size() == 0 && completions.getFactTypes().length == 0 ) {
             layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
         }
 
@@ -166,22 +166,21 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // The list of DSL sentences
     private void addDSLSentences() {
-        if ( completions.getDSLConditions().length > 0 ) {
-            for ( int i = 0; i < completions.getDSLConditions().length; i++ ) {
-                final DSLSentence sen = completions.getDSLConditions()[ i ];
-                String key = "DSL" + i;
-                choices.addItem( sen.toString(),
-                                 key );
-                cmds.put( key,
-                          new Command() {
+        for ( final DSLSentence sen : completions.getDSLConditions() ) {
+            final String sentence = sen.toString();
+            final String key = "DSL" + sentence;
+            choices.addItem( sentence,
+                             key );
+            cmds.put( key,
+                      new Command() {
 
-                              public void execute() {
-                                  addNewDSLLhs( sen,
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  hide();
-                              }
-                          } );
-            }
+                          public void execute() {
+                              addNewDSLLhs( sen,
+                                            Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                              hide();
+                          }
+                      } );
+
         }
     }
 

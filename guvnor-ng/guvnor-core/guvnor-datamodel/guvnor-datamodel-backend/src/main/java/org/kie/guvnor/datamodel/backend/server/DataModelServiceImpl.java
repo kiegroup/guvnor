@@ -17,12 +17,16 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -204,9 +208,9 @@ public class DataModelServiceImpl
         final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                             ".dsl" );
         for ( final org.kie.commons.java.nio.file.Path path : dslFiles ) {
-            //TODO {manstis} Load DSL
+            final String dslDefinition = ioService.readAllString( path );
+            dmoBuilder.addDsl( dslDefinition );
         }
-
     }
 
 }

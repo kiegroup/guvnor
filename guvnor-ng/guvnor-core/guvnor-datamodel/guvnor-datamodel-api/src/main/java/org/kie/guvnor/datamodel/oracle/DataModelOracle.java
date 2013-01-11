@@ -81,11 +81,11 @@ public interface DataModelOracle {
     Collection<? extends String> getMethodParams( String variableClass,
                                                   String methodNameWithParams );
 
-    DSLSentence[] getDSLActions();
+    List<DSLSentence> getDSLActions();
 
     String[] getGlobalCollections();
 
-    DSLSentence[] getDSLConditions();
+    List<DSLSentence> getDSLConditions();
 
     String getParametricFieldType( String factType,
                                    String fieldName );
