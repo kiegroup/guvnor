@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.service;
+package org.kie.guvnor.guided.rule.backend.server;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -24,6 +24,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.server.util.Paths;
 
 public class GuidedRuleSourceService extends BaseSourceService {

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.model;
+package org.kie.guvnor.guided.rule.model.templates;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 
 /**
- *
+ * Container for data needed to edit a Guided Template
  */
-public class GuidedEditorTContent {
+@Portable
+public class GuidedTemplateEditorContent {
 
     private DataModelOracle dataModel;
     private TemplateModel ruleModel;
 
-    public GuidedEditorTContent() {
-
+    public GuidedTemplateEditorContent() {
     }
 
-    public GuidedEditorTContent( final DataModelOracle dataModel,
-                                 final TemplateModel ruleModel ) {
+    public GuidedTemplateEditorContent( final DataModelOracle dataModel,
+                                        final TemplateModel ruleModel ) {
         this.dataModel = dataModel;
         this.ruleModel = ruleModel;
     }

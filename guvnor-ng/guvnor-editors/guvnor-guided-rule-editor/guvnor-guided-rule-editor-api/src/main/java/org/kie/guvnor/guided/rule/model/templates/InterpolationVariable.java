@@ -15,12 +15,19 @@
  */
 package org.kie.guvnor.guided.rule.model.templates;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public class InterpolationVariable {
 
     private String varName;
     private String dataType;
     private String factType;
     private String factField;
+
+    public InterpolationVariable() {
+        //For Errai marshalling...
+    }
 
     public InterpolationVariable( String varName,
                                   String dataType ) {

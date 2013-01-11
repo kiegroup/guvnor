@@ -122,10 +122,10 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         ModellerWidgetFactory widgetFactory = new TemplateModellerWidgetFactory();
 
         this.ruleModeller = new RuleModeller( path,
-                                              oracle,
                                               ruleModel,
-                                              getRuleModellerConfiguration(),
+                                              oracle,
                                               widgetFactory,
+                                              getRuleModellerConfiguration(),
                                               eventBus );
 
         this.popupContent = uiBinder.createAndBindUi( this );

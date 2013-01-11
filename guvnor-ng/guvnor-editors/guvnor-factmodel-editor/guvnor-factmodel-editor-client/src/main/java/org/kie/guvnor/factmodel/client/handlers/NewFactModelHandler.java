@@ -17,6 +17,7 @@ import org.kie.guvnor.factmodel.service.FactModelService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PathPlaceRequest;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Handler for the creation of new Fact Models
@@ -59,10 +60,13 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
                     @Override
                     public void callback( Void aVoid ) {
                         notifySuccess();
-
-                        placeManager.goTo( new PathPlaceRequest( path, "FactModelsEditor" ) );
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "FactModelsEditor" );
+                        placeManager.goTo( place );
                     }
-                } ).save( path, factModel, comment );
+                } ).save( path,
+                          factModel,
+                          comment );
             }
         } );
     }

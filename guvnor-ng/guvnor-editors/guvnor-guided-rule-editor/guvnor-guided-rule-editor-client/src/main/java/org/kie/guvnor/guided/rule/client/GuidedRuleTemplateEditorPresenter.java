@@ -28,9 +28,9 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.guided.rule.model.templates.GuidedTemplateEditorContent;
+import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
+import org.kie.guvnor.guided.rule.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -52,18 +52,18 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.brl")
-public class GuidedRuleEditorPresenter {
+@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", fileTypes = "*.template")
+public class GuidedRuleTemplateEditorPresenter {
 
     public interface View
             extends
             IsWidget {
 
         void setContent( final Path path,
-                         final RuleModel model,
+                         final TemplateModel model,
                          final DataModelOracle dataModel );
 
-        RuleModel getContent();
+        TemplateModel getContent();
 
         boolean isDirty();
 
@@ -82,7 +82,7 @@ public class GuidedRuleEditorPresenter {
     private MultiPageEditor multiPage;
 
     @Inject
-    private Caller<GuidedRuleEditorService> service;
+    private Caller<GuidedRuleTemplateEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -116,9 +116,9 @@ public class GuidedRuleEditorPresenter {
     public void onStart( final Path path ) {
         this.path = path;
 
-        service.call( new RemoteCallback<GuidedEditorContent>() {
+        service.call( new RemoteCallback<GuidedTemplateEditorContent>() {
             @Override
-            public void callback( final GuidedEditorContent response ) {
+            public void callback( final GuidedTemplateEditorContent response ) {
                 view.setContent( path,
                                  response.getRuleModel(),
                                  response.getDataModel() );
@@ -158,7 +158,7 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Editor [" + path.getFileName() + "]";
+        return "Guided Template [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

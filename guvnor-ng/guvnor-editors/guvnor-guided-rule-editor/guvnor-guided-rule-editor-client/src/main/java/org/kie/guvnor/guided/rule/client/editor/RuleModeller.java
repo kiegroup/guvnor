@@ -93,34 +93,35 @@ public class RuleModeller extends DirtyableComposite
     };
 
     //used by Editor and RuleTemplateEditor
-    public RuleModeller( Path path,
-                         DataModelOracle dataModel,
-                         RuleModel model,
-                         EventBus eventBus,
-                         ModellerWidgetFactory widgetFactory ) {
+    public RuleModeller( final Path path,
+                         final RuleModel model,
+                         final DataModelOracle dataModel,
+                         final ModellerWidgetFactory widgetFactory,
+                         final EventBus eventBus ) {
         this.path = path;
+        this.model = model;
         this.dataModel = dataModel;
-        this.eventBus = eventBus;
         this.widgetFactory = widgetFactory;
         this.configuration = RuleModellerConfiguration.getDefault();
-        this.model = model;
+        this.eventBus = eventBus;
 
         doLayout();
     }
 
-    //used by decistion table component
-    public RuleModeller( Path path,
-                         DataModelOracle dataModel,
-                         RuleModel model,
-                         RuleModellerConfiguration configuration,
-                         ModellerWidgetFactory widgetFactory,
-                         EventBus eventBus ) {
+    //used by decision table component
+    public RuleModeller( final Path path,
+                         final RuleModel model,
+                         final DataModelOracle dataModel,
+                         final ModellerWidgetFactory widgetFactory,
+                         final RuleModellerConfiguration configuration,
+                         final EventBus eventBus ) {
         this.path = path;
         this.dataModel = dataModel;
         this.model = model;
         this.eventBus = eventBus;
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
+
         doLayout();
     }
 

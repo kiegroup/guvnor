@@ -74,4 +74,7 @@ public interface DroolsGuvnorImageResources
     @Source("images/guidedRuleIcon.gif")
     ImageResource guidedRuleIcon();
 
+    @Source("images/guidedRuleTemplateIcon.gif")
+    ImageResource guidedRuleTemplateIcon();
+
 }

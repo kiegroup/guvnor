@@ -1,4 +1,4 @@
-package org.kie.guvnor.drltext.client.handlers;
+package org.kie.guvnor.guided.rule.client.handlers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -8,27 +8,28 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.drltext.client.resources.ImageResources;
-import org.kie.guvnor.drltext.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
+import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
+import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * Handler for the creation of new DRL Text Rules
+ * Handler for the creation of new Guided Templates
  */
 @ApplicationScoped
-public class NewDrlTextHandler extends DefaultNewResourceHandler {
+public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "drl";
-
-    @Inject
-    private Caller<VFSService> vfs;
+    private static String FILE_TYPE = "template";
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Caller<GuidedRuleEditorService> service;
 
     @Override
     public String getFileType() {
@@ -37,27 +38,28 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.NewDrlTextDescription();
+        return Constants.INSTANCE.NewGuidedRuleTemplateDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.classImage() );
+        return new Image( DroolsGuvnorImageResources.INSTANCE.guidedRuleTemplateIcon() );
     }
 
     @Override
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
-        vfs.call( new RemoteCallback<Path>() {
+        final TemplateModel templateModel = new TemplateModel();
+        service.call( new RemoteCallback<Path>() {
             @Override
             public void callback( Path response ) {
                 notifySuccess();
                 final PlaceRequest place = new PathPlaceRequest( path,
-                                                                 "DRLEditor" );
+                                                                 "GuidedRuleTemplateEditor" );
                 placeManager.goTo( place );
             }
-        } ).write( path,
-                   "" );
+        } ).save( path,
+                  templateModel );
     }
 
 }

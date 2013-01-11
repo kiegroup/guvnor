@@ -23,53 +23,53 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.editor.RuleModellerWidgetFactory;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.rule.client.editor.templates.RuleTemplateEditor;
+import org.kie.guvnor.guided.rule.client.editor.templates.TemplateModellerWidgetFactory;
+import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.uberfire.backend.vfs.Path;
 
-public class GuidedRuleEditorView
+public class GuidedRuleTemplateEditorView
         extends Composite
-        implements GuidedRuleEditorPresenter.View {
+        implements GuidedRuleTemplateEditorPresenter.View {
 
     private final EventBus localBus = new SimpleEventBus();
     private final VerticalPanel panel = new VerticalPanel();
-    private RuleModeller modeller = null;
+    private RuleTemplateEditor modeller = null;
 
-    public GuidedRuleEditorView() {
+    public GuidedRuleTemplateEditorView() {
         panel.setWidth( "100%" );
         initWidget( panel );
     }
 
     @Override
     public void setContent( final Path path,
-                            final RuleModel model,
+                            final TemplateModel model,
                             final DataModelOracle dataModel ) {
-        modeller = new RuleModeller( path,
-                                     model,
-                                     dataModel,
-                                     new RuleModellerWidgetFactory(),
-                                     localBus );
+        this.modeller = new RuleTemplateEditor( path,
+                                                model,
+                                                dataModel,
+                                                new TemplateModellerWidgetFactory(),
+                                                localBus );
         panel.add( this.modeller );
     }
 
     @Override
-    public RuleModel getContent() {
-        return modeller.getModel();
+    public TemplateModel getContent() {
+        return (TemplateModel) modeller.getRuleModeller().getModel();
     }
 
     @Override
     public boolean isDirty() {
-        return modeller.isDirty();
+        return modeller.getRuleModeller().isDirty();
     }
 
     @Override
     public void setNotDirty() {
-
     }
 
     @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
+
 }

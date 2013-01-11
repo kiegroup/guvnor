@@ -26,22 +26,20 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRTPersistence;
+import org.kie.guvnor.guided.rule.backend.server.util.BRDRTXMLPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRLPersistence;
-import org.kie.guvnor.guided.rule.backend.server.util.BRXMLPersistence;
-import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.rule.model.templates.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.guided.rule.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
 @Service
 @ApplicationScoped
-public class GuidedRuleEditorServiceImpl
-        implements GuidedRuleEditorService {
+public class GuidedRuleTemplateEditorServiceImpl
+        implements GuidedRuleTemplateEditorService {
 
     @Inject
     private VFSService vfs;
@@ -53,43 +51,34 @@ public class GuidedRuleEditorServiceImpl
     private DataModelService dataModelService;
 
     @Override
-    public GuidedEditorContent loadContent( final Path path ) {
-        final RuleModel model = loadRuleModel( path );
+    public GuidedTemplateEditorContent loadContent( final Path path ) {
+        final TemplateModel model = loadTemplateModel( path );
         final DataModelOracle dataModel = dataModelService.getDataModel( path );
-        return new GuidedEditorContent( dataModel, model );
+        return new GuidedTemplateEditorContent( dataModel, model );
     }
 
     @Override
-    public RuleModel loadRuleModel( Path path ) {
-        return BRXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
+    public TemplateModel loadTemplateModel( final Path path ) {
+        return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
     }
 
     @Override
     public void save( final Path path,
-                      final RuleModel model ) {
-        final BRLPersistence p = BRXMLPersistence.getInstance();
+                      final TemplateModel model ) {
+        final BRLPersistence p = BRDRTXMLPersistence.getInstance();
         final String xml = p.marshal( model );
         vfs.write( path,
                    xml );
     }
 
     @Override
-    public String[] loadDropDownExpression( final String[] valuePairs,
-                                            final String expression ) {
-        return new String[ 0 ];
-    }
-
-    @Override
-    public String toSource( final RuleModel model ) {
-        if ( model instanceof TemplateModel ) {
-            return BRDRTPersistence.getInstance().marshal( model );
-        }
-        return BRDRLPersistence.getInstance().marshal( model );
+    public String toSource( final TemplateModel model ) {
+        return BRDRTPersistence.getInstance().marshal( model );
     }
 
     @Override
     public AnalysisReport verify( final Path path,
-                                  final RuleModel content,
+                                  final TemplateModel content,
                                   final Collection<WorkingSetConfigData> activeWorkingSets ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
@@ -97,14 +86,15 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public BuilderResult validate( final Path path,
-                                   final RuleModel content ) {
+                                   final TemplateModel content ) {
         //TODO {porcelli} validate
         return new BuilderResult();
     }
 
     @Override
     public boolean isValid( final Path path,
-                            final RuleModel content ) {
-        return !validate( path, content ).hasLines();
+                            final TemplateModel content ) {
+        return !validate( path,
+                          content ).hasLines();
     }
 }

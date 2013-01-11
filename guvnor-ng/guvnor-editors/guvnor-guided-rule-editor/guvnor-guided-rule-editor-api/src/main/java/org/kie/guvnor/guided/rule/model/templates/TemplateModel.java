@@ -22,15 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 
+@Portable
 public class TemplateModel
         extends RuleModel {
 
-    public static final String                    ID_COLUMN_NAME = "__ID_KOL_NAME__";
-    private             long                      idCol          = 0;
-    private             Map<String, List<String>> table          = new HashMap<String, List<String>>();
+    public static final String ID_COLUMN_NAME = "__ID_KOL_NAME__";
+    private int idCol = 0;
+    private Map<String, List<String>> table = new HashMap<String, List<String>>();
 
     private int rowsCount = 0;
 

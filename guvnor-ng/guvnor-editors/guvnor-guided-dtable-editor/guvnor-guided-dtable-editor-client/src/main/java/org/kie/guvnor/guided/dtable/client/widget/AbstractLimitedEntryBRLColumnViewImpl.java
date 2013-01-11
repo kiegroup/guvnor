@@ -107,10 +107,10 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
         ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
 
         this.ruleModeller = new RuleModeller( path,
-                                              oracle,
                                               ruleModel,
-                                              getRuleModellerConfiguration(),
+                                              oracle,
                                               widgetFactory,
+                                              getRuleModellerConfiguration(),
                                               eventBus );
 
         this.popupContent = uiBinder.createAndBindUi( this );

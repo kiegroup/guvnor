@@ -20,29 +20,21 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
-import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.rule.model.templates.GuidedTemplateEditorContent;
+import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface GuidedRuleEditorService
-        extends ViewSourceService<RuleModel>,
-                ValidationService<RuleModel>,
-                ScopedVerificationService<RuleModel> {
+public interface GuidedRuleTemplateEditorService
+        extends ViewSourceService<TemplateModel>,
+                ValidationService<TemplateModel>,
+                ScopedVerificationService<TemplateModel> {
 
-    GuidedEditorContent loadContent( final Path path );
+    GuidedTemplateEditorContent loadContent( final Path path );
 
-    RuleModel loadRuleModel( Path path );
+    TemplateModel loadTemplateModel( final Path path );
 
     void save( final Path path,
-               final RuleModel model );
-
-    /**
-     * @param valuePairs key=value pairs to be interpolated into the expression.
-     * @param expression The expression, which will then be eval'ed to generate a
-     * String[]
-     */
-    String[] loadDropDownExpression( final String[] valuePairs,
-                                     final String expression );
+               final TemplateModel model );
 
 }

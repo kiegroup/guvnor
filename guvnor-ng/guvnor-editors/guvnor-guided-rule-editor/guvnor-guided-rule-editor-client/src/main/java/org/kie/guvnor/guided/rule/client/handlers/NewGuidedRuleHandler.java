@@ -14,11 +14,11 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * Handler for the creation of new DRL Text Rules
+ * Handler for the creation of new Guided Rules
  */
 @ApplicationScoped
 public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
@@ -54,11 +54,8 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
             @Override
             public void callback( Path response ) {
                 notifySuccess();
-                final PlaceRequest place = new DefaultPlaceRequest( "GuidedRuleEditor" );
-                place.addParameter( "path:uri",
-                                    path.toURI() );
-                place.addParameter( "path:name",
-                                    path.getFileName() );
+                final PlaceRequest place = new PathPlaceRequest( path,
+                                                                 "GuidedRuleEditor" );
                 placeManager.goTo( place );
             }
         } ).save( path,

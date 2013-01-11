@@ -19,7 +19,6 @@ package org.kie.guvnor.guided.rule.client.editor.templates;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -27,15 +26,12 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.client.editor.ModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.client.editor.RuleModelEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.GuidedEditorTContent;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -46,84 +42,92 @@ public class RuleTemplateEditor
         extends Composite
         implements RuleModelEditor {
 
+    private Path path;
     private TemplateModel model;
+    private DataModelOracle dataModel;
+
     private RuleModeller ruleModeller;
-
     private TemplateDataTableWidget table;
+    private ModellerWidgetFactory widgetFactory;
 
-    //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
-    private EventBus eventBus = new SimpleEventBus();
+    private EventBus eventBus;
 
-    private boolean readOnly;
+    private boolean readOnly = false;
 
-    public RuleTemplateEditor( final Path path ) {
+    public RuleTemplateEditor( final Path path,
+                               final TemplateModel model,
+                               final DataModelOracle dataModel,
+                               final ModellerWidgetFactory widgetFactory,
+                               final EventBus eventBus ) {
+        this.path = path;
+        this.model = model;
+        this.dataModel = dataModel;
+        this.widgetFactory = widgetFactory;
+        this.eventBus = eventBus;
 
-        MessageBuilder.createCall( new RemoteCallback<GuidedEditorTContent>() {
-            public void callback( final GuidedEditorTContent response ) {
+        doLayout();
+    }
 
-                RuleTemplateEditor.this.model = response.getRuleModel();
+    private void doLayout() {
+        this.ruleModeller = new RuleModeller( path,
+                                              model,
+                                              dataModel,
+                                              widgetFactory,
+                                              eventBus );
 
-                RuleTemplateEditor.this.ruleModeller = new RuleModeller( path,
-                                                                         response.getDataModel(),
-                                                                         model,
-                                                                         eventBus,
-                                                                         new TemplateModellerWidgetFactory() );
+        final VerticalPanel tPanel = new VerticalPanel();
+        tPanel.setWidth( "100%" );
 
-                final VerticalPanel tPanel = new VerticalPanel();
-                tPanel.setWidth( "100%" );
+        tPanel.add( new Button( Constants.INSTANCE.LoadTemplateData(),
+                                new ClickHandler() {
 
-                tPanel.add( new Button( Constants.INSTANCE.LoadTemplateData(),
-                                        new ClickHandler() {
+                                    public void onClick( ClickEvent event ) {
+                                        int height = (int) ( Window.getClientHeight() * 0.7 );
+                                        int width = (int) ( Window.getClientWidth() * 0.7 );
 
-                                            public void onClick( ClickEvent event ) {
-                                                int height = (int) ( Window.getClientHeight() * 0.7 );
-                                                int width = (int) ( Window.getClientWidth() * 0.7 );
+                                        final FormStylePopup popUp = new FormStylePopup( (Image) null,
+                                                                                         Constants.INSTANCE.TemplateData(),
+                                                                                         width );
 
-                                                final FormStylePopup popUp = new FormStylePopup( (Image) null,
-                                                                                                 Constants.INSTANCE.TemplateData(),
-                                                                                                 width );
+                                        //Initialise table to edit data
+                                        table = new TemplateDataTableWidget( model,
+                                                                             getDataModel(),
+                                                                             isReadOnly(),
+                                                                             eventBus );
+                                        table.setPixelSize( width,
+                                                            height );
+                                        popUp.addAttribute( "",
+                                                            table );
 
-                                                //Initialise table to edit data
-                                                table = new TemplateDataTableWidget( model,
-                                                                                     getDataModel(),
-                                                                                     isReadOnly(),
-                                                                                     eventBus );
-                                                table.setPixelSize( width,
-                                                                    height );
-                                                popUp.addAttribute( "",
-                                                                    table );
+                                        Button btnOK = new Button( Constants.INSTANCE.OK(),
+                                                                   new ClickHandler() {
+                                                                       public void onClick( ClickEvent event ) {
+                                                                           popUp.hide();
+                                                                       }
+                                                                   } );
 
-                                                Button btnOK = new Button( Constants.INSTANCE.OK(),
-                                                                           new ClickHandler() {
-                                                                               public void onClick( ClickEvent event ) {
-                                                                                   popUp.hide();
-                                                                               }
-                                                                           } );
+                                        Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),
+                                                                       new ClickHandler() {
 
-                                                Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),
-                                                                               new ClickHandler() {
+                                                                           public void onClick( ClickEvent event ) {
+                                                                               table.appendRow();
+                                                                           }
 
-                                                                                   public void onClick( ClickEvent event ) {
-                                                                                       table.appendRow();
-                                                                                   }
+                                                                       } );
 
-                                                                               } );
+                                        HorizontalPanel pnlClose = new HorizontalPanel();
+                                        pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
+                                        pnlClose.add( btnOK );
+                                        pnlClose.add( btnAddRow );
+                                        popUp.addAttribute( "",
+                                                            pnlClose );
 
-                                                HorizontalPanel pnlClose = new HorizontalPanel();
-                                                pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
-                                                pnlClose.add( btnOK );
-                                                pnlClose.add( btnAddRow );
-                                                popUp.addAttribute( "",
-                                                                    pnlClose );
+                                        popUp.show();
+                                    }
+                                } ) );
+        tPanel.add( ruleModeller );
+        initWidget( tPanel );
 
-                                                popUp.show();
-                                            }
-                                        } ) );
-                tPanel.add( ruleModeller );
-                initWidget( tPanel );
-
-            }
-        }, GuidedRuleEditorService.class ).loadTemplateModel( path );
     }
 
     public RuleModeller getRuleModeller() {

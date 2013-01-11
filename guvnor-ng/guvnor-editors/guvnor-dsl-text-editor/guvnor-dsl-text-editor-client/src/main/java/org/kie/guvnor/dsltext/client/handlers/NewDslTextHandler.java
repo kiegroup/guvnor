@@ -13,8 +13,8 @@ import org.kie.guvnor.dsltext.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Handler for the creation of new DSL definitions
@@ -52,11 +52,8 @@ public class NewDslTextHandler extends DefaultNewResourceHandler {
             @Override
             public void callback( Path response ) {
                 notifySuccess();
-                final PlaceRequest place = new DefaultPlaceRequest( "DRLEditor" );
-                place.addParameter( "path:uri",
-                                    path.toURI() );
-                place.addParameter( "path:name",
-                                    path.getFileName() );
+                final PlaceRequest place = new PathPlaceRequest( path,
+                                                                 "DRLEditor" );
                 placeManager.goTo( place );
             }
         } ).write( path,
