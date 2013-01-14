@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -43,7 +43,7 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( DroolsGuvnorImageResources.INSTANCE.guidedRuleTemplateIcon() );
+        return new Image( GuidedRuleEditorResources.INSTANCE.images().guidedRuleTemplateIcon() );
     }
 
     @Override

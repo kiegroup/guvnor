@@ -17,7 +17,6 @@ package org.kie.guvnor.guided.rule.client.editor;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -30,11 +29,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.model.SharedConstants;
+import org.kie.guvnor.datamodel.oracle.CEPOracle;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsCss;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsResource;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.HasCEPWindow;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
@@ -46,9 +44,6 @@ import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 public class CEPWindowOperatorsDropdown extends Composite
         implements
         HasValueChangeHandlers<OperatorSelection> {
-
-    private static final OperatorsResource resources = GWT.create( OperatorsResource.class );
-    private static final OperatorsCss css = resources.operatorsCss();
 
     private List<String> operators = CEPOracle.getCEPWindowOperators();
     private ListBox box;
@@ -63,7 +58,7 @@ public class CEPWindowOperatorsDropdown extends Composite
     private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.rule.backend.server.util.CEPWindowOperatorParameterDRLBuilder";
 
     public CEPWindowOperatorsDropdown() {
-        windowContainer.setStylePrimaryName( css.container() );
+        windowContainer.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
         initWidget( windowContainer );
     }
 
@@ -100,7 +95,7 @@ public class CEPWindowOperatorsDropdown extends Composite
 
     //Additional widget for CEP Window operator parameter
     private Widget getOperatorExtension() {
-        parametersContainer.setStylePrimaryName( css.container() );
+        parametersContainer.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
         return parametersContainer;
     }
 

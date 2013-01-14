@@ -32,7 +32,7 @@ import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
@@ -86,7 +86,7 @@ public class Connectives {
                 hp.add( connectiveValueEditor( con ) );
 
                 if ( !isReadOnly ) {
-                    Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+                    Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
                     clear.setAltText( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
                     clear.addClickHandler( createClickHandlerForClearImageButton( c,

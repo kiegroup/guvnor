@@ -15,11 +15,9 @@
  */
 package org.kie.guvnor.guided.rule.client.editor;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsCss;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsResource;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.model.HasParameterizedOperator;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
@@ -28,9 +26,6 @@ import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
  */
 public abstract class AbstractCEPRestrictedEntryTextBox
         extends AbstractRestrictedEntryTextBox {
-
-    private static final OperatorsResource resources = GWT.create( OperatorsResource.class );
-    private static final OperatorsCss      css       = resources.operatorsCss();
 
     protected HasParameterizedOperator hop;
 
@@ -41,7 +36,7 @@ public abstract class AbstractCEPRestrictedEntryTextBox
     }
 
     private void setup( final int index ) {
-        this.setStyleName( css.parameter() );
+        this.setStyleName( GuidedRuleEditorResources.INSTANCE.css().parameter() );
         this.addChangeHandler( new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {

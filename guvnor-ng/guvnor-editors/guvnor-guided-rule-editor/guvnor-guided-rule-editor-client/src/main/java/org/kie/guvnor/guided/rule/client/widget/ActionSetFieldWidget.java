@@ -34,8 +34,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
-import org.kie.guvnor.guided.rule.client.resources.GuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
@@ -133,7 +132,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -161,7 +160,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                Image image = GuvnorImages.INSTANCE.Edit();
+                Image image = GuidedRuleEditorImages508.INSTANCE.Edit();
                 image.setAltText( Constants.INSTANCE.AddFirstNewField() );
                 image.setTitle( Constants.INSTANCE.AddFirstNewField() );
                 image.addClickHandler( new ClickHandler() {
@@ -209,7 +208,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup( ClickEvent w ) {
         final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
 
         final ListBox box = new ListBox();

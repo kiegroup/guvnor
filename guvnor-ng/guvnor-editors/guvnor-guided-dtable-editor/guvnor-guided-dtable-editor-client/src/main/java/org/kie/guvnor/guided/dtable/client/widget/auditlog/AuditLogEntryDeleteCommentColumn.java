@@ -26,6 +26,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 
@@ -78,7 +79,7 @@ public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, Imag
 
     };
 
-    private static final ImageResource image = ImageResources.INSTANCE.deleteItemSmall();
+    private static final ImageResource image = Resources.INSTANCE.images().deleteItemSmall();
 
     public AuditLogEntryDeleteCommentColumn() {
         super( cell );

@@ -17,14 +17,16 @@ package org.kie.guvnor.guided.rule.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsResource;
+import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 
 @EntryPoint
 public class GuidedRuleEditorEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
+        GridResources.INSTANCE.style().ensureInjected();
+        GuidedRuleEditorResources.INSTANCE.css().ensureInjected();
     }
 
 }

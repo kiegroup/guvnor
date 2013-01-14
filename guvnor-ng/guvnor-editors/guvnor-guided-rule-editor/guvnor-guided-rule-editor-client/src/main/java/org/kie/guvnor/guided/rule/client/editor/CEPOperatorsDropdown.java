@@ -18,7 +18,6 @@ package org.kie.guvnor.guided.rule.client.editor;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -35,11 +34,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.model.SharedConstants;
+import org.kie.guvnor.datamodel.oracle.CEPOracle;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsCss;
-import org.kie.guvnor.guided.rule.client.resources.OperatorsResource;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.HasParameterizedOperator;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
@@ -52,17 +50,14 @@ public class CEPOperatorsDropdown extends Composite
         implements
         HasValueChangeHandlers<OperatorSelection> {
 
-    private static final OperatorsResource resources = GWT.create( OperatorsResource.class );
-    private static final OperatorsCss      css       = resources.operatorsCss();
-
     private String[] operators;
-    private Image    btnAddCEPOperators;
-    private ListBox  box;
-    private HorizontalPanel container  = new HorizontalPanel();
-    private TextBox[]       parameters = new TextBox[ 4 ];
+    private Image btnAddCEPOperators;
+    private ListBox box;
+    private HorizontalPanel container = new HorizontalPanel();
+    private TextBox[] parameters = new TextBox[ 4 ];
 
     protected int visibleParameterSet = 0;
-    protected List<Integer>            parameterSets;
+    protected List<Integer> parameterSets;
     protected HasParameterizedOperator hop;
 
     //Parameter key to store the current parameter set (i.e. which parameters are visible)
@@ -93,7 +88,7 @@ public class CEPOperatorsDropdown extends Composite
         }
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.setStylePrimaryName( css.container() );
+        hp.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
         hp.add( getDropDown() );
         hp.add( getOperatorExtension() );
 
@@ -130,9 +125,9 @@ public class CEPOperatorsDropdown extends Composite
 
     //Additional widget for CEP operator parameters
     private Widget getOperatorExtension() {
-        container.setStylePrimaryName( css.container() );
+        container.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
 
-        btnAddCEPOperators = new Image( resources.clock() );
+        btnAddCEPOperators = new Image( GuidedRuleEditorResources.INSTANCE.images().clock() );
         btnAddCEPOperators.setVisible( parameterSets.size() > 0 );
         btnAddCEPOperators.addClickHandler( new ClickHandler() {
 

@@ -30,7 +30,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
 import org.kie.guvnor.datamodel.oracle.DataType;
@@ -179,7 +179,7 @@ public class PopupCreator {
      */
     public void showPatternPopupForComposite( Widget w,
                                               final HasConstraints hasConstraints ) {
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
@@ -269,7 +269,7 @@ public class PopupCreator {
                                              con );
 
         String title = ( con == null ) ? Constants.INSTANCE.ModifyConstraintsFor0( fp.getFactType() ) : Constants.INSTANCE.AddSubFieldConstraint();
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          title );
 
         final ListBox box = new ListBox();

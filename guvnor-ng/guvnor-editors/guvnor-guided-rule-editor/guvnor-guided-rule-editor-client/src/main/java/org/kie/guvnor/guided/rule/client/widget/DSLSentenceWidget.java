@@ -46,7 +46,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CustomFormPopUp;
 import org.kie.guvnor.guided.rule.client.editor.EnumDropDown;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.workingset.client.WorkingSetManager;
 import org.uberfire.client.common.DirtyableComposite;
@@ -543,7 +543,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                     public void onClick( ClickEvent event ) {
                         final CustomFormPopUp customFormPopUp =
-                                new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.Wizard(),
+                                new CustomFormPopUp( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                      Constants.INSTANCE.FieldValue(),
                                                      DSLCustomFormButton.this.customFormConfiguration );
 

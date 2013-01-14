@@ -112,8 +112,6 @@ public interface GridResources
 
     }
 
-    ;
-
     @Source("images/emptyArrow.png")
     ImageResource arrowSpacerIcon();
 

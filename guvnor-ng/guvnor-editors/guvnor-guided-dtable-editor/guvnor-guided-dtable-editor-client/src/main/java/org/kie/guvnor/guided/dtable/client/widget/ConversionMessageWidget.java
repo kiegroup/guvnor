@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.widget.WidthCalculator;
-import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
+import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.model.conversion.ConversionMessage;
 
 /**
@@ -53,13 +53,13 @@ public class ConversionMessageWidget extends Composite {
 
         switch ( message.getMessageType() ) {
             case ERROR:
-                this.image.setResource( ImageResources.INSTANCE.error() );
+                this.image.setResource( Resources.INSTANCE.images().error() );
                 break;
             case INFO:
-                this.image.setResource( ImageResources.INSTANCE.information() );
+                this.image.setResource( Resources.INSTANCE.images().information() );
                 break;
             case WARNING:
-                this.image.setResource( ImageResources.INSTANCE.warning() );
+                this.image.setResource( Resources.INSTANCE.images().warning() );
                 break;
         }
         this.label.setText( message.getMessage() );

@@ -14,82 +14,91 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.client.resources;
+package org.kie.guvnor.guided.rule.client.resources.images;
 
 import com.google.gwt.user.client.ui.Image;
+import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 
-public class DroolsGuvnorImages {
+public class GuidedRuleEditorImages508 {
 
-    public static DroolsGuvnorImages INSTANCE = new DroolsGuvnorImages();
+    public static GuidedRuleEditorImages508 INSTANCE = new GuidedRuleEditorImages508();
 
-    private DroolsGuvnorImages() {
+    private GuidedRuleEditorImages508() {
     }
 
     public Image Wizard() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.newWiz() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().newWiz() );
         image.setAltText( Constants.INSTANCE.Wizard() );
         return image;
     }
 
     public Image DeleteItemSmall() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.itemImages().deleteItemSmall() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.itemImages().deleteItemSmall() );
         image.setAltText( Constants.INSTANCE.DeleteItem() );
         return image;
     }
 
     public Image NewItem() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.itemImages().newItem() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.itemImages().newItem() );
         image.setAltText( Constants.INSTANCE.NewItem() );
         return image;
     }
 
     public Image NewItemBelow() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.newItemBelow() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().newItemBelow() );
         image.setAltText( Constants.INSTANCE.NewItemBelow() );
         return image;
     }
 
     public Image MoveDown() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.shuffleDown() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().shuffleDown() );
         image.setAltText( Constants.INSTANCE.MoveDown() );
 
         return image;
     }
 
     public Image MoveUp() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.shuffleUp() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().shuffleUp() );
         image.setAltText( Constants.INSTANCE.MoveUp() );
         return image;
     }
 
     public Image WarningSmall() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.warning() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().warning() );
         image.setAltText( Constants.INSTANCE.Warning() );
         return image;
     }
 
     public Image Error() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.error() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().error() );
         image.setAltText( Constants.INSTANCE.Error() );
         return image;
     }
 
     public Image EditDisabled() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.editDisabled() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().editDisabled() );
         image.setAltText( Constants.INSTANCE.EditDisabled() );
         return image;
     }
 
     public Image AddConnective() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.addConnective() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addConnective() );
         image.setAltText( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
         return image;
     }
 
     public Image AddFieldToFact() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.addFieldToFact() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addFieldToFact() );
         image.setAltText( Constants.INSTANCE.AddAFieldToThisExpectation() );
         return image;
     }
+
+    public Image Edit() {
+        Image image = new Image( CommonImages.INSTANCE.edit() );
+        image.setAltText( Constants.INSTANCE.Edit() );
+        return image;
+    }
+
 }

@@ -2,8 +2,11 @@ package org.kie.guvnor.guided.dtable.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.kie.guvnor.commons.ui.client.resources.CollapseExpand;
+import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.guvnor.decoratedgrid.client.resources.TableImageResources;
 import org.kie.guvnor.guided.dtable.client.resources.css.CssResources;
+import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 
 /**
  * General Decision Table resources.
@@ -14,16 +17,15 @@ public interface Resources
 
     Resources INSTANCE = GWT.create( Resources.class );
 
-    @Source("images/emptyArrow.png")
-    ImageResource arrowSpacerIcon();
+    TableImageResources tableImageResources();
 
-    @Source("images/icon-unmerge.png")
-    ImageResource toggleUnmergeIcon();
+    CollapseExpand collapseExpand();
 
-    @Source("images/icon-merge.png")
-    ImageResource toggleMergeIcon();
+    ItemImages itemImages();
 
     @Source("css/DecisionTable.css")
     CssResources css();
+
+    ImageResources images();
 
 };

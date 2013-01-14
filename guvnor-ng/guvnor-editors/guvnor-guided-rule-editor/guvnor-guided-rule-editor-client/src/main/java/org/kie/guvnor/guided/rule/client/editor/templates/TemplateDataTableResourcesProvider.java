@@ -19,6 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.kie.guvnor.guided.rule.client.resources.css.GuidedRuleEditorCss;
 
 /**
  *
@@ -27,158 +29,158 @@ public class TemplateDataTableResourcesProvider
         implements
         ResourcesProvider<TemplateDataColumn> {
 
-    protected static final GridResources resources = GWT.create( GridResources.class );
+    protected GuidedRuleEditorResources INSTANCE = GWT.create( GuidedRuleEditorResources.class );
 
     public int rowHeight() {
-        return resources.style().rowHeight();
+        return INSTANCE.css().rowHeight();
     }
 
     public int rowHeaderHeight() {
-        return resources.style().rowHeaderHeight();
+        return INSTANCE.css().rowHeaderHeight();
     }
 
     public int rowHeaderSplitterHeight() {
-        return resources.style().rowHeaderSplitterHeight();
+        return INSTANCE.css().rowHeaderSplitterHeight();
     }
 
     public int rowHeaderSorterHeight() {
-        return resources.style().rowHeaderSorterHeight();
+        return INSTANCE.css().rowHeaderSorterHeight();
     }
 
     public int sidebarWidth() {
-        return resources.style().sidebarWidth();
+        return INSTANCE.css().sidebarWidth();
     }
 
     public int borderWidth() {
-        return resources.style().borderWidth();
+        return INSTANCE.css().borderWidth();
     }
 
     public int borderWidthThick() {
-        return resources.style().borderWidthThick();
+        return INSTANCE.css().borderWidthThick();
     }
 
     public String cellTableColumn( TemplateDataColumn column ) {
-        return resources.style().templateColumn();
+        return INSTANCE.css().templateColumn();
     }
 
     public String cellTable() {
-        return resources.style().cellTable();
+        return INSTANCE.css().cellTable();
     }
 
     public String cellTableEvenRow() {
-        return resources.style().cellTableEvenRow();
+        return INSTANCE.css().cellTableEvenRow();
     }
 
     public String cellTableOddRow() {
-        return resources.style().cellTableOddRow();
+        return INSTANCE.css().cellTableOddRow();
     }
 
     public String cellTableCell() {
-        return resources.style().cellTableCell();
+        return INSTANCE.css().cellTableCell();
     }
 
     public String cellTableCellSelected() {
-        return resources.style().cellTableCellSelected();
+        return INSTANCE.css().cellTableCellSelected();
     }
 
     public String cellTableCellMultipleValues() {
-        return resources.style().cellTableCellMultipleValues();
+        return INSTANCE.css().cellTableCellMultipleValues();
     }
 
     public String cellTableCellOtherwise() {
-        return resources.style().cellTableCellOtherwise();
+        return INSTANCE.css().cellTableCellOtherwise();
     }
 
     public String cellTableCellDiv() {
-        return resources.style().cellTableCellDiv();
+        return INSTANCE.css().cellTableCellDiv();
     }
 
     public String cellTableGroupDiv() {
-        return resources.style().cellTableGroupDiv();
+        return INSTANCE.css().cellTableGroupDiv();
     }
 
     public String cellTableTextDiv() {
-        return resources.style().cellTableTextDiv();
+        return INSTANCE.css().cellTableTextDiv();
     }
 
     public String headerRowBottom() {
-        return resources.style().headerRowBottom();
+        return INSTANCE.css().headerRowBottom();
     }
 
     public String headerRowIntermediate() {
-        return resources.style().headerRowIntermediate();
+        return INSTANCE.css().headerRowIntermediate();
     }
 
     public String headerText() {
-        return resources.style().headerText();
+        return INSTANCE.css().headerText();
     }
 
     public String headerSplitter() {
-        return resources.style().headerSplitter();
+        return INSTANCE.css().headerSplitter();
     }
 
     public String headerResizer() {
-        return resources.style().headerResizer();
+        return INSTANCE.css().headerResizer();
     }
 
     public String selectorSpacer() {
-        return resources.style().selectorSpacer();
+        return INSTANCE.css().selectorSpacer();
     }
 
     public String selectorSpacerOuterDiv() {
-        return resources.style().selectorSpacerOuterDiv();
+        return INSTANCE.css().selectorSpacerOuterDiv();
     }
 
     public String selectorSpacerInnerDiv() {
-        return resources.style().selectorSpacerInnerDiv();
+        return INSTANCE.css().selectorSpacerInnerDiv();
     }
 
     public String selectorCell() {
-        return resources.style().selectorCell();
+        return INSTANCE.css().selectorCell();
     }
 
     public ImageResource arrowSpacerIcon() {
-        return resources.arrowSpacerIcon();
+        return INSTANCE.images().arrowSpacerIcon();
     }
 
     public ImageResource downArrowIcon() {
-        return resources.tableImageResources().downArrow();
+        return INSTANCE.tableImageResources().downArrow();
     }
 
     public ImageResource smallDownArrowIcon() {
-        return resources.tableImageResources().smallDownArrow();
+        return INSTANCE.tableImageResources().smallDownArrow();
     }
 
     public ImageResource upArrowIcon() {
-        return resources.tableImageResources().upArrow();
+        return INSTANCE.tableImageResources().upArrow();
     }
 
     public ImageResource smallUpArrowIcon() {
-        return resources.tableImageResources().smallUpArrow();
+        return INSTANCE.tableImageResources().smallUpArrow();
     }
 
     public ImageResource toggleUnmergeIcon() {
-        return resources.toggleUnmergeIcon();
+        return INSTANCE.images().toggleUnmergeIcon();
     }
 
     public ImageResource toggleMergeIcon() {
-        return resources.toggleMergeIcon();
+        return INSTANCE.images().toggleMergeIcon();
     }
 
     public ImageResource selectorAddIcon() {
-        return resources.itemImages().newItem();
+        return INSTANCE.itemImages().newItem();
     }
 
     public ImageResource selectorDeleteIcon() {
-        return resources.itemImages().deleteItemSmall();
+        return INSTANCE.itemImages().deleteItemSmall();
     }
 
     public ImageResource collapseCellsIcon() {
-        return resources.collapseExpand().collapse();
+        return INSTANCE.collapseExpand().collapse();
     }
 
     public ImageResource expandCellsIcon() {
-        return resources.collapseExpand().expand();
+        return INSTANCE.collapseExpand().expand();
     }
 
 }

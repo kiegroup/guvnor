@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleMetadata;
@@ -63,7 +63,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
     }
 
     private static Image getImage() {
-        Image image = new Image( DroolsGuvnorImageResources.INSTANCE.config() );
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().config() );
         image.setAltText( Constants.INSTANCE.Config() );
         return image;
     }
@@ -149,7 +149,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
     private Image getAddButton( final RuleModel model,
                                 final Command refresh,
                                 final TextBox box ) {
-        final Image addbutton = DroolsGuvnorImages.INSTANCE.NewItem();
+        final Image addbutton = GuidedRuleEditorImages508.INSTANCE.NewItem();
         addbutton.setAltText( Constants.INSTANCE.AddMetadataToTheRule() );
         addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
 

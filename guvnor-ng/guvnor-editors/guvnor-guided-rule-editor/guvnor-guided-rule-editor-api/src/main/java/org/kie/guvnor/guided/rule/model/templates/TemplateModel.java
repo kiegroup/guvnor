@@ -31,8 +31,12 @@ public class TemplateModel
         extends RuleModel {
 
     public static final String ID_COLUMN_NAME = "__ID_KOL_NAME__";
-    private int idCol = 0;
     private Map<String, List<String>> table = new HashMap<String, List<String>>();
+
+    //Pre-6.0 this was a long, however private long fields cannot be set using JSNI (as used by Errai-marshalling).
+    //It has consequentially been set to an int. This will only cause problems for tables >2 billion rows (unlikely!).
+    //XStream serializes the field as <idCol>value</idCol> so there should be no serialization issues.
+    private int idCol = 0;
 
     private int rowsCount = 0;
 
@@ -242,5 +246,10 @@ public class TemplateModel
                           String newValue ) {
         getTable().get( varName ).set( rowIndex,
                                        newValue );
+    }
+
+    //Needed for Errai-RPC marshalling
+    public void setIdCol( final int idCol ) {
+        this.idCol = idCol;
     }
 }

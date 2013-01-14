@@ -36,7 +36,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
@@ -119,7 +119,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                              1 + col,
                              valueEditor( val ) );
             final int idx = i;
-            Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
             remove.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
@@ -203,7 +203,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     protected void showAddFieldPopup( Widget w ) {
         final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );

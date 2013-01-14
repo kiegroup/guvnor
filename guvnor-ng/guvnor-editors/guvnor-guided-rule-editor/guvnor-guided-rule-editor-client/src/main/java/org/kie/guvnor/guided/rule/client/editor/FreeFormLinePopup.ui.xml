@@ -19,7 +19,7 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:guvnor-ui="urn:import:org.kie.guvnor.guided.rule.client.editor">
 
-  <ui:with field='images' type='org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources'/>
+  <ui:with field='images' type='org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources'/>
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.rule.client.resources.i18n.Constants"/>
 

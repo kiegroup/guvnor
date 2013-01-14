@@ -34,7 +34,7 @@ import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.MethodParameterValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
@@ -177,7 +177,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( model.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = DroolsGuvnorImages.INSTANCE.AddFieldToFact();
+            Image edit = GuidedRuleEditorImages508.INSTANCE.AddFieldToFact();
             edit.setAltText( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
@@ -203,7 +203,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );

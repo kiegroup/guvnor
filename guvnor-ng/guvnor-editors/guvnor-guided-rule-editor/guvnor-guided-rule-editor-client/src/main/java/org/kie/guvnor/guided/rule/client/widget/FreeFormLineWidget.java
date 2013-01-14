@@ -29,8 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.guided.rule.client.editor.DynamicTextArea;
 import org.kie.guvnor.guided.rule.client.editor.FreeFormLinePopup;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
-import org.kie.guvnor.guided.rule.client.resources.GuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.FreeFormLine;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -124,7 +124,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
         Image btn;
         if ( !this.readOnly ) {
-            btn = GuvnorImages.INSTANCE.Edit();
+            btn = GuidedRuleEditorImages508.INSTANCE.Edit();
             btn.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -145,7 +145,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
             } );
         } else {
-            btn = new Image( DroolsGuvnorImageResources.INSTANCE.editDisabled() );
+            btn = new Image( GuidedRuleEditorResources.INSTANCE.images().editDisabled() );
         }
 
         return btn;

@@ -43,7 +43,7 @@ import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
 import org.kie.guvnor.guided.rule.model.RuleMetadata;
@@ -141,7 +141,7 @@ public class RuleModeller extends DirtyableComposite
         layout.removeAllRows();
         currentLayoutRow = 0;
 
-        Image addPattern = DroolsGuvnorImages.INSTANCE.NewItem();
+        Image addPattern = GuidedRuleEditorImages508.INSTANCE.NewItem();
         addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
@@ -187,7 +187,7 @@ public class RuleModeller extends DirtyableComposite
                                                       0,
                                                       4 );
 
-            Image addAction = DroolsGuvnorImages.INSTANCE.NewItem();
+            Image addAction = GuidedRuleEditorImages508.INSTANCE.NewItem();
             addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
@@ -315,7 +315,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = DroolsGuvnorImages.INSTANCE.NewItem();
+        Image add = GuidedRuleEditorImages508.INSTANCE.NewItem();
         add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
@@ -397,7 +397,7 @@ public class RuleModeller extends DirtyableComposite
                                                     "100%" );
 
             if ( !w.isFactTypeKnown() ) {
-                final Image image = DroolsGuvnorImages.INSTANCE.Error();
+                final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
                 image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
                 this.addLineIcon( currentLayoutRow,
                                   0,
@@ -515,7 +515,7 @@ public class RuleModeller extends DirtyableComposite
                                                     "100%" );
 
             if ( !w.isFactTypeKnown() ) {
-                final Image image = DroolsGuvnorImages.INSTANCE.Error();
+                final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
                 image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
                 this.addLineIcon( currentLayoutRow,
                                   0,
@@ -579,7 +579,7 @@ public class RuleModeller extends DirtyableComposite
                                   int i,
                                   RuleModellerWidget w ) {
         final DirtyableFlexTable wrapper = new DirtyableFlexTable();
-        final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
@@ -624,7 +624,7 @@ public class RuleModeller extends DirtyableComposite
                                   int i,
                                   RuleModellerWidget w ) {
         final DirtyableFlexTable wrapper = new DirtyableFlexTable();
-        final Image remove = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
@@ -703,15 +703,15 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = DroolsGuvnorImages.INSTANCE.NewItemBelow();
+        Image addPattern = GuidedRuleEditorImages508.INSTANCE.NewItemBelow();
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = DroolsGuvnorImages.INSTANCE.MoveDown();
+        Image moveDown = GuidedRuleEditorImages508.INSTANCE.MoveDown();
         moveDown.setTitle( Constants.INSTANCE.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = DroolsGuvnorImages.INSTANCE.MoveUp();
+        Image moveUp = GuidedRuleEditorImages508.INSTANCE.MoveUp();
         moveUp.setTitle( Constants.INSTANCE.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
@@ -811,7 +811,7 @@ public class RuleModeller extends DirtyableComposite
         if ( this.warnings != null ) {
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.getPatternOrderNumber() != null ) {
-                    Image image = DroolsGuvnorImages.INSTANCE.WarningSmall();
+                    Image image = GuidedRuleEditorImages508.INSTANCE.WarningSmall();
                     image.setTitle( warning.getDescription() );
 
                     this.addLineIcon( warning.getPatternOrderNumber() + 1,
@@ -823,7 +823,7 @@ public class RuleModeller extends DirtyableComposite
         if ( this.errors != null ) {
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.getPatternOrderNumber() != null ) {
-                    Image image = DroolsGuvnorImages.INSTANCE.Error();
+                    Image image = GuidedRuleEditorImages508.INSTANCE.Error();
                     image.setTitle( error.getDescription() );
                     this.addLineIcon( error.getPatternOrderNumber() + 1,
                                       1,

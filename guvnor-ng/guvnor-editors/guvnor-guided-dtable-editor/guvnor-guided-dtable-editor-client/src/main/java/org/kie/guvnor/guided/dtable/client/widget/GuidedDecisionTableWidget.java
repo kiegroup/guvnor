@@ -49,7 +49,6 @@ import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.kie.guvnor.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
@@ -171,7 +170,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( ImageResources.INSTANCE.information() ).getHTML()
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( Resources.INSTANCE.images().information() ).getHTML()
                                                        + "&nbsp;"
                                                        + Constants.INSTANCE.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();

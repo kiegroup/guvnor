@@ -44,8 +44,7 @@ import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
-import org.kie.guvnor.guided.rule.client.resources.GuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.ActionFieldValue;
@@ -157,7 +156,7 @@ public class ActionValueEditor
     //Wrap a Constraint Value Editor with an icon to remove the type 
     private Widget wrap( Widget w ) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         clear.setAltText( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
@@ -367,7 +366,7 @@ public class ActionValueEditor
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = GuvnorImages.INSTANCE.Edit();
+            Image clickme = GuidedRuleEditorImages508.INSTANCE.Edit();
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     showTypeChoice( (Widget) event.getSource() );
@@ -378,7 +377,7 @@ public class ActionValueEditor
     }
 
     protected void showTypeChoice( Widget w ) {
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

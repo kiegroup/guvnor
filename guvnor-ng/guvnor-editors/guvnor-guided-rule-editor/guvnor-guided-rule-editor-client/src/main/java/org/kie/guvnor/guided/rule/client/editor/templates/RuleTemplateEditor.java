@@ -24,12 +24,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.client.editor.RuleModelEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.uberfire.backend.vfs.Path;
@@ -85,13 +85,13 @@ public class RuleTemplateEditor
                                         int height = (int) ( Window.getClientHeight() * 0.7 );
                                         int width = (int) ( Window.getClientWidth() * 0.7 );
 
-                                        final FormStylePopup popUp = new FormStylePopup( (Image) null,
+                                        final FormStylePopup popUp = new FormStylePopup( GuidedRuleEditorResources.INSTANCE.images().guidedRuleTemplateIcon(),
                                                                                          Constants.INSTANCE.TemplateData(),
                                                                                          width );
 
                                         //Initialise table to edit data
                                         table = new TemplateDataTableWidget( model,
-                                                                             getDataModel(),
+                                                                             dataModel,
                                                                              isReadOnly(),
                                                                              eventBus );
                                         table.setPixelSize( width,
@@ -138,7 +138,4 @@ public class RuleTemplateEditor
         return readOnly;
     }
 
-    public DataModelOracle getDataModel() {
-        return null;
-    }
 }

@@ -18,8 +18,6 @@ package org.kie.guvnor.guided.dtable.client.widget.table;
 import com.google.gwt.resources.client.ImageResource;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
-import org.kie.guvnor.guided.dtable.client.resources.css.CssResources;
-import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
@@ -31,164 +29,161 @@ public class DecisionTableResourcesProvider
         implements
         ResourcesProvider<BaseColumn> {
 
-    protected ImageResources images = ImageResources.INSTANCE;
-    protected CssResources css = Resources.INSTANCE.css();
-
     public int rowHeight() {
-        return css.rowHeight();
+        return Resources.INSTANCE.css().rowHeight();
     }
 
     public int rowHeaderHeight() {
-        return css.rowHeaderHeight();
+        return Resources.INSTANCE.css().rowHeaderHeight();
     }
 
     public int rowHeaderSplitterHeight() {
-        return css.rowHeaderSplitterHeight();
+        return Resources.INSTANCE.css().rowHeaderSplitterHeight();
     }
 
     public int rowHeaderSorterHeight() {
-        return css.rowHeaderSorterHeight();
+        return Resources.INSTANCE.css().rowHeaderSorterHeight();
     }
 
     public int sidebarWidth() {
-        return css.sidebarWidth();
+        return Resources.INSTANCE.css().sidebarWidth();
     }
 
     public int borderWidth() {
-        return css.borderWidth();
+        return Resources.INSTANCE.css().borderWidth();
     }
 
     public int borderWidthThick() {
-        return css.borderWidthThick();
+        return Resources.INSTANCE.css().borderWidthThick();
     }
 
     public String cellTableColumn( BaseColumn column ) {
         if ( column instanceof ConditionCol52 ) {
-            return css.conditionColumn();
+            return Resources.INSTANCE.css().conditionColumn();
         } else if ( column instanceof ActionCol52 ) {
-            return css.actionColumn();
+            return Resources.INSTANCE.css().actionColumn();
         }
-        return css.metaColumn();
+        return Resources.INSTANCE.css().metaColumn();
     }
 
     public String cellTable() {
-        return css.cellTable();
+        return Resources.INSTANCE.css().cellTable();
     }
 
     public String cellTableEvenRow() {
-        return css.cellTableEvenRow();
+        return Resources.INSTANCE.css().cellTableEvenRow();
     }
 
     public String cellTableOddRow() {
-        return css.cellTableOddRow();
+        return Resources.INSTANCE.css().cellTableOddRow();
     }
 
     public String cellTableCell() {
-        return css.cellTableCell();
+        return Resources.INSTANCE.css().cellTableCell();
     }
 
     public String cellTableCellSelected() {
-        return css.cellTableCellSelected();
+        return Resources.INSTANCE.css().cellTableCellSelected();
     }
 
     public String cellTableCellMultipleValues() {
-        return css.cellTableCellMultipleValues();
+        return Resources.INSTANCE.css().cellTableCellMultipleValues();
     }
 
     public String cellTableCellOtherwise() {
-        return css.cellTableCellOtherwise();
+        return Resources.INSTANCE.css().cellTableCellOtherwise();
     }
 
     public String cellTableCellDiv() {
-        return css.cellTableCellDiv();
+        return Resources.INSTANCE.css().cellTableCellDiv();
     }
 
     public String cellTableGroupDiv() {
-        return css.cellTableGroupDiv();
+        return Resources.INSTANCE.css().cellTableGroupDiv();
     }
 
     public String cellTableTextDiv() {
-        return css.cellTableTextDiv();
+        return Resources.INSTANCE.css().cellTableTextDiv();
     }
 
     public String headerRowBottom() {
-        return css.headerRowBottom();
+        return Resources.INSTANCE.css().headerRowBottom();
     }
 
     public String headerRowIntermediate() {
-        return css.headerRowIntermediate();
+        return Resources.INSTANCE.css().headerRowIntermediate();
     }
 
     public String headerText() {
-        return css.headerText();
+        return Resources.INSTANCE.css().headerText();
     }
 
     public String headerSplitter() {
-        return css.headerSplitter();
+        return Resources.INSTANCE.css().headerSplitter();
     }
 
     public String headerResizer() {
-        return css.headerResizer();
+        return Resources.INSTANCE.css().headerResizer();
     }
 
     public String selectorSpacer() {
-        return css.selectorSpacer();
+        return Resources.INSTANCE.css().selectorSpacer();
     }
 
     public String selectorSpacerOuterDiv() {
-        return css.selectorSpacerOuterDiv();
+        return Resources.INSTANCE.css().selectorSpacerOuterDiv();
     }
 
     public String selectorSpacerInnerDiv() {
-        return css.selectorSpacerInnerDiv();
+        return Resources.INSTANCE.css().selectorSpacerInnerDiv();
     }
 
     public String selectorCell() {
-        return css.selectorCell();
+        return Resources.INSTANCE.css().selectorCell();
     }
 
     public ImageResource arrowSpacerIcon() {
-        return images.arrowSpacerIcon();
+        return Resources.INSTANCE.images().arrowSpacerIcon();
     }
 
     public ImageResource downArrowIcon() {
-        return images.tableImageResources().downArrow();
+        return Resources.INSTANCE.tableImageResources().downArrow();
     }
 
     public ImageResource smallDownArrowIcon() {
-        return images.tableImageResources().smallDownArrow();
+        return Resources.INSTANCE.tableImageResources().smallDownArrow();
     }
 
     public ImageResource upArrowIcon() {
-        return images.tableImageResources().upArrow();
+        return Resources.INSTANCE.tableImageResources().upArrow();
     }
 
     public ImageResource smallUpArrowIcon() {
-        return images.tableImageResources().smallUpArrow();
+        return Resources.INSTANCE.tableImageResources().smallUpArrow();
     }
 
     public ImageResource toggleUnmergeIcon() {
-        return images.toggleUnmergeIcon();
+        return Resources.INSTANCE.images().toggleUnmergeIcon();
     }
 
     public ImageResource toggleMergeIcon() {
-        return images.toggleMergeIcon();
+        return Resources.INSTANCE.images().toggleMergeIcon();
     }
 
     public ImageResource selectorAddIcon() {
-        return images.itemImages().newItem();
+        return Resources.INSTANCE.itemImages().newItem();
     }
 
     public ImageResource selectorDeleteIcon() {
-        return images.itemImages().deleteItemSmall();
+        return Resources.INSTANCE.itemImages().deleteItemSmall();
     }
 
     public ImageResource collapseCellsIcon() {
-        return images.collapseExpand().collapse();
+        return Resources.INSTANCE.collapseExpand().collapse();
     }
 
     public ImageResource expandCellsIcon() {
-        return images.collapseExpand().expand();
+        return Resources.INSTANCE.collapseExpand().expand();
     }
 
 }

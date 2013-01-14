@@ -52,9 +52,8 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
-import org.kie.guvnor.guided.rule.client.resources.GuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.widget.ExpressionBuilder;
 import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
@@ -173,8 +172,8 @@ public class ConstraintValueEditor
 
         //Show an editor for the constraint value type
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            ImageButton clickme = new ImageButton( GuvnorImages.INSTANCE.Edit(),
-                                                   DroolsGuvnorImages.INSTANCE.EditDisabled(),
+            ImageButton clickme = new ImageButton( GuidedRuleEditorImages508.INSTANCE.Edit(),
+                                                   GuidedRuleEditorImages508.INSTANCE.EditDisabled(),
                                                    Constants.INSTANCE.Edit(),
                                                    new ClickHandler() {
                                                        public void onClick( ClickEvent event ) {
@@ -217,7 +216,7 @@ public class ConstraintValueEditor
             return w;
         }
         HorizontalPanel wrapper = new HorizontalPanel();
-        Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+        Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
@@ -412,7 +411,7 @@ public class ConstraintValueEditor
         }
 
         String msg = Constants.INSTANCE.FormulaEvaluateToAValue();
-        Image img = new Image( DroolsGuvnorImageResources.INSTANCE.functionAssets() );
+        Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
         img.setTitle( msg );
         box.setTitle( msg );
         box.addChangeHandler( new ChangeHandler() {
@@ -505,7 +504,7 @@ public class ConstraintValueEditor
                 Window.alert( "Unexpected constraint type!" );
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( DroolsGuvnorImages.INSTANCE.Wizard(),
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                                          Constants.INSTANCE.FieldValue(),
                                                                          customFormConfiguration );
 
@@ -526,7 +525,7 @@ public class ConstraintValueEditor
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
 
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );

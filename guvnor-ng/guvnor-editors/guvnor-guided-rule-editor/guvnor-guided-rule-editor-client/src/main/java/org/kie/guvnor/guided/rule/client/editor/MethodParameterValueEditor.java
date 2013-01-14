@@ -35,14 +35,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldNature;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
-import org.kie.guvnor.guided.rule.client.resources.GuvnorImages;
+import org.kie.guvnor.datamodel.oracle.DataType;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.ActionFieldFunction;
 import org.kie.guvnor.guided.rule.model.ActionFieldValue;
 import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FieldNatureType;
 import org.uberfire.client.common.DirtyableComposite;
@@ -58,11 +57,11 @@ public class MethodParameterValueEditor
         extends DirtyableComposite {
 
     private ActionFieldFunction methodParameter;
-    private DropDownData        enums;
-    private SimplePanel         root;
-    private RuleModeller model                = null;
-    private String       parameterType        = null;
-    private Command      onValueChangeCommand = null;
+    private DropDownData enums;
+    private SimplePanel root;
+    private RuleModeller model = null;
+    private String parameterType = null;
+    private Command onValueChangeCommand = null;
 
     public MethodParameterValueEditor( final ActionFieldFunction val,
                                        final DropDownData enums,
@@ -219,7 +218,7 @@ public class MethodParameterValueEditor
     }
 
     private Widget choice() {
-        Image clickme = GuvnorImages.INSTANCE.Edit();
+        Image clickme = GuidedRuleEditorImages508.INSTANCE.Edit();
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -230,7 +229,7 @@ public class MethodParameterValueEditor
     }
 
     protected void showTypeChoice( Widget w ) {
-        final FormStylePopup form = new FormStylePopup( DroolsGuvnorImages.INSTANCE.Wizard(),
+        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                         Constants.INSTANCE.FieldValue() );
         Button lit = new Button( Constants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

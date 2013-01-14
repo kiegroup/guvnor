@@ -53,8 +53,8 @@ import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.Connectives;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.PopupCreator;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImageResources;
-import org.kie.guvnor.guided.rule.client.resources.DroolsGuvnorImages;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
@@ -208,7 +208,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+            Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
             clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
@@ -395,7 +395,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
+                Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
                 clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 
@@ -503,7 +503,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Image createAddConnectiveImageButton( final RuleModeller modeller,
                                                   final SingleFieldConstraint constraint ) {
-        Image addConnective = DroolsGuvnorImages.INSTANCE.AddConnective();
+        Image addConnective = GuidedRuleEditorImages508.INSTANCE.AddConnective();
         addConnective.setTitle( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
 
@@ -584,7 +584,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         HorizontalPanel pred = new HorizontalPanel();
         pred.setWidth( "100%" );
-        Image img = new Image( DroolsGuvnorImageResources.INSTANCE.functionAssets() );
+        Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
         img.setTitle( Constants.INSTANCE.FormulaBooleanTip() );
 
         pred.add( img );
