@@ -72,7 +72,15 @@ profile in pom.xml to use that. -->
     <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
   </servlet-mapping>
   
-    
+  <servlet>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <url-pattern>/maven2/*</url-pattern>
+  </servlet-mapping>
+      
   <listener>
     <!--
 
