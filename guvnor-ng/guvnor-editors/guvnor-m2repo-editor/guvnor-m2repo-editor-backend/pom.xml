@@ -105,10 +105,7 @@
       <groupId>org.sonatype.maven</groupId>
       <artifactId>wagon-ahc</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-    </dependency>
+
      
   </dependencies>
 
