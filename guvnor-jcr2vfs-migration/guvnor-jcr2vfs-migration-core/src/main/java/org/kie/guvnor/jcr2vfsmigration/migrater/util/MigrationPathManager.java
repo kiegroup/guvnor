@@ -31,12 +31,21 @@ public class MigrationPathManager {
     @Inject
     @Named("migrationFS")
     private FileSystem fs;
-
+    
     private Map<String, Path> uuidToPathMap = new HashMap<String, Path>();
     private Map<Path, String> pathToUuidMap = new HashMap<Path, String>();
 
     // Generate methods
 
+    public Path generateRootPath() {
+
+        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "projects" ) );
+
+        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+
+        return path;
+    }
+    
     public Path generatePathForModule( Module jcrModule ) {
 
         final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
@@ -49,15 +58,23 @@ public class MigrationPathManager {
 
     public Path generatePathForAsset( Module jcrModule,
                                       Asset jcrAsset ) {
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( "projects" ) + "/" + escapePathEntry( jcrModule.getName() ) );
+        
+        //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
+        final org.kie.commons.java.nio.file.Path assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + "." + jcrAsset.getFormat());
+        
+        //final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
 
-        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
-
-        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+        final Path path = PathFactory.newPath( paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
 
         register( jcrAsset.getUuid(), path );
         return path;
     }
 
+    private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
+        return paths.convert(pathToPomXML).getParent();
+    }
+    
     // Helper methods
 
     public String escapePathEntry( String pathEntry ) {

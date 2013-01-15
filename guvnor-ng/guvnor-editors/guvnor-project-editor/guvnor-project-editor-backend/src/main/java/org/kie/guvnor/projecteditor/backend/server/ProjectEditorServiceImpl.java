@@ -145,6 +145,6 @@ public class ProjectEditorServiceImpl
     }
 
     private Path createGavPath(Path activePath, String name) {
-        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", "default://uf-playground/" + name + "/pom.xml");
+        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI()+ "/" + name + "/pom.xml");
     }
 }
