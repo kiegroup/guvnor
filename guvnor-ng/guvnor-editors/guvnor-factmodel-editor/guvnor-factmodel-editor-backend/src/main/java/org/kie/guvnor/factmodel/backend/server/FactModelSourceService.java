@@ -16,17 +16,14 @@
 
 package org.kie.guvnor.factmodel.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
+import org.kie.commons.io.IOService;
+import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-
-public class FactModelSourceService extends BaseSourceService {
+public class FactModelSourceService
+        extends DRLBaseSourceService {
 
     private static final String PATTERN = ".model.drl";
 
@@ -35,13 +32,8 @@ public class FactModelSourceService extends BaseSourceService {
     private IOService ioService;
 
     @Override
-    public SourceContext getSource( final Path path ) {
-        final String drl = ioService.readAllString( path );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         stripProjectPrefix( path ) );
-        return context;
+    protected IOService getIOService() {
+        return ioService;
     }
 
     @Override

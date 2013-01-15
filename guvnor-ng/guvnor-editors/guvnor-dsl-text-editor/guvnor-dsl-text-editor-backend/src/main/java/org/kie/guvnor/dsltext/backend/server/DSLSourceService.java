@@ -16,32 +16,32 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
+import org.kie.commons.io.IOService;
+import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-
-public class DSLSourceService extends BaseSourceService {
+public class DSLSourceService
+        extends DRLBaseSourceService {
 
     private static final String PATTERN = ".dsl";
 
-    @Inject
-    @Named("ioStrategy")
+
     private IOService ioService;
 
+    public DSLSourceService() {
+        // For Weld
+    }
+
+    @Inject
+    public DSLSourceService(@Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
+    }
+
     @Override
-    public SourceContext getSource( final Path path ) {
-        final String drl = ioService.readAllString( path );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         stripProjectPrefix( path ) );
-        return context;
+    protected IOService getIOService() {
+        return ioService;
     }
 
     @Override

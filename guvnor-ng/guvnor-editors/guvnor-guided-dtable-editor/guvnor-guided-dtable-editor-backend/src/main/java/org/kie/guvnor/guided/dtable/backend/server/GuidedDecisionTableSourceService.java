@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import javax.inject.Inject;
-
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
@@ -34,6 +30,10 @@ import org.kie.guvnor.guided.dtable.model.CompositeColumn;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.server.util.Paths;
+
+import javax.inject.Inject;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 
 public class GuidedDecisionTableSourceService extends BaseSourceService {
 
@@ -51,42 +51,42 @@ public class GuidedDecisionTableSourceService extends BaseSourceService {
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
+    public SourceContext getSource(final Path path) {
         //Load model and convert to DRL
-        final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel( paths.convert( path ) );
-        final String drl = guidedDecisionTableEditorService.toSource( model );
-        final boolean hasDSL = hasDSLSentences( model );
+        final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel(paths.convert(path));
+        final String drl = "package " + stripPackage(path) + "\n" + guidedDecisionTableEditorService.toSource(model);
+        final boolean hasDSL = hasDSLSentences(model);
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
-        String destinationPath = stripProjectPrefix( path );
-        destinationPath = correctFileName( destinationPath,
-                                           ( hasDSL ? ".dslr" : ".drl" ) );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         destinationPath );
+        String destinationPath = stripProjectPrefix(path);
+        destinationPath = correctFileName(destinationPath,
+                (hasDSL ? ".dslr" : ".drl"));
+        final ByteArrayInputStream is = new ByteArrayInputStream(drl.getBytes());
+        final BufferedInputStream bis = new BufferedInputStream(is);
+        final SourceContext context = new SourceContext(bis,
+                destinationPath);
         return context;
     }
 
     // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.
     // GuidedDecisionTableUtils also handles data-types, enums etc and hence requires a DataModelOracle to function. Loading
     // a DataModelOracle just to determine whether the model has DSLs is an expensive operation and not needed here.
-    private boolean hasDSLSentences( final GuidedDecisionTable52 model ) {
-        for ( CompositeColumn<? extends BaseColumn> column : model.getConditions() ) {
-            if ( column instanceof BRLConditionColumn ) {
+    private boolean hasDSLSentences(final GuidedDecisionTable52 model) {
+        for (CompositeColumn<? extends BaseColumn> column : model.getConditions()) {
+            if (column instanceof BRLConditionColumn) {
                 final BRLConditionColumn brlColumn = (BRLConditionColumn) column;
-                for ( IPattern pattern : brlColumn.getDefinition() ) {
-                    if ( pattern instanceof DSLSentence ) {
+                for (IPattern pattern : brlColumn.getDefinition()) {
+                    if (pattern instanceof DSLSentence) {
                         return true;
                     }
                 }
             }
         }
-        for ( ActionCol52 column : model.getActionCols() ) {
-            if ( column instanceof BRLActionColumn ) {
+        for (ActionCol52 column : model.getActionCols()) {
+            if (column instanceof BRLActionColumn) {
                 final BRLActionColumn brlColumn = (BRLActionColumn) column;
-                for ( IAction action : brlColumn.getDefinition() ) {
-                    if ( action instanceof DSLSentence ) {
+                for (IAction action : brlColumn.getDefinition()) {
+                    if (action instanceof DSLSentence) {
                         return true;
                     }
                 }

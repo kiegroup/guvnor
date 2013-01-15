@@ -27,7 +27,8 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.server.util.Paths;
 
-public class GuidedRuleSourceService extends BaseSourceService {
+public class GuidedRuleSourceService
+        extends BaseSourceService {
 
     private static final String PATTERN = ".brl";
 
@@ -46,7 +47,7 @@ public class GuidedRuleSourceService extends BaseSourceService {
     public SourceContext getSource( final Path path ) {
         //Load model and convert to DRL
         final RuleModel model = guidedRuleEditorService.loadRuleModel( paths.convert( path ) );
-        final String drl = guidedRuleEditorService.toSource( model );
+        final String drl = stripPackage(path) + "\n" + guidedRuleEditorService.toSource( model );
         final boolean hasDSL = model.hasDSLSentences();
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
