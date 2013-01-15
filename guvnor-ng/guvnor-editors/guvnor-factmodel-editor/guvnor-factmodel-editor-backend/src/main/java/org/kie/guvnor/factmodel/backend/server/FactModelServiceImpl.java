@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,6 +38,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
@@ -77,6 +79,9 @@ public class FactModelServiceImpl
     @Inject
     private Identity identity;
 
+    @Inject
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+
     @Override
     public FactModelContent loadContent( final Path path ) {
         try {
@@ -105,16 +110,27 @@ public class FactModelServiceImpl
     public void save( final Path path,
                       final FactModels factModels,
                       final String comment ) {
-        save( path, factModels, null, null, comment, null );
+        save( path,
+              factModels,
+              null,
+              null,
+              comment,
+              null );
     }
-    
+
     @Override
     public void save( final Path path,
                       final FactModels factModels,
                       final String comment,
                       final Date when,
-                      final String lastContributor) {
-        save( path, factModels, null, null, comment, when, lastContributor);
+                      final String lastContributor ) {
+        save( path,
+              factModels,
+              null,
+              null,
+              comment,
+              when,
+              lastContributor );
     }
 
     @Override
@@ -123,20 +139,30 @@ public class FactModelServiceImpl
                       final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
-
-        save(resource, content, config, metadata, comment, null);
+        save( resource,
+              content,
+              config,
+              metadata,
+              comment,
+              null );
     }
-    
+
     @Override
     public void save( final Path resource,
                       final FactModels content,
                       final ResourceConfig config,
                       final Metadata metadata,
                       final String comment,
-                      final Date when) {        
-        save(resource, content, config, metadata, comment, when, identity.getName());
+                      final Date when ) {
+        save( resource,
+              content,
+              config,
+              metadata,
+              comment,
+              when,
+              identity.getName() );
     }
-    
+
     @Override
     public void save( final Path resource,
                       final FactModels content,
@@ -144,7 +170,7 @@ public class FactModelServiceImpl
                       final Metadata metadata,
                       final String comment,
                       final Date when,
-                      final String lastContributor) {
+                      final String lastContributor ) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -157,15 +183,25 @@ public class FactModelServiceImpl
         }
 
         if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs, config );
+            attrs = resourceConfigService.configAttrs( attrs,
+                                                       config );
         }
         if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs, metadata );
+            attrs = metadataService.configAttrs( attrs,
+                                                 metadata );
         }
 
-        ioService.write( path, toDRL( content ), attrs, new CommentedOption( lastContributor, comment, null, when ) );
+        ioService.write( path,
+                         toDRL( content ),
+                         attrs,
+                         new CommentedOption( lastContributor,
+                                              comment,
+                                              null,
+                                              when ) );
+
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
     }
-    
+
     @Override
     public String toSource( final FactModels model ) {
         StringBuilder sb = new StringBuilder();

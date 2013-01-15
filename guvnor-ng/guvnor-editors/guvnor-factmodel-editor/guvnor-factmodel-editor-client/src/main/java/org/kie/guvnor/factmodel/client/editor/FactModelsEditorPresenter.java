@@ -32,6 +32,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
@@ -117,9 +118,12 @@ public class FactModelsEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Event<InvalidateDMOProjectCacheEvent> invalidateProjectCache;
+
+    @Inject
     private Event<RestoreEvent> restoreEvent;
 
-    private Path    path;
+    private Path path;
     private boolean isReadOnly;
 
     @PostConstruct
@@ -227,8 +231,13 @@ public class FactModelsEditorPresenter {
                         resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+
                     }
-                } ).save( path, view.getContent(), resourceConfigWidget.getContent(), metadataWidget.getContent(), comment );
+                } ).save( path,
+                          view.getContent(),
+                          resourceConfigWidget.getContent(),
+                          metadataWidget.getContent(),
+                          comment );
             }
         } ).save();
     }

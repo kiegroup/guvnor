@@ -5,10 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.events.InvalidateDataModelOracleCacheEvent;
+import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -20,6 +23,9 @@ public class LRUDataModelOracleCache implements DataModelOracleCache {
     private static final int MAX_ENTRIES = 20;
 
     private Map<Path, DataModelOracle> oracleCache;
+
+    @Inject
+    private ProjectService projectService;
 
     public LRUDataModelOracleCache() {
         oracleCache = new LinkedHashMap<Path, DataModelOracle>( MAX_ENTRIES + 1,
@@ -33,20 +39,20 @@ public class LRUDataModelOracleCache implements DataModelOracleCache {
     }
 
     @Override
-    public DataModelOracle getDataModelOracle( final Path project ) {
-        PortablePreconditions.checkNotNull( "project",
-                                            project );
-        return oracleCache.get( project );
+    public DataModelOracle getDataModelOracle( final Path packagePath ) {
+        PortablePreconditions.checkNotNull( "packagePath",
+                                            packagePath );
+        return oracleCache.get( packagePath );
     }
 
     @Override
-    public void setDataModelOracle( final Path project,
+    public void setDataModelOracle( final Path packagePath,
                                     final DataModelOracle oracle ) {
-        PortablePreconditions.checkNotNull( "project",
-                                            project );
+        PortablePreconditions.checkNotNull( "packagePath",
+                                            packagePath );
         PortablePreconditions.checkNotNull( "oracle",
                                             oracle );
-        oracleCache.put( project,
+        oracleCache.put( packagePath,
                          oracle );
     }
 
@@ -56,17 +62,32 @@ public class LRUDataModelOracleCache implements DataModelOracleCache {
     }
 
     @Override
-    public void invalidateCache( final Path project ) {
-        PortablePreconditions.checkNotNull( "project",
-                                            project );
-        this.oracleCache.remove( project );
+    public void invalidateCache( final Path packagePath ) {
+        PortablePreconditions.checkNotNull( "packagePath",
+                                            packagePath );
+        this.oracleCache.remove( packagePath );
     }
 
-    public void invalidateCache( @Observes final InvalidateDataModelOracleCacheEvent event ) {
+    public void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
-        final Path project = event.getProject();
-        invalidateCache( project );
+        final Path resourcePath = event.getResourcePath();
+        final Path projectPath = projectService.resolveProject( resourcePath );
+        final String projectUri = projectPath.toURI();
+        for ( final Path packagePath : oracleCache.keySet() ) {
+            final String packageUri = packagePath.toURI();
+            if ( packageUri.startsWith( projectUri ) ) {
+                invalidateCache( packagePath );
+            }
+        }
+    }
+
+    public void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
+        PortablePreconditions.checkNotNull( "event",
+                                            event );
+        final Path resourcePath = event.getResourcePath();
+        final Path packagePath = projectService.resolvePackage( resourcePath );
+        invalidateCache( packagePath );
     }
 
 }

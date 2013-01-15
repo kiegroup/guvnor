@@ -101,7 +101,7 @@ public class DataModelServiceImpl
         return cache.getDataModelOracle( packagePath );
     }
 
-    //Check the DataModelOracle for the Project has been created, otherwise create one!
+    //Check the DataModelOracle for the Package has been created, otherwise create one!
     private void assertDataModelOracle( final Path projectPath,
                                         final Path packagePath ) {
         DataModelOracle oracle = cache.getDataModelOracle( packagePath );

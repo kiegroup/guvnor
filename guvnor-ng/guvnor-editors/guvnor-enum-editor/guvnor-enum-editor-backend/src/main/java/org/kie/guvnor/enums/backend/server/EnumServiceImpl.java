@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,6 +32,7 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.backend.server.DataEnumLoader;
+import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -42,13 +43,19 @@ import org.uberfire.backend.vfs.Path;
 @Service
 @ApplicationScoped
 public class EnumServiceImpl implements EnumService {
+
+    private static final String FORMAT = "enumeration";
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-    
+
     @Inject
     private Paths paths;
-    
+
+    @Inject
+    private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
+
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
@@ -60,7 +67,7 @@ public class EnumServiceImpl implements EnumService {
             final List<String> errs = loader.getErrors();
 
             for ( final String message : errs ) {
-                final BuilderResultLine result = new BuilderResultLine().setResourceName( path.getFileName() ).setResourceFormat( getFormat() ).setResourceId( path.toURI() ).setMessage( message );
+                final BuilderResultLine result = new BuilderResultLine().setResourceName( path.getFileName() ).setResourceFormat( FORMAT ).setResourceId( path.toURI() ).setMessage( message );
                 errors.add( result );
             }
 
@@ -77,22 +84,18 @@ public class EnumServiceImpl implements EnumService {
         return !validate( path, content ).hasLines();
     }
 
-    public String getFormat() {
-        return "enumeration";
-    }
-
     @Override
     public AnalysisReport verify( final Path path,
                                   final String content ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
     }
-    
+
     @Override
     public void save( final Path resource,
-                      final String content) {
+                      final String content ) {
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-        
+
         Map<String, Object> attrs;
 
         try {
@@ -109,5 +112,7 @@ public class EnumServiceImpl implements EnumService {
         }*/
 
         ioService.write( path, content, attrs );
+
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
 }

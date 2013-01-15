@@ -126,14 +126,14 @@ public class EnumEditorPresenter {
 
     @OnSave
     public void onSave() {
-        vfs.call( new RemoteCallback<Path>() {
+        enumService.call( new RemoteCallback<Void>() {
             @Override
-            public void callback( Path response ) {
+            public void callback( Void response ) {
                 view.setNotDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).write( path,
-                   view.getContent() );
+        } ).save( path,
+                  view.getContent() );
     }
 
     @IsDirty

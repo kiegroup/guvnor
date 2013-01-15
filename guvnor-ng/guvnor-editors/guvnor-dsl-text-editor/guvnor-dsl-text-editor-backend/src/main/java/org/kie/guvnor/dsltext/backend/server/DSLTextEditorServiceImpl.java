@@ -19,6 +19,7 @@ package org.kie.guvnor.dsltext.backend.server;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,6 +28,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -42,6 +44,9 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     @Inject
     private Paths paths;
 
+    @Inject
+    private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
+
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
@@ -52,12 +57,13 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     @Override
     public boolean isValid( final Path path,
                             final String content ) {
-        return !validate( path, content ).hasLines();
+        return !validate( path,
+                          content ).hasLines();
     }
 
     @Override
-    public AnalysisReport verify( Path path,
-                                  String content ) {
+    public AnalysisReport verify( final Path path,
+                                  final String content ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
     }
@@ -75,6 +81,10 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
             attrs = new HashMap<String, Object>();
         }
 
-        ioService.write( path, content, attrs );
+        ioService.write( path,
+                         content,
+                         attrs );
+
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
 }
