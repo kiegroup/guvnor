@@ -1,5 +1,7 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater.asset;
 
+import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -32,7 +34,7 @@ public class GuidedEditorMigrater {
     @Inject
     protected MigrationPathManager migrationPathManager;
 
-    public void migrate(Module jcrModule, Asset jcrAsset) {
+    public void migrate(Module jcrModule, Asset jcrAsset, final String checkinComment, final Date lastModified, String lastContributor) {
         if (!AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
                     + ") has the wrong format (" + jcrAsset.getFormat() + ").");
@@ -40,7 +42,7 @@ public class GuidedEditorMigrater {
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         RuleModel vfsRuleModel = convertRuleModel(
                 (org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
-        guidedRuleEditorService.save(path, vfsRuleModel);
+        guidedRuleEditorService.save(path, vfsRuleModel, checkinComment, lastModified, lastContributor);
     }
 
     private RuleModel convertRuleModel(

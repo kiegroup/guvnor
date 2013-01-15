@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.factmodel.service;
 
+import java.util.Date;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
@@ -37,10 +39,31 @@ public interface FactModelService
     void save( final Path path,
                final FactModels factModels,
                final String comment );
-
+    
+    void save( final Path path,
+               final FactModels factModels,
+               final String comment,
+               final Date when,
+               final String lastContributor);
+    
     void save( final Path path,
                final FactModels content,
                final ResourceConfig config,
                final Metadata metadata,
                final String comment );
+    
+    void save( final Path path,
+            final FactModels content,
+            final ResourceConfig config,
+            final Metadata metadata,
+            final String comment,
+            final Date when);
+    
+    void save( final Path path,
+            final FactModels content,
+            final ResourceConfig config,
+            final Metadata metadata,
+            final String comment,
+            final Date when,
+            final String lastContributor);
 }

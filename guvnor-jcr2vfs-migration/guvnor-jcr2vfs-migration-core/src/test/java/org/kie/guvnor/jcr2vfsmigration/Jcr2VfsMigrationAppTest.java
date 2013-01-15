@@ -25,6 +25,10 @@ public class Jcr2VfsMigrationAppTest {
     public void migrateMortgageExample() throws IOException {
         migrate("mortgageExample");
     }
+    
+    private void verifyResult() {
+        
+    }
 
     private void migrate(String datasetName) throws IOException {
         File testBaseDir = new File("target/test/" + getClass().getSimpleName());

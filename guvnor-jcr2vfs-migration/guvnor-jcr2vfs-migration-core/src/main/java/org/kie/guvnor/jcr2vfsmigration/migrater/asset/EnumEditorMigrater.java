@@ -8,7 +8,6 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;

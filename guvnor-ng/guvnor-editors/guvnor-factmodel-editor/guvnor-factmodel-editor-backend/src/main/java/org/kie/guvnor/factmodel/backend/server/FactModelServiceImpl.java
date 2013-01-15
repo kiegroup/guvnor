@@ -17,6 +17,7 @@
 package org.kie.guvnor.factmodel.backend.server;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,16 @@ public class FactModelServiceImpl
     public void save( final Path path,
                       final FactModels factModels,
                       final String comment ) {
-        save( path, factModels, null, null, comment );
+        save( path, factModels, null, null, comment, null );
+    }
+    
+    @Override
+    public void save( final Path path,
+                      final FactModels factModels,
+                      final String comment,
+                      final Date when,
+                      final String lastContributor) {
+        save( path, factModels, null, null, comment, when, lastContributor);
     }
 
     @Override
@@ -113,6 +123,28 @@ public class FactModelServiceImpl
                       final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
+
+        save(resource, content, config, metadata, comment, null);
+    }
+    
+    @Override
+    public void save( final Path resource,
+                      final FactModels content,
+                      final ResourceConfig config,
+                      final Metadata metadata,
+                      final String comment,
+                      final Date when) {        
+        save(resource, content, config, metadata, comment, when, identity.getName());
+    }
+    
+    @Override
+    public void save( final Path resource,
+                      final FactModels content,
+                      final ResourceConfig config,
+                      final Metadata metadata,
+                      final String comment,
+                      final Date when,
+                      final String lastContributor) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -131,9 +163,9 @@ public class FactModelServiceImpl
             attrs = metadataService.configAttrs( attrs, metadata );
         }
 
-        ioService.write( path, toDRL( content ), attrs, new CommentedOption( identity.getName(), comment ) );
+        ioService.write( path, toDRL( content ), attrs, new CommentedOption( lastContributor, comment, null, when ) );
     }
-
+    
     @Override
     public String toSource( final FactModels model ) {
         StringBuilder sb = new StringBuilder();

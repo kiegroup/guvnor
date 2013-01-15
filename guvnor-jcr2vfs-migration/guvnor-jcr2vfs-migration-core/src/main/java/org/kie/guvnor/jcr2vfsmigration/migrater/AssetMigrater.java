@@ -1,6 +1,10 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater;
 
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -11,6 +15,8 @@ import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DRLEditorMigrater;
@@ -19,6 +25,7 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.EnumEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FormDefEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +53,8 @@ public class AssetMigrater {
     protected DSLEditorMigrater dslEditorMigrater;    
     @Inject
     protected FormDefEditorMigrater formDefEditorMigrater;        
+    @Inject
+    protected PlainTextAssetMigrater plainTextAssetMigrater;        
 
     public void migrateAll() {
         logger.info("  Asset migration started");
@@ -64,10 +73,14 @@ public class AssetMigrater {
                 try {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {
+                        //Migrate the head version
                         Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
-                        migrate(jcrModule, jcrAsset);
+                        migrate(jcrModule, jcrAsset, null, null, null);
                         logger.debug("    Asset ({}) with format ({}) migrated.",
                                 jcrAsset.getName(), jcrAsset.getFormat());
+                        
+                        //Migrate historical versions
+                        migrateAssetHistory(jcrModule, row.getUuid());
                     }
                 } catch (SerializationException e) {
                     throw new IllegalStateException(e);
@@ -82,24 +95,50 @@ public class AssetMigrater {
         logger.info("  Asset migration ended");
     }
 
-    private void migrate(Module jcrModule, Asset jcrAsset) {
+    private void migrate(Module jcrModule, Asset jcrAsset, String checkinComment, Date lastModified, String lastContributor) {
         if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
-            factModelsMigrater.migrate(jcrModule, jcrAsset);
+            factModelsMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
-            guidedEditorMigrater.migrate(jcrModule, jcrAsset);
-        } else if (AssetFormats.DRL.equals(jcrAsset.getFormat())) {
-            drlEditorMigrater.migrate(jcrModule, jcrAsset);
-        } else if (AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())) {
-            enumEditorMigrater.migrate(jcrModule, jcrAsset);
-        } else if (AssetFormats.DSL.equals(jcrAsset.getFormat()) || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())) {
-            dslEditorMigrater.migrate(jcrModule, jcrAsset);
-        } else if (AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())) {
-            formDefEditorMigrater.migrate(jcrModule, jcrAsset);
+            guidedEditorMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
+        } else if (AssetFormats.DRL.equals(jcrAsset.getFormat()) 
+                || AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())
+                || AssetFormats.DSL.equals(jcrAsset.getFormat())
+                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())
+                || AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())) {
+            plainTextAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
+    }
+    
+    public void migrateAssetHistory(Module jcrModule, String assetUUID) throws SerializationException {
+        //loadItemHistory wont return the current version
+        TableDataResult history = jcrRepositoryAssetService.loadItemHistory(assetUUID);
+        TableDataRow[] rows = history.data;
+        Arrays.sort( rows,
+                new Comparator<TableDataRow>() {
+                    public int compare( TableDataRow r1,
+                                        TableDataRow r2 ) {
+                        Integer v2 = Integer.valueOf( r2.values[0] );
+                        Integer v1 = Integer.valueOf( r1.values[0] );
+
+                        return v2.compareTo( v1 );
+                    }
+                } );
+
+        for (TableDataRow row : rows) {
+/*            String versionNumber = row.values[0];
+            String checkinComment = row.values[1];
+            String lastModified = row.values[2];
+            String stateDescription = row.values[3];
+            String lastContributor = row.values[4];*/
+            String versionSnapshotUUID = row.id;
+
+            Asset historicalAssetJCR = jcrRepositoryAssetService.loadRuleAsset(versionSnapshotUUID);
+            migrate(jcrModule, historicalAssetJCR, historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified(), historicalAssetJCR.getLastContributor());
+        }
     }
 
     // TODO delete code below once we have all of its functionality
@@ -162,43 +201,5 @@ public class AssetMigrater {
 //        //assetVFS.setState(stateName);
 //    }
 //
-//    public void migrateAssetHistory(String assetUUID) throws SerializationException {
-//        //loadItemHistory wont return the current version
-//        TableDataResult history = jcrRepositoryAssetService.loadItemHistory(assetUUID);
-//        TableDataRow[] rows = history.data;
-//        Arrays.sort( rows,
-//                new Comparator<TableDataRow>() {
-//                    public int compare( TableDataRow r1,
-//                                        TableDataRow r2 ) {
-//                        Integer v2 = Integer.valueOf( r2.values[0] );
-//                        Integer v1 = Integer.valueOf( r1.values[0] );
-//
-//                        return v2.compareTo( v1 );
-//                    }
-//                } );
-//
-//        for (TableDataRow row : rows) {
-//            String versionNumber = row.values[0];
-//            String checkinComment = row.values[1];
-//            String lastModified = row.values[2];
-//            String stateDescription = row.values[3];
-//            String lastContributor = row.values[4];
-//            String versionSnapshotUUID = row.id;
-//
-//            Asset historicalAssetJCR = jcrRepositoryAssetService.loadRuleAsset(versionSnapshotUUID);
-//            Asset historicalAssetVFS = historicalAssetJCR;
-//
-//            //TODO: migrate asset binary content. The binary content of assets from previous Guvnor version can not be reused by VFS directly.
-//            //Make sure we deserialize/serialize the binary content of assets
-//            PortableObject binaryContent = historicalAssetJCR.getContent();
-//            historicalAssetVFS.setContent(binaryContent);
-//
-//            //migrate state:
-//            migrateAssetState(historicalAssetJCR, historicalAssetVFS, versionSnapshotUUID);
-//
-//            rulesRepositoryVFS.checkinVersion(historicalAssetVFS);
-//        }
-//
-//    }
-
+ 
 }

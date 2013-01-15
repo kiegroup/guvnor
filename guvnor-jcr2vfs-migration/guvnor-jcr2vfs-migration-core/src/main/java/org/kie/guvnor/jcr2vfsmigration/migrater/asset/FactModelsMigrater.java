@@ -1,5 +1,6 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater.asset;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,7 +34,7 @@ public class FactModelsMigrater {
     @Inject
     protected MigrationPathManager migrationPathManager;
 
-    public void migrate(Module jcrModule, Asset jcrAsset) {
+    public void migrate(Module jcrModule, Asset jcrAsset, final String checkinComment, final Date lastModified, String lastContributor) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
                     + ") has the wrong format (" + jcrAsset.getFormat() + ").");
@@ -41,7 +42,7 @@ public class FactModelsMigrater {
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         FactModels vfsFactModels = convertFactModels(
                 (org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels) jcrAsset.getContent());
-        vfsFactModelService.save(path, vfsFactModels, "");
+        vfsFactModelService.save(path, vfsFactModels, checkinComment, lastModified, lastContributor);
     }
 
     private FactModels convertFactModels(

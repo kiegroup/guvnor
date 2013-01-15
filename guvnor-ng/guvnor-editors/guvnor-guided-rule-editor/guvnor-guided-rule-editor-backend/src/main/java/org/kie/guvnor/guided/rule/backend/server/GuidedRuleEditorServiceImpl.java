@@ -17,6 +17,8 @@
 package org.kie.guvnor.guided.rule.backend.server;
 
 import java.util.Collection;
+import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -73,6 +75,16 @@ public class GuidedRuleEditorServiceImpl
                    xml );
     }
 
+    @Override
+    public void save( final Path path,
+                      final RuleModel factModels,
+                      final String comment,
+                      final Date when,
+                      final String lastContributor) {
+        //TODO:
+
+    }
+    
     @Override
     public String[] loadDropDownExpression( final String[] valuePairs,
                                             final String expression ) {
