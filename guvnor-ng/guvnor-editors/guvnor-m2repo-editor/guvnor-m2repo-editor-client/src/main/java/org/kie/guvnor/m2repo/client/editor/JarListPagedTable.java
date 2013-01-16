@@ -223,9 +223,12 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
         };
         downloadColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
             public void update(int index,
-                    JarListPageRow row,
+                               JarListPageRow row,
                                String value) {
-                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_PATH + "=" + row.getPath(),
+/*                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_PATH + "=" + row.getPath(),
+                        "downloading",
+                        "resizable=no,scrollbars=yes,status=no" );*/
+                Window.open(getFileDownloadURL(row.getPath()),
                         "downloading",
                         "resizable=no,scrollbars=yes,status=no" );
             }
@@ -291,6 +294,15 @@ public class JarListPagedTable extends AbstractPagedTable<JarListPageRow> {
 
     }   
     
-
+    String getFileDownloadURL(String path) {
+        String url = getGuvnorM2RepoBaseURL() + path;
+        return url;
+    }
+    
+    public static String getGuvnorM2RepoBaseURL() {
+        String url = GWT.getModuleBaseURL();
+        String baseURL = url.substring(0, url.indexOf("org.kie.guvnor.GuvnorShowcase"));
+        return baseURL + "maven2/";
+    }
 
 }
