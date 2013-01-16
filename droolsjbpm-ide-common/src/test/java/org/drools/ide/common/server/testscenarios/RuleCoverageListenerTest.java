@@ -145,9 +145,6 @@ class MockActivation
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
     }
 
-    public void setLogicalDependencies(LinkedList justified) {
-    }
-
     public void setActivationNode(ActivationNode ruleFlowGroupNode) {
     }
 
@@ -195,11 +192,6 @@ class MockActivation
         return null;
     }
 
-    public void setBlocked(LinkedList justified) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public void addBlocked(LinkedListNode node) {
         // TODO Auto-generated method stub
         
@@ -224,6 +216,24 @@ class MockActivation
     @Override
     public boolean isRuleNetworkEvaluatorActivation() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<String> getDeclarationIds() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setBlocked(LinkedList<LogicalDependency> justified) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

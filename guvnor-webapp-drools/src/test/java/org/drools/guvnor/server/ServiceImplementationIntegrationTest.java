@@ -16,19 +16,13 @@
 
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.Person;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
@@ -47,6 +41,8 @@ import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
@@ -92,12 +88,10 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
-import org.drools.guvnor.client.rpc.Path;
-import org.drools.guvnor.client.rpc.PathImpl;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.junit.Assert.*;
 
 /**
  * This is really a collection of integration tests.

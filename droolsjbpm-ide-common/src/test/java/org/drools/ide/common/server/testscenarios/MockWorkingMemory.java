@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
@@ -34,8 +35,17 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.common.*;
-import org.drools.concurrent.ExecutorService;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
+import org.drools.common.NodeMemories;
+import org.drools.common.ObjectStore;
+import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.TruthMaintenanceSystem;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -45,7 +55,6 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -61,7 +70,6 @@ import org.drools.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.time.SessionClock;
@@ -154,10 +162,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-        return null;
-    }
-
-    public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
         return null;
     }
 
@@ -378,10 +382,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
     }
 
-    public Map<String, ExitPoint> getExitPoints() {
-        return null;
-    }
-
     public Environment getEnvironment() {
         return null;
     }
@@ -486,9 +486,15 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     @Override
-    public void retract(FactHandle factHandle,
+    public void delete(FactHandle factHandle,
                         Rule rule,
                         Activation activation) throws FactException {
+    }
+
+    @Override
+    public void delete(org.kie.runtime.rule.FactHandle handle) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

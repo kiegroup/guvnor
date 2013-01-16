@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
@@ -12,10 +13,8 @@ import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.EmptyVerifierConfiguration;
 import org.drools.verifier.VerifierConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-
-import com.google.gwt.user.client.rpc.SerializationException;
+import org.kie.io.ResourceType;
 
 public class VerifierConfigurationFactory {
 

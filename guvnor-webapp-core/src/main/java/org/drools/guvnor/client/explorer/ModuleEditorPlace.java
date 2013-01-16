@@ -15,10 +15,16 @@
  */
 package org.drools.guvnor.client.explorer;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+@Portable
 public class ModuleEditorPlace extends DefaultPlaceRequest {
+
+    public ModuleEditorPlace() {
+        super();
+    }
 
     public ModuleEditorPlace(Path path) {
         super("moduleEditor");

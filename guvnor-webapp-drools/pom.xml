@@ -83,14 +83,19 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-vfs-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-webapp-core</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.drools:kie-uberfire-bootstrap</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:kie-project-editor</compileSourcesArtifact>
+            
+            <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
@@ -151,21 +156,6 @@
           <!-- Only excludes them from the war file, not from the exploded directory -->
           <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <!-- Explicitly add the test-jar to the package phase because this is a war -->
-            <!-- Workaround until jira.codehaus.org/browse/MJAR-160 is fixed -->
-            <id>test-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -502,13 +492,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-project-editor</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-project-editor</artifactId>
-      <classifier>sources</classifier>
-      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <!--<dependency>-->

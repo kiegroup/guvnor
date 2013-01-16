@@ -15,13 +15,6 @@
  */
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +23,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.Person;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
@@ -40,6 +34,8 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.Path;
+import org.drools.guvnor.client.rpc.PathImpl;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
@@ -69,12 +65,10 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
-import org.drools.guvnor.client.rpc.Path;
-import org.drools.guvnor.client.rpc.PathImpl;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.junit.Assert.*;
 
 public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTest {
 

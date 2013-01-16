@@ -29,7 +29,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.kie.builder.conf.DefaultPackageNameOption;
-import org.kie.util.ChainedProperties;
+import org.kie.internal.utils.ChainedProperties;
 
 import java.io.IOException;
 import java.util.Collections;

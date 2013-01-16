@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.server.builder;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.StringReader;
 import java.util.Iterator;
 
@@ -26,10 +24,12 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+
+import static org.junit.Assert.*;
 
 public class PackageBuilderTest {
 
