@@ -16,11 +16,6 @@
 
 package org.drools.ide.common.server.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
@@ -39,12 +34,15 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionText;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
@@ -59,6 +57,8 @@ import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class BRDRLPersistenceTest {
 
@@ -84,16 +84,16 @@ public class BRDRLPersistenceTest {
     public void testFreeForm() {
         RuleModel m = new RuleModel();
         m.name = "with composite";
-        m.lhs = new IPattern[1];
-        m.rhs = new IAction[1];
+        m.lhs = new IPattern[ 1 ];
+        m.rhs = new IAction[ 1 ];
 
         FreeFormLine fl = new FreeFormLine();
         fl.text = "Person()";
-        m.lhs[0] = fl;
+        m.lhs[ 0 ] = fl;
 
         FreeFormLine fr = new FreeFormLine();
         fr.text = "fun()";
-        m.rhs[0] = fr;
+        m.rhs[ 0 ] = fr;
 
         String drl = brlPersistence.marshal( m );
         assertNotNull( drl );
@@ -104,7 +104,7 @@ public class BRDRLPersistenceTest {
     @Test
     public void testBasics() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                          + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
@@ -122,7 +122,7 @@ public class BRDRLPersistenceTest {
     @Test
     public void testInsertLogical() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                          + "\t\tAccident( )\n\tthen\n\t\tinsertLogical( new Report() );\nend\n";
+                + "\t\tAccident( )\n\tthen\n\t\tinsertLogical( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
@@ -141,9 +141,9 @@ public class BRDRLPersistenceTest {
     @Test
     public void testAttr() {
         RuleModel m = new RuleModel();
-        m.attributes = new RuleAttribute[1];
-        m.attributes[0] = new RuleAttribute( "enabled",
-                                             "true" );
+        m.attributes = new RuleAttribute[ 1 ];
+        m.attributes[ 0 ] = new RuleAttribute( "enabled",
+                                               "true" );
         final String drl = brlPersistence.marshal( m );
 
         assertTrue( drl.indexOf( "enabled true" ) > 0 );
@@ -154,7 +154,7 @@ public class BRDRLPersistenceTest {
     public void testEnumNoType() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CheeseType.CHEDDAR\" )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -178,7 +178,7 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeString() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CHEDDAR\" )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -203,12 +203,12 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeStringInOperator() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n"
-                          + "\tdialect \"mvel\"\n"
-                          + "\twhen\n"
-                          + "\t\tCheese( type in ( \"CHEDDAR\", \"STILTON\" ) )\n"
-                          + "\tthen\n"
-                          + "\t\tinsert( new Report() );\n"
-                          + "end\n";
+                + "\tdialect \"mvel\"\n"
+                + "\twhen\n"
+                + "\t\tCheese( type in ( \"CHEDDAR\", \"STILTON\" ) )\n"
+                + "\tthen\n"
+                + "\t\tinsert( new Report() );\n"
+                + "end\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -233,7 +233,7 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeNumeric() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( age == 100 )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -258,7 +258,7 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeBoolean() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( smelly == true )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -283,7 +283,7 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeDate() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( dateMade == \"31-Jan-2010\" )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -308,7 +308,7 @@ public class BRDRLPersistenceTest {
     public void testEnumTypeComparable() {
         //Java 1.5+ "true" enums are of type Comparable
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == Cheese.CHEDDAR )\n"
-                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
@@ -333,13 +333,13 @@ public class BRDRLPersistenceTest {
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel();
         String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
-                          + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
-                          + "\tdialect \"mvel\"\n" + "\twhen\n"
-                          + "\t\t>p1 : Person( f1 : age < 42 )\n"
-                          + "\t\t>not (Cancel( )) \n" + "\tthen\n"
-                          + "\t\t>p1.setStatus( \"rejected\" );\n"
-                          + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
-                          + "\t\tSend an email to administrator\n" + "end\n";
+                + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
+                + "\tdialect \"mvel\"\n" + "\twhen\n"
+                + "\t\t>p1 : Person( f1 : age < 42 )\n"
+                + "\t\t>not (Cancel( )) \n" + "\tthen\n"
+                + "\t\t>p1.setStatus( \"rejected\" );\n"
+                + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
+                + "\t\tSend an email to administrator\n" + "end\n";
 
         final String drl = brlPersistence.marshal( m );
 
@@ -484,7 +484,7 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "or";
         CompositeFactPattern cp = new CompositeFactPattern(
-                                                            CompositeFactPattern.COMPOSITE_TYPE_OR );
+                CompositeFactPattern.COMPOSITE_TYPE_OR );
         FactPattern p1 = new FactPattern( "Person" );
         SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
         sf1.setOperator( "==" );
@@ -505,7 +505,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( result
-                .indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
+                            .indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
 
     }
 
@@ -513,14 +513,14 @@ public class BRDRLPersistenceTest {
     public void testExistsMultiPatterns() throws Exception {
         String result = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         assertTrue( result
-                .indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
+                            .indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
     }
 
     @Test
     public void testNotMultiPatterns() throws Exception {
         String result = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_NOT );
         assertTrue( result
-                .indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
+                            .indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
     }
 
     @Test
@@ -544,7 +544,7 @@ public class BRDRLPersistenceTest {
 
     }
 
-    private String getCompositeFOL(String type) {
+    private String getCompositeFOL( String type ) {
         RuleModel m = new RuleModel();
         m.name = "or";
         CompositeFactPattern cp = new CompositeFactPattern( type );
@@ -600,12 +600,12 @@ public class BRDRLPersistenceTest {
         X.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
         X.setValue( "foo" );
         X.setOperator( "==" );
-        X.connectives = new ConnectiveConstraint[1];
-        X.connectives[0] = new ConnectiveConstraint();
-        X.connectives[0].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
-        X.connectives[0].setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        X.connectives[0].setOperator( "|| ==" );
-        X.connectives[0].setValue( "bar" );
+        X.connectives = new ConnectiveConstraint[ 1 ];
+        X.connectives[ 0 ] = new ConnectiveConstraint();
+        X.connectives[ 0 ].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
+        X.connectives[ 0 ].setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        X.connectives[ 0 ].setOperator( "|| ==" );
+        X.connectives[ 0 ].setValue( "bar" );
         comp.addConstraint( X );
 
         final SingleFieldConstraint Y = new SingleFieldConstraint();
@@ -653,10 +653,10 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"with composite\" "
-                          + " \tdialect \"mvel\"\n when "
-                          + "p1 : Person( ) "
-                          + "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )"
-                          + " then " + "insert( new Whee() );" + "end";
+                + " \tdialect \"mvel\"\n when "
+                + "p1 : Person( ) "
+                + "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )"
+                + " then " + "insert( new Whee() );" + "end";
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
 
@@ -681,7 +681,7 @@ public class BRDRLPersistenceTest {
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
 
-        SingleFieldConstraint con = (SingleFieldConstraint) p.constraintList.constraints[0];
+        SingleFieldConstraint con = (SingleFieldConstraint) p.constraintList.constraints[ 0 ];
         con.setFieldBinding( "q" );
 
         // now it should appear, as we are binding a var to it
@@ -2170,8 +2170,8 @@ public class BRDRLPersistenceTest {
 
     }
 
-    private void assertEqualsIgnoreWhitespace(final String expected,
-                                              final String actual) {
+    private void assertEqualsIgnoreWhitespace( final String expected,
+                                               final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
                                                           "" );
         final String cleanActual = actual.replaceAll( "\\s+",
@@ -2201,7 +2201,7 @@ public class BRDRLPersistenceTest {
         // System.err.println(actual);
 
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
-                          + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
+                + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
     }
@@ -2224,7 +2224,7 @@ public class BRDRLPersistenceTest {
         // System.err.println(actual);
 
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
-                          + "Goober( eval( field soundslike 'poo' ) )" + " then " + "end";
+                + "Goober( eval( field soundslike 'poo' ) )" + " then " + "end";
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
     }
@@ -2250,16 +2250,16 @@ public class BRDRLPersistenceTest {
         connective.setOperator( "|| ==" );
         connective.setValue( "blah" );
 
-        con.connectives = new ConnectiveConstraint[1];
-        con.connectives[0] = connective;
+        con.connectives = new ConnectiveConstraint[ 1 ];
+        con.connectives[ 0 ] = connective;
 
         m.addLhsItem( p );
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
         String expected = "rule \"test literal strings\" "
-                          + "\tdialect \"mvel\"\n when "
-                          + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
         assertEqualsIgnoreWhitespace( expected,
                                       result );
 
@@ -2290,16 +2290,16 @@ public class BRDRLPersistenceTest {
         ActionFieldValue val = new ActionFieldValue( "goo",
                                                      "42",
                                                      "Numeric" );
-        ins.fieldValues = new ActionFieldValue[1];
-        ins.fieldValues[0] = val;
+        ins.fieldValues = new ActionFieldValue[ 1 ];
+        ins.fieldValues[ 0 ] = val;
         m.addRhsItem( ins );
 
         ActionInsertLogicalFact insL = new ActionInsertLogicalFact( "Shizzle" );
         ActionFieldValue valL = new ActionFieldValue( "goo",
                                                       "42",
                                                       "Numeric" );
-        insL.fieldValues = new ActionFieldValue[1];
-        insL.fieldValues[0] = valL;
+        insL.fieldValues = new ActionFieldValue[ 1 ];
+        insL.fieldValues[ 0 ] = valL;
         m.addRhsItem( insL );
 
         String result = BRDRLPersistence.getInstance().marshal( m );
@@ -2345,7 +2345,7 @@ public class BRDRLPersistenceTest {
     @Test
     public void testAddGlobal() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                          + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
+                + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
@@ -2407,12 +2407,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"or composite\""
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\" )\n"
-                          + "then\n"
-                          + "insert( new Whee() );\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\" )\n"
+                + "then\n"
+                + "insert( new Whee() );\n"
+                + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -2470,12 +2470,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"or composite complex\""
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
-                          + "then\n"
-                          + "insert( new Whee() );\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+                + "then\n"
+                + "insert( new Whee() );\n"
+                + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -2524,12 +2524,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"and composite\""
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\" )\n"
-                          + "then\n"
-                          + "insert( new Whee() );\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\" )\n"
+                + "then\n"
+                + "insert( new Whee() );\n"
+                + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -2587,12 +2587,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"and composite complex\""
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
-                          + "then\n"
-                          + "insert( new Whee() );\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+                + "then\n"
+                + "insert( new Whee() );\n"
+                + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -2707,7 +2707,7 @@ public class BRDRLPersistenceTest {
         }
 
     }
-    
+
     @Test
     public void testFromAccumulateWithEmbeddedFromEntryPoint() {
         RuleModel m = new RuleModel();
@@ -2733,12 +2733,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"r1\"\n"
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "java.util.List( ) from accumulate ( Foo( $a : bar == 777 ) from entry-point \"ep\", \n"
-                          + "max($a))\n"
-                          + "then\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "java.util.List( ) from accumulate ( Foo( $a : bar == 777 ) from entry-point \"ep\", \n"
+                + "max($a))\n"
+                + "then\n"
+                + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -2768,11 +2768,48 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"r1\"\n"
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "java.util.List( ) from collect ( Foo( $a : bar == 777 ) from entry-point \"ep\" ) \n"
-                          + "then\n"
-                          + "end";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "java.util.List( ) from collect ( Foo( $a : bar == 777 ) from entry-point \"ep\" ) \n"
+                + "then\n"
+                + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+
+    @Test
+    public void testCompositeFactPatternWithFromWithDSL() {
+        final RuleModel m = new RuleModel();
+        m.name = "model";
+
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "A DSL phrase" );
+        m.addLhsItem( sen );
+
+        final FactPattern fp1 = new FactPattern( "Data" );
+        fp1.setBoundName( "$d" );
+        m.addLhsItem( fp1 );
+
+        final CompositeFactPattern cp = new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_NOT );
+
+        final FactPattern fp2 = new FactPattern( "Person" );
+        final FromCompositeFactPattern ffp1 = new FromCompositeFactPattern();
+        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1 ) ) );
+        ffp1.setFactPattern( fp2 );
+        cp.addFactPattern( ffp1 );
+        m.addLhsItem( cp );
+
+        final String actual = BRDRLPersistence.getInstance().marshal( m );
+        final String expected = "rule \"model\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "A DSL phrase\n" +
+                ">$d : Data( )\n" +
+                ">not ( Person( ) from $d\n" +
+                ")\n" +
+                "then\n" +
+                "end\n";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
