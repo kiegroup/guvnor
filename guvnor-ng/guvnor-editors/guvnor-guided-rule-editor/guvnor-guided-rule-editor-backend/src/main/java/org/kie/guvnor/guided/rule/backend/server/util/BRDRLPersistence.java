@@ -409,6 +409,11 @@ public class BRDRLPersistence
             }
         }
 
+        public void visitFromCompositeFactPattern( final FromCompositeFactPattern pattern ) {
+            visitFromCompositeFactPattern( pattern,
+                                           false );
+        }
+
         public void visitFromCompositeFactPattern( final FromCompositeFactPattern pattern,
                                                    final boolean isSubPattern ) {
             buf.append( indentation );
@@ -422,6 +427,11 @@ public class BRDRLPersistence
             buf.append( " from " );
             renderExpression( pattern.getExpression() );
             buf.append( "\n" );
+        }
+
+        public void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern ) {
+            visitFromCollectCompositeFactPattern( pattern,
+                                                  false );
         }
 
         public void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern,
@@ -457,6 +467,11 @@ public class BRDRLPersistence
                 }
             }
             buf.append( ") \n" );
+        }
+
+        public void visitFromAccumulateCompositeFactPattern( final FromAccumulateCompositeFactPattern pattern ) {
+            visitFromAccumulateCompositeFactPattern( pattern,
+                                                     false );
         }
 
         public void visitFromAccumulateCompositeFactPattern( final FromAccumulateCompositeFactPattern pattern,
@@ -512,6 +527,11 @@ public class BRDRLPersistence
             }
             buf.append( ") \n" );
 
+        }
+
+        public void visitFromEntryPointFactPattern( final FromEntryPointFactPattern pattern ) {
+            visitFromEntryPointFactPattern( pattern,
+                                            false );
         }
 
         public void visitFromEntryPointFactPattern( final FromEntryPointFactPattern pattern,

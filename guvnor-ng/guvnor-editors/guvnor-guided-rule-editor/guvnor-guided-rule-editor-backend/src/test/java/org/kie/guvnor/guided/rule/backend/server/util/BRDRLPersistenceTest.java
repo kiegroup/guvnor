@@ -44,12 +44,15 @@ import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
 import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
 import org.kie.guvnor.guided.rule.model.ExpressionField;
+import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
 import org.kie.guvnor.guided.rule.model.ExpressionText;
 import org.kie.guvnor.guided.rule.model.ExpressionUnboundFact;
+import org.kie.guvnor.guided.rule.model.ExpressionVariable;
 import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.kie.guvnor.guided.rule.model.FreeFormLine;
 import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
 import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
+import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
 import org.kie.guvnor.guided.rule.model.FromEntryPointFactPattern;
 import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -71,18 +74,19 @@ public class BRDRLPersistenceTest {
     public void testGenerateEmptyDRL() {
         String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
-        checkMarshallUnmarshall(expected, new RuleModel());
+        checkMarshallUnmarshall( expected, new RuleModel() );
     }
 
-    private void checkMarshallUnmarshall(String expected, RuleModel m) {
+    private void checkMarshallUnmarshall( String expected,
+                                          RuleModel m ) {
         String drl = brlPersistence.marshal( m );
-        assertNotNull(drl);
-        if (expected != null) {
+        assertNotNull( drl );
+        if ( expected != null ) {
             assertEqualsIgnoreWhitespace( expected, drl );
         }
 
         RuleModel unmarshalledModel = brlPersistence.unmarshal( drl );
-        assertEquals(drl, brlPersistence.marshal(unmarshalledModel));
+        assertEquals( drl, brlPersistence.marshal( unmarshalledModel ) );
     }
 
     @Test
@@ -93,17 +97,17 @@ public class BRDRLPersistenceTest {
         m.rhs = new IAction[ 1 ];
 
         FreeFormLine fl = new FreeFormLine();
-        fl.setText("Person()");
+        fl.setText( "Person()" );
         m.lhs[ 0 ] = fl;
 
         FreeFormLine fr = new FreeFormLine();
-        fr.setText("fun()");
+        fr.setText( "fun()" );
         m.rhs[ 0 ] = fr;
 
         String drl = brlPersistence.marshal( m );
         assertNotNull( drl );
         assertTrue( drl.indexOf( "Person()" ) > 0 );
-        assertTrue(drl.indexOf("fun()") > drl.indexOf("Person()"));
+        assertTrue( drl.indexOf( "fun()" ) > drl.indexOf( "Person()" ) );
     }
 
     @Test
@@ -116,10 +120,10 @@ public class BRDRLPersistenceTest {
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -136,7 +140,7 @@ public class BRDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -147,7 +151,7 @@ public class BRDRLPersistenceTest {
                                                "true" );
         final String drl = brlPersistence.marshal( m );
 
-        assertTrue(drl.indexOf("enabled true") > 0);
+        assertTrue( drl.indexOf( "enabled true" ) > 0 );
 
     }
 
@@ -159,7 +163,7 @@ public class BRDRLPersistenceTest {
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "type" );
         con.setOperator( "==" );
@@ -170,7 +174,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -184,16 +188,16 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "type" );
-        con.setOperator("==");
-        con.setValue("CHEDDAR");
-        con.setFieldType(DataType.TYPE_STRING);
+        con.setOperator( "==" );
+        con.setValue( "CHEDDAR" );
+        con.setFieldType( DataType.TYPE_STRING );
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
         pat.addConstraint( con );
 
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -221,7 +225,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -244,7 +248,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -267,7 +271,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -290,7 +294,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -313,12 +317,12 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
     public void testMoreComplexRendering() {
-        final RuleModel m = getComplexModel(false);
+        final RuleModel m = getComplexModel( false );
         String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
                 + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
                 + "\tdialect \"mvel\"\n" + "\twhen\n"
@@ -328,12 +332,13 @@ public class BRDRLPersistenceTest {
                 + "\t\tupdate( p1 );\n" + "\t\tretract( p1 );\n"
                 + "end\n";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testMoreComplexRenderingWithDsl() {
-        final RuleModel m = getComplexModel(true);
+        final RuleModel m = getComplexModel( true );
         String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
                 + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
                 + "\tdialect \"mvel\"\n" + "\twhen\n"
@@ -343,19 +348,19 @@ public class BRDRLPersistenceTest {
                 + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
                 + "\t\tSend an email to administrator\n" + "end\n";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
-    private RuleModel getComplexModel(boolean useDsl) {
+    private RuleModel getComplexModel( boolean useDsl ) {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
 
         m.addAttribute( new RuleAttribute( "no-loop",
-                "true" ) );
+                                           "true" ) );
         m.addAttribute( new RuleAttribute( "salience",
-                "-10" ) );
+                                           "-10" ) );
         m.addAttribute( new RuleAttribute( "agenda-group",
-                "aGroup" ) );
+                                           "aGroup" ) );
 
         final FactPattern pat = new FactPattern( "Person" );
         pat.setBoundName( "p1" );
@@ -375,14 +380,14 @@ public class BRDRLPersistenceTest {
         final ActionUpdateField set = new ActionUpdateField();
         set.setVariable( "p1" );
         set.addFieldValue( new ActionFieldValue( "status",
-                "rejected",
-                DataType.TYPE_STRING ) );
+                                                 "rejected",
+                                                 DataType.TYPE_STRING ) );
         m.addRhsItem( set );
 
         final ActionRetractFact ret = new ActionRetractFact( "p1" );
         m.addRhsItem( ret );
 
-        if (useDsl) {
+        if ( useDsl ) {
             final DSLSentence sen = new DSLSentence();
             sen.setDefinition( "Send an email to {administrator}" );
             m.addRhsItem( sen );
@@ -399,7 +404,7 @@ public class BRDRLPersistenceTest {
         // System.out.println(s);
         assertTrue( s.contains( "Person( f1 : age)" ) );
 
-        checkMarshallUnmarshall(s, m);
+        checkMarshallUnmarshall( s, m );
     }
 
     @Test
@@ -416,7 +421,7 @@ public class BRDRLPersistenceTest {
 
         String s = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age == null )" ) != -1 );
-        checkMarshallUnmarshall(s, m);
+        checkMarshallUnmarshall( s, m );
     }
 
     @Test
@@ -433,7 +438,7 @@ public class BRDRLPersistenceTest {
 
         String s = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age != null )" ) != -1 );
-        checkMarshallUnmarshall(s, m);
+        checkMarshallUnmarshall( s, m );
     }
 
     private RuleModel getModelWithNoConstraints() {
@@ -480,7 +485,7 @@ public class BRDRLPersistenceTest {
         String result = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( result.indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
 
-        checkMarshallUnmarshall(result, m);
+        checkMarshallUnmarshall( result, m );
     }
 
     @Test
@@ -488,7 +493,7 @@ public class BRDRLPersistenceTest {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         String result = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( result.indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
-        checkMarshallUnmarshall(result, m);
+        checkMarshallUnmarshall( result, m );
     }
 
     @Test
@@ -496,7 +501,7 @@ public class BRDRLPersistenceTest {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_NOT );
         String result = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( result.indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
-        checkMarshallUnmarshall(result, m);
+        checkMarshallUnmarshall( result, m );
     }
 
     @Test
@@ -517,7 +522,7 @@ public class BRDRLPersistenceTest {
         String result = BRDRLPersistence.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
-        checkMarshallUnmarshall(result, m);
+        checkMarshallUnmarshall( result, m );
     }
 
     private RuleModel getCompositeFOL( String type ) {
@@ -629,7 +634,7 @@ public class BRDRLPersistenceTest {
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -648,7 +653,7 @@ public class BRDRLPersistenceTest {
 
         String expected = "rule \"boo\" \tdialect \"mvel\"\n when Person() then end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
 
         SingleFieldConstraint con = (SingleFieldConstraint) p.getConstraintList().getConstraint( 0 );
         con.setFieldBinding( "q" );
@@ -656,7 +661,7 @@ public class BRDRLPersistenceTest {
         // now it should appear, as we are binding a var to it
         expected = "rule \"boo\" dialect \"mvel\" when Person(q : field1) then end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -688,7 +693,7 @@ public class BRDRLPersistenceTest {
                 + "     Person(field1 == \"goo\", field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -712,7 +717,7 @@ public class BRDRLPersistenceTest {
                 + "     Person( field1 == \"goo\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -741,7 +746,7 @@ public class BRDRLPersistenceTest {
                 + "     Person( field1 == \"Cheddar\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -764,11 +769,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsJavaEnum\""
-              + "\tdialect \"mvel\"\n when "
-              + "     Person( field1 == CHEESE.Cheddar )"
-              + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( field1 == CHEESE.Cheddar )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -790,11 +795,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNumber\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( field1 == 55 )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( field1 == 55 )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -816,11 +821,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsDate\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( field1 == \"27-Jun-2011\" )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( field1 == \"27-Jun-2011\" )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -842,11 +847,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsBoolean\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( field1 == true )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( field1 == true )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -871,11 +876,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNestedString\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( favouriteCheese.name == \"Cheedar\" )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( favouriteCheese.name == \"Cheedar\" )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -900,11 +905,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNestedNumber\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( favouriteCheese.age == 55 )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( favouriteCheese.age == 55 )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -929,11 +934,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNestedDate\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( favouriteCheese.dateBrought == \"27-Jun-2011\" )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( favouriteCheese.dateBrought == \"27-Jun-2011\" )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -958,11 +963,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNestedJavaEnum\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( favouriteCheese.genericName == CHEESE.Cheddar )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( favouriteCheese.genericName == CHEESE.Cheddar )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -987,11 +992,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test expressionsNestedBoolean\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person( favouriteCheese.smelly == true )"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person( favouriteCheese.smelly == true )"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1019,11 +1024,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test literal numerics\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person(field1 == 44, field2 == variableHere)"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == 44, field2 == variableHere)"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1053,15 +1058,15 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( ai );
 
         String expected = "rule \"test literal bigdecimal\" \n"
-                          + "\tdialect \"mvel\"\n when \n"
-                          + "     Person(field1 == 44B) \n"
-                          + " then \n"
-                          + "Person fact0 = new Person(); \n"
-                          + "fact0.setField1( 55B ); \n"
-                          + "insert( fact0 ); \n"
-                          + "end";
+                + "\tdialect \"mvel\"\n when \n"
+                + "     Person(field1 == 44B) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( 55B ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1093,15 +1098,15 @@ public class BRDRLPersistenceTest {
         String result = BRDRLPersistence.getInstance().marshal( m );
 
         String expected = "rule \"test literal biginteger\" \n"
-                          + "\tdialect \"mvel\"\n when \n"
-                          + "     Person(field1 == 44I ) \n"
-                          + " then \n"
-                          + "Person fact0 = new Person(); \n"
-                          + "fact0.setField1( 55I ); \n"
-                          + "insert( fact0 ); \n"
-                          + "end";
+                + "\tdialect \"mvel\"\n when \n"
+                + "     Person(field1 == 44I ) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( 55I ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1131,15 +1136,15 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( ai );
 
         String expected = "rule \"test literal bigdecimal\" \n"
-                          + "\tdialect \"java\"\n when \n"
-                          + "     Person(field1 == 44B) \n"
-                          + " then \n"
-                          + "Person fact0 = new Person(); \n"
-                          + "fact0.setField1( new java.math.BigDecimal( \"55\" ) ); \n"
-                          + "insert( fact0 ); \n"
-                          + "end";
+                + "\tdialect \"java\"\n when \n"
+                + "     Person(field1 == 44B) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( new java.math.BigDecimal( \"55\" ) ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1169,15 +1174,15 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( ai );
 
         String expected = "rule \"test literal biginteger\" \n"
-                          + "\tdialect \"java\"\n when \n"
-                          + "     Person(field1 == 44I ) \n"
-                          + " then \n"
-                          + "Person fact0 = new Person(); \n"
-                          + "fact0.setField1( new java.math.BigInteger( \"55\" ) ); \n"
-                          + "insert( fact0 ); \n"
-                          + "end";
+                + "\tdialect \"java\"\n when \n"
+                + "     Person(field1 == 44I ) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( new java.math.BigInteger( \"55\" ) ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1205,11 +1210,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test literal booleans\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person(field1 == true, field2 == variableHere)"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == true, field2 == variableHere)"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1237,11 +1242,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test literal dates\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1268,11 +1273,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test literal no type\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person(field1 == \"bananna\", field2 == variableHere)"
-                          + " then " + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == \"bananna\", field2 == variableHere)"
+                + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1293,13 +1298,13 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"in\" \n"
-                          + "dialect \"mvel\" \n"
-                          + "when \n"
-                          + "     Person(field1 in ( \"value1\", \"value2\" ) ) \n"
-                          + " then \n"
-                          + "end";
+                + "dialect \"mvel\" \n"
+                + "when \n"
+                + "     Person(field1 in ( \"value1\", \"value2\" ) ) \n"
+                + " then \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1320,13 +1325,13 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"in\" \n"
-                          + "dialect \"mvel\" \n"
-                          + "when \n"
-                          + "     Person(field1 in ( 55, 66 ) ) \n"
-                          + " then \n"
-                          + "end";
+                + "dialect \"mvel\" \n"
+                + "when \n"
+                + "     Person(field1 in ( 55, 66 ) ) \n"
+                + " then \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1347,13 +1352,13 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"not in\" \n"
-                          + "dialect \"mvel\" \n"
-                          + "when \n"
-                          + "     Person(field1 not in ( \"value1\", \"value2\" ) ) \n"
-                          + " then \n"
-                          + "end";
+                + "dialect \"mvel\" \n"
+                + "when \n"
+                + "     Person(field1 not in ( \"value1\", \"value2\" ) ) \n"
+                + " then \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1374,13 +1379,13 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"not in\" \n"
-                          + "dialect \"mvel\" \n"
-                          + "when \n"
-                          + "     Person(field1 not in ( 55, 66 ) ) \n"
-                          + " then \n"
-                          + "end";
+                + "dialect \"mvel\" \n"
+                + "when \n"
+                + "     Person(field1 not in ( 55, 66 ) ) \n"
+                + " then \n"
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -1417,7 +1422,7 @@ public class BRDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
 
-            checkMarshallUnmarshall(null, m);
+            checkMarshallUnmarshall( null, m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -1464,7 +1469,7 @@ public class BRDRLPersistenceTest {
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
             assertTrue( result.indexOf( "update( $p );" ) != -1 );
 
-            checkMarshallUnmarshall(null, m);
+            checkMarshallUnmarshall( null, m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -1512,7 +1517,7 @@ public class BRDRLPersistenceTest {
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
             assertTrue( result.indexOf( "update( $p );" ) == -1 );
 
-            checkMarshallUnmarshall(null, m);
+            checkMarshallUnmarshall( null, m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -1580,7 +1585,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -1644,7 +1649,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -1753,7 +1758,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -1867,7 +1872,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -1932,7 +1937,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -2010,7 +2015,7 @@ public class BRDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -2085,7 +2090,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "$r.setResultsStringResult( (java.lang.String) wiWorkItem.getResult( \"StringResult\" ) );" ) != -1 );
         assertTrue( result.indexOf( "insert( $r );" ) != -1 );
 
-        checkMarshallUnmarshall(null, m);
+        checkMarshallUnmarshall( null, m );
     }
 
     @Test
@@ -2110,11 +2115,11 @@ public class BRDRLPersistenceTest {
         m.addLhsItem( p );
 
         String expected = "rule \"test sub constraints\""
-                          + "\tdialect \"mvel\"\n when "
-                          + "     Person(field1.field2 == variableHere)" + " then "
-                          + "end";
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1.field2 == variableHere)" + " then "
+                + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
@@ -2147,7 +2152,7 @@ public class BRDRLPersistenceTest {
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
                 + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2167,7 +2172,7 @@ public class BRDRLPersistenceTest {
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
                 + "Goober( eval( field soundslike \"poo\" ) )" + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2200,7 +2205,7 @@ public class BRDRLPersistenceTest {
                 + "\tdialect \"mvel\"\n when "
                 + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2278,7 +2283,7 @@ public class BRDRLPersistenceTest {
         assertTrue( s.indexOf( "auto-focus true" ) > -1 );
         assertTrue( s.indexOf( "duration 42" ) > -1 );
 
-        checkMarshallUnmarshall(s, m);
+        checkMarshallUnmarshall( s, m );
     }
 
     @Test
@@ -2298,7 +2303,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( add );
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2351,7 +2356,7 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2413,7 +2418,7 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2466,7 +2471,7 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2528,7 +2533,7 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected, m );
     }
 
     @Test
@@ -2575,7 +2580,7 @@ public class BRDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, 100B );" ) != -1 );
 
-            checkMarshallUnmarshall(null, m);
+            checkMarshallUnmarshall( null, m );
 
         } finally {
             if ( oldValue == null ) {
@@ -2632,7 +2637,7 @@ public class BRDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, new java.math.BigDecimal(\"100\") );" ) != -1 );
 
-            checkMarshallUnmarshall(null, m);
+            checkMarshallUnmarshall( null, m );
 
         } finally {
             if ( oldValue == null ) {
@@ -2668,7 +2673,6 @@ public class BRDRLPersistenceTest {
         fac.setFunction( "max($a)" );
         m.addLhsItem( fac );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"r1\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -2677,7 +2681,8 @@ public class BRDRLPersistenceTest {
                 + "then\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -2702,7 +2707,6 @@ public class BRDRLPersistenceTest {
         fac.setFactPattern( new FactPattern( "java.util.List" ) );
         m.addLhsItem( fac );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"r1\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -2710,7 +2714,45 @@ public class BRDRLPersistenceTest {
                 + "then\n"
                 + "end";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testCompositeFactPatternWithFromWithDSL() {
+        final RuleModel m = new RuleModel();
+        m.name = "model";
+
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "A DSL phrase" );
+        m.addLhsItem( sen );
+
+        final FactPattern fp1 = new FactPattern( "Data" );
+        fp1.setBoundName( "$d" );
+        m.addLhsItem( fp1 );
+
+        final CompositeFactPattern cp = new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_NOT );
+
+        final FactPattern fp2 = new FactPattern( "Person" );
+        final FromCompositeFactPattern ffp1 = new FromCompositeFactPattern();
+        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1 ) ) );
+        ffp1.setFactPattern( fp2 );
+        cp.addFactPattern( ffp1 );
+        m.addLhsItem( cp );
+
+        final String actual = BRDRLPersistence.getInstance().marshal( m );
+        final String expected = "rule \"model\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "A DSL phrase\n" +
+                ">$d : Data( )\n" +
+                ">not ( Person( ) from $d\n" +
+                ")\n" +
+                "then\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
     }
 
 }
