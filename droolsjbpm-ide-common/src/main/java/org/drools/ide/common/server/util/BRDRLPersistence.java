@@ -393,9 +393,10 @@ public class BRDRLPersistence
             }
         }
 
-        public void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
+        public void visitFromCompositeFactPattern(FromCompositeFactPattern pattern,
+                                                  boolean isSubPattern) {
             buf.append( indentation );
-            if ( isDSLEnhanced ) {
+            if ( !isSubPattern && isDSLEnhanced ) {
                 // adding passthrough markup
                 buf.append( ">" );
             }
@@ -407,9 +408,10 @@ public class BRDRLPersistence
             buf.append( "\n" );
         }
 
-        public void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
+        public void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern,
+                                                         boolean isSubPattern) {
             buf.append( indentation );
-            if ( isDSLEnhanced ) {
+            if ( !isSubPattern && isDSLEnhanced ) {
                 // adding passthrough markup
                 buf.append( ">" );
             }
@@ -421,13 +423,17 @@ public class BRDRLPersistence
                 if ( pattern.getRightPattern() instanceof FactPattern ) {
                     generateFactPattern( (FactPattern) pattern.getRightPattern() );
                 } else if ( pattern.getRightPattern() instanceof FromAccumulateCompositeFactPattern ) {
-                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getRightPattern() );
+                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getRightPattern(),
+                                                             isSubPattern );
                 } else if ( pattern.getRightPattern() instanceof FromCollectCompositeFactPattern ) {
-                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getRightPattern() );
+                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getRightPattern(),
+                                                          isSubPattern );
                 } else if ( pattern.getRightPattern() instanceof FromEntryPointFactPattern ) {
-                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getRightPattern() );
+                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getRightPattern(),
+                                                    isSubPattern );
                 } else if ( pattern.getRightPattern() instanceof FromCompositeFactPattern ) {
-                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getRightPattern() );
+                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getRightPattern(),
+                                                   isSubPattern );
                 } else if ( pattern.getRightPattern() instanceof FreeFormLine ) {
                     visitFreeFormLine( (FreeFormLine) pattern.getRightPattern() );
                 } else {
@@ -437,9 +443,10 @@ public class BRDRLPersistence
             buf.append( ") \n" );
         }
 
-        public void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
+        public void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern,
+                                                            boolean isSubPattern) {
             buf.append( indentation );
-            if ( isDSLEnhanced ) {
+            if ( !isSubPattern && isDSLEnhanced ) {
                 // adding passthrough markup
                 buf.append( ">" );
             }
@@ -451,13 +458,17 @@ public class BRDRLPersistence
                 if ( pattern.getSourcePattern() instanceof FactPattern ) {
                     generateFactPattern( (FactPattern) pattern.getSourcePattern() );
                 } else if ( pattern.getSourcePattern() instanceof FromAccumulateCompositeFactPattern ) {
-                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getSourcePattern() );
+                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getSourcePattern(),
+                                                             isSubPattern );
                 } else if ( pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern ) {
-                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getSourcePattern() );
+                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getSourcePattern(),
+                                                          isSubPattern );
                 } else if ( pattern.getSourcePattern() instanceof FromEntryPointFactPattern ) {
-                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getSourcePattern() );
+                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getSourcePattern(),
+                                                    isSubPattern );
                 } else if ( pattern.getSourcePattern() instanceof FromCompositeFactPattern ) {
-                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getSourcePattern() );
+                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getSourcePattern(),
+                                                   isSubPattern );
                 } else {
                     throw new IllegalArgumentException( "Unsupported pattern " + pattern.getSourcePattern() + " for FROM ACCUMULATE" );
                 }
@@ -487,9 +498,10 @@ public class BRDRLPersistence
 
         }
 
-        public void visitFromEntryPointFactPattern(FromEntryPointFactPattern pattern) {
+        public void visitFromEntryPointFactPattern(FromEntryPointFactPattern pattern,
+                                                   boolean isSubPattern) {
             buf.append( indentation );
-            if ( isDSLEnhanced ) {
+            if ( !isSubPattern && isDSLEnhanced ) {
                 // adding passthrough markup
                 buf.append( ">" );
             }
@@ -523,11 +535,14 @@ public class BRDRLPersistence
             if ( subPattern instanceof FactPattern ) {
                 this.generateFactPattern( (FactPattern) subPattern );
             } else if ( subPattern instanceof FromAccumulateCompositeFactPattern ) {
-                this.visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) subPattern );
+                this.visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) subPattern,
+                                                              true);
             } else if ( subPattern instanceof FromCollectCompositeFactPattern ) {
-                this.visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) subPattern );
+                this.visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) subPattern,
+                                                           true );
             } else if ( subPattern instanceof FromCompositeFactPattern ) {
-                this.visitFromCompositeFactPattern( (FromCompositeFactPattern) subPattern );
+                this.visitFromCompositeFactPattern( (FromCompositeFactPattern) subPattern,
+                                                    true );
             } else {
                 throw new IllegalStateException( "Unsupported Pattern: " + subPattern.getClass().getName() );
             }
