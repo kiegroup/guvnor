@@ -15,17 +15,6 @@
  */
 package org.drools.guvnor.server.files;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
@@ -33,7 +22,6 @@ import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
-import org.drools.agent.HttpClientImpl;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -49,14 +37,20 @@ import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
+import org.drools.rule.Package;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.drools.rule.Package;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -78,7 +72,7 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         AssetItem ruleA2 = pkgA.addAsset("ruleA2", "", null, AssetFormats.DRL);
         ruleA2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
         ruleA2.checkin("version 1");
-        repositoryPackageService.createModuleSnapshot(pkgA.getName(), "snapshotA1", false, "");
+        repositoryPackageService.createModuleSnapshot(pkgA.getName(), "snapshotA1", false, "",false,"","","",false,"","",false,"");
 
         ModuleItem pkgB = rulesRepository.createModule("scanForChangeInRepository",
                 "this is package scanForChangeInRepository");
@@ -88,14 +82,14 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
         AssetItem ruleB2 = pkgB.addAsset("ruleB2", "", null, AssetFormats.DRL);
         ruleB2.updateContent("rule 'ruleA2' when org.drools.Person() then end");
         ruleB2.checkin("version 1");
-        repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotB1", false, "");
+        repositoryPackageService.createModuleSnapshot(pkgB.getName(), "snapshotB1", false, "",false,"","","",false,"","",false,"");
 
         ModuleItem pkgC = rulesRepository.createModule("downloadPackageWithHttpClientImpl",
                 "this is package scanForChangeInRepository");
         AssetItem ruleC1 = pkgC.addAsset("ruleC1", "", null, AssetFormats.DRL);
         ruleC1.updateContent("rule 'ruleA1' when org.drools.Person() then end");
         ruleC1.checkin("version 1");
-        repositoryPackageService.createModuleSnapshot(pkgC.getName(), "snapshotC1", false, "");
+        repositoryPackageService.createModuleSnapshot(pkgC.getName(), "snapshotC1", false, "",false,"","","",false,"","",false,"");
 
         repositoryPackageService.rebuildPackages();
         repositoryPackageService.rebuildSnapshots();

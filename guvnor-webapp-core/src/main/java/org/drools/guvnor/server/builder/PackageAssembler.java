@@ -16,12 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.Iterator;
-
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -35,6 +29,14 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -232,6 +234,18 @@ public class PackageAssembler extends PackageAssemblerBase {
             }
             src.append("\n\n");
         }
+    }
+    public List<AssetItem> getAllNotToIncludeAssets() {
+        setUpSelector();
+        List<AssetItem> notIncluded = new ArrayList<AssetItem>();
+        Iterator<AssetItem> iterator = getAllAssets();
+        while (iterator.hasNext()) {
+            AssetItem asset = iterator.next();
+            if (!assetCanBeAdded(asset)) {
+                notIncluded.add(asset);
+            }
+        }
+        return notIncluded;
     }
 
 }

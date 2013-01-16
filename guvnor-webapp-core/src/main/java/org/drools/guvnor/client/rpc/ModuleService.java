@@ -96,16 +96,32 @@ public interface ModuleService
      * @param comment         A comment to be added to the copied one.
      * @throws SerializationException 
     */
-   public void createModuleSnapshot(String moduleName,
-                                     String snapshotName,
-                                     boolean replaceExisting,
-                                     String comment) throws SerializationException;
-   
-   public void createModuleSnapshot(String moduleName,
-           String snapshotName,
-           boolean replaceExisting,
-           String comment,
-           boolean checkIsBinaryUpToDate) throws SerializationException;
+    public void createModuleSnapshot(String moduleName,
+                                         String snapshotName,
+                                         boolean replaceExisting,
+                                         String comment,
+                                         final String buildMode,
+                                         final String statusOperator,
+                                         final String statusValue,
+                                         final boolean enableStatusSelector,
+                                         final String categoryOperator,
+                                         final String category,
+                                         final boolean enableCategorySelector,
+                                         final String customSelector) throws SerializationException ;
+
+       public void createModuleSnapshot(String moduleName,
+                                         String snapshotName,
+                                         boolean replaceExisting,
+                                         String comment,
+                                         boolean checkIsBinaryUpToDate,
+                                         final String buildMode,
+                                         final String statusOperator,
+                                         final String statusValue,
+                                         final boolean enableStatusSelector,
+                                         final String categoryOperator,
+                                         final String category,
+                                         final boolean enableCategorySelector,
+                                         final String customSelector) throws SerializationException;
 
     /**
      * This alters an existing snapshot, it can be used to copy or delete it.

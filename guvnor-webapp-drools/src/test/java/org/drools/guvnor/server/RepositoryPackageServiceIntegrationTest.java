@@ -15,21 +15,7 @@
  */
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.KnowledgeBase;
 import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
@@ -39,29 +25,12 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
-import org.drools.guvnor.client.rpc.SnapshotDiff;
-import org.drools.guvnor.client.rpc.SnapshotDiffs;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.test.GuvnorIntegrationTest;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.shared.api.PortableObject;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
-import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.*;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.io.impl.InputStreamResource;
 import org.drools.repository.AssetItem;
@@ -72,7 +41,15 @@ import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTest {
 
@@ -121,7 +98,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiff",
                                                        "FIRST",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -149,7 +126,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiff",
                                                        "SECOND",
                                                        false,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -388,7 +365,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "X",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         SnapshotInfo[] snaps = repositoryPackageService.listSnapshots( "testSnapshot" );
         assertEquals( 1,
                       snaps.length );
@@ -404,13 +381,13 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "Y",
                                                        false,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
         repositoryPackageService.createModuleSnapshot( "testSnapshot",
                                                        "X",
                                                        true,
-                                                       "we" );
+                                                       "we" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
 
@@ -475,7 +452,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotRebuild",
                                                        "SNAP",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         ModuleItem snap = repo.loadModuleSnapshot( "testSnapshotRebuild",
                                                    "SNAP" );
@@ -497,7 +474,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotRebuild",
                                                        "SNAP2",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         try {
             repositoryPackageService.rebuildSnapshots();
@@ -683,7 +660,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                        "TEST SNAP 2.0",
                                                        false,
-                                                       "ya" );
+                                                       "ya" ,false,"","","",false,"","",false,"");
         ModuleItem loaded = rulesRepository.loadModuleSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                 "TEST SNAP 2.0" );
 
@@ -858,7 +835,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffPagedResultsPackage",
                                                        "FIRST",
                                                        false,
-                                                       "First snapshot" );
+                                                       "First snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffPagedResultsPackage" ).length );
         assertEquals( 4,
@@ -890,7 +867,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffPagedResultsPackage",
                                                        "SECOND",
                                                        false,
-                                                       "Second snapshot" );
+                                                       "Second snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffPagedResultsPackage" ).length );
         assertEquals( 4,
@@ -982,7 +959,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffFullResultsPackage",
                                                        "FIRST",
                                                        false,
-                                                       "First snapshot" );
+                                                       "First snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffFullResultsPackage" ).length );
         assertEquals( 4,
@@ -1014,7 +991,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testSnapshotDiffFullResultsPackage",
                                                        "SECOND",
                                                        false,
-                                                       "Second snapshot" );
+                                                       "Second snapshot" ,false,"","","",false,"","",false,"");
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiffFullResultsPackage" ).length );
         assertEquals( 4,
@@ -1133,7 +1110,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testBinaryPackageCompile",
                                                        "SNAP1",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
@@ -1241,7 +1218,7 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot( "testBinaryPackageCompileBRL",
                                                        "SNAP1",
                                                        false,
-                                                       "" );
+                                                       "" ,false,"","","",false,"","",false,"");
 
         pattern.setFactType( "PersonX" );
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );

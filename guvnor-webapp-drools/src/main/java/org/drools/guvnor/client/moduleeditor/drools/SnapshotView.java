@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.moduleeditor.drools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -27,18 +24,13 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
 import org.drools.guvnor.client.resources.DroolsGuvnorImages;
 import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.client.rpc.Module;
@@ -46,6 +38,9 @@ import org.drools.guvnor.client.rpc.ModuleService;
 import org.drools.guvnor.client.rpc.ModuleServiceAsync;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the new snapshot view.
@@ -407,7 +402,7 @@ public class SnapshotView extends Composite {
                 pop.hide();
                 String pkg = sel.getSelectedPackage();
                 PackageBuilderWidget.showSnapshotDialog( pkg,
-                                                         refreshCmd );
+                        refreshCmd,"","","",false,"","",false,"" );
             }
         } );
 
