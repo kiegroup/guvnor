@@ -79,7 +79,6 @@ public class Jcr2VfsMigrater {
       //5. Migrate categories
       //6. migratePackagePermissions.   migrateRolesAndPermissionsMetaData
       //7. Test scenario  
-      //8. Migrate asset version history  
       //9. Migrate asset discussion  
       //10. Migrate asset state  
         moduleMigrater.migrateAll();

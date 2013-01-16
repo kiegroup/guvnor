@@ -4,6 +4,7 @@ package org.kie.guvnor.jcr2vfsmigration.migrater;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -81,6 +83,9 @@ public class AssetMigrater {
                         
                         //Migrate historical versions
                         migrateAssetHistory(jcrModule, row.getUuid());
+                        
+                        //Migrate asset discussions
+                        migrateAssetDiscussions(jcrModule, row.getUuid());
                     }
                 } catch (SerializationException e) {
                     throw new IllegalStateException(e);
@@ -141,6 +146,14 @@ public class AssetMigrater {
         }
     }
 
+    public void migrateAssetDiscussions(Module jcrModule, String assetUUID) {
+        List<DiscussionRecord> discussions = jcrRepositoryAssetService
+                .loadDiscussionForAsset(assetUUID);
+        
+        //TODO:
+
+    }
+
     // TODO delete code below once we have all of its functionality
 //
 //    @Inject
@@ -190,10 +203,7 @@ public class AssetMigrater {
 //        }
 //    }
 //
-//    public void migrateAssetDiscussions(Asset assetJCR, Asset assetVFS, String assetUUID) {
-//        List<DiscussionRecord> discussions = jcrRepositoryAssetService.loadDiscussionForAsset(assetUUID);
-//        rulesRepositoryVFS.addToDiscussionForAsset(assetVFS, discussions);
-//    }
+
 //
 //    public void migrateAssetState(Asset assetJCR, Asset assetVFS, String assetUUID) {
 //        String stateName = assetJCR.getState();
