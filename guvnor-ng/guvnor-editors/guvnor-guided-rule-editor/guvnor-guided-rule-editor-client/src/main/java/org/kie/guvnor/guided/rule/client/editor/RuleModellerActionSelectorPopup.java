@@ -193,7 +193,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add update, not modify
     private void addUpdateNotModify() {
-        List<String> vars = model.getLHSBoundFacts();
+        List<String> vars = model.getAllLHSVariables();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -265,7 +265,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add Modifies
     private void addModifies() {
-        List<String> vars = model.getLHSBoundFacts();
+        List<String> vars = model.getAllLHSVariables();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -366,8 +366,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add free-form DRL
     private void addFreeFormDRL() {
-        List<String> vars = model.getLHSBoundFacts();
-        List<String> vars2 = model.getRHSBoundFacts();
+        List<String> lhsVars = model.getAllLHSVariables();
+        List<String> rhsVars = model.getRHSBoundFacts();
         String[] globals = completions.getGlobalVariables();
 
         if ( UserCapabilities.canSeeModulesTree() ) {
@@ -405,10 +405,10 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
 
             //Method calls
-            if ( vars.size() > 0 ) {
+            if ( lhsVars.size() > 0 ) {
                 choices.addItem( SECTION_SEPARATOR );
             }
-            for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
+            for ( Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
                 choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
@@ -425,10 +425,10 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
 
             //Update, not modify
-            if ( vars2.size() > 0 ) {
+            if ( rhsVars.size() > 0 ) {
                 choices.addItem( SECTION_SEPARATOR );
             }
-            for ( Iterator<String> iter = vars2.iterator(); iter.hasNext(); ) {
+            for ( Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
                 choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
