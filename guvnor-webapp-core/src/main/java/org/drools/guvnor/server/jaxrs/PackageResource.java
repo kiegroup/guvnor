@@ -17,71 +17,36 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.server.builder.ModuleAssembler;
+import org.drools.guvnor.server.builder.ModuleAssemblerManager;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.providers.atom.Entry;
 import org.drools.guvnor.server.jaxrs.providers.atom.Feed;
 import org.drools.guvnor.server.jaxrs.providers.atom.Link;
+import org.drools.repository.*;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-
-
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.server.builder.ModuleAssembler;
-import org.drools.guvnor.server.builder.ModuleAssemblerManager;
-import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.repository.AssetHistoryIterator;
-import org.drools.repository.AssetItem;
-import org.drools.repository.ModuleHistoryIterator;
-import org.drools.repository.ModuleItem;
-import org.drools.repository.ModuleIterator;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import javax.xml.bind.JAXBException;
-
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
-import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
-import static org.drools.guvnor.server.jaxrs.Translator.toPackage;
-import static org.drools.guvnor.server.jaxrs.Translator.toPackageEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.*;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -948,7 +913,8 @@ public class PackageResource extends Resource {
             @PathParam("snapshotName") final String snapshotName) throws SerializationException {
         compileModuleIfNeeded(packageName);
         repositoryModuleOperations.createModuleSnapshot(packageName,
-                snapshotName, true, "REST API Snapshot");
+                snapshotName, true, "REST API Snapshot",null,null,null,false,null,null,false,null);
+
     }
 
     private boolean assetExists(final String packageName, final String assetName) {

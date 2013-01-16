@@ -286,7 +286,7 @@ public class PackageDeploymentServletIntegrationTest extends GuvnorIntegrationTe
         repositoryPackageService.createModuleSnapshot("testScenariosURL",
                 "SNAP1",
                 false,
-                "");
+                "",false,"","","",false,"","",false,"");
 
         Base64 enc = new Base64();
         final String encodedAuthorization = enc.encodeToString( "admin:admin".getBytes() );

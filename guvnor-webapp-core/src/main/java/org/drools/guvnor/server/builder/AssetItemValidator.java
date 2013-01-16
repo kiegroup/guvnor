@@ -19,12 +19,10 @@ package org.drools.guvnor.server.builder;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
-import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.repository.AssetItem;
-import org.drools.repository.ModuleItem;
-import org.drools.repository.utils.Validator;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssetItemValidator {
 
@@ -44,6 +42,11 @@ public class AssetItemValidator {
             validator.init(assetItemUnderValidation.getModule(), null);
             return validator.validateAsset(assetItemUnderValidation);
         }
+    }
+
+    public List<AssetItem> getAllNotToIncludeAssets() {
+        List<AssetItem> result = new ArrayList<AssetItem>();
+        return result;
     }
 
 

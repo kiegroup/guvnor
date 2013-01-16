@@ -51,4 +51,7 @@ abstract class AssemblerBase implements ModuleAssembler {
     protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
         return this.moduleItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(formats);
     }
+    protected List<AssetItem> getAllNotToIncludeAssets(StringBuilder includedAssets){
+        return null;
+    }
 }

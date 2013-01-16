@@ -143,15 +143,15 @@ public class PopulateDataIntegrationTest extends GuvnorIntegrationTest {
         repositoryPackageService.createModuleSnapshot( "com.billasurf.manufacturing",
                                                        "TEST",
                                                        false,
-                                                       "The testing region." );
+                                                       "The testing region.",false,"","","",false,"","",false,"");
         repositoryPackageService.createModuleSnapshot( "com.billasurf.manufacturing",
                                                        "PRODUCTION",
                                                        false,
-                                                       "The testing region." );
+                                                       "The testing region.",false,"","","",false,"","",false,"");
         repositoryPackageService.createModuleSnapshot( "com.billasurf.manufacturing",
                                                        "PRODUCTION ROLLBACK",
                                                        false,
-                                                       "The testing region." );
+                                                        "The testing region.",false,"","","",false,"","",false,"");
 
     }
 

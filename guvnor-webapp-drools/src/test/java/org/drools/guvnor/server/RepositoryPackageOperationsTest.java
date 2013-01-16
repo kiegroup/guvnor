@@ -2,8 +2,10 @@ package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.PackageAssembler;
+import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
@@ -287,6 +289,9 @@ public class RepositoryPackageOperationsTest {
         final String comment = "comment";
 
         ModuleItem packageItem = mock(ModuleItem.class);
+        when(packageItem.getFormat()).thenReturn("package");
+        AssetItemIterator assetIterator = mock(AssetItemIterator.class);
+        when(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)).thenReturn(assetIterator);
         when(this.rulesRepository.containsSnapshot(packageName,
                 snapshotName)).thenReturn(true);
         when(this.rulesRepository.loadModuleSnapshot(packageName,
@@ -294,7 +299,7 @@ public class RepositoryPackageOperationsTest {
         this.repositoryPackageOperations.createModuleSnapshot(packageName,
                 snapshotName,
                 true,
-                comment);
+                comment,false, SelectorManager.BUILT_IN_SELECTOR,"","",false,"","",false,"");
         verify(this.rulesRepository).removeModuleSnapshot(packageName,
                 snapshotName);
         verify(this.rulesRepository).createModuleSnapshot(packageName,
@@ -316,7 +321,7 @@ public class RepositoryPackageOperationsTest {
         this.repositoryPackageOperations.createModuleSnapshot(packageName,
                 snapshotName,
                 false,
-                comment);
+                comment,false,"","","",false,"","",false,"");
         verify(this.rulesRepository,
                 never()).removeModuleSnapshot(packageName,
                 snapshotName);
