@@ -5,7 +5,7 @@ cd `dirname $0`
 
 mainClasspath=
 for i in binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
-mainClass=org.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
+mainClass=org.kie.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
 
 echo "Usage: ./runMigration.sh"
 echo "For example: ./runMigration.sh"

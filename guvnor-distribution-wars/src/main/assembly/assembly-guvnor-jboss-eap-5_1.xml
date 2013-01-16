@@ -14,7 +14,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-webapp-drools:war</include>
+        <include>org.kie.guvnor:guvnor-webapp:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>

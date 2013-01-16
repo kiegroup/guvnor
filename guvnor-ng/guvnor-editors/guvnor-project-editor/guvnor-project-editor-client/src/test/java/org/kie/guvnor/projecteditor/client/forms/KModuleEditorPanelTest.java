@@ -1,0 +1,205 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.guvnor.projecteditor.client.forms;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
+import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
+import org.kie.guvnor.projecteditor.model.KBaseModel;
+import org.kie.guvnor.projecteditor.model.KModuleModel;
+import org.mockito.ArgumentCaptor;
+import org.uberfire.backend.vfs.Path;
+
+import static junit.framework.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+public class KModuleEditorPanelTest {
+
+    private Path path;
+    private KModuleEditorPanelView view;
+    private MockProjectEditorServiceCaller projectEditorServiceCaller;
+    private KModuleEditorPanel screenK;
+    private ListFormComboPanelView.Presenter presenter;
+    private NamePopup nameNamePopup;
+    private KBaseForm form;
+
+    @Before
+    public void setUp() throws Exception {
+        path = mock(Path.class);
+        view = mock(KModuleEditorPanelView.class);
+        projectEditorServiceCaller = new MockProjectEditorServiceCaller();
+
+        nameNamePopup = mock(NamePopup.class);
+        form = mock(KBaseForm.class);
+        screenK = new KModuleEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
+        presenter = screenK;
+    }
+
+    @Test
+    public void testShowEmptyModel() throws Exception {
+        projectEditorServiceCaller.setUpModelForLoading(new KModuleModel());
+
+        verify(view, never()).addItem(anyString());
+    }
+
+    @Test
+    public void testShowModelWithSessions() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("First"));
+        kModuleModel.add(createKBaseConfiguration("Second"));
+        kModuleModel.add(createKBaseConfiguration("Third"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        verify(view).addItem("First");
+        verify(view).addItem("Second");
+        verify(view).addItem("Third");
+        verify(view, times(3)).addItem(anyString());
+    }
+
+    @Test
+    public void testSelectKBase() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        KBaseModel theOne = createKBaseConfiguration("TheOne");
+        kModuleModel.add(theOne);
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        presenter.onSelect("TheOne");
+
+        verify(form).setModel(theOne);
+    }
+
+    @Test
+    public void testAddKBase() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        presenter.onAdd();
+
+        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
+        addKBaseCommandArgumentCaptor.getValue().setName("TheOne");
+
+        verify(nameNamePopup).setOldName(""); // Old name should be "" since there is no old name.
+        assertNotNull(kModuleModel.get("TheOne"));
+        verify(view).addItem("TheOne");
+        verify(view).setSelected("TheOne");
+        verify(form).setModel(kModuleModel.get("TheOne"));
+    }
+
+    @Test
+    public void testRemoveKBase() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        presenter.onSelect("RemoveMe");
+
+        presenter.onRemove();
+
+        assertNull(kModuleModel.get("RemoveMe"));
+        verify(view).remove("RemoveMe");
+    }
+
+    @Test
+    public void testRename() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RenameMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        presenter.onSelect("RenameMe");
+
+        presenter.onRename();
+
+        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
+        addKBaseCommandArgumentCaptor.getValue().setName("NewName");
+
+        verify(nameNamePopup).setOldName("RenameMe");
+        assertNull(kModuleModel.get("RenameMe"));
+        assertNotNull(kModuleModel.get("NewName"));
+    }
+
+    @Test
+    public void testRemoveKBaseNoItemSelected() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        presenter.onRemove();
+
+        verify(view).showPleaseSelectAnItem();
+
+        assertNotNull(kModuleModel.get("CantRemoveMe"));
+        verify(view, never()).remove("CantRemoveMe");
+    }
+
+    @Test
+    public void testDoubleClickRemoveSecondTimeWithoutATarget() throws Exception {
+
+        KModuleModel kModuleModel = new KModuleModel();
+        kModuleModel.add(createKBaseConfiguration("RemoveMe"));
+        kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        // Select one and remove.
+        presenter.onSelect("RemoveMe");
+        presenter.onRemove();
+
+        // Click again, nothing is selected.
+        presenter.onRemove();
+
+        verify(view).showPleaseSelectAnItem();
+
+        assertNotNull(kModuleModel.get("CantRemoveMe"));
+        verify(view, never()).remove("CantRemoveMe");
+    }
+
+    @Test
+    public void testSave() throws Exception {
+        KModuleModel kModuleModel = new KModuleModel();
+        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
+        screenK.init(path);
+
+        screenK.save();
+
+        assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
+        verify(view).showSaveSuccessful("kmodule.xml");
+    }
+
+    private KBaseModel createKBaseConfiguration(String name) {
+        KBaseModel knowledgeBaseConfiguration = new KBaseModel();
+        knowledgeBaseConfiguration.setName(name);
+        return knowledgeBaseConfiguration;
+    }
+}
+

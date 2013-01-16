@@ -11,87 +11,17 @@
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
 
-  <groupId>org.drools</groupId>
-  <artifactId>guvnor</artifactId>
+  <groupId>org.kie.guvnor</groupId>
+  <artifactId>guvnor-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor multiproject</name>
-  <description>
-    Guvnor is the web application and repository to govern Drools and jBPM assets.
-  </description>
-
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <!-- Remove me as soon as all of droolsjbpm requires at least Java 6 -->
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.zanata</groupId>
-          <artifactId>zanata-maven-plugin</artifactId>
-          <version>1.5.0</version>
-          <configuration>
-            <!-- Process sub-modules separately, sharing parent config -->
-            <enableModules>true</enableModules>
-            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-            <srcDir>src/main/java</srcDir>
-            <transDir>src/main/java/</transDir>
-            <includes>**/Constants.properties,**/ConstantsCore.properties</includes>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.google.code.maven-config-processor-plugin</groupId>
-          <artifactId>maven-config-processor-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <!--
-            TODO HACK to stop notifications of failed tests on branch master
-        ,   All development goes into branch guvnor-ng, which should NOT have this commit
-           -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <inherited>true</inherited>
-          <configuration>
-            <skipTests>true</skipTests>
-          </configuration>
-        </plugin>
-        <plugin>
-          <!--
-            TODO HACK to stop notifications of failed tests on branch master
-        ,   All development goes into branch guvnor-ng, which should NOT have this commit
-           -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <inherited>true</inherited>
-          <configuration>
-            <skipTests>true</skipTests>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+  <name>Guvnor - Multi-project</name>
+  <description>Guvnor is the web application and repository to govern Drools and jBPM assets.</description>
 
   <modules>
-    <module>kie-uberfire-bootstrap</module>
-    <module>kie-project-editor</module>
-    <module>guvnor-api</module>
-    <module>guvnor-repository-connector</module>
-    <module>guvnor-repository</module>
-    <module>droolsjbpm-ide-common</module>
-    <module>guvnor-webapp-core</module>
-    <module>guvnor-webapp-drools</module>
-    <module>guvnor-bulk-importer</module>
-    <module>guvnor-jcr2vfs-migration</module>
+    <module>guvnor-ng</module>
     <module>guvnor-examples</module>
+    <module>guvnor-jcr2vfs-migration</module>
   </modules>
 
   <profiles>
@@ -104,8 +34,9 @@
       </activation>
       <modules>
         <module>guvnor-docs</module>
-        <module>guvnor-distribution-wars</module>
-        <module>guvnor-distribution</module>
+        <!--todo: needs update those projects before enable than again-->
+        <!--<module>guvnor-distribution-wars</module>-->
+        <!--<module>guvnor-distribution</module>-->
       </modules>
     </profile>
   </profiles>

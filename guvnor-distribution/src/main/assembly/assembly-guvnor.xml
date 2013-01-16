@@ -62,7 +62,7 @@
     <!-- Binaries -->
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-distribution-wars:war</include>
+        <include>org.kie.guvnor:guvnor-distribution-wars:war</include>
       </includes>
       <outputDirectory>binaries</outputDirectory>
       <outputFileNameMapping>guvnor-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
@@ -80,10 +80,8 @@
     <!--</dependencySet>-->
     <!-- Migration -->
     <dependencySet>
-      <includes><!-- Keep in sync with guvnor/guvnor-jcr2vfs-migration/pom.xml -->
-        <include>org.drools:guvnor-jcr2vfs-migration:jar</include>
-        <include>org.drools:guvnor-api:jar</include>
-        <include>org.drools:guvnor-repository*:jar</include>
+      <includes><!-- Keep in sync with guvnor/guvnor-jcr2vfs-migration/guvnor-jcr2vfs-migration-core/pom.xml -->
+        <include>org.kie.guvnor:guvnor-jcr2vfs-migration-core:jar</include>
         <include>commons-cli:commons-cli:jar</include>
         <include>org.slf4j:slf4j-api:jar</include>
         <include>ch.qos.logback:*:jar</include>
@@ -96,7 +94,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-examples:jar</include>
+        <include>org.kie.guvnor:guvnor-examples:jar</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
@@ -107,7 +105,7 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-docs:jdocbook</include>
+        <include>org.kie.guvnor:guvnor-docs:jdocbook</include>
       </includes>
       <outputDirectory>reference_manual</outputDirectory>
       <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
@@ -123,10 +121,10 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools:*:jar:sources</include>
+        <include>org.kie.guvnor:*:jar:sources</include>
       </includes>
       <excludes>
-        <exclude>org.drools:guvnor-examples:jar:sources</exclude>
+        <exclude>org.kie.guvnor:guvnor-examples:jar:sources</exclude>
       </excludes>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
