@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class BuilderValidator extends PackageAssemblerBase implements Validator {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -34,6 +35,11 @@ public class BuilderValidator extends PackageAssemblerBase implements Validator 
     public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
         this.moduleItem = moduleItem;
         createBuilder();
+    }
+
+    @Override
+    public List<AssetItem> getAllNotToIncludeAssets() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public BuilderResult validateAsset(AssetItem item) {

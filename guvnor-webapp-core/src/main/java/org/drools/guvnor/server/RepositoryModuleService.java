@@ -311,24 +311,67 @@ public class RepositoryModuleService
                                                        customSelectorName );
     }
 
-	public void createModuleSnapshot(String moduleName, String snapshotName,
-			boolean replaceExisting, String comment)
-			throws SerializationException {
-		serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
-		repositoryModuleOperations.createModuleSnapshot(moduleName,
-				snapshotName, replaceExisting, comment, false);
+    @WebRemote
+    @LoggedIn
+    public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
+        repositoryModuleOperations.createModuleSnapshot(moduleName,
+                snapshotName,
+                replaceExisting,
+                comment,
+                false,
+                buildMode,
+                statusOperator,
+                statusValue,
+                enableStatusSelector,
+                categoryOperator,
+                category,
+                enableCategorySelector,
+                customSelector);
 
-	}
+    }
 
-	@WebRemote
-	@LoggedIn
-	public void createModuleSnapshot(String moduleName, String snapshotName,
-			boolean replaceExisting, String comment,
-			boolean checkIsBinaryUpToDate) throws SerializationException {
+    @WebRemote
+    @LoggedIn
+    public void createModuleSnapshot(String moduleName,
+                                     String snapshotName,
+                                     boolean replaceExisting,
+                                     String comment,
+                                     boolean checkIsBinaryUpToDate,
+                                     final String buildMode,
+                                     final String statusOperator,
+                                     final String statusValue,
+                                     final boolean enableStatusSelector,
+                                     final String categoryOperator,
+                                     final String category,
+                                     final boolean enableCategorySelector,
+                                     final String customSelector) throws SerializationException {
 		serviceSecurity.checkSecurityIsPackageAdminWithPackageName(moduleName);
-		repositoryModuleOperations.createModuleSnapshot(moduleName,
-				snapshotName, replaceExisting, comment, checkIsBinaryUpToDate);
-	}
+        repositoryModuleOperations.createModuleSnapshot(moduleName,
+                       snapshotName,
+                       replaceExisting,
+                       comment,
+                       checkIsBinaryUpToDate,
+                       buildMode,
+                       statusOperator,
+                       statusValue,
+                       enableStatusSelector,
+                       categoryOperator,
+                       category,
+                       enableCategorySelector,
+                       customSelector);
+    }
 
     @WebRemote
     @LoggedIn

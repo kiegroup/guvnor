@@ -19,6 +19,9 @@ package org.drools.guvnor.server.selector;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BuiltInSelector implements AssetSelector {
     private String  status;
     private String  statusOperator;
@@ -26,6 +29,7 @@ public class BuiltInSelector implements AssetSelector {
     private String  categoryOperator;
     private boolean enableStatusSelector;
     private boolean enableCategorySelector;
+    private List<String> searchStatus;
 
     public BuiltInSelector() {
     }
@@ -68,6 +72,7 @@ public class BuiltInSelector implements AssetSelector {
 
     public void setStatus(String status) {
         this.status = status;
+        this.searchStatus = extractListFromComaSeparated(this.status);
     }
 
     public String getStatusOperator() {
@@ -92,18 +97,40 @@ public class BuiltInSelector implements AssetSelector {
     }
 
     private boolean isStatusAllowed(AssetItem item) {
-        if ( "=".equals( statusOperator ) ) {
-            if ( item.getStateDescription().equals( status ) ) {
-                return true;
-            }
-        } else if ( "!=".equals( statusOperator ) ) {
-            if ( !item.getStateDescription().equals( status ) ) {
-                return true;
-            }
-        }
+           if ( "=".equals( statusOperator ) ) {
+               if (searchStatus.contains(item.getStateDescription())){
+                   return true;
+               }
+           } else if ( "!=".equals( statusOperator ) ) {
+               if (!searchStatus.contains(item.getStateDescription())){
+                   return true;
+               }
+           }
 
-        return false;
-    }
+           return false;
+       }
+     public List<String> extractListFromComaSeparated(String status){
+       List<String> extractedList = new ArrayList<String>();
+       if (status!= null && status.length()> 0 ){
+
+             int firstIndex=0;
+             int lastIndex= status.indexOf(",", firstIndex);
+             while (lastIndex != -1){
+
+               String newStatus = status.substring(firstIndex, lastIndex);
+               extractedList.add(newStatus);
+               firstIndex = lastIndex+1;
+               lastIndex = status.indexOf(",", firstIndex);
+             }
+             if (firstIndex > 0){
+                 String newStatus = status.substring(firstIndex,status.length());
+                 extractedList.add(newStatus);
+             }else {
+                 extractedList.add(status);
+             }
+       }
+       return extractedList;
+     }
 
     private boolean isCategoryAllowed(AssetItem item) {
         if ( "=".equals( categoryOperator ) ) {

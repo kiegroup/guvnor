@@ -68,16 +68,15 @@ public class ModuleServiceServlet
         moduleService.saveModule(p0);
     }
 
-	public void createModuleSnapshot(java.lang.String p0, java.lang.String p1,
-			boolean p2, java.lang.String p3) throws SerializationException {
-		moduleService.createModuleSnapshot(p0, p1, p2, p3);
-	}
+    @Override
+    public void createModuleSnapshot(String moduleName, String snapshotName, boolean replaceExisting, String comment, String buildMode, String statusOperator, String statusValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String customSelector) throws SerializationException {
+        moduleService.createModuleSnapshot(moduleName, snapshotName, replaceExisting, comment, buildMode, statusOperator, statusValue, enableStatusSelector, categoryOperator, category, enableCategorySelector, customSelector);
+}
 
-	public void createModuleSnapshot(java.lang.String p0, java.lang.String p1,
-			boolean p2, java.lang.String p3, boolean p4)
-			throws SerializationException {
-		moduleService.createModuleSnapshot(p0, p1, p2, p3, p4);
-	}
+    @Override
+    public void createModuleSnapshot(String moduleName, String snapshotName, boolean replaceExisting, String comment, boolean checkIsBinaryUpToDate, String buildMode, String statusOperator, String statusValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String customSelector) throws SerializationException {
+        moduleService.createModuleSnapshot(moduleName, snapshotName, replaceExisting, comment, buildMode, statusOperator, statusValue, enableStatusSelector, categoryOperator, category, enableCategorySelector, customSelector);
+ }
 
     @Override
     public void copyOrRemoveSnapshot(java.lang.String p0,
