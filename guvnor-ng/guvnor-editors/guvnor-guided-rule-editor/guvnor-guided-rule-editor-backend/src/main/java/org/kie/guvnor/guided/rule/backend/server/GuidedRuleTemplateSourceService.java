@@ -27,7 +27,8 @@ import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.server.util.Paths;
 
-public class GuidedRuleTemplateSourceService extends BaseSourceService {
+public class GuidedRuleTemplateSourceService
+        extends BaseSourceService {
 
     private static final String PATTERN = ".template";
 
@@ -36,6 +37,10 @@ public class GuidedRuleTemplateSourceService extends BaseSourceService {
 
     @Inject
     private GuidedRuleTemplateEditorService guidedRuleTemplateEditorService;
+
+    protected GuidedRuleTemplateSourceService() {
+        super("/src/main/resources");
+    }
 
     @Override
     public String getPattern() {

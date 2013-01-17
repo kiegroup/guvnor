@@ -25,6 +25,10 @@ import java.io.ByteArrayInputStream;
 public abstract class DRLBaseSourceService
         extends BaseSourceService {
 
+    protected DRLBaseSourceService() {
+        super("/src/main/resources");
+    }
+
     @Override
     public SourceContext getSource(final Path path) {
 

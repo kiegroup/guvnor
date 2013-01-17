@@ -14,7 +14,8 @@ import org.kie.guvnor.commons.service.source.SourceContext;
 /**
  * Source provider for KModule.xml
  */
-public class KModuleSourceService extends BaseSourceService {
+public class KModuleSourceService
+        extends BaseSourceService {
 
     private static final String PATTERN = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF" + File.separator + "kmodule.xml";
 
@@ -23,6 +24,10 @@ public class KModuleSourceService extends BaseSourceService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    protected KModuleSourceService() {
+        super("/src/main/resources");
+    }
 
     @Override
     public SourceContext getSource( final Path path ) {

@@ -35,7 +35,8 @@ import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
-public class GuidedDecisionTableSourceService extends BaseSourceService {
+public class GuidedDecisionTableSourceService
+        extends BaseSourceService {
 
     private static final String PATTERN = ".gdst";
 
@@ -44,6 +45,10 @@ public class GuidedDecisionTableSourceService extends BaseSourceService {
 
     @Inject
     private GuidedDecisionTableEditorService guidedDecisionTableEditorService;
+
+    protected GuidedDecisionTableSourceService() {
+        super("/src/main/resources");
+    }
 
     @Override
     public String getPattern() {

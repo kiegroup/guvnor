@@ -38,6 +38,10 @@ public class GuidedRuleSourceService
     @Inject
     private GuidedRuleEditorService guidedRuleEditorService;
 
+    protected GuidedRuleSourceService() {
+        super("/src/main/resources");
+    }
+
     @Override
     public String getPattern() {
         return PATTERN;

@@ -7,7 +7,11 @@ import org.kie.commons.java.nio.file.Path;
  */
 public abstract class BaseSourceService implements SourceService {
 
-    private static final String PREFIX = "/src/main/resources";
+    private final String prefix;
+
+    protected BaseSourceService(String prefix) {
+        this.prefix = prefix;
+    }
 
     @Override
     public boolean accepts(final Path path) {
@@ -18,22 +22,22 @@ public abstract class BaseSourceService implements SourceService {
 
     protected String stripProjectPrefix(final Path path) {
         final String uri = path.toUri().toString();
-        final int prefixIndex = uri.indexOf(PREFIX);
+        final int prefixIndex = uri.indexOf(prefix);
         return uri.substring(prefixIndex);
     }
 
     protected String returnPackageDeclaration(final Path path) {
-        String prefix = stripProjectPrefix(path);
-        int fileNameStartsFrom = prefix.lastIndexOf('/');
+        String projectPrefix = stripProjectPrefix(path);
+        int fileNameStartsFrom = projectPrefix.lastIndexOf('/');
         if (isThisFileInTheDefaultPackage(fileNameStartsFrom)) {
             return "";
         } else {
-            return "package " + prefix.substring(PREFIX.length() + 1, fileNameStartsFrom).replace('/', '.');
+            return "package " + projectPrefix.substring(prefix.length() + 1, fileNameStartsFrom).replace('/', '.');
         }
     }
 
     private boolean isThisFileInTheDefaultPackage(int fileNameStartsFrom) {
-        return PREFIX.length() + 1 >= fileNameStartsFrom;
+        return prefix.length() + 1 >= fileNameStartsFrom;
     }
 
     protected String correctFileName(final String path,
