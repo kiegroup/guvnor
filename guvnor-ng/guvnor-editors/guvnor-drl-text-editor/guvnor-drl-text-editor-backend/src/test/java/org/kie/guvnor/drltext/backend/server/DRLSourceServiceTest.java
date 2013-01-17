@@ -81,6 +81,11 @@ public class DRLSourceServiceTest {
         assertEquals("package org.test\nsomething", toString(drlSourceService.getSource(path).getInputSteam()));
     }
 
+    @Test
+    public void testDefaultPackage() throws Exception {
+
+    }
+
     private String toString(InputStream inputSteam) throws IOException {
         return CharStreams.toString(new InputStreamReader(inputSteam, Charsets.UTF_8));
     }

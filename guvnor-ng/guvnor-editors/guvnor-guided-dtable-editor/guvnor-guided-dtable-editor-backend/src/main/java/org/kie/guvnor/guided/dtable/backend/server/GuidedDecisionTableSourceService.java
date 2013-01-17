@@ -54,7 +54,7 @@ public class GuidedDecisionTableSourceService extends BaseSourceService {
     public SourceContext getSource(final Path path) {
         //Load model and convert to DRL
         final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel(paths.convert(path));
-        final String drl = "package " + stripPackage(path) + "\n" + guidedDecisionTableEditorService.toSource(model);
+        final String drl = returnPackageDeclaration(path) + "\n" + guidedDecisionTableEditorService.toSource(model);
         final boolean hasDSL = hasDSLSentences(model);
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file

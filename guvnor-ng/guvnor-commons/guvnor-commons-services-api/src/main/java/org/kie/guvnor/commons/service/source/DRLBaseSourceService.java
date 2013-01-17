@@ -28,7 +28,7 @@ public abstract class DRLBaseSourceService
     @Override
     public SourceContext getSource(final Path path) {
 
-        String packageDeclaration = "package " + stripPackage(path);
+        String packageDeclaration = returnPackageDeclaration(path);
 
         String drl = getIOService().readAllString(path);
         if (!drl.contains(packageDeclaration)) {

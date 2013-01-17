@@ -22,9 +22,18 @@ public abstract class BaseSourceService implements SourceService {
         return uri.substring(prefixIndex);
     }
 
-    protected String stripPackage(final Path path) {
+    protected String returnPackageDeclaration(final Path path) {
         String prefix = stripProjectPrefix(path);
-        return prefix.substring(PREFIX.length() + 1, prefix.lastIndexOf('/')).replace('/', '.');
+        int fileNameStartsFrom = prefix.lastIndexOf('/');
+        if (isThisFileInTheDefaultPackage(fileNameStartsFrom)) {
+            return "";
+        } else {
+            return "package " + prefix.substring(PREFIX.length() + 1, fileNameStartsFrom).replace('/', '.');
+        }
+    }
+
+    private boolean isThisFileInTheDefaultPackage(int fileNameStartsFrom) {
+        return PREFIX.length() + 1 >= fileNameStartsFrom;
     }
 
     protected String correctFileName(final String path,

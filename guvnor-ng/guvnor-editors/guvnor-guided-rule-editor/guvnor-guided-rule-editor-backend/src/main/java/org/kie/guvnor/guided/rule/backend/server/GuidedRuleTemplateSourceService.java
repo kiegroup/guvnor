@@ -46,7 +46,7 @@ public class GuidedRuleTemplateSourceService extends BaseSourceService {
     public SourceContext getSource( final Path path ) {
         //Load model and convert to DRL
         final TemplateModel model = guidedRuleTemplateEditorService.loadTemplateModel( paths.convert( path ) );
-        final String drl = stripPackage(path) + "\n" + guidedRuleTemplateEditorService.toSource( model );
+        final String drl = returnPackageDeclaration(path) + "\n" + guidedRuleTemplateEditorService.toSource( model );
         final boolean hasDSL = model.hasDSLSentences();
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
