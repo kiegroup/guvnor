@@ -18,12 +18,14 @@ public class PomSourceService
 
     private static final String PATTERN = "pom.xml";
 
+    private static final String DESTINATION = "pom.xml";
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     protected PomSourceService() {
-        super("/");
+        super("");
     }
 
     @Override
@@ -32,7 +34,7 @@ public class PomSourceService
         final ByteArrayInputStream is = new ByteArrayInputStream(kmodule.getBytes());
         final BufferedInputStream bis = new BufferedInputStream(is);
         final SourceContext context = new SourceContext(bis,
-                stripProjectPrefix(path));
+                DESTINATION);
         return context;
     }
 
