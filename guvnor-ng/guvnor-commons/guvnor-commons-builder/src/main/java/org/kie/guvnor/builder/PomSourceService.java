@@ -30,8 +30,8 @@ public class PomSourceService
 
     @Override
     public SourceContext getSource(final Path path) {
-        final String kmodule = ioService.readAllString(path);
-        final ByteArrayInputStream is = new ByteArrayInputStream(kmodule.getBytes());
+        final String source = ioService.readAllString(path);
+        final ByteArrayInputStream is = new ByteArrayInputStream(source.getBytes());
         final BufferedInputStream bis = new BufferedInputStream(is);
         final SourceContext context = new SourceContext(bis,
                 DESTINATION);

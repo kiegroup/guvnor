@@ -20,6 +20,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
@@ -47,8 +48,8 @@ public class ProjectEditorServiceImpl
     private BuildService buildService;
     private ProjectService projectService;
 
-    @Inject
-    GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     public ProjectEditorServiceImpl() {
         // Weld needs this for proxying.
@@ -60,13 +61,17 @@ public class ProjectEditorServiceImpl
                                     final BuildService buildService,
                                     final Event<Results> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
-                                    final ProjectService projectService) {
+                                    final ProjectService projectService,
+                                    GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler,
+                                    Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache) {
         this.ioService = ioService;
         this.paths = paths;
         this.buildService = buildService;
         this.messagesEvent = messagesEvent;
         this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.projectService = projectService;
+        this.groupArtifactVersionModelContentHandler = groupArtifactVersionModelContentHandler;
+        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
     }
 
     @Override
@@ -104,8 +109,12 @@ public class ProjectEditorServiceImpl
     public Path saveGav(final Path pathToGAV,
                         final GroupArtifactVersionModel gavModel) {
         try {
-            System.out.println("------------------------:" + groupArtifactVersionModelContentHandler.toString(gavModel));
-            return paths.convert(ioService.write(paths.convert(pathToGAV), groupArtifactVersionModelContentHandler.toString(gavModel)));
+            Path result = paths.convert(ioService.write(paths.convert(pathToGAV), groupArtifactVersionModelContentHandler.toString(gavModel)));
+
+            invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(result));
+
+            return result;
+
         } catch (IOException e) {
             e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
         }
@@ -145,6 +154,6 @@ public class ProjectEditorServiceImpl
     }
 
     private Path createGavPath(Path activePath, String name) {
-        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI()+ "/" + name + "/pom.xml");
+        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml");
     }
 }

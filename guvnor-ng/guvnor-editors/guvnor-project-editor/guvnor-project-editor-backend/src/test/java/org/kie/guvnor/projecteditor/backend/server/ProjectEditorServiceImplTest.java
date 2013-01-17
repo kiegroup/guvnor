@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
+import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -38,6 +40,8 @@ public class ProjectEditorServiceImplTest {
     private KModuleEditorContentHandler kProjectEditorContentHandler;
     private Event messagesEvent;
     private ProjectService projectService;
+    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    private Event invalidateDMOProjectCache;
 
     @Before
     public void setUp() throws Exception {
@@ -47,7 +51,9 @@ public class ProjectEditorServiceImplTest {
         messagesEvent = mock(Event.class);
         BuildService buildService = mock(BuildService.class);
         projectService = mock(ProjectService.class);
-        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService);
+        groupArtifactVersionModelContentHandler = mock(GroupArtifactVersionModelContentHandler.class);
+        invalidateDMOProjectCache = mock(Event.class);
+        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService, groupArtifactVersionModelContentHandler, invalidateDMOProjectCache);
     }
 
     @Test
@@ -164,22 +170,27 @@ public class ProjectEditorServiceImplTest {
 //        assertEquals( original, loaded );
 //    }
 //
-//    @Test
-//    public void testSaveGAV() throws Exception {
-//        Path path = messagesEvent( Path.class );
-//        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel();
-//
-//        when(
-//                groupArtifactVersionModelContentHandler.toString( gavModel )
-//            ).thenReturn(
-//                "Howdy!"
-//                        );
-//
-//        service.saveGav( path, gavModel );
-//
-//        verify( ioService ).write( path, "Howdy!" );
-//    }
-//
+    @Test
+    public void testSaveGAV() throws Exception {
+        Path vfsPath = mock(Path.class);
+        org.kie.commons.java.nio.file.Path nioPath = mock(org.kie.commons.java.nio.file.Path.class);
+        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel();
+
+        when(paths.convert(vfsPath)).thenReturn(nioPath);
+
+        when(
+                groupArtifactVersionModelContentHandler.toString(gavModel)
+        ).thenReturn(
+                "Howdy!"
+        );
+
+        service.saveGav(vfsPath, gavModel);
+
+        verify(ioService).write(nioPath, "Howdy!");
+        verify(invalidateDMOProjectCache).fire(any());
+    }
+
+    //
 //    @Test
 //    public void testCheckIfKProjectExists() throws Exception {
 //        Path path = PathFactory.newPath( "file://project/pom.xml" );
