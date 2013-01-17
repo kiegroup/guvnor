@@ -376,6 +376,7 @@ public class GuvnorM2Repository {
         model.setGroupId(gav.getGroupId());
         model.setArtifactId(gav.getArtifactId());
         model.setVersion(gav.getVersion());
+        model.setModelVersion( "4.0.0" );
         
 /*        Repository repo = new Repository();
         repo.setId("guvnor-m2-repo");

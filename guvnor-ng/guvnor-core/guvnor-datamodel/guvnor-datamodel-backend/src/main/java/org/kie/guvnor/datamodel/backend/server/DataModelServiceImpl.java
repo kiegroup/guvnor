@@ -154,8 +154,10 @@ public class DataModelServiceImpl
                                                        className );
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 try {
+                    //TODO {manstis} This null check is not required. There is a bug in KieModuleMetaData.getTypeMetaInfo()
+                    final boolean isEvent = ( typeMetaInfo == null ? false : typeMetaInfo.isEvent() );
                     dmoBuilder.addClass( clazz,
-                                         typeMetaInfo.isEvent() );
+                                         isEvent );
                 } catch ( IOException ioe ) {
                     results.getMessages().add( makeMessage( ioe ) );
                 }

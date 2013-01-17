@@ -48,7 +48,8 @@ public class GroupArtifactVersionModelContentHandler {
         model.setGroupId(gavModel.getGroupId());
         model.setArtifactId(gavModel.getArtifactId());
         model.setVersion(gavModel.getVersion());
-        
+        model.setModelVersion( "4.0.0" );
+
         Repository repo = new Repository();
         repo.setId("guvnor-m2-repo");
         repo.setName("Guvnor M2 Repo");

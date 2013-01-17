@@ -8,7 +8,7 @@ import org.kie.guvnor.builder.DefaultBuilderFilter;
  */
 public class ModelBuilderFilter extends DefaultBuilderFilter {
 
-    private static final String PATTERN = ".model.drl";
+    private static final String[] PATTERNS = new String[]{ "pom.xml", ".model.drl" };
 
     @Override
     public boolean accept( final Path path ) {
@@ -18,6 +18,11 @@ public class ModelBuilderFilter extends DefaultBuilderFilter {
         }
 
         final String uri = path.toUri().toString();
-        return uri.substring( uri.length() - PATTERN.length() ).equals( PATTERN );
+        for ( final String pattern : PATTERNS ) {
+            if ( uri.substring( uri.length() - pattern.length() ).equals( pattern ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
