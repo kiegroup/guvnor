@@ -1,7 +1,9 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -74,11 +76,18 @@ public class LRUDataModelOracleCache implements DataModelOracleCache {
         final Path resourcePath = event.getResourcePath();
         final Path projectPath = projectService.resolveProject( resourcePath );
         final String projectUri = projectPath.toURI();
+
+        final List<Path> cacheEntriesToInvalidate = new ArrayList<Path>();
+
         for ( final Path packagePath : oracleCache.keySet() ) {
             final String packageUri = packagePath.toURI();
             if ( packageUri.startsWith( projectUri ) ) {
-                invalidateCache( packagePath );
+                cacheEntriesToInvalidate.add( packagePath );
             }
+        }
+
+        for ( final Path packagePath : cacheEntriesToInvalidate ) {
+            invalidateCache( packagePath );
         }
     }
 
