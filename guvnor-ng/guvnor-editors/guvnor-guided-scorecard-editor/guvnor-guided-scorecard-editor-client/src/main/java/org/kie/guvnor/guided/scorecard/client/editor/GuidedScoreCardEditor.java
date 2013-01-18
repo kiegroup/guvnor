@@ -140,13 +140,15 @@ public class GuidedScoreCardEditor extends Composite {
 
         EnumDropDown enumDropDown = (EnumDropDown) scorecardPropertiesGrid.getWidget( 1,
                                                                                       0 );
-        final String factName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-        model.setFactName( factName );
-        if ( oracleModelFields.get( factName ) != null ) {
-            for ( final ModelField mf : oracleModelFields.get( factName ) ) {
-                if ( mf.getType().equals( factName ) ) {
-                    model.setFactName( mf.getClassName() );
-                    break;
+        if ( enumDropDown.getSelectedIndex() > -1 ) {
+            final String factName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+            model.setFactName( factName );
+            if ( oracleModelFields.get( factName ) != null ) {
+                for ( final ModelField mf : oracleModelFields.get( factName ) ) {
+                    if ( mf.getType().equals( factName ) ) {
+                        model.setFactName( mf.getClassName() );
+                        break;
+                    }
                 }
             }
         }
@@ -173,31 +175,40 @@ public class GuidedScoreCardEditor extends Composite {
             characteristic.setName( ( (TextBox) flexTable.getWidget( 0,
                                                                      1 ) ).getValue() );
 
+            //Characteristic Fact Type
             enumDropDown = (EnumDropDown) flexTable.getWidget( 2,
                                                                0 );
-            final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-            if ( oracleModelFields.get( simpleFactName ) != null ) {
-                for ( ModelField mf : oracleModelFields.get( simpleFactName ) ) {
-                    if ( mf.getType().equals( simpleFactName ) ) {
-                        characteristic.setFact( mf.getClassName() );
-                        break;
+            if ( enumDropDown.getSelectedIndex() > -1 ) {
+                final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+                characteristic.setFact( simpleFactName );
+                if ( oracleModelFields.get( simpleFactName ) != null ) {
+                    for ( ModelField mf : oracleModelFields.get( simpleFactName ) ) {
+                        if ( mf.getType().equals( simpleFactName ) ) {
+                            characteristic.setFact( mf.getClassName() );
+                            break;
+                        }
                     }
                 }
+
+                //Characteristic Field (cannot be set if no Fact Type has been set)
+                enumDropDown = (EnumDropDown) flexTable.getWidget( 2,
+                                                                   1 );
+                if ( enumDropDown.getSelectedIndex() > -1 ) {
+                    String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+                    fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
+                    characteristic.setField( fieldName );
+                } else {
+                    characteristic.setField( "" );
+                }
+                characteristic.setDataType( getDataTypeForField( simpleFactName,
+                                                                 characteristic.getField() ) );
             }
 
-            enumDropDown = (EnumDropDown) flexTable.getWidget( 2,
-                                                               1 );
-            if ( enumDropDown.getSelectedIndex() > -1 ) {
-                String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-                fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
-                characteristic.setField( fieldName );
-            } else {
-                characteristic.setField( "" );
-            }
-
+            //Characteristic Reason Code
             characteristic.setReasonCode( ( (TextBox) flexTable.getWidget( 2,
                                                                            3 ) ).getValue() );
 
+            //Characteristic Base Line Score
             final String baselineScore = ( (TextBox) flexTable.getWidget( 2,
                                                                           2 ) ).getValue();
             try {
@@ -206,10 +217,11 @@ public class GuidedScoreCardEditor extends Composite {
                 characteristic.setBaselineScore( 0.0d );
             }
 
-            model.getCharacteristics().add( characteristic );
-            characteristic.setDataType( getDataTypeForField( simpleFactName, characteristic.getField() ) );
+            //Characteristic Attributes
             characteristic.getAttributes().clear();
             characteristic.getAttributes().addAll( characteristicsAttrMap.get( flexTable ).getList() );
+
+            model.getCharacteristics().add( characteristic );
         }
 
         return model;

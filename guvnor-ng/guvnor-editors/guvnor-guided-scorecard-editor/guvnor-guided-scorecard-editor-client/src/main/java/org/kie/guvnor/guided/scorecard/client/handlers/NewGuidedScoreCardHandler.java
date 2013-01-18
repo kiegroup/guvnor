@@ -52,6 +52,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final ScoreCardModel model = new ScoreCardModel();
+        model.setName( fileName );
 
         new SaveOpWrapper( path, new SaveCommand() {
             @Override
@@ -68,7 +69,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                           model,
                           comment );
             }
-        } );
+        } ).save();
     }
 
 }

@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.dmg.pmml.pmml_4_1.descr.Attribute;
 import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
@@ -47,6 +48,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -85,6 +87,8 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Inject
     private Identity identity;
+
+    private static final String RESOURCE_EXTENSION = "scgd";
 
     @Override
     public ScoreCardModelContent loadContent( final Path path ) {
@@ -195,21 +199,25 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Override
     public String toSource( final ScoreCardModel model ) {
-        return toDRL( model );
+        final BuilderResult result = validateScoreCard( model );
+        if ( !result.hasLines() ) {
+            return toDRL( model );
+        }
+        return toDRL( result );
     }
 
     @Override
     public BuilderResult validate( final Path path,
-                                   final ScoreCardModel content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
+                                   final ScoreCardModel model ) {
+        final BuilderResult result = validateScoreCard( model );
+        return result;
     }
 
     @Override
     public boolean isValid( final Path path,
-                            final ScoreCardModel content ) {
+                            final ScoreCardModel model ) {
         return !validate( path,
-                          content ).hasLines();
+                          model ).hasLines();
     }
 
     @Override
@@ -223,6 +231,14 @@ public class GuidedScoreCardEditorServiceImpl
         final PMML pmml = createPMMLDocument( model );
         return ScorecardCompiler.convertToDRL( pmml,
                                                ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL );
+    }
+
+    private String toDRL( final BuilderResult result ) {
+        final StringBuilder drl = new StringBuilder();
+        for ( final BuilderResultLine msg : result.getLines() ) {
+            drl.append( "//" ).append( msg.getMessage() ).append( "\n" );
+        }
+        return drl.toString();
     }
 
     private PMML createPMMLDocument( final ScoreCardModel model ) {
@@ -372,6 +388,85 @@ public class GuidedScoreCardEditorServiceImpl
             }
         }
         return sb.toString();
+    }
+
+    private BuilderResult validateScoreCard( final ScoreCardModel model ) {
+        final BuilderResult builderResult = new BuilderResult();
+        if ( StringUtils.isBlank( model.getFactName() ) ) {
+            builderResult.addLine( createBuilderResultLine( "Fact Name is empty.",
+                                                            "Setup Parameters" ) );
+        }
+        if ( StringUtils.isBlank( model.getFieldName() ) ) {
+            builderResult.addLine( createBuilderResultLine( "Resultant Score Field is empty.",
+                                                            "Setup Parameters" ) );
+        }
+        if ( model.getCharacteristics().size() == 0 ) {
+            builderResult.addLine( createBuilderResultLine( "No Characteristics Found.",
+                                                            "Characteristics" ) );
+        }
+        int ctr = 1;
+        for ( final org.kie.guvnor.guided.scorecard.model.Characteristic c : model.getCharacteristics() ) {
+            String characteristicName = "Characteristic ('#" + ctr + "')";
+            if ( StringUtils.isBlank( c.getName() ) ) {
+                builderResult.addLine( createBuilderResultLine( "Name is empty.",
+                                                                characteristicName ) );
+            } else {
+                characteristicName = "Characteristic ('" + c.getName() + "')";
+            }
+            if ( StringUtils.isBlank( c.getFact() ) ) {
+                builderResult.addLine( createBuilderResultLine( "Fact is empty.",
+                                                                characteristicName ) );
+            }
+            if ( StringUtils.isBlank( c.getField() ) ) {
+                builderResult.addLine( createBuilderResultLine( "Characteristic Field is empty.",
+                                                                characteristicName ) );
+            } else if ( StringUtils.isBlank( c.getDataType() ) ) {
+                builderResult.addLine( createBuilderResultLine( "Internal Error (missing datatype).",
+                                                                characteristicName ) );
+            }
+            if ( c.getAttributes().size() == 0 ) {
+                builderResult.addLine( createBuilderResultLine( "No Attributes Found.",
+                                                                characteristicName ) );
+            }
+            if ( model.isUseReasonCodes() ) {
+                if ( StringUtils.isBlank( model.getReasonCodeField() ) ) {
+                    builderResult.addLine( createBuilderResultLine( "Resultant Reason Codes Field is empty.",
+                                                                    characteristicName ) );
+                }
+                if ( !"none".equalsIgnoreCase( model.getReasonCodesAlgorithm() ) ) {
+                    builderResult.addLine( createBuilderResultLine( "Baseline Score is not specified.",
+                                                                    characteristicName ) );
+                }
+            }
+            int attrCtr = 1;
+            for ( final org.kie.guvnor.guided.scorecard.model.Attribute attribute : c.getAttributes() ) {
+                final String attributeName = "Attribute ('#" + attrCtr + "')";
+                if ( StringUtils.isBlank( attribute.getOperator() ) ) {
+                    builderResult.addLine( createBuilderResultLine( "Attribute Operator is empty.",
+                                                                    attributeName ) );
+                }
+                if ( StringUtils.isBlank( attribute.getValue() ) ) {
+                    builderResult.addLine( createBuilderResultLine( "Attribute Value is empty.",
+                                                                    attributeName ) );
+                }
+                if ( model.isUseReasonCodes() ) {
+                    if ( StringUtils.isBlank( c.getReasonCode() ) ) {
+                        if ( StringUtils.isBlank( attribute.getReasonCode() ) ) {
+                            builderResult.addLine( createBuilderResultLine( "Reason Code must be set at either attribute or characteristic.",
+                                                                            attributeName ) );
+                        }
+                    }
+                }
+                attrCtr++;
+            }
+            ctr++;
+        }
+        return builderResult;
+    }
+
+    private BuilderResultLine createBuilderResultLine( final String msg,
+                                                       final String name ) {
+        return new BuilderResultLine().setMessage( msg ).setResourceFormat( RESOURCE_EXTENSION ).setResourceName( name );
     }
 
 }

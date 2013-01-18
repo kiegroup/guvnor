@@ -68,7 +68,7 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
                           factModel,
                           comment );
             }
-        } );
+        } ).save();
     }
 
 }
