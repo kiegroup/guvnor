@@ -28,4 +28,10 @@ public interface Constants
 
     public static final Constants INSTANCE = GWT.create( Constants.class );
 
+    public String scorecard();
+
+    public String newGuidedScoreCardDescription();
+
+    public String scorecardCharacteristics();
+
 }

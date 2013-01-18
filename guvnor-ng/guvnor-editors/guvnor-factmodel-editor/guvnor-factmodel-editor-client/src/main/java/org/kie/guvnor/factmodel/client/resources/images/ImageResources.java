@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.factmodel.client.resources;
+package org.kie.guvnor.factmodel.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -26,16 +26,16 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    @Source("images/edit.gif")
+    @Source("edit.gif")
     ImageResource edit();
 
-    @Source("images/shuffle_up.gif")
+    @Source("shuffle_up.gif")
     ImageResource shuffleUp();
 
-    @Source("images/shuffle_down.gif")
+    @Source("shuffle_down.gif")
     ImageResource shuffleDown();
 
-    @Source("images/factModelIcon.gif")
+    @Source("factModelIcon.gif")
     ImageResource factModelIcon();
 
 }

@@ -38,7 +38,7 @@ import org.kie.guvnor.datamodel.model.FieldNature;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
+import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.ActionFieldFunction;
 import org.kie.guvnor.guided.rule.model.ActionFieldValue;
 import org.kie.guvnor.guided.rule.model.ActionInsertFact;

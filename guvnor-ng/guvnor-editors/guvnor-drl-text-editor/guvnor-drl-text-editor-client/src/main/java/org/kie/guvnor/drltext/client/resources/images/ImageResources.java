@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.drltext.client.resources;
+package org.kie.guvnor.drltext.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -26,9 +26,9 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    @Source("images/class.gif")
+    @Source("class.gif")
     ImageResource classImage();
 
-    @Source("images/field.gif")
+    @Source("field.gif")
     ImageResource field();
 }

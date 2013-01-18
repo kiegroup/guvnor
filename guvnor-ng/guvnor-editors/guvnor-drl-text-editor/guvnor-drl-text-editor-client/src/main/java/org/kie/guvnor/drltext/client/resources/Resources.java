@@ -17,6 +17,7 @@ package org.kie.guvnor.drltext.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import org.kie.guvnor.drltext.client.resources.css.StylesCss;
 
 public interface Resources
         extends

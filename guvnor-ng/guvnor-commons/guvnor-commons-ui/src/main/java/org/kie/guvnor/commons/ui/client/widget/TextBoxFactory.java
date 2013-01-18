@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.rule.client.widget;
+package org.kie.guvnor.commons.ui.client.widget;
 
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.datamodel.oracle.DataType;

@@ -190,6 +190,10 @@ public class DefaultDataModel implements DataModelOracle {
         return field == null ? null : field.getType();
     }
 
+    public Map<String, ModelField[]> getModelFields() {
+        return modelFields;
+    }
+
     // ####################################
     // Operators
     // ####################################

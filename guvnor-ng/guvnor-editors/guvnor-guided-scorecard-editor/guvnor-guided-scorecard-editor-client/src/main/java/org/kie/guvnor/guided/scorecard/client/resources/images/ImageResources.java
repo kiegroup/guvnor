@@ -18,6 +18,7 @@ package org.kie.guvnor.guided.scorecard.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface ImageResources
         extends
@@ -25,4 +26,6 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
+    @Source("scoreCardIcon.gif")
+    ImageResource scoreCardIcon();
 }

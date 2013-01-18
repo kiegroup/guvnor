@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.dsltext.client.resources;
+package org.kie.guvnor.dsltext.client.resources.css;
 
 import com.google.gwt.resources.client.CssResource;
 

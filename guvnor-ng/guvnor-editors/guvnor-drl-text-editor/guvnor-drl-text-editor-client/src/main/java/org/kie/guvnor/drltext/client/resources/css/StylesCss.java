@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.enums.client.resources;
+package org.kie.guvnor.drltext.client.resources.css;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.CssResource;
 
-public interface ImageResources
+/**
+ * General CSS for Guvnor. Use of standalone CSS files should be migrated to
+ * here
+ */
+public interface StylesCss
         extends
-        ClientBundle {
+        CssResource {
+    
+    @ClassName("default-text-Area")
+    String defaultTextArea();
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    @ClassName("category-explorer-Tree")
+    String categoryExplorerTree();
 
-    @Source("images/enumIcon.gif")
-    ImageResource enumIcon();
 
 }

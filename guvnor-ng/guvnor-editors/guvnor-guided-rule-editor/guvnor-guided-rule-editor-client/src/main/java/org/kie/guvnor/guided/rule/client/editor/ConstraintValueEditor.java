@@ -56,7 +56,7 @@ import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.widget.ExpressionBuilder;
-import org.kie.guvnor.guided.rule.client.widget.TextBoxFactory;
+import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
 import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;

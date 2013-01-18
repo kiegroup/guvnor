@@ -24,6 +24,7 @@ import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
 
 public interface DataModelOracle {
 
@@ -31,6 +32,8 @@ public interface DataModelOracle {
 
     String[] getEnumValues( final String factType,
                             final String factField );
+
+    Map<String, ModelField[]> getModelFields();
 
     boolean hasEnums( String type );
 

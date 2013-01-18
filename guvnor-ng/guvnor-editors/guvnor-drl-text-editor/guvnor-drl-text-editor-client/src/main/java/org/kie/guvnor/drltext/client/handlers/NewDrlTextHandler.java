@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.drltext.client.resources.ImageResources;
+import org.kie.guvnor.drltext.client.resources.images.ImageResources;
 import org.kie.guvnor.drltext.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;

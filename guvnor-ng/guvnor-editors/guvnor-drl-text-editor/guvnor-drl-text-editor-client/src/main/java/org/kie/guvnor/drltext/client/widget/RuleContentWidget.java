@@ -24,7 +24,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
 import org.kie.guvnor.drltext.client.resources.Resources;
-import org.kie.guvnor.drltext.client.resources.StylesCss;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.

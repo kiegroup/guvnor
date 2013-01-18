@@ -67,10 +67,6 @@ public interface Constants
 
     String FormulaEvaluateToAValue();
 
-    String RefreshingList();
-
-    String UnableToLoadList();
-
     String AdvancedOptions();
 
     String BoundVariable();

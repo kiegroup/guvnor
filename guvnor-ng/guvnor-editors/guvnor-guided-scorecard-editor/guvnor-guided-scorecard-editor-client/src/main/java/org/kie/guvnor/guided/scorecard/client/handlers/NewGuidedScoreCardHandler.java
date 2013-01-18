@@ -1,4 +1,4 @@
-package org.kie.guvnor.factmodel.client.handlers;
+package org.kie.guvnor.guided.scorecard.client.handlers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,25 +10,25 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
-import org.kie.guvnor.factmodel.client.resources.images.ImageResources;
-import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
-import org.kie.guvnor.factmodel.model.FactModels;
-import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
+import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
+import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * Handler for the creation of new Fact Models
+ * Handler for the creation of new Guided Score Cards
  */
 @ApplicationScoped
-public class NewFactModelHandler extends DefaultNewResourceHandler {
+public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "model.drl";
+    private static String FILE_TYPE = "scgd";
 
     @Inject
-    private Caller<FactModelService> factModelService;
+    private Caller<GuidedScoreCardEditorService> scoreCardService;
 
     @Inject
     private PlaceManager placeManager;
@@ -40,32 +40,32 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newFactModelDescription();
+        return Constants.INSTANCE.newGuidedScoreCardDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.factModelIcon() );
+        return new Image( ImageResources.INSTANCE.scoreCardIcon() );
     }
 
     @Override
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
-        final FactModels factModel = new FactModels();
+        final ScoreCardModel model = new ScoreCardModel();
 
         new SaveOpWrapper( path, new SaveCommand() {
             @Override
             public void execute( final String comment ) {
-                factModelService.call( new RemoteCallback<Void>() {
+                scoreCardService.call( new RemoteCallback<Void>() {
                     @Override
                     public void callback( Void aVoid ) {
                         notifySuccess();
                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "FactModelsEditor" );
+                                                                         "GuidedScoreCardEditor" );
                         placeManager.goTo( place );
                     }
                 } ).save( path,
-                          factModel,
+                          model,
                           comment );
             }
         } );

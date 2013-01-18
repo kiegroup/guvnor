@@ -103,4 +103,9 @@ public interface CommonConstants
     String AddAnOptionalCheckInComment();
 
     String CheckIn();
+
+    String RefreshingList();
+
+    String UnableToLoadList();
+
 }
