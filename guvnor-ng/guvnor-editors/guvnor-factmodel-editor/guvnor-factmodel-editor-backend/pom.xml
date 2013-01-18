@@ -15,9 +15,15 @@
   <description>Fact Model Editor Backend</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-factmodel-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-api</artifactId>
     </dependency>
 
     <dependency>

@@ -89,12 +89,6 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public String[] loadDropDownExpression( final String[] valuePairs,
-                                            final String expression ) {
-        return new String[ 0 ];
-    }
-
-    @Override
     public String toSource( final RuleModel model ) {
         return BRDRLPersistence.getInstance().marshal( model );
     }

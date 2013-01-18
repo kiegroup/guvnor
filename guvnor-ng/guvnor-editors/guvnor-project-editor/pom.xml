@@ -12,6 +12,9 @@
   <artifactId>guvnor-project-editor</artifactId>
   <packaging>pom</packaging>
 
+  <name>Project Editor</name>
+  <description>Project Editor</description>
+
   <modules>
     <module>guvnor-project-editor-api</module>
     <module>guvnor-project-editor-client</module>
