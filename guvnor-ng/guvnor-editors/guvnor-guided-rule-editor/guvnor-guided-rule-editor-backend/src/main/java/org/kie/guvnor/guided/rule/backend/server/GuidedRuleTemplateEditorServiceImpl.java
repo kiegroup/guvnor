@@ -19,8 +19,10 @@ package org.kie.guvnor.guided.rule.backend.server;
 import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -33,8 +35,8 @@ import org.kie.guvnor.guided.rule.model.templates.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 @Service
 @ApplicationScoped
@@ -42,7 +44,11 @@ public class GuidedRuleTemplateEditorServiceImpl
         implements GuidedRuleTemplateEditorService {
 
     @Inject
-    private VFSService vfs;
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private ProjectService projectService;
@@ -59,7 +65,7 @@ public class GuidedRuleTemplateEditorServiceImpl
 
     @Override
     public TemplateModel loadTemplateModel( final Path path ) {
-        return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
+        return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
@@ -67,8 +73,8 @@ public class GuidedRuleTemplateEditorServiceImpl
                       final TemplateModel model ) {
         final BRLPersistence p = BRDRTXMLPersistence.getInstance();
         final String xml = p.marshal( model );
-        vfs.write( path,
-                   xml );
+        ioService.write( paths.convert( path ),
+                         xml );
     }
 
     @Override

@@ -18,27 +18,26 @@ package org.kie.guvnor.guided.rule.backend.server;
 
 import java.util.Collection;
 import java.util.Date;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
-import org.kie.guvnor.guided.rule.backend.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRLPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRXMLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 @Service
 @ApplicationScoped
@@ -46,7 +45,11 @@ public class GuidedRuleEditorServiceImpl
         implements GuidedRuleEditorService {
 
     @Inject
-    private VFSService vfs;
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private ProjectService projectService;
@@ -63,7 +66,7 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public RuleModel loadRuleModel( Path path ) {
-        return BRXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
+        return BRXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
@@ -71,8 +74,8 @@ public class GuidedRuleEditorServiceImpl
                       final RuleModel model ) {
         final BRLPersistence p = BRXMLPersistence.getInstance();
         final String xml = p.marshal( model );
-        vfs.write( path,
-                   xml );
+        ioService.write( paths.convert( path ),
+                         xml );
     }
 
     @Override
@@ -80,11 +83,11 @@ public class GuidedRuleEditorServiceImpl
                       final RuleModel factModels,
                       final String comment,
                       final Date when,
-                      final String lastContributor) {
+                      final String lastContributor ) {
         //TODO:
 
     }
-    
+
     @Override
     public String[] loadDropDownExpression( final String[] valuePairs,
                                             final String expression ) {
@@ -93,9 +96,6 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public String toSource( final RuleModel model ) {
-        if ( model instanceof TemplateModel ) {
-            return BRDRTPersistence.getInstance().marshal( model );
-        }
         return BRDRLPersistence.getInstance().marshal( model );
     }
 

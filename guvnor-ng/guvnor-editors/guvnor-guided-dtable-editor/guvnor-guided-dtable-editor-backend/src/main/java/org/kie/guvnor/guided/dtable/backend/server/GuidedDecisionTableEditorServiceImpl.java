@@ -20,8 +20,10 @@ import java.util.Collection;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -34,8 +36,8 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 @Service
 @ApplicationScoped
@@ -43,7 +45,11 @@ public class GuidedDecisionTableEditorServiceImpl
         implements GuidedDecisionTableEditorService {
 
     @Inject
-    private VFSService vfs;
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private ProjectService projectService;
@@ -53,15 +59,15 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        final GuidedDecisionTable52 model = loadRuleModel( path  );
+        final GuidedDecisionTable52 model = loadRuleModel( path );
         final DataModelOracle dataModel = dataModelService.getDataModel( path );
         return new GuidedDecisionTableEditorContent( dataModel,
                                                      model );
     }
 
     @Override
-    public GuidedDecisionTable52 loadRuleModel(Path path) {
-        return GuidedDTXMLPersistence.getInstance().unmarshal( vfs.readAllString( path ) );
+    public GuidedDecisionTable52 loadRuleModel( Path path ) {
+        return GuidedDTXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
@@ -69,8 +75,8 @@ public class GuidedDecisionTableEditorServiceImpl
                       final GuidedDecisionTable52 model ) {
         final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
         final String xml = p.marshal( model );
-        vfs.write( path,
-                   xml );
+        ioService.write( paths.convert( path ),
+                         xml );
     }
 
     @Override

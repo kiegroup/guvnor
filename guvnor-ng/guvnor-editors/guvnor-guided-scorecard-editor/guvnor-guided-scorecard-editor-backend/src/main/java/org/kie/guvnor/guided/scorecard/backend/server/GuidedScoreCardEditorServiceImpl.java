@@ -62,9 +62,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
 
-/**
- *
- */
 @Service
 @ApplicationScoped
 public class GuidedScoreCardEditorServiceImpl
