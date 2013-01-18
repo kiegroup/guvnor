@@ -50,9 +50,10 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
+import org.drools.kproject.ReleaseIdImpl;
 import org.kie.builder.ReleaseId;
-import org.kie.scanner.Aether;
 import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.scanner.MavenRepository;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.deployment.DeployRequest;
 import org.sonatype.aether.deployment.DeploymentException;
@@ -148,23 +149,7 @@ public class GuvnorM2Repository {
     }
 
     public void deployArtifact(GAV gav, File jarFile, File pomfile) {
-        Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(), gav.getArtifactId(), "jar", gav.getVersion() );
-        jarArtifact = jarArtifact.setFile( jarFile );
-
-        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
-        pomArtifact = pomArtifact.setFile( pomfile );
-
-        DeployRequest deployRequest = new DeployRequest();
-        deployRequest
-                .addArtifact( jarArtifact )
-                .addArtifact( pomArtifact )
-                .setRepository(getGuvnorM2Repository());
-
-        try {
-            Aether.DEFUALT_AETHER.getSystem().deploy(Aether.DEFUALT_AETHER.getSession(), deployRequest);
-        } catch (DeploymentException e) {
-            throw new RuntimeException(e);
-        }
+        MavenRepository.getMavenRepository().deployArtifact(new ReleaseIdImpl(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()), jarFile, pomfile);
     }
 
     private RemoteRepository getGuvnorM2Repository() {
@@ -375,7 +360,7 @@ public class GuvnorM2Repository {
         model.setArtifactId(gav.getArtifactId());
         model.setVersion(gav.getVersion());
         model.setModelVersion( "4.0.0" );
-        
+
 /*        Repository repo = new Repository();
         repo.setId("guvnor-m2-repo");
         repo.setName("Guvnor M2 Repo");
