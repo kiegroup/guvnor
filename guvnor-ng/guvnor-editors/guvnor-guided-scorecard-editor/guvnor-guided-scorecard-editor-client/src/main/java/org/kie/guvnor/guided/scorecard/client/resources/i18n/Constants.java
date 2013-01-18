@@ -34,4 +34,56 @@ public interface Constants
 
     public String scorecardCharacteristics();
 
+    public String scoreCardTitle0( final String scoreCardName );
+
+    public String setupParameters();
+
+    public String characteristics();
+
+    public String facts();
+
+    public String resultantScoreField();
+
+    public String initialScore();
+
+    public String useReasonCodes();
+
+    public String resultantReasonCodesField();
+
+    public String reasonCodesAlgorithm();
+
+    public String baselineScore();
+
+    public String addCharacteristic();
+
+    public String addAttribute();
+
+    public String untitled();
+
+    public String promptDeleteCharacteristic0( final String characteristicName );
+
+    public String promptDeleteAttribute();
+
+    public String notApplicable();
+
+    public String removeCharacteristic();
+
+    public String name();
+
+    public String fact();
+
+    public String characteristic();
+
+    public String reasonCode();
+
+    public String remove();
+
+    public String operator();
+
+    public String value();
+
+    public String partialScore();
+
+    public String actions();
+
 }

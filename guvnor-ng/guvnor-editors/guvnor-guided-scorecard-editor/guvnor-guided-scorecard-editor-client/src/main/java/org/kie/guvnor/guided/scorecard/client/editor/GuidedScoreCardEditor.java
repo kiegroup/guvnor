@@ -100,17 +100,17 @@ public class GuidedScoreCardEditor extends Composite {
         this.oracle = oracle;
         this.oracleModelFields = oracle.getModelFields();
 
-        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( "Scorecard " + " ( " + model.getName() + " )" );
+        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.scoreCardTitle0( model.getName() ) );
         disclosurePanel.setWidth( "100%" );
         disclosurePanel.setTitle( Constants.INSTANCE.scorecard() );
         disclosurePanel.setOpen( true );
 
-        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel( "Setup Parameters" );
+        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel( Constants.INSTANCE.setupParameters() );
         configPanel.setWidth( "95%" );
         configPanel.setOpen( true );
         configPanel.add( getScorecardProperties() );
 
-        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( "Characteristics" );
+        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( Constants.INSTANCE.characteristics() );
         characteristicsPanel.setOpen( model.getCharacteristics().size() > 0 );
         characteristicsPanel.setWidth( "95%" );
         characteristicsPanel.add( getCharacteristics() );
@@ -229,7 +229,8 @@ public class GuidedScoreCardEditor extends Composite {
 
     private Widget getScorecardProperties() {
 
-        scorecardPropertiesGrid = new Grid( 4, 4 );
+        scorecardPropertiesGrid = new Grid( 4,
+                                            4 );
         scorecardPropertiesGrid.setCellSpacing( 5 );
         scorecardPropertiesGrid.setCellPadding( 5 );
 
@@ -287,13 +288,13 @@ public class GuidedScoreCardEditor extends Composite {
 
         scorecardPropertiesGrid.setText( 0,
                                          0,
-                                         "Facts" );
+                                         Constants.INSTANCE.facts() );
         scorecardPropertiesGrid.setText( 0,
                                          1,
-                                         "Resultant Score Field" );
+                                         Constants.INSTANCE.resultantScoreField() );
         scorecardPropertiesGrid.setText( 0,
                                          2,
-                                         "Initial Score" );
+                                         Constants.INSTANCE.initialScore() );
 
         scorecardPropertiesGrid.setWidget( 1,
                                            0,
@@ -307,16 +308,16 @@ public class GuidedScoreCardEditor extends Composite {
 
         scorecardPropertiesGrid.setText( 2,
                                          0,
-                                         "Use Reason Codes" );
+                                         Constants.INSTANCE.useReasonCodes() );
         scorecardPropertiesGrid.setText( 2,
                                          1,
-                                         "Resultant Reason Codes Field" );
+                                         Constants.INSTANCE.resultantReasonCodesField() );
         scorecardPropertiesGrid.setText( 2,
                                          2,
-                                         "Reason Codes Algorithm" );
+                                         Constants.INSTANCE.reasonCodesAlgorithm() );
         scorecardPropertiesGrid.setText( 2,
                                          3,
-                                         "Baseline Score" );
+                                         Constants.INSTANCE.baselineScore() );
 
         scorecardPropertiesGrid.setWidget( 3,
                                            0,
@@ -360,7 +361,7 @@ public class GuidedScoreCardEditor extends Composite {
     private Widget getCharacteristics() {
         characteristicsPanel = new VerticalPanel();
         final HorizontalPanel toolbar = new HorizontalPanel();
-        btnAddCharacteristic = new Button( "New Characteristic",
+        btnAddCharacteristic = new Button( Constants.INSTANCE.addCharacteristic(),
                                            new ClickHandler() {
                                                public void onClick( ClickEvent event ) {
                                                    addCharacteristic( null );
@@ -378,12 +379,13 @@ public class GuidedScoreCardEditor extends Composite {
 
     private void removeCharacteristic( final DirtyableFlexTable selectedTable ) {
         if ( selectedTable != null ) {
-            final TextBox tbName = (TextBox) selectedTable.getWidget( 0, 1 );
+            final TextBox tbName = (TextBox) selectedTable.getWidget( 0,
+                                                                      1 );
             String name = tbName.getValue();
             if ( name == null || name.trim().length() == 0 ) {
                 name = "Untitled";
             }
-            final String msg = "Are you sure you want to delete '" + ( name ) + "' Characteristic?";
+            final String msg = Constants.INSTANCE.promptDeleteCharacteristic0( name );
             if ( Window.confirm( msg ) ) {
                 characteristicsTables.remove( selectedTable );
                 characteristicsAttrMap.remove( selectedTable );
@@ -427,7 +429,7 @@ public class GuidedScoreCardEditor extends Composite {
                 etc.setEnabled( false );
                 ( (Button) selectedTable.getWidget( 0, 3 ) ).setEnabled( characteristicsAttrMap.get( selectedTable ).getList().size() != 2 );
                 if ( newAttribute != null ) {
-                    newAttribute.setValue( "N/A" );
+                    newAttribute.setValue( Constants.INSTANCE.notApplicable() );
                 }
             } else if ( "String".equalsIgnoreCase( field ) ) {
                 newOptions = Arrays.asList( stringOperators );
@@ -449,7 +451,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setStyleName( "rule-ListHeader" );
 
-        Button btnAddAttribute = new Button( "Add Attribute",
+        Button btnAddAttribute = new Button( Constants.INSTANCE.addAttribute(),
                                              new ClickHandler() {
                                                  public void onClick( final ClickEvent event ) {
                                                      addAttribute( cGrid,
@@ -457,7 +459,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                  }
                                              } );
 
-        Button btnRemoveCharacteristic = new Button( "Remove Characteristic",
+        Button btnRemoveCharacteristic = new Button( Constants.INSTANCE.removeCharacteristic(),
                                                      new ClickHandler() {
                                                          public void onClick( ClickEvent event ) {
                                                              removeCharacteristic( cGrid );
@@ -501,7 +503,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setWidget( 0,
                          0,
-                         new Label( "Name" ) );
+                         new Label( Constants.INSTANCE.name() ) );
         final TextBox tbName = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
         cGrid.setWidget( 0,
                          1,
@@ -515,16 +517,16 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setWidget( 1,
                          0,
-                         new Label( "Fact" ) );
+                         new Label( Constants.INSTANCE.fact() ) );
         cGrid.setWidget( 1,
                          1,
-                         new Label( "Characteristic" ) );
+                         new Label( Constants.INSTANCE.characteristic() ) );
         cGrid.setWidget( 1,
                          2,
-                         new Label( "Baseline Score" ) );
+                         new Label( Constants.INSTANCE.baselineScore() ) );
         cGrid.setWidget( 1,
                          3,
-                         new Label( "Reason Code" ) );
+                         new Label( Constants.INSTANCE.reasonCode() ) );
 
         cGrid.setWidget( 2,
                          0,
@@ -673,7 +675,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         final ActionCell.Delegate<Attribute> delegate = new ActionCell.Delegate<Attribute>() {
             public void execute( final Attribute attribute ) {
-                if ( Window.confirm( "Remove this attribute?" ) ) {
+                if ( Window.confirm( Constants.INSTANCE.promptDeleteAttribute() ) ) {
                     final List<Attribute> list = characteristicsAttrMap.get( cGrid ).getList();
                     list.remove( attribute );
                     ( (EnumDropDown) cGrid.getWidget( 2,
@@ -687,21 +689,21 @@ public class GuidedScoreCardEditor extends Composite {
             }
         };
 
-        final Cell<Attribute> actionCell = new ActionCell<Attribute>( "Remove",
+        final Cell<Attribute> actionCell = new ActionCell<Attribute>( Constants.INSTANCE.remove(),
                                                                       delegate );
         final Column<Attribute, String> actionColumn = new IdentityColumn( actionCell );
 
         // Add the columns.
         attributeCellTable.addColumn( operatorColumn,
-                                      "Operator" );
+                                      Constants.INSTANCE.operator() );
         attributeCellTable.addColumn( valueColumn,
-                                      "Value" );
+                                      Constants.INSTANCE.value() );
         attributeCellTable.addColumn( partialScoreColumn,
-                                      "Partial Score" );
+                                      Constants.INSTANCE.partialScore() );
         attributeCellTable.addColumn( reasonCodeColumn,
-                                      "Reason Code" );
+                                      Constants.INSTANCE.reasonCode() );
         attributeCellTable.addColumn( actionColumn,
-                                      "Actions" );
+                                      Constants.INSTANCE.actions() );
         attributeCellTable.setWidth( "100%",
                                      true );
 
