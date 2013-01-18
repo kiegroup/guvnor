@@ -23,6 +23,7 @@ import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
+import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
@@ -33,7 +34,9 @@ public interface GuidedScoreCardEditorService
                 ValidationService<ScoreCardModel>,
                 SimpleVerificationService<ScoreCardModel> {
 
-    ScoreCardModel loadContent( final Path path );
+    ScoreCardModelContent loadContent( final Path path );
+
+    ScoreCardModel loadModel( final Path path );
 
     void save( final Path path,
                final ScoreCardModel factModels,
