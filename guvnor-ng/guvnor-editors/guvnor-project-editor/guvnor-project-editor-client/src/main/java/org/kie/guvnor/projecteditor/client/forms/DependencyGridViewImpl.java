@@ -151,4 +151,9 @@ public class DependencyGridViewImpl
     void onAddDependency(ClickEvent event) {
         presenter.onAddDependencyButton();
     }
+
+    @UiHandler("addFromRepositoryDependencyButton")
+    void onAddDependencyFromRepository(ClickEvent event) {
+        presenter.onAddDependencyFromRepositoryButton();
+    }
 }

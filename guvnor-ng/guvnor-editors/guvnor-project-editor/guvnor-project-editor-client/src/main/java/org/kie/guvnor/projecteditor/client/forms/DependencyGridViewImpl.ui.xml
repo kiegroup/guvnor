@@ -40,6 +40,7 @@
           </div>
           <div style="float:right;">
             <gwt:Button ui:field="addDependencyButton" text='{i18n.Add}'/>
+            <gwt:Button ui:field="addFromRepositoryDependencyButton" text='{i18n.AddFromRepository}'/>
           </div>
           <div style="clear:both;"/>
         </div>

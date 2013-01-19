@@ -28,9 +28,12 @@ public class DependencyGrid
 
     private final DependencyGridView view;
     private List<Dependency> dependencies;
+    private final DependencySelectorPopup dependencySelectorPopup;
 
     @Inject
-    public DependencyGrid(DependencyGridView view) {
+    public DependencyGrid(DependencySelectorPopup dependencySelectorPopup,
+                          DependencyGridView view) {
+        this.dependencySelectorPopup = dependencySelectorPopup;
         this.view = view;
         view.setPresenter(this);
     }
@@ -49,5 +52,10 @@ public class DependencyGrid
     public void onAddDependencyButton() {
         dependencies.add(new Dependency());
         fillList(dependencies);
+    }
+
+    @Override
+    public void onAddDependencyFromRepositoryButton() {
+        dependencySelectorPopup.show();
     }
 }

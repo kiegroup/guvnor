@@ -24,9 +24,10 @@ import com.google.gwt.user.cellview.client.Column;
 
 public class SelectionColumn<T> extends Column<T, Boolean> {
 
-    public static <T> void createAndAddSelectionColumn(CellTable<T> cellTable) {
+    public static <T> SelectionColumn<T> createAndAddSelectionColumn(CellTable<T> cellTable) {
         SelectionColumn<T> selectionColumn = new SelectionColumn<T>(cellTable);
         cellTable.addColumn(selectionColumn, SafeHtmlUtils.fromSafeConstant("<br>"));
+        return selectionColumn;
     }
 
     private final CellTable<T> cellTable;

@@ -29,9 +29,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -40,11 +37,9 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 
 public class M2RepoEditorView
@@ -100,10 +95,10 @@ public class M2RepoEditorView
             public void onClick(ClickEvent arg0) {
                 resultsP.clear();             
                 if ( searchTextBox.getText() ==null || searchTextBox.getText().equals( "" ) ) {
-                    JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
+                    JarListEditor table = new JarListEditor(m2RepoService);
                     resultsP.add( table );                    
                 } else {
-                    JarListPagedTable table = new JarListPagedTable(m2RepoService, searchTextBox.getText());
+                    JarListEditor table = new JarListEditor(m2RepoService, searchTextBox.getText());
                     resultsP.add( table );
                 }
             }
@@ -124,7 +119,7 @@ public class M2RepoEditorView
         container.add( resultsP );
         
         resultsP.clear();
-        JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
+        JarListEditor table = new JarListEditor(m2RepoService);
         resultsP.add( table );
         
         layout.add(container);
@@ -163,7 +158,7 @@ public class M2RepoEditorView
                     hiddenVersionIdField.setText(null);   
                     
                     resultsP.clear();             
-                    JarListPagedTable table = new JarListPagedTable(m2RepoService, null);
+                    JarListEditor table = new JarListEditor(m2RepoService);
                     resultsP.add( table );                  
                         
                 } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {

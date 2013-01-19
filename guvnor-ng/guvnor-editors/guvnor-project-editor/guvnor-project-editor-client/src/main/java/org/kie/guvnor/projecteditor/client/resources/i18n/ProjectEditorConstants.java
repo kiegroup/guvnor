@@ -47,6 +47,8 @@ public interface ProjectEditorConstants
 
     String Add();
 
+    String AddFromRepository();
+
     String Delete();
 
     String MakeDefault();

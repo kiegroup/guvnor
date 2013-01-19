@@ -31,12 +31,14 @@ public class DependencyGridTest {
     private DependencyGrid grid;
     private DependencyGridView view;
     private DependencyGridView.Presenter presenter;
+    private DependencySelectorPopup dependencySelectorPopup;
 
 
     @Before
     public void setUp() throws Exception {
         view = mock(DependencyGridView.class);
-        grid = new DependencyGrid(view);
+        dependencySelectorPopup = mock(DependencySelectorPopup.class);
+        grid = new DependencyGrid(dependencySelectorPopup, view);
         presenter = grid;
     }
 
@@ -55,6 +57,14 @@ public class DependencyGridTest {
         grid.fillList(dependencies);
 
         verify(view).setList(dependencies);
+
+    }
+
+
+    @Test
+    public void testAddFromRepository() throws Exception {
+
+        presenter.onAddDependencyFromRepositoryButton();
 
     }
 }

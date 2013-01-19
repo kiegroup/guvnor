@@ -28,6 +28,7 @@ public interface DependencyGridView
 
         void onAddDependencyButton();
 
+        void onAddDependencyFromRepositoryButton();
     }
     void setPresenter(Presenter presenter);
 
