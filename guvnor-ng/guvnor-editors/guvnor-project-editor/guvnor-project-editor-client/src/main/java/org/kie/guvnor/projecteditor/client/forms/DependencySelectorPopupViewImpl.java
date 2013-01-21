@@ -40,7 +40,7 @@ public class DependencySelectorPopupViewImpl
             public void update(int index,
                                JarListPageRow row,
                                String value) {
-                presenter.onPathSelection(value);
+                presenter.onPathSelection(row.getPath());
             }
         });
 

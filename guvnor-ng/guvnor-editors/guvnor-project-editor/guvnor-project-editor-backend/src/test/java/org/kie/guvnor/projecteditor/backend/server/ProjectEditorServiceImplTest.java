@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
@@ -53,7 +54,8 @@ public class ProjectEditorServiceImplTest {
         projectService = mock(ProjectService.class);
         POMContentHandler = mock(POMContentHandler.class);
         invalidateDMOProjectCache = mock(Event.class);
-        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService, POMContentHandler, invalidateDMOProjectCache);
+        M2RepoService m2RepoService = mock(M2RepoService.class);
+        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService, POMContentHandler, m2RepoService, invalidateDMOProjectCache);
     }
 
     @Test
@@ -184,7 +186,7 @@ public class ProjectEditorServiceImplTest {
                 "Howdy!"
         );
 
-        service.saveGav(vfsPath, gavModel);
+        service.savePOM(vfsPath, gavModel);
 
         verify(ioService).write(nioPath, "Howdy!");
         verify(invalidateDMOProjectCache).fire(any());

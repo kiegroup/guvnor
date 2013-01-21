@@ -23,19 +23,16 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.guvnor.project.model.GAV;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
 @Dependent
 public class POMContentHandler {
-    @Inject
-    private M2RepoService m2RepoService;
+
 
     public POMContentHandler() {
         // Weld needs this for proxying.       
@@ -48,13 +45,11 @@ public class POMContentHandler {
         model.setGroupId(gavModel.getGav().getGroupId());
         model.setArtifactId(gavModel.getGav().getArtifactId());
         model.setVersion(gavModel.getGav().getVersion());
-        model.setModelVersion("4.0.0");
+        model.setModelVersion(gavModel.getModelVersion());
 
-        Repository repo = new Repository();
-        repo.setId("guvnor-m2-repo");
-        repo.setName("Guvnor M2 Repo");
-        repo.setUrl(m2RepoService.getRepositoryURL());
-        model.addRepository(repo);
+        for (org.kie.guvnor.project.model.Repository repository : gavModel.getRepositories()) {
+            model.addRepository(fromClientModelToPom(repository));
+        }
 
         for (org.kie.guvnor.project.model.Dependency dependency : gavModel.getDependencies()) {
             model.addDependency(fromClientModelToPom(dependency));
@@ -66,9 +61,18 @@ public class POMContentHandler {
         return stringWriter.toString();
     }
 
-    public POM toModel(String propertiesString)
+    private Repository fromClientModelToPom(org.kie.guvnor.project.model.Repository from) {
+        Repository to = new Repository();
+        to.setId(from.getId());
+        to.setName(from.getName());
+        to.setUrl(from.getUrl());
+
+        return to;
+    }
+
+    public POM toModel(String pomAsString)
             throws IOException, XmlPullParserException {
-        Model model = new MavenXpp3Reader().read(new StringReader(propertiesString));
+        Model model = new MavenXpp3Reader().read(new StringReader(pomAsString));
 
 
         POM gavModel = new POM(
@@ -78,11 +82,25 @@ public class POMContentHandler {
                         model.getVersion())
         );
 
+        for (Repository repository : model.getRepositories()) {
+            gavModel.addRepository(fromPomModelToClientModel(repository));
+        }
+
         for (Dependency dependency : model.getDependencies()) {
             gavModel.getDependencies().add(fromPomModelToClientModel(dependency));
         }
 
         return gavModel;
+    }
+
+    private org.kie.guvnor.project.model.Repository fromPomModelToClientModel(Repository from) {
+        org.kie.guvnor.project.model.Repository to = new org.kie.guvnor.project.model.Repository();
+
+        to.setId(from.getId());
+        to.setName(from.getName());
+        to.setUrl(from.getUrl());
+
+        return to;
     }
 
     private org.kie.guvnor.project.model.Dependency fromPomModelToClientModel(Dependency from) {

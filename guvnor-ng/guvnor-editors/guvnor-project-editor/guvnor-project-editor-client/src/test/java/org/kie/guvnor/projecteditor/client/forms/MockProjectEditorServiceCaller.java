@@ -54,7 +54,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path saveGav(Path path, POM gav) {
+            public Path savePOM(Path path, POM gav) {
                 callback.callback(null);
                 savedGav = gav;
                 return null;

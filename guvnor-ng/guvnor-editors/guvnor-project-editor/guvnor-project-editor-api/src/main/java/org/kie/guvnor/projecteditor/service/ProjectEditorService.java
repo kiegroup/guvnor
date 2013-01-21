@@ -30,7 +30,7 @@ public interface ProjectEditorService {
     public void saveKModule(Path path,
                             KModuleModel model);
 
-    public Path saveGav(final Path path,
+    public Path savePOM(final Path path,
                         final POM gav);
 
     public KModuleModel loadKModule(Path path);

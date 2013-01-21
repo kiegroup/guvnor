@@ -37,6 +37,8 @@ public interface M2RepoService {
 
     public String loadPOMStringFromJar(String path);
 
+    public GAV loadGAVFromJar(String path);
+
     public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters);
 
     public String getRepositoryURL();

@@ -16,22 +16,24 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.GAV;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -45,67 +47,81 @@ public class M2RepoServiceImpl
     @Inject
     private GuvnorM2Repository repository;
 
+    @Inject
+    private POMContentHandler pomContentHandler;
 
     @Override
     public void deployJar(InputStream is, GAV gav) {
         repository.deployArtifact(is, gav);
     }
-    
+
     @Override
     public InputStream loadJar(String path) {
         return repository.loadFile(path);
     }
-    
+
     @Override
     public String getJarName(String path) {
         return repository.getFileName(path);
     }
-    
+
     @Override
     public void deleteJar(String[] path) {
         repository.deleteFile(path);
     }
-    
+
     @Override
     public String loadPOMStringFromJar(String path) {
         return repository.loadPOMFromJar(path);
     }
-    
+
     @Override
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters ) {
+    public GAV loadGAVFromJar(String path) {
+        try {
+            return pomContentHandler.toModel(repository.loadPOMFromJar(path)).getGav();
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO Needs to be logged -Rikkola-
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();  //TODO Needs to be logged -Rikkola-
+        }
+        return new GAV();
+    }
+
+    @Override
+    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters) {
         Collection<File> files = repository.listFiles(filters);
-        
+
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
 
         int i = 0;
-        for(File file : files) {
-            if(i>=pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
+        for (File file : files) {
+            if (i >= pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
                 break;
             }
-            if(i>=pageRequest.getStartRowIndex()) {
+            if (i >= pageRequest.getStartRowIndex()) {
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName(file.getName());
                 jarListPageRow.setPath(file.getPath());
                 jarListPageRow.setLastModified(new Date(file.lastModified()));
                 tradeRatePageRowList.add(jarListPageRow);
             }
-            i++;            
+            i++;
         }
-        
+
         response.setPageRowList(tradeRatePageRowList);
         response.setStartRowIndex(pageRequest.getStartRowIndex());
         response.setTotalRowSize(files.size());
         response.setTotalRowSizeExact(true);
         //response.setLastPage(true);
-        
+
         return response;
     }
-    
+
     @Override
     public String getRepositoryURL() {
         return repository.getRepositoryURL();
     }
-    
+
 
 }

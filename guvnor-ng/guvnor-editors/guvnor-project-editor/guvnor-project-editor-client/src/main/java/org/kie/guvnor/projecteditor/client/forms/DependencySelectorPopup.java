@@ -1,10 +1,9 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.GAV;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class DependencySelectorPopup
 
     private final DependencySelectorPopupView view;
     private final Caller<M2RepoService> m2RepoService;
-    private ArrayList<SelectionHandler<POM>> selectionHandlers = new ArrayList<SelectionHandler<POM>>();
+    private ArrayList<GAVSelectionHandler> selectionHandlers = new ArrayList<GAVSelectionHandler>();
 
     @Inject
     public DependencySelectorPopup(DependencySelectorPopupView view,
@@ -31,17 +30,17 @@ public class DependencySelectorPopup
 
     @Override
     public void onPathSelection(String pathToDependency) {
-        m2RepoService.call(new RemoteCallback<Object>() {
+        m2RepoService.call(new RemoteCallback<GAV>() {
             @Override
-            public void callback(Object o) {
-                //TODO -Rikkola-
+            public void callback(GAV gav) {
+                for (GAVSelectionHandler handler : selectionHandlers) {
+                    handler.onSelection(gav);
+                }
             }
-        }
-
-        ).loadPOMStringFromJar(pathToDependency);
+        }).loadGAVFromJar(pathToDependency);
     }
 
-    public void addSelectionHandler(SelectionHandler<POM> selectionHandler) {
+    public void addSelectionHandler(GAVSelectionHandler selectionHandler) {
         selectionHandlers.add(selectionHandler);
     }
 }

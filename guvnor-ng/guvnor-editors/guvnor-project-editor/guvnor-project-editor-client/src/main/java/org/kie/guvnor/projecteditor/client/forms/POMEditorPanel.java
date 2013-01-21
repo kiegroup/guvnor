@@ -90,7 +90,7 @@ public class POMEditorPanel
                         view.showSaveSuccessful("pom.xml");
                     }
                 }
-        ).saveGav(path, model);
+        ).savePOM(path, model);
     }
 
     @Override

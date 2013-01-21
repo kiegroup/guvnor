@@ -19,33 +19,13 @@ package org.kie.guvnor.project.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class Dependency {
+public class Dependency
+        extends GAV {
 
-    private String groupId;
-    private String artifactId;
-    private String version;
-
-    public String getGroupId() {
-        return groupId;
+    public Dependency() {
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public Dependency(GAV gav) {
+        super(gav.getGroupId(), gav.getArtifactId(), gav.getVersion());
     }
 }

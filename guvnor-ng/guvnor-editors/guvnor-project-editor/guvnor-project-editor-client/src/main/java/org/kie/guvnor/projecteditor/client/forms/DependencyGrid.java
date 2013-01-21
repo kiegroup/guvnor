@@ -16,12 +16,10 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.GAV;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -37,10 +35,10 @@ public class DependencyGrid
     public DependencyGrid(DependencySelectorPopup dependencySelectorPopup,
                           DependencyGridView view) {
         this.dependencySelectorPopup = dependencySelectorPopup;
-        dependencySelectorPopup.addSelectionHandler(new SelectionHandler<POM>() {
+        dependencySelectorPopup.addSelectionHandler(new GAVSelectionHandler() {
             @Override
-            public void onSelection(SelectionEvent<POM> event) {
-                //TODO -Rikkola-
+            public void onSelection(GAV gav) {
+                dependencies.add(new Dependency(gav));
             }
         });
         this.view = view;

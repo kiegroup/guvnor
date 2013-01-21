@@ -21,8 +21,10 @@ import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -50,6 +52,7 @@ public class ProjectEditorServiceImpl
 
     private POMContentHandler POMContentHandler;
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+    private M2RepoService m2RepoService;
 
     public ProjectEditorServiceImpl() {
         // Weld needs this for proxying.
@@ -63,6 +66,7 @@ public class ProjectEditorServiceImpl
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final ProjectService projectService,
                                     POMContentHandler POMContentHandler,
+                                    M2RepoService m2RepoService,
                                     Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache) {
         this.ioService = ioService;
         this.paths = paths;
@@ -71,12 +75,22 @@ public class ProjectEditorServiceImpl
         this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.projectService = projectService;
         this.POMContentHandler = POMContentHandler;
+        this.m2RepoService = m2RepoService;
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
     }
 
     @Override
     public Path newProject(Path activePath, final String name) {
-        return saveGav(createGAV(activePath, name), new POM());
+        POM pomModel = new POM();
+        Repository repository = new Repository();
+        repository.setId("guvnor-m2-repo");
+        repository.setName("Guvnor M2 Repo");
+        repository.setUrl(m2RepoService.getRepositoryURL());
+        pomModel.addRepository(repository);
+
+        Path pathToPom = createPOMFile(activePath, name);
+
+        return savePOM(pathToPom, pomModel);
     }
 
     @Override
@@ -106,7 +120,7 @@ public class ProjectEditorServiceImpl
     }
 
     @Override
-    public Path saveGav(final Path pathToGAV,
+    public Path savePOM(final Path pathToGAV,
                         final POM gavModel) {
         try {
             Path result = paths.convert(ioService.write(paths.convert(pathToGAV), POMContentHandler.toString(gavModel)));
@@ -149,11 +163,11 @@ public class ProjectEditorServiceImpl
         return paths.convert(pathToPomXML).getParent();
     }
 
-    private Path createGAV(Path activePath, String name) {
-        return paths.convert(ioService.createFile(paths.convert(createGavPath(activePath, name))));
+    private Path createPOMFile(Path activePath, String name) {
+        return paths.convert(ioService.createFile(paths.convert(createPOMPath(activePath, name))));
     }
 
-    private Path createGavPath(Path activePath, String name) {
+    private Path createPOMPath(Path activePath, String name) {
         return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml");
     }
 }

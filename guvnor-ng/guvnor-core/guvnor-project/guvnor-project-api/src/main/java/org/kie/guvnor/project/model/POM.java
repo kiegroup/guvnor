@@ -24,9 +24,12 @@ import java.util.List;
 @Portable
 public class POM {
 
+    private static final String MODEL_VERSION = "4.0.0";
+
     private GAV gav;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
+    private List<Repository> repositories = new ArrayList<Repository>();
 
     public POM() {
     }
@@ -43,4 +46,18 @@ public class POM {
     public List<Dependency> getDependencies() {
         return dependencies;
     }
+
+    public void addRepository(Repository repository) {
+        repositories.add(repository);
+    }
+
+    public List<Repository> getRepositories() {
+        return repositories;
+    }
+
+    public String getModelVersion() {
+        return MODEL_VERSION;
+    }
+
+
 }
