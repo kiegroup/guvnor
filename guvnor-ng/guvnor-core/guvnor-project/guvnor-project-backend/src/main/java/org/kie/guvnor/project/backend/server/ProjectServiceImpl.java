@@ -26,7 +26,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -64,7 +64,7 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public GroupArtifactVersionModel loadGav( final Path path ) {
+    public POM loadGav( final Path path ) {
         try {
             org.kie.commons.java.nio.file.Path convert = paths.convert( path );
             String propertiesString = ioService.readAllString( convert );

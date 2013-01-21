@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.uberfire.backend.vfs.Path;
 
@@ -31,7 +31,7 @@ public interface ProjectEditorService {
                             KModuleModel model);
 
     public Path saveGav(final Path path,
-                        final GroupArtifactVersionModel gav);
+                        final POM gav);
 
     public KModuleModel loadKModule(Path path);
 

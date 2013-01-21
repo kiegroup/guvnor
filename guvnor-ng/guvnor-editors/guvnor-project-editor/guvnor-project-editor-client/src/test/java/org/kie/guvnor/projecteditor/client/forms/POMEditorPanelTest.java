@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
@@ -27,49 +27,49 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class GroupArtifactVersionEditorPanelTest {
+public class POMEditorPanelTest {
 
-    private GroupArtifactVersionEditorPanelView view;
-    private GroupArtifactVersionEditorPanel panel;
+    private POMEditorPanelView view;
+    private POMEditorPanel panel;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockProjectServiceCaller projectServiceCaller;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(GroupArtifactVersionEditorPanelView.class);
+        view = mock(POMEditorPanelView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         projectServiceCaller = new MockProjectServiceCaller();
-        panel = new GroupArtifactVersionEditorPanel(projectEditorServiceCaller, projectServiceCaller, view);
+        panel = new POMEditorPanel(projectEditorServiceCaller, projectServiceCaller, view);
     }
 
     @Test
     public void testLoad() throws Exception {
-        GroupArtifactVersionModel gavModel = createTestModel("group", "artifact", "1.1.1");
+        POM gavModel = createTestModel("group", "artifact", "1.1.1");
         projectServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 
-        verify(view).setGAV(gavModel);
+        verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("artifact");
         verify(view).setDependencies(gavModel.getDependencies());
     }
 
     @Test
     public void testSave() throws Exception {
-        GroupArtifactVersionModel gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
+        POM gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
         projectServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 
-        verify(view).setGAV(gavModel);
+        verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("my.artifact");
 
-        gavModel.setGroupId("group2");
-        gavModel.setArtifactId("artifact2");
+        gavModel.getGav().setGroupId("group2");
+        gavModel.getGav().setArtifactId("artifact2");
 
         ArgumentCaptor<ArtifactIdChangeHandler> captor = ArgumentCaptor.forClass(ArtifactIdChangeHandler.class);
         verify(view).addArtifactIdChangeHandler(captor.capture());
-        gavModel.setVersion("2.2.2");
+        gavModel.getGav().setVersion("2.2.2");
         captor.getValue().onChange("2.2.2");
 
         verify(view).setTitleText("2.2.2");
@@ -81,19 +81,19 @@ public class GroupArtifactVersionEditorPanelTest {
             }
         });
 
-        GroupArtifactVersionModel savedGav = projectEditorServiceCaller.getSavedGav();
-        assertEquals("group2", savedGav.getGroupId());
-        assertEquals("artifact2", savedGav.getArtifactId());
-        assertEquals("2.2.2", savedGav.getVersion());
+        POM savedGav = projectEditorServiceCaller.getSavedGav();
+        assertEquals("group2", savedGav.getGav().getGroupId());
+        assertEquals("artifact2", savedGav.getGav().getArtifactId());
+        assertEquals("2.2.2", savedGav.getGav().getVersion());
 
         verify(view).showSaveSuccessful("pom.xml");
     }
 
-    private GroupArtifactVersionModel createTestModel(String group, String artifact, String version) {
-        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel();
-        gavModel.setGroupId(group);
-        gavModel.setArtifactId(artifact);
-        gavModel.setVersion(version);
+    private POM createTestModel(String group, String artifact, String version) {
+        POM gavModel = new POM();
+        gavModel.getGav().setGroupId(group);
+        gavModel.getGav().setArtifactId(artifact);
+        gavModel.getGav().setVersion(version);
         return gavModel;
     }
 }

@@ -23,7 +23,7 @@ public interface ProjectEditorScreenView
 
     String getEnableKieProjectMenuItemText();
 
-    void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel);
+    void setGroupArtifactVersionEditorPanel(POMEditorPanel gavPanel);
 
     void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel);
 

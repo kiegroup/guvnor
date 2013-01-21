@@ -20,14 +20,14 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
 public class MockProjectServiceCaller
         implements Caller<ProjectService> {
 
-    private GroupArtifactVersionModel gavModel;
+    private POM gavModel;
     private final ProjectService service;
     private RemoteCallback callback;
 
@@ -40,7 +40,7 @@ public class MockProjectServiceCaller
             }
 
             @Override
-            public GroupArtifactVersionModel loadGav( Path path ) {
+            public POM loadGav( Path path ) {
                 callback.callback( gavModel );
                 return gavModel;
             }
@@ -71,7 +71,7 @@ public class MockProjectServiceCaller
         return service;
     }
 
-    public void setGav( GroupArtifactVersionModel gavModel ) {
+    public void setGav( POM gavModel ) {
         this.gavModel = gavModel;
     }
 }

@@ -37,7 +37,7 @@ public class ProjectEditorScreenViewImpl
     }
 
     @Override
-    public void setGroupArtifactVersionEditorPanel(GroupArtifactVersionEditorPanel gavPanel) {
+    public void setGroupArtifactVersionEditorPanel(POMEditorPanel gavPanel) {
         addPage(new Page(gavPanel, ProjectEditorConstants.INSTANCE.PomDotXml()) {
             @Override
             public void onFocus() {

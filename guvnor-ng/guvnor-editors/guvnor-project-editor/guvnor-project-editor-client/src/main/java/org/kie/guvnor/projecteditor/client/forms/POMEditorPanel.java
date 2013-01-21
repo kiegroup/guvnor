@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -29,19 +29,19 @@ import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
 
-public class GroupArtifactVersionEditorPanel
+public class POMEditorPanel
         implements IsWidget {
 
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
-    private final GroupArtifactVersionEditorPanelView view;
+    private final POMEditorPanelView view;
     private Path path;
-    private GroupArtifactVersionModel model;
+    private POM model;
     private final Caller<ProjectService> projectServiceCaller;
 
     @Inject
-    public GroupArtifactVersionEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
-                                           Caller<ProjectService> projectServiceCaller,
-                                           GroupArtifactVersionEditorPanelView view) {
+    public POMEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
+                          Caller<ProjectService> projectServiceCaller,
+                          POMEditorPanelView view) {
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.projectServiceCaller = projectServiceCaller;
         this.view = view;
@@ -51,12 +51,12 @@ public class GroupArtifactVersionEditorPanel
     public void init(Path path) {
         this.path = path;
         projectServiceCaller.call(
-                new RemoteCallback<GroupArtifactVersionModel>() {
+                new RemoteCallback<POM>() {
                     @Override
-                    public void callback(final GroupArtifactVersionModel gav) {
-                        GroupArtifactVersionEditorPanel.this.model = gav;
+                    public void callback(final POM model) {
+                        POMEditorPanel.this.model = model;
 
-                        view.setGAV(gav);
+                        view.setGAV(model.getGav());
 
                         view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
                             @Override
@@ -65,9 +65,9 @@ public class GroupArtifactVersionEditorPanel
                             }
                         });
 
-                        setTitle(gav.getArtifactId());
+                        setTitle(model.getGav().getArtifactId());
 
-                        view.setDependencies(model.getDependencies());
+                        view.setDependencies(POMEditorPanel.this.model.getDependencies());
                     }
                 }
         ).loadGav(path);

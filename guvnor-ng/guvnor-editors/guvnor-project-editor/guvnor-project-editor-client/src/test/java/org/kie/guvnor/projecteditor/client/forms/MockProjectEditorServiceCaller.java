@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -33,7 +33,7 @@ public class MockProjectEditorServiceCaller
     private KModuleModel modelForLoading;
 
     private RemoteCallback callback;
-    private GroupArtifactVersionModel savedGav;
+    private POM savedGav;
     private Path pathToRelatedKModuleFileIfAny;
 
     MockProjectEditorServiceCaller() {
@@ -54,7 +54,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path saveGav(Path path, GroupArtifactVersionModel gav) {
+            public Path saveGav(Path path, POM gav) {
                 callback.callback(null);
                 savedGav = gav;
                 return null;
@@ -99,7 +99,7 @@ public class MockProjectEditorServiceCaller
         this.modelForLoading = upModelForLoading;
     }
 
-    public GroupArtifactVersionModel getSavedGav() {
+    public POM getSavedGav() {
         return savedGav;
     }
 

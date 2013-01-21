@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +30,7 @@ public class KModuleModel
     private final Map<String, KBaseModel> kBases = new HashMap<String, KBaseModel>();
     private String kBasesPath;
     private String kModulePath;
-    private GroupArtifactVersionModel groupArtifactVersion;
+    private POM groupArtifactVersion;
 
     @Override
     public Iterator<KBaseModel> iterator() {
@@ -61,7 +61,7 @@ public class KModuleModel
         return kModulePath;
     }
 
-    public GroupArtifactVersionModel getGroupArtifactVersion() {
+    public POM getGroupArtifactVersion() {
         return groupArtifactVersion;
     }
 
@@ -73,7 +73,7 @@ public class KModuleModel
         this.kModulePath = kModulePath;
     }
 
-    public void setGroupArtifactVersion(GroupArtifactVersionModel groupArtifactVersion) {
+    public void setGroupArtifactVersion(POM groupArtifactVersion) {
         this.groupArtifactVersion = groupArtifactVersion;
     }
 }

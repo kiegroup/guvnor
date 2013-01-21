@@ -4,7 +4,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class DependencySelectorPopup
 
     private final DependencySelectorPopupView view;
     private final Caller<M2RepoService> m2RepoService;
-    private ArrayList<SelectionHandler<GroupArtifactVersionModel>> selectionHandlers = new ArrayList<SelectionHandler<GroupArtifactVersionModel>>();
+    private ArrayList<SelectionHandler<POM>> selectionHandlers = new ArrayList<SelectionHandler<POM>>();
 
     @Inject
     public DependencySelectorPopup(DependencySelectorPopupView view,
@@ -41,7 +41,7 @@ public class DependencySelectorPopup
         ).loadPOMFromJar(pathToDependency);
     }
 
-    public void addSelectionHandler(SelectionHandler<GroupArtifactVersionModel> selectionHandler) {
+    public void addSelectionHandler(SelectionHandler<POM> selectionHandler) {
         selectionHandlers.add(selectionHandler);
     }
 }

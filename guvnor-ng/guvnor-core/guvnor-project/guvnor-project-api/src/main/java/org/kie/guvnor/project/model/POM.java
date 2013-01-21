@@ -17,53 +17,28 @@
 package org.kie.guvnor.project.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.m2repo.model.GAV;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Portable
-public class GroupArtifactVersionModel {
+public class POM {
 
-    private String groupId = "";
-    private String artifactId = "";
-    private String version = "";
+    private GAV gav;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
 
-    public GroupArtifactVersionModel() {
+    public POM() {
     }
 
-    public GroupArtifactVersionModel(String groupId,
-                                     String artifactId,
-                                     String version) {
+    public POM(GAV gav) {
         super();
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
+        this.gav = gav;
     }
 
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public GAV getGav() {
+        return gav;
     }
 
     public List<Dependency> getDependencies() {

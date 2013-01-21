@@ -22,33 +22,33 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.kie.guvnor.project.model.POM;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 @Dependent
 public class GroupArtifactVersionModelContentHandler {
     @Inject
     private M2RepoService m2RepoService;
-    
+
     public GroupArtifactVersionModelContentHandler() {
         // Weld needs this for proxying.       
     }
 
-    public String toString(GroupArtifactVersionModel gavModel)
+    public String toString(POM gavModel)
             throws IOException {
 
         Model model = new Model();
-        model.setGroupId(gavModel.getGroupId());
-        model.setArtifactId(gavModel.getArtifactId());
-        model.setVersion(gavModel.getVersion());
-        model.setModelVersion( "4.0.0" );
+        model.setGroupId(gavModel.getGav().getGroupId());
+        model.setArtifactId(gavModel.getGav().getArtifactId());
+        model.setVersion(gavModel.getGav().getVersion());
+        model.setModelVersion("4.0.0");
 
         Repository repo = new Repository();
         repo.setId("guvnor-m2-repo");
@@ -66,15 +66,17 @@ public class GroupArtifactVersionModelContentHandler {
         return stringWriter.toString();
     }
 
-    public GroupArtifactVersionModel toModel(String propertiesString)
+    public POM toModel(String propertiesString)
             throws IOException, XmlPullParserException {
         Model model = new MavenXpp3Reader().read(new StringReader(propertiesString));
 
 
-        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel(
-                model.getGroupId(),
-                model.getArtifactId(),
-                model.getVersion());
+        POM gavModel = new POM(
+                new GAV(
+                        model.getGroupId(),
+                        model.getArtifactId(),
+                        model.getVersion())
+        );
 
         for (Dependency dependency : model.getDependencies()) {
             gavModel.getDependencies().add(fromPomModelToClientModel(dependency));

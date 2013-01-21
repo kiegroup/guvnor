@@ -38,7 +38,7 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 public class ProjectEditorScreen {
 
     private final ProjectEditorScreenView view;
-    private final GroupArtifactVersionEditorPanel gavPanel;
+    private final POMEditorPanel gavPanel;
     private final KModuleEditorPanel kModuleEditorPanel;
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private final Caller<BuildService> buildServiceCaller;
@@ -49,7 +49,7 @@ public class ProjectEditorScreen {
     @Inject
     public ProjectEditorScreen(
             ProjectEditorScreenView view,
-            GroupArtifactVersionEditorPanel gavPanel,
+            POMEditorPanel gavPanel,
             KModuleEditorPanel kModuleEditorPanel,
             Caller<ProjectEditorService> projectEditorServiceCaller,
             Caller<BuildService> buildServiceCaller) {

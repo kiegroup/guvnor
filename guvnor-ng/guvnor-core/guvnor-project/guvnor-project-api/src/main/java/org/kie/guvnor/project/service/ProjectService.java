@@ -18,7 +18,7 @@ package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -29,7 +29,7 @@ public interface ProjectService {
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
-    GroupArtifactVersionModel loadGav( final Path path );
+    POM loadGav( final Path path );
 
     /**
      * Given a Resource path resolve it to the containing Project Path. A Project path is the folder containing pom.xml

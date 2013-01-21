@@ -22,7 +22,7 @@ import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
 import org.kie.guvnor.projecteditor.service.ProjectEditorService;
@@ -76,7 +76,7 @@ public class ProjectEditorServiceImpl
 
     @Override
     public Path newProject(Path activePath, final String name) {
-        return saveGav(createGAV(activePath, name), new GroupArtifactVersionModel());
+        return saveGav(createGAV(activePath, name), new POM());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ProjectEditorServiceImpl
 
     @Override
     public Path saveGav(final Path pathToGAV,
-                        final GroupArtifactVersionModel gavModel) {
+                        final POM gavModel) {
         try {
             Path result = paths.convert(ioService.write(paths.convert(pathToGAV), groupArtifactVersionModelContentHandler.toString(gavModel)));
 

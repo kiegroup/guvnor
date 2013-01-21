@@ -2,7 +2,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.m2repo.model.GAV;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class GAVEditor
         IsWidget {
 
     private final GAVEditorView view;
-    private GroupArtifactVersionModel gav;
+    private GAV gav;
     private ArrayList<ArtifactIdChangeHandler> artifactIfChangeHandlers = new ArrayList<ArtifactIdChangeHandler>();
 
     @Inject
@@ -21,7 +21,7 @@ public class GAVEditor
         view.setPresenter(this);
     }
 
-    public void setGAV(GroupArtifactVersionModel gav) {
+    public void setGAV(GAV gav) {
         this.gav = gav;
         view.setGroupId(gav.getGroupId());
         view.setArtifactId(gav.getArtifactId());

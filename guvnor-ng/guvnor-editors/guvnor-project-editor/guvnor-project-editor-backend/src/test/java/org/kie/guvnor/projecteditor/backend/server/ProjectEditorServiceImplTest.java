@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -174,7 +174,7 @@ public class ProjectEditorServiceImplTest {
     public void testSaveGAV() throws Exception {
         Path vfsPath = mock(Path.class);
         org.kie.commons.java.nio.file.Path nioPath = mock(org.kie.commons.java.nio.file.Path.class);
-        GroupArtifactVersionModel gavModel = new GroupArtifactVersionModel();
+        POM gavModel = new POM();
 
         when(paths.convert(vfsPath)).thenReturn(nioPath);
 

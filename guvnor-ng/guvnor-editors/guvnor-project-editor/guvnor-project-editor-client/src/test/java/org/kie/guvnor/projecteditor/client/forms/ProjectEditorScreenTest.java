@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 public class ProjectEditorScreenTest {
     private ProjectEditorScreenView view;
-    private GroupArtifactVersionEditorPanel gavPanel;
+    private POMEditorPanel gavPanel;
     private KModuleEditorPanel kModuleEditorPanel;
     private ProjectEditorScreen screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
@@ -42,7 +42,7 @@ public class ProjectEditorScreenTest {
         when(view.getSaveMenuItemText()).thenReturn("");
         when(view.getBuildMenuItemText()).thenReturn("");
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
-        gavPanel = mock(GroupArtifactVersionEditorPanel.class);
+        gavPanel = mock(POMEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();

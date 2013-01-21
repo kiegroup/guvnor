@@ -16,14 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 
 import java.util.List;
 
-public interface GroupArtifactVersionEditorPanelView
+public interface POMEditorPanelView
         extends IsWidget {
 
 
@@ -35,7 +34,7 @@ public interface GroupArtifactVersionEditorPanelView
 
     void setDependencies(List<Dependency> dependencies);
 
-    void setGAV(GroupArtifactVersionModel gav);
+    void setGAV(GAV gav);
 
     void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler);
 }

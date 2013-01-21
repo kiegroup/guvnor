@@ -21,7 +21,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.kie.guvnor.project.model.POM;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -37,9 +37,9 @@ public class DependencyGrid
     public DependencyGrid(DependencySelectorPopup dependencySelectorPopup,
                           DependencyGridView view) {
         this.dependencySelectorPopup = dependencySelectorPopup;
-        dependencySelectorPopup.addSelectionHandler(new SelectionHandler<GroupArtifactVersionModel>() {
+        dependencySelectorPopup.addSelectionHandler(new SelectionHandler<POM>() {
             @Override
-            public void onSelection(SelectionEvent<GroupArtifactVersionModel> event) {
+            public void onSelection(SelectionEvent<POM> event) {
                 //TODO -Rikkola-
             }
         });
