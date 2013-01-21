@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.ui.configurations.ApplicationPreferences;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.datamodel.backend.server.DataModelBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;

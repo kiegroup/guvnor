@@ -33,7 +33,7 @@
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
   <inherits name="org.kie.guvnor.commons.security.GuvnorCommonsSecurity"/>
 
-  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUIClient"/>
+  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
   <inherits name="org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget"/>
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
   <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>

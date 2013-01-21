@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.kie.guvnor.commons.ui.configurations.ApplicationPreferences;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.client.common.FormStyleLayout;

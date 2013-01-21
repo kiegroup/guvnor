@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.kie.guvnor.commons.ui.configurations.ApplicationPreferences;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

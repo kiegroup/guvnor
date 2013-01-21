@@ -21,7 +21,7 @@ import java.util.Date;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.guvnor.commons.ui.configurations.ApplicationPreferences;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
