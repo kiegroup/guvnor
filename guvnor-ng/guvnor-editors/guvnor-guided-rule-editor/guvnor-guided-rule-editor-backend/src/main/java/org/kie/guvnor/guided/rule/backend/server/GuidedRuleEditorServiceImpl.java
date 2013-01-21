@@ -18,6 +18,9 @@ package org.kie.guvnor.guided.rule.backend.server;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,6 +39,8 @@ import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.mvel2.MVEL;
+import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -90,8 +95,36 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public String[] loadDropDownExpression( final String[] valuePairs,
-                                            final String expression ) {
-        return new String[ 0 ];
+                                            String expression ) {
+        final Map<String, String> context = new HashMap<String, String>();
+
+        for ( final String valuePair : valuePairs ) {
+            if ( valuePair == null ) {
+                return new String[ 0 ];
+            }
+            final String[] pair = valuePair.split( "=" );
+            context.put( pair[ 0 ],
+                         pair[ 1 ] );
+        }
+        // first interpolate the pairs
+        expression = (String) TemplateRuntime.eval( expression,
+                                                    context );
+
+        // now we can eval it for real...
+        Object result = MVEL.eval( expression );
+        if ( result instanceof String[] ) {
+            return (String[]) result;
+        } else if ( result instanceof List ) {
+            List l = (List) result;
+            String[] xs = new String[ l.size() ];
+            for ( int i = 0; i < xs.length; i++ ) {
+                Object el = l.get( i );
+                xs[ i ] = el.toString();
+            }
+            return xs;
+        } else {
+            return null;
+        }
     }
 
     @Override
