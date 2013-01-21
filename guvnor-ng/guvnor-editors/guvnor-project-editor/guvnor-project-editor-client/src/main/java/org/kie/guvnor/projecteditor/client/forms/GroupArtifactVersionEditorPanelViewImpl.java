@@ -17,16 +17,14 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.project.model.Dependency;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
@@ -38,8 +36,6 @@ public class GroupArtifactVersionEditorPanelViewImpl
         extends ResizeComposite
         implements GroupArtifactVersionEditorPanelView {
 
-
-    private Presenter presenter;
     private InlineLabel tabTitleLabel = new InlineLabel(ProjectEditorConstants.INSTANCE.ProjectModel());
 
     interface GroupArtifactVersionEditorPanelViewImplBinder
@@ -52,60 +48,22 @@ public class GroupArtifactVersionEditorPanelViewImpl
 
     private final Event<NotificationEvent> notificationEvent;
 
-    @UiField
-    TextBox groupIdTextBox;
-
-    @UiField
-    TextBox artifactIdTextBox;
-
-    @UiField
-    TextBox versionIdTextBox;
+    @UiField(provided = true)
+    GAVEditor gavEditor;
 
     @UiField(provided = true)
     DependencyGrid dependencyGrid;
 
     @Inject
     public GroupArtifactVersionEditorPanelViewImpl(Event<NotificationEvent> notificationEvent,
+                                                   GAVEditor gavEditor,
                                                    DependencyGrid dependencyGrid) {
+        this.gavEditor = gavEditor;
         this.dependencyGrid = dependencyGrid;
         initWidget(uiBinder.createAndBindUi(this));
         this.notificationEvent = notificationEvent;
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setGroupId(String id) {
-        groupIdTextBox.setText(id);
-    }
-
-    @UiHandler("groupIdTextBox")
-    public void onGroupIdChange(KeyUpEvent event) {
-        presenter.onGroupIdChange(groupIdTextBox.getText());
-    }
-
-    @Override
-    public void setArtifactId(String id) {
-        artifactIdTextBox.setText(id);
-    }
-
-    @UiHandler("artifactIdTextBox")
-    public void onArtifactIdChange(KeyUpEvent event) {
-        presenter.onArtifactIdChange(artifactIdTextBox.getText());
-    }
-
-    @Override
-    public void setVersionId(String versionId) {
-        versionIdTextBox.setText(versionId);
-    }
-
-    @UiHandler("versionIdTextBox")
-    public void onVersionIdChange(KeyUpEvent event) {
-        presenter.onVersionIdChange(versionIdTextBox.getText());
-    }
 
     @Override
     public void showSaveSuccessful(String fileName) {
@@ -120,6 +78,16 @@ public class GroupArtifactVersionEditorPanelViewImpl
     @Override
     public void setDependencies(List<Dependency> dependencies) {
         dependencyGrid.fillList(dependencies);
+    }
+
+    @Override
+    public void setGAV(GroupArtifactVersionModel gav) {
+        gavEditor.setGAV(gav);
+    }
+
+    @Override
+    public void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler) {
+        gavEditor.addArtifactIdChangeHandler(changeHandler);
     }
 
     @Override

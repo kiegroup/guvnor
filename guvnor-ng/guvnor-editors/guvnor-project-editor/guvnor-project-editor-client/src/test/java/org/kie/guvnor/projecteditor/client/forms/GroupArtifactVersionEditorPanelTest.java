@@ -20,6 +20,7 @@ import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.project.model.GroupArtifactVersionModel;
+import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.assertEquals;
@@ -29,7 +30,6 @@ import static org.mockito.Mockito.verify;
 public class GroupArtifactVersionEditorPanelTest {
 
     private GroupArtifactVersionEditorPanelView view;
-    private GroupArtifactVersionEditorPanelView.Presenter presenter;
     private GroupArtifactVersionEditorPanel panel;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockProjectServiceCaller projectServiceCaller;
@@ -40,12 +40,6 @@ public class GroupArtifactVersionEditorPanelTest {
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         projectServiceCaller = new MockProjectServiceCaller();
         panel = new GroupArtifactVersionEditorPanel(projectEditorServiceCaller, projectServiceCaller, view);
-        presenter = panel;
-    }
-
-    @Test
-    public void testPresenterSet() throws Exception {
-        verify(view).setPresenter(presenter);
     }
 
     @Test
@@ -55,10 +49,8 @@ public class GroupArtifactVersionEditorPanelTest {
         Path path = mock(Path.class);
         panel.init(path);
 
-        verify(view).setGroupId("group");
-        verify(view).setArtifactId("artifact");
+        verify(view).setGAV(gavModel);
         verify(view).setTitleText("artifact");
-        verify(view).setVersionId("1.1.1");
         verify(view).setDependencies(gavModel.getDependencies());
     }
 
@@ -69,15 +61,18 @@ public class GroupArtifactVersionEditorPanelTest {
         Path path = mock(Path.class);
         panel.init(path);
 
-        verify(view).setGroupId("my.group");
-        verify(view).setArtifactId("my.artifact");
+        verify(view).setGAV(gavModel);
         verify(view).setTitleText("my.artifact");
-        verify(view).setVersionId("1.0-SNAPSHOT");
 
-        presenter.onGroupIdChange("group2");
-        presenter.onArtifactIdChange("artifact2");
-        verify(view).setTitleText("artifact2");
-        presenter.onVersionIdChange("2.2.2");
+        gavModel.setGroupId("group2");
+        gavModel.setArtifactId("artifact2");
+
+        ArgumentCaptor<ArtifactIdChangeHandler> captor = ArgumentCaptor.forClass(ArtifactIdChangeHandler.class);
+        verify(view).addArtifactIdChangeHandler(captor.capture());
+        gavModel.setVersion("2.2.2");
+        captor.getValue().onChange("2.2.2");
+
+        verify(view).setTitleText("2.2.2");
 
         panel.save(new Command() {
             @Override

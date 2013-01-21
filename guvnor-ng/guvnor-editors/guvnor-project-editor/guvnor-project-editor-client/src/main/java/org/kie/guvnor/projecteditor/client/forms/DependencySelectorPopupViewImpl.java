@@ -18,6 +18,7 @@ public class DependencySelectorPopupViewImpl
         implements DependencySelectorPopupView {
 
     private final Caller<M2RepoService> m2RepoService;
+    private Presenter presenter;
 
     @Inject
     public DependencySelectorPopupViewImpl(Caller<M2RepoService> m2RepoService) {
@@ -39,12 +40,17 @@ public class DependencySelectorPopupViewImpl
             public void update(int index,
                                JarListPageRow row,
                                String value) {
-                //TODO
+                presenter.onPathSelection(value);
             }
         });
 
         pagedJarTable.addColumn(selectColumn, new TextHeader(""));
 
         return pagedJarTable;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 }

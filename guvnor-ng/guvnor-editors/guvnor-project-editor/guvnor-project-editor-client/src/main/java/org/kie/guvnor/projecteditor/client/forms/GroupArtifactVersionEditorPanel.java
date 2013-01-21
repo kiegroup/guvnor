@@ -18,7 +18,6 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -31,7 +30,7 @@ import org.uberfire.backend.vfs.Path;
 import javax.inject.Inject;
 
 public class GroupArtifactVersionEditorPanel
-        implements GroupArtifactVersionEditorPanelView.Presenter, IsWidget {
+        implements IsWidget {
 
     private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private final GroupArtifactVersionEditorPanelView view;
@@ -47,7 +46,6 @@ public class GroupArtifactVersionEditorPanel
         this.projectServiceCaller = projectServiceCaller;
         this.view = view;
 
-        view.setPresenter(this);
     }
 
     public void init(Path path) {
@@ -55,13 +53,19 @@ public class GroupArtifactVersionEditorPanel
         projectServiceCaller.call(
                 new RemoteCallback<GroupArtifactVersionModel>() {
                     @Override
-                    public void callback(GroupArtifactVersionModel gav) {
+                    public void callback(final GroupArtifactVersionModel gav) {
                         GroupArtifactVersionEditorPanel.this.model = gav;
-                        view.setGroupId(gav.getGroupId());
-                        view.setArtifactId(gav.getArtifactId());
+
+                        view.setGAV(gav);
+
+                        view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
+                            @Override
+                            public void onChange(String newArtifactId) {
+                                setTitle(newArtifactId);
+                            }
+                        });
 
                         setTitle(gav.getArtifactId());
-                        view.setVersionId(gav.getVersion());
 
                         view.setDependencies(model.getDependencies());
                     }
@@ -75,22 +79,6 @@ public class GroupArtifactVersionEditorPanel
         } else {
             view.setTitleText(titleText);
         }
-    }
-
-    @Override
-    public void onGroupIdChange(String groupId) {
-        model.setGroupId(groupId);
-    }
-
-    @Override
-    public void onArtifactIdChange(String artifactId) {
-        model.setArtifactId(artifactId);
-        setTitle(artifactId);
-    }
-
-    @Override
-    public void onVersionIdChange(String versionId) {
-        model.setVersion(versionId);
     }
 
     public void save(final Command callback) {
@@ -107,8 +95,7 @@ public class GroupArtifactVersionEditorPanel
 
     @Override
     public Widget asWidget() {
-        Widget widget = view.asWidget();
-        return widget;
+        return view.asWidget();
     }
 
     public IsWidget getTitle() {

@@ -16,30 +16,16 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.project.model.Dependency;
+import org.kie.guvnor.project.model.GroupArtifactVersionModel;
 
 import java.util.List;
 
 public interface GroupArtifactVersionEditorPanelView
         extends IsWidget {
 
-    interface Presenter {
-
-        void onGroupIdChange(String groupId);
-
-        void onArtifactIdChange(String artifactId);
-
-        void onVersionIdChange(String versionId);
-
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void setGroupId(String id);
-    void setArtifactId(String id);
-
-    void setVersionId(String versionId);
 
     IsWidget getTitleWidget();
 
@@ -48,4 +34,8 @@ public interface GroupArtifactVersionEditorPanelView
     void showSaveSuccessful(String fileName);
 
     void setDependencies(List<Dependency> dependencies);
+
+    void setGAV(GroupArtifactVersionModel gav);
+
+    void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler);
 }
