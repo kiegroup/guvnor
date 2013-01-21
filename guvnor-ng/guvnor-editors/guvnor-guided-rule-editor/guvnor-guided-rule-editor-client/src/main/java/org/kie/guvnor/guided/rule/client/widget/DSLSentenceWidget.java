@@ -38,7 +38,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerLabel;
-import org.kie.guvnor.commons.ui.client.widget.EnumDropDown;
 import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.DSLVariableValue;

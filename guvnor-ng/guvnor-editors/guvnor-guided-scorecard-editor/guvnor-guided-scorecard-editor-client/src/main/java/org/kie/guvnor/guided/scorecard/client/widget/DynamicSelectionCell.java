@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.widget;
+package org.kie.guvnor.guided.scorecard.client.widget;
 
 import java.util.ArrayList;
 import java.util.HashMap;

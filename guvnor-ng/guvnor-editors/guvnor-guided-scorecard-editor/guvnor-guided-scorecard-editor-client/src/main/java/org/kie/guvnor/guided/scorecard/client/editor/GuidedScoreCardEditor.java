@@ -26,6 +26,8 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -39,26 +41,24 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.commons.ui.client.widget.CustomEditTextCell;
-import org.kie.guvnor.commons.ui.client.widget.DynamicSelectionCell;
-import org.kie.guvnor.commons.ui.client.widget.EnumDropDown;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
-import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.scorecard.client.widget.CustomEditTextCell;
+import org.kie.guvnor.guided.scorecard.client.widget.DynamicSelectionCell;
 import org.kie.guvnor.guided.scorecard.model.Attribute;
 import org.kie.guvnor.guided.scorecard.model.Characteristic;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.DropDownValueChanged;
 
 public class GuidedScoreCardEditor extends Composite {
 
@@ -68,7 +68,7 @@ public class GuidedScoreCardEditor extends Composite {
     private static final String[] typesForRC = new String[]{ "List" };
 
     private static final String[] stringOperators = new String[]{ "=", "in" };
-    private static final String[] booleanOperators = new String[]{ "true", "false" };
+    private static final String[] booleanOperators = new String[]{ "false", "true" };
     private static final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<=" };
 
     private Map<String, ModelField[]> oracleModelFields;
@@ -80,9 +80,9 @@ public class GuidedScoreCardEditor extends Composite {
     private List<DirtyableFlexTable> characteristicsTables = new ArrayList<DirtyableFlexTable>();
     private Map<DirtyableFlexTable, ListDataProvider<Attribute>> characteristicsAttrMap = new HashMap<DirtyableFlexTable, ListDataProvider<Attribute>>();
 
-    private EnumDropDown ddUseReasonCode;
-    private EnumDropDown ddReasonCodeAlgorithm;
-    private EnumDropDown ddReasonCodeField;
+    private ListBox ddUseReasonCode;
+    private ListBox ddReasonCodeAlgorithm;
+    private ListBox ddReasonCodeField;
     private TextBox tbBaselineScore;
     private TextBox tbInitialScore;
     private Grid scorecardPropertiesGrid;
@@ -138,8 +138,8 @@ public class GuidedScoreCardEditor extends Composite {
         model.setReasonCodesAlgorithm( ddReasonCodeAlgorithm.getValue( ddReasonCodeAlgorithm.getSelectedIndex() ) );
         model.setUseReasonCodes( ddUseReasonCode.getSelectedIndex() == 1 );
 
-        EnumDropDown enumDropDown = (EnumDropDown) scorecardPropertiesGrid.getWidget( 1,
-                                                                                      0 );
+        ListBox enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
+                                                                            0 );
         if ( enumDropDown.getSelectedIndex() > -1 ) {
             final String factName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
             model.setFactName( factName );
@@ -153,8 +153,8 @@ public class GuidedScoreCardEditor extends Composite {
             }
         }
 
-        enumDropDown = (EnumDropDown) scorecardPropertiesGrid.getWidget( 1,
-                                                                         1 );
+        enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
+                                                                    1 );
         if ( enumDropDown.getSelectedIndex() > -1 ) {
             String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
             fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
@@ -176,8 +176,8 @@ public class GuidedScoreCardEditor extends Composite {
                                                                      1 ) ).getValue() );
 
             //Characteristic Fact Type
-            enumDropDown = (EnumDropDown) flexTable.getWidget( 2,
-                                                               0 );
+            enumDropDown = (ListBox) flexTable.getWidget( 2,
+                                                          0 );
             if ( enumDropDown.getSelectedIndex() > -1 ) {
                 final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
                 characteristic.setFact( simpleFactName );
@@ -191,8 +191,8 @@ public class GuidedScoreCardEditor extends Composite {
                 }
 
                 //Characteristic Field (cannot be set if no Fact Type has been set)
-                enumDropDown = (EnumDropDown) flexTable.getWidget( 2,
-                                                                   1 );
+                enumDropDown = (ListBox) flexTable.getWidget( 2,
+                                                              1 );
                 if ( enumDropDown.getSelectedIndex() > -1 ) {
                     String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
                     fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
@@ -238,42 +238,44 @@ public class GuidedScoreCardEditor extends Composite {
         tbInitialScore.setText( Double.toString( model.getInitialScore() ) );
 
         String factName = model.getFactName();
+        // if fact is a fully qualified className, strip off the packageName
         if ( factName.lastIndexOf( "." ) > -1 ) {
-            // if fact is a fully qualified className, strip off the packageName
             factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
         }
-        final EnumDropDown dropDownFields = new EnumDropDown( "",
-                                                              new DropDownValueChanged() {
-                                                                  public void valueChanged( final String newText,
-                                                                                            final String newValue ) {
-                                                                      //do nothing
-                                                                  }
-                                                              }, DropDownData.create( new String[]{ } ) );
 
-        EnumDropDown dropDownFacts = new EnumDropDown( factName,
-                                                       new DropDownValueChanged() {
-                                                           public void valueChanged( final String newText,
-                                                                                     final String newValue ) {
-                                                               String selectedField = model.getFieldName();
-                                                               selectedField = selectedField + " : double";
-                                                               dropDownFields.setDropDownData( selectedField,
-                                                                                               DropDownData.create( getEligibleFields( newValue,
-                                                                                                                                       typesForScore ) ) );
-                                                           }
-                                                       }, DropDownData.create( oracle.getFactTypes() ) );
+        //Fields List Box
+        final ListBox dropDownFields = new ListBox();
 
-        ddReasonCodeField = new EnumDropDown( "",
-                                              new DropDownValueChanged() {
-                                                  public void valueChanged( final String newText,
-                                                                            final String newValue ) {
-                                                      //do nothing
-                                                  }
-                                              }, DropDownData.create( new String[]{ } ) );
+        //Facts List Box
+        final ListBox dropDownFacts = new ListBox();
+        final String[] eligibleFacts = oracle.getFactTypes();
+        for ( final String factType : eligibleFacts ) {
+            dropDownFacts.addItem( factType );
+        }
+        dropDownFacts.addChangeHandler( new ChangeHandler() {
 
+            @Override
+            public void onChange( final ChangeEvent event ) {
+                scoreCardPropertyFactChanged( dropDownFacts,
+                                              dropDownFields );
+            }
+
+        } );
+        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( factName );
+        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
+        scoreCardPropertyFactChanged( dropDownFacts,
+                                      dropDownFields );
+
+        //Reason Codes List Box
+        ddReasonCodeField = new ListBox();
+        final String[] eligibleReasonCodeFields = getEligibleFields( factName,
+                                                                     typesForRC );
+        for ( final String field : eligibleReasonCodeFields ) {
+            ddReasonCodeField.addItem( field );
+        }
         final String rcField = model.getReasonCodeField() + " : List";
-        ddReasonCodeField.setDropDownData( rcField,
-                                           DropDownData.create( getEligibleFields( factName,
-                                                                                   typesForRC ) ) );
+        final int selectedReasonCodeIndex = Arrays.asList( eligibleReasonCodeFields ).indexOf( rcField );
+        ddReasonCodeField.setSelectedIndex( selectedReasonCodeIndex >= 0 ? selectedReasonCodeIndex : 0 );
 
         final boolean useReasonCodes = model.isUseReasonCodes();
         String reasonCodesAlgo = model.getReasonCodesAlgorithm();
@@ -282,8 +284,8 @@ public class GuidedScoreCardEditor extends Composite {
         }
 
         ddUseReasonCode = booleanEditor( Boolean.toString( useReasonCodes ) );
-        ddReasonCodeAlgorithm = dropDownEditor( DropDownData.create( reasonCodeAlgorithms ),
-                                                reasonCodesAlgo );
+        ddReasonCodeAlgorithm = listBoxEditor( reasonCodeAlgorithms,
+                                               reasonCodesAlgo );
         tbBaselineScore = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE );
 
         scorecardPropertiesGrid.setText( 0,
@@ -334,6 +336,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         /* TODO : Remove this explicitly Disabled Reasoncode support field*/
         ddUseReasonCode.setEnabled( false );
+        ddReasonCodeField.setEnabled( false );
 
         tbBaselineScore.setText( Double.toString( model.getBaselineScore() ) );
 
@@ -350,12 +353,22 @@ public class GuidedScoreCardEditor extends Composite {
                                                              3,
                                                              "200px" );
 
-        int index = Arrays.asList( oracle.getFactTypes() ).indexOf( factName );
-        dropDownFacts.setSelectedIndex( index );
-        dropDownFields.setDropDownData( model.getFieldName() + " : double", DropDownData.create( getEligibleFields( factName,
-                                                                                                                    typesForScore ) ) );
-
         return scorecardPropertiesGrid;
+    }
+
+    private void scoreCardPropertyFactChanged( final ListBox dropDownFacts,
+                                               final ListBox dropDownFields ) {
+        final int selectedIndex = dropDownFacts.getSelectedIndex();
+        final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
+        final String[] eligibleFieldsForSelectedFactType = getEligibleFields( selectedFactType,
+                                                                              typesForScore );
+        dropDownFields.clear();
+        for ( final String field : eligibleFieldsForSelectedFactType ) {
+            dropDownFields.addItem( field );
+        }
+        final String qualifiedFieldName = model.getFieldName() + " : double";
+        final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
+        dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
     }
 
     private Widget getCharacteristics() {
@@ -408,13 +421,13 @@ public class GuidedScoreCardEditor extends Composite {
         }
         characteristicsAttrMap.get( selectedTable ).refresh();
 
-        //disable the fact & field dropdowns
-        ( (EnumDropDown) selectedTable.getWidget( 2,
-                                                  0 ) ).setEnabled( false );
-        ( (EnumDropDown) selectedTable.getWidget( 2,
-                                                  1 ) ).setEnabled( false );
-        final EnumDropDown edd = ( (EnumDropDown) selectedTable.getWidget( 2,
-                                                                           1 ) );
+        //Disable the fact & field dropdowns
+        ( (ListBox) selectedTable.getWidget( 2,
+                                             0 ) ).setEnabled( false );
+        ( (ListBox) selectedTable.getWidget( 2,
+                                             1 ) ).setEnabled( false );
+        final ListBox edd = ( (ListBox) selectedTable.getWidget( 2,
+                                                                 1 ) );
         if ( edd.getSelectedIndex() > -1 ) {
             String field = edd.getValue( edd.getSelectedIndex() );
             field = field.substring( field.indexOf( ":" ) + 1 ).trim();
@@ -473,33 +486,31 @@ public class GuidedScoreCardEditor extends Composite {
                 selectedFact = selectedFact.substring( selectedFact.lastIndexOf( "." ) + 1 );
             }
         }
-        final EnumDropDown dropDownFields = new EnumDropDown( "",
-                                                              new DropDownValueChanged() {
-                                                                  public void valueChanged( final String newText,
-                                                                                            final String newValue ) {
-                                                                      //do nothing
-                                                                  }
-                                                              }, DropDownData.create( new String[]{ } ) );
 
-        EnumDropDown dropDownFacts = new EnumDropDown( selectedFact,
-                                                       new DropDownValueChanged() {
-                                                           public void valueChanged( final String newText,
-                                                                                     final String newValue ) {
-                                                               String selectedField = "";
-                                                               if ( characteristic != null ) {
-                                                                   selectedField = characteristic.getField();
-                                                                   selectedField = selectedField + " : " + characteristic.getDataType();
-                                                               }
-                                                               dropDownFields.setDropDownData( selectedField, DropDownData.create( getEligibleFields( newValue,
-                                                                                                                                                      typesForAttributes ) ) );
-                                                               //dropDownFields.setSelectedIndex(0);
-                                                           }
-                                                       }, DropDownData.create( oracle.getFactTypes() ) );
+        //Fields List Box
+        final ListBox dropDownFields = new ListBox();
 
-        final DropDownData dropDownData = DropDownData.create( getEligibleFields( selectedFact,
-                                                                                  typesForAttributes ) );
-        dropDownFields.setDropDownData( "",
-                                        dropDownData );
+        //Facts List Box
+        final ListBox dropDownFacts = new ListBox();
+        final String[] eligibleFacts = oracle.getFactTypes();
+        for ( final String factType : eligibleFacts ) {
+            dropDownFacts.addItem( factType );
+        }
+        dropDownFacts.addChangeHandler( new ChangeHandler() {
+
+            @Override
+            public void onChange( final ChangeEvent event ) {
+                characteristicFactChanged( characteristic,
+                                           dropDownFacts,
+                                           dropDownFields );
+            }
+
+        } );
+        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( selectedFact );
+        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
+        characteristicFactChanged( characteristic,
+                                   dropDownFacts,
+                                   dropDownFields );
 
         cGrid.setWidget( 0,
                          0,
@@ -575,16 +586,32 @@ public class GuidedScoreCardEditor extends Composite {
         if ( characteristic != null ) {
             tbReasonCode.setValue( characteristic.getReasonCode() );
             tbBaseline.setValue( "" + characteristic.getBaselineScore() );
-
-            final int index = Arrays.asList( oracle.getFactTypes() ).indexOf( selectedFact );
-            dropDownFacts.setSelectedIndex( index );
-
-            final String modifiedFieldName = characteristic.getField() + " : " + characteristic.getDataType();
-            dropDownFields.setSelectedIndex( Arrays.asList( getEligibleFields( selectedFact, typesForAttributes ) ).indexOf( modifiedFieldName ) );
             tbName.setValue( characteristic.getName() );
         }
 
         return cGrid;
+    }
+
+    private void characteristicFactChanged( final Characteristic characteristic,
+                                            final ListBox dropDownFacts,
+                                            final ListBox dropDownFields ) {
+        final int selectedIndex = dropDownFacts.getSelectedIndex();
+        final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
+        final String[] eligibleFieldsForSelectedFactType = getEligibleFields( selectedFactType,
+                                                                              typesForAttributes );
+
+        String selectedField = "";
+        if ( characteristic != null ) {
+            selectedField = characteristic.getField();
+            selectedField = selectedField + " : " + characteristic.getDataType();
+        }
+
+        dropDownFields.clear();
+        for ( final String field : eligibleFieldsForSelectedFactType ) {
+            dropDownFields.addItem( field );
+        }
+        final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( selectedField );
+        dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
     }
 
     private Widget addAttributeCellTable( final DirtyableFlexTable cGrid,
@@ -678,10 +705,10 @@ public class GuidedScoreCardEditor extends Composite {
                 if ( Window.confirm( Constants.INSTANCE.promptDeleteAttribute() ) ) {
                     final List<Attribute> list = characteristicsAttrMap.get( cGrid ).getList();
                     list.remove( attribute );
-                    ( (EnumDropDown) cGrid.getWidget( 2,
-                                                      0 ) ).setEnabled( list.size() == 0 );
-                    ( (EnumDropDown) cGrid.getWidget( 2,
-                                                      1 ) ).setEnabled( list.size() == 0 );
+                    ( (ListBox) cGrid.getWidget( 2,
+                                                 0 ) ).setEnabled( list.size() == 0 );
+                    ( (ListBox) cGrid.getWidget( 2,
+                                                 1 ) ).setEnabled( list.size() == 0 );
                     ( (Button) cGrid.getWidget( 0,
                                                 3 ) ).setEnabled( list.size() != 2 );
                     attributeCellTable.redraw();
@@ -774,37 +801,39 @@ public class GuidedScoreCardEditor extends Composite {
         return null;
     }
 
-    private EnumDropDown booleanEditor( final String currentValue ) {
-        return new EnumDropDown( currentValue,
-                                 new DropDownValueChanged() {
-                                     public void valueChanged( final String newText,
-                                                               final String newValue ) {
-                                         boolean enabled = "true".equalsIgnoreCase( newValue );
-                                         ddReasonCodeAlgorithm.setEnabled( enabled );
-                                         tbBaselineScore.setEnabled( enabled );
-                                         ddReasonCodeField.setEnabled( enabled );
-                                         for ( final DirtyableFlexTable cGrid : characteristicsTables ) {
-                                             //baseline score for each characteristic
-                                             ( (TextBox) cGrid.getWidget( 2,
-                                                                          2 ) ).setEnabled( enabled );
-                                             //reason code for each characteristic
-                                             ( (TextBox) cGrid.getWidget( 2,
-                                                                          3 ) ).setEnabled( enabled );
-                                         }
-                                     }
-                                 },
-                                 DropDownData.create( new String[]{ "false", "true" } ) );
+    private ListBox booleanEditor( final String currentValue ) {
+        final ListBox listBox = listBoxEditor( booleanOperators,
+                                               currentValue );
+        listBox.addChangeHandler( new ChangeHandler() {
+            @Override
+            public void onChange( final ChangeEvent event ) {
+                final int selectedIndex = listBox.getSelectedIndex();
+                final String selectedValue = listBox.getItemText( selectedIndex );
+                final boolean enabled = "true".equalsIgnoreCase( selectedValue );
+                ddReasonCodeAlgorithm.setEnabled( enabled );
+                tbBaselineScore.setEnabled( enabled );
+                ddReasonCodeField.setEnabled( enabled );
+                for ( final DirtyableFlexTable cGrid : characteristicsTables ) {
+                    //baseline score for each characteristic
+                    ( (TextBox) cGrid.getWidget( 2,
+                                                 2 ) ).setEnabled( enabled );
+                    //reason code for each characteristic
+                    ( (TextBox) cGrid.getWidget( 2,
+                                                 3 ) ).setEnabled( enabled );
+                }
+            }
+        } );
+        return listBox;
     }
 
-    private EnumDropDown dropDownEditor( final DropDownData dropDownData,
-                                         final String currentValue ) {
-        return new EnumDropDown( currentValue,
-                                 new DropDownValueChanged() {
-                                     public void valueChanged( final String newText,
-                                                               final String newValue ) {
-                                         //valueHasChanged(newValue);
-                                     }
-                                 },
-                                 dropDownData );
+    private ListBox listBoxEditor( final String[] values,
+                                   final String currentValue ) {
+        final ListBox listBox = new ListBox();
+        for ( final String value : values ) {
+            listBox.addItem( value );
+        }
+        final int selectedIndex = Arrays.asList( values ).indexOf( currentValue );
+        listBox.setSelectedIndex( selectedIndex >= 0 ? selectedIndex : 0 );
+        return listBox;
     }
 }
