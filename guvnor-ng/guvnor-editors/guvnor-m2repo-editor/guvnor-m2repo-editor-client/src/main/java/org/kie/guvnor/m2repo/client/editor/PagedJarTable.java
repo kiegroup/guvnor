@@ -170,7 +170,7 @@ public class PagedJarTable
                         editor.setSize("800px", "600px");
                         editor.show();
                     }
-                }).loadPOMFromJar(row.getPath());
+                }).loadPOMStringFromJar(row.getPath());
             }
         });
         columnPicker.addColumn(openColumn,

@@ -16,22 +16,28 @@
 
 package org.kie.guvnor.m2repo.service;
 
-import java.io.InputStream;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
+import org.kie.guvnor.project.model.GAV;
+
+import java.io.InputStream;
 
 
 @Remote
 public interface M2RepoService {
     public void deployJar(InputStream is, GAV gav);
+
     public InputStream loadJar(String path);
+
     public String getJarName(String path);
+
     public void deleteJar(String[] path);
-    public String loadPOMFromJar(String path);
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest, String filters );
+
+    public String loadPOMStringFromJar(String path);
+
+    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters);
+
     public String getRepositoryURL();
 }

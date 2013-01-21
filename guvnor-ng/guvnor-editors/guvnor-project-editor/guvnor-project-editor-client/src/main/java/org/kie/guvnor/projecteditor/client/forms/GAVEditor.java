@@ -2,7 +2,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.project.model.GAV;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

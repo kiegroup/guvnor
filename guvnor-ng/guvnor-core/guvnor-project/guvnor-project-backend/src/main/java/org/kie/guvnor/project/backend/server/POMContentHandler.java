@@ -22,7 +22,7 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 
@@ -33,11 +33,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 @Dependent
-public class GroupArtifactVersionModelContentHandler {
+public class POMContentHandler {
     @Inject
     private M2RepoService m2RepoService;
 
-    public GroupArtifactVersionModelContentHandler() {
+    public POMContentHandler() {
         // Weld needs this for proxying.       
     }
 

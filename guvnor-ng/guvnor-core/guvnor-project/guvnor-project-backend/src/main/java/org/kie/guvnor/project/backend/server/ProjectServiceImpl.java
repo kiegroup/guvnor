@@ -44,7 +44,7 @@ public class ProjectServiceImpl
     private Paths paths;
 
     @Inject
-    GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    POMContentHandler POMContentHandler;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -68,7 +68,7 @@ public class ProjectServiceImpl
         try {
             org.kie.commons.java.nio.file.Path convert = paths.convert( path );
             String propertiesString = ioService.readAllString( convert );
-            return groupArtifactVersionModelContentHandler.toModel( propertiesString );
+            return POMContentHandler.toModel( propertiesString );
         } catch ( IOException e ) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
         } catch ( XmlPullParserException e ) {

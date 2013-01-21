@@ -38,7 +38,7 @@ public class DependencySelectorPopup
             }
         }
 
-        ).loadPOMFromJar(pathToDependency);
+        ).loadPOMStringFromJar(pathToDependency);
     }
 
     public void addSelectionHandler(SelectionHandler<POM> selectionHandler) {

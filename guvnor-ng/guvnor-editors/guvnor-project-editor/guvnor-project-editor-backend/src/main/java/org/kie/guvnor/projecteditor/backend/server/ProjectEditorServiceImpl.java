@@ -21,7 +21,7 @@ import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.project.backend.server.GroupArtifactVersionModelContentHandler;
+import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.model.KModuleModel;
@@ -48,7 +48,7 @@ public class ProjectEditorServiceImpl
     private BuildService buildService;
     private ProjectService projectService;
 
-    private GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler;
+    private POMContentHandler POMContentHandler;
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     public ProjectEditorServiceImpl() {
@@ -62,7 +62,7 @@ public class ProjectEditorServiceImpl
                                     final Event<Results> messagesEvent,
                                     final KModuleEditorContentHandler moduleEditorContentHandler,
                                     final ProjectService projectService,
-                                    GroupArtifactVersionModelContentHandler groupArtifactVersionModelContentHandler,
+                                    POMContentHandler POMContentHandler,
                                     Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache) {
         this.ioService = ioService;
         this.paths = paths;
@@ -70,7 +70,7 @@ public class ProjectEditorServiceImpl
         this.messagesEvent = messagesEvent;
         this.moduleEditorContentHandler = moduleEditorContentHandler;
         this.projectService = projectService;
-        this.groupArtifactVersionModelContentHandler = groupArtifactVersionModelContentHandler;
+        this.POMContentHandler = POMContentHandler;
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
     }
 
@@ -109,7 +109,7 @@ public class ProjectEditorServiceImpl
     public Path saveGav(final Path pathToGAV,
                         final POM gavModel) {
         try {
-            Path result = paths.convert(ioService.write(paths.convert(pathToGAV), groupArtifactVersionModelContentHandler.toString(gavModel)));
+            Path result = paths.convert(ioService.write(paths.convert(pathToGAV), POMContentHandler.toString(gavModel)));
 
             invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(result));
 

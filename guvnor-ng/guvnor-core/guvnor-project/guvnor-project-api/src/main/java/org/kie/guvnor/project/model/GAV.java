@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.kie.guvnor.m2repo.model;
+package org.kie.guvnor.project.model;
 
 
 import org.jboss.errai.common.client.api.annotations.Portable;

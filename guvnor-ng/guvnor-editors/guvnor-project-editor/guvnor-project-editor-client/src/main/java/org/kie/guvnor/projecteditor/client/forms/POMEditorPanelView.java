@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.Dependency;
 
 import java.util.List;

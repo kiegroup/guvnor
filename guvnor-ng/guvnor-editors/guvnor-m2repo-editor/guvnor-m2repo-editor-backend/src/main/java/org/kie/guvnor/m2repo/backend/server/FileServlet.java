@@ -17,25 +17,15 @@
 package org.kie.guvnor.m2repo.backend.server;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.io.StringReader;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,11 +39,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.drools.kproject.ReleaseIdImpl;
-import org.kie.builder.ReleaseId;
-import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.model.GAV;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).

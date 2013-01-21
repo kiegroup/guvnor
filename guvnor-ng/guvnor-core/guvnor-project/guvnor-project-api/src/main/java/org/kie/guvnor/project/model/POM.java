@@ -17,7 +17,6 @@
 package org.kie.guvnor.project.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.m2repo.model.GAV;
 
 import java.util.ArrayList;
 import java.util.List;

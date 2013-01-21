@@ -29,9 +29,9 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.m2repo.model.GAV;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.model.GAV;
 
 
 /**
@@ -67,7 +67,7 @@ public class M2RepoServiceImpl
     }
     
     @Override
-    public String loadPOMFromJar(String path) {
+    public String loadPOMStringFromJar(String path) {
         return repository.loadPOMFromJar(path);
     }
     

@@ -17,9 +17,8 @@
 package org.kie.guvnor.m2repo.backend.server;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.m2repo.model.GAV;
+import org.kie.guvnor.project.model.GAV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,6 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class M2RepositoryTest {
