@@ -39,6 +39,7 @@ public class DependencyGrid
             @Override
             public void onSelection(GAV gav) {
                 dependencies.add(new Dependency(gav));
+                fillList(dependencies);
             }
         });
         this.view = view;

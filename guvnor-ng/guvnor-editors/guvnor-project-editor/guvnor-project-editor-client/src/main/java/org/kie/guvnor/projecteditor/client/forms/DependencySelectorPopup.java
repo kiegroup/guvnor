@@ -38,6 +38,8 @@ public class DependencySelectorPopup
                 }
             }
         }).loadGAVFromJar(pathToDependency);
+
+        view.hide();
     }
 
     public void addSelectionHandler(GAVSelectionHandler selectionHandler) {
