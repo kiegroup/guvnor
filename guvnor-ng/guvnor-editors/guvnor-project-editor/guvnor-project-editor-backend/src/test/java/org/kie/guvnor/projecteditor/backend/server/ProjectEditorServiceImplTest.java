@@ -55,7 +55,24 @@ public class ProjectEditorServiceImplTest {
         POMContentHandler = mock(POMContentHandler.class);
         invalidateDMOProjectCache = mock(Event.class);
         M2RepoService m2RepoService = mock(M2RepoService.class);
+
+        setUpWrite();
         service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService, POMContentHandler, m2RepoService, invalidateDMOProjectCache);
+    }
+
+    private void setUpWrite() {
+        org.kie.commons.java.nio.file.Path writtenPath = mock(org.kie.commons.java.nio.file.Path.class);
+        when(
+                ioService.write(any(org.kie.commons.java.nio.file.Path.class), anyString())
+        ).thenReturn(
+                writtenPath
+        );
+        Path path = mock(Path.class);
+        when(
+                paths.convert(writtenPath)
+        ).thenReturn(
+                path
+        );
     }
 
     @Test
