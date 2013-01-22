@@ -92,7 +92,7 @@ public class RuleModeller extends DirtyableComposite
         }
     };
 
-    //used by Editor and RuleTemplateEditor
+    //used by RuleModeller
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final DataModelOracle dataModel,
@@ -108,7 +108,7 @@ public class RuleModeller extends DirtyableComposite
         doLayout();
     }
 
-    //used by decision table component
+    //used by GuidedDecisionTableWidget
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final DataModelOracle dataModel,

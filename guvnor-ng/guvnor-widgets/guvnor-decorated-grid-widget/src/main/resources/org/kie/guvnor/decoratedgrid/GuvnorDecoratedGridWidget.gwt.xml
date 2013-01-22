@@ -32,4 +32,28 @@
 
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
 
+  <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
+  <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.CellHeightCalculatorImpl">
+    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CellHeightCalculatorImpl" />
+  </replace-with>
+  <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.CellHeightCalculatorImplIE">
+    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CellHeightCalculatorImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+    </any>
+  </replace-with>
+
+  <!-- Deferred binding to handle different check-box behaviours -->
+  <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.decoratedgrid.CheckboxCellImpl">
+    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImpl" />
+  </replace-with>
+  <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImplIE">
+    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+    </any>
+  </replace-with>
+
 </module>

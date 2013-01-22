@@ -17,13 +17,12 @@
 package org.kie.guvnor.guided.rule.client;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.editor.templates.RuleTemplateEditor;
+import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.templates.TemplateModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
 import org.uberfire.backend.vfs.Path;
@@ -32,9 +31,8 @@ public class GuidedRuleTemplateEditorView
         extends Composite
         implements GuidedRuleTemplateEditorPresenter.View {
 
-    private final EventBus localBus = new SimpleEventBus();
-    private final VerticalPanel panel = new VerticalPanel();
-    private RuleTemplateEditor modeller = null;
+    private final SimplePanel panel = new SimplePanel();
+    private RuleModeller modeller = null;
 
     public GuidedRuleTemplateEditorView() {
         panel.setWidth( "100%" );
@@ -44,12 +42,14 @@ public class GuidedRuleTemplateEditorView
     @Override
     public void setContent( final Path path,
                             final TemplateModel model,
-                            final DataModelOracle dataModel ) {
-        this.modeller = new RuleTemplateEditor( path,
-                                                model,
-                                                dataModel,
-                                                new TemplateModellerWidgetFactory(),
-                                                localBus );
+                            final DataModelOracle dataModel,
+                            final EventBus eventBus,
+                            final boolean isReadOnly ) {
+        this.modeller = new RuleModeller( path,
+                                          model,
+                                          dataModel,
+                                          new TemplateModellerWidgetFactory(),
+                                          eventBus );
         panel.add( this.modeller );
     }
 

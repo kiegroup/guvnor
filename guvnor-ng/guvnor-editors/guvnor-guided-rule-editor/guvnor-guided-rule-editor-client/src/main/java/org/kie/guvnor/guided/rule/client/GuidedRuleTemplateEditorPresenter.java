@@ -21,6 +21,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -61,7 +63,9 @@ public class GuidedRuleTemplateEditorPresenter {
 
         void setContent( final Path path,
                          final TemplateModel model,
-                         final DataModelOracle dataModel );
+                         final DataModelOracle dataModel,
+                         final EventBus eventBus,
+                         final boolean isReadOnly );
 
         TemplateModel getContent();
 
@@ -72,11 +76,26 @@ public class GuidedRuleTemplateEditorPresenter {
         boolean confirmClose();
     }
 
+    public interface DataView
+            extends
+            IsWidget {
+
+        void setContent( final TemplateModel model,
+                         final DataModelOracle dataModel,
+                         final EventBus eventBus,
+                         final boolean isReadOnly );
+
+        void clear();
+    }
+
     @Inject
     private View view;
 
     @Inject
     private ViewSourceView viewSource;
+
+    @Inject
+    private DataView dataView;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -86,6 +105,13 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    private EventBus eventBus = new SimpleEventBus();
+
+    private boolean isReadOnly = false;
+
+    private TemplateModel model;
+    private DataModelOracle oracle;
 
     private Path path = null;
 
@@ -110,6 +136,22 @@ public class GuidedRuleTemplateEditorPresenter {
                 viewSource.clear();
             }
         } );
+        multiPage.addPage( new Page( dataView,
+                                     "Data" ) {
+
+            @Override
+            public void onFocus() {
+                dataView.setContent( model,
+                                     oracle,
+                                     eventBus,
+                                     isReadOnly );
+            }
+
+            @Override
+            public void onLostFocus() {
+                dataView.clear();
+            }
+        } );
     }
 
     @OnStart
@@ -119,9 +161,17 @@ public class GuidedRuleTemplateEditorPresenter {
         service.call( new RemoteCallback<GuidedTemplateEditorContent>() {
             @Override
             public void callback( final GuidedTemplateEditorContent response ) {
+                model = response.getRuleModel();
+                oracle = response.getDataModel();
                 view.setContent( path,
-                                 response.getRuleModel(),
-                                 response.getDataModel() );
+                                 model,
+                                 oracle,
+                                 eventBus,
+                                 isReadOnly );
+                dataView.setContent( model,
+                                     oracle,
+                                     eventBus,
+                                     isReadOnly );
             }
         } ).loadContent( path );
     }
