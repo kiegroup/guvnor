@@ -1,6 +1,7 @@
 package org.kie.guvnor.project.backend.server;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
@@ -8,11 +9,14 @@ import org.kie.guvnor.project.service.POMService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 
+@Service
+@ApplicationScoped
 public class POMServiceImpl
         implements POMService {
 
