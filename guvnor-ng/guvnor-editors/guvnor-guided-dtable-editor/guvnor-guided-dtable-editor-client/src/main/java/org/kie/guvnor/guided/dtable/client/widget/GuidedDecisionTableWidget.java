@@ -101,6 +101,11 @@ public class GuidedDecisionTableWidget extends Composite
         LimitedEntryBRLActionColumnView.Presenter {
 
     private VerticalPanel layout;
+    private DecoratedDisclosurePanel disclosurePanel;
+    private DecoratedDisclosurePanel conditions;
+    private DecoratedDisclosurePanel actions;
+    private DecoratedDisclosurePanel options;
+
     private PrettyFormLayout configureColumnsNote;
     private VerticalPanel attributeConfigWidget;
     private VerticalPanel conditionsConfigWidget;
@@ -175,9 +180,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                        + Constants.INSTANCE.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
-        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.DecisionTable() );
-        disclosurePanel.setWidth( "100%" );
+        disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.DecisionTable() );
         disclosurePanel.setTitle( Constants.INSTANCE.DecisionTable() );
+        disclosurePanel.setWidth( "100%" );
 
         VerticalPanel config = new VerticalPanel();
         config.setWidth( "100%" );
@@ -188,21 +193,21 @@ public class GuidedDecisionTableWidget extends Composite
             config.add( newColumn() );
         }
 
-        DecoratedDisclosurePanel conditions = new DecoratedDisclosurePanel( Constants.INSTANCE.ConditionColumns() );
-        conditions.setOpen( false );
+        conditions = new DecoratedDisclosurePanel( Constants.INSTANCE.ConditionColumns() );
         conditions.setWidth( "75%" );
+        conditions.setOpen( false );
         conditions.add( getConditions() );
         config.add( conditions );
 
-        DecoratedDisclosurePanel actions = new DecoratedDisclosurePanel( Constants.INSTANCE.ActionColumns() );
-        actions.setOpen( false );
+        actions = new DecoratedDisclosurePanel( Constants.INSTANCE.ActionColumns() );
         actions.setWidth( "75%" );
+        actions.setOpen( false );
         actions.add( getActions() );
         config.add( actions );
 
-        DecoratedDisclosurePanel options = new DecoratedDisclosurePanel( Constants.INSTANCE.Options() );
-        options.setOpen( false );
+        options = new DecoratedDisclosurePanel( Constants.INSTANCE.Options() );
         options.setWidth( "75%" );
+        options.setOpen( false );
         options.add( getAttributes() );
         config.add( options );
 
@@ -1433,10 +1438,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                   identity,
                                                   isReadOnly,
                                                   eventBus );
-        dtable.setPixelSize( 1000,
-                             400 );
         dtableContainer.setWidget( dtable );
-
     }
 
     //Check if any of the bound Fact Patterns in the BRL Fragment are used elsewhere

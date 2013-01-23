@@ -42,6 +42,12 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         VerticalPanel vp = new VerticalPanel();
 
+        ctrls = new DecisionTableControlsWidget( this,
+                                                 model,
+                                                 identity,
+                                                 isReadOnly );
+        vp.add( ctrls );
+
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
                                                                cellFactory,
@@ -50,12 +56,6 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                                                isReadOnly,
                                                                eventBus );
         vp.add( widget );
-
-        ctrls = new DecisionTableControlsWidget( this,
-                                                 model,
-                                                 identity,
-                                                 isReadOnly );
-        vp.add( ctrls );
 
         initWidget( vp );
 

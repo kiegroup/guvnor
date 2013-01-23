@@ -184,7 +184,7 @@ public class TemplateDataHeaderWidget
             }
 
             // Schedule resize event after header has been drawn
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
                 public void execute() {
                     ResizeEvent.fire( TemplateDataHeaderWidget.this,
                                       getBody().getOffsetWidth(),

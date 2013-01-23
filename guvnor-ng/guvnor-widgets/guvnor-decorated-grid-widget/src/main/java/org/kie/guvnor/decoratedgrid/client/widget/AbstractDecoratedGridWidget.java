@@ -159,9 +159,11 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
         this.headerWidget.addResizeHandler( new ResizeHandler() {
 
             public void onResize( ResizeEvent event ) {
-                scrollPanel.setHeight( ( height - event.getHeight() )
-                                               + "px" );
-                assertDimensions();
+                final int scrollPanelHeight = height - event.getHeight();
+                if ( scrollPanelHeight > 0 ) {
+                    scrollPanel.setHeight( scrollPanelHeight + "px" );
+                    assertDimensions();
+                }
             }
         } );
         bodyPanel.add( headerWidget );

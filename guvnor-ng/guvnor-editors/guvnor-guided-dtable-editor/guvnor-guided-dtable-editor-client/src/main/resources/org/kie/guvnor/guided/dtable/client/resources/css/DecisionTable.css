@@ -93,8 +93,8 @@
 }
 
 .headerSplitter {
-    height: 8px;
     background-color: #a0a0a0;
+    height: rowHeaderSplitterHeight;
     border-right: borderWidth dotted grey;
 }
 

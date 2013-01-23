@@ -163,7 +163,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
             final HorizontalPanel hp = new HorizontalPanel();
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
-            hp.setWidth( "100%" );
+            hp.setWidth( resources.sidebarWidth() + "px" );
 
             //Add row icon
             if ( !isReadOnly ) {
@@ -260,12 +260,6 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
         public void setHeight( int height ) {
             super.setHeight( height + "px" );
-
-            //Height needs to be adjusted for borders
-            String innerPixelHeight = ( height - resources.borderWidthThick() ) + "px";
-            DOM.setStyleAttribute( outerDiv,
-                                   "height",
-                                   innerPixelHeight );
         }
 
         private void setPadding( int padding ) {
@@ -348,7 +342,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
     /**
      * Construct a "Sidebar" for the provided DecisionTable
-     * @param decisionTable
+     * @param resources
+     * @param isReadOnly
+     * @param eventBus
      */
     public AbstractVerticalDecoratedGridSidebarWidget( ResourcesProvider<T> resources,
                                                        boolean isReadOnly,

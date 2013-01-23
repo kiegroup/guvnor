@@ -213,6 +213,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
             private HeaderSplitter() {
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
+                hp.getElement().getStyle().setHeight( resources.rowHeaderSplitterHeight(),
+                                                      Unit.PX );
                 hp.setWidth( "100%" );
                 setIconImage();
                 hp.add( icon );
