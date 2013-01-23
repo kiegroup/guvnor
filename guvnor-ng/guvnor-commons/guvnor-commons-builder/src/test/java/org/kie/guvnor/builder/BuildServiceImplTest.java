@@ -16,33 +16,59 @@
 
 package org.kie.guvnor.builder;
 
-import javax.enterprise.event.Event;
+import java.net.URL;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
+import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.kie.guvnor.commons.service.builder.BuildService;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.service.ProjectService;
+
 import org.uberfire.backend.server.util.Paths;
 
-import static org.mockito.Mockito.*;
 
 public class BuildServiceImplTest {
-
-    private BuildService service;
+    private BeanManager beanManager;
 
     @Before
     public void setUp() throws Exception {
-        final Paths paths = mock( Paths.class );
-        final SourceServices sourceServices = mock( SourceServices.class );
-        final ProjectService projectService = mock( ProjectService.class );
-        final M2RepoService m2RepoService = mock( M2RepoService.class );
-        final Event messagesEvent = mock( Event.class );
+        StartMain startMain = new StartMain(new String[0]);
+        beanManager = startMain.go().getBeanManager();
+    }
+    
+    @Test
+    public void testBuilder() throws Exception {
+/*        Weld weld = new Weld();
+        WeldContainer weldContainer = weld.initialize();
 
-        service = new BuildServiceImpl( paths,
-                                        sourceServices,
-                                        projectService,
-                                        m2RepoService,
-                                        messagesEvent );
+        SourceServices sourceServices = weldContainer.instance().select(SourceServices.class).get();*/             
+        
+        Bean sourceServicesBean = (Bean)beanManager.getBeans(SourceServices.class).iterator().next();
+        CreationalContext cc = beanManager.createCreationalContext(sourceServicesBean);
+        SourceServices sourceServices = (SourceServices)beanManager.getReference(sourceServicesBean, SourceServices.class, cc);
+
+        Bean pathsBean = (Bean)beanManager.getBeans(Paths.class).iterator().next();
+        cc = beanManager.createCreationalContext(pathsBean);
+        Paths paths = (Paths)beanManager.getReference(pathsBean, Paths.class, cc);
+   
+        
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2");
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath(url.toURI());
+        
+        final Builder builder = new Builder(path,
+                "guvnor-m2repo-dependency-example2",
+                paths,
+                sourceServices );
+        
+        final Results results = builder.build();
+        
+        assertTrue(results.isEmpty());
     }
 }

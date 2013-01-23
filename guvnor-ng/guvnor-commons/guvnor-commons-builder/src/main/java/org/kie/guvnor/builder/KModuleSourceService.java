@@ -17,7 +17,8 @@ import org.kie.guvnor.commons.service.source.SourceContext;
 public class KModuleSourceService
         extends BaseSourceService {
 
-    private static final String PATTERN = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF" + File.separator + "kmodule.xml";
+    //NOTE: Platform specific separators are handled by Path already
+    private static final String PATTERN = "src/main/resources/META-INF/kmodule.xml";
 
     private static final String DESTINATION = "META-INF" + File.separator + "kmodule.xml";
 

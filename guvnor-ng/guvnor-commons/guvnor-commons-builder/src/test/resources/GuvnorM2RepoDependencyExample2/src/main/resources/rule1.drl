@@ -1,0 +1,12 @@
+import org.kie.test.Bean;
+
+ 
+rule Test
+
+when
+
+Bean()
+
+then
+
+end
