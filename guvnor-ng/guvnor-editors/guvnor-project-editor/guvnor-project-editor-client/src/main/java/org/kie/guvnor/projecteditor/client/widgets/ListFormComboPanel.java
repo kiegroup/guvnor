@@ -18,7 +18,7 @@ package org.kie.guvnor.projecteditor.client.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.projecteditor.model.HasListFormComboPanelProperties;
+import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
 
 import java.util.Map;
 

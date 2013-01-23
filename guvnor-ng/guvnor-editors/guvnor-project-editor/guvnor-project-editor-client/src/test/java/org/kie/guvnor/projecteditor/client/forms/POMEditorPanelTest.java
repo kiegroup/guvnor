@@ -33,20 +33,20 @@ public class POMEditorPanelTest {
     private POMEditorPanelView view;
     private POMEditorPanel panel;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
-    private MockProjectServiceCaller projectServiceCaller;
+    private MockPomServiceCaller pomServiceCaller;
 
     @Before
     public void setUp() throws Exception {
         view = mock(POMEditorPanelView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
-        projectServiceCaller = new MockProjectServiceCaller();
-        panel = new POMEditorPanel(projectEditorServiceCaller, projectServiceCaller, view);
+        pomServiceCaller = new MockPomServiceCaller();
+        panel = new POMEditorPanel(pomServiceCaller, view);
     }
 
     @Test
     public void testLoad() throws Exception {
         POM gavModel = createTestModel("group", "artifact", "1.1.1");
-        projectServiceCaller.setGav(gavModel);
+        pomServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 
@@ -58,7 +58,7 @@ public class POMEditorPanelTest {
     @Test
     public void testSave() throws Exception {
         POM gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
-        projectServiceCaller.setGav(gavModel);
+        pomServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
         panel.init(path);
 
@@ -82,7 +82,7 @@ public class POMEditorPanelTest {
             }
         });
 
-        POM savedGav = projectEditorServiceCaller.getSavedGav();
+        POM savedGav = pomServiceCaller.getSavedPOM();
         assertEquals("group2", savedGav.getGav().getGroupId());
         assertEquals("artifact2", savedGav.getGav().getArtifactId());
         assertEquals("2.2.2", savedGav.getGav().getVersion());

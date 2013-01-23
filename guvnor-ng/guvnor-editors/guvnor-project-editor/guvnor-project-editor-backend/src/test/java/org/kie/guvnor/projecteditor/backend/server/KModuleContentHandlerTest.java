@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.backend.server;
 
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
+import org.kie.guvnor.project.model.KModuleModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,13 +25,13 @@ import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertNotNull;
 
-public class KModuleEditorContentHandlerTest {
+public class KModuleContentHandlerTest {
 
 
     @Test
     public void testBasic() throws Exception {
-        KModuleEditorContentHandler kModuleEditorContentHandler = new KModuleEditorContentHandler();
-        KModuleModel model = kModuleEditorContentHandler.toModel(readResource("simpleKModule.xml"));
+        KModuleContentHandler kModuleContentHandler = new KModuleContentHandler();
+        KModuleModel model = kModuleContentHandler.toModel(readResource("simpleKModule.xml"));
 
         assertNotNull(model);
     }

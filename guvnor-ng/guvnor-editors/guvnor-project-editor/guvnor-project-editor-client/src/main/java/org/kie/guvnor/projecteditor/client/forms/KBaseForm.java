@@ -20,9 +20,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.projecteditor.client.widgets.Form;
-import org.kie.guvnor.projecteditor.model.AssertBehaviorOption;
-import org.kie.guvnor.projecteditor.model.EventProcessingOption;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
+import org.kie.guvnor.project.model.AssertBehaviorOption;
+import org.kie.guvnor.project.model.EventProcessingOption;
+import org.kie.guvnor.project.model.KBaseModel;
 
 public class KBaseForm
         implements Form<KBaseModel>, KBaseFormView.Presenter {

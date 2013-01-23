@@ -5,9 +5,9 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.guvnor.project.service.KModuleService;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
 
-    private final Caller<ProjectEditorService> projectEditorServiceCaller;
+    private final Caller<KModuleService> projectEditorServiceCaller;
 
     private KModuleModel model;
     private Path path;
@@ -23,7 +23,7 @@ public class KModuleEditorPanel
     private final KModuleEditorPanelView view;
 
     @Inject
-    public KModuleEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
+    public KModuleEditorPanel(Caller<KModuleService> projectEditorServiceCaller,
                               KBaseForm form,
                               NamePopup namePopup,
                               KModuleEditorPanelView view) {

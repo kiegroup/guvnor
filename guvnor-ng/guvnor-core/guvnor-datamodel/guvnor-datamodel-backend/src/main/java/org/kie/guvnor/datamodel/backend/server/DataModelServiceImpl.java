@@ -35,6 +35,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
@@ -50,6 +51,9 @@ public class DataModelServiceImpl
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private POMService pomService;
 
     @Inject
     private Paths paths;
@@ -129,7 +133,7 @@ public class DataModelServiceImpl
                                                  final Path packagePath ) {
         //Build the project to get all available classes
         final Path pomPath = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
-        final POM gav = projectService.loadGav( pomPath );
+        final POM gav = pomService.loadPOM(pomPath);
         final Builder builder = new Builder( paths.convert( projectPath ),
                                              gav.getGav().getArtifactId(),
                                              paths,

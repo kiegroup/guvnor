@@ -9,8 +9,8 @@ import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.context.WorkbenchContext;
@@ -26,7 +26,8 @@ import java.util.List;
  * Handler for the creation of new Projects
  */
 @ApplicationScoped
-public class NewProjectHandler implements NewResourceHandler {
+public class NewProjectHandler
+        implements NewResourceHandler {
 
     private static String FILE_TYPE = null;
 
@@ -40,7 +41,7 @@ public class NewProjectHandler implements NewResourceHandler {
     private Event<NotificationEvent> notificationEvent;
 
     @Inject
-    private Caller<ProjectEditorService> projectEditorServiceCaller;
+    private Caller<ProjectService> projectServiceCaller;
 
     @Override
     public String getFileType() {
@@ -61,7 +62,7 @@ public class NewProjectHandler implements NewResourceHandler {
     public void create(final String projectName) {
         Path activePath = context.getActivePath();
         if (activePath != null) {
-            projectEditorServiceCaller.call(new RemoteCallback<Path>() {
+            projectServiceCaller.call(new RemoteCallback<Path>() {
                 @Override
                 public void callback(Path pathToPom) {
 

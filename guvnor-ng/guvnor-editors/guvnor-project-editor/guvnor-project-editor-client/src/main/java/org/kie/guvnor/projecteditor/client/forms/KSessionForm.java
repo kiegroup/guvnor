@@ -17,8 +17,8 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.projecteditor.model.ClockTypeOption;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.project.model.ClockTypeOption;
+import org.kie.guvnor.project.model.KSessionModel;
 import org.kie.guvnor.projecteditor.client.widgets.Form;
 
 import javax.inject.Inject;

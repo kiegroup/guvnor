@@ -21,10 +21,10 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.guvnor.projecteditor.model.AssertBehaviorOption;
-import org.kie.guvnor.projecteditor.model.EventProcessingOption;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.project.model.AssertBehaviorOption;
+import org.kie.guvnor.project.model.EventProcessingOption;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KSessionModel;
 
 import java.util.HashMap;
 import java.util.Map;

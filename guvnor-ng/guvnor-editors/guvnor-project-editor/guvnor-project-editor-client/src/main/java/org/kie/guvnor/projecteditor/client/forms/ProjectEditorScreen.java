@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.project.service.KModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -40,7 +40,7 @@ public class ProjectEditorScreen {
     private final ProjectEditorScreenView view;
     private final POMEditorPanel gavPanel;
     private final KModuleEditorPanel kModuleEditorPanel;
-    private final Caller<ProjectEditorService> projectEditorServiceCaller;
+    private final Caller<KModuleService> projectEditorServiceCaller;
     private final Caller<BuildService> buildServiceCaller;
 
     private Path pathToPomXML;
@@ -51,7 +51,7 @@ public class ProjectEditorScreen {
             ProjectEditorScreenView view,
             POMEditorPanel gavPanel,
             KModuleEditorPanel kModuleEditorPanel,
-            Caller<ProjectEditorService> projectEditorServiceCaller,
+            Caller<KModuleService> projectEditorServiceCaller,
             Caller<BuildService> buildServiceCaller) {
         this.view = view;
         this.gavPanel = gavPanel;
@@ -133,25 +133,26 @@ public class ProjectEditorScreen {
                     }
                 }
         ));
-        if (pathToKModuleXML == null) {
-            menuBar.addItem(new DefaultMenuItemCommand(
-                    view.getEnableKieProjectMenuItemText(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            projectEditorServiceCaller.call(
-                                    new RemoteCallback<Path>() {
-                                        @Override
-                                        public void callback(Path pathToKProject) {
-                                            pathToKModuleXML = pathToKProject;
-                                            setUpKProject(pathToKProject);
-                                        }
-                                    }
-                            ).setUpKModuleStructure(pathToPomXML);
-                        }
-                    }
-            ));
-        }
+        // For now every module is a kie project.
+//        if (pathToKModuleXML == null) {
+//            menuBar.addItem(new DefaultMenuItemCommand(
+//                    view.getEnableKieProjectMenuItemText(),
+//                    new Command() {
+//                        @Override
+//                        public void execute() {
+//                            projectEditorServiceCaller.call(
+//                                    new RemoteCallback<Path>() {
+//                                        @Override
+//                                        public void callback(Path pathToKProject) {
+//                                            pathToKModuleXML = pathToKProject;
+//                                            setUpKProject(pathToKProject);
+//                                        }
+//                                    }
+//                            ).setUpKModuleStructure(pathToPomXML);
+//                        }
+//                    }
+//            ));
+//        }
 
         return menuBar;
     }

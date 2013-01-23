@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
+import org.kie.guvnor.project.model.KModuleModel;
 import org.uberfire.backend.vfs.Path;
 
 
 @Remote
-public interface ProjectEditorService {
+public interface KModuleService {
 
     public Path setUpKModuleStructure(Path pathToPom);
 
     public void saveKModule(Path path,
                             KModuleModel model);
 
-    public Path savePOM(final Path path,
-                        final POM gav);
-
     public KModuleModel loadKModule(Path path);
 
     public Path pathToRelatedKModuleFileIfAny(Path pathToPomXML);
 
-    public Path newProject(Path activePath, String name);
 }

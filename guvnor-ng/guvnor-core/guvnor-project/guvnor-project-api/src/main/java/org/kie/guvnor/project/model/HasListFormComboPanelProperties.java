@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.service;
+package org.kie.guvnor.project.model;
 
+public interface HasListFormComboPanelProperties {
 
-import org.uberfire.backend.vfs.Path;
+    String getName();
 
-public interface FileService {
+    void setName( String name );
 
-    public Path newProject(String folderName);
+    public boolean isDefault();
+
+    void setDefault(boolean theDefault);
 }

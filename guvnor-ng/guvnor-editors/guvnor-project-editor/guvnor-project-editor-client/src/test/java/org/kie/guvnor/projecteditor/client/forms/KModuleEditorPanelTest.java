@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KModuleModel;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 

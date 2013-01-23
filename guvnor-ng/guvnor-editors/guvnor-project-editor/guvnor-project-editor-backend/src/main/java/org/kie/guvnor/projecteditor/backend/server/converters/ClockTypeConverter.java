@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.guvnor.projecteditor.model.ClockTypeOption;
+import org.kie.guvnor.project.model.ClockTypeOption;
 
 public class ClockTypeConverter implements Converter {
 

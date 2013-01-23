@@ -32,6 +32,7 @@ public class POM {
     private List<Repository> repositories = new ArrayList<Repository>();
 
     public POM() {
+        this.gav = new GAV();
     }
 
     public POM(GAV gav) {

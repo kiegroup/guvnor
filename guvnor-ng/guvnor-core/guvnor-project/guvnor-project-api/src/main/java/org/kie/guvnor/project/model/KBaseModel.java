@@ -1,4 +1,4 @@
-package org.kie.guvnor.projecteditor.model;
+package org.kie.guvnor.project.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 

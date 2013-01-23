@@ -16,21 +16,23 @@
 
 package org.kie.guvnor.project.backend.server;
 
-import java.io.IOException;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.Repository;
+import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Service
 @ApplicationScoped
@@ -43,109 +45,124 @@ public class ProjectServiceImpl
     private IOService ioService;
     private Paths paths;
 
-    @Inject
-    POMContentHandler POMContentHandler;
+    private POMService pomService;
+    private M2RepoService m2RepoService;
+    private KModuleService kModuleService;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
 
     @Inject
-    public ProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final Paths paths ) {
+    public ProjectServiceImpl(M2RepoService m2RepoService,
+                              final @Named("ioStrategy") IOService ioService,
+                              final Paths paths,
+                              KModuleService kModuleService,
+                              POMService pomService) {
+        this.m2RepoService = m2RepoService;
         this.ioService = ioService;
         this.paths = paths;
+        this.kModuleService = kModuleService;
+        this.pomService = pomService;
     }
 
     @Override
-    public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
+    public WorkingSetSettings loadWorkingSetConfig(final Path project) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
 
     @Override
-    public POM loadGav( final Path path ) {
-        try {
-            org.kie.commons.java.nio.file.Path convert = paths.convert( path );
-            String propertiesString = ioService.readAllString( convert );
-            return POMContentHandler.toModel( propertiesString );
-        } catch ( IOException e ) {
-            e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
-        } catch ( XmlPullParserException e ) {
-            e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
-        }
-        return null;
-
-    }
-
-    @Override
-    public Path resolveProject( final Path resource ) {
+    public Path resolveProject(final Path resource) {
 
         //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
+        if (resource == null) {
             return null;
         }
 
         //Check if resource is the project root
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        if ( hasPom( path ) && hasKModule( path ) ) {
-            return resource;
-        }
+        org.kie.commons.java.nio.file.Path path = paths.convert(resource).normalize();
 
         //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-        if ( Files.isRegularFile( path ) ) {
+        if (Files.isRegularFile(path)) {
             path = path.getParent();
         }
-        while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
+        if (hasPom(path) && hasKModule(path)) {
+            return resource;
+        }
+        while (path.getNameCount() > 0 && !path.getFileName().toString().equals(SOURCE_FILENAME)) {
             path = path.getParent();
         }
-        if ( path.getNameCount() == 0 ) {
+        if (path.getNameCount() == 0) {
             return null;
         }
         path = path.getParent();
-        if ( path.getNameCount() == 0 || path == null ) {
+        if (path.getNameCount() == 0 || path == null) {
             return null;
         }
-        if ( !hasPom( path ) ) {
+        if (!hasPom(path)) {
             return null;
         }
-        if ( !hasKModule( path ) ) {
+        if (!hasKModule(path)) {
             return null;
         }
-        return PathFactory.newPath( paths.convert( path.getFileSystem() ),
-                                    path.getFileName().toString(),
-                                    path.toUri().toString() );
+        return PathFactory.newPath(paths.convert(path.getFileSystem()),
+                path.getFileName().toString(),
+                path.toUri().toString());
     }
 
     @Override
-    public Path resolvePackage( final Path resource ) {
+    public Path resolvePackage(final Path resource) {
 
         //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
+        if (resource == null) {
             return null;
         }
 
         //A resource is already a folder simply return it
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        if ( Files.isDirectory( path ) ) {
+        org.kie.commons.java.nio.file.Path path = paths.convert(resource).normalize();
+        if (Files.isDirectory(path)) {
             return resource;
         }
 
         path = path.getParent();
 
-        return PathFactory.newPath( paths.convert( path.getFileSystem() ),
-                                    path.getFileName().toString(),
-                                    path.toUri().toString() );
+        return PathFactory.newPath(paths.convert(path.getFileSystem()),
+                path.getFileName().toString(),
+                path.toUri().toString());
     }
 
-    private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
-        final org.kie.commons.java.nio.file.Path pomPath = path.resolve( POM_FILENAME );
-        return Files.exists( pomPath );
+    @Override
+    public Path newProject(Path activePath, String name) {
+        POM pomModel = new POM();
+        Repository repository = new Repository();
+        repository.setId("guvnor-m2-repo");
+        repository.setName("Guvnor M2 Repo");
+        repository.setUrl(m2RepoService.getRepositoryURL());
+        pomModel.addRepository(repository);
+
+        Path pathToPom = createPOMFile(activePath, name);
+        kModuleService.setUpKModuleStructure(pathToPom);
+
+        return pomService.savePOM(pathToPom, pomModel);
     }
 
-    private boolean hasKModule( final org.kie.commons.java.nio.file.Path path ) {
-        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_FILENAME );
-        return Files.exists( kmodulePath );
+    private Path createPOMFile(Path activePath, String name) {
+        return paths.convert(ioService.createFile(paths.convert(createPOMPath(activePath, name))));
+    }
+
+    private Path createPOMPath(Path activePath, String name) {
+        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml");
+    }
+
+    private boolean hasPom(final org.kie.commons.java.nio.file.Path path) {
+        final org.kie.commons.java.nio.file.Path pomPath = path.resolve(POM_FILENAME);
+        return Files.exists(pomPath);
+    }
+
+    private boolean hasKModule(final org.kie.commons.java.nio.file.Path path) {
+        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve(KMODULE_FILENAME);
+        return Files.exists(kmodulePath);
     }
 
 }

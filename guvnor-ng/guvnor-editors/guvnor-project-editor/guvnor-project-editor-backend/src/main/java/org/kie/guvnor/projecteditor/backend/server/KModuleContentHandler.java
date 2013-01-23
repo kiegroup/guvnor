@@ -25,15 +25,15 @@ import org.kie.guvnor.projecteditor.backend.server.converters.KSessionConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.ListenerConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.QualifierConverter;
 import org.kie.guvnor.projecteditor.backend.server.converters.WorkItemHandelerConverter;
-import org.kie.guvnor.projecteditor.model.ClockTypeOption;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
-import org.kie.guvnor.projecteditor.model.ListenerModel;
-import org.kie.guvnor.projecteditor.model.QualifierModel;
-import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
+import org.kie.guvnor.project.model.ClockTypeOption;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.guvnor.project.model.ListenerModel;
+import org.kie.guvnor.project.model.QualifierModel;
+import org.kie.guvnor.project.model.WorkItemHandlerModel;
 
-public class KModuleEditorContentHandler {
+public class KModuleContentHandler {
 
     public KModuleModel toModel(String xml) {
         return (KModuleModel) createXStream().fromXML(xml);

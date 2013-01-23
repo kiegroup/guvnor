@@ -18,12 +18,10 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.projecteditor.client.forms.KBaseForm;
-import org.kie.guvnor.projecteditor.client.forms.KBaseFormView;
-import org.kie.guvnor.projecteditor.model.AssertBehaviorOption;
-import org.kie.guvnor.projecteditor.model.EventProcessingOption;
-import org.kie.guvnor.projecteditor.model.KBaseModel;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.project.model.AssertBehaviorOption;
+import org.kie.guvnor.project.model.EventProcessingOption;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KSessionModel;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Map;

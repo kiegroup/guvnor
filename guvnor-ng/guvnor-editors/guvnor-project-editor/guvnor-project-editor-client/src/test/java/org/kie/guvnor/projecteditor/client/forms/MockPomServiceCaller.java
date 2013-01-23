@@ -19,39 +19,31 @@ package org.kie.guvnor.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.project.service.POMService;
 import org.uberfire.backend.vfs.Path;
 
-public class MockProjectServiceCaller
-        implements Caller<ProjectService> {
+public class MockPomServiceCaller
+        implements Caller<POMService> {
 
     private POM gavModel;
-    private final ProjectService service;
+    private final POMService service;
     private RemoteCallback callback;
+    private POM pomModel;
 
-    public MockProjectServiceCaller() {
-        service = new ProjectService() {
+    public MockPomServiceCaller() {
+        service = new POMService() {
 
-            @Override
-            public WorkingSetSettings loadWorkingSetConfig( Path project ) {
-                return null;  //TODO -Rikkola-
-            }
 
             @Override
-            public POM loadGav( Path path ) {
-                callback.callback( gavModel );
+            public POM loadPOM(Path path) {
+                callback.callback(gavModel);
                 return gavModel;
             }
 
             @Override
-            public Path resolveProject( Path resource ) {
-                return null;  //TODO -Rikkola-
-            }
-
-            @Override
-            public Path resolvePackage( Path resource ) {
+            public Path savePOM(Path pathToPOM, POM pomModel) {
+                MockPomServiceCaller.this.pomModel = pomModel;
                 return null;  //TODO -Rikkola-
             }
 
@@ -59,19 +51,23 @@ public class MockProjectServiceCaller
     }
 
     @Override
-    public ProjectService call( RemoteCallback<?> remoteCallback ) {
+    public POMService call(RemoteCallback<?> remoteCallback) {
         callback = remoteCallback;
         return service;
     }
 
     @Override
-    public ProjectService call( RemoteCallback<?> remoteCallback,
-                                ErrorCallback errorCallback ) {
+    public POMService call(RemoteCallback<?> remoteCallback,
+                           ErrorCallback errorCallback) {
         callback = remoteCallback;
         return service;
     }
 
-    public void setGav( POM gavModel ) {
+    public void setGav(POM gavModel) {
         this.gavModel = gavModel;
+    }
+
+    public POM getSavedPOM() {
+        return pomModel;
     }
 }

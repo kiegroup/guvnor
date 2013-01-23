@@ -21,10 +21,10 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.guvnor.projecteditor.model.ClockTypeOption;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
-import org.kie.guvnor.projecteditor.model.ListenerModel;
-import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
+import org.kie.guvnor.project.model.ClockTypeOption;
+import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.guvnor.project.model.ListenerModel;
+import org.kie.guvnor.project.model.WorkItemHandlerModel;
 
 import java.util.List;
 

@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.model;
+package org.kie.guvnor.project.model;
 
-public interface HasListFormComboPanelProperties {
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-    String getName();
-
-    void setName( String name );
-
-    public boolean isDefault();
-
-    void setDefault(boolean theDefault);
+@Portable
+public enum AssertBehaviorOption {
+    EQUALITY, IDENTITY;
 }

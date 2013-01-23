@@ -1,7 +1,9 @@
 package org.kie.guvnor.jcr2vfsmigration;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,13 +13,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class Jcr2VfsMigrationAppTest {
 
@@ -25,9 +22,9 @@ public class Jcr2VfsMigrationAppTest {
     public void migrateMortgageExample() throws IOException {
         migrate("mortgageExample");
     }
-    
+
     private void verifyResult() {
-        
+
     }
 
     private void migrate(String datasetName) throws IOException {
@@ -55,7 +52,7 @@ public class Jcr2VfsMigrationAppTest {
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
-            File entryDestination = new File(outputDir,  entry.getName());
+            File entryDestination = new File(outputDir, entry.getName());
             entryDestination.getParentFile().mkdirs();
             if (entryDestination.isDirectory()) {
                 entryDestination.mkdir();

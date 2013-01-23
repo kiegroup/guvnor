@@ -20,25 +20,24 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.projecteditor.model.KModuleModel;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.guvnor.project.service.KModuleService;
 import org.uberfire.backend.vfs.Path;
 
 public class MockProjectEditorServiceCaller
-        implements Caller<ProjectEditorService> {
+        implements Caller<KModuleService> {
 
-    private final ProjectEditorService service;
+    private final KModuleService service;
 
     private KModuleModel savedModel;
     private KModuleModel modelForLoading;
 
     private RemoteCallback callback;
-    private POM savedGav;
     private Path pathToRelatedKModuleFileIfAny;
 
     MockProjectEditorServiceCaller() {
 
-        service = new ProjectEditorService() {
+        service = new KModuleService() {
 
 
             @Override
@@ -54,13 +53,6 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public Path savePOM(Path path, POM gav) {
-                callback.callback(null);
-                savedGav = gav;
-                return null;
-            }
-
-            @Override
             public KModuleModel loadKModule(Path path) {
                 callback.callback(modelForLoading);
                 return modelForLoading;
@@ -72,10 +64,6 @@ public class MockProjectEditorServiceCaller
                 return pathToRelatedKModuleFileIfAny;
             }
 
-            @Override
-            public Path newProject(Path activePath, String name) {
-                return null;  //TODO -Rikkola-
-            }
         };
     }
 
@@ -84,23 +72,19 @@ public class MockProjectEditorServiceCaller
     }
 
     @Override
-    public ProjectEditorService call(RemoteCallback<?> callback) {
+    public KModuleService call(RemoteCallback<?> callback) {
         this.callback = callback;
         return service;
     }
 
     @Override
-    public ProjectEditorService call(RemoteCallback<?> callback, ErrorCallback errorCallback) {
+    public KModuleService call(RemoteCallback<?> callback, ErrorCallback errorCallback) {
         this.callback = callback;
         return service;
     }
 
     public void setUpModelForLoading(KModuleModel upModelForLoading) {
         this.modelForLoading = upModelForLoading;
-    }
-
-    public POM getSavedGav() {
-        return savedGav;
     }
 
     public void setPathToRelatedKModuleFileIfAny(Path pathToRelatedKModuleFileIfAny) {

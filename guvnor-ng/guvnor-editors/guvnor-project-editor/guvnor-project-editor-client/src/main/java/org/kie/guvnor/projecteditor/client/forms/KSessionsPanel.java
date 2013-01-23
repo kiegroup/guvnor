@@ -18,7 +18,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
-import org.kie.guvnor.projecteditor.model.KSessionModel;
+import org.kie.guvnor.project.model.KSessionModel;
 
 import javax.inject.Inject;
 

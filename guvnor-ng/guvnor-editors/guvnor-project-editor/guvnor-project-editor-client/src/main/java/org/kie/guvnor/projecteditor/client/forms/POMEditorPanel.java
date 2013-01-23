@@ -22,9 +22,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.project.service.KModuleService;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
@@ -32,25 +32,22 @@ import javax.inject.Inject;
 public class POMEditorPanel
         implements IsWidget {
 
-    private final Caller<ProjectEditorService> projectEditorServiceCaller;
     private final POMEditorPanelView view;
     private Path path;
     private POM model;
-    private final Caller<ProjectService> projectServiceCaller;
+    private final Caller<POMService> pomServiceCaller;
 
     @Inject
-    public POMEditorPanel(Caller<ProjectEditorService> projectEditorServiceCaller,
-                          Caller<ProjectService> projectServiceCaller,
+    public POMEditorPanel(Caller<POMService> pomServiceCaller,
                           POMEditorPanelView view) {
-        this.projectEditorServiceCaller = projectEditorServiceCaller;
-        this.projectServiceCaller = projectServiceCaller;
+        this.pomServiceCaller = pomServiceCaller;
         this.view = view;
 
     }
 
     public void init(Path path) {
         this.path = path;
-        projectServiceCaller.call(
+        pomServiceCaller.call(
                 new RemoteCallback<POM>() {
                     @Override
                     public void callback(final POM model) {
@@ -70,7 +67,7 @@ public class POMEditorPanel
                         view.setDependencies(POMEditorPanel.this.model.getDependencies());
                     }
                 }
-        ).loadGav(path);
+        ).loadPOM(path);
     }
 
     private void setTitle(String titleText) {
@@ -82,7 +79,7 @@ public class POMEditorPanel
     }
 
     public void save(final Command callback) {
-        projectEditorServiceCaller.call(
+        pomServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path path) {

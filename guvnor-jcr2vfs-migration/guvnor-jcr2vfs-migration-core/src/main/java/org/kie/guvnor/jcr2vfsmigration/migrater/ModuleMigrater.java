@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.guvnor.projecteditor.service.ProjectEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -23,8 +23,8 @@ public class ModuleMigrater {
     protected MigrationPathManager migrationPathManager;
 
     @Inject
-    protected ProjectEditorService projectEditorService;   
-    
+    protected ProjectService projectService;
+
     public void migrateAll() {
         logger.info("  Module migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
@@ -39,9 +39,9 @@ public class ModuleMigrater {
         //Set up project structure:        
         Path modulePath = migrationPathManager.generateRootPath();  
 
-        Path pomPath = projectEditorService.newProject(modulePath, jcrModule.getName());
-        projectEditorService.setUpKModuleStructure(pomPath);
-        
+        projectService.newProject(modulePath, jcrModule.getName());
+
+
         // TODO REPLACE ME WITH ACTUAL CODE
         logger.debug("      TODO migrate module ({}).", jcrModule.getName());
     }

@@ -21,8 +21,8 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.guvnor.projecteditor.model.QualifierModel;
-import org.kie.guvnor.projecteditor.model.WorkItemHandlerModel;
+import org.kie.guvnor.project.model.QualifierModel;
+import org.kie.guvnor.project.model.WorkItemHandlerModel;
 
 public class WorkItemHandelerConverter
         extends AbstractXStreamConverter {

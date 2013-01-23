@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.ByteArrayInputStream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.guvnor.commons.service.builder.BuildService;
@@ -28,9 +23,14 @@ import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.project.service.POMService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 
 @Service
 @ApplicationScoped
@@ -40,7 +40,7 @@ public class BuildServiceImpl
     private Paths paths;
     private SourceServices sourceServices;
     private Event<Results> messagesEvent;
-    private ProjectService projectService;
+    private POMService pomService;
     private M2RepoService m2RepoService;
 
     public BuildServiceImpl() {
@@ -48,36 +48,36 @@ public class BuildServiceImpl
     }
 
     @Inject
-    public BuildServiceImpl( final Paths paths,
-                             final SourceServices sourceServices,
-                             final ProjectService projectService,
-                             final M2RepoService m2RepoService,
-                             final Event<Results> messagesEvent ) {
+    public BuildServiceImpl(final Paths paths,
+                            final SourceServices sourceServices,
+                            final POMService pomService,
+                            final M2RepoService m2RepoService,
+                            final Event<Results> messagesEvent) {
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
-        this.projectService = projectService;
+        this.pomService = pomService;
         this.m2RepoService = m2RepoService;
     }
 
     @Override
-    public void build( final Path pathToPom ) {
-        final POM gav = projectService.loadGav( pathToPom );
+    public void build(final Path pathToPom) {
+        final POM gav = pomService.loadPOM(pathToPom);
 
-        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
-                                             gav.getGav().getArtifactId(),
-                                             paths,
-                                             sourceServices );
+        final Builder builder = new Builder(paths.convert(pathToPom).getParent(),
+                gav.getGav().getArtifactId(),
+                paths,
+                sourceServices);
 
         final Results results = builder.build();
-        if ( results.isEmpty() ) {
+        if (results.isEmpty()) {
 
             final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
-            final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
+            final ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
 
-            m2RepoService.deployJar( input,
-                                     gav.getGav() );
+            m2RepoService.deployJar(input,
+                    gav.getGav());
         }
-        messagesEvent.fire( results );
+        messagesEvent.fire(results);
     }
 }

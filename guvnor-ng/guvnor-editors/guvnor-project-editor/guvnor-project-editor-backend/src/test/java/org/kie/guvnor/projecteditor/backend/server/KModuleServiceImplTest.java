@@ -19,11 +19,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
-import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
-import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -33,14 +29,12 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class ProjectEditorServiceImplTest {
+public class KModuleServiceImplTest {
 
     private IOService ioService;
     private Paths paths;
-    private ProjectEditorServiceImpl service;
-    private KModuleEditorContentHandler kProjectEditorContentHandler;
-    private Event messagesEvent;
-    private ProjectService projectService;
+    private KModuleServiceImpl serviceImpl;
+    private KModuleContentHandler kProjectContentHandler;
     private POMContentHandler POMContentHandler;
     private Event invalidateDMOProjectCache;
 
@@ -48,16 +42,12 @@ public class ProjectEditorServiceImplTest {
     public void setUp() throws Exception {
         ioService = mock(IOService.class);
         paths = mock(Paths.class);
-        kProjectEditorContentHandler = mock(KModuleEditorContentHandler.class);
-        messagesEvent = mock(Event.class);
-        BuildService buildService = mock(BuildService.class);
-        projectService = mock(ProjectService.class);
+        kProjectContentHandler = mock(KModuleContentHandler.class);
         POMContentHandler = mock(POMContentHandler.class);
         invalidateDMOProjectCache = mock(Event.class);
-        M2RepoService m2RepoService = mock(M2RepoService.class);
 
         setUpWrite();
-        service = new ProjectEditorServiceImpl(ioService, paths, buildService, messagesEvent, kProjectEditorContentHandler, projectService, POMContentHandler, m2RepoService, invalidateDMOProjectCache);
+        serviceImpl = new KModuleServiceImpl(ioService, paths, kProjectContentHandler);
     }
 
     private void setUpWrite() {
@@ -93,7 +83,7 @@ public class ProjectEditorServiceImplTest {
         org.kie.commons.java.nio.file.Path kmodule = mock(org.kie.commons.java.nio.file.Path.class);
         setUpDirectory(directory, "src/main/resources/META-INF/kmodule.xml", kmodule);
 
-        service.setUpKModuleStructure(pathToPom);
+        serviceImpl.setUpKModuleStructure(pathToPom);
 
         verify(ioService).createDirectory(mainJava);
         verify(ioService).createDirectory(mainResources);
@@ -189,25 +179,25 @@ public class ProjectEditorServiceImplTest {
 //        assertEquals( original, loaded );
 //    }
 //
-    @Test
-    public void testSaveGAV() throws Exception {
-        Path vfsPath = mock(Path.class);
-        org.kie.commons.java.nio.file.Path nioPath = mock(org.kie.commons.java.nio.file.Path.class);
-        POM gavModel = new POM();
-
-        when(paths.convert(vfsPath)).thenReturn(nioPath);
-
-        when(
-                POMContentHandler.toString(gavModel)
-        ).thenReturn(
-                "Howdy!"
-        );
-
-        service.savePOM(vfsPath, gavModel);
-
-        verify(ioService).write(nioPath, "Howdy!");
-        verify(invalidateDMOProjectCache).fire(any());
-    }
+//    @Test
+//    public void testSaveGAV() throws Exception {
+//        Path vfsPath = mock(Path.class);
+//        org.kie.commons.java.nio.file.Path nioPath = mock(org.kie.commons.java.nio.file.Path.class);
+//        POM gavModel = new POM();
+//
+//        when(paths.convert(vfsPath)).thenReturn(nioPath);
+//
+//        when(
+//                POMContentHandler.toString(gavModel)
+//        ).thenReturn(
+//                "Howdy!"
+//        );
+//
+//        service.savePOM(vfsPath, gavModel);
+//
+//        verify(ioService).write(nioPath, "Howdy!");
+//        verify(invalidateDMOProjectCache).fire(any());
+//    }
 
     //
 //    @Test
