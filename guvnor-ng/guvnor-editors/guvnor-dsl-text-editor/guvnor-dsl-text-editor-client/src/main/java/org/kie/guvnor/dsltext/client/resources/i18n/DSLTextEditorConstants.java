@@ -22,11 +22,13 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * DSL Editor I18N constants
  */
-public interface Constants
+public interface DSLTextEditorConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final DSLTextEditorConstants INSTANCE = GWT.create( DSLTextEditorConstants.class );
 
     String NewDslTextDescription();
+
+    String Edit();
 }

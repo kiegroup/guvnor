@@ -21,7 +21,7 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
@@ -53,7 +53,7 @@ public class CommentWidget
     }
 
     private DecoratedDisclosurePanel getDisclosurePanel() {
-        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.Description() );
+        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( MetaDataConstants.INSTANCE.Description() );
         disclosurePanel.setWidth( "100%" );
         return disclosurePanel;
     }
@@ -62,7 +62,7 @@ public class CommentWidget
         final DecoratedTextArea text = new DecoratedTextArea();
         text.setWidth( "95%" );
         text.setVisibleLines( 5 );
-        text.setTitle( Constants.INSTANCE.RuleDocHint() );
+        text.setTitle( MetaDataConstants.INSTANCE.RuleDocHint() );
         return text;
     }
 
@@ -76,7 +76,7 @@ public class CommentWidget
             }
         } );
         if ( metadata.getDescription() == null || "".equals( metadata.getDescription() ) ) {
-            text.setText( Constants.INSTANCE.documentationDefault() );
+            text.setText( MetaDataConstants.INSTANCE.documentationDefault() );
         }
     }
 }

@@ -8,8 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.resources.images.ImageResources;
-import org.kie.guvnor.dsltext.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
@@ -37,7 +37,7 @@ public class NewDslTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.NewDslTextDescription();
+        return DSLTextEditorConstants.INSTANCE.NewDslTextDescription();
     }
 
     @Override

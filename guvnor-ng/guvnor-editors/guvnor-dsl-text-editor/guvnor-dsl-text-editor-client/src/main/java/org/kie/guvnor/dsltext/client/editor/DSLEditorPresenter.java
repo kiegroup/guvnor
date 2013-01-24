@@ -18,6 +18,7 @@ package org.kie.guvnor.dsltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,8 +26,13 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.IsDirty;
@@ -39,6 +45,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.LoadingPopup;
+import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
@@ -77,7 +84,15 @@ public class DSLEditorPresenter {
     private Caller<DSLTextEditorService> dslTextEditorService;
 
     @Inject
+    private Caller<MetadataService> metadataService;
+
+    @Inject
     private Event<NotificationEvent> notification;
+
+    @Inject @New
+    private MultiPageEditor multiPageEditor;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Path path;
 
@@ -92,9 +107,17 @@ public class DSLEditorPresenter {
                     view.setContent( null );
                 } else {
                     view.setContent( response );
+
                 }
             }
         } ).readAllString( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata, false );
+            }
+        } ).getMetadata( path );
     }
 
     @OnSave
@@ -134,7 +157,9 @@ public class DSLEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return view;
+        multiPageEditor.addWidget(view, DSLTextEditorConstants.INSTANCE.Edit());
+        multiPageEditor.addWidget(metadataWidget, MetaDataConstants.INSTANCE.Metadata());
+        return multiPageEditor;
     }
 
     @WorkbenchMenu

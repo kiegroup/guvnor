@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.metadata.client.resources.Images;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -69,8 +69,8 @@ public class CategorySelectorWidget
     private void doActions() {
         final VerticalPanel actions = new VerticalPanel();
         final Image add = Images.INSTANCE.NewItem();
-        add.setAltText( Constants.INSTANCE.AssetCategoryEditorAddNewCategory() );
-        add.setTitle( Constants.INSTANCE.AddANewCategory() );
+        add.setAltText( MetaDataConstants.INSTANCE.AssetCategoryEditorAddNewCategory() );
+        add.setTitle( MetaDataConstants.INSTANCE.AddANewCategory() );
 
         add.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
@@ -108,7 +108,7 @@ public class CategorySelectorWidget
             list.setWidget( i, 0, new SmallLabel( categoryPath ) );
             if ( !readOnly ) {
                 final Image del = Images.INSTANCE.Trash();
-                del.setTitle( Constants.INSTANCE.RemoveThisCategory() );
+                del.setTitle( MetaDataConstants.INSTANCE.RemoveThisCategory() );
                 del.addClickHandler( new ClickHandler() {
                     public void onClick( final ClickEvent event ) {
                         removeCategory( idx );
@@ -140,12 +140,12 @@ public class CategorySelectorWidget
      */
     class CategorySelector extends FormStylePopup {
 
-        public Button ok = new Button( Constants.INSTANCE.OK() );
+        public Button ok = new Button( MetaDataConstants.INSTANCE.OK() );
         private CategoryExplorerWidget selector;
         public  String                 selectedPath;
 
         public CategorySelector() {
-            setTitle( Constants.INSTANCE.SelectCategoryToAdd() );
+            setTitle( MetaDataConstants.INSTANCE.SelectCategoryToAdd() );
             final VerticalPanel vert = new VerticalPanel();
 
             selector = new CategoryExplorerWidget( data.getPath(),

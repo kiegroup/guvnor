@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
@@ -68,7 +68,7 @@ public class MetadataWidget
 
         layout.clear();
 
-        startSection( Constants.INSTANCE.Metadata() );
+        startSection( MetaDataConstants.INSTANCE.Metadata() );
         addHeader( metadata.getPath().getFileName() );
 
         loadData();
@@ -77,28 +77,28 @@ public class MetadataWidget
     private void addHeader( final String name ) {
         final HorizontalPanel hp = new HorizontalPanel();
         hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
-        currentSection.addAttribute( Constants.INSTANCE.Title(), hp );
+        currentSection.addAttribute( MetaDataConstants.INSTANCE.Title(), hp );
     }
 
     private void loadData() {
-        addAttribute( Constants.INSTANCE.CategoriesMetaData(), categories() );
+        addAttribute( MetaDataConstants.INSTANCE.CategoriesMetaData(), categories() );
 
-        addAttribute( Constants.INSTANCE.LastModified(),
+        addAttribute( MetaDataConstants.INSTANCE.LastModified(),
                       readOnlyDate( metadata.getLastModified() ) );
-        addAttribute( Constants.INSTANCE.ModifiedByMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.ModifiedByMetaData(),
                       readOnlyText( metadata.getLastContributor() ) );
-        addAttribute( Constants.INSTANCE.NoteMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.NoteMetaData(),
                       readOnlyText( metadata.getCheckinComment() ) );
 
         if ( !readOnly ) {
-            addAttribute( Constants.INSTANCE.CreatedOnMetaData(),
+            addAttribute( MetaDataConstants.INSTANCE.CreatedOnMetaData(),
                           readOnlyDate( metadata.getDateCreated() ) );
         }
 
-        addAttribute( Constants.INSTANCE.CreatedByMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.CreatedByMetaData(),
                       readOnlyText( metadata.getCreator() ) );
 
-        addAttribute( Constants.INSTANCE.IsDisabledMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.IsDisabledMetaData(),
                       editableBoolean( new FieldBooleanBinding() {
                           public boolean getValue() {
                               return metadata.isDisabled();
@@ -108,18 +108,18 @@ public class MetadataWidget
                               makeDirty();
                               metadata.setDisabled( val );
                           }
-                      }, Constants.INSTANCE.DisableTip() ) );
+                      }, MetaDataConstants.INSTANCE.DisableTip() ) );
 
-        addAttribute( Constants.INSTANCE.FormatMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.FormatMetaData(),
                       readOnlyText( metadata.getFormat() ) );
         addAttribute( "URI:",
                       readOnlyText( metadata.getPath().toURI() ) );
 
         endSection( false );
 
-        startSection( Constants.INSTANCE.OtherMetaData() );
+        startSection( MetaDataConstants.INSTANCE.OtherMetaData() );
 
-        addAttribute( Constants.INSTANCE.SubjectMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.SubjectMetaData(),
                       editableText( new FieldBinding() {
                           public String getValue() {
                               return metadata.getSubject();
@@ -129,9 +129,9 @@ public class MetadataWidget
                               makeDirty();
                               metadata.setSubject( val );
                           }
-                      }, Constants.INSTANCE.AShortDescriptionOfTheSubjectMatter() ) );
+                      }, MetaDataConstants.INSTANCE.AShortDescriptionOfTheSubjectMatter() ) );
 
-        addAttribute( Constants.INSTANCE.TypeMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.TypeMetaData(),
                       editableText( new FieldBinding() {
                           public String getValue() {
                               return metadata.getType();
@@ -142,9 +142,9 @@ public class MetadataWidget
                               metadata.setType( val );
                           }
 
-                      }, Constants.INSTANCE.TypeTip() ) );
+                      }, MetaDataConstants.INSTANCE.TypeTip() ) );
 
-        addAttribute( Constants.INSTANCE.ExternalLinkMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                           public String getValue() {
                               return metadata.getExternalRelation();
@@ -155,9 +155,9 @@ public class MetadataWidget
                               metadata.setExternalRelation( val );
                           }
 
-                      }, Constants.INSTANCE.ExternalLinkTip() ) );
+                      }, MetaDataConstants.INSTANCE.ExternalLinkTip() ) );
 
-        addAttribute( Constants.INSTANCE.SourceMetaData(),
+        addAttribute( MetaDataConstants.INSTANCE.SourceMetaData(),
                       editableText( new FieldBinding() {
                           public String getValue() {
                               return metadata.getExternalSource();
@@ -168,12 +168,12 @@ public class MetadataWidget
                               metadata.setExternalSource( val );
                           }
 
-                      }, Constants.INSTANCE.SourceMetaDataTip() ) );
+                      }, MetaDataConstants.INSTANCE.SourceMetaDataTip() ) );
 
         endSection( true );
 
         if ( !readOnly ) {
-            startSection( Constants.INSTANCE.VersionHistory() );
+            startSection( MetaDataConstants.INSTANCE.VersionHistory() );
             addRow( new VersionBrowser( metadata ) );
             endSection( true );
         }
