@@ -106,6 +106,7 @@
       <artifactId>guvnor-drl-text-editor-backend</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
+        
   </dependencies>
 </project>

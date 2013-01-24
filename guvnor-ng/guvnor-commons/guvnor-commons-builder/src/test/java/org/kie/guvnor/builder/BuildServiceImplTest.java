@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -29,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.model.GAV;
 
 import org.uberfire.backend.server.util.Paths;
 
@@ -40,6 +43,8 @@ public class BuildServiceImplTest {
     public void setUp() throws Exception {
         StartMain startMain = new StartMain(new String[0]);
         beanManager = startMain.go().getBeanManager();
+        
+        setUpGuvnorM2Repo();
     }
     
     @Test
@@ -70,5 +75,18 @@ public class BuildServiceImplTest {
         final Results results = builder.build();
         
         //assertTrue(results.isEmpty());
+    }
+    
+    private void setUpGuvnorM2Repo() {        
+        Bean m2RepoServiceBean = (Bean)beanManager.getBeans(M2RepoService.class).iterator().next();
+        CreationalContext cc = beanManager.createCreationalContext(m2RepoServiceBean);
+        M2RepoService m2RepoService = (M2RepoService)beanManager.getReference(m2RepoServiceBean, M2RepoService.class, cc);
+        
+        String m2RepoURL = m2RepoService.getRepositoryURL();
+        GAV gav = new GAV("org.kie.example", "guvnor-m2repo-dependency-example1", "1.0");
+        
+        InputStream is = this.getClass().getResourceAsStream("/guvnor-m2repo-dependency-example1-1.0.jar");
+        m2RepoService.deployJar(is, gav);
+        
     }
 }
