@@ -28,6 +28,10 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -89,6 +93,11 @@ public class EnumEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private Caller<MetadataService> metadataService;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
     private Path path;
 
     @PostConstruct
@@ -107,6 +116,24 @@ public class EnumEditorPresenter {
                 viewSource.clear();
             }
         } );
+        multiPage.addPage(new Page(metadataWidget, MetaDataConstants.INSTANCE.Metadata()) {
+            @Override
+            public void onFocus() {
+                metadataService.call(
+                        new RemoteCallback<Metadata>() {
+                            @Override
+                            public void callback(Metadata metadata) {
+                                metadataWidget.setContent(metadata, false);
+                            }
+                        }
+                ).getMetadata(path);
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        });
     }
 
     @OnStart
