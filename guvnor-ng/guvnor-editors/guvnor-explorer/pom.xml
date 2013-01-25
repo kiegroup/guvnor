@@ -17,6 +17,8 @@
 
   <modules>
     <module>guvnor-explorer-client</module>
+    <module>guvnor-explorer-api</module>
+    <module>guvnor-explorer-backend</module>
   </modules>
 
 </project>

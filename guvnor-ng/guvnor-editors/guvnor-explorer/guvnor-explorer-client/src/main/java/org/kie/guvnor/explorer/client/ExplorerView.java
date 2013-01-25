@@ -1,22 +1,35 @@
 package org.kie.guvnor.explorer.client;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.backend.Root;
+import org.kie.guvnor.explorer.client.util.FoldersFirstAlphabeticalComparator;
+import org.kie.guvnor.explorer.client.widget.FileWidget;
+import org.kie.guvnor.explorer.client.widget.FolderWidget;
+import org.kie.guvnor.explorer.client.widget.ProjectWidget;
+import org.kie.guvnor.explorer.client.widget.RepositoryWidget;
+import org.kie.guvnor.explorer.model.Item;
 
 /**
  * The ExplorerPresenter's view implementation
  */
-public class ExplorerView extends Composite implements ExplorerPresenter.View,
-                                                       RequiresResize {
+public class ExplorerView extends Composite implements ExplorerPresenter.View {
+
+    private final FoldersFirstAlphabeticalComparator sorter = new FoldersFirstAlphabeticalComparator();
 
     private ExplorerPresenter presenter;
 
     private final VerticalPanel container = new VerticalPanel();
 
+    private final VerticalPanel itemWidgetsContainer = new VerticalPanel();
+
     public ExplorerView() {
+        container.add( new Label( "Breadcrumbs to go here..." ) );
+        container.add( itemWidgetsContainer );
         initWidget( container );
     }
 
@@ -26,34 +39,46 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View,
     }
 
     @Override
-    public void setFocus() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void setItems( final List<Item> items ) {
 
-    @Override
-    public void reset() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+        Collections.sort( items,
+                          sorter );
+        itemWidgetsContainer.clear();
 
-    @Override
-    public void removeIfExists( Root root ) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void addNewRoot( Root root ) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onResize() {
-        final Widget p = getParent();
-        if ( p != null ) {
-            final int width = p.getOffsetWidth();
-            final int height = p.getOffsetHeight();
-            setPixelSize( width,
-                          height );
+        for ( final Item item : items ) {
+            IsWidget itemWidget = null;
+            switch ( item.getType() ) {
+                case PARENT_FOLDER:
+                    itemWidget = new FolderWidget( item.getPath(),
+                                                   item.getCaption(),
+                                                   presenter );
+                    break;
+                case REPOSITORY:
+                    itemWidget = new RepositoryWidget( item.getPath(),
+                                                       item.getCaption(),
+                                                       presenter );
+                    break;
+                case PROJECT:
+                    itemWidget = new ProjectWidget( item.getPath(),
+                                                    item.getCaption(),
+                                                    presenter );
+                    break;
+                case FOLDER:
+                    itemWidget = new FolderWidget( item.getPath(),
+                                                   item.getCaption(),
+                                                   presenter );
+                    break;
+                case FILE:
+                    itemWidget = new FileWidget( item.getPath(),
+                                                 item.getCaption(),
+                                                 presenter );
+                    break;
+            }
+            if ( itemWidget != null ) {
+                itemWidgetsContainer.add( itemWidget );
+            }
         }
+
     }
 
 }

@@ -156,6 +156,16 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-dsl-text-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-dsl-text-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-project-editor-client</artifactId>
     </dependency>
 
@@ -181,12 +191,19 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-dsl-text-editor-client</artifactId>
+      <artifactId>guvnor-explorer-api</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-dsl-text-editor-backend</artifactId>
+      <artifactId>guvnor-explorer-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-explorer-backend</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- UberFire -->
@@ -369,12 +386,15 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-scorecard-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-client</compileSourcesArtifact>
-            <!--
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
-            -->
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-view-source-widget</compileSourcesArtifact>

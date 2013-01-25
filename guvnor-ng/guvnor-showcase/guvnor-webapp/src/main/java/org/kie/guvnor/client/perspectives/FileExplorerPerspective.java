@@ -106,6 +106,13 @@ public class FileExplorerPerspective {
                                                                   placeManager.goTo( "FileExplorer" );
                                                               }
                                                           } ) );
+        this.menuBar.addItem( new DefaultMenuItemCommand( "Project Explorer",
+                                                          new Command() {
+                                                              @Override
+                                                              public void execute() {
+                                                                  placeManager.goTo( "org.kie.guvnor.explorer" );
+                                                              }
+                                                          } ) );
         this.menuBar.addItem( newResourcesMenu );
     }
 

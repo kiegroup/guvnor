@@ -21,6 +21,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-explorer-api</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-explorer-backend</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-backend</artifactId>
     </dependency>
@@ -33,6 +45,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
     <dependency>

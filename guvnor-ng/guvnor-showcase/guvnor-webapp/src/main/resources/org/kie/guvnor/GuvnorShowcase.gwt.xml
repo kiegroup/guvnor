@@ -15,22 +15,23 @@
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
-  
+  <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
+
   <!-- Editors -->
   <inherits name='org.kie.guvnor.categories.GuvnorCategoriesEditorClient'/>
   <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditorClient"/>
   <inherits name="org.kie.guvnor.enums.GuvnorEnumEditorClient"/>
   <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorClient"/>
-  <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
   <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
   <inherits name="org.kie.guvnor.guided.scorecard.GuvnorGuidedScoreCardEditorClient"/>
   <inherits name="org.kie.guvnor.dsltext.GuvnorDSLTextEditorClient"/>
 
-  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
-  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
+  <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
 
-  <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
+  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+
+  <inherits name="org.kie.guvnor.explorer.GuvnorExplorerClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnor-showcase.css'/>

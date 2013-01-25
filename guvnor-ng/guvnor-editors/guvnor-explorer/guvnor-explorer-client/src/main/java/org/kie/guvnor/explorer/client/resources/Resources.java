@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.guvnor.explorer.client.resources.images;
+package org.kie.guvnor.explorer.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.kie.guvnor.explorer.client.resources.css.StylesCss;
 
-public interface ImageResources
+/**
+ * Resources for Explorer
+ */
+public interface Resources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final Resources INSTANCE = GWT.create( Resources.class );
 
-    @Source("repositoryIcon.png")
-    ImageResource repositoryIcon();
-
-    @Source("projectIcon.png")
-    ImageResource projectIcon();
-
-    @Source("folderIcon.png")
-    ImageResource folderIcon();
-
-    @Source("fileIcon.png")
-    ImageResource fileIcon();
+    @Source("css/Styles.css")
+    StylesCss CSS();
 
 }
