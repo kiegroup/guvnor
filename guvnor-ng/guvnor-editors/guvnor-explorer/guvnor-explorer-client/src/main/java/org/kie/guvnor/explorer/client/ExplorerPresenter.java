@@ -91,6 +91,7 @@ public class ExplorerPresenter {
     private void loadItems( final Path path ) {
         if ( path == null ) {
             loadRootItems();
+            activePath = path;
         } else {
             if ( !path.equals( activePath ) ) {
                 explorerService.call( new RemoteCallback<List<Item>>() {
@@ -98,12 +99,12 @@ public class ExplorerPresenter {
                     @Override
                     public void callback( final List<Item> items ) {
                         view.setItems( items );
+                        activePath = path;
                     }
 
                 } ).getItemsForPathScope( path );
             }
         }
-        activePath = path;
     }
 
     private void loadRootItems() {

@@ -1,4 +1,4 @@
-package org.kie.guvnor.explorer.backend.server;
+package org.kie.guvnor.explorer.backend.server.loaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,11 @@ public class OutsideProjectLoader implements ItemsLoader {
     @Override
     public List<Item> load( final Path path ) {
 
+        //Check Path exists
         final List<Item> items = new ArrayList<Item>();
+        if ( !Files.exists( paths.convert( path ) ) ) {
+            return items;
+        }
 
         //Ensure Path represents a Folder
         org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );

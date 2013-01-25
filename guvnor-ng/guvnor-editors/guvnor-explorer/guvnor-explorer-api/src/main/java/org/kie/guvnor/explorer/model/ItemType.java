@@ -8,8 +8,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public enum ItemType {
     PARENT_FOLDER,
+    PARENT_PACKAGE,
     REPOSITORY,
     PROJECT,
+    PACKAGE,
     FOLDER,
     FILE
 }

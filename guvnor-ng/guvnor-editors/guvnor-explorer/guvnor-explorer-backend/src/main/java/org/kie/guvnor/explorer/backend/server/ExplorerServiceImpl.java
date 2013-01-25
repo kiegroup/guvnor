@@ -23,6 +23,8 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.guvnor.explorer.backend.server.loaders.ItemsLoader;
 import org.kie.guvnor.explorer.model.Item;
 import org.kie.guvnor.explorer.service.ExplorerService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -34,9 +36,7 @@ import org.uberfire.backend.vfs.Path;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final String SOURCE_FILENAME = "src";
-    private static final String POM_FILENAME = "pom.xml";
-    private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
+    private static final String JAVA_PATH = "src/main/java";
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private IOService ioService;
@@ -91,10 +91,22 @@ public class ExplorerServiceImpl
             return makeProjectRootList( resource );
         }
 
-        //Check if Path is within Projects resources
+        //Check if Path is within Projects Java folder
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRootPath );
+        final org.kie.commons.java.nio.file.Path pJavaSources = pRoot.resolve( JAVA_PATH );
         final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
         final org.kie.commons.java.nio.file.Path pResource = paths.convert( resource );
+        if ( Files.isSameFile( pResource, pJavaSources ) ) {
+            return makeProjectRootList( resource );
+        }
+        if ( pResource.startsWith( pJavaSources ) ) {
+            return makeProjectPackageList( resource );
+        }
+
+        //Check if Path is within Projects resources
+        if ( Files.isSameFile( pResource, pResources ) ) {
+            return makeProjectRootList( resource );
+        }
         if ( pResource.startsWith( pResources ) ) {
             return makeProjectPackageList( resource );
         }

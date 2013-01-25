@@ -1,4 +1,4 @@
-package org.kie.guvnor.explorer.backend.server;
+package org.kie.guvnor.explorer.backend.server.loaders;
 
 import java.util.List;
 

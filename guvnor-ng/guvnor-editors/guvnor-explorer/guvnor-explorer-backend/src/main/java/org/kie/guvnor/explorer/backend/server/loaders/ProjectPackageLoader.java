@@ -1,4 +1,4 @@
-package org.kie.guvnor.explorer.backend.server;
+package org.kie.guvnor.explorer.backend.server.loaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,13 @@ import javax.inject.Named;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
+import org.kie.guvnor.explorer.backend.server.util.Filter;
+import org.kie.guvnor.explorer.backend.server.util.MetaInfFolderFilter;
 import org.kie.guvnor.explorer.model.FileItem;
-import org.kie.guvnor.explorer.model.FolderItem;
 import org.kie.guvnor.explorer.model.Item;
-import org.kie.guvnor.explorer.model.ParentFolderItem;
+import org.kie.guvnor.explorer.model.PackageItem;
+import org.kie.guvnor.explorer.model.ParentPackageItem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -20,8 +23,10 @@ import org.uberfire.backend.vfs.Path;
  * Loader to add Projects, Folders and Files
  */
 @Dependent
-@Named("projectNonPackageList")
-public class ProjectNonPackageLoader implements ItemsLoader {
+@Named("projectPackageList")
+public class ProjectPackageLoader implements ItemsLoader {
+
+    private final Filter filter;
 
     @Inject
     @Named("ioStrategy")
@@ -30,10 +35,19 @@ public class ProjectNonPackageLoader implements ItemsLoader {
     @Inject
     private Paths paths;
 
+    public ProjectPackageLoader() {
+        filter = new DotFileFilter();
+        filter.setNextFilter( new MetaInfFolderFilter() );
+    }
+
     @Override
     public List<Item> load( final Path path ) {
 
+        //Check Path exists
         final List<Item> items = new ArrayList<Item>();
+        if ( !Files.exists( paths.convert( path ) ) ) {
+            return items;
+        }
 
         //Ensure Path represents a Folder
         org.kie.commons.java.nio.file.Path rPath = paths.convert( path );
@@ -45,16 +59,18 @@ public class ProjectNonPackageLoader implements ItemsLoader {
         final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( rPath );
         for ( final org.kie.commons.java.nio.file.Path p : directoryStream ) {
 
-            if ( Files.isRegularFile( p ) ) {
-                items.add( new FileItem( paths.convert( p ) ) );
-            } else if ( Files.isDirectory( p ) ) {
-                items.add( new FolderItem( paths.convert( p ) ) );
+            if ( filter.accept( p ) ) {
+                if ( Files.isRegularFile( p ) ) {
+                    items.add( new FileItem( paths.convert( p ) ) );
+                } else if ( Files.isDirectory( p ) ) {
+                    items.add( new PackageItem( paths.convert( p ) ) );
+                }
             }
         }
 
         //Add ability to move up one level in the hierarchy
-        items.add( new ParentFolderItem( paths.convert( rPath.getParent() ),
-                                         ".." ) );
+        items.add( new ParentPackageItem( paths.convert( rPath.getParent() ),
+                                          ".." ) );
 
         return items;
     }

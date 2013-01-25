@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.explorer.client.util.FoldersFirstAlphabeticalComparator;
 import org.kie.guvnor.explorer.client.widget.FileWidget;
 import org.kie.guvnor.explorer.client.widget.FolderWidget;
+import org.kie.guvnor.explorer.client.widget.PackageWidget;
 import org.kie.guvnor.explorer.client.widget.ProjectWidget;
 import org.kie.guvnor.explorer.client.widget.RepositoryWidget;
 import org.kie.guvnor.explorer.model.Item;
@@ -53,6 +54,11 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
                                                    item.getCaption(),
                                                    presenter );
                     break;
+                case PARENT_PACKAGE:
+                    itemWidget = new PackageWidget( item.getPath(),
+                                                    item.getCaption(),
+                                                    presenter );
+                    break;
                 case REPOSITORY:
                     itemWidget = new RepositoryWidget( item.getPath(),
                                                        item.getCaption(),
@@ -60,6 +66,11 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
                     break;
                 case PROJECT:
                     itemWidget = new ProjectWidget( item.getPath(),
+                                                    item.getCaption(),
+                                                    presenter );
+                    break;
+                case PACKAGE:
+                    itemWidget = new PackageWidget( item.getPath(),
                                                     item.getCaption(),
                                                     presenter );
                     break;

@@ -8,43 +8,27 @@ import org.uberfire.backend.vfs.Path;
  * An item representing a project
  */
 @Portable
-public class ProjectItem implements Item {
-
-    private Path path;
-    private String caption;
+public class ProjectItem extends BaseItem {
 
     public ProjectItem() {
         //For Errai-marshalling
     }
 
     public ProjectItem( final Path path ) {
-        this( path,
-              path.getFileName() );
+        super( path );
     }
 
     public ProjectItem( final Path path,
                         final String caption ) {
+        super( path,
+               caption );
         PortablePreconditions.checkNotNull( "path",
                                             path );
-        PortablePreconditions.checkNotNull( "caption",
-                                            caption );
-        this.path = path;
-        this.caption = caption;
     }
 
     @Override
     public ItemType getType() {
         return ItemType.PROJECT;
-    }
-
-    @Override
-    public Path getPath() {
-        return this.path;
-    }
-
-    @Override
-    public String getCaption() {
-        return this.caption;
     }
 
 }

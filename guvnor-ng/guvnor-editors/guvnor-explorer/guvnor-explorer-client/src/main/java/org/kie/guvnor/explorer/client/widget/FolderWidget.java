@@ -2,54 +2,28 @@ package org.kie.guvnor.explorer.client.widget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.explorer.client.ExplorerPresenter;
-import org.kie.guvnor.explorer.client.resources.Resources;
 import org.kie.guvnor.explorer.client.resources.images.ImageResources;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * A widget representing a RepositoryWidget folder
+ * A widget representing a folder
  */
-public class FolderWidget extends Composite {
-
-    private final Anchor anchor = new Anchor();
-    private final HorizontalPanel container = new HorizontalPanel();
-    private final Image icon = new Image( ImageResources.INSTANCE.folderIcon() );
-
-    private final Path path;
-    private final String caption;
-    private final ExplorerPresenter presenter;
+public class FolderWidget extends BaseItemWidget {
 
     public FolderWidget( final Path path,
                          final ExplorerPresenter presenter ) {
-        this( path,
-              path == null ? "" : path.getFileName(),
-              presenter );
+        super( path,
+               presenter );
     }
 
     public FolderWidget( final Path path,
                          final String caption,
                          final ExplorerPresenter presenter ) {
-        PortablePreconditions.checkNotNull( "caption",
-                                            caption );
-        PortablePreconditions.checkNotNull( "presenter",
-                                            presenter );
-
-        this.path = path;
-        this.caption = caption;
-        this.presenter = presenter;
-
-        container.add( icon );
-        container.add( anchor );
-        container.setStyleName( Resources.INSTANCE.CSS().item() );
-        anchor.setText( caption );
-        initWidget( container );
-
+        super( path,
+               caption,
+               presenter );
         anchor.addClickHandler( new ClickHandler() {
 
             @Override
@@ -57,7 +31,11 @@ public class FolderWidget extends Composite {
                 presenter.setContext( path );
             }
         } );
+    }
 
+    @Override
+    public Image getImage() {
+        return new Image( ImageResources.INSTANCE.folderIcon() );
     }
 
 }

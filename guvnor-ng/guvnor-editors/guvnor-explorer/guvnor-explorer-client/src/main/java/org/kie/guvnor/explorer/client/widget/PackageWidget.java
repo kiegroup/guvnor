@@ -9,19 +9,19 @@ import org.kie.guvnor.explorer.client.resources.images.ImageResources;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * A widget representing a repository
+ * A widget representing a package
  */
-public class RepositoryWidget extends BaseItemWidget {
+public class PackageWidget extends BaseItemWidget {
 
-    public RepositoryWidget( final Path path,
-                             final ExplorerPresenter presenter ) {
+    public PackageWidget( final Path path,
+                          final ExplorerPresenter presenter ) {
         super( path,
                presenter );
     }
 
-    public RepositoryWidget( final Path path,
-                             final String caption,
-                             final ExplorerPresenter presenter ) {
+    public PackageWidget( final Path path,
+                          final String caption,
+                          final ExplorerPresenter presenter ) {
         super( path,
                caption,
                presenter );
@@ -38,7 +38,7 @@ public class RepositoryWidget extends BaseItemWidget {
 
     @Override
     public Image getImage() {
-        return new Image( ImageResources.INSTANCE.repositoryIcon() );
+        return new Image( ImageResources.INSTANCE.packageIcon() );
     }
 
 }

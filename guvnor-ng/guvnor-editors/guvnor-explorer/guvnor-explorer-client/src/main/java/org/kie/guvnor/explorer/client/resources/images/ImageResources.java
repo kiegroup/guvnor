@@ -32,6 +32,9 @@ public interface ImageResources
     @Source("projectIcon.png")
     ImageResource projectIcon();
 
+    @Source("packageIcon.png")
+    ImageResource packageIcon();
+
     @Source("folderIcon.png")
     ImageResource folderIcon();
 

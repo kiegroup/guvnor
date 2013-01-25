@@ -5,21 +5,21 @@ import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * An item representing a file
+ * An item representing a Package within a Project
  */
 @Portable
-public class FileItem extends BaseItem {
+public class PackageItem extends BaseItem {
 
-    public FileItem() {
+    public PackageItem() {
         //For Errai-marshalling
     }
 
-    public FileItem( final Path path ) {
+    public PackageItem( final Path path ) {
         super( path );
     }
 
-    public FileItem( final Path path,
-                     final String caption ) {
+    public PackageItem( final Path path,
+                        final String caption ) {
         super( path,
                caption );
         PortablePreconditions.checkNotNull( "path",
@@ -28,7 +28,7 @@ public class FileItem extends BaseItem {
 
     @Override
     public ItemType getType() {
-        return ItemType.FILE;
+        return ItemType.PACKAGE;
     }
 
 }
