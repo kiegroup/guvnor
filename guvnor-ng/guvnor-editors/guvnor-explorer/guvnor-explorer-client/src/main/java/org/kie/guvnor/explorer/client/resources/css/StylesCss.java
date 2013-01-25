@@ -27,4 +27,6 @@ public interface StylesCss
 
     String item();
 
+    String breadCrumbs();
+
 }

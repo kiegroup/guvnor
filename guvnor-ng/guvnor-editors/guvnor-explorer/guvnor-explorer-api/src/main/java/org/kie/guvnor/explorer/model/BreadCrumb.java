@@ -27,6 +27,7 @@ public class BreadCrumb {
         PortablePreconditions.checkNotNull( "caption",
                                             caption );
         this.path = path;
+        this.caption = caption;
     }
 
     public Path getPath() {

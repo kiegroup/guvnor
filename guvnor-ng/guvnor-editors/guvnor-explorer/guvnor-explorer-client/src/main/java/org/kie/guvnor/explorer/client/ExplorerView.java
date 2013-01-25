@@ -1,5 +1,6 @@
 package org.kie.guvnor.explorer.client;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,11 +9,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.explorer.client.util.FoldersFirstAlphabeticalComparator;
+import org.kie.guvnor.explorer.client.widget.BreadCrumbsWidget;
 import org.kie.guvnor.explorer.client.widget.FileWidget;
 import org.kie.guvnor.explorer.client.widget.FolderWidget;
 import org.kie.guvnor.explorer.client.widget.PackageWidget;
 import org.kie.guvnor.explorer.client.widget.ProjectWidget;
 import org.kie.guvnor.explorer.client.widget.RepositoryWidget;
+import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
 
 /**
@@ -28,8 +31,10 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
 
     private final VerticalPanel itemWidgetsContainer = new VerticalPanel();
 
+    private final BreadCrumbsWidget breadCrumbsWidget = new BreadCrumbsWidget();
+
     public ExplorerView() {
-        container.add( new Label( "Breadcrumbs to go here..." ) );
+        container.add( breadCrumbsWidget );
         container.add( itemWidgetsContainer );
         initWidget( container );
     }
@@ -37,11 +42,17 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
     @Override
     public void init( final ExplorerPresenter presenter ) {
         this.presenter = presenter;
+        this.breadCrumbsWidget.setPresenter( presenter );
     }
 
     @Override
-    public void setItems( final List<Item> items ) {
+    public void setContent( final ExplorerContent content ) {
 
+        //Bread Crumbs
+        breadCrumbsWidget.setBreadCrumbs( content.getBreadCrumbs() );
+
+        //Items - ExplorerContent returns an unmodifiable List
+        final List<Item> items = new ArrayList<Item>( content.getItems() );
         Collections.sort( items,
                           sorter );
         itemWidgetsContainer.clear();

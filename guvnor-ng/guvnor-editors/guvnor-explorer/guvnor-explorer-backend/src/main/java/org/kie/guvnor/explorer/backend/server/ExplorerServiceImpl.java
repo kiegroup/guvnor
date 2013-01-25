@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.explorer.backend.server;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -23,8 +26,11 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.FileStore;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.loaders.ItemsLoader;
+import org.kie.guvnor.explorer.model.BreadCrumb;
+import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
 import org.kie.guvnor.explorer.service.ExplorerService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -73,7 +79,7 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public List<Item> getItemsForPathScope( final Path resource ) {
+    public ExplorerContent getContentInScope( final Path resource ) {
         //Null Path cannot be in a Project scope
         if ( resource == null ) {
             return makeOutsideProjectList( resource );
@@ -115,20 +121,59 @@ public class ExplorerServiceImpl
         return makeProjectNonPackageList( resource );
     }
 
-    private List<Item> makeOutsideProjectList( final Path path ) {
-        return outsideProjectListLoader.load( path );
+    private ExplorerContent makeOutsideProjectList( final Path path ) {
+        final List<Item> items = outsideProjectListLoader.load( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        return new ExplorerContent( items,
+                                    breadCrumbs );
     }
 
-    private List<Item> makeProjectRootList( final Path path ) {
-        return projectRootListLoader.load( path );
+    private ExplorerContent makeProjectRootList( final Path path ) {
+        final List<Item> items = projectRootListLoader.load( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        return new ExplorerContent( items,
+                                    breadCrumbs );
     }
 
-    private List<Item> makeProjectPackageList( final Path path ) {
-        return projectPackageListLoader.load( path );
+    private ExplorerContent makeProjectPackageList( final Path path ) {
+        final List<Item> items = projectPackageListLoader.load( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        return new ExplorerContent( items,
+                                    breadCrumbs );
     }
 
-    private List<Item> makeProjectNonPackageList( final Path path ) {
-        return projectNonPackageListLoader.load( path );
+    private ExplorerContent makeProjectNonPackageList( final Path path ) {
+        final List<Item> items = projectNonPackageListLoader.load( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        return new ExplorerContent( items,
+                                    breadCrumbs );
+    }
+
+    private List<BreadCrumb> makeBreadCrumbs( final Path path ) {
+        final List<BreadCrumb> breadCrumbs = new ArrayList<BreadCrumb>();
+
+        org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        org.kie.commons.java.nio.file.Path nioFileName = nioPath.getFileName();
+        while ( nioFileName != null ) {
+            final BreadCrumb breadCrumb = new BreadCrumb( paths.convert( nioPath ),
+                                                          nioFileName.toString() );
+            breadCrumbs.add( 0,
+                             breadCrumb );
+            nioPath = nioPath.getParent();
+            nioFileName = nioPath.getFileName();
+        }
+        breadCrumbs.add( 0, new BreadCrumb( paths.convert( nioPath ),
+                                            getRootDirectory( nioPath ) ) );
+
+        return breadCrumbs;
+    }
+
+    private String getRootDirectory( final org.kie.commons.java.nio.file.Path path ) {
+        final Iterator<FileStore> fileStoreIterator = path.getFileSystem().getFileStores().iterator();
+        if ( fileStoreIterator.hasNext() ) {
+            return fileStoreIterator.next().name();
+        }
+        return "";
     }
 
 }

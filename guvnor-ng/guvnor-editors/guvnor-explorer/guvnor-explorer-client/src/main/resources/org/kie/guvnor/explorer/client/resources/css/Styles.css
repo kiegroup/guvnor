@@ -15,5 +15,25 @@
  */
 .item {
     vertical-align: centre;
-    cursor: hand; cursor: pointer;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.breadCrumbs {
+    height: 32px;
+}
+
+.breadCrumbs a {
+    color: blue;
+    vertical-align: middle;
+    font-size: 12pt;
+    margin: 5px;
+}
+
+.breadCrumbs div {
+    color: black;
+    vertical-align: middle;
+    font-weight: bold;
+    font-size: 12pt;
+    margin: 5px;
 }

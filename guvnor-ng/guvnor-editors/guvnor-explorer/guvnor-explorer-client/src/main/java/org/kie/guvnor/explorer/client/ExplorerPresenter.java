@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.explorer.client.resources.i18n.Constants;
+import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
 import org.kie.guvnor.explorer.model.RepositoryItem;
 import org.kie.guvnor.explorer.service.ExplorerService;
@@ -55,7 +56,7 @@ public class ExplorerPresenter {
             extends
             UberView<ExplorerPresenter> {
 
-        void setItems( List<Item> item );
+        void setContent( ExplorerContent content );
 
     }
 
@@ -94,15 +95,15 @@ public class ExplorerPresenter {
             activePath = path;
         } else {
             if ( !path.equals( activePath ) ) {
-                explorerService.call( new RemoteCallback<List<Item>>() {
+                explorerService.call( new RemoteCallback<ExplorerContent>() {
 
                     @Override
-                    public void callback( final List<Item> items ) {
-                        view.setItems( items );
+                    public void callback( final ExplorerContent content ) {
+                        view.setContent( content );
                         activePath = path;
                     }
 
-                } ).getItemsForPathScope( path );
+                } ).getContentInScope( path );
             }
         }
     }
@@ -115,7 +116,8 @@ public class ExplorerPresenter {
                 for ( final Root root : roots ) {
                     items.add( wrapRoot( root ) );
                 }
-                view.setItems( items );
+                final ExplorerContent content = new ExplorerContent( items );
+                view.setContent( content );
             }
         } ).listRoots();
     }
