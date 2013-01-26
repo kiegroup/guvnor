@@ -34,8 +34,10 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
@@ -99,20 +101,24 @@ public class FileExplorerPerspective {
 
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
-        this.menuBar.addItem( new DefaultMenuItemCommand( "File Explorer",
-                                                          new Command() {
-                                                              @Override
-                                                              public void execute() {
-                                                                  placeManager.goTo( "FileExplorer" );
-                                                              }
-                                                          } ) );
-        this.menuBar.addItem( new DefaultMenuItemCommand( "Project Explorer",
-                                                          new Command() {
-                                                              @Override
-                                                              public void execute() {
-                                                                  placeManager.goTo( "org.kie.guvnor.explorer" );
-                                                              }
-                                                          } ) );
+        final MenuBar subMenu = new DefaultMenuBar();
+        subMenu.addItem( new DefaultMenuItemCommand( "Files",
+                                                     new Command() {
+                                                         @Override
+                                                         public void execute() {
+                                                             placeManager.goTo( "FileExplorer" );
+                                                         }
+                                                     } ) );
+        subMenu.addItem( new DefaultMenuItemCommand( "Projects",
+                                                     new Command() {
+                                                         @Override
+                                                         public void execute() {
+                                                             placeManager.goTo( "org.kie.guvnor.explorer" );
+                                                         }
+                                                     } ) );
+        final MenuItemSubMenu subMenuItem = new DefaultMenuItemSubMenu( "Explore",
+                                                                        subMenu );
+        this.menuBar.addItem( subMenuItem );
         this.menuBar.addItem( newResourcesMenu );
     }
 
