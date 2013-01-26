@@ -130,35 +130,65 @@ public class ExplorerServiceImpl
 
     private ExplorerContent makeProjectRootList( final Path path ) {
         final List<Item> items = projectRootListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
+                                                              makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
     private ExplorerContent makeProjectPackageList( final Path path ) {
         final List<Item> items = projectPackageListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
+                                                              makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
     private ExplorerContent makeProjectNonPackageList( final Path path ) {
         final List<Item> items = projectNonPackageListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
+                                                              makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
+    private List<org.kie.commons.java.nio.file.Path> makeBreadCrumbExclusions( final Path path ) {
+        final List<org.kie.commons.java.nio.file.Path> exclusions = new ArrayList<org.kie.commons.java.nio.file.Path>();
+        final Path projectRoot = projectService.resolveProject( path );
+        if ( projectRoot == null ) {
+            return exclusions;
+        }
+        final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
+        final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
+        final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
+        final org.kie.commons.java.nio.file.Path e3 = e2.resolve( "java" );
+        final org.kie.commons.java.nio.file.Path e4 = e2.resolve( "resources" );
+        exclusions.add( e1 );
+        exclusions.add( e2 );
+        exclusions.add( e3 );
+        exclusions.add( e4 );
+        return exclusions;
+    }
+
     private List<BreadCrumb> makeBreadCrumbs( final Path path ) {
+        return makeBreadCrumbs( path,
+                                new ArrayList<org.kie.commons.java.nio.file.Path>() );
+    }
+
+    private List<BreadCrumb> makeBreadCrumbs( final Path path,
+                                              final List<org.kie.commons.java.nio.file.Path> exclusions ) {
         final List<BreadCrumb> breadCrumbs = new ArrayList<BreadCrumb>();
 
         org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
         org.kie.commons.java.nio.file.Path nioFileName = nioPath.getFileName();
         while ( nioFileName != null ) {
-            final BreadCrumb breadCrumb = new BreadCrumb( paths.convert( nioPath ),
-                                                          nioFileName.toString() );
-            breadCrumbs.add( 0,
-                             breadCrumb );
+            if ( includePath( nioPath,
+                              exclusions ) ) {
+                final BreadCrumb breadCrumb = new BreadCrumb( paths.convert( nioPath ),
+                                                              nioFileName.toString() );
+                breadCrumbs.add( 0,
+                                 breadCrumb );
+            }
             nioPath = nioPath.getParent();
             nioFileName = nioPath.getFileName();
         }
@@ -166,6 +196,16 @@ public class ExplorerServiceImpl
                                             getRootDirectory( nioPath ) ) );
 
         return breadCrumbs;
+    }
+
+    private boolean includePath( final org.kie.commons.java.nio.file.Path path,
+                                 final List<org.kie.commons.java.nio.file.Path> exclusions ) {
+        for ( final org.kie.commons.java.nio.file.Path p : exclusions ) {
+            if ( path.endsWith( p ) ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String getRootDirectory( final org.kie.commons.java.nio.file.Path path ) {

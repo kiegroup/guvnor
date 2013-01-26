@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.kie.guvnor.explorer.client.resources.Resources;
 import org.kie.guvnor.explorer.client.util.FoldersFirstAlphabeticalComparator;
 import org.kie.guvnor.explorer.client.widget.BreadCrumbsWidget;
 import org.kie.guvnor.explorer.client.widget.FileWidget;
@@ -28,14 +31,18 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
     private ExplorerPresenter presenter;
 
     private final VerticalPanel container = new VerticalPanel();
-
     private final VerticalPanel itemWidgetsContainer = new VerticalPanel();
-
+    private final SimplePanel breadCrumbsWidgetContainer = new SimplePanel();
     private final BreadCrumbsWidget breadCrumbsWidget = new BreadCrumbsWidget();
 
     public ExplorerView() {
-        container.add( breadCrumbsWidget );
+        container.setStyleName( Resources.INSTANCE.CSS().container() );
+        breadCrumbsWidgetContainer.setStyleName( Resources.INSTANCE.CSS().breadCrumbsContainer() );
+
+        breadCrumbsWidgetContainer.add( breadCrumbsWidget );
+        container.add( breadCrumbsWidgetContainer );
         container.add( itemWidgetsContainer );
+
         initWidget( container );
     }
 

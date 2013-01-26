@@ -13,27 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.container {
+    padding: 5px;
+    width: 100%;
+}
+
 .item {
-    vertical-align: centre;
+    height: 32px;
+    vertical-align: middle;
     cursor: pointer;
     cursor: hand;
 }
 
+.item a {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.breadCrumbsContainer {
+    width: 100%;
+    background-color: #f6f6f6;
+    margin-bottom: 5px;
+}
+
 .breadCrumbs {
-    height: 32px;
+    height: 48px;
 }
 
 .breadCrumbs a {
     color: blue;
+    display: table-cell;
     vertical-align: middle;
-    font-size: 12pt;
-    margin: 5px;
+    padding-left: 5px;
+    height: 48px;
 }
 
 .breadCrumbs div {
     color: black;
+    display: table-cell;
     vertical-align: middle;
-    font-weight: bold;
-    font-size: 12pt;
-    margin: 5px;
+    padding-left: 5px;
+    height: 48px;
 }

@@ -17,7 +17,7 @@ public class ExplorerContent {
     private List<BreadCrumb> breadCrumbs;
 
     public ExplorerContent() {
-        //For Errai-marshalling
+        this( new ArrayList<Item>() );
     }
 
     public ExplorerContent( final List<Item> items ) {
