@@ -18,8 +18,11 @@ package org.kie.guvnor.projecteditor.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -35,6 +38,7 @@ public class KModuleServiceImpl
     private IOService ioService;
     private Paths paths;
     private KModuleContentHandler moduleContentHandler;
+    private MetadataService metadataService;
 
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
@@ -42,9 +46,11 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl(final @Named("ioStrategy") IOService ioService,
+                              MetadataService metadataService,
                               final Paths paths,
                               final KModuleContentHandler moduleContentHandler) {
         this.ioService = ioService;
+        this.metadataService = metadataService;
         this.paths = paths;
         this.moduleContentHandler = moduleContentHandler;
     }
@@ -70,9 +76,30 @@ public class KModuleServiceImpl
     }
 
     @Override
-    public void saveKModule(final Path path,
-                            final KModuleModel model) {
-        saveKModule(paths.convert(path), model);
+    public void saveKModule(String commitMessage,
+                            final Path path,
+                            final KModuleModel model,
+                            Metadata metadata) {
+        if (metadata == null) {
+            ioService.write(
+                    paths.convert(path),
+                    moduleContentHandler.toString(model),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        } else {
+            ioService.write(
+                    paths.convert(path),
+                    moduleContentHandler.toString(model),
+                    metadataService.setUpAttributes(path, metadata),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        }
     }
 
     @Override
@@ -95,8 +122,7 @@ public class KModuleServiceImpl
 
     private void saveKModule(final org.kie.commons.java.nio.file.Path path,
                              final KModuleModel model) {
-        String content = moduleContentHandler.toString(model);
-        ioService.write(path, content);
+        ioService.write(path, moduleContentHandler.toString(model));
     }
 
     private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {

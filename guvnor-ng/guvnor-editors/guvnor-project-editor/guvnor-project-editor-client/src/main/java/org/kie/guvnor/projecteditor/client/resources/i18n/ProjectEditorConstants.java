@@ -112,4 +112,8 @@ public interface ProjectEditorConstants
     String VersionID();
 
     String Dependencies();
+
+    String PomDotXmlMetadata();
+
+    String KModuleDotXmlMetadata();
 }

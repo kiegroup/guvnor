@@ -3,9 +3,12 @@ package org.kie.guvnor.project.backend.server;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -25,6 +28,7 @@ public class POMServiceImpl
     private IOService ioService;
     private Paths paths;
     private POMContentHandler pomContentHandler;
+    private MetadataService metadataService;
 
     public POMServiceImpl() {
         // For Weld
@@ -33,10 +37,12 @@ public class POMServiceImpl
     @Inject
     public POMServiceImpl(Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
                           @Named("ioStrategy") IOService ioService,
+                          MetadataService metadataService,
                           Paths paths,
                           POMContentHandler pomContentHandler) {
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.ioService = ioService;
+        this.metadataService = metadataService;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
     }
@@ -59,10 +65,53 @@ public class POMServiceImpl
 
 
     @Override
-    public Path savePOM(final Path pathToPOM,
-                        final POM pomModel) {
+    public Path savePOM(final String commitMessage,
+                        final Path pathToPOM,
+                        final POM pomModel,
+                        Metadata metadata) {
         try {
-            Path result = paths.convert(ioService.write(paths.convert(pathToPOM), pomContentHandler.toString(pomModel)));
+            Path result;
+            if (metadata == null) {
+                result = paths.convert(
+                        ioService.write(
+                                paths.convert(pathToPOM),
+                                pomContentHandler.toString(pomModel),
+                                new CommentedOption(
+                                        null,
+                                        commitMessage,
+                                        null,
+                                        null)));
+            } else {
+                result = paths.convert(
+                        ioService.write(
+                                paths.convert(pathToPOM),
+                                pomContentHandler.toString(pomModel),
+                                metadataService.setUpAttributes(pathToPOM, metadata),
+                                new CommentedOption(
+                                        null,
+                                        commitMessage,
+                                        null,
+                                        null))); // I made a song about this ♫♫♫ null, null, null, null, null, nuuuuulllll ♫♫♫
+            }
+
+            invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(result));
+
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
+        }
+        return null;
+    }
+
+    @Override
+    public Path savePOM(final Path pathToPOM, final POM pomModel) {
+        try {
+
+            Path result = paths.convert(
+                    ioService.write(
+                            paths.convert(pathToPOM),
+                            pomContentHandler.toString(pomModel)));
 
             invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(result));
 

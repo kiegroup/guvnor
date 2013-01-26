@@ -22,6 +22,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public class MockProjectEditorServiceCaller
@@ -47,7 +48,7 @@ public class MockProjectEditorServiceCaller
             }
 
             @Override
-            public void saveKModule(Path path, KModuleModel model) {
+            public void saveKModule(String commitMessage, Path path, KModuleModel model, Metadata metadata) {
                 callback.callback(null);
                 savedModel = model;
             }

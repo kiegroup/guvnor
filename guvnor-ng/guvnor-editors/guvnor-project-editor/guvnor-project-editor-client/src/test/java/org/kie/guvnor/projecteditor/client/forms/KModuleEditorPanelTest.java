@@ -18,11 +18,12 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
-import org.kie.guvnor.project.model.KBaseModel;
-import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
@@ -190,7 +191,8 @@ public class KModuleEditorPanelTest {
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
         screenK.init(path);
 
-        screenK.save();
+        Metadata metadata = mock(Metadata.class);
+        screenK.save("my commit message", metadata);
 
         assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
         verify(view).showSaveSuccessful("kmodule.xml");

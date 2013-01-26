@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
+import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -47,7 +48,7 @@ public class KModuleServiceImplTest {
         invalidateDMOProjectCache = mock(Event.class);
 
         setUpWrite();
-        serviceImpl = new KModuleServiceImpl(ioService, paths, kProjectContentHandler);
+        serviceImpl = new KModuleServiceImpl(ioService, mock(MetadataService.class), paths, kProjectContentHandler);
     }
 
     private void setUpWrite() {

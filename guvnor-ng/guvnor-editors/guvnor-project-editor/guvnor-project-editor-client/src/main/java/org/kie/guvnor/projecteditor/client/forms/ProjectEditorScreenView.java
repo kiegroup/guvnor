@@ -17,13 +17,25 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 
 public interface ProjectEditorScreenView
         extends IsWidget {
 
+    interface Presenter {
+
+        void onPOMMetadataTabSelected();
+
+        void onKModuleTabSelected();
+
+        void onKModuleMetadataTabSelected();
+    }
+
+    void setPresenter(Presenter presenter);
+
     String getEnableKieProjectMenuItemText();
 
-    void setGroupArtifactVersionEditorPanel(POMEditorPanel gavPanel);
+    void setPOMEditorPanel(POMEditorPanel gavPanel);
 
     void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel);
 
@@ -31,6 +43,7 @@ public interface ProjectEditorScreenView
 
     String getBuildMenuItemText();
 
-    void showBuildSuccessful();
+    void setPOMMetadataPanel(MetadataWidget pomMetaDataPanel);
 
+    void setKModuleMetadataPanel(MetadataWidget kModuleMetaDataPanel);
 }

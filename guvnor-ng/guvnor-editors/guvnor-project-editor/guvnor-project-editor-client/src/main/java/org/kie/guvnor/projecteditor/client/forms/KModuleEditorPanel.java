@@ -3,11 +3,12 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
+import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ public class KModuleEditorPanel
     private Path path;
 
     private final KModuleEditorPanelView view;
+    private boolean hasBeenInitialized = false;
 
     @Inject
     public KModuleEditorPanel(Caller<KModuleService> projectEditorServiceCaller,
@@ -43,6 +45,8 @@ public class KModuleEditorPanel
                 KModuleEditorPanel.this.model = model;
 
                 setItems(model.getKBases());
+
+                hasBeenInitialized = true;
             }
         }).loadKModule(path);
     }
@@ -54,12 +58,16 @@ public class KModuleEditorPanel
         return model;
     }
 
-    public void save() {
+    public void save(String commitMessage, Metadata metadata) {
         projectEditorServiceCaller.call(new RemoteCallback<Void>() {
             @Override
             public void callback(Void v) {
                 view.showSaveSuccessful("kmodule.xml");
             }
-        }).saveKModule(path, model);
+        }).saveKModule(commitMessage, path, model, metadata);
+    }
+
+    public boolean hasBeenInitialized() {
+        return hasBeenInitialized;
     }
 }

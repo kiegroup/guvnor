@@ -19,6 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
@@ -32,9 +33,10 @@ public class ProjectEditorScreenTest {
     private ProjectEditorScreenView view;
     private POMEditorPanel gavPanel;
     private KModuleEditorPanel kModuleEditorPanel;
-    private ProjectEditorScreen screen;
+    private ProjectEditorScreenPresenter screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockBuildServiceCaller buildServiceCaller;
+    private MockMetadataServiceCaller metadataServiceCaller;
 
     @Before
     public void setUp() throws Exception {
@@ -46,12 +48,13 @@ public class ProjectEditorScreenTest {
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();
-        screen = new ProjectEditorScreen(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller);
+        metadataServiceCaller = new MockMetadataServiceCaller();
+        screen = new ProjectEditorScreenPresenter(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller);
     }
 
     @Test
     public void testBasicSetup() throws Exception {
-        verify(view).setGroupArtifactVersionEditorPanel(gavPanel);
+        verify(view).setPOMEditorPanel(gavPanel);
         verify(view, never()).setKModuleEditorPanel(kModuleEditorPanel);
     }
 
@@ -100,8 +103,8 @@ public class ProjectEditorScreenTest {
         MenuBar menuBar = screen.buildMenuBar();
         clickFirst(menuBar);
 
-        verify(gavPanel).save(any(Command.class));
-        verify(kModuleEditorPanel, never()).save();
+        verify(gavPanel).save(anyString(), any(Command.class), any(Metadata.class));
+        verify(kModuleEditorPanel, never()).save(anyString(), any(Metadata.class));
     }
 
     @Test
@@ -115,9 +118,9 @@ public class ProjectEditorScreenTest {
         clickFirst(menuBar);
 
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(gavPanel).save(commandArgumentCaptor.capture());
+        verify(gavPanel).save(anyString(), commandArgumentCaptor.capture(), any(Metadata.class));
         commandArgumentCaptor.getValue().execute();
-        verify(kModuleEditorPanel).save();
+        verify(kModuleEditorPanel).save(anyString(), any(Metadata.class));
     }
 
     @Test

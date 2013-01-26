@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
@@ -75,12 +76,16 @@ public class POMEditorPanelTest {
 
         verify(view).setTitleText("2.2.2");
 
-        panel.save(new Command() {
-            @Override
-            public void execute() {
-                //TODO -Rikkola-
-            }
-        });
+        Metadata metadata = mock(Metadata.class);
+        panel.save(
+                "Commit message",
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //TODO -Rikkola-
+                    }
+                },
+                metadata);
 
         POM savedGav = pomServiceCaller.getSavedPOM();
         assertEquals("group2", savedGav.getGav().getGroupId());

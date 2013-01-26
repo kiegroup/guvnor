@@ -21,6 +21,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public class MockPomServiceCaller
@@ -39,6 +40,11 @@ public class MockPomServiceCaller
             public POM loadPOM(Path path) {
                 callback.callback(gavModel);
                 return gavModel;
+            }
+
+            @Override
+            public Path savePOM(String commitMessage, Path pathToPOM, POM pomModel, Metadata metadata) {
+                return null;  //TODO -Rikkola-
             }
 
             @Override

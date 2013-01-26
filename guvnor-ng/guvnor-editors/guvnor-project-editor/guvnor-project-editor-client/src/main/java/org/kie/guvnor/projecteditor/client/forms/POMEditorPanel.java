@@ -24,6 +24,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
@@ -77,7 +78,8 @@ public class POMEditorPanel
         }
     }
 
-    public void save(final Command callback) {
+    public void save(final String commitMessage, final Command callback, final Metadata metadata) {
+
         pomServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
@@ -86,7 +88,7 @@ public class POMEditorPanel
                         view.showSaveSuccessful("pom.xml");
                     }
                 }
-        ).savePOM(path, model);
+        ).savePOM(commitMessage,path, model, metadata);
     }
 
     @Override

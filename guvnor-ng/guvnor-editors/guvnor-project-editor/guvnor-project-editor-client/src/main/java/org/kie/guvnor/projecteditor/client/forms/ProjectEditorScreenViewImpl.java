@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
@@ -30,6 +31,7 @@ public class ProjectEditorScreenViewImpl
 
 
     private final Event<NotificationEvent> notificationEvent;
+    private Presenter presenter;
 
     @Inject
     public ProjectEditorScreenViewImpl(Event<NotificationEvent> notificationEvent) {
@@ -37,10 +39,29 @@ public class ProjectEditorScreenViewImpl
     }
 
     @Override
-    public void setGroupArtifactVersionEditorPanel(POMEditorPanel gavPanel) {
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setPOMEditorPanel(POMEditorPanel gavPanel) {
         addPage(new Page(gavPanel, ProjectEditorConstants.INSTANCE.PomDotXml()) {
             @Override
             public void onFocus() {
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        });
+    }
+
+    @Override
+    public void setPOMMetadataPanel(MetadataWidget pomMetaDataPanel) {
+        addPage(new Page(pomMetaDataPanel, ProjectEditorConstants.INSTANCE.PomDotXmlMetadata()) {
+            @Override
+            public void onFocus() {
+                presenter.onPOMMetadataTabSelected();
             }
 
             @Override
@@ -54,6 +75,7 @@ public class ProjectEditorScreenViewImpl
         addPage(new Page(kModuleEditorPanel, ProjectEditorConstants.INSTANCE.KModuleDotXml()) {
             @Override
             public void onFocus() {
+                presenter.onKModuleTabSelected();
             }
 
             @Override
@@ -62,6 +84,19 @@ public class ProjectEditorScreenViewImpl
         });
     }
 
+    @Override
+    public void setKModuleMetadataPanel(MetadataWidget kModuleMetaDataPanel) {
+        addPage(new Page(kModuleMetaDataPanel, ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata()) {
+            @Override
+            public void onFocus() {
+                presenter.onKModuleMetadataTabSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        });
+    }
 
     @Override
     public String getEnableKieProjectMenuItemText() {
@@ -76,10 +111,5 @@ public class ProjectEditorScreenViewImpl
     @Override
     public String getBuildMenuItemText() {
         return ProjectEditorConstants.INSTANCE.Build();
-    }
-
-    @Override
-    public void showBuildSuccessful() {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.BuildSuccessful()));
     }
 }
