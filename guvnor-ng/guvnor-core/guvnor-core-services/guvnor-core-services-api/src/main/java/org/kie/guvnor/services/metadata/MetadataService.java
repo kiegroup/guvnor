@@ -32,4 +32,7 @@ public interface MetadataService {
 
     Map<String, Object> configAttrs( final Map<String, Object> attrs,
                                      final Metadata metadata );
+
+    Map<String, Object> setUpAttributes(Path path, Metadata metadata);
+
 }
