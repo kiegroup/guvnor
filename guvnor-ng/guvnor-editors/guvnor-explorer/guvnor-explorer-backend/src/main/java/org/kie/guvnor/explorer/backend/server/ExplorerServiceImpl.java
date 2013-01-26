@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.explorer.backend.server;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,7 +23,6 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileStore;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.loaders.ItemsLoader;
 import org.kie.guvnor.explorer.model.BreadCrumb;
@@ -46,6 +42,8 @@ public class ExplorerServiceImpl
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private IOService ioService;
+    private ProjectService projectService;
+    private BreadCrumbFactory breadCrumbFactory;
     private Paths paths;
 
     @Inject
@@ -64,17 +62,18 @@ public class ExplorerServiceImpl
     @Named("projectNonPackageList")
     private ItemsLoader projectNonPackageListLoader;
 
-    @Inject
-    private ProjectService projectService;
-
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
 
     @Inject
     public ExplorerServiceImpl( final @Named("ioStrategy") IOService ioService,
+                                final ProjectService projectService,
+                                final BreadCrumbFactory breadCrumbFactory,
                                 final Paths paths ) {
         this.ioService = ioService;
+        this.projectService = projectService;
+        this.breadCrumbFactory = breadCrumbFactory;
         this.paths = paths;
     }
 
@@ -123,97 +122,33 @@ public class ExplorerServiceImpl
 
     private ExplorerContent makeOutsideProjectList( final Path path ) {
         final List<Item> items = outsideProjectListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
     private ExplorerContent makeProjectRootList( final Path path ) {
         final List<Item> items = projectRootListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
-                                                              makeBreadCrumbExclusions( path ) );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
+                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
     private ExplorerContent makeProjectPackageList( final Path path ) {
         final List<Item> items = projectPackageListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
-                                                              makeBreadCrumbExclusions( path ) );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
+                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
     private ExplorerContent makeProjectNonPackageList( final Path path ) {
         final List<Item> items = projectNonPackageListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = makeBreadCrumbs( path,
-                                                              makeBreadCrumbExclusions( path ) );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
+                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
-    }
-
-    private List<org.kie.commons.java.nio.file.Path> makeBreadCrumbExclusions( final Path path ) {
-        final List<org.kie.commons.java.nio.file.Path> exclusions = new ArrayList<org.kie.commons.java.nio.file.Path>();
-        final Path projectRoot = projectService.resolveProject( path );
-        if ( projectRoot == null ) {
-            return exclusions;
-        }
-        final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
-        final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
-        final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
-        final org.kie.commons.java.nio.file.Path e3 = e2.resolve( "java" );
-        final org.kie.commons.java.nio.file.Path e4 = e2.resolve( "resources" );
-        exclusions.add( e1 );
-        exclusions.add( e2 );
-        exclusions.add( e3 );
-        exclusions.add( e4 );
-        return exclusions;
-    }
-
-    private List<BreadCrumb> makeBreadCrumbs( final Path path ) {
-        return makeBreadCrumbs( path,
-                                new ArrayList<org.kie.commons.java.nio.file.Path>() );
-    }
-
-    private List<BreadCrumb> makeBreadCrumbs( final Path path,
-                                              final List<org.kie.commons.java.nio.file.Path> exclusions ) {
-        final List<BreadCrumb> breadCrumbs = new ArrayList<BreadCrumb>();
-
-        org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-        org.kie.commons.java.nio.file.Path nioFileName = nioPath.getFileName();
-        while ( nioFileName != null ) {
-            if ( includePath( nioPath,
-                              exclusions ) ) {
-                final BreadCrumb breadCrumb = new BreadCrumb( paths.convert( nioPath ),
-                                                              nioFileName.toString() );
-                breadCrumbs.add( 0,
-                                 breadCrumb );
-            }
-            nioPath = nioPath.getParent();
-            nioFileName = nioPath.getFileName();
-        }
-        breadCrumbs.add( 0, new BreadCrumb( paths.convert( nioPath ),
-                                            getRootDirectory( nioPath ) ) );
-
-        return breadCrumbs;
-    }
-
-    private boolean includePath( final org.kie.commons.java.nio.file.Path path,
-                                 final List<org.kie.commons.java.nio.file.Path> exclusions ) {
-        for ( final org.kie.commons.java.nio.file.Path p : exclusions ) {
-            if ( path.endsWith( p ) ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String getRootDirectory( final org.kie.commons.java.nio.file.Path path ) {
-        final Iterator<FileStore> fileStoreIterator = path.getFileSystem().getFileStores().iterator();
-        if ( fileStoreIterator.hasNext() ) {
-            return fileStoreIterator.next().name();
-        }
-        return "";
     }
 
 }
