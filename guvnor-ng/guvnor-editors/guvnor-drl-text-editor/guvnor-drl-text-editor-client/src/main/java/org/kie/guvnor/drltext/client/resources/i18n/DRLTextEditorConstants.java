@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * EnumEditor I18N constants
  */
-public interface Constants
+public interface DRLTextEditorConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final DRLTextEditorConstants INSTANCE = GWT.create( DRLTextEditorConstants.class );
 
     String FactTypes();
 
@@ -35,4 +35,6 @@ public interface Constants
     String ShowFactTypes();
 
     String NewDrlTextDescription();
+
+    String DRL();
 }

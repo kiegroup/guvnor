@@ -18,6 +18,7 @@ package org.kie.guvnor.drltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,10 +26,17 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.IsDirty;
@@ -41,6 +49,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.LoadingPopup;
+import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
@@ -74,10 +84,11 @@ public class DRLEditorPresenter {
     private View view;
 
     @Inject
-    private Caller<VFSService> vfs;
+    private Caller<DataModelService> dataModelService;
 
     @Inject
-    private Caller<DataModelService> dataModelService;
+    @New
+    private MultiPageEditor multiPage;
 
     @Inject
     private Caller<DRLTextEditorService> drlTextEditorService;
@@ -85,16 +96,24 @@ public class DRLEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
+
+    @Inject
+    private Caller<MetadataService> metadataService;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
     private Path path;
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
 
+        multiPage.addWidget(view, DRLTextEditorConstants.INSTANCE.DRL());
+
         dataModelService.call( new RemoteCallback<DataModelOracle>() {
             @Override
             public void callback( final DataModelOracle model ) {
-                vfs.call( new RemoteCallback<String>() {
+                drlTextEditorService.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( String response ) {
                         if ( response == null || response.isEmpty() ) {
@@ -105,22 +124,47 @@ public class DRLEditorPresenter {
                                              model );
                         }
                     }
-                } ).readAllString( path );
+                } ).load( path );
             }
-        } ).getDataModel( path );
+        } ).getDataModel(path);
 
+        multiPage.addPage(new Page(metadataWidget, MetaDataConstants.INSTANCE.Metadata()) {
+            @Override
+            public void onFocus() {
+                metadataService.call(
+                        new RemoteCallback<Metadata>() {
+                            @Override
+                            public void callback(Metadata metadata) {
+                                metadataWidget.setContent(metadata, false);
+                            }
+                        }
+                ).getMetadata(path);
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        });
     }
 
     @OnSave
     public void onSave() {
-        vfs.call( new RemoteCallback<Path>() {
+        new SaveOpWrapper(path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                view.setNotDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute(final String commitMessage) {
+                drlTextEditorService.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                    }
+                }).save(path,
+                        view.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        } ).write( path,
-                   view.getContent() );
+        }).save();
     }
 
     @IsDirty
@@ -148,7 +192,7 @@ public class DRLEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return view;
+        return multiPage;
     }
 
     @WorkbenchMenu

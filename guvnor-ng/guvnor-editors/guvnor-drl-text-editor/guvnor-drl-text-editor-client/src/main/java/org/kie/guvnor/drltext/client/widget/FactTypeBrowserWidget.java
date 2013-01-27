@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.resources.images.ImageResources;
 import org.kie.guvnor.drltext.client.resources.Resources;
-import org.kie.guvnor.drltext.client.resources.i18n.Constants;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
 
@@ -45,7 +45,7 @@ public class FactTypeBrowserWidget
         final HorizontalPanel hpFactsAndHide = new HorizontalPanel();
         final HorizontalPanel hpShow = new HorizontalPanel();
 
-        hpShow.add( new ClickableLabel( Constants.INSTANCE.ShowFactTypes(),
+        hpShow.add( new ClickableLabel( DRLTextEditorConstants.INSTANCE.ShowFactTypes(),
                                         new ClickHandler() {
                                             public void onClick( com.google.gwt.event.dom.client.ClickEvent event ) {
                                                 hpShow.setVisible( false );
@@ -55,8 +55,8 @@ public class FactTypeBrowserWidget
                                         } ) );
         panel.add( hpShow );
 
-        hpFactsAndHide.add( new SmallLabel( Constants.INSTANCE.FactTypes() ) );
-        hpFactsAndHide.add( new ClickableLabel( Constants.INSTANCE.hide(),
+        hpFactsAndHide.add( new SmallLabel( DRLTextEditorConstants.INSTANCE.FactTypes() ) );
+        hpFactsAndHide.add( new ClickableLabel( DRLTextEditorConstants.INSTANCE.hide(),
                                                 new ClickHandler() {
                                                     public void onClick( com.google.gwt.event.dom.client.ClickEvent event ) {
                                                         hpShow.setVisible( true );
