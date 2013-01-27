@@ -26,6 +26,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
@@ -153,14 +155,21 @@ public class EnumEditorPresenter {
 
     @OnSave
     public void onSave() {
-        enumService.call( new RemoteCallback<Void>() {
+        new SaveOpWrapper(path, new SaveCommand() {
             @Override
-            public void callback( Void response ) {
-                view.setNotDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute(final String commitMessage) {
+                enumService.call(new RemoteCallback<Void>() {
+                    @Override
+                    public void callback(Void response) {
+                        view.setNotDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                    }
+                }).save(path,
+                        view.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        } ).save( path,
-                  view.getContent() );
+        }).save();
     }
 
     @IsDirty

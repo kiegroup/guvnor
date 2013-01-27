@@ -27,6 +27,7 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
@@ -34,6 +35,8 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.backend.server.DataEnumLoader;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.service.EnumService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -49,6 +52,9 @@ public class EnumServiceImpl implements EnumService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private MetadataService metadataService;
 
     @Inject
     private Paths paths;
@@ -93,25 +99,21 @@ public class EnumServiceImpl implements EnumService {
 
     @Override
     public void save( final Path resource,
-                      final String content ) {
+                      final String content,
+                      final Metadata metadata,
+                      final String commitMessage ) {
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        Map<String, Object> attrs;
+        ioService.write(
+                path,
+                content,
+                metadataService.setUpAttributes(resource, metadata),
+                new CommentedOption(
+                        null,
+                        commitMessage,
+                        null,
+                        null));
 
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-/*        if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs, config );
-        }
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs, metadata );
-        }*/
-
-        ioService.write( path, content, attrs );
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
