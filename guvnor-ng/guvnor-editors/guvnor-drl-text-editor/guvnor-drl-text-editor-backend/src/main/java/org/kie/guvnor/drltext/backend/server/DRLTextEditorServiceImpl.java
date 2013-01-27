@@ -19,9 +19,9 @@ package org.kie.guvnor.drltext.backend.server;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -29,10 +29,9 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @ApplicationScoped
@@ -44,6 +43,9 @@ public class DRLTextEditorServiceImpl
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
 
     @Inject
     private Paths paths;
@@ -103,5 +105,7 @@ public class DRLTextEditorServiceImpl
                             null,
                             null));
         }
+
+        invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(path));
     }
 }

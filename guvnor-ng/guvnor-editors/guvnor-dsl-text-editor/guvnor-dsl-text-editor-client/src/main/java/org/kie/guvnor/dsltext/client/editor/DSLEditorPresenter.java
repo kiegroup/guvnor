@@ -26,6 +26,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -78,9 +80,6 @@ public class DSLEditorPresenter {
     private View view;
 
     @Inject
-    private Caller<VFSService> vfs;
-
-    @Inject
     private Caller<DSLTextEditorService> dslTextEditorService;
 
     @Inject
@@ -100,7 +99,7 @@ public class DSLEditorPresenter {
     public void onStart( final Path path ) {
         this.path = path;
 
-        vfs.call( new RemoteCallback<String>() {
+        dslTextEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String response ) {
                 if ( response == null || response.isEmpty() ) {
@@ -110,7 +109,7 @@ public class DSLEditorPresenter {
 
                 }
             }
-        } ).readAllString( path );
+        } ).load(path);
 
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
@@ -122,14 +121,21 @@ public class DSLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        dslTextEditorService.call( new RemoteCallback<Void>() {
+        new SaveOpWrapper(path, new SaveCommand() {
             @Override
-            public void callback( Void response ) {
-                view.setNotDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute(final String commitMessage) {
+                dslTextEditorService.call(new RemoteCallback<Void>() {
+                    @Override
+                    public void callback(Void response) {
+                        view.setNotDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                    }
+                }).save(path,
+                        view.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        } ).save( path,
-                  view.getContent() );
+        }).save();
     }
 
     @IsDirty

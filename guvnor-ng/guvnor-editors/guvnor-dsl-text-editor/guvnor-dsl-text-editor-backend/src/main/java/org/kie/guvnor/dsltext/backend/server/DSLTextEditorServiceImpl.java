@@ -16,30 +16,34 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.dsltext.service.DSLTextEditorService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
-import org.kie.guvnor.dsltext.service.DSLTextEditorService;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
-
 @Service
 @ApplicationScoped
-public class DSLTextEditorServiceImpl implements DSLTextEditorService {
+public class DSLTextEditorServiceImpl
+        implements DSLTextEditorService {
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private MetadataService metadataService;
 
     @Inject
     private Paths paths;
@@ -48,43 +52,54 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final String content ) {
+    public BuilderResult validate(final Path path,
+                                  final String content) {
         //TODO {porcelli} validate
         return new BuilderResult();
     }
 
     @Override
-    public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path,
-                          content ).hasLines();
+    public boolean isValid(final Path path,
+                           final String content) {
+        return !validate(path,
+                content).hasLines();
     }
 
     @Override
-    public AnalysisReport verify( final Path path,
-                                  final String content ) {
+    public AnalysisReport verify(final Path path,
+                                 final String content) {
         //TODO {porcelli} verify
         return new AnalysisReport();
     }
 
     @Override
-    public void save( final Path resource,
-                      final String content ) {
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+    public String load(Path path) {
+        return ioService.readAllString(paths.convert(path));
+    }
 
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
+    @Override
+    public void save(Path path, String content, Metadata metadata, String commitMessage) {
+        if (metadata == null) {
+            ioService.write(
+                    paths.convert(path),
+                    content,
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        } else {
+            ioService.write(
+                    paths.convert(path),
+                    content,
+                    metadataService.setUpAttributes(path, metadata),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
         }
 
-        ioService.write( path,
-                         content,
-                         attrs );
-
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(path));
     }
 }
