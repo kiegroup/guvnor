@@ -27,6 +27,7 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -39,6 +40,8 @@ import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
@@ -57,10 +60,10 @@ public class GuidedRuleEditorServiceImpl
     private Paths paths;
 
     @Inject
-    private ProjectService projectService;
+    private DataModelService dataModelService;
 
     @Inject
-    private DataModelService dataModelService;
+    private MetadataService metadataService;
 
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
@@ -75,22 +78,39 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final RuleModel model ) {
-        final BRLPersistence p = BRXMLPersistence.getInstance();
-        final String xml = p.marshal( model );
-        ioService.write( paths.convert( path ),
-                         xml );
+    public void save(Path path, RuleModel model) {
+        ioService.write(
+                paths.convert(path),
+                BRXMLPersistence.getInstance().marshal(model));
     }
 
     @Override
     public void save( final Path path,
-                      final RuleModel factModels,
-                      final String comment,
-                      final Date when,
-                      final String lastContributor ) {
-        //TODO:
+                      final RuleModel model,
+                      final Metadata metadata,
+                      final String commitMessage) {
 
+
+        if (metadata == null) {
+            ioService.write(
+                    paths.convert(path),
+                    BRXMLPersistence.getInstance().marshal( model ),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        } else {
+            ioService.write(
+                    paths.convert(path),
+                    BRXMLPersistence.getInstance().marshal( model ),
+                    metadataService.setUpAttributes(path, metadata),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        }
     }
 
     @Override

@@ -26,11 +26,17 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -87,6 +93,11 @@ public class GuidedRuleEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private Caller<MetadataService> metadataService;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
     private Path path = null;
 
     @PostConstruct
@@ -110,6 +121,25 @@ public class GuidedRuleEditorPresenter {
                 viewSource.clear();
             }
         } );
+
+        multiPage.addPage(new Page(metadataWidget, MetaDataConstants.INSTANCE.Metadata()) {
+            @Override
+            public void onFocus() {
+                metadataService.call(
+                        new RemoteCallback<Metadata>() {
+                            @Override
+                            public void callback(Metadata metadata) {
+                                metadataWidget.setContent(metadata, false);
+                            }
+                        }
+                ).getMetadata(path);
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        });
     }
 
     @OnStart
@@ -128,14 +158,21 @@ public class GuidedRuleEditorPresenter {
 
     @OnSave
     public void onSave() {
-        service.call( new RemoteCallback<Path>() {
+        new SaveOpWrapper(path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                view.setNotDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute(final String commitMessage) {
+                service.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                    }
+                }).save(path,
+                        view.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        } ).save( path,
-                  view.getContent() );
+        }).save();
     }
 
     @IsDirty
@@ -163,6 +200,8 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
+
+
         return multiPage;
     }
 

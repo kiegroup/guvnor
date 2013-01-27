@@ -24,6 +24,7 @@ import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -37,13 +38,10 @@ public interface GuidedRuleEditorService
     RuleModel loadRuleModel( Path path );
 
     void save( final Path path,
-               final RuleModel model );
-    
-    void save( final Path path,
-               final RuleModel factModels,
-               final String comment,
-               final Date when,
-               final String lastContributor);
+               final RuleModel model,
+               final Metadata metadata,
+               final String commitMessage);
+
     /**
      * @param valuePairs key=value pairs to be interpolated into the expression.
      * @param expression The expression, which will then be eval'ed to generate a
@@ -52,4 +50,5 @@ public interface GuidedRuleEditorService
     String[] loadDropDownExpression( final String[] valuePairs,
                                      final String expression );
 
+    void save(Path path, RuleModel model);
 }
