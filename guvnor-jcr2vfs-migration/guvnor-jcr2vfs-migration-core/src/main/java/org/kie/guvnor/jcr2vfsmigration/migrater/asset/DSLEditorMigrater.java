@@ -37,7 +37,7 @@ public class DSLEditorMigrater {
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
 
-        enumService.save(path, ((RuleContentText)jcrAsset.getContent()).content);
+        enumService.save(path, ((RuleContentText)jcrAsset.getContent()).content, null, "");
     }
 
  }
