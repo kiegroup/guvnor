@@ -10,7 +10,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -60,7 +59,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                 placeManager.goTo( place );
             }
         } ).save( path,
-                  ruleModel );
+                  ruleModel);
     }
 
 }

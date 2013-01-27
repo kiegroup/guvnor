@@ -21,6 +21,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -157,14 +159,21 @@ public class GuidedDecisionTableEditorPresenter {
 
     @OnSave
     public void onSave() {
-        service.call(new RemoteCallback<Path>() {
+        new SaveOpWrapper(path, new SaveCommand() {
             @Override
-            public void callback(Path response) {
-                view.setNotDirty();
-                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+            public void execute(final String commitMessage) {
+                service.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                    }
+                }).save(path,
+                        view.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        }).save(path,
-                view.getContent());
+        }).save();
     }
 
     @IsDirty

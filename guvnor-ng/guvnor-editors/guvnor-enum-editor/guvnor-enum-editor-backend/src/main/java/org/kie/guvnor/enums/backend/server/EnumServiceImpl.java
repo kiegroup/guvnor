@@ -104,15 +104,27 @@ public class EnumServiceImpl implements EnumService {
                       final String commitMessage ) {
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        ioService.write(
-                path,
-                content,
-                metadataService.setUpAttributes(resource, metadata),
-                new CommentedOption(
-                        null,
-                        commitMessage,
-                        null,
-                        null));
+        if (metadata == null) {
+            ioService.write(
+                    path,
+                    content,
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        } else {
+            ioService.write(
+                    path,
+                    content,
+                    metadataService.setUpAttributes(resource, metadata),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        }
+
 
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );

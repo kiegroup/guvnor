@@ -24,6 +24,7 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -36,6 +37,8 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -52,10 +55,10 @@ public class GuidedDecisionTableEditorServiceImpl
     private Paths paths;
 
     @Inject
-    private ProjectService projectService;
+    private DataModelService dataModelService;
 
     @Inject
-    private DataModelService dataModelService;
+    private MetadataService metadataService;
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
@@ -71,12 +74,39 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final GuidedDecisionTable52 model ) {
-        final GuidedDTXMLPersistence p = GuidedDTXMLPersistence.getInstance();
-        final String xml = p.marshal( model );
-        ioService.write( paths.convert( path ),
-                         xml );
+    public void save(Path path, GuidedDecisionTable52 model) {
+        ioService.write(
+                paths.convert(path),
+                GuidedDTXMLPersistence.getInstance().marshal( model ));
+    }
+
+    @Override
+    public void save(final Path path,
+                     final GuidedDecisionTable52 model,
+                     final Metadata metadata,
+                     final String commitMessage) {
+
+        if (metadata == null) {
+            ioService.write(
+                    paths.convert(path),
+                    GuidedDTXMLPersistence.getInstance().marshal( model ),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        } else {
+            ioService.write(
+                    paths.convert(path),
+                    GuidedDTXMLPersistence.getInstance().marshal( model ),
+                    metadataService.setUpAttributes(path, metadata),
+                    new CommentedOption(
+                            null,
+                            commitMessage,
+                            null,
+                            null));
+        }
+
     }
 
     @Override
