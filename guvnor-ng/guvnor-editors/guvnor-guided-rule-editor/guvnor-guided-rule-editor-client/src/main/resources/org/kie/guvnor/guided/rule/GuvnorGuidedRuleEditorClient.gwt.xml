@@ -34,7 +34,6 @@
   <inherits name="org.kie.guvnor.commons.security.GuvnorCommonsSecurity"/>
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
-  <inherits name="org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget"/>
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
 
   <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorAPI"/>

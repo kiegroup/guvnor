@@ -33,8 +33,8 @@ import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.templates.InterpolationVariable;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelCloneVisitor;
+import org.kie.guvnor.guided.template.model.InterpolationVariable;
+import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
 import org.uberfire.backend.vfs.Path;
 
 /**

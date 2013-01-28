@@ -17,7 +17,6 @@
 package org.kie.guvnor.guided.rule.backend.server;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +33,10 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
-import org.kie.guvnor.guided.rule.backend.server.util.BRLPersistence;
 import org.kie.guvnor.guided.rule.backend.server.util.BRXMLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
-import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mvel2.MVEL;

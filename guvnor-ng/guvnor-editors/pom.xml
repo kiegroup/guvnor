@@ -36,6 +36,7 @@
     <module>guvnor-project-editor</module>
     <module>guvnor-explorer</module>
     <module>guvnor-guided-rule-editor</module>
+    <module>guvnor-guided-template-editor</module>
     <module>guvnor-guided-dtable-editor</module>
     <module>guvnor-guided-scorecard-editor</module>
     <module>guvnor-m2repo-editor</module>

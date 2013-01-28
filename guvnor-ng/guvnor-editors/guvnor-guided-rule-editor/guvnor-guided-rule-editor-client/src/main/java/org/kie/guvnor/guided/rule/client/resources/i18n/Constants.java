@@ -459,6 +459,4 @@ public interface Constants
 
     String NewGuidedRuleDescription();
 
-    String NewGuidedRuleTemplateDescription();
-
 }

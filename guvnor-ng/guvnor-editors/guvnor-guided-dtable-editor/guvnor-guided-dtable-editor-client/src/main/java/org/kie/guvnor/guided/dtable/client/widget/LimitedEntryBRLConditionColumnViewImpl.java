@@ -31,7 +31,7 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLConditionColumn;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelCloneVisitor;
+import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
 import org.uberfire.backend.vfs.Path;
 
 /**

@@ -46,10 +46,10 @@ import org.kie.guvnor.guided.rule.client.editor.RuleModelEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.editor.templates.TemplateModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.templates.InterpolationVariable;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelVisitor;
+import org.kie.guvnor.guided.template.client.editor.TemplateModellerWidgetFactory;
+import org.kie.guvnor.guided.template.model.InterpolationVariable;
+import org.kie.guvnor.guided.template.model.RuleModelVisitor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Popup;
 

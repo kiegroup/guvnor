@@ -38,6 +38,7 @@
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
 
   <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorAPI"/>
+  <inherits name="org.kie.guvnor.guided.template.GuvnorGuidedTemplateEditorAPI"/>
 
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
 

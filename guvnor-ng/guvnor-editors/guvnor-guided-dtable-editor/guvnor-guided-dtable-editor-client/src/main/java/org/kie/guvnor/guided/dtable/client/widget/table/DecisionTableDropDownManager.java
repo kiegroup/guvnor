@@ -42,8 +42,8 @@ import org.kie.guvnor.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelPeerVariableVisitor;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelPeerVariableVisitor.ValueHolder;
+import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor;
+import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor.ValueHolder;
 
 /**
  * A utility class to get the values of all Constraints\Actions in the scope of

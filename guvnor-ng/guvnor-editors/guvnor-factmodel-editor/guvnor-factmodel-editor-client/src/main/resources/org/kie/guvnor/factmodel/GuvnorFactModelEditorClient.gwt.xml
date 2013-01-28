@@ -37,8 +37,6 @@
   <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>
   <inherits name="org.kie.guvnor.configresource.GuvnorConfigResourceWidget"/>
 
-
   <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorAPI"/>
-
 
 </module>

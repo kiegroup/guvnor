@@ -106,6 +106,18 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-template-editor-client</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-template-editor-backend</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-dtable-editor-client</artifactId>
     </dependency>
 
@@ -378,6 +390,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-factmodel-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-rule-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-rule-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-template-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-template-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-dtable-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-dtable-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-scorecard-editor-api</compileSourcesArtifact>

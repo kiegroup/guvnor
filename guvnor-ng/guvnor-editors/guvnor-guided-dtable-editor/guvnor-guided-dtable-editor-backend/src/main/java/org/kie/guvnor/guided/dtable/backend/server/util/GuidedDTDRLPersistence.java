@@ -65,8 +65,8 @@ import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleMetadata;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.templates.InterpolationVariable;
-import org.kie.guvnor.guided.rule.model.templates.RuleModelVisitor;
+import org.kie.guvnor.guided.template.model.InterpolationVariable;
+import org.kie.guvnor.guided.template.model.RuleModelVisitor;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -77,7 +77,7 @@ public class GuidedDTDRLPersistence {
         return new GuidedDTDRLPersistence();
     }
 
-    public String marshal(GuidedDecisionTable52 dt) {
+    public String marshal( GuidedDecisionTable52 dt ) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -123,7 +123,7 @@ public class GuidedDTDRLPersistence {
                 rm.parentName = dt.getParentName();
             }
 
-            sb.append( "//from row number: " + (i + 1) + "\n" );
+            sb.append( "//from row number: " + ( i + 1 ) + "\n" );
             if ( desc != null && desc.length() > 0 ) {
                 sb.append( "//" + desc + "\n" );
             }
@@ -138,11 +138,11 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    void doActions(List<BaseColumn> allColumns,
-                   List<ActionCol52> actionCols,
-                   TemplateDataProvider rowDataProvider,
-                   List<DTCellValue52> row,
-                   RuleModel rm) {
+    void doActions( List<BaseColumn> allColumns,
+                    List<ActionCol52> actionCols,
+                    TemplateDataProvider rowDataProvider,
+                    List<DTCellValue52> row,
+                    RuleModel rm ) {
 
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( ActionCol52 c : actionCols ) {
@@ -214,18 +214,18 @@ public class GuidedDTDRLPersistence {
             }
         }
 
-        rm.rhs = new IAction[actions.size()];
+        rm.rhs = new IAction[ actions.size() ];
         for ( int i = 0; i < rm.rhs.length; i++ ) {
-            rm.rhs[i] = actions.get( i ).action;
+            rm.rhs[ i ] = actions.get( i ).action;
         }
     }
 
-    private void doAction(List<BaseColumn> allColumns,
-                          LimitedEntryBRLActionColumn column,
-                          List<LabelledAction> actions,
-                          TemplateDataProvider rowDataProvider,
-                          List<DTCellValue52> row,
-                          RuleModel rm) {
+    private void doAction( List<BaseColumn> allColumns,
+                           LimitedEntryBRLActionColumn column,
+                           List<LabelledAction> actions,
+                           TemplateDataProvider rowDataProvider,
+                           List<DTCellValue52> row,
+                           RuleModel rm ) {
         final int index = allColumns.indexOf( column );
         final DTCellValue52 dcv = row.get( index );
         if ( dcv.getBooleanValue() ) {
@@ -236,12 +236,12 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    private void doAction(List<BaseColumn> allColumns,
-                          BRLActionColumn column,
-                          List<LabelledAction> actions,
-                          TemplateDataProvider rowDataProvider,
-                          List<DTCellValue52> row,
-                          RuleModel rm) {
+    private void doAction( List<BaseColumn> allColumns,
+                           BRLActionColumn column,
+                           List<LabelledAction> actions,
+                           TemplateDataProvider rowDataProvider,
+                           List<DTCellValue52> row,
+                           RuleModel rm ) {
 
         //Check whether the parameter-less BRL fragment needs inclusion
         if ( !hasVariables( column ) ) {
@@ -251,7 +251,7 @@ public class GuidedDTDRLPersistence {
             if ( dcv.getBooleanValue() ) {
                 for ( IAction action : column.getDefinition() ) {
                     addAction( action,
-                                   actions );
+                               actions );
                 }
             }
 
@@ -289,7 +289,7 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    private boolean hasVariables(BRLActionColumn column) {
+    private boolean hasVariables( BRLActionColumn column ) {
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
         RuleModel rm = new RuleModel();
         for ( IAction action : column.getDefinition() ) {
@@ -300,8 +300,8 @@ public class GuidedDTDRLPersistence {
         return ivs.size() > 0;
     }
 
-    private void addAction(IAction action,
-                           List<LabelledAction> actions) {
+    private void addAction( IAction action,
+                            List<LabelledAction> actions ) {
         String binding = null;
         LabelledAction a = null;
         if ( action instanceof ActionInsertFact ) {
@@ -335,9 +335,9 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionWorkItemInsertFactCol52 ac,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionWorkItemInsertFactCol52 ac,
+                           String cell ) {
         if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
             LabelledAction a = findByLabelledAction( actions,
                                                      ac.getBoundName() );
@@ -365,9 +365,9 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionInsertFactCol52 ac,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionInsertFactCol52 ac,
+                           String cell ) {
         LabelledAction a = findByLabelledAction( actions,
                                                  ac.getBoundName() );
         if ( a == null ) {
@@ -391,9 +391,9 @@ public class GuidedDTDRLPersistence {
         ins.addFieldValue( val );
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionWorkItemSetFieldCol52 sf,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionWorkItemSetFieldCol52 sf,
+                           String cell ) {
         if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
             LabelledAction a = findByLabelledAction( actions,
                                                      sf.getBoundName() );
@@ -406,11 +406,11 @@ public class GuidedDTDRLPersistence {
                     a.action = new ActionUpdateField( sf.getBoundName() );
                 }
                 actions.add( a );
-            } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+            } else if ( sf.isUpdate() && !( a.action instanceof ActionUpdateField ) ) {
                 // lets swap it out for an update as the user has asked for it.
                 ActionSetField old = (ActionSetField) a.action;
                 ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
-                update.setFieldValues(old.getFieldValues());
+                update.setFieldValues( old.getFieldValues() );
                 a.action = update;
             }
             ActionSetField asf = (ActionSetField) a.action;
@@ -423,9 +423,9 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionSetFieldCol52 sf,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionSetFieldCol52 sf,
+                           String cell ) {
         LabelledAction a = findByLabelledAction( actions,
                                                  sf.getBoundName() );
         if ( a == null ) {
@@ -437,11 +437,11 @@ public class GuidedDTDRLPersistence {
                 a.action = new ActionUpdateField( sf.getBoundName() );
             }
             actions.add( a );
-        } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+        } else if ( sf.isUpdate() && !( a.action instanceof ActionUpdateField ) ) {
             // lets swap it out for an update as the user has asked for it.
             ActionSetField old = (ActionSetField) a.action;
             ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
-            update.setFieldValues(old.getFieldValues());
+            update.setFieldValues( old.getFieldValues() );
             a.action = update;
         }
         ActionSetField asf = (ActionSetField) a.action;
@@ -451,18 +451,18 @@ public class GuidedDTDRLPersistence {
         asf.addFieldValue( val );
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionRetractFactCol52 rf,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionRetractFactCol52 rf,
+                           String cell ) {
         LabelledAction a = new LabelledAction();
         a.action = new ActionRetractFact( cell );
         a.boundName = cell;
         actions.add( a );
     }
 
-    private void doAction(List<LabelledAction> actions,
-                          ActionWorkItemCol52 wi,
-                          String cell) {
+    private void doAction( List<LabelledAction> actions,
+                           ActionWorkItemCol52 wi,
+                           String cell ) {
         if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
             ActionExecuteWorkItem aewi = new ActionExecuteWorkItem();
             aewi.setWorkDefinition( wi.getWorkItemDefinition() );
@@ -475,8 +475,8 @@ public class GuidedDTDRLPersistence {
 
     //Labelled Actions are used to group actions on the same bound Fact. Only 
     //ActionSetField and ActionUpdateField need to be grouped in this manner.
-    private LabelledAction findByLabelledAction(List<LabelledAction> actions,
-                                                String boundName) {
+    private LabelledAction findByLabelledAction( List<LabelledAction> actions,
+                                                 String boundName ) {
         for ( LabelledAction labelledAction : actions ) {
             IAction action = labelledAction.action;
             if ( action instanceof ActionFieldList ) {
@@ -488,16 +488,16 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doConditions(List<BaseColumn> allColumns,
-                      List<CompositeColumn<? extends BaseColumn>> conditionPatterns,
-                      TemplateDataProvider rowDataProvider,
-                      List<DTCellValue52> row,
-                      List<List<DTCellValue52>> data,
-                      RuleModel rm) {
+    void doConditions( List<BaseColumn> allColumns,
+                       List<CompositeColumn<? extends BaseColumn>> conditionPatterns,
+                       TemplateDataProvider rowDataProvider,
+                       List<DTCellValue52> row,
+                       List<List<DTCellValue52>> data,
+                       RuleModel rm ) {
 
         List<IPattern> patterns = new ArrayList<IPattern>();
 
-        for ( CompositeColumn< ? > cc : conditionPatterns ) {
+        for ( CompositeColumn<?> cc : conditionPatterns ) {
 
             if ( cc instanceof LimitedEntryBRLConditionColumn ) {
                 doCondition( allColumns,
@@ -524,15 +524,15 @@ public class GuidedDTDRLPersistence {
                              rm );
             }
         }
-        rm.lhs = patterns.toArray( new IPattern[patterns.size()] );
+        rm.lhs = patterns.toArray( new IPattern[ patterns.size() ] );
     }
 
-    private void doCondition(List<BaseColumn> allColumns,
-                             LimitedEntryBRLConditionColumn column,
-                             List<IPattern> patterns,
-                             TemplateDataProvider rowDataProvider,
-                             List<DTCellValue52> row,
-                             RuleModel rm) {
+    private void doCondition( List<BaseColumn> allColumns,
+                              LimitedEntryBRLConditionColumn column,
+                              List<IPattern> patterns,
+                              TemplateDataProvider rowDataProvider,
+                              List<DTCellValue52> row,
+                              RuleModel rm ) {
         final int index = allColumns.indexOf( column );
         final DTCellValue52 dcv = row.get( index );
         if ( dcv.getBooleanValue() ) {
@@ -542,12 +542,12 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    private void doCondition(List<BaseColumn> allColumns,
-                             BRLConditionColumn column,
-                             List<IPattern> patterns,
-                             TemplateDataProvider rowDataProvider,
-                             List<DTCellValue52> row,
-                             RuleModel rm) {
+    private void doCondition( List<BaseColumn> allColumns,
+                              BRLConditionColumn column,
+                              List<IPattern> patterns,
+                              TemplateDataProvider rowDataProvider,
+                              List<DTCellValue52> row,
+                              RuleModel rm ) {
 
         //Check whether the parameter-less BRL fragment needs inclusion
         if ( !hasVariables( column ) ) {
@@ -593,7 +593,7 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    private boolean hasVariables(BRLConditionColumn column) {
+    private boolean hasVariables( BRLConditionColumn column ) {
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
         RuleModel rm = new RuleModel();
         for ( IPattern pattern : column.getDefinition() ) {
@@ -604,12 +604,12 @@ public class GuidedDTDRLPersistence {
         return ivs.size() > 0;
     }
 
-    private void doCondition(List<BaseColumn> allColumns,
-                             Pattern52 pattern,
-                             List<IPattern> patterns,
-                             List<DTCellValue52> row,
-                             List<List<DTCellValue52>> data,
-                             RuleModel rm) {
+    private void doCondition( List<BaseColumn> allColumns,
+                              Pattern52 pattern,
+                              List<IPattern> patterns,
+                              List<DTCellValue52> row,
+                              List<List<DTCellValue52>> data,
+                              RuleModel rm ) {
 
         List<ConditionCol52> cols = pattern.getChildColumns();
 
@@ -641,7 +641,7 @@ public class GuidedDTDRLPersistence {
             }
 
             //If operator is "== null" or "!= null" add constraint if table value is true
-            if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
+            if ( c.getOperator() != null && ( c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" ) ) ) {
                 isValid = Boolean.TRUE.equals( dcv.getBooleanValue() );
             }
 
@@ -682,8 +682,8 @@ public class GuidedDTDRLPersistence {
 
                 //Add the constraint from this cell
                 switch ( c.getConstraintValueType() ) {
-                    case BaseSingleFieldConstraint.TYPE_LITERAL :
-                    case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                    case BaseSingleFieldConstraint.TYPE_LITERAL:
+                    case BaseSingleFieldConstraint.TYPE_RET_VALUE:
                         if ( !isOtherwise ) {
                             FieldConstraint fc = makeSingleFieldConstraint( c,
                                                                             cell );
@@ -695,11 +695,11 @@ public class GuidedDTDRLPersistence {
                             fp.addConstraint( fc );
                         }
                         break;
-                    case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                    case BaseSingleFieldConstraint.TYPE_PREDICATE:
                         SingleFieldConstraint pred = new SingleFieldConstraint();
                         pred.setConstraintValueType( c.getConstraintValueType() );
                         if ( c.getFactField() != null
-                             && c.getFactField().indexOf( "$param" ) > -1 ) {
+                                && c.getFactField().indexOf( "$param" ) > -1 ) {
                             // handle interpolation
                             pred.setValue( c.getFactField().replace( "$param",
                                                                      cell ) );
@@ -708,9 +708,9 @@ public class GuidedDTDRLPersistence {
                         }
                         fp.addConstraint( pred );
                         break;
-                    default :
+                    default:
                         throw new IllegalArgumentException( "Unknown constraintValueType: "
-                                                            + c.getConstraintValueType() );
+                                                                    + c.getConstraintValueType() );
                 }
 
             }
@@ -720,8 +720,10 @@ public class GuidedDTDRLPersistence {
     /**
      * take a CSV list and turn it into DRL syntax
      */
-    String makeInList(String cell) {
-        if ( cell.startsWith( "(" ) ) return cell;
+    String makeInList( String cell ) {
+        if ( cell.startsWith( "(" ) ) {
+            return cell;
+        }
         String res = "";
         StringTokenizer st = new StringTokenizer( cell,
                                                   "," );
@@ -732,17 +734,19 @@ public class GuidedDTDRLPersistence {
             } else {
                 res += "\"" + t + "\"";
             }
-            if ( st.hasMoreTokens() ) res += ", ";
+            if ( st.hasMoreTokens() ) {
+                res += ", ";
+            }
         }
         return "(" + res + ")";
     }
 
-    private boolean no(String operator) {
+    private boolean no( String operator ) {
         return operator == null || "".equals( operator );
     }
 
-    private IPattern findByFactPattern(List<IPattern> patterns,
-                                       String boundName) {
+    private IPattern findByFactPattern( List<IPattern> patterns,
+                                        String boundName ) {
         if ( boundName == null ) {
             return null;
         }
@@ -764,10 +768,10 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doAttribs(List<BaseColumn> allColumns,
-                   List<AttributeCol52> attributeCols,
-                   List<DTCellValue52> row,
-                   RuleModel rm) {
+    void doAttribs( List<BaseColumn> allColumns,
+                    List<AttributeCol52> attributeCols,
+                    List<DTCellValue52> row,
+                    RuleModel rm ) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol52 at = attributeCols.get( j );
@@ -787,14 +791,14 @@ public class GuidedDTDRLPersistence {
             }
         }
         if ( attribs.size() > 0 ) {
-            rm.attributes = attribs.toArray( new RuleAttribute[attribs.size()] );
+            rm.attributes = attribs.toArray( new RuleAttribute[ attribs.size() ] );
         }
     }
 
-    void doMetadata(List<BaseColumn> allColumns,
-                    List<MetadataCol52> metadataCols,
-                    List<DTCellValue52> row,
-                    RuleModel rm) {
+    void doMetadata( List<BaseColumn> allColumns,
+                     List<MetadataCol52> metadataCols,
+                     List<DTCellValue52> row,
+                     RuleModel rm ) {
 
         // setup temp list
         List<RuleMetadata> metadataList = new ArrayList<RuleMetadata>();
@@ -811,27 +815,28 @@ public class GuidedDTDRLPersistence {
             }
         }
         if ( metadataList.size() > 0 ) {
-            rm.metadataList = metadataList.toArray( new RuleMetadata[metadataList.size()] );
+            rm.metadataList = metadataList.toArray( new RuleMetadata[ metadataList.size() ] );
         }
     }
 
-    String getName(String tableName,
-                   Number num) {
+    String getName( String tableName,
+                    Number num ) {
         return "Row " + num.longValue() + " " + tableName;
     }
 
-    boolean validCell(String c) {
-        return (c != null) && (!c.trim().equals( "" ));
+    boolean validCell( String c ) {
+        return ( c != null ) && ( !c.trim().equals( "" ) );
     }
 
     private class LabelledAction {
-        String  boundName;
+
+        String boundName;
         IAction action;
     }
 
     //Build a normal SingleFieldConstraint for a non-otherwise cell value
-    private FieldConstraint makeSingleFieldConstraint(ConditionCol52 c,
-                                                      String cell) {
+    private FieldConstraint makeSingleFieldConstraint( ConditionCol52 c,
+                                                       String cell ) {
 
         SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
 
@@ -843,12 +848,12 @@ public class GuidedDTDRLPersistence {
             String[] a = cell.split( "\\s" );
             if ( a.length > 1 ) {
                 //Operator might be 1 part (e.g. "==") or two parts (e.g. "not in")
-                StringBuilder operator = new StringBuilder( a[0] );
+                StringBuilder operator = new StringBuilder( a[ 0 ] );
                 for ( int i = 1; i < a.length - 1; i++ ) {
-                    operator.append( a[i] );
+                    operator.append( a[ i ] );
                 }
                 sfc.setOperator( operator.toString() );
-                sfc.setValue( a[a.length - 1] );
+                sfc.setValue( a[ a.length - 1 ] );
             } else {
                 sfc.setValue( cell );
             }
@@ -874,9 +879,9 @@ public class GuidedDTDRLPersistence {
     }
 
     //Build a SingleFieldConstraint for an otherwise cell value
-    private FieldConstraint makeSingleFieldConstraint(ConditionCol52 c,
-                                                      List<BaseColumn> allColumns,
-                                                      List<List<DTCellValue52>> data) {
+    private FieldConstraint makeSingleFieldConstraint( ConditionCol52 c,
+                                                       List<BaseColumn> allColumns,
+                                                       List<List<DTCellValue52>> data ) {
 
         GuidedDTDRLOtherwiseHelper.OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );
         return builder.makeFieldConstraint( c,

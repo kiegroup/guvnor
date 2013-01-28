@@ -19,6 +19,7 @@ package org.kie.guvnor.guided.rule.backend.server.util;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.kie.guvnor.datamodel.model.DSLSentence;
+import org.kie.guvnor.guided.rule.backend.server.util.upgrade.RuleModelUpgradeHelper1;
 import org.kie.guvnor.guided.rule.backend.server.util.upgrade.RuleModelUpgradeHelper2;
 import org.kie.guvnor.guided.rule.backend.server.util.upgrade.RuleModelUpgradeHelper3;
 import org.kie.guvnor.guided.rule.model.ActionFieldValue;
@@ -48,8 +49,6 @@ import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleMetadata;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.templates.TemplateModel;
-import org.kie.guvnor.guided.rule.backend.server.util.upgrade.RuleModelUpgradeHelper1;
 
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
@@ -58,11 +57,13 @@ import org.kie.guvnor.guided.rule.backend.server.util.upgrade.RuleModelUpgradeHe
 public class BRXMLPersistence
         implements BRLPersistence {
 
-    private XStream xt;
+    protected XStream xt;
+
     private static final RuleModelUpgradeHelper1 upgrader1 = new RuleModelUpgradeHelper1();
     private static final RuleModelUpgradeHelper2 upgrader2 = new RuleModelUpgradeHelper2();
     private static final RuleModelUpgradeHelper3 upgrader3 = new RuleModelUpgradeHelper3();
-    private static final BRLPersistence          INSTANCE  = new BRXMLPersistence();
+
+    private static final BRLPersistence INSTANCE = new BRXMLPersistence();
 
     protected BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
@@ -143,9 +144,6 @@ public class BRXMLPersistence
 
         this.xt.aliasPackage( "org.drools.guvnor.client.modeldriven.brl",
                               "org.kie.guvnor.datamodel.model" );
-
-        this.xt.alias( "org.drools.guvnor.client.modeldriven.dt.TemplateModel",
-                       TemplateModel.class );
 
         //Legacy DSLSentences have a collection of String values whereas newer persisted models
         //have a collection of DSLVariableValues. See https://issues.jboss.org/browse/GUVNOR-1872

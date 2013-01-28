@@ -11,8 +11,8 @@
   <artifactId>guvnor-guided-rule-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Guided Editor Backend</name>
-  <description>Guided Editor Backend</description>
+  <name>Guided Rule Editor Backend</name>
+  <description>Guided Rule Editor Backend</description>
 
   <dependencies>
     <dependency>
@@ -32,22 +32,12 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-templates</artifactId>
+      <artifactId>drools-compiler</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-datamodel-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-backend</artifactId>
     </dependency>
 
     <dependency>
