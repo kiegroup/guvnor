@@ -1,17 +1,14 @@
 package org.kie.guvnor.metadata.client.resources.i18n;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
-/**
- *
- */
-public interface MetadataConstants extends
-                           Messages {
+import java.util.Date;
 
-    public static final MetadataConstants INSTANCE = GWT.create( MetadataConstants.class );
+public interface MetadataConstants extends
+        Messages {
+
+    public static final MetadataConstants INSTANCE = GWT.create(MetadataConstants.class);
 
     String Title();
 
