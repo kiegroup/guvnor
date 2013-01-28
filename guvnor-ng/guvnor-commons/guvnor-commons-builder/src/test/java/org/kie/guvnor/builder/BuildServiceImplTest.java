@@ -46,9 +46,33 @@ public class BuildServiceImplTest {
         
         setUpGuvnorM2Repo();
     }
+    @Test
+    public void testBuilderSimpleKProject() throws Exception {
+        Bean sourceServicesBean = (Bean)beanManager.getBeans(SourceServices.class).iterator().next();
+        CreationalContext cc = beanManager.createCreationalContext(sourceServicesBean);
+        SourceServices sourceServices = (SourceServices)beanManager.getReference(sourceServicesBean, SourceServices.class, cc);
+
+        Bean pathsBean = (Bean)beanManager.getBeans(Paths.class).iterator().next();
+        cc = beanManager.createCreationalContext(pathsBean);
+        Paths paths = (Paths)beanManager.getReference(pathsBean, Paths.class, cc);
+   
+        
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample1");
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath(url.toURI());
+        
+        final Builder builder = new Builder(path,
+                "guvnor-m2repo-dependency-example1",
+                paths,
+                sourceServices );
+        
+        final Results results = builder.build();
+        
+        assertTrue(results.isEmpty());
+    }
     
     @Test
-    public void testBuilder() throws Exception {
+    public void testBuilderKProjectHasDependency() throws Exception {
 /*        Weld weld = new Weld();
         WeldContainer weldContainer = weld.initialize();
 

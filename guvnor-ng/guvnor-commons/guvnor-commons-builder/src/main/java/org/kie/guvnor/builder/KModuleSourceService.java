@@ -20,7 +20,8 @@ public class KModuleSourceService
     //NOTE: Platform specific separators are handled by Path already
     private static final String PATTERN = "src/main/resources/META-INF/kmodule.xml";
 
-    private static final String DESTINATION = "META-INF" + File.separator + "kmodule.xml";
+    //KieBuilderImpl only accepts Unix style
+    private static final String DESTINATION = "src/main/resources/META-INF/kmodule.xml";
 
     @Inject
     @Named("ioStrategy")
