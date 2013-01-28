@@ -30,7 +30,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -118,7 +118,7 @@ public class EnumEditorPresenter {
                 viewSource.clear();
             }
         } );
-        multiPage.addPage(new Page(metadataWidget, MetaDataConstants.INSTANCE.Metadata()) {
+        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
             @Override
             public void onFocus() {
                 metadataService.call(

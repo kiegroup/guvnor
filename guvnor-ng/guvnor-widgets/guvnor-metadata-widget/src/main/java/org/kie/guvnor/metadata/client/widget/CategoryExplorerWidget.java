@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
-import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.services.metadata.model.Categories;
 import org.kie.guvnor.services.metadata.model.CategoryItem;
@@ -91,8 +91,8 @@ public class CategoryExplorerWidget
     public void showEmptyTree() {
         if ( this.emptyCategories == null ) {
             final AbsolutePanel p = new AbsolutePanel();
-            p.add( new HTML( MetaDataConstants.INSTANCE.NoCategoriesCreatedYetTip() ) );
-            final Button b = new Button( MetaDataConstants.INSTANCE.Refresh() );
+            p.add( new HTML( MetadataConstants.INSTANCE.NoCategoriesCreatedYetTip() ) );
+            final Button b = new Button( MetadataConstants.INSTANCE.Refresh() );
             b.addClickHandler( new ClickHandler() {
                 public void onClick( final ClickEvent event ) {
                     refresh();
@@ -112,7 +112,7 @@ public class CategoryExplorerWidget
      * This will refresh the tree and restore it back to the original state
      */
     private void loadInitialTree() {
-        navTreeWidget.addItem( MetaDataConstants.INSTANCE.PleaseWait() );
+        navTreeWidget.addItem( MetadataConstants.INSTANCE.PleaseWait() );
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {

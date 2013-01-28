@@ -50,7 +50,7 @@ public class PlainTextAssetMigrater {
             attrs = new HashMap<String, Object>();
         }
 
-        ioService.write( nioPath, ((RuleContentText)jcrAsset.getContent()).content, attrs, new CommentedOption(lastContributor, checkinComment, null, lastModified ));
+        ioService.write( nioPath, ((RuleContentText)jcrAsset.getContent()).content, attrs, new CommentedOption(lastContributor, null, checkinComment, lastModified ));
     }
 
  }

@@ -85,9 +85,6 @@ public class GuidedScoreCardEditorServiceImpl
     @Inject
     private DataModelService dataModelService;
 
-    @Inject
-    private Identity identity;
-
     private static final String RESOURCE_EXTENSION = "scgd";
 
     @Override
@@ -104,30 +101,9 @@ public class GuidedScoreCardEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final ScoreCardModel model,
-                      final String comment ) {
-        save( path,
-              model,
-              null,
-              null,
-              comment,
-              null );
-    }
-
-    @Override
-    public void save( final Path path,
-                      final ScoreCardModel model,
-                      final String comment,
-                      final Date when,
-                      final String lastContributor ) {
-        save( path,
-              model,
-              null,
-              null,
-              comment,
-              when,
-              lastContributor );
+    public void save(Path path, ScoreCardModel model) {
+        ioService.write( paths.convert(path),
+                         ScoreCardsXMLPersistence.getInstance().marshal( model ));
     }
 
     @Override
@@ -135,39 +111,7 @@ public class GuidedScoreCardEditorServiceImpl
                       final ScoreCardModel model,
                       final ResourceConfig config,
                       final Metadata metadata,
-                      final String comment ) {
-        save( resource,
-              model,
-              config,
-              metadata,
-              comment,
-              null );
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final ScoreCardModel model,
-                      final ResourceConfig config,
-                      final Metadata metadata,
-                      final String comment,
-                      final Date when ) {
-        save( resource,
-              model,
-              config,
-              metadata,
-              comment,
-              when,
-              identity.getName() );
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final ScoreCardModel model,
-                      final ResourceConfig config,
-                      final Metadata metadata,
-                      final String comment,
-                      final Date when,
-                      final String lastContributor ) {
+                      final String comment) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -191,10 +135,7 @@ public class GuidedScoreCardEditorServiceImpl
         ioService.write( path,
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
                          attrs,
-                         new CommentedOption( lastContributor,
-                                              comment,
-                                              null,
-                                              when ) );
+                         metadataService.getCommentedOption(comment) );
     }
 
     @Override

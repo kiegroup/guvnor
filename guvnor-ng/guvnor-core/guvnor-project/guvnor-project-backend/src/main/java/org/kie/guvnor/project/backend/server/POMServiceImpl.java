@@ -76,22 +76,14 @@ public class POMServiceImpl
                         ioService.write(
                                 paths.convert(pathToPOM),
                                 pomContentHandler.toString(pomModel),
-                                new CommentedOption(
-                                        null,
-                                        commitMessage,
-                                        null,
-                                        null)));
+                                metadataService.getCommentedOption(commitMessage)));
             } else {
                 result = paths.convert(
                         ioService.write(
                                 paths.convert(pathToPOM),
                                 pomContentHandler.toString(pomModel),
                                 metadataService.setUpAttributes(pathToPOM, metadata),
-                                new CommentedOption(
-                                        null,
-                                        commitMessage,
-                                        null,
-                                        null))); // I made a song about this ♫♫♫ null, null, null, null, null, nuuuuulllll ♫♫♫
+                                metadataService.getCommentedOption(commitMessage)));
             }
 
             invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(result));

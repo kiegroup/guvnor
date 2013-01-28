@@ -17,7 +17,7 @@ package org.kie.guvnor.metadata.client.resources;
 
 import com.google.gwt.user.client.ui.Image;
 import org.kie.guvnor.commons.ui.client.resources.ItemImages;
-import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 
 public class Images {
 
@@ -28,19 +28,19 @@ public class Images {
 
     public Image NewItem() {
         final Image image = new Image( ItemImages.INSTANCE.newItem() );
-        image.setAltText( MetaDataConstants.INSTANCE.NewItem() );
+        image.setAltText( MetadataConstants.INSTANCE.NewItem() );
         return image;
     }
 
     public Image Trash() {
         final Image image = new Image( ImageResources.INSTANCE.trash() );
-        image.setAltText( MetaDataConstants.INSTANCE.Trash() );
+        image.setAltText( MetadataConstants.INSTANCE.Trash() );
         return image;
     }
 
     public Image Refresh() {
         final Image image = new Image( ImageResources.INSTANCE.refresh() );
-        image.setAltText( MetaDataConstants.INSTANCE.Refresh() );
+        image.setAltText( MetadataConstants.INSTANCE.Refresh() );
         return image;
     }
 

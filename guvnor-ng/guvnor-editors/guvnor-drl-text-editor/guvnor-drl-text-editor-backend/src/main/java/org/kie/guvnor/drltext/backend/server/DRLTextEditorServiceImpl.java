@@ -89,21 +89,13 @@ public class DRLTextEditorServiceImpl
             ioService.write(
                     paths.convert(path),
                     content,
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         } else {
             ioService.write(
                     paths.convert(path),
                     content,
                     metadataService.setUpAttributes(path, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         }
 
         invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(path));

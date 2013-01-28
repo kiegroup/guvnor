@@ -39,32 +39,38 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
+import javax.enterprise.inject.New;
+
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
-public class ProjectEditorScreenPresenter
+public class
+        ProjectEditorScreenPresenter
         implements ProjectEditorScreenView.Presenter {
 
-    private final ProjectEditorScreenView view;
-    private final POMEditorPanel pomPanel;
+    private ProjectEditorScreenView view;
+    private POMEditorPanel pomPanel;
     private MetadataWidget pomMetaDataPanel = new MetadataWidget();
-    private final KModuleEditorPanel kModuleEditorPanel;
+    private KModuleEditorPanel kModuleEditorPanel;
     private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
-    private final Caller<KModuleService> projectEditorServiceCaller;
-    private final Caller<BuildService> buildServiceCaller;
+    private Caller<KModuleService> projectEditorServiceCaller;
+    private Caller<BuildService> buildServiceCaller;
 
     private Path pathToPomXML;
     private Path pathToKModuleXML;
-    private final Caller<MetadataService> metadataService;
+    private Caller<MetadataService> metadataService;
     private Metadata kmoduleMetadata;
     private Metadata pomMetadata;
 
+    public ProjectEditorScreenPresenter() {
+    }
+
     @Inject
     public ProjectEditorScreenPresenter(
-            ProjectEditorScreenView view,
-            POMEditorPanel pomPanel,
-            KModuleEditorPanel kModuleEditorPanel,
+            @New ProjectEditorScreenView view,
+            @New POMEditorPanel pomPanel,
+            @New KModuleEditorPanel kModuleEditorPanel,
             Caller<KModuleService> projectEditorServiceCaller,
             Caller<BuildService> buildServiceCaller,
-            Caller<MetadataService> metadataService) {
+            Caller<MetadataService> metadataService ) {
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;

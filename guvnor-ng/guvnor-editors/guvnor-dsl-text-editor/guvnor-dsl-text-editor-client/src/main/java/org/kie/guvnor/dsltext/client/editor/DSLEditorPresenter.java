@@ -31,12 +31,11 @@ import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.metadata.client.resources.i18n.MetaDataConstants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnMayClose;
@@ -164,7 +163,7 @@ public class DSLEditorPresenter {
     @WorkbenchPartView
     public IsWidget getWidget() {
         multiPageEditor.addWidget(view, DSLTextEditorConstants.INSTANCE.Edit());
-        multiPageEditor.addWidget(metadataWidget, MetaDataConstants.INSTANCE.Metadata());
+        multiPageEditor.addWidget(metadataWidget, MetadataConstants.INSTANCE.Metadata());
         return multiPageEditor;
     }
 

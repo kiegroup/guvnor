@@ -27,11 +27,13 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -83,21 +85,13 @@ public class DSLTextEditorServiceImpl
             ioService.write(
                     paths.convert(path),
                     content,
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         } else {
             ioService.write(
                     paths.convert(path),
                     content,
                     metadataService.setUpAttributes(path, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         }
 
         invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(path));

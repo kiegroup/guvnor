@@ -42,7 +42,7 @@ public class FactModelsMigrater {
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         FactModels vfsFactModels = convertFactModels(
                 (org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels) jcrAsset.getContent());
-        vfsFactModelService.save(path, vfsFactModels, checkinComment, lastModified, lastContributor);
+        vfsFactModelService.save(path, vfsFactModels, checkinComment); //, lastModified, lastContributor); TODO: Some sort of migration service
     }
 
     private FactModels convertFactModels(

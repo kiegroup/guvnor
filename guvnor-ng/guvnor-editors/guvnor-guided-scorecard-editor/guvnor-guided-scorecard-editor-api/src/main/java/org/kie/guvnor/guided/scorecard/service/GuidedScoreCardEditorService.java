@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.service;
 
-import java.util.Date;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
@@ -31,41 +29,18 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface GuidedScoreCardEditorService
         extends ViewSourceService<ScoreCardModel>,
-                ValidationService<ScoreCardModel>,
-                SimpleVerificationService<ScoreCardModel> {
+        ValidationService<ScoreCardModel>,
+        SimpleVerificationService<ScoreCardModel> {
 
-    ScoreCardModelContent loadContent( final Path path );
+    ScoreCardModelContent loadContent(final Path path);
 
-    ScoreCardModel loadModel( final Path path );
+    ScoreCardModel loadModel(final Path path);
 
-    void save( final Path path,
-               final ScoreCardModel factModels,
-               final String comment );
+    void save(final Path path,
+              final ScoreCardModel content,
+              final ResourceConfig config,
+              final Metadata metadata,
+              final String comment );
 
-    void save( final Path path,
-               final ScoreCardModel factModels,
-               final String comment,
-               final Date when,
-               final String lastContributor );
-
-    void save( final Path path,
-               final ScoreCardModel content,
-               final ResourceConfig config,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final ScoreCardModel content,
-               final ResourceConfig config,
-               final Metadata metadata,
-               final String comment,
-               final Date when );
-
-    void save( final Path path,
-               final ScoreCardModel content,
-               final ResourceConfig config,
-               final Metadata metadata,
-               final String comment,
-               final Date when,
-               final String lastContributor );
+    void save(Path path, ScoreCardModel model);
 }

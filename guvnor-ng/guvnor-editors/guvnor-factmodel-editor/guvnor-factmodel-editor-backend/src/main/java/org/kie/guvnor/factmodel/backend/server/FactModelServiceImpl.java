@@ -17,7 +17,6 @@
 package org.kie.guvnor.factmodel.backend.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,6 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -51,7 +49,6 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.Identity;
 
 import static java.util.Collections.*;
 
@@ -75,9 +72,6 @@ public class FactModelServiceImpl
 
     @Inject
     private ResourceConfigService resourceConfigService;
-
-    @Inject
-    private Identity identity;
 
     @Inject
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
@@ -107,30 +101,8 @@ public class FactModelServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final FactModels factModels,
-                      final String comment ) {
-        save( path,
-              factModels,
-              null,
-              null,
-              comment,
-              null );
-    }
-
-    @Override
-    public void save( final Path path,
-                      final FactModels factModels,
-                      final String comment,
-                      final Date when,
-                      final String lastContributor ) {
-        save( path,
-              factModels,
-              null,
-              null,
-              comment,
-              when,
-              lastContributor );
+    public void save(Path path, FactModels factModel, String comment) {
+        ioService.write(paths.convert(path), toDRL(factModel), metadataService.getCommentedOption(comment));
     }
 
     @Override
@@ -138,39 +110,7 @@ public class FactModelServiceImpl
                       final FactModels content,
                       final ResourceConfig config,
                       final Metadata metadata,
-                      final String comment ) {
-        save( resource,
-              content,
-              config,
-              metadata,
-              comment,
-              null );
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final FactModels content,
-                      final ResourceConfig config,
-                      final Metadata metadata,
-                      final String comment,
-                      final Date when ) {
-        save( resource,
-              content,
-              config,
-              metadata,
-              comment,
-              when,
-              identity.getName() );
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final FactModels content,
-                      final ResourceConfig config,
-                      final Metadata metadata,
-                      final String comment,
-                      final Date when,
-                      final String lastContributor ) {
+                      final String comment) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -194,10 +134,7 @@ public class FactModelServiceImpl
         ioService.write( path,
                          toDRL( content ),
                          attrs,
-                         new CommentedOption( lastContributor,
-                                              comment,
-                                              null,
-                                              when ) );
+                         metadataService.getCommentedOption(comment) );
 
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
     }

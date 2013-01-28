@@ -8,10 +8,10 @@ import com.google.gwt.i18n.client.Messages;
 /**
  *
  */
-public interface MetaDataConstants extends
+public interface MetadataConstants extends
                            Messages {
 
-    public static final MetaDataConstants INSTANCE = GWT.create( MetaDataConstants.class );
+    public static final MetadataConstants INSTANCE = GWT.create( MetadataConstants.class );
 
     String Title();
 

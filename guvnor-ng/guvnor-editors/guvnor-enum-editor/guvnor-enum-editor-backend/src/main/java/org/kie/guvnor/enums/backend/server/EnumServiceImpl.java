@@ -108,21 +108,13 @@ public class EnumServiceImpl implements EnumService {
             ioService.write(
                     path,
                     content,
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         } else {
             ioService.write(
                     path,
                     content,
                     metadataService.setUpAttributes(resource, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         }
 
 

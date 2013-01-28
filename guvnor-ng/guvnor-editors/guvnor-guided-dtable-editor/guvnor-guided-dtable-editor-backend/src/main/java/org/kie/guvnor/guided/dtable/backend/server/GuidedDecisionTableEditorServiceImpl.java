@@ -90,21 +90,13 @@ public class GuidedDecisionTableEditorServiceImpl
             ioService.write(
                     paths.convert(path),
                     GuidedDTXMLPersistence.getInstance().marshal( model ),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         } else {
             ioService.write(
                     paths.convert(path),
                     GuidedDTXMLPersistence.getInstance().marshal( model ),
                     metadataService.setUpAttributes(path, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         }
 
     }

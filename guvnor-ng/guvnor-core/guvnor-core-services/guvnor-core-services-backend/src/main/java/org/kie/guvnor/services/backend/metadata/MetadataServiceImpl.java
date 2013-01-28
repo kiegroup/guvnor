@@ -39,6 +39,7 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.model.PortableVersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -61,6 +62,9 @@ public class MetadataServiceImpl implements MetadataService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private Identity identity;
 
     @Inject
     private Paths paths;
@@ -365,4 +369,12 @@ public class MetadataServiceImpl implements MetadataService {
         return attributes;
     }
 
+    @Override
+    public CommentedOption getCommentedOption(String commitMessage) {
+        return new CommentedOption(
+                identity.getName(),
+                null,
+                commitMessage,
+                new Date());
+    }
 }

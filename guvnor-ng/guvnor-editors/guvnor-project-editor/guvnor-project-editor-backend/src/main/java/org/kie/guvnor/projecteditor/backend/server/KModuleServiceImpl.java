@@ -18,7 +18,6 @@ package org.kie.guvnor.projecteditor.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -84,21 +83,13 @@ public class KModuleServiceImpl
             ioService.write(
                     paths.convert(path),
                     moduleContentHandler.toString(model),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         } else {
             ioService.write(
                     paths.convert(path),
                     moduleContentHandler.toString(model),
                     metadataService.setUpAttributes(path, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.getCommentedOption(commitMessage));
         }
     }
 
