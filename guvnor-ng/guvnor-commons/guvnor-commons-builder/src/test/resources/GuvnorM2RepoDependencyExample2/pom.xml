@@ -12,7 +12,7 @@
     <repository>
       <id>guvnor-m2-repo</id>
       <name>Guvnor M2 Repo</name>
-      <url>file://./repository</url>
+      <url>file://repository</url>
     </repository>
   </repositories>
 
