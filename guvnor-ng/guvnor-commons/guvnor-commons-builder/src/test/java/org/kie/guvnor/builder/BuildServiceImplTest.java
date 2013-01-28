@@ -74,7 +74,7 @@ public class BuildServiceImplTest {
         
         final Results results = builder.build();
         
-        //assertTrue(results.isEmpty());
+        assertTrue(results.isEmpty());
     }
     
     private void setUpGuvnorM2Repo() {        
