@@ -107,13 +107,11 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-template-editor-client</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-template-editor-backend</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
