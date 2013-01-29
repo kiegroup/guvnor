@@ -77,13 +77,13 @@ public class GuidedScoreCardEditorServiceImpl
     private Paths paths;
 
     @Inject
-    private MetadataService metadataService;
+    private DataModelService dataModelService;
 
     @Inject
     private ResourceConfigService resourceConfigService;
 
     @Inject
-    private DataModelService dataModelService;
+    private MetadataService metadataService;
 
     @Inject
     private Identity identity;
@@ -104,10 +104,12 @@ public class GuidedScoreCardEditorServiceImpl
     }
 
     @Override
-    public void save( Path path,
-                      ScoreCardModel model ) {
+    public void save( final Path path,
+                      final ScoreCardModel model,
+                      final String comment ) {
         ioService.write( paths.convert( path ),
-                         ScoreCardsXMLPersistence.getInstance().marshal( model ) );
+                         ScoreCardsXMLPersistence.getInstance().marshal( model ),
+                         makeCommentedOption( comment ) );
     }
 
     @Override

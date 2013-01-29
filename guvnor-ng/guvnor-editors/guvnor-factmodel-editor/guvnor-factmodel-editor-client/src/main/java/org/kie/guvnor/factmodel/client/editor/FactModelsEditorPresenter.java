@@ -107,9 +107,9 @@ public class FactModelsEditorPresenter {
     @Inject
     private ViewSourceView viewSource;
 
-    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
-
     private final MetadataWidget metadataWidget = new MetadataWidget();
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     @Inject
     private MultiPageEditor multiPage;
@@ -199,19 +199,21 @@ public class FactModelsEditorPresenter {
             }
         } ).loadContent( path );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata, isReadOnly );
-            }
-        } ).getMetadata( path );
-
         resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
             @Override
             public void callback( final ResourceConfig config ) {
-                resourceConfigWidget.setContent( config, isReadOnly );
+                resourceConfigWidget.setContent( config,
+                                                 isReadOnly );
             }
         } ).getConfig( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
+            }
+        } ).getMetadata( path );
     }
 
     @OnSave

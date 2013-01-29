@@ -27,9 +27,15 @@ public interface EnumService
         extends ValidationService<String>,
                 SimpleVerificationService<String> {
 
-    void save( final Path resource,
+    String load( final Path path );
+
+    void save( final Path path,
                final String content,
                final Metadata metadata,
-               final String CommitMessage);
+               final String comment );
+
+    void save( final Path path,
+               final String content,
+               final String comment );
 
 }

@@ -87,9 +87,6 @@ public class EnumEditorPresenter {
     private MultiPageEditor multiPage;
 
     @Inject
-    private Caller<VFSService> vfs;
-
-    @Inject
     private Caller<EnumService> enumService;
 
     @Inject
@@ -141,7 +138,7 @@ public class EnumEditorPresenter {
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
-        vfs.call( new RemoteCallback<String>() {
+        enumService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String response ) {
                 if ( response == null || response.isEmpty() ) {
@@ -150,7 +147,7 @@ public class EnumEditorPresenter {
                     view.setContent( response );
                 }
             }
-        } ).readAllString( path );
+        } ).load( path );
     }
 
     @OnSave

@@ -19,6 +19,7 @@ package org.kie.guvnor.drltext.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -27,9 +28,16 @@ public interface DRLTextEditorService
         extends ValidationService<String>,
                 SimpleVerificationService<String> {
 
-    void save( final Path resource,  final String content);
+    String load( final Path path );
 
-    String load(Path path);
+    void save( final Path path,
+               final String content,
+               final ResourceConfig config,
+               final Metadata metadata,
+               final String comment );
 
-    void save(Path path, String content, Metadata metadata, String commitMessage);
+    void save( final Path path,
+               final String content,
+               final String comment );
+
 }

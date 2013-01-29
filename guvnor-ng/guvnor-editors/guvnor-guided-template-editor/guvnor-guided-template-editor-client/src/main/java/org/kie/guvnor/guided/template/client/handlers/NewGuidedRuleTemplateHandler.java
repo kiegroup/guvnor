@@ -8,7 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.kie.guvnor.guided.template.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.template.model.TemplateModel;
@@ -51,16 +52,23 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final TemplateModel templateModel = new TemplateModel();
-        service.call( new RemoteCallback<Path>() {
+
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path,
-                                                                 "GuidedRuleTemplateEditor" );
-                placeManager.goTo( place );
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void aVoid ) {
+                        notifySuccess();
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "GuidedRuleTemplateEditor" );
+                        placeManager.goTo( place );
+                    }
+                } ).save( path,
+                          templateModel,
+                          comment );
             }
-        } ).save( path,
-                  templateModel );
+        } ).save();
     }
 
 }

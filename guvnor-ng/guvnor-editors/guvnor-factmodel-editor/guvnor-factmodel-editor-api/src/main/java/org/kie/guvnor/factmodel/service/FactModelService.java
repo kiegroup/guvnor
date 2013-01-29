@@ -42,7 +42,8 @@ public interface FactModelService
                final Metadata metadata,
                final String comment );
 
-    void save(Path path, FactModels factModel, String comment);
-
+    void save(final Path path,
+              final FactModels factModel,
+              final String comment);
 
 }

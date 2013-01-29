@@ -25,6 +25,7 @@ import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -36,14 +37,17 @@ public interface GuidedDecisionTableEditorService
 
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
-    GuidedDecisionTable52 loadRuleModel(Path path);
+    GuidedDecisionTable52 loadRuleModel( final Path path );
 
-    void save(final Path path,
-              final GuidedDecisionTable52 model,
-              final Metadata metadata,
-              final String commitMessage);
+    void save( final Path path,
+               final GuidedDecisionTable52 content,
+               final ResourceConfig config,
+               final Metadata metadata,
+               final String comment );
 
-    void save(Path path, GuidedDecisionTable52 ruleModel);
+    void save( final Path path,
+               final GuidedDecisionTable52 factModel,
+               final String comment );
 
     Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 }

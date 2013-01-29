@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -50,16 +52,23 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final RuleModel ruleModel = new RuleModel();
-        service.call( new RemoteCallback<Path>() {
+
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path,
-                                                                 "GuidedRuleEditor" );
-                placeManager.goTo( place );
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void aVoid ) {
+                        notifySuccess();
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "GuidedRuleEditor" );
+                        placeManager.goTo( place );
+                    }
+                } ).save( path,
+                          ruleModel,
+                          comment );
             }
-        } ).save( path,
-                  ruleModel );
+        } ).save();
     }
 
 }

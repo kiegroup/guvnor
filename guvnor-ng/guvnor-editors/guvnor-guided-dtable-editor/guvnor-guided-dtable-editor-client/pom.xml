@@ -28,7 +28,7 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-decorated-grid-widget</artifactId>
+      <artifactId>guvnor-view-source-widget</artifactId>
     </dependency>
 
     <dependency>
@@ -38,12 +38,22 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-workingset-client</artifactId>
+      <artifactId>guvnor-config-resource-widget</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-view-source-widget</artifactId>
+      <artifactId>guvnor-error-messages-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-decorated-grid-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-workingset-client</artifactId>
     </dependency>
 
     <dependency>

@@ -23,6 +23,7 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -30,6 +31,8 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -66,9 +69,9 @@ public class GuidedDecisionTableEditorPresenter {
             extends
             IsWidget {
 
-        void setContent(final Path path,
-                        final DataModelOracle dataModel,
-                        final GuidedDecisionTable52 content);
+        void setContent( final Path path,
+                         final DataModelOracle dataModel,
+                         final GuidedDecisionTable52 content );
 
         GuidedDecisionTable52 getContent();
 
@@ -96,84 +99,111 @@ public class GuidedDecisionTableEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
     private Caller<MetadataService> metadataService;
 
     private Path path = null;
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     @PostConstruct
     public void init() {
-        multiPage.addWidget(view,
-                CommonConstants.INSTANCE.EditTabTitle());
-        multiPage.addPage(new Page(viewSource,
-                CommonConstants.INSTANCE.SourceTabTitle()) {
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                service.call(new RemoteCallback<String>() {
+                service.call( new RemoteCallback<String>() {
                     @Override
-                    public void callback(final String response) {
-                        viewSource.setContent(response);
+                    public void callback( final String response ) {
+                        viewSource.setContent( response );
                     }
-                }).toSource(view.getContent());
+                } ).toSource( view.getContent() );
             }
 
             @Override
             public void onLostFocus() {
                 viewSource.clear();
             }
-        });
-        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
+        } );
+
+        multiPage.addPage( new Page( resourceConfigWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataService.call(
-                        new RemoteCallback<Metadata>() {
-                            @Override
-                            public void callback(Metadata metadata) {
-                                metadataWidget.setContent(metadata, false);
-                            }
-                        }
-                ).getMetadata(path);
+                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+                    @Override
+                    public void callback( final ResourceConfig config ) {
+                        resourceConfigWidget.setContent( config,
+                                                         false );
+                    }
+                } ).getConfig( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   false );
+                    }
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 // Nothing to do here
             }
-        });
+        } );
     }
 
     @OnStart
-    public void onStart(final Path path) {
+    public void onStart( final Path path ) {
         this.path = path;
 
-        service.call(new RemoteCallback<GuidedDecisionTableEditorContent>() {
+        service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
             @Override
-            public void callback(final GuidedDecisionTableEditorContent response) {
-                view.setContent(path,
-                        response.getDataModel(),
-                        response.getRuleModel());
+            public void callback( final GuidedDecisionTableEditorContent response ) {
+                view.setContent( path,
+                                 response.getDataModel(),
+                                 response.getRuleModel() );
             }
-        }).loadContent(path);
+        } ).loadContent( path );
     }
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper(path, new SaveCommand() {
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void execute(final String commitMessage) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          resourceConfigWidget.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        }).save();
+        } ).save();
     }
 
     @IsDirty
@@ -188,7 +218,7 @@ public class GuidedDecisionTableEditorPresenter {
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;
@@ -206,26 +236,26 @@ public class GuidedDecisionTableEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation(new Command() {
+        return newResourceMenuBuilder().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
-                service.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path,
-                        view.getContent());
+                } ).validate( path,
+                              view.getContent() );
             }
-        }).addSave(new Command() {
+        } ).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
             }
-        }).build();
+        } ).build();
     }
 
 }

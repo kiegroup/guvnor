@@ -17,6 +17,8 @@
 package org.kie.guvnor.dsltext.backend.server;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -25,6 +27,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
@@ -83,24 +86,41 @@ public class DSLTextEditorServiceImpl
     }
 
     @Override
-    public void save( Path path,
-                      String content,
-                      Metadata metadata,
-                      String commitMessage ) {
-        if ( metadata == null ) {
-            ioService.write(
-                    paths.convert( path ),
-                    content,
-                    makeCommentedOption( commitMessage ) );
-        } else {
-            ioService.write(
-                    paths.convert( path ),
-                    content,
-                    metadataService.setUpAttributes( path, metadata ),
-                    makeCommentedOption( commitMessage ) );
+    public void save( final Path path,
+                      final String content,
+                      final String comment ) {
+        ioService.write( paths.convert( path ),
+                         content,
+                         makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public void save( final Path resource,
+                      final String content,
+                      final Metadata metadata,
+                      final String comment ) {
+
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+
+        Map<String, Object> attrs;
+
+        try {
+            attrs = ioService.readAttributes( path );
+        } catch ( final NoSuchFileException ex ) {
+            attrs = new HashMap<String, Object>();
         }
 
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( path ) );
+        if ( metadata != null ) {
+            attrs = metadataService.configAttrs( attrs,
+                                                 metadata );
+        }
+
+        ioService.write( path,
+                         content,
+                         attrs,
+                         makeCommentedOption( comment ) );
+
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

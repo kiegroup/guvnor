@@ -15,14 +15,10 @@
   <description>Fact Model Editor Client</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-factmodel-editor-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
     <dependency>
@@ -41,6 +37,16 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-error-messages-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
@@ -48,11 +54,6 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-commons-ui</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-error-messages-widget</artifactId>
     </dependency>
 
     <dependency>

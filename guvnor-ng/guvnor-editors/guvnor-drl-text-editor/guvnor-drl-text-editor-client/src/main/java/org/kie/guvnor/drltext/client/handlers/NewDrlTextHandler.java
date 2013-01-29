@@ -8,10 +8,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.resources.images.ImageResources;
+import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -25,7 +27,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
     private static String FILE_TYPE = "drl";
 
     @Inject
-    private Caller<VFSService> vfs;
+    private Caller<DRLTextEditorService> drlTextService;
 
     @Inject
     private PlaceManager placeManager;
@@ -48,16 +50,23 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
-        vfs.call( new RemoteCallback<Path>() {
+
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path,
-                                                                 "DRLEditor" );
-                placeManager.goTo( place );
+            public void execute( final String comment ) {
+                drlTextService.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void aVoid ) {
+                        notifySuccess();
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "DRLEditor" );
+                        placeManager.goTo( place );
+                    }
+                } ).save( path,
+                          "",
+                          comment );
             }
-        } ).write( path,
-                   "" );
+        } ).save();
     }
 
 }

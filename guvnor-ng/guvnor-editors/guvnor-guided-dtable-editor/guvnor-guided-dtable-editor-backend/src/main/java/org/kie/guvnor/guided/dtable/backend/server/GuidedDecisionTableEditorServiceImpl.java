@@ -18,6 +18,8 @@ package org.kie.guvnor.guided.dtable.backend.server;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -37,6 +40,8 @@ import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -62,6 +67,9 @@ public class GuidedDecisionTableEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
+    private ResourceConfigService resourceConfigService;
+
+    @Inject
     private Identity identity;
 
     @Override
@@ -78,32 +86,44 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
-    public void save( Path path,
-                      GuidedDecisionTable52 model ) {
-        ioService.write(
-                paths.convert( path ),
-                GuidedDTXMLPersistence.getInstance().marshal( model ) );
+    public void save( final Path path,
+                      final GuidedDecisionTable52 model,
+                      final String comment ) {
+        ioService.write( paths.convert( path ),
+                         GuidedDTXMLPersistence.getInstance().marshal( model ),
+                         makeCommentedOption( comment ) );
     }
 
     @Override
-    public void save( final Path path,
+    public void save( final Path resource,
                       final GuidedDecisionTable52 model,
+                      final ResourceConfig config,
                       final Metadata metadata,
-                      final String commitMessage ) {
+                      final String comment ) {
 
-        if ( metadata == null ) {
-            ioService.write(
-                    paths.convert( path ),
-                    GuidedDTXMLPersistence.getInstance().marshal( model ),
-                    makeCommentedOption( commitMessage ) );
-        } else {
-            ioService.write(
-                    paths.convert( path ),
-                    GuidedDTXMLPersistence.getInstance().marshal( model ),
-                    metadataService.setUpAttributes( path, metadata ),
-                    makeCommentedOption( commitMessage ) );
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+
+        Map<String, Object> attrs;
+
+        try {
+            attrs = ioService.readAttributes( path );
+        } catch ( final NoSuchFileException ex ) {
+            attrs = new HashMap<String, Object>();
         }
 
+        if ( config != null ) {
+            attrs = resourceConfigService.configAttrs( attrs,
+                                                       config );
+        }
+        if ( metadata != null ) {
+            attrs = metadataService.configAttrs( attrs,
+                                                 metadata );
+        }
+
+        ioService.write( path,
+                         GuidedDTXMLPersistence.getInstance().marshal( model ),
+                         attrs,
+                         makeCommentedOption( comment ) );
     }
 
     @Override

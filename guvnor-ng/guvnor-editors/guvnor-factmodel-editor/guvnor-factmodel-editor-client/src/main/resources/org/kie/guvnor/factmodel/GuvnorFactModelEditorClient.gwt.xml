@@ -32,7 +32,6 @@
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
   <inherits name="org.kie.guvnor.errors.GuvnorErrorMessagesWidget"/>
-
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
   <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>
   <inherits name="org.kie.guvnor.configresource.GuvnorConfigResourceWidget"/>

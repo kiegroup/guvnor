@@ -22,6 +22,8 @@ import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -35,6 +37,13 @@ public interface GuidedRuleTemplateEditorService
     TemplateModel loadTemplateModel( final Path path );
 
     void save( final Path path,
-               final TemplateModel model );
+               final TemplateModel content,
+               final ResourceConfig config,
+               final Metadata metadata,
+               final String comment );
+
+    void save( final Path path,
+               final TemplateModel factModel,
+               final String comment );
 
 }

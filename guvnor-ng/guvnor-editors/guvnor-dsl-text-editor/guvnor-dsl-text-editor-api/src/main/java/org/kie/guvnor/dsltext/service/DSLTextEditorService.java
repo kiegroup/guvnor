@@ -25,9 +25,16 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DSLTextEditorService
         extends ValidationService<String>,
-        SimpleVerificationService<String> {
+                SimpleVerificationService<String> {
 
-    String load(Path path);
+    String load( final Path path );
 
-    void save(Path path, String content, Metadata metadata, String commitMessage);
+    void save( final Path path,
+               final String content,
+               final Metadata metadata,
+               final String comment );
+
+    void save( final Path path,
+               final String content,
+               final String comment );
 }

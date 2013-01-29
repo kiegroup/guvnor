@@ -28,6 +28,7 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
@@ -35,6 +36,8 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -94,7 +97,12 @@ public class GuidedRuleEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
     private Caller<MetadataService> metadataService;
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -122,24 +130,42 @@ public class GuidedRuleEditorPresenter {
             }
         } );
 
-        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
+        multiPage.addPage( new Page( resourceConfigWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataService.call(
-                        new RemoteCallback<Metadata>() {
-                            @Override
-                            public void callback(Metadata metadata) {
-                                metadataWidget.setContent(metadata, false);
-                            }
-                        }
-                ).getMetadata(path);
+                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+                    @Override
+                    public void callback( final ResourceConfig config ) {
+                        resourceConfigWidget.setContent( config,
+                                                         false );
+                    }
+                } ).getConfig( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   false );
+                    }
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 // Nothing to do here
             }
-        });
+        } );
     }
 
     @OnStart
@@ -158,21 +184,24 @@ public class GuidedRuleEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper(path, new SaveCommand() {
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void execute(final String commitMessage) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          resourceConfigWidget.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        }).save();
+        } ).save();
     }
 
     @IsDirty
@@ -200,7 +229,6 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-
 
         return multiPage;
     }

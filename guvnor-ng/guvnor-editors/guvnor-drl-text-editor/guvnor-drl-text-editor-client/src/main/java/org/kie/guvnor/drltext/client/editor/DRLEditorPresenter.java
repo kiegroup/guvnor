@@ -18,7 +18,6 @@ package org.kie.guvnor.drltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -28,6 +27,8 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
@@ -35,6 +36,8 @@ import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
@@ -80,26 +83,32 @@ public class DRLEditorPresenter {
     }
 
     @Inject
-    private View view;
+    private Caller<DRLTextEditorService> drlTextEditorService;
 
     @Inject
     private Caller<DataModelService> dataModelService;
 
     @Inject
-    @New
-    private MultiPageEditor multiPage;
+    private Caller<MetadataService> metadataService;
 
     @Inject
-    private Caller<DRLTextEditorService> drlTextEditorService;
+    private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
+    private View view;
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
+
+    @Inject
+    private MultiPageEditor multiPage;
 
     @Inject
     private Event<NotificationEvent> notification;
 
-
     @Inject
-    private Caller<MetadataService> metadataService;
-
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    private Event<InvalidateDMOProjectCacheEvent> invalidateProjectCache;
 
     private Path path;
 
@@ -107,7 +116,7 @@ public class DRLEditorPresenter {
     public void onStart( final Path path ) {
         this.path = path;
 
-        multiPage.addWidget(view, DRLTextEditorConstants.INSTANCE.DRL());
+        multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
 
         dataModelService.call( new RemoteCallback<DataModelOracle>() {
             @Override
@@ -125,45 +134,66 @@ public class DRLEditorPresenter {
                     }
                 } ).load( path );
             }
-        } ).getDataModel(path);
+        } ).getDataModel( path );
 
-        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
+        multiPage.addPage( new Page( resourceConfigWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataService.call(
-                        new RemoteCallback<Metadata>() {
-                            @Override
-                            public void callback(Metadata metadata) {
-                                metadataWidget.setContent(metadata, false);
-                            }
-                        }
-                ).getMetadata(path);
+                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+                    @Override
+                    public void callback( final ResourceConfig config ) {
+                        resourceConfigWidget.setContent( config,
+                                                         false );
+                    }
+                } ).getConfig( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   false );
+                    }
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 // Nothing to do here
             }
-        });
+        } );
     }
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper(path, new SaveCommand() {
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void execute(final String commitMessage) {
-                drlTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                drlTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          resourceConfigWidget.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        }).save();
+        } ).save();
     }
 
     @IsDirty

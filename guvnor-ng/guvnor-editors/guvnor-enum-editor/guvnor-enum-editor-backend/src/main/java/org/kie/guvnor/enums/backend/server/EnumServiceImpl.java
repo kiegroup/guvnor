@@ -65,6 +65,43 @@ public class EnumServiceImpl implements EnumService {
     private Identity identity;
 
     @Override
+    public String load( Path path ) {
+        return ioService.readAllString( paths.convert( path ) );
+    }
+
+    @Override
+    public void save( final Path path,
+                      final String content,
+                      final String comment ) {
+        ioService.write( paths.convert( path ),
+                         content,
+                         makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public void save( final Path resource,
+                      final String content,
+                      final Metadata metadata,
+                      final String commitMessage ) {
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+
+        if ( metadata == null ) {
+            ioService.write(
+                    path,
+                    content,
+                    makeCommentedOption( commitMessage ) );
+        } else {
+            ioService.write(
+                    path,
+                    content,
+                    metadataService.setUpAttributes( resource, metadata ),
+                    makeCommentedOption( commitMessage ) );
+        }
+
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+    }
+
+    @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
         final DataEnumLoader loader = new DataEnumLoader( content );
@@ -97,29 +134,6 @@ public class EnumServiceImpl implements EnumService {
                                   final String content ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final String content,
-                      final Metadata metadata,
-                      final String commitMessage ) {
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        if ( metadata == null ) {
-            ioService.write(
-                    path,
-                    content,
-                    makeCommentedOption( commitMessage ) );
-        } else {
-            ioService.write(
-                    path,
-                    content,
-                    metadataService.setUpAttributes( resource, metadata ),
-                    makeCommentedOption( commitMessage ) );
-        }
-
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

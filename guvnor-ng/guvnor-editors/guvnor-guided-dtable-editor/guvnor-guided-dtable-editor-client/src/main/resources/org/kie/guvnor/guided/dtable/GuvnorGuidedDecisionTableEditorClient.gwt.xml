@@ -34,11 +34,14 @@
   <inherits name="org.kie.guvnor.commons.security.GuvnorCommonsSecurity"/>
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
-  <inherits name="org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget"/>
+  <inherits name="org.kie.guvnor.errors.GuvnorErrorMessagesWidget"/>
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
+  <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>
+  <inherits name="org.kie.guvnor.configresource.GuvnorConfigResourceWidget"/>
 
   <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorAPI"/>
   <inherits name="org.kie.guvnor.guided.template.GuvnorGuidedTemplateEditorAPI"/>
+  <inherits name="org.kie.guvnor.decoratedgrid.GuvnorDecoratedGridWidget"/>
 
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
 

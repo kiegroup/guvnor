@@ -29,18 +29,20 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface GuidedScoreCardEditorService
         extends ViewSourceService<ScoreCardModel>,
-        ValidationService<ScoreCardModel>,
-        SimpleVerificationService<ScoreCardModel> {
+                ValidationService<ScoreCardModel>,
+                SimpleVerificationService<ScoreCardModel> {
 
-    ScoreCardModelContent loadContent(final Path path);
+    ScoreCardModelContent loadContent( final Path path );
 
-    ScoreCardModel loadModel(final Path path);
+    ScoreCardModel loadModel( final Path path );
 
-    void save(final Path path,
-              final ScoreCardModel content,
-              final ResourceConfig config,
-              final Metadata metadata,
-              final String comment );
+    void save( final Path path,
+               final ScoreCardModel content,
+               final ResourceConfig config,
+               final Metadata metadata,
+               final String comment );
 
-    void save(Path path, ScoreCardModel model);
+    void save( final Path path,
+               final ScoreCardModel model,
+               final String comment );
 }

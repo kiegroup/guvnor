@@ -29,11 +29,20 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.ResourceConfigService;
+import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -105,6 +114,16 @@ public class GuidedRuleTemplateEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private Caller<ResourceConfigService> resourceConfigService;
+
+    @Inject
+    private Caller<MetadataService> metadataService;
+
+    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
+
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
     private EventBus eventBus = new SimpleEventBus();
 
     private boolean isReadOnly = false;
@@ -135,6 +154,7 @@ public class GuidedRuleTemplateEditorPresenter {
                 viewSource.clear();
             }
         } );
+
         multiPage.addPage( new Page( dataView,
                                      "Data" ) {
 
@@ -151,6 +171,43 @@ public class GuidedRuleTemplateEditorPresenter {
                 dataView.clear();
             }
         } );
+        multiPage.addPage( new Page( resourceConfigWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
+            @Override
+            public void onFocus() {
+                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
+                    @Override
+                    public void callback( final ResourceConfig config ) {
+                        resourceConfigWidget.setContent( config,
+                                                         isReadOnly );
+                    }
+                } ).getConfig( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        } );
+
     }
 
     @OnStart
@@ -177,14 +234,24 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @OnSave
     public void onSave() {
-        service.call( new RemoteCallback<Path>() {
+        new SaveOpWrapper( path, new SaveCommand() {
             @Override
-            public void callback( Path response ) {
-                view.setNotDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( Path response ) {
+                        view.setNotDirty();
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                    }
+                } ).save( path,
+                          view.getContent(),
+                          resourceConfigWidget.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        } ).save( path,
-                  view.getContent() );
+        } ).save();
     }
 
     @IsDirty

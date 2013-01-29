@@ -29,7 +29,12 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-ui</artifactId>
+      <artifactId>guvnor-metadata-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-config-resource-widget</artifactId>
     </dependency>
 
     <dependency>
@@ -39,7 +44,7 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-metadata-widget</artifactId>
+      <artifactId>guvnor-commons-ui</artifactId>
     </dependency>
 
     <dependency>

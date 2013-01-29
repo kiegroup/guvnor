@@ -14,8 +14,6 @@ import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PathPlaceRequest;
@@ -68,7 +66,8 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                         placeManager.goTo( place );
                     }
                 } ).save( path,
-                          model );
+                          model,
+                          comment );
             }
         } ).save();
     }
