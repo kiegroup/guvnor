@@ -41,6 +41,7 @@ public class ProjectServiceImpl
 
     private static final String SOURCE_FILENAME = "src";
     private static final String POM_FILENAME = "pom.xml";
+    private static final String RESOURCES_PATH = "src/main/resources";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
     private IOService ioService;
     private Paths paths;
@@ -117,8 +118,20 @@ public class ProjectServiceImpl
             return null;
         }
 
-        //A resource is already a folder simply return it
+        //If Path is not within a Project we cannot resolve a package
+        final Path projectRoot = resolveProject( resource );
+        if ( projectRoot == null ) {
+            return null;
+        }
+
+        //The Path must be within a Project's src/main/resources path
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path resourcesPath = paths.convert( projectRoot ).resolve( RESOURCES_PATH );
+        if ( !path.startsWith( resourcesPath ) ) {
+            return null;
+        }
+
+        //If the Path is already a folder simply return it
         if ( Files.isDirectory( path ) ) {
             return resource;
         }

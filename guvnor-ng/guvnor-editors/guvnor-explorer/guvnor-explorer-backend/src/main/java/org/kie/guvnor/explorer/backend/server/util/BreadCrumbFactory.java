@@ -1,19 +1,19 @@
-package org.kie.guvnor.explorer.backend.server;
+package org.kie.guvnor.explorer.backend.server.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileStore;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.explorer.model.BreadCrumb;
-import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * A Factory to make Bread Crumbs!
@@ -22,7 +22,6 @@ import org.uberfire.backend.server.util.Paths;
 public class BreadCrumbFactory {
 
     private IOService ioService;
-    private ProjectService projectService;
     private Paths paths;
 
     public BreadCrumbFactory() {
@@ -31,20 +30,27 @@ public class BreadCrumbFactory {
 
     @Inject
     public BreadCrumbFactory( final @Named("ioStrategy") IOService ioService,
-                              final ProjectService projectService,
                               final Paths paths ) {
         this.ioService = ioService;
-        this.projectService = projectService;
         this.paths = paths;
     }
 
-    public List<BreadCrumb> makeBreadCrumbs( final org.uberfire.backend.vfs.Path path ) {
+    public List<BreadCrumb> makeBreadCrumbs( final Path path ) {
         return makeBreadCrumbs( path,
-                                new ArrayList<org.kie.commons.java.nio.file.Path>() );
+                                new ArrayList<org.kie.commons.java.nio.file.Path>(),
+                                new HashMap<org.kie.commons.java.nio.file.Path, String>() );
     }
 
-    public List<BreadCrumb> makeBreadCrumbs( final org.uberfire.backend.vfs.Path path,
+    public List<BreadCrumb> makeBreadCrumbs( final Path path,
                                              final List<org.kie.commons.java.nio.file.Path> exclusions ) {
+        return makeBreadCrumbs( path,
+                                exclusions,
+                                new HashMap<org.kie.commons.java.nio.file.Path, String>() );
+    }
+
+    public List<BreadCrumb> makeBreadCrumbs( final Path path,
+                                             final List<org.kie.commons.java.nio.file.Path> exclusions,
+                                             final Map<org.kie.commons.java.nio.file.Path, String> captionSubstitutions ) {
         final List<BreadCrumb> breadCrumbs = new ArrayList<BreadCrumb>();
 
         org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
@@ -52,8 +58,12 @@ public class BreadCrumbFactory {
         while ( nioFileName != null ) {
             if ( includePath( nioPath,
                               exclusions ) ) {
+                String caption = nioFileName.toString();
+                if ( captionSubstitutions.containsKey( nioPath ) ) {
+                    caption = captionSubstitutions.get( nioPath );
+                }
                 final BreadCrumb breadCrumb = new BreadCrumb( paths.convert( nioPath ),
-                                                              nioFileName.toString() );
+                                                              caption );
                 breadCrumbs.add( 0,
                                  breadCrumb );
             }
@@ -64,24 +74,6 @@ public class BreadCrumbFactory {
                                             getRootDirectory( nioPath ) ) );
 
         return breadCrumbs;
-    }
-
-    public List<Path> makeBreadCrumbExclusions( final org.uberfire.backend.vfs.Path path ) {
-        final List<org.kie.commons.java.nio.file.Path> exclusions = new ArrayList<Path>();
-        final org.uberfire.backend.vfs.Path projectRoot = projectService.resolveProject( path );
-        if ( projectRoot == null ) {
-            return exclusions;
-        }
-        final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
-        final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
-        final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
-        final org.kie.commons.java.nio.file.Path e3 = e2.resolve( "java" );
-        final org.kie.commons.java.nio.file.Path e4 = e2.resolve( "resources" );
-        exclusions.add( e1 );
-        exclusions.add( e2 );
-        exclusions.add( e3 );
-        exclusions.add( e4 );
-        return exclusions;
     }
 
     private boolean includePath( final org.kie.commons.java.nio.file.Path path,

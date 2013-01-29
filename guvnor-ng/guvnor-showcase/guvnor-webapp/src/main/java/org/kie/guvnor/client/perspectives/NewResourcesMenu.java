@@ -77,7 +77,7 @@ public class NewResourcesMenu extends DefaultMenuItemSubMenu {
             public void callback( final Path path ) {
                 enableNewResourceHandlers( path != null );
             }
-        } ).resolveProject( path );
+        } ).resolvePackage( path );
     }
 
     private void enableNewResourceHandlers( final boolean enable ) {

@@ -26,6 +26,8 @@ import org.uberfire.backend.vfs.Path;
 @Named("projectPackageList")
 public class ProjectPackageLoader implements ItemsLoader {
 
+    private static final String RESOURCES_PATH = "src/main/resources";
+
     private final Filter filter;
 
     @Inject
@@ -41,7 +43,8 @@ public class ProjectPackageLoader implements ItemsLoader {
     }
 
     @Override
-    public List<Item> load( final Path path ) {
+    public List<Item> load( final Path path,
+                            final Path projectRoot ) {
 
         //Check Path exists
         final List<Item> items = new ArrayList<Item>();
@@ -50,15 +53,14 @@ public class ProjectPackageLoader implements ItemsLoader {
         }
 
         //Ensure Path represents a Folder
-        org.kie.commons.java.nio.file.Path rPath = paths.convert( path );
-        if ( !Files.isDirectory( rPath ) ) {
-            rPath = rPath.getParent();
+        org.kie.commons.java.nio.file.Path pPath = paths.convert( path );
+        if ( !Files.isDirectory( pPath ) ) {
+            pPath = pPath.getParent();
         }
 
         //Get list of immediate children
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( rPath );
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( pPath );
         for ( final org.kie.commons.java.nio.file.Path p : directoryStream ) {
-
             if ( filter.accept( p ) ) {
                 if ( Files.isRegularFile( p ) ) {
                     items.add( new FileItem( paths.convert( p ) ) );
@@ -69,10 +71,26 @@ public class ProjectPackageLoader implements ItemsLoader {
         }
 
         //Add ability to move up one level in the hierarchy
-        items.add( new ParentPackageItem( paths.convert( rPath.getParent() ),
+        final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
+        items.add( new ParentPackageItem( paths.convert( getParent( pPath,
+                                                                    pRoot ) ),
                                           ".." ) );
 
         return items;
+    }
+
+    //Explorer flattens the folder hierarchy from /src/main/resources/p1 to /resources and /p1
+    //where /resources represents the default package and /p1 a user-defined package. Therefore
+    //when navigating up the hierarchy we need to translate /p1's parent into /src/main.
+    private org.kie.commons.java.nio.file.Path getParent( final org.kie.commons.java.nio.file.Path pPath,
+                                                          final org.kie.commons.java.nio.file.Path pRoot ) {
+        org.kie.commons.java.nio.file.Path pParent = pPath.getParent();
+        final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
+        if ( Files.isSameFile( pParent,
+                               pResources ) ) {
+            pParent = pParent.getParent();
+        }
+        return pParent;
     }
 
 }

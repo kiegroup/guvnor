@@ -10,6 +10,7 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface ItemsLoader {
 
-    List<Item> load( final Path path );
+    List<Item> load( final Path path,
+                     final Path projectRoot );
 
 }

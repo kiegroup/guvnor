@@ -27,31 +27,30 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ProjectService {
 
-    WorkingSetSettings loadWorkingSetConfig(final Path project);
+    WorkingSetSettings loadWorkingSetConfig( final Path project );
 
     /**
      * Given a Resource path resolve it to the containing Project Path. A Project path is the folder containing pom.xml
-     *
      * @param resource
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
-    Path resolveProject(final Path resource);
+    Path resolveProject( final Path resource );
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
-     *
+     * The folder must be within a valid Project structure and at least reference /src/main/resources or deeper.
      * @param resource
      * @return Path to the folder containing the resource file.
      */
-    Path resolvePackage(final Path resource);
+    Path resolvePackage( final Path resource );
 
     /**
      * Creates a new project to the given path.
-     *
      * @param activePath
      * @param name
      * @return
      */
-    public Path newProject(Path activePath, final String name);
+    public Path newProject( Path activePath,
+                            final String name );
 
 }

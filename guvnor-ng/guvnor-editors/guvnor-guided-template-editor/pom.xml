@@ -11,6 +11,10 @@
 
   <artifactId>guvnor-guided-template-editor</artifactId>
   <packaging>pom</packaging>
+
+  <name>Guvnor Guided Template Editor</name>
+  <description>Guvnor Guided Template Editor</description>
+
   <modules>
     <module>guvnor-guided-template-editor-api</module>
     <module>guvnor-guided-template-editor-backend</module>

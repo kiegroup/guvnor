@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.guvnor.explorer.model.Item;
-import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -17,18 +16,16 @@ import org.uberfire.backend.vfs.Path;
 public class ProjectNonPackageLoader implements ItemsLoader {
 
     @Inject
-    private ProjectService projectService;
-
-    @Inject
     @Named("projectRootList")
     private ItemsLoader projectRootListLoader;
 
     @Override
-    public List<Item> load( final Path path ) {
+    public List<Item> load( final Path path,
+                            final Path projectRoot ) {
         // A Path that is within a Project but not a Package can be selected from File
         // Explorer. Simply return the Project's content for use in Project Explorer.
-        final Path projectPath = projectService.resolveProject( path );
-        return projectRootListLoader.load( projectPath );
+        return projectRootListLoader.load( projectRoot,
+                                           projectRoot );
     }
 
 }

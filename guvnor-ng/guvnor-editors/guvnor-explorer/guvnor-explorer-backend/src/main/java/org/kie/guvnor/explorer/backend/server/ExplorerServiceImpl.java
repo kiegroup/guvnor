@@ -25,6 +25,8 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.loaders.ItemsLoader;
+import org.kie.guvnor.explorer.backend.server.util.BreadCrumbFactory;
+import org.kie.guvnor.explorer.backend.server.util.BreadCrumbUtilities;
 import org.kie.guvnor.explorer.model.BreadCrumb;
 import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
@@ -38,12 +40,10 @@ import org.uberfire.backend.vfs.Path;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final String JAVA_PATH = "src/main/java";
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private IOService ioService;
     private ProjectService projectService;
-    private BreadCrumbFactory breadCrumbFactory;
     private Paths paths;
 
     @Inject
@@ -55,12 +55,22 @@ public class ExplorerServiceImpl
     private ItemsLoader projectRootListLoader;
 
     @Inject
+    @Named("projectDefaultPackageList")
+    private ItemsLoader projectDefaultPackageListLoader;
+
+    @Inject
     @Named("projectPackageList")
     private ItemsLoader projectPackageListLoader;
 
     @Inject
     @Named("projectNonPackageList")
     private ItemsLoader projectNonPackageListLoader;
+
+    @Inject
+    private BreadCrumbFactory breadCrumbFactory;
+
+    @Inject
+    private BreadCrumbUtilities breadCrumbUtilities;
 
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -69,84 +79,103 @@ public class ExplorerServiceImpl
     @Inject
     public ExplorerServiceImpl( final @Named("ioStrategy") IOService ioService,
                                 final ProjectService projectService,
-                                final BreadCrumbFactory breadCrumbFactory,
                                 final Paths paths ) {
         this.ioService = ioService;
         this.projectService = projectService;
-        this.breadCrumbFactory = breadCrumbFactory;
         this.paths = paths;
     }
 
     @Override
     public ExplorerContent getContentInScope( final Path resource ) {
+
+        final Path projectRootPath = projectService.resolveProject( resource );
+
         //Null Path cannot be in a Project scope
         if ( resource == null ) {
-            return makeOutsideProjectList( resource );
+            return makeOutsideProjectList( resource,
+                                           projectRootPath );
         }
 
         //Check if Path is within a Project scope
-        final Path projectRootPath = projectService.resolveProject( resource );
         if ( projectRootPath == null ) {
-            return makeOutsideProjectList( resource );
+            return makeOutsideProjectList( resource,
+                                           projectRootPath );
         }
 
         //Check if Path is Project root
-        final boolean isProjectRootPath = projectRootPath.toURI().equals( resource.toURI() );
-        if ( isProjectRootPath ) {
-            return makeProjectRootList( resource );
-        }
-
-        //Check if Path is within Projects Java folder
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRootPath );
-        final org.kie.commons.java.nio.file.Path pJavaSources = pRoot.resolve( JAVA_PATH );
-        final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
         final org.kie.commons.java.nio.file.Path pResource = paths.convert( resource );
-        if ( Files.isSameFile( pResource, pJavaSources ) ) {
-            return makeProjectRootList( resource );
-        }
-        if ( pResource.startsWith( pJavaSources ) ) {
-            return makeProjectPackageList( resource );
+        final boolean isProjectRootPath = Files.isSameFile( pRoot,
+                                                            pResource );
+        if ( isProjectRootPath ) {
+            return makeProjectRootList( resource,
+                                        projectRootPath );
         }
 
         //Check if Path is within Projects resources
-        if ( Files.isSameFile( pResource, pResources ) ) {
-            return makeProjectRootList( resource );
+        final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
+        if ( Files.isSameFile( pResource,
+                               pResources ) ) {
+            return makeProjectDefaultPackageList( resource,
+                                                  projectRootPath );
         }
         if ( pResource.startsWith( pResources ) ) {
-            return makeProjectPackageList( resource );
+            return makeProjectPackageList( resource,
+                                           projectRootPath );
         }
 
         //Otherwise Path must be between Project root and Project resources
-        return makeProjectNonPackageList( resource );
+        return makeProjectNonPackageList( resource,
+                                          projectRootPath );
     }
 
-    private ExplorerContent makeOutsideProjectList( final Path path ) {
-        final List<Item> items = outsideProjectListLoader.load( path );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path );
+    private ExplorerContent makeOutsideProjectList( final Path path,
+                                                    final Path projectRoot ) {
+        final List<Item> items = outsideProjectListLoader.load( path,
+                                                                projectRoot );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
-    private ExplorerContent makeProjectRootList( final Path path ) {
-        final List<Item> items = projectRootListLoader.load( path );
+    private ExplorerContent makeProjectRootList( final Path path,
+                                                 final Path projectRoot ) {
+        final List<Item> items = projectRootListLoader.load( path,
+                                                             projectRoot );
         final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
-    private ExplorerContent makeProjectPackageList( final Path path ) {
-        final List<Item> items = projectPackageListLoader.load( path );
+    private ExplorerContent makeProjectDefaultPackageList( final Path path,
+                                                           final Path projectRoot ) {
+        final List<Item> items = projectDefaultPackageListLoader.load( path,
+                                                                       projectRoot );
         final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusionsForDefaultPackage( path ),
+                                                                                breadCrumbUtilities.makeBreadCrumbCaptionSubstitutionsForDefaultPackage( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
 
-    private ExplorerContent makeProjectNonPackageList( final Path path ) {
-        final List<Item> items = projectNonPackageListLoader.load( path );
+    private ExplorerContent makeProjectPackageList( final Path path,
+                                                    final Path projectRoot ) {
+        final List<Item> items = projectPackageListLoader.load( path,
+                                                                projectRoot );
         final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbFactory.makeBreadCrumbExclusions( path ) );
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
+        return new ExplorerContent( items,
+                                    breadCrumbs );
+    }
+
+    private ExplorerContent makeProjectNonPackageList( final Path path,
+                                                       final Path projectRoot ) {
+        final List<Item> items = projectNonPackageListLoader.load( path,
+                                                                   projectRoot );
+        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
