@@ -5,10 +5,10 @@ import com.google.gwt.i18n.client.Messages;
 
 import java.util.Date;
 
-public interface Constants extends
+public interface MetadataConstants extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create(Constants.class);
+    public static final MetadataConstants INSTANCE = GWT.create(MetadataConstants.class);
 
     String Title();
 

@@ -28,7 +28,7 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -123,7 +123,7 @@ public class GuidedDecisionTableEditorPresenter {
                 viewSource.clear();
             }
         });
-        multiPage.addPage(new Page(metadataWidget, Constants.INSTANCE.Metadata()) {
+        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
             @Override
             public void onFocus() {
                 metadataService.call(

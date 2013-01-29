@@ -34,7 +34,7 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.security.AppRoles;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.config.AppConfigService;
 import org.kie.guvnor.services.metadata.model.DiscussionRecord;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -64,7 +64,7 @@ public class DiscussionWidget
         this.readOnly = readOnly;
         identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
 
-        final DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel( Constants.INSTANCE.Discussion() );
+        final DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel( MetadataConstants.INSTANCE.Discussion() );
         discussionPanel.setWidth( "100%" );
 
         commentList.setWidth( "100%" );
@@ -93,7 +93,7 @@ public class DiscussionWidget
     }
 
     private Widget appendComment( final DiscussionRecord r ) {
-        final SmallLabel hrd = new SmallLabel( Constants.INSTANCE.smallCommentBy0On1Small( r.getAuthor(), new Date( r.getTimestamp() ) ) );
+        final SmallLabel hrd = new SmallLabel( MetadataConstants.INSTANCE.smallCommentBy0On1Small( r.getAuthor(), new Date( r.getTimestamp() ) ) );
         hrd.addStyleName( "discussion-header" );
         commentList.add( hrd );
 
@@ -125,17 +125,17 @@ public class DiscussionWidget
 
         final HorizontalPanel hp = new HorizontalPanel();
 
-        final Button createNewComment = new Button( Constants.INSTANCE.AddADiscussionComment() );
+        final Button createNewComment = new Button( MetadataConstants.INSTANCE.AddADiscussionComment() );
         createNewComment.setEnabled( !this.readOnly );
         hp.add( createNewComment );
 
         if ( identity.hasRole( AppRoles.ADMIN ) ) {
-            final Button adminClearAll = new Button( Constants.INSTANCE.EraseAllComments() );
+            final Button adminClearAll = new Button( MetadataConstants.INSTANCE.EraseAllComments() );
             adminClearAll.setEnabled( !readOnly );
             hp.add( adminClearAll );
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick( final ClickEvent sender ) {
-                    if ( Window.confirm( Constants.INSTANCE.EraseAllCommentsWarning() ) ) {
+                    if ( Window.confirm( MetadataConstants.INSTANCE.EraseAllCommentsWarning() ) ) {
                         metadata.eraseDiscussion();
                         makeDirty();
                         updateCommentList();
@@ -160,8 +160,8 @@ public class DiscussionWidget
         comment.setWidth( "100%" );
         newCommentLayout.add( comment );
 
-        Button ok = new Button( Constants.INSTANCE.OK() );
-        Button cancel = new Button( Constants.INSTANCE.Cancel() );
+        Button ok = new Button( MetadataConstants.INSTANCE.OK() );
+        Button cancel = new Button( MetadataConstants.INSTANCE.Cancel() );
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick( final ClickEvent sender ) {

@@ -34,7 +34,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.Images;
-import org.kie.guvnor.metadata.client.resources.i18n.Constants;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
 import org.uberfire.backend.vfs.Path;
@@ -75,7 +75,7 @@ public class VersionBrowser extends Composite {
         };
 
         layout = new FlexTable();
-        final ClickableLabel vh = new ClickableLabel( Constants.INSTANCE.VersionHistory1(), clickHandler );
+        final ClickableLabel vh = new ClickableLabel( MetadataConstants.INSTANCE.VersionHistory1(), clickHandler );
         layout.setWidget( 0, 0, vh );
         layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" );
 
@@ -107,7 +107,7 @@ public class VersionBrowser extends Composite {
     protected void loadHistoryData( final List<VersionRecord> versions ) {
 
         if ( versions == null || versions.size() == 0 ) {
-            layout.setWidget( 1, 0, new Label( Constants.INSTANCE.NoHistory() ) );
+            layout.setWidget( 1, 0, new Label( MetadataConstants.INSTANCE.NoHistory() ) );
             showStaticIcon();
             return;
         }
@@ -117,7 +117,7 @@ public class VersionBrowser extends Composite {
         for ( int i = 0; i < versions.size(); i++ ) {
             final VersionRecord version = versions.get( i );
 
-            final String s = Constants.INSTANCE.property0ModifiedOn1By23( String.valueOf( i + 1 ),
+            final String s = MetadataConstants.INSTANCE.property0ModifiedOn1By23( String.valueOf( i + 1 ),
                                                                           version.date().toString(),
                                                                           version.author(),
                                                                           version.comment() );
@@ -129,7 +129,7 @@ public class VersionBrowser extends Composite {
 
         formatter.setColSpan( 1, 0, 2 );
 
-        final Button open = new Button( Constants.INSTANCE.View() );
+        final Button open = new Button( MetadataConstants.INSTANCE.View() );
 
         open.addClickHandler( new ClickHandler() {
 
