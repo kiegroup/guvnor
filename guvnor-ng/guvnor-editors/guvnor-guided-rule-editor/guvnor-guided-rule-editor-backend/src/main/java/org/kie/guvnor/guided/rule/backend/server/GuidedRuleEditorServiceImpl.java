@@ -17,6 +17,7 @@
 package org.kie.guvnor.guided.rule.backend.server;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -62,6 +64,9 @@ public class GuidedRuleEditorServiceImpl
     @Inject
     private MetadataService metadataService;
 
+    @Inject
+    private Identity identity;
+
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
         final RuleModel model = loadRuleModel( path );
@@ -75,38 +80,30 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public void save(Path path, RuleModel model) {
+    public void save( Path path,
+                      RuleModel model ) {
         ioService.write(
-                paths.convert(path),
-                BRXMLPersistence.getInstance().marshal(model));
+                paths.convert( path ),
+                BRXMLPersistence.getInstance().marshal( model ) );
     }
 
     @Override
     public void save( final Path path,
                       final RuleModel model,
                       final Metadata metadata,
-                      final String commitMessage) {
+                      final String commitMessage ) {
 
-
-        if (metadata == null) {
+        if ( metadata == null ) {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     BRXMLPersistence.getInstance().marshal( model ),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    makeCommentedOption( commitMessage ) );
         } else {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     BRXMLPersistence.getInstance().marshal( model ),
-                    metadataService.setUpAttributes(path, metadata),
-                    new CommentedOption(
-                            null,
-                            commitMessage,
-                            null,
-                            null));
+                    metadataService.setUpAttributes( path, metadata ),
+                    makeCommentedOption( commitMessage ) );
         }
     }
 
@@ -168,5 +165,15 @@ public class GuidedRuleEditorServiceImpl
     public boolean isValid( final Path path,
                             final RuleModel content ) {
         return !validate( path, content ).hasLines();
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 }

@@ -16,18 +16,21 @@
 
 package org.kie.guvnor.projecteditor.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -39,15 +42,18 @@ public class KModuleServiceImpl
     private KModuleContentHandler moduleContentHandler;
     private MetadataService metadataService;
 
+    @Inject
+    private Identity identity;
+
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
     }
 
     @Inject
-    public KModuleServiceImpl(final @Named("ioStrategy") IOService ioService,
-                              MetadataService metadataService,
-                              final Paths paths,
-                              final KModuleContentHandler moduleContentHandler) {
+    public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
+                               MetadataService metadataService,
+                               final Paths paths,
+                               final KModuleContentHandler moduleContentHandler ) {
         this.ioService = ioService;
         this.metadataService = metadataService;
         this.paths = paths;
@@ -55,68 +61,78 @@ public class KModuleServiceImpl
     }
 
     @Override
-    public Path setUpKModuleStructure(final Path pathToPom) {
+    public Path setUpKModuleStructure( final Path pathToPom ) {
         try {
             // Create project structure
-            final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
+            final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath( pathToPom );
 
-            ioService.createDirectory(directory.resolve("src/main/java"));
-            ioService.createDirectory(directory.resolve("src/main/resources"));
-            final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve("src/main/resources/META-INF/kmodule.xml");
-            saveKModule(pathToKModuleXML, new KModuleModel());
+            ioService.createDirectory( directory.resolve( "src/main/java" ) );
+            ioService.createDirectory( directory.resolve( "src/main/resources" ) );
+            final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            saveKModule( pathToKModuleXML, new KModuleModel() );
 
-            ioService.createDirectory(directory.resolve("src/test/java"));
-            ioService.createDirectory(directory.resolve("src/test/resources"));
+            ioService.createDirectory( directory.resolve( "src/test/java" ) );
+            ioService.createDirectory( directory.resolve( "src/test/resources" ) );
 
-            return paths.convert(pathToKModuleXML);
-        } catch (Exception e) {
+            return paths.convert( pathToKModuleXML );
+        } catch ( Exception e ) {
             return null;
         }
     }
 
     @Override
-    public void saveKModule(String commitMessage,
-                            final Path path,
-                            final KModuleModel model,
-                            Metadata metadata) {
-        if (metadata == null) {
+    public void saveKModule( String commitMessage,
+                             final Path path,
+                             final KModuleModel model,
+                             Metadata metadata ) {
+        if ( metadata == null ) {
             ioService.write(
-                    paths.convert(path),
-                    moduleContentHandler.toString(model),
-                    metadataService.getCommentedOption(commitMessage));
+                    paths.convert( path ),
+                    moduleContentHandler.toString( model ),
+                    makeCommentedOption( commitMessage ) );
         } else {
             ioService.write(
-                    paths.convert(path),
-                    moduleContentHandler.toString(model),
-                    metadataService.setUpAttributes(path, metadata),
-                    metadataService.getCommentedOption(commitMessage));
+                    paths.convert( path ),
+                    moduleContentHandler.toString( model ),
+                    metadataService.setUpAttributes( path, metadata ),
+                    makeCommentedOption( commitMessage ) );
         }
     }
 
     @Override
-    public KModuleModel loadKModule(final Path path) {
-        return moduleContentHandler.toModel(ioService.readAllString(paths.convert(path)));
+    public KModuleModel loadKModule( final Path path ) {
+        return moduleContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
-    public Path pathToRelatedKModuleFileIfAny(final Path pathToPomXML) {
-        final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPomXML);
+    public Path pathToRelatedKModuleFileIfAny( final Path pathToPomXML ) {
+        final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath( pathToPomXML );
 
-        final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve("src/main/resources/META-INF/kmodule.xml");
+        final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve( "src/main/resources/META-INF/kmodule.xml" );
 
-        if (ioService.exists(pathToKModuleXML)) {
-            return paths.convert(pathToKModuleXML);
+        if ( ioService.exists( pathToKModuleXML ) ) {
+            return paths.convert( pathToKModuleXML );
         } else {
             return null;
         }
     }
 
-    private void saveKModule(final org.kie.commons.java.nio.file.Path path,
-                             final KModuleModel model) {
-        ioService.write(path, moduleContentHandler.toString(model));
+    private void saveKModule( final org.kie.commons.java.nio.file.Path path,
+                              final KModuleModel model ) {
+        ioService.write( path, moduleContentHandler.toString( model ) );
     }
 
-    private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
-        return paths.convert(pathToPomXML).getParent();
+    private org.kie.commons.java.nio.file.Path getPomDirectoryPath( final Path pathToPomXML ) {
+        return paths.convert( pathToPomXML ).getParent();
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 }

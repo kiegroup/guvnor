@@ -85,6 +85,9 @@ public class GuidedScoreCardEditorServiceImpl
     @Inject
     private DataModelService dataModelService;
 
+    @Inject
+    private Identity identity;
+
     private static final String RESOURCE_EXTENSION = "scgd";
 
     @Override
@@ -101,9 +104,10 @@ public class GuidedScoreCardEditorServiceImpl
     }
 
     @Override
-    public void save(Path path, ScoreCardModel model) {
-        ioService.write( paths.convert(path),
-                         ScoreCardsXMLPersistence.getInstance().marshal( model ));
+    public void save( Path path,
+                      ScoreCardModel model ) {
+        ioService.write( paths.convert( path ),
+                         ScoreCardsXMLPersistence.getInstance().marshal( model ) );
     }
 
     @Override
@@ -111,7 +115,7 @@ public class GuidedScoreCardEditorServiceImpl
                       final ScoreCardModel model,
                       final ResourceConfig config,
                       final Metadata metadata,
-                      final String comment) {
+                      final String comment ) {
 
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
@@ -135,7 +139,7 @@ public class GuidedScoreCardEditorServiceImpl
         ioService.write( path,
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
                          attrs,
-                         metadataService.getCommentedOption(comment) );
+                         makeCommentedOption( comment ) );
     }
 
     @Override
@@ -408,6 +412,16 @@ public class GuidedScoreCardEditorServiceImpl
     private BuilderResultLine createBuilderResultLine( final String msg,
                                                        final String name ) {
         return new BuilderResultLine().setMessage( msg ).setResourceFormat( RESOURCE_EXTENSION ).setResourceName( name );
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 
 }

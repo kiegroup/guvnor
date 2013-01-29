@@ -36,5 +36,4 @@ public interface MetadataService {
 
     Map<String, Object> setUpAttributes(Path path, Metadata metadata);
 
-    CommentedOption getCommentedOption(String commitMessage);
 }

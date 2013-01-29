@@ -17,9 +17,8 @@
 package org.kie.guvnor.enums.backend.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -39,6 +37,7 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 /**
  *
@@ -61,6 +60,9 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
+
+    @Inject
+    private Identity identity;
 
     @Override
     public BuilderResult validate( final Path path,
@@ -104,21 +106,29 @@ public class EnumServiceImpl implements EnumService {
                       final String commitMessage ) {
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        if (metadata == null) {
+        if ( metadata == null ) {
             ioService.write(
                     path,
                     content,
-                    metadataService.getCommentedOption(commitMessage));
+                    makeCommentedOption( commitMessage ) );
         } else {
             ioService.write(
                     path,
                     content,
-                    metadataService.setUpAttributes(resource, metadata),
-                    metadataService.getCommentedOption(commitMessage));
+                    metadataService.setUpAttributes( resource, metadata ),
+                    makeCommentedOption( commitMessage ) );
         }
 
-
-
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 }

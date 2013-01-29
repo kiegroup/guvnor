@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
+import java.util.Date;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -27,6 +29,7 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -37,6 +40,7 @@ import javax.inject.Named;
 @ApplicationScoped
 public class DRLTextEditorServiceImpl
         implements DRLTextEditorService {
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -50,54 +54,70 @@ public class DRLTextEditorServiceImpl
     @Inject
     private Paths paths;
 
+    @Inject
+    private Identity identity;
+
     @Override
-    public BuilderResult validate(final Path path,
-                                  final String content) {
+    public BuilderResult validate( final Path path,
+                                   final String content ) {
         //TODO {porcelli} validate
         return new BuilderResult();
     }
 
     @Override
-    public boolean isValid(final Path path,
-                           final String content) {
-        return !validate(path, content).hasLines();
+    public boolean isValid( final Path path,
+                            final String content ) {
+        return !validate( path, content ).hasLines();
     }
 
     @Override
-    public AnalysisReport verify(Path path,
-                                 String content) {
+    public AnalysisReport verify( Path path,
+                                  String content ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
     }
 
     @Override
-    public String load(Path path) {
-        return ioService.readAllString(paths.convert(path));
+    public String load( Path path ) {
+        return ioService.readAllString( paths.convert( path ) );
     }
 
     @Override
-    public void save(final Path resource,
-                     final String content) {
-        ioService.write(paths.convert(resource), content);
+    public void save( final Path resource,
+                      final String content ) {
+        ioService.write( paths.convert( resource ), content );
     }
 
     @Override
-    public void save(Path path, String content, Metadata metadata, String commitMessage) {
+    public void save( Path path,
+                      String content,
+                      Metadata metadata,
+                      String commitMessage ) {
 
-
-        if (metadata == null) {
+        if ( metadata == null ) {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     content,
-                    metadataService.getCommentedOption(commitMessage));
+                    makeCommentedOption( commitMessage ) );
+
         } else {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     content,
-                    metadataService.setUpAttributes(path, metadata),
-                    metadataService.getCommentedOption(commitMessage));
+                    metadataService.setUpAttributes( path, metadata ),
+                    makeCommentedOption( commitMessage ) );
         }
 
-        invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(path));
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( path ) );
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 }

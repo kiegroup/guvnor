@@ -17,6 +17,7 @@
 package org.kie.guvnor.guided.dtable.backend.server;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,11 +37,11 @@ import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -60,6 +61,9 @@ public class GuidedDecisionTableEditorServiceImpl
     @Inject
     private MetadataService metadataService;
 
+    @Inject
+    private Identity identity;
+
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         final GuidedDecisionTable52 model = loadRuleModel( path );
@@ -74,29 +78,30 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
-    public void save(Path path, GuidedDecisionTable52 model) {
+    public void save( Path path,
+                      GuidedDecisionTable52 model ) {
         ioService.write(
-                paths.convert(path),
-                GuidedDTXMLPersistence.getInstance().marshal( model ));
+                paths.convert( path ),
+                GuidedDTXMLPersistence.getInstance().marshal( model ) );
     }
 
     @Override
-    public void save(final Path path,
-                     final GuidedDecisionTable52 model,
-                     final Metadata metadata,
-                     final String commitMessage) {
+    public void save( final Path path,
+                      final GuidedDecisionTable52 model,
+                      final Metadata metadata,
+                      final String commitMessage ) {
 
-        if (metadata == null) {
+        if ( metadata == null ) {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     GuidedDTXMLPersistence.getInstance().marshal( model ),
-                    metadataService.getCommentedOption(commitMessage));
+                    makeCommentedOption( commitMessage ) );
         } else {
             ioService.write(
-                    paths.convert(path),
+                    paths.convert( path ),
                     GuidedDTXMLPersistence.getInstance().marshal( model ),
-                    metadataService.setUpAttributes(path, metadata),
-                    metadataService.getCommentedOption(commitMessage));
+                    metadataService.setUpAttributes( path, metadata ),
+                    makeCommentedOption( commitMessage ) );
         }
 
     }
@@ -132,5 +137,15 @@ public class GuidedDecisionTableEditorServiceImpl
                             final GuidedDecisionTable52 content ) {
         return !validate( path,
                           content ).hasLines();
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
     }
 }

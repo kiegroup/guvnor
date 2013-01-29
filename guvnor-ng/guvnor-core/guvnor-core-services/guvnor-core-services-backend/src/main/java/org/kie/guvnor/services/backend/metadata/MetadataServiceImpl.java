@@ -16,12 +16,20 @@
 
 package org.kie.guvnor.services.backend.metadata;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreAttributes;
 import org.kie.commons.io.attribute.DublinCoreAttributesUtil;
 import org.kie.commons.io.attribute.DublinCoreView;
-import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -39,21 +47,11 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.model.PortableVersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.Identity;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.emptyList;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
-import static org.kie.guvnor.services.backend.metadata.MetadataBuilder.newMetadata;
-import static org.kie.guvnor.services.backend.metadata.attribute.Mode.DISABLED;
+import static java.util.Collections.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.guvnor.services.backend.metadata.MetadataBuilder.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.Mode.*;
 
 @Service
 @ApplicationScoped
@@ -64,55 +62,52 @@ public class MetadataServiceImpl implements MetadataService {
     private IOService ioService;
 
     @Inject
-    private Identity identity;
-
-    @Inject
     private Paths paths;
 
     @Override
-    public Metadata getMetadata(final Path resource) {
+    public Metadata getMetadata( final Path resource ) {
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert(resource);
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        final DublinCoreView dcoreView = ioService.getFileAttributeView(path, DublinCoreView.class);
-        final DiscussionView discussView = ioService.getFileAttributeView(path, DiscussionView.class);
-        final OtherMetaView otherMetaView = ioService.getFileAttributeView(path, OtherMetaView.class);
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView(path, VersionAttributeView.class);
+        final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
+        final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );
+        final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );
+        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
 
         return newMetadata()
-                .withPath(paths.convert(path.toRealPath()))
-                .withCheckinComment(versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get(versionAttributeView.readAttributes().history().size() - 1).comment() : null)
-                .withLastContributor(versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get(versionAttributeView.readAttributes().history().size() - 1).author() : null)
-                .withCreator(versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get(0).author() : null)
-                .withLastModified(new Date(versionAttributeView.readAttributes().lastModifiedTime().toMillis()))
-                .withDateCreated(new Date(versionAttributeView.readAttributes().creationTime().toMillis()))
-                .withSubject(dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get(0) : null)
-                .withType(dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get(0) : null)
-                .withExternalRelation(dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get(0) : null)
-                .withExternalSource(dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get(0) : null)
-                .withDescription(dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get(0) : null)
-                .withDisabledOption(otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals(DISABLED) : false)
-                .withCategories(otherMetaView.readAttributes().categories())
-                .withDiscussion(discussView.readAttributes().discussion())
-                .withVersion(new ArrayList<VersionRecord>(versionAttributeView.readAttributes().history().size()) {{
-                    for (final VersionRecord record : versionAttributeView.readAttributes().history()) {
-                        add(new PortableVersionRecord(record.id(), record.author(), record.comment(), record.date(), record.uri()));
+                .withPath( paths.convert( path.toRealPath() ) )
+                .withCheckinComment( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( versionAttributeView.readAttributes().history().size() - 1 ).comment() : null )
+                .withLastContributor( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( versionAttributeView.readAttributes().history().size() - 1 ).author() : null )
+                .withCreator( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( 0 ).author() : null )
+                .withLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) )
+                .withDateCreated( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) )
+                .withSubject( dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get( 0 ) : null )
+                .withType( dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get( 0 ) : null )
+                .withExternalRelation( dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get( 0 ) : null )
+                .withExternalSource( dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get( 0 ) : null )
+                .withDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : null )
+                .withDisabledOption( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false )
+                .withCategories( otherMetaView.readAttributes().categories() )
+                .withDiscussion( discussView.readAttributes().discussion() )
+                .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().size() ) {{
+                    for ( final VersionRecord record : versionAttributeView.readAttributes().history() ) {
+                        add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
                     }
-                }})
+                }} )
                 .build();
     }
 
     @Override
-    public Map<String, Object> configAttrs(final Map<String, Object> _attrs,
-                                           final Metadata metadata) {
-        checkNotNull("_attrs", _attrs);
-        checkNotNull("metadata", metadata);
+    public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
+                                            final Metadata metadata ) {
+        checkNotNull( "_attrs", _attrs );
+        checkNotNull( "metadata", metadata );
 
-        Map<String, Object> attrs = DublinCoreAttributesUtil.cleanup(_attrs);
-        attrs = DiscussionAttributesUtil.cleanup(attrs);
-        attrs = OtherMetaAttributesUtil.cleanup(attrs);
+        Map<String, Object> attrs = DublinCoreAttributesUtil.cleanup( _attrs );
+        attrs = DiscussionAttributesUtil.cleanup( attrs );
+        attrs = OtherMetaAttributesUtil.cleanup( attrs );
 
-        attrs.putAll(DiscussionAttributesUtil.toMap(
+        attrs.putAll( DiscussionAttributesUtil.toMap(
                 new DiscussionAttributes() {
                     @Override
                     public List<DiscussionRecord> discussion() {
@@ -163,9 +158,9 @@ public class MetadataServiceImpl implements MetadataService {
                     public Object fileKey() {
                         return null;
                     }
-                }, "*"));
+                }, "*" ) );
 
-        attrs.putAll(OtherMetaAttributesUtil.toMap(
+        attrs.putAll( OtherMetaAttributesUtil.toMap(
                 new OtherMetaAttributes() {
                     @Override
                     public List<String> categories() {
@@ -221,9 +216,9 @@ public class MetadataServiceImpl implements MetadataService {
                     public Object fileKey() {
                         return null;
                     }
-                }, "*"));
+                }, "*" ) );
 
-        attrs.putAll(DublinCoreAttributesUtil.toMap(
+        attrs.putAll( DublinCoreAttributesUtil.toMap(
                 new DublinCoreAttributes() {
 
                     @Override
@@ -238,15 +233,15 @@ public class MetadataServiceImpl implements MetadataService {
 
                     @Override
                     public List<String> subjects() {
-                        return new ArrayList<String>(1) {{
-                            add(metadata.getSubject());
+                        return new ArrayList<String>( 1 ) {{
+                            add( metadata.getSubject() );
                         }};
                     }
 
                     @Override
                     public List<String> descriptions() {
-                        return new ArrayList<String>(1) {{
-                            add(metadata.getDescription());
+                        return new ArrayList<String>( 1 ) {{
+                            add( metadata.getDescription() );
                         }};
                     }
 
@@ -262,8 +257,8 @@ public class MetadataServiceImpl implements MetadataService {
 
                     @Override
                     public List<String> types() {
-                        return new ArrayList<String>(1) {{
-                            add(metadata.getType());
+                        return new ArrayList<String>( 1 ) {{
+                            add( metadata.getType() );
                         }};
                     }
 
@@ -279,8 +274,8 @@ public class MetadataServiceImpl implements MetadataService {
 
                     @Override
                     public List<String> sources() {
-                        return new ArrayList<String>(1) {{
-                            add(metadata.getExternalSource());
+                        return new ArrayList<String>( 1 ) {{
+                            add( metadata.getExternalSource() );
                         }};
                     }
 
@@ -291,8 +286,8 @@ public class MetadataServiceImpl implements MetadataService {
 
                     @Override
                     public List<String> relations() {
-                        return new ArrayList<String>(1) {{
-                            add(metadata.getExternalRelation());
+                        return new ArrayList<String>( 1 ) {{
+                            add( metadata.getExternalRelation() );
                         }};
                     }
 
@@ -350,31 +345,23 @@ public class MetadataServiceImpl implements MetadataService {
                     public Object fileKey() {
                         return null;
                     }
-                }, "*"));
+                }, "*" ) );
 
         return attrs;
     }
 
-
-    public Map<String, Object> setUpAttributes(Path path, Metadata metadata) {
+    public Map<String, Object> setUpAttributes( Path path,
+                                                Metadata metadata ) {
         Map<String, Object> attributes;
         try {
-            attributes = ioService.readAttributes(paths.convert(path));
-        } catch (final NoSuchFileException ex) {
+            attributes = ioService.readAttributes( paths.convert( path ) );
+        } catch ( final NoSuchFileException ex ) {
             attributes = new HashMap<String, Object>();
         }
-        if (metadata != null) {
-            attributes = configAttrs(attributes, metadata);
+        if ( metadata != null ) {
+            attributes = configAttrs( attributes, metadata );
         }
         return attributes;
     }
 
-    @Override
-    public CommentedOption getCommentedOption(String commitMessage) {
-        return new CommentedOption(
-                identity.getName(),
-                null,
-                commitMessage,
-                new Date());
-    }
 }
