@@ -1,68 +1,23 @@
-/*
- * Copyright 2012 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kie.guvnor.guided.scorecard.client;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditor;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 
-public class GuidedScoreCardEditorView
-        extends Composite
-        implements GuidedScoreCardEditorPresenter.View {
+public interface GuidedScoreCardEditorView
+        extends IsWidget {
 
-    private GuidedScoreCardEditor editor = new GuidedScoreCardEditor();
 
-    public GuidedScoreCardEditorView() {
-        initWidget( editor );
-    }
+    void setContent(final ScoreCardModel model,
+                    final DataModelOracle oracle);
 
-    @Override
-    public void setContent( final ScoreCardModel model,
-                            final DataModelOracle oracle ) {
-        this.editor.setContent( model,
-                                oracle );
-    }
+    ScoreCardModel getModel();
 
-    @Override
-    public ScoreCardModel getModel() {
-        return this.editor.getModel();
-    }
+    boolean isDirty();
 
-    @Override
-    public boolean isDirty() {
-        //TODO This editor does not currently support "isDirty"
-        return false;
-    }
+    void setNotDirty();
 
-    @Override
-    public void setNotDirty() {
-        //TODO This editor does not currently support "isDirty"
-    }
+    boolean confirmClose();
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
+    void alertReadOnly();
 }

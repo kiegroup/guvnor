@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -32,9 +31,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.events.RestoreEvent;
@@ -69,24 +66,6 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 @WorkbenchEditor(identifier = "GuidedScoreCardEditor", fileTypes = "*.scgd")
 public class GuidedScoreCardEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final ScoreCardModel model,
-                         final DataModelOracle oracle );
-
-        ScoreCardModel getModel();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-        void alertReadOnly();
-    }
-
     @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
 
@@ -100,7 +79,7 @@ public class GuidedScoreCardEditorPresenter {
     private Caller<VersionService> versionService;
 
     @Inject
-    private View view;
+    private GuidedScoreCardEditorView view;
 
     @Inject
     private ViewSourceView viewSource;
@@ -124,7 +103,7 @@ public class GuidedScoreCardEditorPresenter {
     private Path path;
     private boolean isReadOnly;
 
-    @PostConstruct
+    @OnStart
     public void init() {
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
