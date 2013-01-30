@@ -1,5 +1,6 @@
 /target
 /local
+/repository
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
