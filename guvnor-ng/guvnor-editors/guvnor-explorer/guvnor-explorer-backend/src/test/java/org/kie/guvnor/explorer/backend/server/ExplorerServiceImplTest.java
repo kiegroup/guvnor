@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.explorer.model.BreadCrumb;
@@ -66,8 +65,6 @@ public class ExplorerServiceImplTest {
     }
 
     @Test
-    @Ignore("getParent does not return the same Path as a direct lookup of the parent path")
-    //This test highlights a problem with Path.getParent(). porcelli is looking into providing a fix.
     public void testParent() throws URISyntaxException {
         final URL parentUrl = this.getClass().getResource( "/" );
         final org.kie.commons.java.nio.file.Path parentNioPath = fs.getPath( parentUrl.toURI() );
@@ -76,7 +73,7 @@ public class ExplorerServiceImplTest {
         final org.kie.commons.java.nio.file.Path childNioPath = fs.getPath( childUrl.toURI() );
         final org.kie.commons.java.nio.file.Path childParentNioPath = childNioPath.getParent();
 
-        assertEquals( parentUrl,
+        assertEquals( parentNioPath,
                       childParentNioPath );
     }
 
@@ -215,9 +212,8 @@ public class ExplorerServiceImplTest {
                       items.get( 1 ).getPath() );
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
                       items.get( 2 ).getPath() );
-        //Need to append a "/" as Path.getParent() does not include the trailing "/". See testParent.
-        assertEquals( makePath( "/" ).toURI(),
-                      items.get( 3 ).getPath().toURI() + "/" );
+        assertEquals( makePath( "/" ),
+                      items.get( 3 ).getPath() );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
