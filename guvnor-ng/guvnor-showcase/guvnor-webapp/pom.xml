@@ -214,6 +214,24 @@
       <artifactId>guvnor-explorer-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-globals-editor-api</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-globals-editor-client</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-globals-editor-backend</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -396,6 +414,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-guided-scorecard-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
