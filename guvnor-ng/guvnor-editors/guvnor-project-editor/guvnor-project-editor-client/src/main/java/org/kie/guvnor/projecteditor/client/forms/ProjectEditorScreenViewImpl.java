@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -32,6 +33,8 @@ public class ProjectEditorScreenViewImpl
 
     private final Event<NotificationEvent> notificationEvent;
     private Presenter presenter;
+    private MetadataWidget pomMetaDataPanel = new MetadataWidget();
+    private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
 
     @Inject
     public ProjectEditorScreenViewImpl(Event<NotificationEvent> notificationEvent) {
@@ -54,11 +57,7 @@ public class ProjectEditorScreenViewImpl
             public void onLostFocus() {
             }
         });
-    }
-
-    @Override
-    public void setPOMMetadataPanel(MetadataWidget pomMetaDataPanel) {
-        addPage(new Page(pomMetaDataPanel, ProjectEditorConstants.INSTANCE.PomDotXmlMetadata()) {
+        addPage(new Page(this.pomMetaDataPanel, ProjectEditorConstants.INSTANCE.PomDotXmlMetadata()) {
             @Override
             public void onFocus() {
                 presenter.onPOMMetadataTabSelected();
@@ -82,11 +81,7 @@ public class ProjectEditorScreenViewImpl
             public void onLostFocus() {
             }
         });
-    }
-
-    @Override
-    public void setKModuleMetadataPanel(MetadataWidget kModuleMetaDataPanel) {
-        addPage(new Page(kModuleMetaDataPanel, ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata()) {
+        addPage(new Page(this.kModuleMetaDataPanel, ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata()) {
             @Override
             public void onFocus() {
                 presenter.onKModuleMetadataTabSelected();
@@ -111,5 +106,15 @@ public class ProjectEditorScreenViewImpl
     @Override
     public String getBuildMenuItemText() {
         return ProjectEditorConstants.INSTANCE.Build();
+    }
+
+    @Override
+    public void setPOMMetadata(Metadata metadata) {
+        pomMetaDataPanel.setContent(metadata, false);
+    }
+
+    @Override
+    public void setKModuleMetadata(Metadata metadata) {
+        kModuleMetaDataPanel.setContent(metadata, false);
     }
 }

@@ -40,4 +40,5 @@ public interface DRLTextEditorService
                final String content,
                final String comment );
 
+    void save(Path path, String content);
 }

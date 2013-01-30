@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.inject.Instance;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +24,15 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.commons.service.source.SourceService;
 
+import javax.enterprise.inject.Instance;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SourceServicesImplTest {
 
@@ -39,79 +42,79 @@ public class SourceServicesImplTest {
 
     @Before
     public void setUp() throws Exception {
-        instance = mock( Instance.class );
+        instance = mock(Instance.class);
         sourceServices = new ArrayList<SourceService>();
         pathsToDelete = new ArrayList<Path>();
     }
 
     @After
     public void clearDown() {
-        for ( final Path p : pathsToDelete ) {
-            Files.delete( p );
+        for (final Path p : pathsToDelete) {
+            Files.delete(p);
         }
     }
 
     @Test
     public void testSomethingSimple() throws Exception {
-        addToList( getSourceService( ".drl" ) );
-        assertTrue( new SourceServicesImpl( instance ).hasServiceFor( makePath( "myFile",
-                                                                                ".drl" ) ) );
+        addToList(getSourceService(".drl"));
+        assertTrue(new SourceServicesImpl(instance).hasServiceFor(makePath("myFile",
+                ".drl")));
     }
 
     @Test
     public void testMissing() throws Exception {
-        addToList( getSourceService( ".notHere" ) );
-        assertFalse( new SourceServicesImpl( instance ).hasServiceFor( makePath( "myFile",
-                                                                                 ".drl" ) ) );
+        addToList(getSourceService(".notHere"));
+        assertFalse(new SourceServicesImpl(instance).hasServiceFor(makePath("myFile",
+                ".drl")));
     }
 
     @Test
     public void testShorter() throws Exception {
-        SourceService DRL = getSourceService( ".drl" );
-        SourceService modelDRL = getSourceService( ".model.drl" );
-        addToList( DRL, modelDRL );
+        SourceService DRL = getSourceService(".drl");
+        SourceService modelDRL = getSourceService(".model.drl");
+        addToList(DRL, modelDRL);
 
-        assertEquals( DRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
-                                                                                       ".drl" ) ) );
+        assertEquals(DRL, new SourceServicesImpl(instance).getServiceFor(makePath("myFile",
+                ".drl")));
 
         sourceServices.clear();
 
-        addToList( modelDRL, DRL );
+        addToList(modelDRL, DRL);
 
-        assertEquals( DRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
-                                                                                       ".drl" ) ) );
+        assertEquals(DRL, new SourceServicesImpl(instance).getServiceFor(makePath("myFile",
+                ".drl")));
     }
 
     @Test
     public void testLonger() throws Exception {
-        SourceService DRL = getSourceService( ".drl" );
-        SourceService modelDRL = getSourceService( ".model.drl" );
-        addToList( DRL,
-                   modelDRL );
+        SourceService DRL = getSourceService(".drl");
+        SourceService modelDRL = getSourceService(".model.drl");
+        addToList(DRL,
+                modelDRL);
 
-        assertEquals( modelDRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
-                                                                                            ".model.drl" ) ) );
+        assertEquals(modelDRL, new SourceServicesImpl(instance).getServiceFor(makePath("myFile",
+                ".model.drl")));
 
         sourceServices.clear();
 
-        addToList( modelDRL,
-                   DRL );
+        addToList(modelDRL,
+                DRL);
 
-        assertEquals( modelDRL, new SourceServicesImpl( instance ).getServiceFor( makePath( "myFile",
-                                                                                            ".model.drl" ) ) );
+        assertEquals(modelDRL, new SourceServicesImpl(instance).getServiceFor(makePath("myFile",
+                ".model.drl")));
     }
 
-    private SourceService getSourceService( final String extension ) {
+    private SourceService getSourceService(final String extension) {
         return new SourceService() {
 
             @Override
-            public boolean accepts( final Path path ) {
+            public boolean accepts(final Path path) {
                 final String uri = path.toUri().toString();
-                return uri.substring( uri.length() - extension.length() ).equals( extension );
+                return uri.substring(uri.length() - extension.length()).equals(extension);
             }
 
             @Override
-            public SourceContext getSource( final Path path ) {
+            public SourceContext getSource(final Path path) {
                 return null;
             }
 
@@ -122,25 +125,30 @@ public class SourceServicesImplTest {
         };
     }
 
-    private void addToList( SourceService... services ) {
+    private void addToList(SourceService... services) {
 
-        for ( SourceService service : services ) {
-            sourceServices.add( service );
+        for (SourceService service : services) {
+            sourceServices.add(service);
         }
 
         when(
                 instance.iterator()
-            ).thenReturn(
+        ).thenReturn(
                 sourceServices.iterator()
-                        );
+        );
     }
 
-    private Path makePath( final String prefix,
-                           final String suffix ) {
-        final Path p = Files.createTempFile( prefix,
-                                             suffix );
-        pathsToDelete.add( p );
-        return p;
+    private Path makePath(final String prefix,
+                          final String suffix) throws URISyntaxException {
+        Path path = mock(Path.class);
+
+
+        when(
+                path.toUri()
+        ).thenReturn(
+                new URI(prefix + suffix)
+        );
+        return path;
     }
 
 }

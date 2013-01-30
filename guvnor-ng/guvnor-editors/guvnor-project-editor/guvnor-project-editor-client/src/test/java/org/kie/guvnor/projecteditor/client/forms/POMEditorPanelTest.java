@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -88,6 +89,7 @@ public class POMEditorPanelTest {
                 metadata);
 
         POM savedGav = pomServiceCaller.getSavedPOM();
+        assertNotNull(savedGav);
         assertEquals("group2", savedGav.getGav().getGroupId());
         assertEquals("artifact2", savedGav.getGav().getArtifactId());
         assertEquals("2.2.2", savedGav.getGav().getVersion());

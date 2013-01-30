@@ -42,7 +42,7 @@ public class GuidedEditorMigrater {
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         RuleModel vfsRuleModel = convertRuleModel(
                 (org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
-        guidedRuleEditorService.save(path, vfsRuleModel, null, checkinComment);
+        guidedRuleEditorService.save(path, vfsRuleModel, checkinComment);
     }
 
     private RuleModel convertRuleModel(

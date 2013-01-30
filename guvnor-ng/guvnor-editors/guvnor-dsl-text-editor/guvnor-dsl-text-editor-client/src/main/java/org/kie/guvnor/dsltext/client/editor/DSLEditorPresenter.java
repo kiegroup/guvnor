@@ -27,7 +27,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -120,7 +120,7 @@ public class DSLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper(path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
             public void execute(final String commitMessage) {
                 dslTextEditorService.call(new RemoteCallback<Void>() {
@@ -134,7 +134,7 @@ public class DSLEditorPresenter {
                         metadataWidget.getContent(),
                         commitMessage);
             }
-        }).save();
+        });
     }
 
     @IsDirty

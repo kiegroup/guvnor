@@ -28,7 +28,7 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -191,25 +191,25 @@ public class GuidedScoreCardEditorPresenter {
             return;
         }
 
-        new SaveOpWrapper( path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
-            public void execute( final String comment ) {
-                scoreCardEditorService.call( new RemoteCallback<Path>() {
+            public void execute(final String comment) {
+                scoreCardEditorService.call(new RemoteCallback<Path>() {
                     @Override
-                    public void callback( final Path response ) {
+                    public void callback(final Path response) {
                         view.setNotDirty();
                         resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
 
                     }
-                } ).save( path,
-                          view.getModel(),
-                          resourceConfigWidget.getContent(),
-                          metadataWidget.getContent(),
-                          comment );
+                }).save(path,
+                        view.getModel(),
+                        resourceConfigWidget.getContent(),
+                        metadataWidget.getContent(),
+                        comment);
             }
-        } ).save();
+        });
     }
 
     @WorkbenchPartView
@@ -268,19 +268,19 @@ public class GuidedScoreCardEditorPresenter {
             builder.addRestoreVersion( new Command() {
                 @Override
                 public void execute() {
-                    new SaveOpWrapper( path, new SaveCommand() {
+                    new SaveOperationService().save(path, new SaveCommand() {
                         @Override
-                        public void execute( final String comment ) {
-                            versionService.call( new RemoteCallback<Path>() {
+                        public void execute(final String comment) {
+                            versionService.call(new RemoteCallback<Path>() {
                                 @Override
-                                public void callback( final Path restored ) {
+                                public void callback(final Path restored) {
                                     //TODO {porcelli} close current?
-                                    restoreEvent.fire( new RestoreEvent( restored ) );
+                                    restoreEvent.fire(new RestoreEvent(restored));
                                 }
-                            } ).restore( path,
-                                         comment );
+                            }).restore(path,
+                                    comment);
                         }
-                    } ).save();
+                    });
                 }
             } );
         } else {

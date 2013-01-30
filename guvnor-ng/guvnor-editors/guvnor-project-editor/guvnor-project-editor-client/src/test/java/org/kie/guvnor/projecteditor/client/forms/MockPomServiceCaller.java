@@ -44,13 +44,16 @@ public class MockPomServiceCaller
 
             @Override
             public Path savePOM(String commitMessage, Path pathToPOM, POM pomModel, Metadata metadata) {
-                return null;  //TODO -Rikkola-
+                MockPomServiceCaller.this.pomModel=pomModel;
+                callback.callback(pathToPOM);
+                return pathToPOM;
             }
 
             @Override
             public Path savePOM(Path pathToPOM, POM pomModel) {
                 MockPomServiceCaller.this.pomModel = pomModel;
-                return null;  //TODO -Rikkola-
+                callback.callback(pathToPOM);
+                return pathToPOM;
             }
 
         };

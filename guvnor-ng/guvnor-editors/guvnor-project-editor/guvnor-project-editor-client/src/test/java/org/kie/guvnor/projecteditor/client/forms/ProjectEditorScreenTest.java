@@ -19,24 +19,28 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static org.junit.Assert.assertTrue;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.*;
+import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickFirst;
+import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickSecond;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProjectEditorScreenTest {
     private ProjectEditorScreenView view;
-    private POMEditorPanel gavPanel;
+    private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
     private ProjectEditorScreenPresenter screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockBuildServiceCaller buildServiceCaller;
     private MockMetadataServiceCaller metadataServiceCaller;
+    private SaveOperationService saveOperationService;
 
     @Before
     public void setUp() throws Exception {
@@ -44,17 +48,18 @@ public class ProjectEditorScreenTest {
         when(view.getSaveMenuItemText()).thenReturn("");
         when(view.getBuildMenuItemText()).thenReturn("");
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
-        gavPanel = mock(POMEditorPanel.class);
+        pomPanel = mock(POMEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();
         metadataServiceCaller = new MockMetadataServiceCaller();
-        screen = new ProjectEditorScreenPresenter(view, gavPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller);
+        saveOperationService = mock(SaveOperationService.class);
+        screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
     }
 
     @Test
     public void testBasicSetup() throws Exception {
-        verify(view).setPOMEditorPanel(gavPanel);
+        verify(view).setPOMEditorPanel(pomPanel);
         verify(view, never()).setKModuleEditorPanel(kModuleEditorPanel);
     }
 
@@ -64,7 +69,7 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        verify(gavPanel).init(path);
+        verify(pomPanel).init(path);
         verify(kModuleEditorPanel, never()).init(any(Path.class));
     }
 
@@ -75,24 +80,24 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        verify(gavPanel).init(path);
-        verify(kModuleEditorPanel).init(pathToKModuleXML);
-    }
-
-    @Test
-    public void testEnableKProject() throws Exception {
-        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
-        Path pathToGav = mock(Path.class);
-        screen.init(pathToGav);
-
-        Path pathToKProjectXML = mock(Path.class);
-        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKProjectXML);
-        MenuBar menuBar = screen.buildMenuBar();
-        clickThird(menuBar);
-
-        verify(kModuleEditorPanel).init(pathToKProjectXML);
+        verify(pomPanel).init(path);
         verify(view).setKModuleEditorPanel(kModuleEditorPanel);
     }
+
+//    @Test
+//    public void testEnableKProject() throws Exception {
+//        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
+//        Path pathToGav = mock(Path.class);
+//        screen.init(pathToGav);
+//
+//        Path pathToKProjectXML = mock(Path.class);
+//        projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKProjectXML);
+//        MenuBar menuBar = screen.buildMenuBar();
+//        clickThird(menuBar);
+//
+//        verify(kModuleEditorPanel).init(pathToKProjectXML);
+//        verify(view).setKModuleEditorPanel(kModuleEditorPanel);
+//    }
 
     @Test
     public void testSave() throws Exception {
@@ -100,10 +105,11 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        MenuBar menuBar = screen.buildMenuBar();
-        clickFirst(menuBar);
+        clickSave();
 
-        verify(gavPanel).save(anyString(), any(Command.class), any(Metadata.class));
+        clickOkToCommitPopup();
+
+        verify(pomPanel).save(anyString(), any(Command.class), any(Metadata.class));
         verify(kModuleEditorPanel, never()).save(anyString(), any(Metadata.class));
     }
 
@@ -114,11 +120,14 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        MenuBar menuBar = screen.buildMenuBar();
-        clickFirst(menuBar);
+        initKModuleEditorPanel();
+
+        clickSave();
+
+        clickOkToCommitPopup();
 
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(gavPanel).save(anyString(), commandArgumentCaptor.capture(), any(Metadata.class));
+        verify(pomPanel).save(anyString(), commandArgumentCaptor.capture(), any(Metadata.class));
         commandArgumentCaptor.getValue().execute();
         verify(kModuleEditorPanel).save(anyString(), any(Metadata.class));
     }
@@ -133,5 +142,24 @@ public class ProjectEditorScreenTest {
         clickSecond(menuBar);
 
         assertTrue(buildServiceCaller.isBuildWasCalled());
+    }
+
+    private void initKModuleEditorPanel() {
+        when(
+                kModuleEditorPanel.hasBeenInitialized()
+        ).thenReturn(
+                true
+        );
+    }
+
+    private void clickSave() {
+        MenuBar menuBar = screen.buildMenuBar();
+        clickFirst(menuBar);
+    }
+
+    private void clickOkToCommitPopup() {
+        ArgumentCaptor<SaveCommand> saveCommandArgumentCaptor = ArgumentCaptor.forClass(SaveCommand.class);
+        verify(saveOperationService).save(any(Path.class), saveCommandArgumentCaptor.capture());
+        saveCommandArgumentCaptor.getValue().execute("Commit Message");
     }
 }

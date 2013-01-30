@@ -23,8 +23,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -48,9 +47,7 @@ public class
 
     private ProjectEditorScreenView view;
     private POMEditorPanel pomPanel;
-    private MetadataWidget pomMetaDataPanel = new MetadataWidget();
     private KModuleEditorPanel kModuleEditorPanel;
-    private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
     private Caller<KModuleService> projectEditorServiceCaller;
     private Caller<BuildService> buildServiceCaller;
 
@@ -59,6 +56,7 @@ public class
     private Caller<MetadataService> metadataService;
     private Metadata kmoduleMetadata;
     private Metadata pomMetadata;
+    private SaveOperationService saveOperationService;
 
     public ProjectEditorScreenPresenter() {
     }
@@ -70,17 +68,18 @@ public class
             @New KModuleEditorPanel kModuleEditorPanel,
             Caller<KModuleService> projectEditorServiceCaller,
             Caller<BuildService> buildServiceCaller,
-            Caller<MetadataService> metadataService ) {
+            Caller<MetadataService> metadataService,
+            SaveOperationService saveOperationService) {
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.buildServiceCaller = buildServiceCaller;
         this.metadataService = metadataService;
+        this.saveOperationService = saveOperationService;
 
         view.setPresenter(this);
         view.setPOMEditorPanel(pomPanel);
-        view.setPOMMetadataPanel(pomMetaDataPanel);
     }
 
     @OnStart
@@ -103,7 +102,6 @@ public class
 
     private void setUpKProject() {
         view.setKModuleEditorPanel(kModuleEditorPanel);
-        view.setKModuleMetadataPanel(kModuleMetaDataPanel);
     }
 
     @WorkbenchPartTitle
@@ -125,7 +123,7 @@ public class
                 new Command() {
                     @Override
                     public void execute() {
-                        new SaveOpWrapper(pathToPomXML, new SaveCommand() {
+                        saveOperationService.save(pathToPomXML, new SaveCommand() {
                             @Override
                             public void execute(final String comment) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.
@@ -142,9 +140,7 @@ public class
                                         },
                                         pomMetadata);
                             }
-                        }).save();
-
-
+                        });
                     }
                 }
         ));
@@ -195,7 +191,7 @@ public class
                 @Override
                 public void callback(Metadata metadata) {
                     pomMetadata = metadata;
-                    pomMetaDataPanel.setContent(metadata, false);
+                    view.setPOMMetadata(metadata);
                 }
             }).getMetadata(pathToPomXML);
         }
@@ -215,7 +211,7 @@ public class
                 @Override
                 public void callback(Metadata metadata) {
                     kmoduleMetadata = metadata;
-                    kModuleMetaDataPanel.setContent(metadata, false);
+                    view.setKModuleMetadata(metadata);
                 }
             }).getMetadata(pathToKModuleXML);
         }

@@ -99,6 +99,13 @@ public class DRLTextEditorServiceImpl
     }
 
     @Override
+    public void save( final Path path,
+                      final String content ) {
+        ioService.write( paths.convert( path ),
+                         content );
+    }
+
+    @Override
     public void save( final Path resource,
                       final String content,
                       final ResourceConfig config,

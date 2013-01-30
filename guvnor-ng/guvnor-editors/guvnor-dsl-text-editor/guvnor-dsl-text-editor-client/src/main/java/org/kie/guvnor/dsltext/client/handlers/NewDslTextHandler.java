@@ -9,7 +9,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.resources.images.ImageResources;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
@@ -48,25 +48,25 @@ public class NewDslTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create(final String fileName) {
+        final Path path = buildFullPathName(fileName);
 
-        new SaveOpWrapper( path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
-            public void execute( final String comment ) {
-                dslTextService.call( new RemoteCallback<Void>() {
+            public void execute(final String comment) {
+                dslTextService.call(new RemoteCallback<Void>() {
                     @Override
-                    public void callback( Void aVoid ) {
+                    public void callback(Void aVoid) {
                         notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "DSLEditor" );
-                        placeManager.goTo( place );
+                        final PlaceRequest place = new PathPlaceRequest(path,
+                                "DSLEditor");
+                        placeManager.goTo(place);
                     }
-                } ).save( path,
-                          "",
-                          comment );
+                }).save(path,
+                        "",
+                        comment);
             }
-        } ).save();
+        });
     }
 
 }

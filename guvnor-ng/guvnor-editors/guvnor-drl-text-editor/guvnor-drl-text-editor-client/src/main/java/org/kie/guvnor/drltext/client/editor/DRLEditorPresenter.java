@@ -26,7 +26,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -176,24 +176,24 @@ public class DRLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper( path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
-            public void execute( final String commitMessage ) {
-                drlTextEditorService.call( new RemoteCallback<Path>() {
+            public void execute(final String commitMessage) {
+                drlTextEditorService.call(new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Path response ) {
+                    public void callback(Path response) {
                         view.setNotDirty();
                         resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
                     }
-                } ).save( path,
-                          view.getContent(),
-                          resourceConfigWidget.getContent(),
-                          metadataWidget.getContent(),
-                          commitMessage );
+                }).save(path,
+                        view.getContent(),
+                        resourceConfigWidget.getContent(),
+                        metadataWidget.getContent(),
+                        commitMessage);
             }
-        } ).save();
+        });
     }
 
     @IsDirty

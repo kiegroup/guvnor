@@ -9,7 +9,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.factmodel.client.resources.images.ImageResources;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -53,22 +53,22 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
         final Path path = buildFullPathName( fileName );
         final FactModels factModel = new FactModels();
 
-        new SaveOpWrapper( path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
-            public void execute( final String comment ) {
-                factModelService.call( new RemoteCallback<Void>() {
+            public void execute(final String comment) {
+                factModelService.call(new RemoteCallback<Void>() {
                     @Override
-                    public void callback( Void aVoid ) {
+                    public void callback(Void aVoid) {
                         notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "FactModelsEditor" );
-                        placeManager.goTo( place );
+                        final PlaceRequest place = new PathPlaceRequest(path,
+                                "FactModelsEditor");
+                        placeManager.goTo(place);
                     }
-                } ).save( path,
-                          factModel,
-                          comment );
+                }).save(path,
+                        factModel,
+                        comment);
             }
-        } ).save();
+        });
     }
 
 }

@@ -27,7 +27,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
-import org.kie.guvnor.commons.ui.client.save.SaveOpWrapper;
+import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
@@ -36,7 +36,6 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnMayClose;
@@ -152,7 +151,7 @@ public class EnumEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOpWrapper(path, new SaveCommand() {
+        new SaveOperationService().save(path, new SaveCommand() {
             @Override
             public void execute(final String commitMessage) {
                 enumService.call(new RemoteCallback<Void>() {
@@ -166,7 +165,7 @@ public class EnumEditorPresenter {
                         metadataWidget.getContent(),
                         commitMessage);
             }
-        }).save();
+        });
     }
 
     @IsDirty
