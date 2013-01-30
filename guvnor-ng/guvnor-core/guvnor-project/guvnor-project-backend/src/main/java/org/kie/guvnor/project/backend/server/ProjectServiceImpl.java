@@ -41,8 +41,11 @@ public class ProjectServiceImpl
 
     private static final String SOURCE_FILENAME = "src";
     private static final String POM_FILENAME = "pom.xml";
-    private static final String RESOURCES_PATH = "src/main/resources";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
+
+    private static final String JAVA_PATH = "src/main/java";
+    private static final String RESOURCES_PATH = "src/main/resources";
+
     private IOService ioService;
     private Paths paths;
 
@@ -125,9 +128,17 @@ public class ProjectServiceImpl
         }
 
         //The Path must be within a Project's src/main/resources path
+        boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path javaPath = paths.convert( projectRoot ).resolve( JAVA_PATH );
+        if ( path.startsWith( javaPath ) ) {
+            resolved = true;
+        }
         final org.kie.commons.java.nio.file.Path resourcesPath = paths.convert( projectRoot ).resolve( RESOURCES_PATH );
-        if ( !path.startsWith( resourcesPath ) ) {
+        if ( path.startsWith( resourcesPath ) ) {
+            resolved = true;
+        }
+        if ( !resolved ) {
             return null;
         }
 
