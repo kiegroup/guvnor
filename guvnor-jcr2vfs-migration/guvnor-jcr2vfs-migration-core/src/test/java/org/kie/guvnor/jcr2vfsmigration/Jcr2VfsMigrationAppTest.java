@@ -28,7 +28,7 @@ public class Jcr2VfsMigrationAppTest {
     }
 
     private void migrate(String datasetName) throws IOException {
-        File testBaseDir = new File("target/test/" + getClass().getSimpleName());
+        File testBaseDir = new File("target/test/" + datasetName);
         if (testBaseDir.exists()) {
             FileUtils.deleteDirectory(testBaseDir);
         }
