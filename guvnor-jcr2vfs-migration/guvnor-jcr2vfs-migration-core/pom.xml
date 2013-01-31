@@ -141,7 +141,6 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-core-services-backend</artifactId>
     </dependency> 
-    <dependency>    
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-jgit</artifactId>
