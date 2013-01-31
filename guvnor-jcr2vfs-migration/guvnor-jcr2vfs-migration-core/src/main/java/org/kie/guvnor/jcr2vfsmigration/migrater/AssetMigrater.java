@@ -28,8 +28,13 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FormDefEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 
 
 @ApplicationScoped
@@ -58,6 +63,13 @@ public class AssetMigrater {
     @Inject
     protected PlainTextAssetMigrater plainTextAssetMigrater;        
 
+    @Inject
+    protected MetadataService metadataService;        
+    @Inject
+    protected MigrationPathManager migrationPathManager;
+    @Inject
+    private Paths paths;
+    
     public void migrateAll() {
         logger.info("  Asset migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
@@ -146,12 +158,22 @@ public class AssetMigrater {
         }
     }
 
-    public void migrateAssetDiscussions(Module jcrModule, String assetUUID) {
-        List<DiscussionRecord> discussions = jcrRepositoryAssetService
-                .loadDiscussionForAsset(assetUUID);
+    public void migrateAssetDiscussions(Module jcrModule, String assetUUID)  throws SerializationException {
+        Asset assetJCR = jcrRepositoryAssetService.loadRuleAsset(assetUUID);
+        List<DiscussionRecord> discussions = jcrRepositoryAssetService.loadDiscussionForAsset(assetUUID);
         
-        //TODO:
+        if(discussions.size() == 0) {
+            return;
+        }
+        
+         //final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        Metadata metadata = new Metadata();
+        for(DiscussionRecord discussion: discussions) {
+            metadata.addDiscussion( new org.kie.guvnor.services.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );           
+        }
 
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, assetJCR);
+        metadataService.setUpAttributes(path, metadata);
     }
 
     // TODO delete code below once we have all of its functionality
