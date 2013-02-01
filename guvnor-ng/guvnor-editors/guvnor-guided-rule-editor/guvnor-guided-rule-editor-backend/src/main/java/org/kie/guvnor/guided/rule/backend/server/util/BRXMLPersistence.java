@@ -186,6 +186,10 @@ public class BRXMLPersistence
         return rm;
     }
 
+    public RuleModel unmarshalUsingDSL( final String str, final String... dsls ) {
+        throw new UnsupportedOperationException();
+    }
+
     protected RuleModel createEmptyModel() {
         return new RuleModel();
     }

@@ -20,7 +20,9 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 
 public interface BRLPersistence {
 
-    public String marshal( final RuleModel model );
+    String marshal( final RuleModel model );
 
-    public RuleModel unmarshal( final String str );
+    RuleModel unmarshal( final String str );
+
+    RuleModel unmarshalUsingDSL( final String str, final String... dsls );
 }

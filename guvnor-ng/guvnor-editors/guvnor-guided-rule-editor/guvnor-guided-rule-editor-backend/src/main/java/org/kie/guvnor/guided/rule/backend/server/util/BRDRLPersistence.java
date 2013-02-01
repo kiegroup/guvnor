@@ -16,14 +16,6 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.ReflectiveVisitor;
@@ -90,6 +82,16 @@ import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class persists the rule model to DRL and back
@@ -1339,13 +1341,145 @@ public class BRDRLPersistence
      * @see BRLPersistence#unmarshal(String)
      */
     public RuleModel unmarshal( String str ) {
-        RuleDescr ruleDescr = parseDrl( str );
+        return getRuleModel( preprocessDSL( str ) );
+    }
+
+    public RuleModel unmarshalUsingDSL( final String str, final String... dsls ) {
+        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ) );
+    }
+
+    private ExpandedDRLInfo parseDSLs(ExpandedDRLInfo expandedDRLInfo, String[] dsls) {
+        for (String dsl : dsls) {
+            for (String line : dsl.split("\n")) {
+                String dslPattern = line.trim();
+                if ( dslPattern.length() > 0 ) {
+                    if ( dslPattern.startsWith("[when]") ) {
+                        expandedDRLInfo.lhsDslPatterns.add(extractDslPattern(dslPattern.substring("[when]".length())));
+                    } else if ( dslPattern.startsWith("[then]") ) {
+                        expandedDRLInfo.rhsDslPatterns.add(extractDslPattern(dslPattern.substring("[then]".length())));
+                    } else if ( dslPattern.startsWith("[]") ) {
+                        String pattern = extractDslPattern(dslPattern.substring("[]".length()));
+                        expandedDRLInfo.lhsDslPatterns.add(pattern);
+                        expandedDRLInfo.rhsDslPatterns.add(pattern);
+                    }
+                }
+            }
+        }
+        return expandedDRLInfo;
+    }
+
+    private String extractDslPattern(String line) {
+        return line.substring(0, line.indexOf('=')).trim();
+    }
+
+    private RuleModel getRuleModel(ExpandedDRLInfo expandedDRLInfo) {
+        RuleDescr ruleDescr = parseDrl(expandedDRLInfo.plainDrl);
         RuleModel m = new RuleModel();
         m.name = ruleDescr.getName();
         boolean isJavaDialect = parseAttributes( m, ruleDescr.getAttributes() );
-        Map<String, String> boundParams = parseLhs( m, ruleDescr.getLhs() );
-        parseRhs( m, (String) ruleDescr.getConsequence(), isJavaDialect, boundParams );
+        Map<String, String> boundParams = parseLhs( m, ruleDescr.getLhs(), expandedDRLInfo );
+        parseRhs( m, (String) ruleDescr.getConsequence(), isJavaDialect, boundParams, expandedDRLInfo );
         return m;
+    }
+
+    private ExpandedDRLInfo preprocessDSL( String str ) {
+        boolean hasDsl = false;
+        StringBuilder drl = new StringBuilder();
+        String thenLine = null;
+        List<String> lhsStatements = new ArrayList<String>();
+        List<String> rhsStatements = new ArrayList<String>();
+        int statementsWithoutParanthesis = 0;
+
+        String[] lines = str.split("\n");
+        RuleSection ruleSection = RuleSection.HEADER;
+        for (String line : lines) {
+            if ( ruleSection == RuleSection.HEADER ) {
+                drl.append(line).append("\n");
+                if ( line.contains("when") ) {
+                    ruleSection = RuleSection.LHS;
+                }
+                continue;
+            }
+            if ( ruleSection == RuleSection.LHS && line.contains("then") ) {
+                thenLine = line;
+                ruleSection = RuleSection.RHS;
+                continue;
+            }
+            if ( line.trim().startsWith(">") ) {
+                hasDsl = true;
+            } else if ( line.indexOf('(') < 0 ) {
+                statementsWithoutParanthesis++;
+            }
+            if ( ruleSection == RuleSection.LHS ) {
+                lhsStatements.add(line);
+            } else {
+                rhsStatements.add(line);
+            }
+        }
+
+        hasDsl |= statementsWithoutParanthesis == lhsStatements.size() + rhsStatements.size();
+
+        ExpandedDRLInfo expandedDRLInfo = new ExpandedDRLInfo(hasDsl);
+        if ( !hasDsl ) {
+            expandedDRLInfo.plainDrl = str;
+            return expandedDRLInfo;
+        }
+
+        int lineCounter = -1;
+        for (String statement : lhsStatements) {
+            lineCounter++;
+            String trimmed = statement.trim();
+            if ( trimmed.startsWith(">") ) {
+                drl.append(trimmed.substring(1)).append("\n");
+            } else {
+                expandedDRLInfo.dslStatementsInLhs.put(lineCounter, trimmed);
+            }
+        }
+
+        drl.append(thenLine).append("\n");
+
+        lineCounter = -1;
+        for (String statement : rhsStatements) {
+            lineCounter++;
+            String trimmed = statement.trim();
+            if (trimmed.endsWith("end")) {
+                trimmed = trimmed.substring(0, trimmed.length()-3).trim();
+            }
+            if (trimmed.length() > 0) {
+                if ( trimmed.startsWith(">") ) {
+                    drl.append(trimmed.substring(1)).append("\n");
+                } else {
+                    expandedDRLInfo.dslStatementsInRhs.put(lineCounter, trimmed);
+                }
+            }
+        }
+
+        expandedDRLInfo.plainDrl = drl.toString();
+
+        return expandedDRLInfo;
+    }
+
+    private enum RuleSection { HEADER, LHS, RHS }
+
+    private static class ExpandedDRLInfo {
+        private final boolean hasDsl;
+        private String plainDrl;
+
+        private Map<Integer, String> dslStatementsInLhs;
+        private Map<Integer, String> dslStatementsInRhs;
+
+        private List<String> lhsDslPatterns;
+        private List<String> rhsDslPatterns;
+
+        private ExpandedDRLInfo(boolean hasDsl) {
+            this.hasDsl = hasDsl;
+            if ( hasDsl ) {
+                dslStatementsInLhs = new HashMap<Integer, String>();
+                dslStatementsInRhs = new HashMap<Integer, String>();
+                lhsDslPatterns = new ArrayList<String>();
+                rhsDslPatterns = new ArrayList<String>();
+            }
+        }
     }
 
     private RuleDescr parseDrl( String drl ) {
@@ -1373,12 +1507,28 @@ public class BRDRLPersistence
     }
 
     private Map<String, String> parseLhs( RuleModel m,
-                                          AndDescr lhs ) {
+                                          AndDescr lhs,
+                                          ExpandedDRLInfo expandedDRLInfo ) {
         Map<String, String> boundParams = new HashMap<String, String>();
+        int lineCounter = -1;
         for ( BaseDescr descr : lhs.getDescrs() ) {
+            lineCounter = parseDslInLhs(m, expandedDRLInfo, lineCounter);
             m.addLhsItem( parseBaseDescr( descr, boundParams ) );
         }
+        parseDslInLhs(m, expandedDRLInfo, lineCounter);
         return boundParams;
+    }
+
+    private int parseDslInLhs(RuleModel m, ExpandedDRLInfo expandedDRLInfo, int lineCounter) {
+        lineCounter++;
+        if ( expandedDRLInfo.hasDsl ) {
+            String dslLine = expandedDRLInfo.dslStatementsInLhs.get(lineCounter);
+            while ( dslLine != null ) {
+                m.addLhsItem(toDSLSentence(expandedDRLInfo.lhsDslPatterns, dslLine));
+                dslLine = expandedDRLInfo.dslStatementsInLhs.get(++lineCounter);
+            }
+        }
+        return lineCounter;
     }
 
     private IPattern parseBaseDescr( BaseDescr descr,
@@ -1503,12 +1653,22 @@ public class BRDRLPersistence
     private void parseRhs( RuleModel m,
                            String rhs,
                            boolean isJavaDialect,
-                           Map<String, String> boundParams ) {
+                           Map<String, String> boundParams,
+                           ExpandedDRLInfo expandedDRLInfo ) {
         PortableWorkDefinition pwd = null;
         Map<String, List<String>> setStatements = new HashMap<String, List<String>>();
         Map<String, String> factsType = new HashMap<String, String>();
 
+        int lineCounter = -1;
         for ( String line : rhs.split( "\n" ) ) {
+            lineCounter++;
+            if ( expandedDRLInfo.hasDsl ) {
+                String dslLine = expandedDRLInfo.dslStatementsInRhs.get(lineCounter);
+                while ( dslLine != null ) {
+                    m.addRhsItem(toDSLSentence(expandedDRLInfo.rhsDslPatterns, dslLine));
+                    dslLine = expandedDRLInfo.dslStatementsInRhs.get(++lineCounter);
+                }
+            }
             line = line.trim();
             if ( line.startsWith( "insertLogical" ) ) {
                 String fact = unwrapParenthesis( line );
@@ -1604,6 +1764,31 @@ public class BRDRLPersistence
             addSettersToAction( entry.getValue(), action, isJavaDialect );
             m.addRhsItem( action );
         }
+
+        if ( expandedDRLInfo.hasDsl ) {
+            String dslLine = expandedDRLInfo.dslStatementsInRhs.get(++lineCounter);
+            while ( dslLine != null ) {
+                m.addRhsItem(toDSLSentence(expandedDRLInfo.rhsDslPatterns, dslLine));
+                dslLine = expandedDRLInfo.dslStatementsInRhs.get(++lineCounter);
+            }
+        }
+    }
+
+    private DSLSentence toDSLSentence(List<String> dslPatterns, String dslLine) {
+        DSLSentence dslSentence = new DSLSentence();
+        for (String dslPattern : dslPatterns) {
+            String regex = dslPattern.replaceAll("\\{\\s*[\\:\\.\\w]+\\s*\\}", "(.*)");
+            Matcher m = Pattern.compile(regex).matcher(dslLine);
+            if ( m.matches() ) {
+                dslSentence.setDefinition( dslPattern );
+                for (int i = 0; i < m.groupCount(); i++) {
+                    dslSentence.getValues().get( i ).setValue( m.group(i+1) );
+                }
+                return dslSentence;
+            }
+        }
+        dslSentence.setDefinition( dslLine );
+        return dslSentence;
     }
 
     private PortableParameterDefinition buildPortableParameterDefinition( String name,

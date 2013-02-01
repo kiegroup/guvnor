@@ -16,10 +16,7 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import java.util.List;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
 import org.kie.guvnor.datamodel.model.DSLSentence;
@@ -63,6 +60,8 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class BRDRLPersistenceTest {
@@ -90,7 +89,11 @@ public class BRDRLPersistenceTest {
         }
 
         RuleModel unmarshalledModel = brlPersistence.unmarshal( drl );
-        assertEquals( drl, brlPersistence.marshal( unmarshalledModel ) );
+        if ( expected != null ) {
+            assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
+        } else {
+            assertEquals( drl, brlPersistence.marshal( unmarshalledModel ) );
+        }
     }
 
     @Test
@@ -340,7 +343,6 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    @Ignore
     public void testMoreComplexRenderingWithDsl() {
         final RuleModel m = getComplexModel( true );
         String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
@@ -353,11 +355,31 @@ public class BRDRLPersistenceTest {
                 + "\t\tSend an email to administrator\n" + "end\n";
 
         checkMarshallUnmarshall( expected, m );
+
+        String drl = brlPersistence.marshal(m);
+        assertEqualsIgnoreWhitespace( expected, drl );
+
+        String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
+
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
+
+        IAction[] actions = unmarshalledModel.rhs;
+        DSLSentence dslSentence = (DSLSentence)actions[actions.length-1];
+        assertEquals("Send an email to {administrator}", dslSentence.getDefinition());
+
+        assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
     }
 
     @Test
     public void testDSLExpansion() {
-        final String dslDefinition = "When the credit rating is {rating:ENUM:Applicant.creditRating}";
+        String expected =
+                "rule \"Rule With DSL\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\tThe credit rating is AA\n" +
+                "\tthen\n" +
+                "end\n";
+        final String dslDefinition = "The credit rating is {rating:ENUM:Applicant.creditRating}";
 
         final DSLSentence dsl = new DSLSentence();
         dsl.setDefinition( dslDefinition );
@@ -378,23 +400,41 @@ public class BRDRLPersistenceTest {
         //Check interpolation
         final String expansion = dsl.interpolate();
 
-        assertEquals( "When the credit rating is AA",
+        assertEquals( "The credit rating is AA",
                       expansion );
         assertEquals( dsl.getDefinition(),
                       dslDefinition );
 
         final RuleModel m = new RuleModel();
+        m.name = "Rule With DSL";
         m.addLhsItem( dsl );
+
+        String drl = brlPersistence.marshal(m);
+        assertEqualsIgnoreWhitespace( expected, drl );
+
+        String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
+
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
+
+        DSLSentence dslSentence = (DSLSentence)unmarshalledModel.lhs[0];
+        assertEquals(dslDefinition, dslSentence.getDefinition());
+        assertEquals( 1, dslSentence.getValues().size() );
+        assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
+        DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
+        assertEquals( "AA", dslComplexVariableValue.getValue() );
+        assertEquals( "ENUM:Applicant.creditRating", dslComplexVariableValue.getId() );
+
+        assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
     }
 
     @Test
     public void testDSLExpansionLHS() {
-        final String dslDefinition = "When the credit rating is {rating:ENUM:Applicant.creditRating}";
+        final String dslDefinition = "The credit rating is {rating:ENUM:Applicant.creditRating}";
         final String drlExpected =
                 "rule \"r1\"\n" +
                         "dialect \"mvel\"\n" +
                         "when\n" +
-                        "When the credit rating is AA\n" +
+                        "The credit rating is AA\n" +
                         "then\n" +
                         "end";
 

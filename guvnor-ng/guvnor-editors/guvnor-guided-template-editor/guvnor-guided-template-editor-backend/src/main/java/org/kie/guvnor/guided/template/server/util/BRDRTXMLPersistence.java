@@ -60,6 +60,11 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     }
 
     @Override
+    public RuleModel unmarshalUsingDSL( final String str, final String... dsls ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     protected RuleModel createEmptyModel() {
         return new TemplateModel();
     }
