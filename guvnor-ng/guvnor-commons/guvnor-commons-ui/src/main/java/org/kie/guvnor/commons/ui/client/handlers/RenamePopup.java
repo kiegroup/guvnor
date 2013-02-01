@@ -47,6 +47,7 @@ public class RenamePopup extends FormStylePopup {
 
                 if(nameTextBox.getText() == null || "".equals(nameTextBox.getText())) {
                     Window.alert("Please enter the name you would like to change this asset to");
+                    return;
                 }
                 
                 if(!Window.confirm( "Are you sure you want to rename this asset to " + nameTextBox.getText())) {
