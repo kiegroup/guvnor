@@ -16,10 +16,14 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
 import org.kie.guvnor.datamodel.model.DSLSentence;
+import org.kie.guvnor.datamodel.model.DSLVariableValue;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.model.workitems.PortableBooleanParameterDefinition;
@@ -349,6 +353,64 @@ public class BRDRLPersistenceTest {
                 + "\t\tSend an email to administrator\n" + "end\n";
 
         checkMarshallUnmarshall( expected, m );
+    }
+
+    @Test
+    public void testDSLExpansion() {
+        final String dslDefinition = "When the credit rating is {rating:ENUM:Applicant.creditRating}";
+
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition( dslDefinition );
+
+        //Check values are correctly parsed
+        final List<DSLVariableValue> values = dsl.getValues();
+        assertEquals( 1,
+                      values.size() );
+        assertTrue( values.get( 0 ) instanceof DSLComplexVariableValue );
+        assertEquals( "rating",
+                      values.get( 0 ).getValue() );
+        assertEquals( "ENUM:Applicant.creditRating",
+                      ( (DSLComplexVariableValue) values.get( 0 ) ).getId() );
+
+        //The following line is normally performed by the UI when the user sets values
+        dsl.getValues().get( 0 ).setValue( "AA" );
+
+        //Check interpolation
+        final String expansion = dsl.interpolate();
+
+        assertEquals( "When the credit rating is AA",
+                      expansion );
+        assertEquals( dsl.getDefinition(),
+                      dslDefinition );
+
+        final RuleModel m = new RuleModel();
+        m.addLhsItem( dsl );
+    }
+
+    @Test
+    public void testDSLExpansionLHS() {
+        final String dslDefinition = "When the credit rating is {rating:ENUM:Applicant.creditRating}";
+        final String drlExpected =
+                "rule \"r1\"\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "When the credit rating is AA\n" +
+                        "then\n" +
+                        "end";
+
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition( dslDefinition );
+        //The following line is normally performed by the UI when the user sets values
+        dsl.getValues().get( 0 ).setValue( "AA" );
+
+        //Append DSL to RuleModel to check marshalling
+        final RuleModel m = new RuleModel();
+        m.name = "r1";
+        m.addLhsItem( dsl );
+
+        final String drlActual = brlPersistence.marshal( m );
+        assertEqualsIgnoreWhitespace( drlExpected,
+                                      drlActual );
     }
 
     private RuleModel getComplexModel( boolean useDsl ) {
@@ -1653,7 +1715,7 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    //Test that WorkItem Parameters whose values are bound are created and 
+    //Test that WorkItem Parameters whose values are bound are created and
     //populated in the RHS if the Pattern is bound to the same variable
     public void testRHSExecuteWorkItemWithBindings() {
 
