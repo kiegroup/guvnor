@@ -33,6 +33,10 @@ public class KModuleConverter
 
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         KModuleModel kModule = (KModuleModel) value;
+
+        writer.addAttribute("xmlns", "http://jboss.org/kie/6.0.0/kmodule");
+        writer.addAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+
         for (KBaseModel kBaseModule : kModule.getKBases().values()) {
             writeObject(writer, context, "kbase", kBaseModule);
         }
