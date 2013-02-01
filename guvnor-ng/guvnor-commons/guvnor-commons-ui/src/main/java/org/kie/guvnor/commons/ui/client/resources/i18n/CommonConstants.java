@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.commons.ui.client.resources.i18n;
 
+import org.uberfire.client.mvp.Command;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
@@ -75,6 +77,14 @@ public interface CommonConstants
     String Validate();
 
     String Restore();
+    
+    String Copy();
+    
+    String Delete();
+    
+    String Rename();
+    
+    String Move();
 
     String EditTabTitle();
 
@@ -92,6 +102,14 @@ public interface CommonConstants
 
     String ItemSavedSuccessfully();
 
+    String ItemDeletedSuccessfully();
+    
+    String ItemRenamedSuccessfully();
+    
+    String ItemCopiedSuccessfully();
+    
+    String ItemMovedSuccessfully();
+    
     String ItemPathSubheading();
 
     String ItemUndefinedPath();

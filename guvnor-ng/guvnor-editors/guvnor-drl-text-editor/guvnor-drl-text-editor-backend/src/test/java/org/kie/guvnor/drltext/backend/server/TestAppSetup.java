@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.builder;
+package org.kie.guvnor.drltext.backend.server;
 
 
 import javax.annotation.PostConstruct;

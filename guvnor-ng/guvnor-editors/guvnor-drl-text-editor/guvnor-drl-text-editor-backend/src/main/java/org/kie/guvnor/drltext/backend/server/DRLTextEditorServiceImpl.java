@@ -38,6 +38,7 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
 @Service
@@ -138,7 +139,28 @@ public class DRLTextEditorServiceImpl
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
-
+    
+    @Override
+    public void delete( final Path path, final String comment ) {
+        ioService.delete( paths.convert( path ) );
+    }
+    
+    @Override
+    public void rename( final Path path, final String newName, final String comment ) {
+        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
+        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
+        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
+        ioService.move(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    }
+    
+    @Override
+    public void copy( final Path path, final String newName, final String comment ) {
+        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
+        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
+        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
+        ioService.copy(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    }
+    
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();

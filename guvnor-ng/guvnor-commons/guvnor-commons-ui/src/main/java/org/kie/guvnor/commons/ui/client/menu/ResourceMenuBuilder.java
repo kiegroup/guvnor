@@ -39,6 +39,10 @@ public final class ResourceMenuBuilder {
     private Command saveCommand     = null;
     private Command restoreCommand  = null;
     private Command validateCommand = null;
+    private Command copyCommand = null;
+    private Command deleteCommand = null;
+    private Command renameCommand = null;
+    private Command moveCommand = null;
 
     public ResourceMenuBuilder addValidation( final Command command ) {
         this.validateCommand = command;
@@ -55,6 +59,26 @@ public final class ResourceMenuBuilder {
         return this;
     }
 
+    public ResourceMenuBuilder addCopy( final Command command ) {
+        this.copyCommand = command;
+        return this;
+    }
+    
+    public ResourceMenuBuilder addRename( final Command command ) {
+        this.renameCommand = command;
+        return this;
+    }
+    
+    public ResourceMenuBuilder addDelete( final Command command ) {
+        this.deleteCommand = command;
+        return this;
+    }
+    
+    public ResourceMenuBuilder addMove( final Command command ) {
+        this.moveCommand = command;
+        return this;
+    }
+    
     public MenuBar build() {
         final MenuBar menuBar = new DefaultMenuBar();
         final MenuBar subMenuBar = new DefaultMenuBar();
@@ -78,7 +102,30 @@ public final class ResourceMenuBuilder {
                                                                  restoreCommand );
             subMenuBar.addItem( restore );
         }
-
+       
+        if ( copyCommand != null ) {
+            final MenuItem copy = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Copy(),
+                                                                 copyCommand );
+            subMenuBar.addItem( copy );
+        }
+        
+        if ( deleteCommand != null ) {
+            final MenuItem delete = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Delete(),
+                                                                 deleteCommand );
+            subMenuBar.addItem( delete );
+        }
+        
+        if ( renameCommand != null ) {
+            final MenuItem rename = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Rename(),
+                                                                 renameCommand );
+            subMenuBar.addItem( rename );
+        }
+        
+        if ( moveCommand != null ) {
+            final MenuItem move = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Move(),
+                                                                 moveCommand );
+            subMenuBar.addItem( move );
+        }        
         return menuBar;
 
     }

@@ -14,40 +14,44 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.builder;
+package org.kie.guvnor.drltext.backend.server;
 
-
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-
+import org.uberfire.security.Identity;
+import org.uberfire.security.Role;
 
 @Singleton
-public class TestAppSetup {
+public class TestIdentityFactory {
 
-    private final IOService         ioService         = new IOServiceDotFileImpl();
-    private final ActiveFileSystems activeFileSystems = new ActiveFileSystemsImpl();
+    private Identity identity;
 
     @PostConstruct
     public void onStartup() {
+        identity = new Identity() {
+
+            public String getName() {
+                return "jcr2vfs-migration";
+            }
+
+            public List<Role> getRoles() {
+                return Collections.emptyList();
+            }
+
+            public boolean hasRole( Role role ) {
+                return true;
+            }
+
+        };
     }
 
     @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
-    @Produces
-    @Named("fs")
-    public ActiveFileSystems fileSystems() {
-        return activeFileSystems;
+    public Identity getIdentity() {
+        return identity;
     }
 
 }

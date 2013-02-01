@@ -195,7 +195,63 @@ public class DRLEditorPresenter {
             }
         });
     }
-
+    
+    public void onDelete() {
+        new SaveOperationService().save(path, new SaveCommand() {
+            @Override
+            public void execute(final String commitMessage) {
+                drlTextEditorService.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                    }
+                }).delete(path,
+                          commitMessage);
+            }
+        });
+    }
+    
+    public void onRename() {
+        new SaveOperationService().save(path, new SaveCommand() {
+            @Override
+            public void execute(final String commitMessage) {
+                drlTextEditorService.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                    }
+                }).rename(path,
+                          "newName",
+                          commitMessage);
+            }
+        });
+    }
+    
+    public void onCopy() {
+        new SaveOperationService().save(path, new SaveCommand() {
+            @Override
+            public void execute(final String commitMessage) {
+                drlTextEditorService.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        resourceConfigWidget.resetDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                    }
+                }).copy(path,
+                        "newName",
+                        commitMessage);
+            }
+        });
+    }
+    
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -241,6 +297,26 @@ public class DRLEditorPresenter {
                               view.getContent() );
             }
         } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).addDelete( new Command() {
+            @Override
+            public void execute() {
+                onDelete();
+            }
+        } ).addRename( new Command() {
+            @Override
+            public void execute() {
+                onRename();
+            }
+        } ).addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
+            }
+        } ).addMove( new Command() {
             @Override
             public void execute() {
                 onSave();

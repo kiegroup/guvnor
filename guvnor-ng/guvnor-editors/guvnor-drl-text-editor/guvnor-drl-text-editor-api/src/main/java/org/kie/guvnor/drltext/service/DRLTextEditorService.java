@@ -41,4 +41,10 @@ public interface DRLTextEditorService
                final String comment );
 
     void save(Path path, String content);
+    
+    void delete( final Path path, String comment );
+    
+    void rename( final Path path, String newName, String comment );
+    
+    void copy( final Path path, String newName, String comment );
 }
