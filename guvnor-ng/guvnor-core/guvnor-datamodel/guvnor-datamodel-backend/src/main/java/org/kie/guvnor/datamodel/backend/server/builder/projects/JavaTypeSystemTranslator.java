@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -61,7 +61,7 @@ public class JavaTypeSystemTranslator implements ClassToGenericClassConverter {
             } else if ( Comparable.class.isAssignableFrom( type ) ) {
                 fieldType = DataType.TYPE_COMPARABLE;
             } else {
-                fieldType = type.getSimpleName();
+                fieldType = type.getName();
             }
         }
         return fieldType;

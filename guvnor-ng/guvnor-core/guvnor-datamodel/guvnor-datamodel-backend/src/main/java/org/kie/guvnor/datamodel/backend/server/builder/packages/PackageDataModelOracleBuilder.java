@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.builder.packages;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,81 +10,58 @@ import java.util.Map;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.DataEnumLoader;
 import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.DefaultDataModel;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 /**
- * Builder for DataModelOracle
+ * Builder for PackageDataModelOracle
  */
-public final class DataModelBuilder {
+public final class PackageDataModelOracleBuilder {
 
-    private DefaultDataModel oracle = new DefaultDataModel();
+    private final String packageName;
 
-    private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
+    private PackageDataModelOracle oracle = new PackageDataModelOracle();
+    private ProjectDefinition projectDefinition = new ProjectDefinition();
+
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
-
     private List<DSLSentence> dslConditionSentences = new ArrayList<DSLSentence>();
     private List<DSLSentence> dslActionSentences = new ArrayList<DSLSentence>();
-
     //These are not used anywhere in Guvnor 5.5.x, but have been retained for future scope
     private List<DSLSentence> dslKeywordItems = new ArrayList<DSLSentence>();
     private List<DSLSentence> dslAnyScopeItems = new ArrayList<DSLSentence>();
 
     private List<String> errors = new ArrayList<String>();
 
-    public static DataModelBuilder newDataModelBuilder() {
-        return new DataModelBuilder();
+    public static PackageDataModelOracleBuilder newDataModelBuilder() {
+        return new PackageDataModelOracleBuilder( "" );
     }
 
-    private DataModelBuilder() {
+    public static PackageDataModelOracleBuilder newDataModelBuilder( final String packageName ) {
+        return new PackageDataModelOracleBuilder( packageName );
     }
 
-    public SimpleFactBuilder addFact( final String factType ) {
-        return addFact( factType,
-                        false );
+    private PackageDataModelOracleBuilder( final String packageName ) {
+        this.packageName = packageName;
     }
 
-    public SimpleFactBuilder addFact( final String factType,
-                                      final boolean isEvent ) {
-        final SimpleFactBuilder builder = new SimpleFactBuilder( this,
-                                                                 factType,
-                                                                 isEvent );
-        factTypeBuilders.add( builder );
-        return builder;
-    }
-
-    public DataModelBuilder addClass( final Class clazz ) throws IOException {
-        return addClass( clazz,
-                         false );
-    }
-
-    public DataModelBuilder addClass( final Class clazz,
-                                      final boolean isEvent ) throws IOException {
-        final FactBuilder builder = new ClassFactBuilder( this,
-                                                          clazz,
-                                                          isEvent );
-        factTypeBuilders.add( builder );
+    public PackageDataModelOracleBuilder setProjectDefinition( final ProjectDefinition projectDefinition ) {
+        this.projectDefinition = projectDefinition;
         return this;
     }
 
-    public DataModelBuilder addEnum( final String factType,
-                                     final String fieldName,
-                                     final String[] values ) {
-        final String qualifiedFactField = factType + "." + fieldName;
-        addEnum( qualifiedFactField,
-                 values );
-        return this;
-    }
-
-    public DataModelBuilder addEnum( final String qualifiedFactField,
-                                     final String[] values ) {
+    public PackageDataModelOracleBuilder addEnum( final String factType,
+                                                  final String fieldName,
+                                                  final String[] values ) {
+        final String qualifiedFactField = factType + "#" + fieldName;
         factFieldEnums.put( qualifiedFactField,
                             values );
         return this;
     }
 
-    public DataModelBuilder addEnum( final String enumDefinition ) {
+    public PackageDataModelOracleBuilder addEnum( final String enumDefinition ) {
         parseEnumDefinition( enumDefinition );
         return this;
     }
@@ -102,7 +79,7 @@ public final class DataModelBuilder {
         errors.addAll( enumLoader.getErrors() );
     }
 
-    public DataModelBuilder addDsl( final String dslDefinition ) {
+    public PackageDataModelOracleBuilder addDsl( final String dslDefinition ) {
         parseDslDefinition( dslDefinition );
         return this;
     }
@@ -173,16 +150,16 @@ public final class DataModelBuilder {
     }
 
     public DataModelOracle build() {
-        loadFactTypes();
         loadEnums();
         loadDsls();
+        loadProjectDefinition();
         return oracle;
     }
 
-    private void loadFactTypes() {
-        for ( final FactBuilder factBuilder : this.factTypeBuilders ) {
-            factBuilder.build( oracle );
-        }
+    private void loadProjectDefinition() {
+        oracle.setPackageName( packageName );
+        oracle.setProjectDefinition( projectDefinition );
+        oracle.initialize();
     }
 
     private void loadEnums() {
@@ -192,12 +169,12 @@ public final class DataModelBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        oracle.addEnums( loadableEnums );
+        oracle.addPackageEnums( loadableEnums );
     }
 
     private void loadDsls() {
-        oracle.addDslConditionSentences( dslConditionSentences );
-        oracle.addDslActionSentences( dslActionSentences );
+        oracle.addPackageDslConditionSentences( dslConditionSentences );
+        oracle.addPackageDslActionSentences( dslActionSentences );
     }
 
 }

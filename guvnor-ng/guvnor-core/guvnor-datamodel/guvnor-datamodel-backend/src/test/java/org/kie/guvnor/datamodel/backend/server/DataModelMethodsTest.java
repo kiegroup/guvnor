@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
@@ -30,9 +33,11 @@ public class DataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addClass( TreeMap.class )
                 .build();
+
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "java.util" ).setProjectDefinition( pd ).build();
 
         final String[] getters = dmo.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
                                                           "TreeMap" );
@@ -74,18 +79,20 @@ public class DataModelMethodsTest {
                       getters[ 16 ] );
 
         final String[] setters = dmo.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                          "TreeMap" );
+                                                          TreeMap.class.getName() );
         assertEquals( 0,
                       setters.length );
     }
 
     @Test
     public void testMethodsOnJavaClass_ArrayList() throws Exception {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addClass( ArrayList.class )
                 .build();
 
-        final List<String> methodNames = dmo.getMethodNames( "ArrayList" );
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final List<String> methodNames = dmo.getMethodNames( ArrayList.class.getName() );
 
         assertNotNull( methodNames );
         assertFalse( methodNames.isEmpty() );

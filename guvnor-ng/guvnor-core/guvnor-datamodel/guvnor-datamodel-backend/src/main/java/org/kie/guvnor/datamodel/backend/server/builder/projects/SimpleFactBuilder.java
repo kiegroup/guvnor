@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import org.kie.guvnor.datamodel.model.ModelField;
 
@@ -7,14 +7,14 @@ import org.kie.guvnor.datamodel.model.ModelField;
  */
 public class SimpleFactBuilder extends BaseFactBuilder {
 
-    public SimpleFactBuilder( final DataModelBuilder builder,
+    public SimpleFactBuilder( final ProjectDefinitionBuilder builder,
                               final String factType ) {
         this( builder,
               factType,
               false );
     }
 
-    public SimpleFactBuilder( final DataModelBuilder builder,
+    public SimpleFactBuilder( final ProjectDefinitionBuilder builder,
                               final String factType,
                               final boolean isEvent ) {
         super( builder,

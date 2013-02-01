@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import java.beans.Introspector;
 import java.io.IOException;
@@ -17,10 +17,10 @@ import java.util.TreeSet;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.guvnor.datamodel.model.ClassMethodInspector;
 import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
-import org.kie.guvnor.datamodel.model.DefaultDataModel;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 /**
  * Builder for Fact Types originating from a .class
@@ -32,24 +32,24 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
     private final Map<String, String> fieldParametersType = new HashMap<String, String>();
 
-    public ClassFactBuilder( final DataModelBuilder builder,
+    public ClassFactBuilder( final ProjectDefinitionBuilder builder,
                              final Class<?> clazz ) throws IOException {
         this( builder,
               clazz,
               false );
     }
 
-    public ClassFactBuilder( final DataModelBuilder builder,
+    public ClassFactBuilder( final ProjectDefinitionBuilder builder,
                              final Class<?> clazz,
                              final boolean isEvent ) throws IOException {
         super( builder,
-               clazz.getSimpleName(),
+               clazz,
                isEvent );
         loadClassFields( clazz );
     }
 
     @Override
-    public void build( final DefaultDataModel oracle ) {
+    public void build( final ProjectDefinition oracle ) {
         super.build( oracle );
         oracle.addMethodInformation( buildMethodInformation() );
         oracle.addFieldParametersType( buildFieldParametersType() );
@@ -76,7 +76,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             return;
         }
 
-        final String factType = clazz.getSimpleName();
+        final String factType = getFactType( clazz );
 
         //Get all getters and setters for the class. This does not handle delegated properties
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
@@ -259,21 +259,16 @@ public class ClassFactBuilder extends BaseFactBuilder {
         if ( fieldClazz.isEnum() ) {
             final Field[] enumFields = fieldClazz.getDeclaredFields();
             final List<String> enumValues = new ArrayList<String>();
-            int i = 0;
             for ( final Field enumField : enumFields ) {
                 if ( enumField.isEnumConstant() ) {
                     String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
-                    if ( shortName.contains( "$" ) ) {
-                        shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
-                    }
                     enumValues.add( shortName + "=" + shortName );
-                    i++;
                 }
             }
-            final String qualifiedFactField = className + "." + fieldName;
             final String a[] = new String[ enumValues.size() ];
             enumValues.toArray( a );
-            getDataModelBuilder().addEnum( qualifiedFactField,
+            getDataModelBuilder().addEnum( className,
+                                           fieldName,
                                            a );
         }
     }

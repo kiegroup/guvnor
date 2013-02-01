@@ -31,6 +31,12 @@ import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.cache.LRUDataModelOracleCache;
+import org.kie.guvnor.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
@@ -47,7 +53,12 @@ public class DataModelServiceImpl
         implements DataModelService {
 
     @Inject
-    private DataModelOracleCache cache;
+    @Named("PackageDataModelOracleCache")
+    private LRUDataModelOracleCache cachePackages;
+
+    @Inject
+    @Named("ProjectDataModelOracleCache")
+    private LRUProjectDataModelOracleCache cacheProjects;
 
     @Inject
     private ProjectService projectService;
@@ -73,19 +84,8 @@ public class DataModelServiceImpl
 
     @Override
     public String[] getFactTypes( final Path resourcePath ) {
-        PortablePreconditions.checkNotNull( "resourcePath",
-                                            resourcePath );
-        final Path projectPath = resolveProjectPath( resourcePath );
-        final Path packagePath = resolvePackagePath( resourcePath );
-
-        //Resource was not within a Project structure
-        if ( projectPath == null ) {
-            return new String[ 0 ];
-        }
-
-        assertDataModelOracle( projectPath,
-                               packagePath );
-        return cache.getDataModelOracle( packagePath ).getFactTypes();
+        final DataModelOracle oracle = getDataModel( resourcePath );
+        return oracle.getFactTypes();
     }
 
     @Override
@@ -100,20 +100,33 @@ public class DataModelServiceImpl
             return makeEmptyDataModelOracle();
         }
 
-        assertDataModelOracle( projectPath,
-                               packagePath );
-        return cache.getDataModelOracle( packagePath );
+        assertProjectDataModelOracle( projectPath );
+        assertPackageDataModelOracle( projectPath,
+                                      packagePath );
+
+        final DataModelOracle oracle = cachePackages.getEntry( packagePath );
+        return oracle;
+    }
+
+    //Check the ProjectDefinition for the Project has been created, otherwise create one!
+    private void assertProjectDataModelOracle( final Path projectPath ) {
+        ProjectDefinition projectDefinition = cacheProjects.getEntry( projectPath );
+        if ( projectDefinition == null ) {
+            projectDefinition = makeProjectDefinition( projectPath );
+            cacheProjects.setEntry( projectPath,
+                                    projectDefinition );
+        }
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    private void assertDataModelOracle( final Path projectPath,
-                                        final Path packagePath ) {
-        DataModelOracle oracle = cache.getDataModelOracle( packagePath );
+    private void assertPackageDataModelOracle( final Path projectPath,
+                                               final Path packagePath ) {
+        DataModelOracle oracle = cachePackages.getEntry( packagePath );
         if ( oracle == null ) {
-            oracle = makeDataModelOracle( projectPath,
-                                          packagePath );
-            cache.setDataModelOracle( packagePath,
-                                      oracle );
+            oracle = makePackageDataModelOracle( projectPath,
+                                                 packagePath );
+            cachePackages.setEntry( packagePath,
+                                    oracle );
         }
     }
 
@@ -125,31 +138,38 @@ public class DataModelServiceImpl
         return projectService.resolvePackage( resourcePath );
     }
 
-    private DataModelOracle makeEmptyDataModelOracle() {
-        return DataModelBuilder.newDataModelBuilder().build();
+    private String resolvePackageName( final Path packagePath ) {
+        return projectService.resolvePackageName( packagePath );
     }
 
-    private DataModelOracle makeDataModelOracle( final Path projectPath,
-                                                 final Path packagePath ) {
-        //Build the project to get all available classes
+    private DataModelOracle makeEmptyDataModelOracle() {
+        return new PackageDataModelOracle();
+    }
+
+    private ProjectDefinition makeEmptyProjectDefinition() {
+        return new ProjectDefinition();
+    }
+
+    private ProjectDefinition makeProjectDefinition( final Path projectPath ) {
+        //Build the Project to get all available classes
         final Path pomPath = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
-        final POM gav = pomService.loadPOM(pomPath);
+        final POM gav = pomService.loadPOM( pomPath );
         final Builder builder = new Builder( paths.convert( projectPath ),
                                              gav.getGav().getArtifactId(),
                                              paths,
                                              sourceServices,
                                              new ModelBuilderFilter() );
 
-        //If the Project had errors report them to the user and return an empty DataModelOracle
+        //If the Project had errors report them to the user and return an empty ProjectDefinition
         final Results results = builder.build();
         if ( !results.isEmpty() ) {
             messagesEvent.fire( results );
-            return makeEmptyDataModelOracle();
+            return makeEmptyProjectDefinition();
         }
 
-        //Otherwise create a DataModelOracle...
+        //Otherwise create the ProjectDefinition...
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
-        final DataModelBuilder dmoBuilder = DataModelBuilder.newDataModelBuilder();
+        final ProjectDefinitionBuilder pdBuilder = ProjectDefinitionBuilder.newProjectDefinitionBuilder();
 
         //Add all classes from the KieModule metaData
         for ( final String packageName : metaData.getPackages() ) {
@@ -158,15 +178,29 @@ public class DataModelServiceImpl
                                                        className );
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 try {
-                    //TODO {manstis} This null check is not required. There is a bug in KieModuleMetaData.getTypeMetaInfo()
-                    final boolean isEvent = ( typeMetaInfo == null ? false : typeMetaInfo.isEvent() );
-                    dmoBuilder.addClass( clazz,
-                                         isEvent );
+                    pdBuilder.addClass( clazz,
+                                        typeMetaInfo.isEvent() );
                 } catch ( IOException ioe ) {
                     results.getMessages().add( makeMessage( ioe ) );
                 }
             }
         }
+
+        //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
+        if ( !results.isEmpty() ) {
+            messagesEvent.fire( results );
+            return makeEmptyProjectDefinition();
+        }
+
+        return pdBuilder.build();
+    }
+
+    private DataModelOracle makePackageDataModelOracle( final Path projectPath,
+                                                        final Path packagePath ) {
+        final String packageName = projectService.resolvePackageName( packagePath );
+        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newDataModelBuilder(packageName);
+        final ProjectDefinition projectDefinition = cacheProjects.getEntry( projectPath );
+        dmoBuilder.setProjectDefinition( projectDefinition );
 
         //Add Guvnor enumerations
         loadEnumsForPackage( dmoBuilder,
@@ -178,12 +212,6 @@ public class DataModelServiceImpl
 
         //TODO {manstis} - Add Globals
 
-        //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
-        if ( !results.isEmpty() ) {
-            messagesEvent.fire( results );
-            return makeEmptyDataModelOracle();
-        }
-
         return dmoBuilder.build();
     }
 
@@ -194,7 +222,7 @@ public class DataModelServiceImpl
         return message;
     }
 
-    private void loadEnumsForPackage( final DataModelBuilder dmoBuilder,
+    private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
                                       final Path packagePath ) {
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
@@ -205,7 +233,7 @@ public class DataModelServiceImpl
         }
     }
 
-    private void loadDslsForPackage( final DataModelBuilder dmoBuilder,
+    private void loadDslsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
                                      final Path packagePath ) {
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,

@@ -35,7 +35,7 @@ public interface DataModelOracle {
 
     Map<String, ModelField[]> getModelFields();
 
-    boolean hasEnums( String type );
+    boolean hasEnums( String qualifiedFactField );
 
     boolean hasEnums( final String factType,
                       final String factField );
@@ -81,8 +81,8 @@ public interface DataModelOracle {
     String getFieldType( String variableClass,
                          String fieldName );
 
-    Collection<? extends String> getMethodParams( String variableClass,
-                                                  String methodNameWithParams );
+    List<String> getMethodParams( String factType,
+                                  String methodNameWithParams );
 
     List<DSLSentence> getDSLActions();
 

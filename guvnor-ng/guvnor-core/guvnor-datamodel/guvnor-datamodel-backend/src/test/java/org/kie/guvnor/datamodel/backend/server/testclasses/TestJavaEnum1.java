@@ -17,7 +17,7 @@
 package org.kie.guvnor.datamodel.backend.server.testclasses;
 
 /**
- * Test class to check Java enums are extracted correctly by DataModelBuilder
+ * Test class to check Java enums are extracted correctly by ProjectDefinitionBuilder
  */
 public class TestJavaEnum1 {
 

@@ -16,6 +16,10 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
@@ -29,10 +33,6 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @Service
 @ApplicationScoped
@@ -150,6 +150,44 @@ public class ProjectServiceImpl
         path = path.getParent();
 
         return paths.convert( path );
+    }
+
+    @Override
+    public String resolvePackageName( final Path path ) {
+
+        //Check path is actually within a Package within a Project
+        final Path packagePath = resolvePackage( path );
+        if ( packagePath == null ) {
+            return null;
+        }
+        final Path projectPath = resolveProject( packagePath );
+        if ( projectPath == null ) {
+            return null;
+        }
+
+        //Use the relative path between Project root and Package path to build the package name
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectPath );
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.kie.commons.java.nio.file.Path nioDelta = nioProjectPath.relativize( nioPackagePath );
+
+        //Build package name
+        String packageName = nioDelta.toString();
+        if ( packageName.startsWith( JAVA_PATH ) ) {
+            packageName = packageName.replace( JAVA_PATH,
+                                               "" );
+        }
+        if ( packageName.startsWith( RESOURCES_PATH ) ) {
+            packageName = packageName.replace( RESOURCES_PATH,
+                                               "" );
+        }
+        if ( packageName.length() == 0 ) {
+            return "defaultpkg";
+        }
+        if ( packageName.startsWith( "/" ) ) {
+            packageName = packageName.substring( 1 );
+        }
+        return packageName.replaceAll( "/",
+                                       "." );
     }
 
     @Override

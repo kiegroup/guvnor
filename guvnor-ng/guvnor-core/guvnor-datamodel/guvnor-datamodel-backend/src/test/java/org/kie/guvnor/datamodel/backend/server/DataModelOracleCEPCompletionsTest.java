@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
@@ -13,13 +16,13 @@ import org.kie.guvnor.datamodel.oracle.DataType;
 import static org.junit.Assert.*;
 
 /**
- * Tests for the DefaultDataModel CEP completions
+ * Tests for the ProjectDefinition CEP completions
  */
 public class DataModelOracleCEPCompletionsTest {
 
     @Test
     public void testCEPCompletions() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "NotAnEvent" )
                 .addField( new ModelField( "dateField",
                                            Date.class.getName(),
@@ -41,6 +44,8 @@ public class DataModelOracleCEPCompletionsTest {
                                            DataType.TYPE_DATE ) )
                 .end()
                 .build();
+
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
 
         //Check completions
         String[] types = dmo.getFactTypes();

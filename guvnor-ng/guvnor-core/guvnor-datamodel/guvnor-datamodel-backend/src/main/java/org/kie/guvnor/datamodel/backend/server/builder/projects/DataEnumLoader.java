@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.backend.server;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +70,7 @@ public class DataEnumLoader {
 
         Map<String, String[]> newMap = new HashMap<String, String[]>();
         for ( Map.Entry<String, Object> entry : map.entrySet() ) {
-            String key = entry.getKey();
+            String key = makeEnumKey( entry.getKey() );
             Object list = entry.getValue();
             if ( !( list instanceof List<?> || list instanceof String ) ) {
                 if ( list == null ) {
@@ -138,6 +138,13 @@ public class DataEnumLoader {
      */
     public Map<String, String[]> getData() {
         return this.data;
+    }
+
+    private String makeEnumKey( final String userDefinedKey ) {
+        //Use of "." as a delimiter between Fact and Field leads to problems with fully qualified class names
+        String systemDefinedKey = userDefinedKey.replace( ".",
+                                                          "#" );
+        return systemDefinedKey;
     }
 
 }

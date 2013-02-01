@@ -25,7 +25,9 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.backend.server.DataModelBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
@@ -73,7 +75,7 @@ public class CellValueFactoryTests {
     @Before
     @SuppressWarnings("serial")
     public void setup() {
-        oracle = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "MyClass" )
                 .addField( new ModelField( "bigDecimalField",
                                            Integer.class.getName(),
@@ -132,6 +134,8 @@ public class CellValueFactoryTests {
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
                 .build();
+
+        oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
 
         dt = new GuidedDecisionTable52();
 

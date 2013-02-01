@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.model;
+package org.kie.guvnor.datamodel.oracle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,50 +10,60 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
-import org.kie.guvnor.datamodel.oracle.OracleUtils;
+import org.kie.guvnor.datamodel.model.DSLSentence;
+import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
 
 /**
  * Default implementation of DataModelOracle
  */
 @Portable
-public class DefaultDataModel implements DataModelOracle {
+public class PackageDataModelOracle implements DataModelOracle {
+
+    //Package for which this DMO relates
+    private String packageName;
+
+    //Project-level Facts, Fields and Java Enums
+    private ProjectDefinition projectDefinition;
+
+    // Package-level enumeration definitions derived from "Guvnor" enumerations.
+    private Map<String, String[]> packageEnumDefinitions = new HashMap<String, String[]>();
+
+    // Package-level DSL language extensions.
+    private List<DSLSentence> packageDSLConditionSentences = new ArrayList<DSLSentence>();
+    private List<DSLSentence> packageDSLActionSentences = new ArrayList<DSLSentence>();
+
+    // Package-level map of Globals (name is key) and their type (value).
+    //TODO {manstis} The following are not setup by DataModelBuilder
+    private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
+
+    // Package-level Globals that are a collection type.
+    //TODO {manstis} The following are not setup by DataModelBuilder
+    private String[] packageGlobalCollections = new String[ 0 ];
 
     // Details of Fact Types and their corresponding fields
-    private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
+    private Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
 
     // A map of FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
-    private Map<String, Boolean> eventTypes = new HashMap<String, Boolean>();
+    private Map<String, Boolean> scopedEventTypes = new HashMap<String, Boolean>();
 
     // A map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
-    private Map<String, String[]> dataEnumLists = new HashMap<String, String[]>();
+    private Map<String, String[]> scopedEnumLists = new HashMap<String, String[]>();
 
     // This is used to calculate what fields an enum list may depend on.
-    private transient Map<String, Object> dataEnumLookupFields;
+    private transient Map<String, Object> scopedEnumLookupFields;
 
     // Details of Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
-    private Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+    private Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
 
     // A map of the field that contains the parametrized type of a collection
     // for example given "List<String> name", key = "name" value = "String"
-    private Map<String, String> fieldParametersType = new HashMap<String, String>();
-
-    // DSL language extensions, if needed, if provided by the package.
-    private List<DSLSentence> dslConditionSentences = new ArrayList<DSLSentence>();
-    private List<DSLSentence> dslActionSentences = new ArrayList<DSLSentence>();
-
-    //TODO {manstis} The following are not setup by DataModelBuilder
-
-    // A map of globals (name is key) and their type (value).
-    private Map<String, String> globalTypes = new HashMap<String, String>();
-
-    // Globals that are a collection type.
-    private String[] globalCollections = new String[ 0 ];
+    private Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
 
     //Public constructor is needed for Errai Marshaller :(
-    public DefaultDataModel() {
+    public PackageDataModelOracle() {
     }
 
     // ####################################
@@ -65,7 +75,7 @@ public class DefaultDataModel implements DataModelOracle {
      * @return
      */
     public String[] getFactTypes() {
-        final String[] types = modelFields.keySet().toArray( new String[ modelFields.size() ] );
+        final String[] types = scopedModelFields.keySet().toArray( new String[ scopedModelFields.size() ] );
         Arrays.sort( types );
         return types;
     }
@@ -79,10 +89,10 @@ public class DefaultDataModel implements DataModelOracle {
         if ( type == null ) {
             return null;
         }
-        if ( modelFields.containsKey( type ) ) {
+        if ( scopedModelFields.containsKey( type ) ) {
             return type;
         }
-        for ( Map.Entry<String, ModelField[]> entry : modelFields.entrySet() ) {
+        for ( Map.Entry<String, ModelField[]> entry : scopedModelFields.entrySet() ) {
             for ( ModelField mf : entry.getValue() ) {
                 if ( DataType.TYPE_THIS.equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
                     return entry.getKey();
@@ -98,10 +108,10 @@ public class DefaultDataModel implements DataModelOracle {
      * @return
      */
     public boolean isFactTypeAnEvent( final String factType ) {
-        if ( !eventTypes.containsKey( factType ) ) {
+        if ( !scopedEventTypes.containsKey( factType ) ) {
             return false;
         }
-        return eventTypes.get( factType );
+        return scopedEventTypes.get( factType );
     }
 
     /**
@@ -110,14 +120,7 @@ public class DefaultDataModel implements DataModelOracle {
      * @return
      */
     public boolean isFactTypeRecognized( final String factType ) {
-        String factLeafType = factType;
-        if ( factLeafType == null ) {
-            return false;
-        }
-        if ( factLeafType.contains( "." ) ) {
-            factLeafType = factLeafType.substring( factLeafType.lastIndexOf( "." ) + 1 );
-        }
-        return modelFields.containsKey( factLeafType );
+        return scopedModelFields.containsKey( factType );
     }
 
     // ####################################
@@ -130,11 +133,11 @@ public class DefaultDataModel implements DataModelOracle {
 
     private String[] getModelFields( final String modelClassName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        if ( !modelFields.containsKey( shortName ) ) {
+        if ( !scopedModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = scopedModelFields.get( shortName );
         final String[] fieldNames = new String[ fields.length ];
         for ( int i = 0; i < fields.length; i++ ) {
             fieldNames[ i ] = fields[ i ].getName();
@@ -145,11 +148,11 @@ public class DefaultDataModel implements DataModelOracle {
     public String[] getFieldCompletions( final FieldAccessorsAndMutators accessorOrMutator,
                                          final String factType ) {
         final String shortName = getFactNameFromType( factType );
-        if ( !modelFields.containsKey( shortName ) ) {
+        if ( !scopedModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = scopedModelFields.get( shortName );
         final List<String> fieldNames = new ArrayList<String>();
         for ( int i = 0; i < fields.length; i++ ) {
             final ModelField field = fields[ i ];
@@ -171,7 +174,7 @@ public class DefaultDataModel implements DataModelOracle {
     private ModelField getField( final String modelClassName,
                                  final String fieldName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = scopedModelFields.get( shortName );
         if ( fields == null ) {
             return null;
         }
@@ -191,7 +194,7 @@ public class DefaultDataModel implements DataModelOracle {
     }
 
     public Map<String, ModelField[]> getModelFields() {
-        return modelFields;
+        return scopedModelFields;
     }
 
     // ####################################
@@ -288,23 +291,23 @@ public class DefaultDataModel implements DataModelOracle {
 
     public List<MethodInfo> getMethodInfosForGlobalVariable( final String varName ) {
         final String type = getGlobalVariable( varName );
-        return methodInformation.get( type );
+        return scopedMethodInformation.get( type );
     }
 
     public String getGlobalVariable( final String name ) {
-        return globalTypes.get( name );
+        return packageGlobalTypes.get( name );
     }
 
     public boolean isGlobalVariable( final String name ) {
-        return globalTypes.containsKey( name );
+        return packageGlobalTypes.containsKey( name );
     }
 
     public String[] getGlobalVariables() {
-        return OracleUtils.toStringArray( globalTypes.keySet() );
+        return OracleUtils.toStringArray( packageGlobalTypes.keySet() );
     }
 
     public String[] getGlobalCollections() {
-        return globalCollections;
+        return packageGlobalCollections;
     }
 
     // ####################################
@@ -312,11 +315,11 @@ public class DefaultDataModel implements DataModelOracle {
     // ####################################
 
     public List<DSLSentence> getDSLConditions() {
-        return Collections.unmodifiableList( dslConditionSentences );
+        return Collections.unmodifiableList( packageDSLConditionSentences );
     }
 
     public List<DSLSentence> getDSLActions() {
-        return Collections.unmodifiableList( dslActionSentences );
+        return Collections.unmodifiableList( packageDSLActionSentences );
     }
 
     // ####################################
@@ -344,12 +347,12 @@ public class DefaultDataModel implements DataModelOracle {
 
         if ( !currentValueMap.isEmpty() ) {
             // we may need to check for data dependent enums
-            final Object _typeFields = dataEnumLookupFields.get( type + "." + field );
+            final Object _typeFields = dataEnumLookupFields.get( type + "#" + field );
 
             if ( _typeFields instanceof String ) {
                 final String typeFields = (String) _typeFields;
                 final StringBuilder dataEnumListsKeyBuilder = new StringBuilder( type );
-                dataEnumListsKeyBuilder.append( "." ).append( field );
+                dataEnumListsKeyBuilder.append( "#" ).append( field );
 
                 boolean addOpeninColumn = true;
                 final String[] splitTypeFields = typeFields.split( "," );
@@ -377,7 +380,7 @@ public class DefaultDataModel implements DataModelOracle {
                     dataEnumListsKeyBuilder.append( "]" );
                 }
 
-                final DropDownData data = DropDownData.create( dataEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
+                final DropDownData data = DropDownData.create( scopedEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
                 if ( data != null ) {
                     return data;
                 }
@@ -387,7 +390,7 @@ public class DefaultDataModel implements DataModelOracle {
                 final String queryString = getQueryString( type,
                                                            field,
                                                            fieldsNeeded,
-                                                           dataEnumLists );
+                                                           scopedEnumLists );
                 final String[] valuePairs = new String[ fieldsNeeded.length ];
 
                 // collect all the values of the fields needed, then return it as a string...
@@ -423,7 +426,7 @@ public class DefaultDataModel implements DataModelOracle {
                                    final Map<String, String[]> dataEnumLists ) {
         for ( Iterator<String> iterator = dataEnumLists.keySet().iterator(); iterator.hasNext(); ) {
             final String key = iterator.next();
-            if ( key.startsWith( factType + "." + field ) && fieldsNeeded != null && key.contains( "[" ) ) {
+            if ( key.startsWith( factType + "#" + field ) && fieldsNeeded != null && key.contains( "[" ) ) {
 
                 final String[] values = key.substring( key.indexOf( '[' ) + 1,
                                                        key.lastIndexOf( ']' ) ).split( "," );
@@ -447,7 +450,7 @@ public class DefaultDataModel implements DataModelOracle {
 
                 final String[] qry = dataEnumLists.get( key );
                 return qry[ 0 ];
-            } else if ( key.startsWith( factType + "." + field ) && ( fieldsNeeded == null || fieldsNeeded.length == 0 ) ) {
+            } else if ( key.startsWith( factType + "#" + field ) && ( fieldsNeeded == null || fieldsNeeded.length == 0 ) ) {
                 final String[] qry = dataEnumLists.get( key );
                 return qry[ 0 ];
             }
@@ -460,20 +463,22 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public String[] getEnumValues( final String factType,
                                    final String field ) {
-        return dataEnumLists.get( factType + "." + field );
+        return scopedEnumLists.get( factType + "#" + field );
     }
 
     public boolean hasEnums( final String factType,
                              final String field ) {
-        return hasEnums( factType + "." + field );
+        return hasEnums( factType + "#" + field );
     }
 
-    public boolean hasEnums( final String type ) {
+    public boolean hasEnums( final String qualifiedFactField ) {
         boolean hasEnums = false;
-        final String dependentType = type + "[";
-        for ( String e : dataEnumLists.keySet() ) {
+        final String key = qualifiedFactField.replace( ".",
+                                                       "#" );
+        final String dependentType = key + "[";
+        for ( String e : scopedEnumLists.keySet() ) {
             //e.g. Fact.field1
-            if ( e.equals( type ) ) {
+            if ( e.equals( key ) ) {
                 return true;
             }
             //e.g. Fact.field2[field1=val2]
@@ -502,7 +507,7 @@ public class DefaultDataModel implements DataModelOracle {
             return false;
         }
         //Check if the childField is a direct descendant of the parentField
-        final String key = factType + "." + childField;
+        final String key = factType + "#" + childField;
         if ( !enums.containsKey( key ) ) {
             return false;
         }
@@ -526,9 +531,9 @@ public class DefaultDataModel implements DataModelOracle {
      * This is only used by enums that are like Fact.field[something=X] and so on.
      */
     private Map<String, Object> loadDataEnumLookupFields() {
-        if ( dataEnumLookupFields == null ) {
-            dataEnumLookupFields = new HashMap<String, Object>();
-            final Set<String> keys = dataEnumLists.keySet();
+        if ( scopedEnumLookupFields == null ) {
+            scopedEnumLookupFields = new HashMap<String, Object>();
+            final Set<String> keys = scopedEnumLists.keySet();
             for ( String key : keys ) {
                 if ( key.indexOf( '[' ) != -1 ) {
                     int ix = key.indexOf( '[' );
@@ -549,21 +554,21 @@ public class DefaultDataModel implements DataModelOracle {
                             }
                         }
 
-                        dataEnumLookupFields.put( factField,
-                                                  typeFieldBuilder.toString() );
+                        scopedEnumLookupFields.put( factField,
+                                                    typeFieldBuilder.toString() );
                     } else {
                         final String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {
                             fields[ i ] = fields[ i ].trim();
                         }
-                        dataEnumLookupFields.put( factField,
-                                                  fields );
+                        scopedEnumLookupFields.put( factField,
+                                                    fields );
                     }
                 }
             }
         }
 
-        return dataEnumLookupFields;
+        return scopedEnumLookupFields;
     }
 
     // ####################################
@@ -588,7 +593,7 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public List<String> getMethodNames( final String factType,
                                         final int paramCount ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
         final List<String> methodList = new ArrayList<String>();
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
@@ -608,7 +613,7 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public List<String> getMethodParams( final String factType,
                                          final String methodNameWithParams ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
@@ -627,7 +632,7 @@ public class DefaultDataModel implements DataModelOracle {
      */
     public MethodInfo getMethodInfo( final String factType,
                                      final String methodFullName ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().equals( methodFullName ) ) {
@@ -654,7 +659,7 @@ public class DefaultDataModel implements DataModelOracle {
     }
 
     private String getParametricFieldType( String fieldName ) {
-        return fieldParametersType.get( fieldName );
+        return scopedFieldParametersType.get( fieldName );
     }
 
     // ##############################################################################################
@@ -662,32 +667,109 @@ public class DefaultDataModel implements DataModelOracle {
     // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
     // ##############################################################################################
 
-    public void addFactsAndFields( final Map<String, ModelField[]> modelFields ) {
-        this.modelFields.putAll( modelFields );
+    public void setPackageName( final String packageName ) {
+        this.packageName = packageName;
     }
 
-    public void addEventType( final Map<String, Boolean> eventTypes ) {
-        this.eventTypes.putAll( eventTypes );
+    public void setProjectDefinition( final ProjectDefinition projectDefinition ) {
+        this.projectDefinition = projectDefinition;
     }
 
-    public void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
-        this.methodInformation.putAll( methodInformation );
+    public void addPackageEnums( final Map<String, String[]> dataEnumLists ) {
+        this.packageEnumDefinitions.putAll( dataEnumLists );
     }
 
-    public void addFieldParametersType( final Map<String, String> fieldParametersType ) {
-        this.fieldParametersType.putAll( fieldParametersType );
+    public void addPackageDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
+        this.packageDSLConditionSentences.addAll( dslConditionSentences );
     }
 
-    public void addEnums( final Map<String, String[]> dataEnumLists ) {
-        this.dataEnumLists.putAll( dataEnumLists );
+    public void addPackageDslActionSentences( final List<DSLSentence> dslActionSentences ) {
+        this.packageDSLActionSentences.addAll( dslActionSentences );
     }
 
-    public void addDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
-        this.dslConditionSentences.addAll( dslConditionSentences );
+    public void initialize() {
+        final Map<String, ModelField[]> projectModelFields = projectDefinition.getFactsAndFields();
+        final Map<String, Boolean> projectEventTypes = projectDefinition.getEventTypes();
+        final Map<String, String[]> projectEnumDefinitions = projectDefinition.getEnumDefinitions();
+        final Map<String, List<MethodInfo>> projectMethodInformation = projectDefinition.getMethodInformation();
+        final Map<String, String> projectFieldParametersTypes = projectDefinition.getFieldParametersTypes();
+        final List<String> imports = new ArrayList<String>();
+
+        //Filter and rename Model Fields based on package name and imports
+        scopedModelFields.clear();
+        scopedModelFields.putAll( PackageDataModelOracleUtils.filterModelFields( packageName,
+                                                                                 imports,
+                                                                                 projectModelFields ) );
+
+        //Filter and rename Event Types based on package name and imports
+        scopedEventTypes.clear();
+        scopedEventTypes.putAll( PackageDataModelOracleUtils.filterEventTypes( packageName,
+                                                                               imports,
+                                                                               projectEventTypes ) );
+
+        //Filter and rename Enum definitions based on package name and imports
+        scopedEnumLists.clear();
+        scopedEnumLists.putAll( packageEnumDefinitions );
+        scopedEnumLists.putAll( PackageDataModelOracleUtils.filterEnumDefinitions( packageName,
+                                                                                   imports,
+                                                                                   projectEnumDefinitions ) );
+
+        //TODO Filter and rename based on package name (and imports)
+        scopedMethodInformation = projectMethodInformation;
+
+        //TODO Filter and rename based on package name (and imports)
+        scopedFieldParametersType = projectFieldParametersTypes;
     }
 
-    public void addDslActionSentences( final List<DSLSentence> dslActionSentences ) {
-        this.dslActionSentences.addAll( dslActionSentences );
+    private String getPackageName( final String qualifiedType ) {
+        String packageName = qualifiedType;
+        int dotIndex = packageName.lastIndexOf( "." );
+        if ( dotIndex != -1 ) {
+            packageName = packageName.substring( 0,
+                                                 dotIndex );
+        }
+        return packageName;
+    }
+
+    private String getTypeName( final String qualifiedType ) {
+        String typeName = qualifiedType;
+        int dotIndex = typeName.lastIndexOf( "." );
+        if ( dotIndex != -1 ) {
+            typeName = typeName.substring( dotIndex + 1 );
+        }
+        return typeName.replace( "$", "." );
+//        int innerClassDelimiterIndex = typeName.indexOf( "$" );
+//        if ( innerClassDelimiterIndex != -1 ) {
+//            typeName = typeName.substring( innerClassDelimiterIndex + 1 );
+//        }
+//        return typeName;
+    }
+
+    private ModelField[] correctModelFields( final ModelField[] originalModelFields ) {
+        final List<ModelField> correctedModelFields = new ArrayList<ModelField>();
+        for ( final ModelField mf : originalModelFields ) {
+            String mfType = mf.getType();
+            String mfClassName = mf.getClassName();
+            final String mfClassName_QualifiedType = mf.getClassName();
+            final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
+            final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
+            if ( mfClassName_PackageName.equals( packageName ) ) {
+                mfClassName = mfClassName_TypeName;
+            }
+            final String mfType_QualifiedType = mf.getType();
+            final String mfType_PackageName = getPackageName( mfType_QualifiedType );
+            final String mfType_TypeName = getTypeName( mfType_QualifiedType );
+            if ( mfType_PackageName.equals( packageName ) ) {
+                mfType = mfType_TypeName;
+            }
+            correctedModelFields.add( new ModelField( mf.getName(),
+                                                      mfClassName,
+                                                      mf.getClassType(),
+                                                      mf.getAccessorsAndMutators(),
+                                                      mfType ) );
+        }
+        final ModelField[] result = new ModelField[ correctedModelFields.size() ];
+        return correctedModelFields.toArray( result );
     }
 
 }

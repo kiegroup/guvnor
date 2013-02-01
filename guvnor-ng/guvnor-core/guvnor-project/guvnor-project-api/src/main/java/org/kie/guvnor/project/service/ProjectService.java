@@ -45,6 +45,13 @@ public interface ProjectService {
     Path resolvePackage( final Path resource );
 
     /**
+     * Given a Package path resolve it to a package name.
+     * @param packagePath
+     * @return Name of the package.
+     */
+    String resolvePackageName( final Path packagePath );
+
+    /**
      * Creates a new project to the given path.
      * @param activePath
      * @param name

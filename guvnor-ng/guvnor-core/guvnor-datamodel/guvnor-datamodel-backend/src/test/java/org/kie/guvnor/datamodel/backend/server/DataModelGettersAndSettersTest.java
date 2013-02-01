@@ -17,10 +17,13 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataType;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +31,7 @@ public class DataModelGettersAndSettersTest {
 
     @Test
     public void testGettersAndSettersOnDeclaredModel() throws Exception {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -43,6 +46,8 @@ public class DataModelGettersAndSettersTest {
                 .end()
                 .build();
 
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
         final String[] getters = dmo.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
                                                           "Person" );
         assertEquals( 3,
@@ -54,9 +59,8 @@ public class DataModelGettersAndSettersTest {
         assertEquals( "sex",
                       getters[ 2 ] );
 
-        final String[] setters = dmo.getFieldCompletions(
-                FieldAccessorsAndMutators.MUTATOR,
-                "Person" );
+        final String[] setters = dmo.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                          "Person" );
         assertEquals( 2,
                       setters.length );
         assertEquals( "age",
@@ -67,12 +71,14 @@ public class DataModelGettersAndSettersTest {
 
     @Test
     public void testGettersAndSettersOnJavaClass() throws Exception {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addClass( Person.class )
                 .build();
 
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server" ).setProjectDefinition( pd ).build();
+
         final String[] getters = dmo.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                          "Person" );
+                                                          "DataModelGettersAndSettersTest.Person" );
         assertEquals( 2,
                       getters.length );
         assertEquals( DataType.TYPE_THIS,
@@ -81,7 +87,7 @@ public class DataModelGettersAndSettersTest {
                       getters[ 1 ] );
 
         final String[] setters = dmo.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                          "Person" );
+                                                          "DataModelGettersAndSettersTest.Person" );
         assertEquals( 1,
                       setters.length );
         assertEquals( "age",

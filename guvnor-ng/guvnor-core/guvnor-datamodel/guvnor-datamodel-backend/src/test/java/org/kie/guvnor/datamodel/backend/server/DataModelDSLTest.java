@@ -17,6 +17,7 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 import static junit.framework.Assert.*;
@@ -25,7 +26,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddConditionDSLSentence() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[when]There is a Smurf=Smurf()" )
                 .build();
 
@@ -37,7 +38,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddActionDSLSentence() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[then]Greet Smurf=System.out.println(\"Hello Smurf\");" )
                 .build();
 
@@ -49,7 +50,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddMultipleConditionDSLSentence() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[when]There is a Smurf=Smurf()" )
                 .addDsl( "[when]There is Happy Smurf=Smurf( nature = HAPPY )" )
                 .build();
@@ -62,7 +63,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddMultipleActionDSLSentence() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[then]Report Smurfs=System.out.println(\"There is a Smurf\");" )
                 .addDsl( "[then]Greet Happy Smurf=System.out.println(\"Hello Happy Smurf\");" )
                 .build();
@@ -75,7 +76,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddMultipleConditionDSLSentenceCombined() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[when]There is a Smurf=Smurf()\n[when]There is Happy Smurf=Smurf( nature = HAPPY )" )
                 .build();
 
@@ -87,7 +88,7 @@ public class DataModelDSLTest {
 
     @Test
     public void testAddMultipleActionDSLSentenceCombined() {
-        final DataModelOracle dmo = DataModelBuilder.newDataModelBuilder()
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addDsl( "[then]Report Smurfs=System.out.println(\"There is a Smurf\");\n[then]Greet Happy Smurf=System.out.println(\"Hello Happy Smurf\");" )
                 .build();
 

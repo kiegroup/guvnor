@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.DataModelBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -35,8 +37,8 @@ public class GuidedDecisionTableTest {
 
     @Test
     public void testValueLists() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addEnum( "Driver",
                           "name",
                           new String[]{ "bob", "michael" } )
@@ -44,14 +46,14 @@ public class GuidedDecisionTableTest {
                           "rating",
                           new String[]{ "1", "2" } )
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
 
-        Map<String, String> currentValueMap = new HashMap<String, String>();
+        final Map<String, String> currentValueMap = new HashMap<String, String>();
 
         // add cols for LHS
-        ConditionCol52 c1 = new ConditionCol52();
-        Pattern52 p1 = new Pattern52();
+        final ConditionCol52 c1 = new ConditionCol52();
+        final Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setFactField( "name" );
@@ -59,8 +61,8 @@ public class GuidedDecisionTableTest {
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );
 
-        ConditionCol52 c1_ = new ConditionCol52();
-        Pattern52 p1_ = new Pattern52();
+        final ConditionCol52 c1_ = new ConditionCol52();
+        final Pattern52 p1_ = new Pattern52();
         p1_.setBoundName( "c1" );
         p1_.setFactType( "Driver" );
         c1_.setFactField( "name" );
@@ -68,15 +70,15 @@ public class GuidedDecisionTableTest {
         c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         dt.getConditions().add( p1_ );
 
-        ConditionCol52 c1__ = new ConditionCol52();
+        final ConditionCol52 c1__ = new ConditionCol52();
         c1__.setFactField( "sex" );
         p1_.getChildColumns().add( c1__ );
         c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         c1__.setValueList( "Male,Female" );
         dt.getConditions().add( p1_ );
 
-        ConditionCol52 c1___ = new ConditionCol52();
-        Pattern52 p1__ = new Pattern52();
+        final ConditionCol52 c1___ = new ConditionCol52();
+        final Pattern52 p1__ = new Pattern52();
         p1__.setBoundName( "c1" );
         p1__.setFactType( "Driver" );
         c1___.setFactField( "name" );
@@ -85,8 +87,8 @@ public class GuidedDecisionTableTest {
         p1__.getChildColumns().add( c1___ );
         dt.getConditions().add( p1__ );
 
-        ConditionCol52 c2 = new ConditionCol52();
-        Pattern52 p2 = new Pattern52();
+        final ConditionCol52 c2 = new ConditionCol52();
+        final Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
         c2.setFactField( "nothing" );
@@ -94,30 +96,30 @@ public class GuidedDecisionTableTest {
         p2.getChildColumns().add( c2 );
         dt.getConditions().add( p2 );
 
-        ActionSetFieldCol52 asf = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "c1" );
         asf.setFactField( "name" );
         dt.getActionCols().add( asf );
 
-        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactField( "rating" );
         ins_.setFactType( "Person" );
         ins_.setValueList( "one,two,three" );
         dt.getActionCols().add( ins_ );
 
-        ActionSetFieldCol52 asf_ = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 asf_ = new ActionSetFieldCol52();
         asf_.setBoundName( "c1" );
         asf_.setFactField( "goo" );
         dt.getActionCols().add( asf_ );
 
-        ActionSetFieldCol52 asf__ = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 asf__ = new ActionSetFieldCol52();
         asf__.setBoundName( "c1" );
         asf__.setFactField( "goo" );
         asf__.setValueList( "one,two,three" );
@@ -255,10 +257,9 @@ public class GuidedDecisionTableTest {
 
     @Test
     @SuppressWarnings("serial")
-    public void
-    testNumeric() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+    public void testNumeric() {
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -272,19 +273,22 @@ public class GuidedDecisionTableTest {
                                            DataType.TYPE_STRING ) )
                 .end()
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
 
-        AttributeCol52 at = new AttributeCol52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
+
+        final AttributeCol52 at = new AttributeCol52();
         at.setAttribute( "salience" );
-        AttributeCol52 at_ = new AttributeCol52();
+        final AttributeCol52 at_ = new AttributeCol52();
         at_.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( at );
         dt.getAttributeCols().add( at_ );
 
-        ConditionCol52 c1 = new ConditionCol52();
-        Pattern52 p1 = new Pattern52();
+        final ConditionCol52 c1 = new ConditionCol52();
+        final Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setFactField( "name" );
@@ -293,8 +297,8 @@ public class GuidedDecisionTableTest {
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );
 
-        ConditionCol52 c1_ = new ConditionCol52();
-        Pattern52 p1_ = new Pattern52();
+        final ConditionCol52 c1_ = new ConditionCol52();
+        final Pattern52 p1_ = new Pattern52();
         p1_.setBoundName( "c1" );
         p1_.setFactType( "Driver" );
         c1_.setFactField( "age" );
@@ -303,8 +307,8 @@ public class GuidedDecisionTableTest {
         p1_.getChildColumns().add( c1_ );
         dt.getConditions().add( p1_ );
 
-        ConditionCol52 c2 = new ConditionCol52();
-        Pattern52 p2 = new Pattern52();
+        final ConditionCol52 c2 = new ConditionCol52();
+        final Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c1" );
         p2.setFactType( "Driver" );
         c2.setFactField( "age" );
@@ -312,23 +316,23 @@ public class GuidedDecisionTableTest {
         p2.getChildColumns().add( c2 );
         dt.getConditions().add( p2 );
 
-        ActionSetFieldCol52 a = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
         a.setFactField( "name" );
         dt.getActionCols().add( a );
 
-        ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
         a2.setBoundName( "c1" );
         a2.setFactField( "age" );
         dt.getActionCols().add( a2 );
 
-        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactType( "Driver" );
         ins.setFactField( "name" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactType( "Driver" );
         ins_.setFactField( "age" );
@@ -359,8 +363,8 @@ public class GuidedDecisionTableTest {
     @Test
     @SuppressWarnings("serial")
     public void testGetType() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -384,20 +388,23 @@ public class GuidedDecisionTableTest {
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
 
-        AttributeCol52 salienceAttribute = new AttributeCol52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
+
+        final AttributeCol52 salienceAttribute = new AttributeCol52();
         salienceAttribute.setAttribute( "salience" );
-        AttributeCol52 enabledAttribute = new AttributeCol52();
+        final AttributeCol52 enabledAttribute = new AttributeCol52();
         enabledAttribute.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( salienceAttribute );
         dt.getAttributeCols().add( enabledAttribute );
 
-        Pattern52 p1 = new Pattern52();
+        final Pattern52 p1 = new Pattern52();
 
-        ConditionCol52 conditionColName = new ConditionCol52();
+        final ConditionCol52 conditionColName = new ConditionCol52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         conditionColName.setFactField( "name" );
@@ -405,48 +412,48 @@ public class GuidedDecisionTableTest {
         conditionColName.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColName );
 
-        ConditionCol52 conditionColAge = new ConditionCol52();
+        final ConditionCol52 conditionColAge = new ConditionCol52();
         conditionColAge.setFactField( "age" );
         conditionColAge.setOperator( "==" );
         conditionColAge.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColAge );
 
-        ConditionCol52 conditionColDate = new ConditionCol52();
+        final ConditionCol52 conditionColDate = new ConditionCol52();
         conditionColDate.setFactField( "date" );
         conditionColDate.setOperator( "==" );
         conditionColDate.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColDate );
 
-        ConditionCol52 conditionColApproved = new ConditionCol52();
+        final ConditionCol52 conditionColApproved = new ConditionCol52();
         conditionColApproved.setFactField( "approved" );
         conditionColApproved.setOperator( "==" );
         conditionColApproved.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColApproved );
 
-        ConditionCol52 conditionColAge2 = new ConditionCol52();
+        final ConditionCol52 conditionColAge2 = new ConditionCol52();
         conditionColAge2.setFactField( "age" );
         conditionColAge2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( conditionColAge2 );
 
         dt.getConditions().add( p1 );
 
-        ActionSetFieldCol52 a = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
         a.setFactField( "name" );
         dt.getActionCols().add( a );
 
-        ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
         a2.setBoundName( "c1" );
         a2.setFactField( "age" );
         dt.getActionCols().add( a2 );
 
-        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactType( "Driver" );
         ins.setFactField( "name" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactType( "Driver" );
         ins_.setFactField( "age" );
@@ -478,26 +485,27 @@ public class GuidedDecisionTableTest {
 
     @Test
     public void testNoConstraintLists() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder()
                 .addEnum( "Driver",
                           "name",
                           new String[]{ "bob", "michael" } )
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
 
         // add cols for LHS
-        ConditionCol52 c1 = new ConditionCol52();
-        Pattern52 p1 = new Pattern52();
+        final ConditionCol52 c1 = new ConditionCol52();
+        final Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );
 
-        ConditionCol52 c2 = new ConditionCol52();
-        Pattern52 p2 = new Pattern52();
+        final ConditionCol52 c2 = new ConditionCol52();
+        final Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -514,8 +522,8 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     @Test
     public void testNoConstraints() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -529,29 +537,32 @@ public class GuidedDecisionTableTest {
                                            DataType.TYPE_STRING ) )
                 .end()
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
+
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
 
         // add cols for LHS
-        RowNumberCol52 rnc = new RowNumberCol52();
-        DescriptionCol52 dc = new DescriptionCol52();
+        final RowNumberCol52 rnc = new RowNumberCol52();
+        final DescriptionCol52 dc = new DescriptionCol52();
 
-        MetadataCol52 mdc = new MetadataCol52();
+        final MetadataCol52 mdc = new MetadataCol52();
         mdc.setMetadata( "cheese" );
 
-        AttributeCol52 ac = new AttributeCol52();
+        final AttributeCol52 ac = new AttributeCol52();
         ac.setAttribute( "salience" );
 
-        ActionSetFieldCol52 asfc = new ActionSetFieldCol52();
+        final ActionSetFieldCol52 asfc = new ActionSetFieldCol52();
         asfc.setBoundName( "d1" );
         asfc.setFactField( "age" );
 
-        ActionInsertFactCol52 aifc = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 aifc = new ActionInsertFactCol52();
         aifc.setBoundName( "d2" );
         aifc.setFactType( "Driver" );
         aifc.setFactField( "age" );
 
-        ConditionCol52 c1 = new ConditionCol52();
+        final ConditionCol52 c1 = new ConditionCol52();
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
@@ -559,7 +570,7 @@ public class GuidedDecisionTableTest {
         p1.getChildColumns().add( c1 );
         dt.getConditions().add( p1 );
 
-        ConditionCol52 c2 = new ConditionCol52();
+        final ConditionCol52 c2 = new ConditionCol52();
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
@@ -568,7 +579,7 @@ public class GuidedDecisionTableTest {
         p2.getChildColumns().add( c2 );
         dt.getConditions().add( p2 );
 
-        ConditionCol52 c3 = new ConditionCol52();
+        final ConditionCol52 c3 = new ConditionCol52();
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
         p3.setFactType( "Driver" );
@@ -577,7 +588,7 @@ public class GuidedDecisionTableTest {
         p3.getChildColumns().add( c3 );
         dt.getConditions().add( p3 );
 
-        ConditionCol52 c4 = new ConditionCol52();
+        final ConditionCol52 c4 = new ConditionCol52();
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
         p4.setFactType( "Driver" );
@@ -587,7 +598,7 @@ public class GuidedDecisionTableTest {
         p4.getChildColumns().add( c4 );
         dt.getConditions().add( p4 );
 
-        ConditionCol52 c5 = new ConditionCol52();
+        final ConditionCol52 c5 = new ConditionCol52();
         Pattern52 p5 = new Pattern52();
         p5.setBoundName( "c5" );
         p5.setFactType( "Driver" );
@@ -595,7 +606,7 @@ public class GuidedDecisionTableTest {
         p5.getChildColumns().add( c5 );
         dt.getConditions().add( p5 );
 
-        ConditionCol52 c6 = new ConditionCol52();
+        final ConditionCol52 c6 = new ConditionCol52();
         Pattern52 p6 = new Pattern52();
         p6.setBoundName( "c6" );
         p6.setFactType( "Driver" );
@@ -621,8 +632,8 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     @Test
     public void testConditionPredicateChoices() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -636,11 +647,14 @@ public class GuidedDecisionTableTest {
                                            DataType.TYPE_STRING ) )
                 .end()
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
 
-        ConditionCol52 c1 = new ConditionCol52();
-        Pattern52 p1 = new Pattern52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
+
+        final ConditionCol52 c1 = new ConditionCol52();
+        final Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
@@ -662,8 +676,8 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     @Test
     public void testConditionFormulaChoices() {
-        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        DataModelOracle oracle = DataModelBuilder.newDataModelBuilder()
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -677,11 +691,14 @@ public class GuidedDecisionTableTest {
                                            DataType.TYPE_STRING ) )
                 .end()
                 .build();
-        GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                       dt );
 
-        ConditionCol52 c1 = new ConditionCol52();
-        Pattern52 p1 = new Pattern52();
+        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
+                                                                             dt );
+
+        final ConditionCol52 c1 = new ConditionCol52();
+        final Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );

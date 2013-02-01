@@ -1477,8 +1477,8 @@ public class GuidedDecisionTableWidget extends Composite
         //whereas Fields use the fully qualified Class Name. We don't use the generic fieldType (see 
         //SuggestionCompletionEngine.TYPE) as we can't distinguish between different numeric types
         String simpleClassName = className;
-        if ( simpleClassName != null && simpleClassName.lastIndexOf( "" ) > 0 ) {
-            simpleClassName = simpleClassName.substring( simpleClassName.lastIndexOf( "" ) + 1 );
+        if ( simpleClassName != null && simpleClassName.lastIndexOf( "." ) > 0 ) {
+            simpleClassName = simpleClassName.substring( simpleClassName.lastIndexOf( "." ) + 1 );
         }
         Set<String> bindings = new HashSet<String>();
         for ( Pattern52 p : this.model.getPatterns() ) {

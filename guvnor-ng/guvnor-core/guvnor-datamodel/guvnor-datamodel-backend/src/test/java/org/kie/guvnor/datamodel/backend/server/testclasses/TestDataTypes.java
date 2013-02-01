@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- * Test class to check data-types are extracted correctly by DataModelBuilder
+ * Test class to check data-types are extracted correctly by ProjectDefinitionBuilder
  */
 public class TestDataTypes {
 
