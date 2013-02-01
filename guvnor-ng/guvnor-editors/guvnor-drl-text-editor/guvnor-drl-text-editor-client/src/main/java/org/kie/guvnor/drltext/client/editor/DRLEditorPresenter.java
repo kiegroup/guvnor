@@ -24,6 +24,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
+import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
+import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.SaveCommand;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -215,9 +218,9 @@ public class DRLEditorPresenter {
     }
     
     public void onRename() {
-        new SaveOperationService().save(path, new SaveCommand() {
+        RenamePopup popup = new RenamePopup(new RenameCommand() {
             @Override
-            public void execute(final String commitMessage) {
+            public void execute(final String newName, final String comment) {
                 drlTextEditorService.call(new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path response) {
@@ -227,16 +230,18 @@ public class DRLEditorPresenter {
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
                     }
                 }).rename(path,
-                          "newName",
-                          commitMessage);
+                          newName,
+                          comment);
             }
         });
+        
+        popup.show();
     }
     
     public void onCopy() {
-        new SaveOperationService().save(path, new SaveCommand() {
+        CopyPopup popup = new CopyPopup(new RenameCommand() {
             @Override
-            public void execute(final String commitMessage) {
+            public void execute(final String newName, final String comment) {
                 drlTextEditorService.call(new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path response) {
@@ -246,10 +251,12 @@ public class DRLEditorPresenter {
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
                     }
                 }).copy(path,
-                        "newName",
-                        commitMessage);
+                        newName,
+                        comment);
             }
         });
+        
+        popup.show();
     }
     
     @IsDirty
