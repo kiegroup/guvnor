@@ -1,2 +1,0 @@
-org.kie.guvnor.commons.ui.service.EnumDropDownService
-org.kie.guvnor.commons.ui.configurations.ApplicationPreferences
