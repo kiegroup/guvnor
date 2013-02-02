@@ -29,7 +29,11 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
                                             event );
         final Path resourcePath = event.getResourcePath();
         final Path packagePath = projectService.resolvePackage( resourcePath );
-        invalidateCache( packagePath );
+
+        //If resource was not within a Package there's nothing to invalidate
+        if ( packagePath != null ) {
+            invalidateCache( packagePath );
+        }
     }
 
     public void invalidateProjectPackagesCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
@@ -37,17 +41,20 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
                                             event );
         final Path resourcePath = event.getResourcePath();
         final Path projectPath = projectService.resolveProject( resourcePath );
+
+        //If resource was not within a Project there's nothing to invalidate
+        if ( projectPath == null ) {
+            return;
+        }
+
         final String projectUri = projectPath.toURI();
-
         final List<Path> cacheEntriesToInvalidate = new ArrayList<Path>();
-
         for ( final Path packagePath : getKeys() ) {
             final String packageUri = packagePath.toURI();
             if ( packageUri.startsWith( projectUri ) ) {
                 cacheEntriesToInvalidate.add( packagePath );
             }
         }
-
         for ( final Path packagePath : cacheEntriesToInvalidate ) {
             invalidateCache( packagePath );
         }

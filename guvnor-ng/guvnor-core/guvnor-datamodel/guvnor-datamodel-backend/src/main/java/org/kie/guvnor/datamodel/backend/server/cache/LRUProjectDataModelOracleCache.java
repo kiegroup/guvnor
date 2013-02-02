@@ -28,8 +28,12 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
-        final Path packagePath = projectService.resolvePackage( resourcePath );
-        invalidateCache( packagePath );
+        final Path projectPath = projectService.resolveProject( resourcePath );
+
+        //If resource was not within a Project there's nothing to invalidate
+        if ( projectPath != null ) {
+            invalidateCache( projectPath );
+        }
     }
 
 }
