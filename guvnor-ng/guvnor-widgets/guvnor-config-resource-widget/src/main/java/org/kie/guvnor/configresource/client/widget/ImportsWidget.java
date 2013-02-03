@@ -137,8 +137,10 @@ public class ImportsWidget
 
     private void doImports() {
         importList.clear();
-        for (final Import i : imports) {
-            importList.addItem(i.getType());
+        if (imports != null) {
+            for (final Import i : imports) {
+                importList.addItem(i.getType());
+            }
         }
     }
 

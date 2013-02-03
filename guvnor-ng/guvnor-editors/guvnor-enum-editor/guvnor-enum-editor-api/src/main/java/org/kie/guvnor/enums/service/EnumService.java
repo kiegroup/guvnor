@@ -19,6 +19,7 @@ package org.kie.guvnor.enums.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
+import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -27,7 +28,7 @@ public interface EnumService
         extends ValidationService<String>,
                 SimpleVerificationService<String> {
 
-    String load( final Path path );
+    EnumModelContent load( final Path path );
 
     void save( final Path path,
                final String content,

@@ -42,7 +42,7 @@ public class RuleModel {
     public IPattern[]      lhs          = new IPattern[ 0 ];
     public IAction[]       rhs          = new IAction[ 0 ];
 
-    private Imports imports;
+    private Imports imports = new Imports();
 
     //Is the Rule to be negated (i.e. "not ( PatternX, PatternY... )"
     private boolean isNegated;

@@ -32,6 +32,8 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.DataEnumLoader;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.enums.model.EnumModel;
+import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -66,8 +68,8 @@ public class EnumServiceImpl implements EnumService {
     private Identity identity;
 
     @Override
-    public String load( Path path ) {
-        return ioService.readAllString( paths.convert( path ) );
+    public EnumModelContent load( Path path ) {
+        return new EnumModelContent(new EnumModel(ioService.readAllString( paths.convert( path ) )));
     }
 
     @Override

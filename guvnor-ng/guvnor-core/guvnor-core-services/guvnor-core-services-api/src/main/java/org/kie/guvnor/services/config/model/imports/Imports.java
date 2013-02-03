@@ -23,7 +23,7 @@ import java.util.List;
 @Portable
 public class Imports {
 
-    private ArrayList<Import> imports;
+    private ArrayList<Import> imports = new ArrayList<Import>();
 
     public Imports() {
 

@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.enums.client.editor;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -32,6 +27,7 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
@@ -56,7 +52,11 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
@@ -69,7 +69,7 @@ public class EnumEditorPresenter {
             extends
             IsWidget {
 
-        void setContent( String content );
+        void setContent(String content);
 
         String getContent();
 
@@ -102,22 +102,24 @@ public class EnumEditorPresenter {
 
     private Path path;
 
-    @PostConstruct
-    public void init() {
-        multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
-        multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+
+    @OnStart
+    public void onStart(final Path path) {
+        this.path = path;
+
+        multiPage.addWidget(view, CommonConstants.INSTANCE.EditTabTitle());
+        multiPage.addPage(new Page(viewSource, CommonConstants.INSTANCE.SourceTabTitle()) {
             @Override
             public void onFocus() {
-                viewSource.setContent( view.getContent() );
+                viewSource.setContent(view.getContent());
             }
 
             @Override
             public void onLostFocus() {
                 viewSource.clear();
             }
-        } );
+        });
+
         multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
             @Override
             public void onFocus() {
@@ -136,21 +138,13 @@ public class EnumEditorPresenter {
                 // Nothing to do here
             }
         });
-    }
 
-    @OnStart
-    public void onStart( final Path path ) {
-        this.path = path;
-        enumService.call( new RemoteCallback<String>() {
+        enumService.call(new RemoteCallback<EnumModelContent>() {
             @Override
-            public void callback( String response ) {
-                if ( response == null || response.isEmpty() ) {
-                    view.setContent( null );
-                } else {
-                    view.setContent( response );
-                }
+            public void callback(EnumModelContent response) {
+                view.setContent(response.getModel().getDRL());
             }
-        } ).load( path );
+        }).load(path);
     }
 
     @OnSave
@@ -243,7 +237,7 @@ public class EnumEditorPresenter {
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -261,20 +255,20 @@ public class EnumEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation( new Command() {
+        return newResourceMenuBuilder().addValidation(new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( "Wait while validating..." );
-                enumService.call( new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage("Wait while validating...");
+                enumService.call(new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                    public void callback(BuilderResult response) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path, view.getContent() );
+                }).validate(path, view.getContent());
             }
-        } ).addSave( new Command() {
+        }).addSave(new Command() {
             @Override
             public void execute() {
                 onSave();
@@ -294,6 +288,6 @@ public class EnumEditorPresenter {
             public void execute() {
                 onCopy();
             }
-        } ).build();
+        }).build();
     }
 }
