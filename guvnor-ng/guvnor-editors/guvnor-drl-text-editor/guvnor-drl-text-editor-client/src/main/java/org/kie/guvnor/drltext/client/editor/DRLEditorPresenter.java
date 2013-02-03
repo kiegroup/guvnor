@@ -164,7 +164,6 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
                     }
@@ -184,7 +183,6 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
                     }
@@ -205,7 +203,6 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
                     }

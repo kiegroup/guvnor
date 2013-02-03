@@ -22,7 +22,6 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.globals.model.Global;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -37,7 +36,6 @@ public interface GlobalsEditorService extends ValidationService<String>,
 
     void save( final Path path,
                final List<Global> content,
-               final ResourceConfig config,
                final Metadata metadata,
                final String comment );
 
