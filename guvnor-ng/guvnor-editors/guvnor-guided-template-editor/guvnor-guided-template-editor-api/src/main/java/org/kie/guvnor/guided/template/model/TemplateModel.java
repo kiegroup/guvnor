@@ -25,6 +25,7 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 @Portable
 public class TemplateModel
@@ -39,6 +40,8 @@ public class TemplateModel
     private int idCol = 0;
 
     private int rowsCount = 0;
+
+    private Imports imports;
 
     /**
      * Append a row of data
@@ -251,5 +254,9 @@ public class TemplateModel
     //Needed for Errai-RPC marshalling
     public void setIdCol( final int idCol ) {
         this.idCol = idCol;
+    }
+
+    public Imports getImports() {
+        return imports;
     }
 }

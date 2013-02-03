@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,8 +27,7 @@ import org.kie.commons.java.nio.file.attribute.FileTime;
 import org.kie.guvnor.services.backend.config.attribute.ConfigAttributes;
 import org.kie.guvnor.services.backend.config.attribute.ConfigView;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
-import org.kie.guvnor.services.config.model.imports.ImportsConfig;
+import org.kie.guvnor.services.config.model.imports.Import;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -41,57 +38,12 @@ import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesU
 @ApplicationScoped
 public class ResourceConfigServiceImpl implements ResourceConfigService {
 
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Inject
-    private Paths paths;
-
     @Override
-    public ResourceConfig getConfig( final Path resource ) {
-        checkNotNull( "resource", resource );
-
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        final ConfigView configView = ioService.getFileAttributeView( path, ConfigView.class );
-
-        final ImportsConfig importsConfig = new ImportsConfig();
-        for ( final String i : configView.readAttributes().imports() ) {
-            importsConfig.addImport( new ImportsConfig.Import( i ) );
-        }
-
-        final ResourceConfig result = new ResourceConfig();
-        result.setImportsConfig( importsConfig );
-        result.setImportsConfig( configView.readAttributes().content() );
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
-                                            final ResourceConfig config ) {
-        checkNotNull( "config", config );
-        checkNotNull( "_attrs", _attrs );
-
-        final Map<String, Object> attrs = cleanup( _attrs );
-
-        final List<String> imports = new ArrayList<String>() {{
-            for ( int i = 0; i < config.getImportsConfig().getImports().size(); i++ ) {
-                add( i, config.getImportsConfig().getImports().get( i ).getType() );
-            }
-        }};
+    public Map<String, Object> configAttrs( final Map<String, Object> attrs) {
+        checkNotNull( "_attrs", attrs );
 
         attrs.putAll( toMap( new ConfigAttributes() {
-            @Override
-            public List<String> imports() {
-                return imports;
-            }
 
-            @Override
-            public String content() {
-                return config.getStringContent();
-            }
 
             @Override
             public FileTime lastModifiedTime() {

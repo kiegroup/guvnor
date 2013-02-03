@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.auditlog.AuditLog;
 import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLog;
 import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditLogFilter;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -79,6 +80,8 @@ public class GuidedDecisionTable52 {
     private transient AnalysisCol52 analysisCol;
 
     private AuditLog auditLog;
+
+    private Imports imports;
 
     public enum TableFormat {
         EXTENDED_ENTRY,
@@ -349,6 +352,10 @@ public class GuidedDecisionTable52 {
             this.auditLog = new DefaultAuditLog( new DecisionTableAuditLogFilter() );
         }
         return this.auditLog;
+    }
+
+    public Imports getImports() {
+        return imports;
     }
 
 }

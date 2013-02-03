@@ -57,7 +57,6 @@ import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -116,32 +115,12 @@ public class GuidedScoreCardEditorServiceImpl
     @Override
     public void save( final Path resource,
                       final ScoreCardModel model,
-                      final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs,
-                                                       config );
-        }
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
+        ioService.write( paths.convert( resource ),
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
-                         attrs,
+                         metadataService.setUpAttributes(resource, metadata),
                          makeCommentedOption( comment ) );
     }
     

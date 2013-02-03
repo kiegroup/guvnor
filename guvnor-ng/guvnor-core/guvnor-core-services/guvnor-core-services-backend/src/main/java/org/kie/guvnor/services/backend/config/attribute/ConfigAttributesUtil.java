@@ -31,33 +31,12 @@ public final class ConfigAttributesUtil {
 
     }
 
-    public static Map<String, Object> cleanup( final Map<String, Object> _attrs ) {
-        final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
-
-        for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( IMPORT ) || key.equals( CONTENT ) ) {
-                attrs.put( key, null );
-            }
-        }
-
-        return attrs;
-    }
-
     public static Map<String, Object> toMap( final ConfigAttributes attrs,
                                              final String... attributes ) {
         return new HashMap<String, Object>() {{
             for ( final String attribute : attributes ) {
                 checkNotEmpty( "attribute", attribute );
 
-                if ( attribute.equals( "*" ) || attribute.equals( IMPORT ) ) {
-                    for ( int i = 0; i < attrs.imports().size(); i++ ) {
-                        final String content = attrs.imports().get( i );
-                        put( buildAttrName( IMPORT, i ), content );
-                    }
-                }
-                if ( attribute.equals( "*" ) || attribute.equals( CONTENT ) ) {
-                    put( CONTENT, attrs.content() );
-                }
                 if ( attribute.equals( "*" ) ) {
                     break;
                 }

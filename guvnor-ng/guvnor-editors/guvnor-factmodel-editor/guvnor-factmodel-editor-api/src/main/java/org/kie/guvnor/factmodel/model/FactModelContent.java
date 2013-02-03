@@ -16,24 +16,28 @@
 
 package org.kie.guvnor.factmodel.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.services.config.model.imports.Imports;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class FactModelContent {
 
     private FactModels factModels;
     private List<FactMetaModel> superTypes = new ArrayList<FactMetaModel>();
+    private Imports imports = new Imports();
 
     public FactModelContent() {
     }
 
-    public FactModelContent( final FactModels factModels,
-                             final List<FactMetaModel> superTypes ) {
+    public FactModelContent(final FactModels factModels,
+                            final List<FactMetaModel> superTypes,
+                            final Imports imports) {
         this.factModels = factModels;
-        superTypes.addAll( superTypes );
+        superTypes.addAll(superTypes);
+        this.imports = imports;
     }
 
     public FactModels getFactModels() {
@@ -42,6 +46,10 @@ public class FactModelContent {
 
     public List<FactMetaModel> getSuperTypes() {
         return superTypes;
+    }
+
+    public Imports getImports() {
+        return imports;
     }
 
 }

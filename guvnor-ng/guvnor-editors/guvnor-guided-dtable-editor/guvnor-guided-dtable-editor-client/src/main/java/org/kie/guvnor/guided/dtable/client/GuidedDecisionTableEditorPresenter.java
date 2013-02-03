@@ -27,7 +27,7 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -36,7 +36,6 @@ import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -103,23 +102,21 @@ public class GuidedDecisionTableEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Caller<ResourceConfigService> resourceConfigService;
-
-    @Inject
     private Caller<MetadataService> metadataService;
 
     private Path path = null;
 
-    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
-
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
-    @PostConstruct
-    public void init() {
+
+    @OnStart
+    public void onStart( final Path path ) {
+        this.path = path;
+        final ImportsWidget importsWidget = new ImportsWidget(path);
         multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
+                CommonConstants.INSTANCE.EditTabTitle() );
         multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+                CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 service.call( new RemoteCallback<String>() {
@@ -136,33 +133,17 @@ public class GuidedDecisionTableEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( resourceConfigWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
-            @Override
-            public void onFocus() {
-                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
-                    @Override
-                    public void callback( final ResourceConfig config ) {
-                        resourceConfigWidget.setContent( config,
-                                                         false );
-                    }
-                } ).getConfig( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
+        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
 
         multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
+                MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
                     public void callback( Metadata metadata ) {
                         metadataWidget.setContent( metadata,
-                                                   false );
+                                false );
                     }
                 } ).getMetadata( path );
             }
@@ -172,11 +153,6 @@ public class GuidedDecisionTableEditorPresenter {
                 // Nothing to do here
             }
         } );
-    }
-
-    @OnStart
-    public void onStart( final Path path ) {
-        this.path = path;
 
         service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
             @Override
@@ -184,6 +160,7 @@ public class GuidedDecisionTableEditorPresenter {
                 view.setContent( path,
                                  response.getDataModel(),
                                  response.getRuleModel() );
+                importsWidget.setImports(response.getRuleModel().getImports().getImports());
             }
         } ).loadContent( path );
     }
@@ -197,13 +174,11 @@ public class GuidedDecisionTableEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
                     }
                 }).save(path,
                         view.getContent(),
-                        resourceConfigWidget.getContent(),
                         metadataWidget.getContent(),
                         commitMessage);
             }

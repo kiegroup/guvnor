@@ -16,60 +16,24 @@
 
 package org.kie.guvnor.guided.rule.client;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.editor.RuleModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.backend.vfs.Path;
 
-public class GuidedRuleEditorView
-        extends Composite
-        implements GuidedRuleEditorPresenter.View {
+public interface GuidedRuleEditorView
+        extends IsWidget {
 
-    private final EventBus localBus = new SimpleEventBus();
-    private final VerticalPanel panel = new VerticalPanel();
-    private RuleModeller modeller = null;
+    void setContent(final Path path,
+                    final RuleModel model,
+                    final DataModelOracle dataModel);
 
-    public GuidedRuleEditorView() {
-        panel.setWidth( "100%" );
-        initWidget( panel );
-    }
+    RuleModel getContent();
 
-    @Override
-    public void setContent( final Path path,
-                            final RuleModel model,
-                            final DataModelOracle dataModel ) {
-        modeller = new RuleModeller( path,
-                                     model,
-                                     dataModel,
-                                     new RuleModellerWidgetFactory(),
-                                     localBus );
-        panel.add( this.modeller );
-    }
+    boolean isDirty();
 
-    @Override
-    public RuleModel getContent() {
-        return modeller.getModel();
-    }
+    void setNotDirty();
 
-    @Override
-    public boolean isDirty() {
-        return modeller.isDirty();
-    }
+    boolean confirmClose();
 
-    @Override
-    public void setNotDirty() {
-
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
 }

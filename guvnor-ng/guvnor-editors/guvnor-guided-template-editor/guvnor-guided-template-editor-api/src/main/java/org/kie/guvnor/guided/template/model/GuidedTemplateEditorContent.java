@@ -18,6 +18,10 @@ package org.kie.guvnor.guided.template.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.services.config.model.imports.Import;
+import org.kie.guvnor.services.config.model.imports.Imports;
+
+import java.util.List;
 
 /**
  * Container for data needed to edit a Guided Template

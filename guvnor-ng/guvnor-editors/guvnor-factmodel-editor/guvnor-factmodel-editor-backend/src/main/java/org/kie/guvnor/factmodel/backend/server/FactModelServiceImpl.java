@@ -46,7 +46,9 @@ import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
+import org.kie.guvnor.services.config.model.imports.Import;
+import org.kie.guvnor.services.config.model.imports.Imports;
+import org.kie.guvnor.services.config.model.imports.ImportsParser;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -86,11 +88,12 @@ public class FactModelServiceImpl
     @Override
     public FactModelContent loadContent( final Path path ) {
         try {
-            final List<FactMetaModel> models = toModel( ioService.readAllString( paths.convert( path ) ) );
+            String drl = ioService.readAllString(paths.convert(path));
+            final List<FactMetaModel> models = toModel(drl);
             final FactModels ms = new FactModels();
             ms.getModels().addAll( models );
 
-            return new FactModelContent( ms, loadAllAvailableTypes( path ) );
+            return new FactModelContent( ms, loadAllAvailableTypes( path ), ImportsParser.parseImports(drl));
         } catch ( final DroolsParserException e ) {
             throw new RuntimeException( e );
         }
@@ -119,33 +122,13 @@ public class FactModelServiceImpl
     @Override
     public void save( final Path resource,
                       final FactModels content,
-                      final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs,
-                                                       config );
-        }
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
-                         toDRL( content ),
-                         attrs,
-                         makeCommentedOption( comment ) );
+        ioService.write(paths.convert(resource),
+                toDRL(content),
+                metadataService.setUpAttributes(resource, metadata),
+                makeCommentedOption(comment));
 
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
     }

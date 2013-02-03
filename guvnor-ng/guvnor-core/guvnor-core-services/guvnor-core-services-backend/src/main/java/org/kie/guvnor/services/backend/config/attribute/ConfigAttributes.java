@@ -16,16 +16,10 @@
 
 package org.kie.guvnor.services.backend.config.attribute;
 
-import java.util.List;
-
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 
-/**
- *
- */
-public interface ConfigAttributes extends BasicFileAttributes {
+public interface ConfigAttributes
+        extends BasicFileAttributes {
 
-    List<String> imports();
 
-    String content();
 }

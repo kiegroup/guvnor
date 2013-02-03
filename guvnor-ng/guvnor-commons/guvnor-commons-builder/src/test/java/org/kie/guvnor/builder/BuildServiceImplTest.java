@@ -85,7 +85,7 @@ public class BuildServiceImplTest {
         Bean pathsBean = (Bean)beanManager.getBeans(Paths.class).iterator().next();
         cc = beanManager.createCreationalContext(pathsBean);
         Paths paths = (Paths)beanManager.getReference(pathsBean, Paths.class, cc);
-   
+
         
         URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();

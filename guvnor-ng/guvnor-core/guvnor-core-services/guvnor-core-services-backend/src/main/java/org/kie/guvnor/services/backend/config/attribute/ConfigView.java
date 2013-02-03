@@ -16,25 +16,18 @@
 
 package org.kie.guvnor.services.backend.config.attribute;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.kie.commons.data.Pair;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.AbstractBasicFileAttributeView;
 import org.kie.commons.java.nio.base.AbstractPath;
 import org.kie.commons.java.nio.base.NeedsPreloadedAttrs;
-import org.kie.commons.java.nio.base.NotImplementedException;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
 
 import static org.kie.commons.data.Pair.*;
-import static org.kie.commons.validation.Preconditions.*;
 import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesUtil.*;
 
 /**
@@ -43,48 +36,14 @@ import static org.kie.guvnor.services.backend.config.attribute.ConfigAttributesU
 public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
-    public static final String IMPORT  = "config.import";
-    public static final String CONTENT = "config.content";
-
-    private static final Set<String> PROPERTIES = new HashSet<String>() {{
-        add( IMPORT );
-        add( CONTENT );
-    }};
-
     private final ConfigAttributes attrs;
 
     public ConfigView( final AbstractPath path ) {
         super( path );
-        final Map<String, Object> content = path.getAttrStorage().getContent();
 
         final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
 
-        final Map<Integer, String> _imports = new TreeMap<Integer, String>();
-
-        String _configContent = null;
-
-        for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
-            if ( entry.getKey().startsWith( IMPORT ) ) {
-                final Pair<Integer, String> result = extractValue( entry );
-                _imports.put( result.getK1(), result.getK2() );
-            } else if ( entry.getKey().equals( CONTENT ) ) {
-                _configContent = entry.getValue().toString();
-            }
-        }
-
-        final String configContent = _configContent;
-        final List<String> imports = new ArrayList<String>( _imports.values() );
-
         this.attrs = new ConfigAttributes() {
-            @Override
-            public List<String> imports() {
-                return imports;
-            }
-
-            @Override
-            public String content() {
-                return configContent;
-            }
 
             @Override
             public FileTime lastModifiedTime() {
@@ -161,15 +120,6 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
         return new Class[]{ ConfigView.class };
-    }
-
-    @Override
-    public void setAttribute( final String attribute,
-                              final Object value ) throws IOException {
-        checkNotEmpty( "attribute", attribute );
-        checkCondition( "invalid attribute", PROPERTIES.contains( attribute ) );
-
-        throw new NotImplementedException();
     }
 
 }

@@ -33,7 +33,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
@@ -41,7 +41,6 @@ import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
@@ -77,9 +76,6 @@ public class GuidedScoreCardEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
-    private Caller<ResourceConfigService> resourceConfigService;
-
-    @Inject
     private Caller<VersionService> versionService;
 
     @Inject
@@ -87,8 +83,6 @@ public class GuidedScoreCardEditorPresenter {
 
     @Inject
     private ViewSourceView viewSource;
-
-    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -99,27 +93,30 @@ public class GuidedScoreCardEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateProjectCache;
-
-    @Inject
     private Event<RestoreEvent> restoreEvent;
 
     private Path path;
     private boolean isReadOnly;
+    private ImportsWidget importsWidget;
+
 
     @OnStart
-    public void init() {
+    public void onStart( final Path path,
+                         final PlaceRequest request ) {
+        this.path = path;
+        importsWidget = new ImportsWidget(path);
+
         multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
+                CommonConstants.INSTANCE.EditTabTitle() );
 
         multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+                CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 scoreCardEditorService.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( final String response ) {
-                        viewSource.setContent( response );
+                        viewSource.setContent(response);
                     }
                 } ).toSource( view.getModel() );
             }
@@ -130,19 +127,10 @@ public class GuidedScoreCardEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( resourceConfigWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
+        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
 
         multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
             }
@@ -151,12 +139,6 @@ public class GuidedScoreCardEditorPresenter {
             public void onLostFocus() {
             }
         } );
-    }
-
-    @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest request ) {
-        this.path = path;
         this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
         loadContent();
     }
@@ -168,6 +150,7 @@ public class GuidedScoreCardEditorPresenter {
 
                 view.setContent( content.getModel(),
                                  content.getOracle() );
+                importsWidget.setImports(content.getModel().getImports().getImports());
             }
         } ).loadContent( path );
 
@@ -178,14 +161,6 @@ public class GuidedScoreCardEditorPresenter {
                                            isReadOnly );
             }
         } ).getMetadata( path );
-
-        resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
-            @Override
-            public void callback( final ResourceConfig config ) {
-                resourceConfigWidget.setContent( config,
-                                                 isReadOnly );
-            }
-        } ).getConfig( path );
     }
 
     @OnSave
@@ -202,14 +177,12 @@ public class GuidedScoreCardEditorPresenter {
                     @Override
                     public void callback(final Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
 
                     }
                 }).save(path,
                         view.getModel(),
-                        resourceConfigWidget.getContent(),
                         metadataWidget.getContent(),
                         comment);
             }
@@ -290,7 +263,7 @@ public class GuidedScoreCardEditorPresenter {
         if ( isReadOnly ) {
             return false;
         }
-        return ( view.isDirty() || resourceConfigWidget.isDirty() || metadataWidget.isDirty() );
+        return ( view.isDirty() || metadataWidget.isDirty() );
     }
 
     @OnMayClose

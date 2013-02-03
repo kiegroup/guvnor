@@ -35,7 +35,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
@@ -44,7 +44,6 @@ import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -119,12 +118,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Caller<ResourceConfigService> resourceConfigService;
-
-    @Inject
     private Caller<MetadataService> metadataService;
-
-    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -137,12 +131,16 @@ public class GuidedRuleTemplateEditorPresenter {
 
     private Path path = null;
 
-    @PostConstruct
-    public void init() {
+
+    @OnStart
+    public void onStart( final Path path ) {
+        this.path = path;
+        final ImportsWidget importsWidget = new ImportsWidget(path);
+
         multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
+                CommonConstants.INSTANCE.EditTabTitle() );
         multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+                CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 service.call( new RemoteCallback<String>() {
@@ -160,14 +158,14 @@ public class GuidedRuleTemplateEditorPresenter {
         } );
 
         multiPage.addPage( new Page( dataView,
-                                     "Data" ) {
+                "Data" ) {
 
             @Override
             public void onFocus() {
                 dataView.setContent( model,
-                                     oracle,
-                                     eventBus,
-                                     isReadOnly );
+                        oracle,
+                        eventBus,
+                        isReadOnly );
             }
 
             @Override
@@ -175,33 +173,18 @@ public class GuidedRuleTemplateEditorPresenter {
                 dataView.clear();
             }
         } );
-        multiPage.addPage( new Page( resourceConfigWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
-            @Override
-            public void onFocus() {
-                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
-                    @Override
-                    public void callback( final ResourceConfig config ) {
-                        resourceConfigWidget.setContent( config,
-                                                         isReadOnly );
-                    }
-                } ).getConfig( path );
-            }
 
-            @Override
-            public void onLostFocus() {
-            }
-        } );
+        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
 
         multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
+                MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
                     public void callback( Metadata metadata ) {
                         metadataWidget.setContent( metadata,
-                                                   isReadOnly );
+                                isReadOnly );
                     }
                 } ).getMetadata( path );
             }
@@ -211,12 +194,6 @@ public class GuidedRuleTemplateEditorPresenter {
                 // Nothing to do here
             }
         } );
-
-    }
-
-    @OnStart
-    public void onStart( final Path path ) {
-        this.path = path;
 
         service.call( new RemoteCallback<GuidedTemplateEditorContent>() {
             @Override
@@ -232,6 +209,7 @@ public class GuidedRuleTemplateEditorPresenter {
                                      oracle,
                                      eventBus,
                                      isReadOnly );
+                importsWidget.setImports(response.getRuleModel().getImports().getImports());
             }
         } ).loadContent( path );
     }
@@ -245,13 +223,11 @@ public class GuidedRuleTemplateEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
                     }
                 }).save(path,
                         view.getContent(),
-                        resourceConfigWidget.getContent(),
                         metadataWidget.getContent(),
                         commitMessage);
             }

@@ -31,7 +31,7 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -41,7 +41,6 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
@@ -70,22 +69,6 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 @WorkbenchEditor(identifier = "DRLEditor", fileTypes = "*.drl")
 public class DRLEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final String content,
-                         final DataModelOracle dataModel );
-
-        String getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-    }
-
     @Inject
     private Caller<DRLTextEditorService> drlTextEditorService;
 
@@ -96,14 +79,9 @@ public class DRLEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
-    private Caller<ResourceConfigService> resourceConfigService;
-
-    @Inject
-    private View view;
+    private DRLEditorView view;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
-
-    private final ResourceConfigWidget resourceConfigWidget = new ResourceConfigWidget();
 
     @Inject
     private MultiPageEditor multiPage;
@@ -111,14 +89,12 @@ public class DRLEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
-    @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateProjectCache;
-
     private Path path;
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
+
 
         multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
 
@@ -139,24 +115,6 @@ public class DRLEditorPresenter {
                 } ).load( path );
             }
         } ).getDataModel( path );
-
-        multiPage.addPage( new Page( resourceConfigWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() ) {
-            @Override
-            public void onFocus() {
-                resourceConfigService.call( new RemoteCallback<ResourceConfig>() {
-                    @Override
-                    public void callback( final ResourceConfig config ) {
-                        resourceConfigWidget.setContent( config,
-                                                         false );
-                    }
-                } ).getConfig( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
 
         multiPage.addPage( new Page( metadataWidget,
                                      MetadataConstants.INSTANCE.Metadata() ) {
@@ -187,13 +145,11 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback(Path response) {
                         view.setNotDirty();
-                        resourceConfigWidget.resetDirty();
                         metadataWidget.resetDirty();
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
                     }
                 }).save(path,
                         view.getContent(),
-                        resourceConfigWidget.getContent(),
                         metadataWidget.getContent(),
                         commitMessage);
             }

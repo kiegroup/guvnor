@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 @Portable
 public class ScoreCardModel {
@@ -35,6 +36,8 @@ public class ScoreCardModel {
 
     private List<Characteristic> characteristics = new ArrayList<Characteristic>();
     private String packageName;
+
+    private Imports imports;
 
     public ScoreCardModel() {
     }
@@ -117,5 +120,9 @@ public class ScoreCardModel {
 
     public void setPackageName( final String packageName ) {
         this.packageName = packageName;
+    }
+
+    public Imports getImports() {
+        return imports;
     }
 }

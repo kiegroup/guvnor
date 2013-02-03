@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 @Portable
 public class RuleModel {
@@ -40,6 +41,8 @@ public class RuleModel {
     public RuleMetadata[]  metadataList = new RuleMetadata[ 0 ];
     public IPattern[]      lhs          = new IPattern[ 0 ];
     public IAction[]       rhs          = new IAction[ 0 ];
+
+    private Imports imports;
 
     //Is the Rule to be negated (i.e. "not ( PatternX, PatternY... )"
     private boolean isNegated;
@@ -756,6 +759,10 @@ public class RuleModel {
      */
     public void setNegated( boolean isNegated ) {
         this.isNegated = isNegated;
+    }
+
+    public Imports getImports() {
+        return imports;
     }
 
 }

@@ -15,21 +15,21 @@
  */
 package org.kie.guvnor.services.config.model.imports;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Portable
-public class ImportsConfig {
+public class Imports {
 
-    private List<Import> imports = new ArrayList<Import>();
+    private ArrayList<Import> imports;
 
-    public ImportsConfig() {
+    public Imports() {
 
     }
 
-    public ImportsConfig( final List<Import> imports ) {
+    public Imports(final List<Import> imports) {
         this.imports = new ArrayList<Import>( imports );
     }
 
@@ -52,25 +52,6 @@ public class ImportsConfig {
 
     public void addImport( final Import i ) {
         imports.add( i );
-    }
-
-    @Portable
-    public static class Import {
-
-        private String type;
-
-        public Import() {
-
-        }
-
-        public Import( String t ) {
-            this.type = t;
-        }
-
-        public String getType() {
-            return this.type;
-        }
-
     }
 
 }

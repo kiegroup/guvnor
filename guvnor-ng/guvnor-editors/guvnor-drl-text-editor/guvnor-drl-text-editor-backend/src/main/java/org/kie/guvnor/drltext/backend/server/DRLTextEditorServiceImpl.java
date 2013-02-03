@@ -33,7 +33,6 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -109,35 +108,16 @@ public class DRLTextEditorServiceImpl
     @Override
     public void save( final Path resource,
                       final String content,
-                      final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+        ioService.write(
+                paths.convert(resource),
+                content,
+                metadataService.setUpAttributes(resource, metadata),
+                makeCommentedOption(comment));
 
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs,
-                                                       config );
-        }
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
-                         content,
-                         attrs,
-                         makeCommentedOption( comment ) );
-
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
     }
     
     @Override

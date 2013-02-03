@@ -19,7 +19,6 @@ package org.kie.guvnor.services.config;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -28,8 +27,5 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ResourceConfigService {
 
-    ResourceConfig getConfig( final Path resource );
-
-    Map<String, Object> configAttrs( final Map<String, Object> attrs,
-                                     final ResourceConfig config );
+    Map<String, Object> configAttrs( final Map<String, Object> attrs);
 }

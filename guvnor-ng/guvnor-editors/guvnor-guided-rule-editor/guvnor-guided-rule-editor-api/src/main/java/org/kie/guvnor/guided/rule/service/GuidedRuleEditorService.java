@@ -16,15 +16,12 @@
 
 package org.kie.guvnor.guided.rule.service;
 
-import java.util.Date;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -40,7 +37,6 @@ public interface GuidedRuleEditorService
 
     void save( final Path path,
                final RuleModel content,
-               final ResourceConfig config,
                final Metadata metadata,
                final String comment );
 

@@ -18,8 +18,6 @@ package org.kie.guvnor.guided.template.server;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +25,6 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -39,7 +36,6 @@ import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.template.server.util.BRDRTXMLPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.services.config.ResourceConfigService;
-import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -95,33 +91,13 @@ public class GuidedRuleTemplateEditorServiceImpl
     @Override
     public void save( final Path resource,
                       final TemplateModel model,
-                      final ResourceConfig config,
                       final Metadata metadata,
                       final String comment ) {
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( config != null ) {
-            attrs = resourceConfigService.configAttrs( attrs,
-                                                       config );
-        }
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
-                         BRDRTXMLPersistence.getInstance().marshal( model ),
-                         attrs,
-                         makeCommentedOption( comment ) );
+        ioService.write(paths.convert(resource),
+                BRDRTXMLPersistence.getInstance().marshal(model),
+                metadataService.setUpAttributes(resource, metadata),
+                makeCommentedOption(comment));
     }
     
     @Override
