@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.client.widgets;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.popup.FormPopup;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class ListFormComboPanelTest {
     public void setUp() throws Exception {
         view = mock(ListFormComboPanelView.class);
         Form form = mock(Form.class);
-        NamePopup namePopup = mock(NamePopup.class);
+        FormPopup namePopup = mock(FormPopup.class);
         panel = new ListFormComboPanel<HasListFormComboPanelProperties>(view, form, namePopup) {
             @Override
             protected HasListFormComboPanelProperties createNew(String name) {

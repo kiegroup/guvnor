@@ -28,15 +28,13 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
-import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
@@ -63,7 +61,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.List;
 
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
 
@@ -71,7 +68,8 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResou
 @WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "*.model.drl")
 public class FactModelsEditorPresenter {
 
-    private ImportsWidget importsWidget;
+    @Inject
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private Caller<FactModelService> factModelService;
@@ -129,7 +127,6 @@ public class FactModelsEditorPresenter {
             }
         });
 
-        importsWidget = new ImportsWidget(path, isReadOnly);
         multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
 
         multiPage.addWidget(metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle());
@@ -153,7 +150,7 @@ public class FactModelsEditorPresenter {
                         content.getSuperTypes(),
                         modelNameHelper);
 
-                importsWidget.setImports(content.getImports().getImports());
+                importsWidget.setImports(content.getImports());
             }
         }).loadContent(path);
 

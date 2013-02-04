@@ -27,7 +27,7 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -35,7 +35,6 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -56,7 +55,6 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -83,10 +81,14 @@ public class GuidedDecisionTableEditorPresenter {
         void setNotDirty();
 
         boolean confirmClose();
+
     }
 
     @Inject
     private View view;
+
+    @Inject
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private ViewSourceView viewSource;
@@ -112,7 +114,7 @@ public class GuidedDecisionTableEditorPresenter {
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
-        final ImportsWidget importsWidget = new ImportsWidget(path);
+
         multiPage.addWidget( view,
                 CommonConstants.INSTANCE.EditTabTitle() );
         multiPage.addPage( new Page( viewSource,
@@ -160,7 +162,7 @@ public class GuidedDecisionTableEditorPresenter {
                 view.setContent( path,
                                  response.getDataModel(),
                                  response.getRuleModel() );
-                importsWidget.setImports(response.getRuleModel().getImports().getImports());
+                importsWidget.setImports(response.getRuleModel().getImports());
             }
         } ).loadContent( path );
     }

@@ -18,9 +18,9 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.popup.FormPopup;
+import org.kie.guvnor.commons.ui.client.popup.PopupSetFieldCommand;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
-import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.guvnor.project.model.KSessionModel;
 import org.mockito.ArgumentCaptor;
 
@@ -35,13 +35,13 @@ public class KSessionsPanelTest {
     private KSessionsPanelView view;
     private KSessionsPanel kSessionsPanel;
     private ListFormComboPanelView.Presenter presenter;
-    private NamePopup namePopup;
+    private FormPopup namePopup;
     private KSessionForm form;
 
     @Before
     public void setUp() throws Exception {
         view = mock(KSessionsPanelView.class);
-        namePopup = mock(NamePopup.class);
+        namePopup = mock(FormPopup.class);
         form = mock(KSessionForm.class);
         kSessionsPanel = new KSessionsPanel(view, form, namePopup);
         presenter = kSessionsPanel;
@@ -64,7 +64,7 @@ public class KSessionsPanelTest {
         presenter.onAdd();
 
 
-        ArgumentCaptor<PopupSetNameCommand> addKSessionCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        ArgumentCaptor<PopupSetFieldCommand> addKSessionCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
         verify(namePopup).show(addKSessionCommandArgumentCaptor.capture());
 
         addKSessionCommandArgumentCaptor.getValue().setName("TheOne");

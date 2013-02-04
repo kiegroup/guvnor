@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.widgets;
+package org.kie.guvnor.commons.ui.client.popup;
 
-public interface PopupSetNameCommand {
+public interface FormPopupView {
+
+    interface Presenter{
+
+        void onOk();
+
+    }
+
+    void setPresenter( Presenter presenter );
+
+    void show();
+
+    String getName();
 
     void setName( String name );
 
+    void showFieldEmptyWarning();
 }

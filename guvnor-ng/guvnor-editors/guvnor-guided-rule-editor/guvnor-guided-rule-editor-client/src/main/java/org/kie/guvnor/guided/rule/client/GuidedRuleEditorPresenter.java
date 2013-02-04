@@ -27,15 +27,12 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidget;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -66,7 +63,8 @@ import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResou
 @WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.gre.drl")
 public class GuidedRuleEditorPresenter {
 
-    private ImportsWidget importsWidget;
+    @Inject
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private GuidedRuleEditorView view;
@@ -94,7 +92,6 @@ public class GuidedRuleEditorPresenter {
     @OnStart
     public void onStart(final Path path) {
         this.path = path;
-        importsWidget = new ImportsWidget(path);
 
         multiPage.addWidget(view, CommonConstants.INSTANCE.EditTabTitle());
 
@@ -144,7 +141,7 @@ public class GuidedRuleEditorPresenter {
                 view.setContent(path,
                         response.getRuleModel(),
                         response.getDataModel());
-                importsWidget.setImports(response.getRuleModel().getImports().getImports());
+                importsWidget.setImports(response.getRuleModel().getImports());
             }
         }).loadContent(path);
     }

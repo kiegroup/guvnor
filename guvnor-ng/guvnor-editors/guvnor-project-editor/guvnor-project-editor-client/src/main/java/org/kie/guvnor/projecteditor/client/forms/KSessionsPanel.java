@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import org.kie.guvnor.commons.ui.client.popup.FormPopup;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
 import org.kie.guvnor.project.model.KSessionModel;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class KSessionsPanel
     @Inject
     public KSessionsPanel(KSessionsPanelView view,
                           KSessionForm form,
-                          NamePopup namePopup) {
+                          FormPopup namePopup) {
         super(view, form, namePopup);
     }
 

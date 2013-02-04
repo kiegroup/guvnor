@@ -36,4 +36,7 @@ public interface NewItemPopupConstants
 
     String MissingName();
 
+    String New();
+
+    String PleaseSetAName();
 }

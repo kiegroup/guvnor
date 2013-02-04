@@ -18,11 +18,11 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.popup.FormPopup;
+import org.kie.guvnor.commons.ui.client.popup.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.guvnor.projecteditor.client.widgets.NamePopup;
-import org.kie.guvnor.projecteditor.client.widgets.PopupSetNameCommand;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
@@ -38,7 +38,7 @@ public class KModuleEditorPanelTest {
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private KModuleEditorPanel screenK;
     private ListFormComboPanelView.Presenter presenter;
-    private NamePopup nameNamePopup;
+    private FormPopup nameNamePopup;
     private KBaseForm form;
 
     @Before
@@ -47,7 +47,7 @@ public class KModuleEditorPanelTest {
         view = mock(KModuleEditorPanelView.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
 
-        nameNamePopup = mock(NamePopup.class);
+        nameNamePopup = mock(FormPopup.class);
         form = mock(KBaseForm.class);
         screenK = new KModuleEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
         presenter = screenK;
@@ -99,7 +99,7 @@ public class KModuleEditorPanelTest {
 
         presenter.onAdd();
 
-        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        ArgumentCaptor<PopupSetFieldCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
         verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
         addKBaseCommandArgumentCaptor.getValue().setName("TheOne");
 
@@ -138,7 +138,7 @@ public class KModuleEditorPanelTest {
 
         presenter.onRename();
 
-        ArgumentCaptor<PopupSetNameCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetNameCommand.class);
+        ArgumentCaptor<PopupSetFieldCommand> addKBaseCommandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
         verify(nameNamePopup).show(addKBaseCommandArgumentCaptor.capture());
         addKBaseCommandArgumentCaptor.getValue().setName("NewName");
 

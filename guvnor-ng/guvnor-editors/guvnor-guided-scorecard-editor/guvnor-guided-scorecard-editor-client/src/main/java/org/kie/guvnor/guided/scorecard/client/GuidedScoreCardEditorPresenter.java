@@ -33,14 +33,12 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidget;
-import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
@@ -97,14 +95,15 @@ public class GuidedScoreCardEditorPresenter {
 
     private Path path;
     private boolean isReadOnly;
-    private ImportsWidget importsWidget;
+
+    @Inject
+    private ImportsWidgetPresenter importsWidget;
 
 
     @OnStart
     public void onStart( final Path path,
                          final PlaceRequest request ) {
         this.path = path;
-        importsWidget = new ImportsWidget(path);
 
         multiPage.addWidget( view,
                 CommonConstants.INSTANCE.EditTabTitle() );
@@ -150,7 +149,7 @@ public class GuidedScoreCardEditorPresenter {
 
                 view.setContent( content.getModel(),
                                  content.getOracle() );
-                importsWidget.setImports(content.getModel().getImports().getImports());
+                importsWidget.setImports(content.getModel().getImports());
             }
         } ).loadContent( path );
 

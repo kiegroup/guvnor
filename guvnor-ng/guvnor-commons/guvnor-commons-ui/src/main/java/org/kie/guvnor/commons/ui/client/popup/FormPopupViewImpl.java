@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.widgets;
+package org.kie.guvnor.commons.ui.client.popup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,20 +24,20 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
 
-public class NamePopupViewImpl
+public class FormPopupViewImpl
         extends Popup
-        implements NamePopupView {
+        implements FormPopupView {
 
     private final Widget widget;
     private Presenter presenter;
 
     interface AddNewKBasePopupViewImplBinder
             extends
-            UiBinder<Widget, NamePopupViewImpl> {
+            UiBinder<Widget, FormPopupViewImpl> {
 
     }
 
@@ -52,9 +52,9 @@ public class NamePopupViewImpl
     @UiField
     Button cancelButton;
 
-    public NamePopupViewImpl() {
+    public FormPopupViewImpl() {
         widget = uiBinder.createAndBindUi( this );
-        setTitle( ProjectEditorConstants.INSTANCE.New() );
+        setTitle( NewItemPopupConstants.INSTANCE.New() );
     }
 
     @Override
@@ -89,8 +89,8 @@ public class NamePopupViewImpl
     }
 
     @Override
-    public void showNameEmptyWarning() {
-        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.PleaseSetAName() );
+    public void showFieldEmptyWarning() {
+        ErrorPopup.showMessage( NewItemPopupConstants.INSTANCE.PleaseSetAName() );
     }
 
     @UiHandler("cancelButton")

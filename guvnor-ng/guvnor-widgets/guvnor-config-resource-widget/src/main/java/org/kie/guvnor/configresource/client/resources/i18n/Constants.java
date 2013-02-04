@@ -66,4 +66,8 @@ public interface Constants extends
     String NewItemDisabled();
 
     String Home();
+
+    String New();
+
+    String PleaseSetAName();
 }

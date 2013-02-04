@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.guided.template.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -35,7 +34,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidget;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
@@ -43,7 +42,6 @@ import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -85,8 +83,8 @@ public class GuidedRuleTemplateEditorPresenter {
         void setNotDirty();
 
         boolean confirmClose();
-    }
 
+    }
     public interface DataView
             extends
             IsWidget {
@@ -97,10 +95,14 @@ public class GuidedRuleTemplateEditorPresenter {
                          final boolean isReadOnly );
 
         void clear();
+
     }
 
     @Inject
     private View view;
+
+    @Inject
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private ViewSourceView viewSource;
@@ -135,7 +137,6 @@ public class GuidedRuleTemplateEditorPresenter {
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
-        final ImportsWidget importsWidget = new ImportsWidget(path);
 
         multiPage.addWidget( view,
                 CommonConstants.INSTANCE.EditTabTitle() );
@@ -209,7 +210,7 @@ public class GuidedRuleTemplateEditorPresenter {
                                      oracle,
                                      eventBus,
                                      isReadOnly );
-                importsWidget.setImports(response.getRuleModel().getImports().getImports());
+                importsWidget.setImports(response.getRuleModel().getImports());
             }
         } ).loadContent( path );
     }

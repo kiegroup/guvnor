@@ -1,2 +1,2 @@
-org.kie.guvnor.globals.model.Global
 org.kie.guvnor.globals.service.GlobalsEditorService
+org.kie.guvnor.globals.model.Global

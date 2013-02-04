@@ -18,6 +18,8 @@ package org.kie.guvnor.projecteditor.client.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.popup.FormPopup;
+import org.kie.guvnor.commons.ui.client.popup.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
 
 import java.util.Map;
@@ -27,14 +29,14 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     private Map<String, T> items;
     private final ListFormComboPanelView view;
-    private final NamePopup namePopup;
+    private final FormPopup namePopup;
 
     private String selectedItemName = null;
     private final Form<T> form;
 
     public ListFormComboPanel(ListFormComboPanelView view,
                               Form<T> form,
-                              NamePopup namePopup) {
+                              FormPopup namePopup) {
         this.view = view;
         this.namePopup = namePopup;
         this.form = form;
@@ -72,7 +74,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
     @Override
     public void onAdd() {
         namePopup.setOldName("");
-        namePopup.show(new PopupSetNameCommand() {
+        namePopup.show(new PopupSetFieldCommand() {
             @Override
             public void setName(String name) {
                 T model = createNew(name);
@@ -88,7 +90,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
     public void onRename() {
         namePopup.setOldName(selectedItemName);
 
-        namePopup.show(new PopupSetNameCommand() {
+        namePopup.show(new PopupSetFieldCommand() {
             @Override
             public void setName(String name) {
                 T model = items.get(selectedItemName);

@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.widgets;
+package org.kie.guvnor.commons.ui.client.popup;
 
 import javax.inject.Inject;
 
-public class NamePopup
-        implements NamePopupView.Presenter {
+public class FormPopup
+        implements FormPopupView.Presenter {
 
-    private PopupSetNameCommand command;
+    private PopupSetFieldCommand command;
 
-    protected final NamePopupView view;
+    protected final FormPopupView view;
 
     @Inject
-    public NamePopup(NamePopupView view) {
+    public FormPopup(FormPopupView view) {
         this.view = view;
         view.setPresenter(this);
     }
 
-    public void show(PopupSetNameCommand command) {
+    public void show(PopupSetFieldCommand command) {
         this.command = command;
         view.show();
     }
@@ -41,7 +41,7 @@ public class NamePopup
         if (view.getName() != null && !view.getName().trim().equals("")) {
             command.setName(view.getName());
         } else {
-            view.showNameEmptyWarning();
+            view.showFieldEmptyWarning();
         }
     }
 
