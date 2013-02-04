@@ -52,23 +52,25 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
+        ruleModel.setTableName( stripFileExtension( fileName ) );
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
-            @Override
-            public void execute(final String comment) {
-                service.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void aVoid) {
-                        notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest(path,
-                                "GuidedDecisionTableEditor");
-                        placeManager.goTo(place);
-                    }
-                }).save(path,
-                        ruleModel,
-                        comment);
-            }
-        });
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Void>() {
+                                                     @Override
+                                                     public void callback( Void aVoid ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedDecisionTableEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).save( path,
+                                                           ruleModel,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }

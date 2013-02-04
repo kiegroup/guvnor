@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.guided.rule.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,11 +35,12 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
-import org.kie.guvnor.guided.rule.backend.server.util.BRXMLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.config.model.ResourceConfig;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -71,7 +73,16 @@ public class GuidedRuleEditorServiceImpl
     private ResourceConfigService resourceConfigService;
 
     @Inject
+    private FileDiscoveryService fileDiscoveryService;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
     private Identity identity;
+
+    public GuidedRuleEditorServiceImpl() {
+    }
 
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
@@ -82,7 +93,24 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public RuleModel loadRuleModel( Path path ) {
-        return BRXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
+        final String drl = ioService.readAllString( paths.convert( path ) );
+        final String[] dsls = loadDslsForPackage( path );
+        return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
+                                                                 dsls );
+    }
+
+    private String[] loadDslsForPackage( final Path path ) {
+        final List<String> dsls = new ArrayList<String>();
+        final Path packagePath = projectService.resolvePackage( path );
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final Collection<org.kie.commons.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
+                                                                                                            ".dsl" );
+        for ( final org.kie.commons.java.nio.file.Path dslPath : dslPaths ) {
+            final String dslDefinition = ioService.readAllString( dslPath );
+            dsls.add( dslDefinition );
+        }
+        final String[] result = new String[ dsls.size() ];
+        return dsls.toArray( result );
     }
 
     @Override
@@ -90,7 +118,7 @@ public class GuidedRuleEditorServiceImpl
                       final RuleModel model,
                       final String comment ) {
         ioService.write( paths.convert( path ),
-                         BRXMLPersistence.getInstance().marshal( model ),
+                         BRDRLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
     }
 
@@ -121,7 +149,7 @@ public class GuidedRuleEditorServiceImpl
         }
 
         ioService.write( path,
-                         BRXMLPersistence.getInstance().marshal( model ),
+                         BRDRLPersistence.getInstance().marshal( model ),
                          attrs,
                          makeCommentedOption( comment ) );
     }

@@ -25,7 +25,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @ApplicationScoped
 public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "brl";
+    private static String FILE_TYPE = "gre.drl";
 
     @Inject
     private PlaceManager placeManager;
@@ -52,23 +52,25 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final RuleModel ruleModel = new RuleModel();
+        ruleModel.name = stripFileExtension( fileName );
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
-            @Override
-            public void execute(final String comment) {
-                service.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void aVoid) {
-                        notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest(path,
-                                "GuidedRuleEditor");
-                        placeManager.goTo(place);
-                    }
-                }).save(path,
-                        ruleModel,
-                        comment);
-            }
-        });
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Void>() {
+                                                     @Override
+                                                     public void callback( Void aVoid ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedRuleEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).save( path,
+                                                           ruleModel,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }

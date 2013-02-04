@@ -62,6 +62,15 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         return assetPath;
     }
 
+    protected String stripFileExtension( final String fileName ) {
+        final int dotIndex = fileName.indexOf( "." );
+        if ( dotIndex == -1 ) {
+            return fileName;
+        }
+        return fileName.substring( 0,
+                                   dotIndex );
+    }
+
     protected void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }

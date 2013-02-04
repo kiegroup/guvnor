@@ -50,25 +50,27 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final String fileName ) {
-        final Path path = buildFullPathName(fileName);
+        final Path path = buildFullPathName( fileName );
         final TemplateModel templateModel = new TemplateModel();
+        templateModel.name = stripFileExtension( fileName );
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
-            @Override
-            public void execute(final String comment) {
-                service.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void aVoid) {
-                        notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest(path,
-                                "GuidedRuleTemplateEditor");
-                        placeManager.goTo(place);
-                    }
-                }).save(path,
-                        templateModel,
-                        comment);
-            }
-        });
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Void>() {
+                                                     @Override
+                                                     public void callback( Void aVoid ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedRuleTemplateEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).save( path,
+                                                           templateModel,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }

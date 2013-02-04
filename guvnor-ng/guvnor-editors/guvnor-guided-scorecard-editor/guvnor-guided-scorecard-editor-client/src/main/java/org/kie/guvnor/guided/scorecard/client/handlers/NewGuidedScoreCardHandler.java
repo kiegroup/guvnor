@@ -52,24 +52,25 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( fileName );
+        model.setName( stripFileExtension( fileName ) );
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
-            @Override
-            public void execute(final String comment) {
-                scoreCardService.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void aVoid) {
-                        notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest(path,
-                                "GuidedScoreCardEditor");
-                        placeManager.goTo(place);
-                    }
-                }).save(path,
-                        model,
-                        comment);
-            }
-        });
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 scoreCardService.call( new RemoteCallback<Void>() {
+                                                     @Override
+                                                     public void callback( Void aVoid ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedScoreCardEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).save( path,
+                                                           model,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }

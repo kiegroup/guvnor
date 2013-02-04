@@ -61,7 +61,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.brl")
+@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.gre.drl")
 public class GuidedRuleEditorPresenter {
 
     public interface View

@@ -1473,12 +1473,10 @@ public class BRDRLPersistence
 
         private ExpandedDRLInfo(boolean hasDsl) {
             this.hasDsl = hasDsl;
-            if ( hasDsl ) {
-                dslStatementsInLhs = new HashMap<Integer, String>();
-                dslStatementsInRhs = new HashMap<Integer, String>();
-                lhsDslPatterns = new ArrayList<String>();
-                rhsDslPatterns = new ArrayList<String>();
-            }
+            dslStatementsInLhs = new HashMap<Integer, String>();
+            dslStatementsInRhs = new HashMap<Integer, String>();
+            lhsDslPatterns = new ArrayList<String>();
+            rhsDslPatterns = new ArrayList<String>();
         }
     }
 
