@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.factmodel.client.resources.images.ImageResources;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
@@ -53,7 +53,7 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
         final Path path = buildFullPathName( fileName );
         final FactModels factModel = new FactModels();
 
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute(final String comment) {
                 factModelService.call(new RemoteCallback<Void>() {

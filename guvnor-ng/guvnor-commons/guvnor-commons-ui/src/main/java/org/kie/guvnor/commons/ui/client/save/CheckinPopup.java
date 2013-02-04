@@ -33,10 +33,10 @@ public class CheckinPopup extends FormStylePopup {
 
     private final TextArea    comment;
     private final Button      save;
-    private final SaveCommand command;
+    private final CommandWithCommitMessage command;
 
     public CheckinPopup( final String message,
-                         final SaveCommand command ) {
+                         final CommandWithCommitMessage command ) {
         this.command = checkNotNull( "command", command );
 
         setTitle( message );

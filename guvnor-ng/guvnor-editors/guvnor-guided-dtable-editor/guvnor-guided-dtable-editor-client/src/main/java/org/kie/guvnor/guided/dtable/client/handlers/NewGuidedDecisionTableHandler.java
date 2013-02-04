@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
@@ -53,7 +53,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
         final Path path = buildFullPathName( fileName );
         final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
 
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute(final String comment) {
                 service.call(new RemoteCallback<Void>() {

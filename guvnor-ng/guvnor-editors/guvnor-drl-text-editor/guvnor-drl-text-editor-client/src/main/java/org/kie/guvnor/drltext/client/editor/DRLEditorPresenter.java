@@ -25,10 +25,11 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
+import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -179,7 +180,7 @@ public class DRLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute(final String commitMessage) {
                 drlTextEditorService.call(new RemoteCallback<Path>() {
@@ -200,9 +201,9 @@ public class DRLEditorPresenter {
     }
     
     public void onDelete() {
-        new SaveOperationService().save(path, new SaveCommand() {
+        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
+            public void execute(final String comment) {
                 drlTextEditorService.call(new RemoteCallback<Path>() {
                     @Override
                     public void callback(Path response) {
@@ -212,9 +213,11 @@ public class DRLEditorPresenter {
                         notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
                     }
                 }).delete(path,
-                          commitMessage);
+                          comment);
             }
         });
+        
+        popup.show();
     }
     
     public void onRename() {
@@ -323,12 +326,12 @@ public class DRLEditorPresenter {
             public void execute() {
                 onCopy();
             }
-        } ).addMove( new Command() {
+        } )/*.addMove( new Command() {
             @Override
             public void execute() {
                 onSave();
             }
-        } ).build();
+        } )*/.build();
     }
 
 }

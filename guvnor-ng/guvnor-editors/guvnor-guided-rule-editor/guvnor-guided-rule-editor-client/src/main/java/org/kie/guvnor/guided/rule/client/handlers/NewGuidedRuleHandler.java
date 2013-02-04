@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -53,7 +53,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
         final Path path = buildFullPathName( fileName );
         final RuleModel ruleModel = new RuleModel();
 
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute(final String comment) {
                 service.call(new RemoteCallback<Void>() {

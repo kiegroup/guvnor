@@ -19,7 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
@@ -158,7 +158,7 @@ public class ProjectEditorScreenTest {
     }
 
     private void clickOkToCommitPopup() {
-        ArgumentCaptor<SaveCommand> saveCommandArgumentCaptor = ArgumentCaptor.forClass(SaveCommand.class);
+        ArgumentCaptor<CommandWithCommitMessage> saveCommandArgumentCaptor = ArgumentCaptor.forClass(CommandWithCommitMessage.class);
         verify(saveOperationService).save(any(Path.class), saveCommandArgumentCaptor.capture());
         saveCommandArgumentCaptor.getValue().execute("Commit Message");
     }

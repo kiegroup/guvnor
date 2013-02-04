@@ -23,7 +23,7 @@ import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 public class SaveOperationService {
 
     public void save(final Path path,
-                     final SaveCommand saveCommand) {
+                     final CommandWithCommitMessage saveCommand) {
         checkNotNull("command", saveCommand);
 
         if (path.getFileSystem().supportedFileAttributeViews().contains("version")) {

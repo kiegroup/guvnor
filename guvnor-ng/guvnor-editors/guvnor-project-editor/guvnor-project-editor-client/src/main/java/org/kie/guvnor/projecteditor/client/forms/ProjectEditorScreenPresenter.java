@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -123,7 +123,7 @@ public class
                 new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save(pathToPomXML, new SaveCommand() {
+                        saveOperationService.save(pathToPomXML, new CommandWithCommitMessage() {
                             @Override
                             public void execute(final String comment) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.

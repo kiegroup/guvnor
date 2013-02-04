@@ -29,7 +29,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ResourceConfigWidget;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -223,7 +223,7 @@ public class FactModelsEditorPresenter {
             return;
         }
 
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
                 factModelService.call( new RemoteCallback<Path>() {
@@ -299,7 +299,7 @@ public class FactModelsEditorPresenter {
             builder.addRestoreVersion(new Command() {
                 @Override
                 public void execute() {
-                    new SaveOperationService().save(path, new SaveCommand() {
+                    new SaveOperationService().save(path, new CommandWithCommitMessage() {
                         @Override
                         public void execute(final String comment) {
                             versionService.call(new RemoteCallback<Path>() {

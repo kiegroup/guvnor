@@ -19,7 +19,7 @@ package org.kie.guvnor.commons.ui.client.save;
 /**
  *
  */
-public interface SaveCommand {
+public interface CommandWithCommitMessage {
 
     void execute( final String comment );
 }

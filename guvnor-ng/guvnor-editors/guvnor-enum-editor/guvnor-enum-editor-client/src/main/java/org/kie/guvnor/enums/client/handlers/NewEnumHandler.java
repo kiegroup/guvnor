@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.enums.client.resources.i18n.Constants;
 import org.kie.guvnor.enums.client.resources.images.ImageResources;
@@ -51,7 +51,7 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
     public void create(final String fileName) {
         final Path path = buildFullPathName(fileName);
 
-        new SaveOperationService().save(path, new SaveCommand() {
+        new SaveOperationService().save(path, new CommandWithCommitMessage() {
             @Override
             public void execute(final String comment) {
                 enumService.call(new RemoteCallback<Void>() {
