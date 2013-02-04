@@ -590,8 +590,8 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <!--<module>org.kie.guvnor.GuvnorShowcase</module>-->
-              <!--<draftCompile>false</draftCompile>-->
+              <module>org.kie.guvnor.GuvnorShowcase</module>
+              <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
         </plugins>
