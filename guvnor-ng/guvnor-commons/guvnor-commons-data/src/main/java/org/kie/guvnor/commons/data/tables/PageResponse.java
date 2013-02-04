@@ -20,23 +20,19 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * A Page of data for display in a PagedTable
  */
 @Portable
-public class PageResponse<T extends AbstractPageRow>
-        implements
-    IsSerializable {
+public class PageResponse<T extends AbstractPageRow> {
 
     // Is totalRowSize exact or undetermined
     private boolean totalRowSizeExact;
 
     // Total number of rows in whole data-set (not just page)
-    private int     totalRowSize;
+    private int totalRowSize;
 
-    private int     startRowIndex;
+    private int startRowIndex;
     private List<T> pageRowList;
     private boolean lastPage;
 
@@ -68,23 +64,23 @@ public class PageResponse<T extends AbstractPageRow>
         return totalRowSizeExact;
     }
 
-    public void setLastPage(boolean lastPage) {
+    public void setLastPage( boolean lastPage ) {
         this.lastPage = lastPage;
     }
 
-    public void setPageRowList(List<T> assetPageRowList) {
+    public void setPageRowList( List<T> assetPageRowList ) {
         this.pageRowList = assetPageRowList;
     }
 
-    public void setStartRowIndex(int startRowIndex) {
+    public void setStartRowIndex( int startRowIndex ) {
         this.startRowIndex = startRowIndex;
     }
 
-    public void setTotalRowSize(int totalRowSize) {
+    public void setTotalRowSize( int totalRowSize ) {
         this.totalRowSize = totalRowSize;
     }
 
-    public void setTotalRowSizeExact(boolean totalRowSizeExact) {
+    public void setTotalRowSizeExact( boolean totalRowSizeExact ) {
         this.totalRowSizeExact = totalRowSizeExact;
     }
 

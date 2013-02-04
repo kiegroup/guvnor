@@ -16,19 +16,14 @@
 
 package org.kie.guvnor.commons.data.tables;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * A single row of a paged data
  */
 public abstract class AbstractPageRow
-    implements
-    IsSerializable,
-    Comparable<AbstractPageRow> {
+        implements
+        Comparable<AbstractPageRow> {
 
-    public int compareTo(AbstractPageRow o) {
+    public int compareTo( AbstractPageRow o ) {
         return 0;
     }
 

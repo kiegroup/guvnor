@@ -21,31 +21,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.google.code.maven-config-processor-plugin</groupId>
-        <artifactId>maven-config-processor-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <transformations>
-            <transformation>
-              <!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-              <input>../guvnor-ng/guvnor-showcase/guvnor-webapp/src/main/webapp/WEB-INF/web.xml</input>
-              <config>src/main/config-processor-filter/jboss-as-7_0/web_xml-filter.xml</config>
-              <output>config-processor-filtered/jboss-as-7_0/WEB-INF/web.xml</output>
-            </transformation>
-          </transformations>
-          <namespaceContexts>
-            <j>http://java.sun.com/xml/ns/javaee</j>
-          </namespaceContexts>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>process</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -59,12 +34,12 @@
         <configuration>
           <finalName>guvnor-${project.version}</finalName>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-guvnor-jboss-eap-5_1.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-7_0.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-guvnor-tomcat-7_0.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
@@ -74,16 +49,6 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-webapp</artifactId>
       <type>war</type>
-    </dependency>
-    <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-jms</artifactId>
-      <version>${cxf.version}</version>
-    </dependency>
-    <dependency><!-- Only used by JBoss AS 5.1: Avoids ClassCastException on JBoss AS 5.1 for EAP with CXF extension -->
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-corba</artifactId>
-      <version>${cxf.version}</version>
     </dependency>
   </dependencies>
 

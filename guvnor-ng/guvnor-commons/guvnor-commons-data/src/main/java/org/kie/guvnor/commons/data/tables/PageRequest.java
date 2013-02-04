@@ -18,27 +18,22 @@ package org.kie.guvnor.commons.data.tables;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * A generic request for paged data
- * 
  * @see PageResponse
  */
 @Portable
-public class PageRequest
-        implements
-    IsSerializable {
+public class PageRequest {
 
-    protected int     startRowIndex = 0;
-    protected Integer pageSize      = null; // null returns all pages
+    protected int startRowIndex = 0;
+    protected Integer pageSize = null; // null returns all pages
 
     // For GWT serialisation
     public PageRequest() {
     }
 
-    public PageRequest(int startRowIndex,
-                               Integer pageSize) {
+    public PageRequest( int startRowIndex,
+                        Integer pageSize ) {
         this.startRowIndex = startRowIndex;
         this.pageSize = pageSize;
     }
@@ -55,11 +50,11 @@ public class PageRequest
         return startRowIndex;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public void setPageSize( Integer pageSize ) {
         this.pageSize = pageSize;
     }
 
-    public void setStartRowIndex(int startRowIndex) {
+    public void setStartRowIndex( int startRowIndex ) {
         this.startRowIndex = startRowIndex;
     }
 

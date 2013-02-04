@@ -42,26 +42,6 @@
   </servlet-mapping>
 
   <servlet>
-    <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
-with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
-(perhaps under src/integration-test-settings/web.xml and alter the integration-test
-profile in pom.xml to use that. -->
-    <servlet-name>ErraiServlet</servlet-name>
-    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-
-    <init-param>
-      <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ErraiServlet</servlet-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>FileServlet</servlet-name>
     <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
   </servlet>
@@ -78,19 +58,22 @@ profile in pom.xml to use that. -->
     <servlet-name>FileDownloadServlet</servlet-name>
     <url-pattern>/maven2/*</url-pattern>
   </servlet-mapping>
-      
+
+  <servlet>
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <listener>
-    <!--
-
-    NOTE: The orig servlet listener has been patched,
-    until a solution to the bean validation problems in hosted mode is found.
--->
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-    
-
-<!--     <listener-class>org.jboss.errai.container.CDIServletStateListener</listener-class> -->
   </listener>
 
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+      
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>
     <resource-env-ref-name>BeanManager</resource-env-ref-name>
