@@ -37,5 +37,10 @@ public interface EnumService
     void save( final Path path,
                final String content,
                final String comment );
-
+    
+    void delete( final Path path, String comment );
+    
+    void rename( final Path path, String newName, String comment );
+    
+    void copy( final Path path, String newName, String comment );
 }
