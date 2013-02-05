@@ -81,7 +81,7 @@ public class GuidedDecisionTable52 {
 
     private AuditLog auditLog;
 
-    private Imports imports;
+    private Imports imports = new Imports();
 
     public enum TableFormat {
         EXTENDED_ENTRY,

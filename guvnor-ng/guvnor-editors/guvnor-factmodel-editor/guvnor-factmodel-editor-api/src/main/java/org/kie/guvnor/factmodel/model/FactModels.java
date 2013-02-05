@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
  *
  */
 @Portable
 public class FactModels {
+
+    private Imports imports = new Imports();
 
     private List<FactMetaModel> models = new ArrayList<FactMetaModel>();
 
@@ -34,5 +37,13 @@ public class FactModels {
 
     public List<FactMetaModel> getModels() {
         return models;
+    }
+
+    public Imports getImports() {
+        return imports;
+    }
+
+    public void setImports(Imports imports) {
+        this.imports = imports;
     }
 }

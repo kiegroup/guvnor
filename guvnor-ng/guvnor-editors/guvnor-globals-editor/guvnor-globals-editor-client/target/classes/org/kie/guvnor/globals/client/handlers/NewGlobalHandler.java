@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.save.SaveCommand;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.client.resources.images.GlobalsEditorImageResources;
@@ -56,7 +56,7 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
         final List<Global> model = new ArrayList<Global>();
 
         new SaveOperationService().save( path,
-                                         new SaveCommand() {
+                                         new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
                 globalsService.call( new RemoteCallback<Void>() {

@@ -77,9 +77,6 @@ public class FactModelServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private ResourceConfigService resourceConfigService;
-
-    @Inject
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
@@ -90,10 +87,11 @@ public class FactModelServiceImpl
         try {
             String drl = ioService.readAllString(paths.convert(path));
             final List<FactMetaModel> models = toModel(drl);
-            final FactModels ms = new FactModels();
-            ms.getModels().addAll( models );
+            final FactModels factModels = new FactModels();
+            factModels.getModels().addAll( models );
+            factModels.setImports(ImportsParser.parseImports(drl));
 
-            return new FactModelContent( ms, loadAllAvailableTypes( path ), ImportsParser.parseImports(drl));
+            return new FactModelContent( factModels, loadAllAvailableTypes( path ));
         } catch ( final DroolsParserException e ) {
             throw new RuntimeException( e );
         }
@@ -219,6 +217,10 @@ public class FactModelServiceImpl
 
     private String toDRL( final FactModels model ) {
         final StringBuilder sb = new StringBuilder();
+
+        sb.append(model.getImports().toString());
+        sb.append("\n");
+
         for ( final FactMetaModel factMetaModel : model.getModels() ) {
             sb.append( toDRL( factMetaModel ) ).append( "\n\n" );
         }

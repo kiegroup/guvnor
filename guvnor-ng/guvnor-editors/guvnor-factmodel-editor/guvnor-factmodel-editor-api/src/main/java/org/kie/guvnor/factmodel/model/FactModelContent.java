@@ -27,17 +27,14 @@ public class FactModelContent {
 
     private FactModels factModels;
     private List<FactMetaModel> superTypes = new ArrayList<FactMetaModel>();
-    private Imports imports = new Imports();
 
     public FactModelContent() {
     }
 
     public FactModelContent(final FactModels factModels,
-                            final List<FactMetaModel> superTypes,
-                            final Imports imports) {
+                            final List<FactMetaModel> superTypes) {
         this.factModels = factModels;
         superTypes.addAll(superTypes);
-        this.imports = imports;
     }
 
     public FactModels getFactModels() {
@@ -46,10 +43,6 @@ public class FactModelContent {
 
     public List<FactMetaModel> getSuperTypes() {
         return superTypes;
-    }
-
-    public Imports getImports() {
-        return imports;
     }
 
 }
