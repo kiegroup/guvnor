@@ -26,7 +26,7 @@ public interface POMEditorPanelView
         extends IsWidget {
 
 
-    IsWidget getTitleWidget();
+    String getTitleWidget();
 
     void setTitleText(String titleText);
 

@@ -16,27 +16,25 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.Dependency;
+import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.List;
 
 public class POMEditorPanelViewImpl
         extends ResizeComposite
         implements POMEditorPanelView {
 
-    private InlineLabel tabTitleLabel = new InlineLabel(ProjectEditorConstants.INSTANCE.ProjectModel());
+    private String tabTitleLabel = ProjectEditorConstants.INSTANCE.ProjectModel();
 
     interface GroupArtifactVersionEditorPanelViewImplBinder
             extends
@@ -44,7 +42,7 @@ public class POMEditorPanelViewImpl
 
     }
 
-    private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create(GroupArtifactVersionEditorPanelViewImplBinder.class);
+    private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create( GroupArtifactVersionEditorPanelViewImplBinder.class );
 
     private final Event<NotificationEvent> notificationEvent;
 
@@ -55,50 +53,49 @@ public class POMEditorPanelViewImpl
     DependencyGrid dependencyGrid;
 
     @Inject
-    public POMEditorPanelViewImpl(Event<NotificationEvent> notificationEvent,
-                                  GAVEditor gavEditor,
-                                  DependencyGrid dependencyGrid) {
+    public POMEditorPanelViewImpl( Event<NotificationEvent> notificationEvent,
+                                   GAVEditor gavEditor,
+                                   DependencyGrid dependencyGrid ) {
         this.gavEditor = gavEditor;
         this.dependencyGrid = dependencyGrid;
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;
     }
 
-
     @Override
-    public void showSaveSuccessful(String fileName) {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
+    public void showSaveSuccessful( String fileName ) {
+        notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName ) ) );
     }
 
     @Override
-    public IsWidget getTitleWidget() {
+    public String getTitleWidget() {
         return tabTitleLabel;
     }
 
     @Override
-    public void setDependencies(List<Dependency> dependencies) {
-        dependencyGrid.fillList(dependencies);
+    public void setDependencies( List<Dependency> dependencies ) {
+        dependencyGrid.fillList( dependencies );
     }
 
     @Override
-    public void setGAV(GAV gav) {
-        gavEditor.setGAV(gav);
+    public void setGAV( GAV gav ) {
+        gavEditor.setGAV( gav );
     }
 
     @Override
-    public void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler) {
-        gavEditor.addArtifactIdChangeHandler(changeHandler);
+    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+        gavEditor.addArtifactIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void setTitleText(String titleText) {
-        tabTitleLabel.setText(titleText);
+    public void setTitleText( String titleText ) {
+        tabTitleLabel = titleText;
     }
 
     @Override
     public void onResize() {
-        setPixelSize(getParent().getOffsetWidth(),
-                getParent().getOffsetHeight());
+        setPixelSize( getParent().getOffsetWidth(),
+                      getParent().getOffsetHeight() );
         super.onResize();
     }
 }

@@ -16,7 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import javax.enterprise.inject.New;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -38,25 +39,23 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
-import javax.enterprise.inject.New;
-
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
 public class
         ProjectEditorScreenPresenter
         implements ProjectEditorScreenView.Presenter {
 
     private ProjectEditorScreenView view;
-    private POMEditorPanel pomPanel;
-    private KModuleEditorPanel kModuleEditorPanel;
-    private Caller<KModuleService> projectEditorServiceCaller;
-    private Caller<BuildService> buildServiceCaller;
+    private POMEditorPanel          pomPanel;
+    private KModuleEditorPanel      kModuleEditorPanel;
+    private Caller<KModuleService>  projectEditorServiceCaller;
+    private Caller<BuildService>    buildServiceCaller;
 
-    private Path pathToPomXML;
-    private Path pathToKModuleXML;
+    private Path                    pathToPomXML;
+    private Path                    pathToKModuleXML;
     private Caller<MetadataService> metadataService;
-    private Metadata kmoduleMetadata;
-    private Metadata pomMetadata;
-    private SaveOperationService saveOperationService;
+    private Metadata                kmoduleMetadata;
+    private Metadata                pomMetadata;
+    private SaveOperationService    saveOperationService;
 
     public ProjectEditorScreenPresenter() {
     }
@@ -69,7 +68,7 @@ public class
             Caller<KModuleService> projectEditorServiceCaller,
             Caller<BuildService> buildServiceCaller,
             Caller<MetadataService> metadataService,
-            SaveOperationService saveOperationService) {
+            SaveOperationService saveOperationService ) {
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
@@ -78,35 +77,36 @@ public class
         this.metadataService = metadataService;
         this.saveOperationService = saveOperationService;
 
-        view.setPresenter(this);
-        view.setPOMEditorPanel(pomPanel);
+        view.setPresenter( this );
+        view.setPOMEditorPanel( pomPanel );
     }
 
     @OnStart
-    public void init(Path path) {
+    public void init( Path path ) {
 
         pathToPomXML = path;
-        pomPanel.init(path);
+        pomPanel.init( path );
         projectEditorServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path pathToKModuleXML) {
+                    public void callback( Path pathToKModuleXML ) {
                         ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                        if (pathToKModuleXML != null) {
+                        if ( pathToKModuleXML != null ) {
                             setUpKProject();
                         }
                     }
                 }
-        ).pathToRelatedKModuleFileIfAny(path);
+                                       ).pathToRelatedKModuleFileIfAny( path );
     }
 
     private void setUpKProject() {
-        view.setKModuleEditorPanel(kModuleEditorPanel);
+        view.setKModuleEditorPanel( kModuleEditorPanel );
     }
 
     @WorkbenchPartTitle
-    public IsWidget getTitle() {
-        return pomPanel.getTitle();
+    public String getTitle() {
+        //TODO {porcelli} Needs a way to notify title updates -> return pomPanel.getTitle();
+        return "Project Editor [" + pathToPomXML.getFileName() + "]";
     }
 
     @WorkbenchPartView
@@ -118,33 +118,33 @@ public class
     public MenuBar buildMenuBar() {
         MenuBar menuBar = new DefaultMenuBar();
 
-        menuBar.addItem(new DefaultMenuItemCommand(
+        menuBar.addItem( new DefaultMenuItemCommand(
                 view.getSaveMenuItemText(),
                 new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save(pathToPomXML, new CommandWithCommitMessage() {
+                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
                             @Override
-                            public void execute(final String comment) {
+                            public void execute( final String comment ) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.
                                 pomPanel.save(
                                         comment,
                                         new com.google.gwt.user.client.Command() {
                                             @Override
                                             public void execute() {
-                                                if (kModuleEditorPanel.hasBeenInitialized()) {
-                                                    kModuleEditorPanel.save(comment, kmoduleMetadata);
+                                                if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                                                    kModuleEditorPanel.save( comment, kmoduleMetadata );
                                                 }
                                                 // TODO: Save the metadata, use callback (check the comment above) -Rikkola-
                                             }
                                         },
-                                        pomMetadata);
+                                        pomMetadata );
                             }
-                        });
+                        } );
                     }
                 }
-        ));
-        menuBar.addItem(new DefaultMenuItemCommand(
+        ) );
+        menuBar.addItem( new DefaultMenuItemCommand(
                 view.getBuildMenuItemText(),
                 new Command() {
                     @Override
@@ -152,14 +152,14 @@ public class
                         buildServiceCaller.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback(Void v) {
+                                    public void callback( Void v ) {
 
                                     }
                                 }
-                        ).build(pathToPomXML);
+                                               ).build( pathToPomXML );
                     }
                 }
-        ));
+        ) );
         // For now every module is a kie project.
 //        if (pathToKModuleXML == null) {
 //            menuBar.addItem(new DefaultMenuItemCommand(
@@ -186,34 +186,34 @@ public class
 
     @Override
     public void onPOMMetadataTabSelected() {
-        if (pomMetadata == null) {
-            metadataService.call(new RemoteCallback<Metadata>() {
+        if ( pomMetadata == null ) {
+            metadataService.call( new RemoteCallback<Metadata>() {
                 @Override
-                public void callback(Metadata metadata) {
+                public void callback( Metadata metadata ) {
                     pomMetadata = metadata;
-                    view.setPOMMetadata(metadata);
+                    view.setPOMMetadata( metadata );
                 }
-            }).getMetadata(pathToPomXML);
+            } ).getMetadata( pathToPomXML );
         }
     }
 
     @Override
     public void onKModuleTabSelected() {
-        if (!kModuleEditorPanel.hasBeenInitialized()) {
-            kModuleEditorPanel.init(pathToKModuleXML);
+        if ( !kModuleEditorPanel.hasBeenInitialized() ) {
+            kModuleEditorPanel.init( pathToKModuleXML );
         }
     }
 
     @Override
     public void onKModuleMetadataTabSelected() {
-        if (kmoduleMetadata == null) {
-            metadataService.call(new RemoteCallback<Metadata>() {
+        if ( kmoduleMetadata == null ) {
+            metadataService.call( new RemoteCallback<Metadata>() {
                 @Override
-                public void callback(Metadata metadata) {
+                public void callback( Metadata metadata ) {
                     kmoduleMetadata = metadata;
-                    view.setKModuleMetadata(metadata);
+                    view.setKModuleMetadata( metadata );
                 }
-            }).getMetadata(pathToKModuleXML);
+            } ).getMetadata( pathToKModuleXML );
         }
     }
 }

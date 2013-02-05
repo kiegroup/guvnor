@@ -96,7 +96,7 @@ public class POMEditorPanel
         return view.asWidget();
     }
 
-    public IsWidget getTitle() {
+    public String getTitle() {
         return view.getTitleWidget();
     }
 }
