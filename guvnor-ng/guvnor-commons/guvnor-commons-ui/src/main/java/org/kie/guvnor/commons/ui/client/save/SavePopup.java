@@ -49,7 +49,7 @@ public class SavePopup extends FormStylePopup {
         addAttribute( "Check in comment:", checkInCommentTextBox );
         
         final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( CommonConstants.INSTANCE.CheckIn() );
+        final Button create = new Button( "Save" );
         create.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent arg0 ) {
                 
