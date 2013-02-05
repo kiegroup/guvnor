@@ -115,9 +115,9 @@ public class AssetMigrater {
     private void migrate(Module jcrModule, Asset jcrAsset, String checkinComment, Date lastModified, String lastContributor) {
         if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
             factModelsMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
-        } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
+        } /*else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
             guidedEditorMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
-        } else if (AssetFormats.DRL.equals(jcrAsset.getFormat()) 
+        }*/ else if (AssetFormats.DRL.equals(jcrAsset.getFormat()) 
                 || AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())
                 || AssetFormats.DSL.equals(jcrAsset.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())
