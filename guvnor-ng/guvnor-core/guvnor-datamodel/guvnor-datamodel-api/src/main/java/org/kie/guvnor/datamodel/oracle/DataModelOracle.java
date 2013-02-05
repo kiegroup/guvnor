@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.datamodel.oracle;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +24,8 @@ import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.services.config.model.imports.Import;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 public interface DataModelOracle {
 
@@ -103,5 +104,11 @@ public interface DataModelOracle {
 
     String getFieldClassName( String factName,
                               String fieldName );
+
+    void addImport( Import item );
+
+    void removeImport( Import item );
+
+    void setImports( Imports imports );
 
 }

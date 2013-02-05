@@ -15,6 +15,8 @@ import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.services.config.model.imports.Import;
+import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
  * Default implementation of DataModelOracle
@@ -23,10 +25,13 @@ import org.kie.guvnor.datamodel.model.ModelField;
 public class PackageDataModelOracle implements DataModelOracle {
 
     //Package for which this DMO relates
-    private String packageName;
+    private String packageName = "";
+
+    //Imports from the Project into this Package
+    private Imports imports = new Imports();
 
     //Project-level Facts, Fields and Java Enums
-    private ProjectDefinition projectDefinition;
+    private ProjectDefinition projectDefinition = new ProjectDefinition();
 
     // Package-level enumeration definitions derived from "Guvnor" enumerations.
     private Map<String, String[]> packageEnumDefinitions = new HashMap<String, String[]>();
@@ -662,6 +667,23 @@ public class PackageDataModelOracle implements DataModelOracle {
         return scopedFieldParametersType.get( fieldName );
     }
 
+    @Override
+    public void addImport( final Import item ) {
+        this.imports.addImport( item );
+        initialize();
+    }
+
+    @Override
+    public void removeImport( final Import item ) {
+        this.imports.removeImport( item );
+        initialize();
+    }
+
+    public void setImports( final Imports imports ) {
+        this.imports = imports;
+        initialize();
+    }
+
     // ##############################################################################################
     // Non-interface methods for the Builder to use.
     // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
@@ -693,7 +715,6 @@ public class PackageDataModelOracle implements DataModelOracle {
         final Map<String, String[]> projectEnumDefinitions = projectDefinition.getEnumDefinitions();
         final Map<String, List<MethodInfo>> projectMethodInformation = projectDefinition.getMethodInformation();
         final Map<String, String> projectFieldParametersTypes = projectDefinition.getFieldParametersTypes();
-        final List<String> imports = new ArrayList<String>();
 
         //Filter and rename Model Fields based on package name and imports
         scopedModelFields.clear();
@@ -719,57 +740,6 @@ public class PackageDataModelOracle implements DataModelOracle {
 
         //TODO Filter and rename based on package name (and imports)
         scopedFieldParametersType = projectFieldParametersTypes;
-    }
-
-    private String getPackageName( final String qualifiedType ) {
-        String packageName = qualifiedType;
-        int dotIndex = packageName.lastIndexOf( "." );
-        if ( dotIndex != -1 ) {
-            packageName = packageName.substring( 0,
-                                                 dotIndex );
-        }
-        return packageName;
-    }
-
-    private String getTypeName( final String qualifiedType ) {
-        String typeName = qualifiedType;
-        int dotIndex = typeName.lastIndexOf( "." );
-        if ( dotIndex != -1 ) {
-            typeName = typeName.substring( dotIndex + 1 );
-        }
-        return typeName.replace( "$", "." );
-//        int innerClassDelimiterIndex = typeName.indexOf( "$" );
-//        if ( innerClassDelimiterIndex != -1 ) {
-//            typeName = typeName.substring( innerClassDelimiterIndex + 1 );
-//        }
-//        return typeName;
-    }
-
-    private ModelField[] correctModelFields( final ModelField[] originalModelFields ) {
-        final List<ModelField> correctedModelFields = new ArrayList<ModelField>();
-        for ( final ModelField mf : originalModelFields ) {
-            String mfType = mf.getType();
-            String mfClassName = mf.getClassName();
-            final String mfClassName_QualifiedType = mf.getClassName();
-            final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
-            final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
-            if ( mfClassName_PackageName.equals( packageName ) ) {
-                mfClassName = mfClassName_TypeName;
-            }
-            final String mfType_QualifiedType = mf.getType();
-            final String mfType_PackageName = getPackageName( mfType_QualifiedType );
-            final String mfType_TypeName = getTypeName( mfType_QualifiedType );
-            if ( mfType_PackageName.equals( packageName ) ) {
-                mfType = mfType_TypeName;
-            }
-            correctedModelFields.add( new ModelField( mf.getName(),
-                                                      mfClassName,
-                                                      mf.getClassType(),
-                                                      mf.getAccessorsAndMutators(),
-                                                      mfType ) );
-        }
-        final ModelField[] result = new ModelField[ correctedModelFields.size() ];
-        return correctedModelFields.toArray( result );
     }
 
 }

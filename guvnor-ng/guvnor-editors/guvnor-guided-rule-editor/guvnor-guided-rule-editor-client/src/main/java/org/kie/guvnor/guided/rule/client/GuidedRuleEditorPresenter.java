@@ -16,6 +16,11 @@
 
 package org.kie.guvnor.guided.rule.client;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -28,11 +33,16 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
+import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.events.ImportAddedEvent;
+import org.kie.guvnor.services.config.events.ImportRemovedEvent;
+import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -53,11 +63,7 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
+import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.gre.drl")
@@ -87,144 +93,166 @@ public class GuidedRuleEditorPresenter {
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Path path = null;
-
+    private RuleModel model = null;
+    private DataModelOracle oracle = null;
 
     @OnStart
-    public void onStart(final Path path) {
+    public void onStart( final Path path ) {
         this.path = path;
 
-        multiPage.addWidget(view, CommonConstants.INSTANCE.EditTabTitle());
+        multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
 
-
-        multiPage.addPage(new Page(viewSource,
-                CommonConstants.INSTANCE.SourceTabTitle()) {
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                service.call(new RemoteCallback<String>() {
+                service.call( new RemoteCallback<String>() {
                     @Override
-                    public void callback(final String response) {
-                        viewSource.setContent(response);
+                    public void callback( final String response ) {
+                        viewSource.setContent( response );
                     }
-                }).toSource(view.getContent());
+                } ).toSource( view.getContent() );
             }
 
             @Override
             public void onLostFocus() {
                 viewSource.clear();
             }
-        });
+        } );
 
-        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
+        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addPage(new Page(metadataWidget,
-                MetadataConstants.INSTANCE.Metadata()) {
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
-                metadataService.call(new RemoteCallback<Metadata>() {
+                metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
-                    public void callback(Metadata metadata) {
-                        metadataWidget.setContent(metadata,
-                                false);
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   false );
                     }
-                }).getMetadata(path);
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 // Nothing to do here
             }
-        });
+        } );
 
-        service.call(new RemoteCallback<GuidedEditorContent>() {
+        service.call( new RemoteCallback<GuidedEditorContent>() {
             @Override
-            public void callback(final GuidedEditorContent response) {
-                view.setContent(path,
-                        response.getRuleModel(),
-                        response.getDataModel());
-                importsWidget.setImports(response.getRuleModel().getImports());
+            public void callback( final GuidedEditorContent response ) {
+                model = response.getRuleModel();
+                oracle = response.getDataModel();
+                oracle.setImports( model.getImports() );
+                view.setContent( path,
+                                 model,
+                                 oracle );
+                importsWidget.setImports( path,
+                                          model.getImports() );
             }
-        }).loadContent(path);
+        } ).loadContent( path );
     }
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        });
+        } );
     }
-    
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
+    }
+
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
                     }
-                }).rename(path,
-                          newName,
-                          comment);
+                } ).rename( path,
+                            newName,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -237,7 +265,7 @@ public class GuidedRuleEditorPresenter {
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;
@@ -256,21 +284,21 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation(new Command() {
+        return newResourceMenuBuilder().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
-                service.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path,
-                        view.getContent());
+                } ).validate( path,
+                              view.getContent() );
             }
-        }).addSave(new Command() {
+        } ).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
@@ -290,7 +318,7 @@ public class GuidedRuleEditorPresenter {
             public void execute() {
                 onCopy();
             }
-        }).build();
+        } ).build();
     }
 
 }

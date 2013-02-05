@@ -15,10 +15,11 @@
  */
 package org.kie.guvnor.services.config.model.imports;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Imports {
@@ -29,8 +30,8 @@ public class Imports {
 
     }
 
-    public Imports(final List<Import> imports) {
-        this.imports = new ArrayList<Import>(imports);
+    public Imports( final List<Import> imports ) {
+        this.imports = new ArrayList<Import>( imports );
     }
 
     public List<Import> getImports() {
@@ -39,23 +40,35 @@ public class Imports {
 
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final Import i : imports) {
-            sb.append("import ").append(i.getType()).append('\n');
+        for ( final Import i : imports ) {
+            sb.append( "import " ).append( i.getType() ).append( '\n' );
         }
 
         return sb.toString();
     }
 
-    public void addImport(final Import item) {
-        imports.add(item);
+    public void addImport( final Import item ) {
+        imports.add( item );
     }
 
-    public void removeImport(String selected) {
-        for (Import item : imports) {
-            if (item.getType().equals(selected)) {
-                imports.remove(item);
+    public void removeImport( final Import item ) {
+        final Iterator<Import> itr = imports.iterator();
+        while ( itr.hasNext() ) {
+            final Import i = itr.next();
+            if ( i.getType().equals( item.getType() ) ) {
+                itr.remove();
                 break;
             }
         }
     }
+
+    public boolean contains( final Import item ) {
+        for ( Import i : imports ) {
+            if ( i.getType().equals( item.getType() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

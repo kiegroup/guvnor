@@ -12,9 +12,9 @@ import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.DataEnumLoader;
 import org.kie.guvnor.datamodel.model.DSLSentence;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 /**
  * Builder for PackageDataModelOracle

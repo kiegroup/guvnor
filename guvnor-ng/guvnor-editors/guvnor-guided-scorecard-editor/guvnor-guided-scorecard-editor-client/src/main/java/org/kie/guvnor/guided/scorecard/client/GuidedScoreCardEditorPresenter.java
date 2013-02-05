@@ -34,11 +34,16 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.events.ImportAddedEvent;
+import org.kie.guvnor.services.config.events.ImportRemovedEvent;
+import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
@@ -94,11 +99,12 @@ public class GuidedScoreCardEditorPresenter {
     private Event<RestoreEvent> restoreEvent;
 
     private Path path;
+    private ScoreCardModel model = null;
+    private DataModelOracle oracle = null;
     private boolean isReadOnly;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
-
 
     @OnStart
     public void onStart( final Path path,
@@ -106,16 +112,16 @@ public class GuidedScoreCardEditorPresenter {
         this.path = path;
 
         multiPage.addWidget( view,
-                CommonConstants.INSTANCE.EditTabTitle() );
+                             CommonConstants.INSTANCE.EditTabTitle() );
 
         multiPage.addPage( new Page( viewSource,
-                CommonConstants.INSTANCE.SourceTabTitle() ) {
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 scoreCardEditorService.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( final String response ) {
-                        viewSource.setContent(response);
+                        viewSource.setContent( response );
                     }
                 } ).toSource( view.getModel() );
             }
@@ -126,10 +132,10 @@ public class GuidedScoreCardEditorPresenter {
             }
         } );
 
-        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
+        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
         multiPage.addPage( new Page( metadataWidget,
-                CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
             }
@@ -146,10 +152,14 @@ public class GuidedScoreCardEditorPresenter {
         scoreCardEditorService.call( new RemoteCallback<ScoreCardModelContent>() {
             @Override
             public void callback( final ScoreCardModelContent content ) {
+                model = content.getModel();
+                oracle = content.getDataModel();
+                oracle.setImports( model.getImports() );
 
-                view.setContent( content.getModel(),
-                                 content.getOracle() );
-                importsWidget.setImports(content.getModel().getImports());
+                view.setContent( model,
+                                 oracle );
+                importsWidget.setImports( path,
+                                          model.getImports() );
             }
         } ).loadContent( path );
 
@@ -169,81 +179,99 @@ public class GuidedScoreCardEditorPresenter {
             return;
         }
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                scoreCardEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(final Path response) {
+                    public void callback( final Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
 
                     }
-                }).save(path,
-                        view.getModel(),
-                        metadataWidget.getContent(),
-                        comment);
+                } ).save( path,
+                          view.getModel(),
+                          metadataWidget.getContent(),
+                          comment );
             }
-        });
+        } );
     }
-    
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
+    }
+
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                scoreCardEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                scoreCardEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
                     }
-                }).rename(path,
-                          newName,
-                          comment);
+                } ).rename( path,
+                            newName,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                scoreCardEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
 
@@ -303,19 +331,19 @@ public class GuidedScoreCardEditorPresenter {
             builder.addRestoreVersion( new Command() {
                 @Override
                 public void execute() {
-                    new SaveOperationService().save(path, new CommandWithCommitMessage() {
+                    new SaveOperationService().save( path, new CommandWithCommitMessage() {
                         @Override
-                        public void execute(final String comment) {
-                            versionService.call(new RemoteCallback<Path>() {
+                        public void execute( final String comment ) {
+                            versionService.call( new RemoteCallback<Path>() {
                                 @Override
-                                public void callback(final Path restored) {
+                                public void callback( final Path restored ) {
                                     //TODO {porcelli} close current?
-                                    restoreEvent.fire(new RestoreEvent(restored));
+                                    restoreEvent.fire( new RestoreEvent( restored ) );
                                 }
-                            }).restore(path,
-                                    comment);
+                            } ).restore( path,
+                                         comment );
                         }
-                    });
+                    } );
                 }
             } );
         } else {

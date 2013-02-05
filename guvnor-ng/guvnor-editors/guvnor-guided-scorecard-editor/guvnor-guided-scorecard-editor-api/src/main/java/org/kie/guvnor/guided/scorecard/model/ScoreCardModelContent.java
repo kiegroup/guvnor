@@ -42,7 +42,7 @@ public class ScoreCardModelContent {
         return this.model;
     }
 
-    public DataModelOracle getOracle() {
+    public DataModelOracle getDataModel() {
         return this.oracle;
     }
 

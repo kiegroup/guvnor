@@ -16,33 +16,40 @@
 
 package org.kie.guvnor.factmodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.services.config.model.imports.Imports;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 @Portable
 public class FactModelContent {
 
     private FactModels factModels;
     private List<FactMetaModel> superTypes = new ArrayList<FactMetaModel>();
+    private DataModelOracle oracle;
 
     public FactModelContent() {
     }
 
-    public FactModelContent(final FactModels factModels,
-                            final List<FactMetaModel> superTypes) {
+    public FactModelContent( final FactModels factModels,
+                             final List<FactMetaModel> superTypes,
+                             final DataModelOracle oracle ) {
         this.factModels = factModels;
-        superTypes.addAll(superTypes);
+        this.superTypes.addAll( superTypes );
+        this.oracle = oracle;
     }
 
     public FactModels getFactModels() {
-        return factModels;
+        return this.factModels;
     }
 
     public List<FactMetaModel> getSuperTypes() {
-        return superTypes;
+        return this.superTypes;
+    }
+
+    public DataModelOracle getDataModel() {
+        return this.oracle;
     }
 
 }

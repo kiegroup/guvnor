@@ -1,2 +1,0 @@
-org.kie.guvnor.globals.backend.server.GlobalsEditorServiceImpl
-org.kie.guvnor.globals.backend.server.GlobalsSourceService

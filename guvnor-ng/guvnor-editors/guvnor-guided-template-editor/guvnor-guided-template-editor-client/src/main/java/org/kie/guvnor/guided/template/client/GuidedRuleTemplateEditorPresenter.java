@@ -18,6 +18,7 @@ package org.kie.guvnor.guided.template.client;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
@@ -42,6 +43,9 @@ import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.events.ImportAddedEvent;
+import org.kie.guvnor.services.config.events.ImportRemovedEvent;
+import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -85,6 +89,7 @@ public class GuidedRuleTemplateEditorPresenter {
         boolean confirmClose();
 
     }
+
     public interface DataView
             extends
             IsWidget {
@@ -126,22 +131,20 @@ public class GuidedRuleTemplateEditorPresenter {
 
     private EventBus eventBus = new SimpleEventBus();
 
-    private boolean isReadOnly = false;
-
+    private Path path = null;
     private TemplateModel model;
     private DataModelOracle oracle;
 
-    private Path path = null;
-
+    private boolean isReadOnly = false;
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
 
         multiPage.addWidget( view,
-                CommonConstants.INSTANCE.EditTabTitle() );
+                             CommonConstants.INSTANCE.EditTabTitle() );
         multiPage.addPage( new Page( viewSource,
-                CommonConstants.INSTANCE.SourceTabTitle() ) {
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 service.call( new RemoteCallback<String>() {
@@ -159,14 +162,14 @@ public class GuidedRuleTemplateEditorPresenter {
         } );
 
         multiPage.addPage( new Page( dataView,
-                "Data" ) {
+                                     "Data" ) {
 
             @Override
             public void onFocus() {
                 dataView.setContent( model,
-                        oracle,
-                        eventBus,
-                        isReadOnly );
+                                     oracle,
+                                     eventBus,
+                                     isReadOnly );
             }
 
             @Override
@@ -175,17 +178,17 @@ public class GuidedRuleTemplateEditorPresenter {
             }
         } );
 
-        multiPage.addWidget(importsWidget, CommonConstants.INSTANCE.ConfigTabTitle());
+        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
         multiPage.addPage( new Page( metadataWidget,
-                MetadataConstants.INSTANCE.Metadata() ) {
+                                     MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
                     public void callback( Metadata metadata ) {
                         metadataWidget.setContent( metadata,
-                                isReadOnly );
+                                                   isReadOnly );
                     }
                 } ).getMetadata( path );
             }
@@ -210,87 +213,106 @@ public class GuidedRuleTemplateEditorPresenter {
                                      oracle,
                                      eventBus,
                                      isReadOnly );
-                importsWidget.setImports(response.getRuleModel().getImports());
+                importsWidget.setImports( path,
+                                          response.getRuleModel().getImports() );
             }
         } ).loadContent( path );
     }
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        });
+        } );
     }
-    
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
+    }
+
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
                     }
-                }).rename(path,
-                          newName,
-                          comment);
+                } ).rename( path,
+                            newName,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                service.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
 

@@ -16,65 +16,92 @@
 
 package org.kie.guvnor.configresource.client.widget;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.kie.guvnor.commons.ui.client.popup.FormPopup;
 import org.kie.guvnor.commons.ui.client.popup.PopupSetFieldCommand;
+import org.kie.guvnor.services.config.events.ImportAddedEvent;
+import org.kie.guvnor.services.config.events.ImportRemovedEvent;
 import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.config.model.imports.Imports;
+import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
-        implements ImportsWidgetView.Presenter, IsWidget {
+        implements ImportsWidgetView.Presenter,
+                   IsWidget {
 
-    private Imports imports;
+    private Path resourcePath;
+    private Imports resourceImports;
+
     private ImportsWidgetView view;
     private final FormPopup addImportPopup;
 
+    private Event<ImportAddedEvent> importAddedEvent;
+    private Event<ImportRemovedEvent> importRemovedEvent;
+
     @Inject
-    public ImportsWidgetPresenter(ImportsWidgetView view,
-                                  FormPopup addImportPopup) {
+    public ImportsWidgetPresenter( final ImportsWidgetView view,
+                                   final FormPopup addImportPopup,
+                                   final Event<ImportAddedEvent> importAddedEvent,
+                                   final Event<ImportRemovedEvent> importRemovedEvent ) {
         this.view = view;
         this.addImportPopup = addImportPopup;
-        view.setPresenter(this);
+        this.importAddedEvent = importAddedEvent;
+        this.importRemovedEvent = importRemovedEvent;
+        view.setPresenter( this );
     }
 
     public void setReadOnly() {
         view.setupReadOnly();
     }
 
-    public void setImports(Imports imports) {
-        checkNotNull("imports", imports);
-        checkNotNull("imports", imports.getImports());
+    public void setImports( final Path resourcePath,
+                            final Imports resourceImports ) {
+        checkNotNull( "resourcePath",
+                      resourcePath );
+        checkNotNull( "imports",
+                      resourceImports );
+        checkNotNull( "imports",
+                      resourceImports.getImports() );
 
-        this.imports = imports;
+        this.resourcePath = resourcePath;
+        this.resourceImports = resourceImports;
 
-        for (Import item : imports.getImports()) {
-            view.addImport(item.getType());
+        for ( Import item : resourceImports.getImports() ) {
+            view.addImport( item.getType() );
         }
     }
 
     @Override
     public void onAddImport() {
-        addImportPopup.show(new PopupSetFieldCommand() {
+        addImportPopup.show( new PopupSetFieldCommand() {
             @Override
-            public void setName(String name) {
-                imports.getImports().add(new Import(name));
-                view.addImport(name);
+            public void setName( String name ) {
+                final Import item = new Import( name );
+                view.addImport( name );
+                resourceImports.getImports().add( item );
+                importAddedEvent.fire( new ImportAddedEvent( resourcePath,
+                                                             item ) );
             }
-        });
+        } );
     }
 
     @Override
     public void onRemoveImport() {
         String selected = view.getSelected();
-        if (selected == null) {
+        if ( selected == null ) {
             view.showPleaseSelectAnImport();
         } else {
-            imports.removeImport(selected);
-            view.removeImport(selected);
+            final Import item = new Import( selected );
+            view.removeImport( selected );
+            resourceImports.removeImport( item );
+            importRemovedEvent.fire( new ImportRemovedEvent( resourcePath,
+                                                             item ) );
         }
     }
 

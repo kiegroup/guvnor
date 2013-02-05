@@ -15,6 +15,7 @@
   <description>Fact Model Editor API</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-core-services-api</artifactId>
@@ -26,9 +27,15 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
+
   </dependencies>
 
   <build>
