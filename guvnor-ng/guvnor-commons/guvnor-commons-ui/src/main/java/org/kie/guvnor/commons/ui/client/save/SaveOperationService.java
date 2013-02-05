@@ -27,7 +27,7 @@ public class SaveOperationService {
         checkNotNull("command", saveCommand);
 
         if (path.getFileSystem().supportedFileAttributeViews().contains("version")) {
-            new CheckinPopup("", saveCommand).show();
+            new SavePopup(saveCommand).show();
         } else {
             saveCommand.execute("");
         }
