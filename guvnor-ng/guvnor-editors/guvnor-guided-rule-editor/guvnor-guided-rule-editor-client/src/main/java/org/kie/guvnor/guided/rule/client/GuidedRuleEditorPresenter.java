@@ -25,6 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
+import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
+import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
+import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -203,7 +207,66 @@ public class GuidedRuleEditorPresenter {
             }
         });
     }
-
+    
+    public void onDelete() {
+        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+            @Override
+            public void execute(final String comment) {
+                service.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                    }
+                }).delete(path,
+                          comment);
+            }
+        });
+        
+        popup.show();
+    }
+    
+    public void onRename() {
+        RenamePopup popup = new RenamePopup(new RenameCommand() {
+            @Override
+            public void execute(final String newName, final String comment) {
+                service.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                    }
+                }).rename(path,
+                          newName,
+                          comment);
+            }
+        });
+        
+        popup.show();
+    }
+    
+    public void onCopy() {
+        CopyPopup popup = new CopyPopup(new RenameCommand() {
+            @Override
+            public void execute(final String newName, final String comment) {
+                service.call(new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path response) {
+                        view.setNotDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                    }
+                }).copy(path,
+                        newName,
+                        comment);
+            }
+        });
+        
+        popup.show();
+    }
+    
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -253,6 +316,21 @@ public class GuidedRuleEditorPresenter {
             @Override
             public void execute() {
                 onSave();
+            }
+        } ).addDelete( new Command() {
+            @Override
+            public void execute() {
+                onDelete();
+            }
+        } ).addRename( new Command() {
+            @Override
+            public void execute() {
+                onRename();
+            }
+        } ).addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
             }
         } ).build();
     }

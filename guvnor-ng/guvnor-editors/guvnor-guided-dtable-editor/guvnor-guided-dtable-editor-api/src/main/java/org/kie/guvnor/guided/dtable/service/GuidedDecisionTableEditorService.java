@@ -48,6 +48,12 @@ public interface GuidedDecisionTableEditorService
     void save( final Path path,
                final GuidedDecisionTable52 factModel,
                final String comment );
-
+    
+    void delete( final Path path, String comment );
+    
+    void rename( final Path path, String newName, String comment );
+    
+    void copy( final Path path, String newName, String comment );
+    
     Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 }

@@ -49,6 +49,7 @@ import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
 @Service
@@ -153,7 +154,34 @@ public class GuidedRuleEditorServiceImpl
                          attrs,
                          makeCommentedOption( comment ) );
     }
+    
+    @Override
+    public void delete( final Path path, final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]");
 
+        ioService.delete( paths.convert( path ) );
+    }
+    
+    @Override
+    public void rename( final Path path, final String newName, final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+
+        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
+        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
+        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
+        ioService.move(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    }
+    
+    @Override
+    public void copy( final Path path, final String newName, final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        
+        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
+        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
+        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
+        ioService.copy(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    }
+    
     @Override
     public String[] loadDropDownExpression( final String[] valuePairs,
                                             String expression ) {
