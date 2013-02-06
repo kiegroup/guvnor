@@ -15,6 +15,8 @@
  */
 package org.kie.guvnor.services.config.model.imports;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  * Utility methods to parse an Imports Config
  */
@@ -24,13 +26,14 @@ public final class ImportsParser {
 
     }
 
-    public static Imports parseImports(final String content) {
+    public static Imports parseImports(final Path path, final String content) {
+        Imports imports = new Imports();
+
+        imports.setResourcePath(path);
+
         if (content == null || content.trim().equals("")) {
-            return new Imports();
+            return imports;
         } else {
-
-            Imports imports = new Imports();
-
             final String[] lines = content.split("\\n");
 
             for (int i = 0; i < lines.length; i++) {

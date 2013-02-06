@@ -170,8 +170,7 @@ public class GuidedDecisionTableEditorPresenter {
                 view.setContent( path,
                                  oracle,
                                  model );
-                importsWidget.setImports( path,
-                                          model.getImports() );
+                importsWidget.setImports( model.getImports() );
             }
         } ).loadContent( path );
     }

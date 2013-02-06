@@ -35,7 +35,6 @@ public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
                    IsWidget {
 
-    private Path resourcePath;
     private Imports resourceImports;
 
     private ImportsWidgetView view;
@@ -60,16 +59,14 @@ public class ImportsWidgetPresenter
         view.setupReadOnly();
     }
 
-    public void setImports( final Path resourcePath,
-                            final Imports resourceImports ) {
-        checkNotNull( "resourcePath",
-                      resourcePath );
+    public void setImports( final Imports resourceImports ) {
         checkNotNull( "imports",
                       resourceImports );
+        checkNotNull( "resourcePath",
+                      resourceImports.getImports() );
         checkNotNull( "imports",
                       resourceImports.getImports() );
 
-        this.resourcePath = resourcePath;
         this.resourceImports = resourceImports;
 
         for ( Import item : resourceImports.getImports() ) {
@@ -85,7 +82,7 @@ public class ImportsWidgetPresenter
                 final Import item = new Import( name );
                 view.addImport( name );
                 resourceImports.getImports().add( item );
-                importAddedEvent.fire( new ImportAddedEvent( resourcePath,
+                importAddedEvent.fire( new ImportAddedEvent( resourceImports.getResourcePath(),
                                                              item ) );
             }
         } );
@@ -100,7 +97,7 @@ public class ImportsWidgetPresenter
             final Import item = new Import( selected );
             view.removeImport( selected );
             resourceImports.removeImport( item );
-            importRemovedEvent.fire( new ImportRemovedEvent( resourcePath,
+            importRemovedEvent.fire( new ImportRemovedEvent( resourceImports.getResourcePath(),
                                                              item ) );
         }
     }

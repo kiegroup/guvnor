@@ -15,14 +15,17 @@
  */
 package org.kie.guvnor.services.config.model.imports;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Portable
 public class Imports {
+
+    private Path resourcePath;
 
     private ArrayList<Import> imports = new ArrayList<Import>();
 
@@ -30,8 +33,17 @@ public class Imports {
 
     }
 
-    public Imports( final List<Import> imports ) {
-        this.imports = new ArrayList<Import>( imports );
+    public Imports(final Path resourcePath, final List<Import> imports) {
+        this.resourcePath = resourcePath;
+        this.imports = new ArrayList<Import>(imports);
+    }
+
+    public void setResourcePath(Path resourcePath) {
+        this.resourcePath = resourcePath;
+    }
+
+    public Path getResourcePath() {
+        return resourcePath;
     }
 
     public List<Import> getImports() {
@@ -40,31 +52,31 @@ public class Imports {
 
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for ( final Import i : imports ) {
-            sb.append( "import " ).append( i.getType() ).append( '\n' );
+        for (final Import i : imports) {
+            sb.append("import ").append(i.getType()).append('\n');
         }
 
         return sb.toString();
     }
 
-    public void addImport( final Import item ) {
-        imports.add( item );
+    public void addImport(final Import item) {
+        imports.add(item);
     }
 
-    public void removeImport( final Import item ) {
+    public void removeImport(final Import item) {
         final Iterator<Import> itr = imports.iterator();
-        while ( itr.hasNext() ) {
+        while (itr.hasNext()) {
             final Import i = itr.next();
-            if ( i.getType().equals( item.getType() ) ) {
+            if (i.getType().equals(item.getType())) {
                 itr.remove();
                 break;
             }
         }
     }
 
-    public boolean contains( final Import item ) {
-        for ( Import i : imports ) {
-            if ( i.getType().equals( item.getType() ) ) {
+    public boolean contains(final Import item) {
+        for (Import i : imports) {
+            if (i.getType().equals(item.getType())) {
                 return true;
             }
         }
