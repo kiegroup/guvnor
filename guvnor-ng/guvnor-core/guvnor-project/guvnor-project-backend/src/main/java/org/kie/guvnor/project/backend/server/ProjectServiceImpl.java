@@ -26,6 +26,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
@@ -52,6 +53,7 @@ public class ProjectServiceImpl
     private POMService pomService;
     private M2RepoService m2RepoService;
     private KModuleService kModuleService;
+    private PackageConfigurationContentHandler packageConfigurationContentHandler;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -62,12 +64,14 @@ public class ProjectServiceImpl
                                final @Named("ioStrategy") IOService ioService,
                                final Paths paths,
                                KModuleService kModuleService,
-                               POMService pomService ) {
+                               POMService pomService,
+                               PackageConfigurationContentHandler packageConfigurationContentHandler) {
         this.m2RepoService = m2RepoService;
         this.ioService = ioService;
         this.paths = paths;
         this.kModuleService = kModuleService;
         this.pomService = pomService;
+        this.packageConfigurationContentHandler = packageConfigurationContentHandler;
     }
 
     @Override
@@ -206,6 +210,15 @@ public class ProjectServiceImpl
         return pomService.savePOM( pathToPom, pomModel );
     }
 
+    @Override
+    public void newPackage(Path path) {
+
+        org.kie.commons.java.nio.file.Path directory = ioService.createDirectory(paths.convert(path));
+        org.kie.commons.java.nio.file.Path pathToFile = ioService.createFile(paths.convert(PathFactory.newPath(path.getFileSystem(), "package.config", path.toURI() + "/package.config")));
+
+        ioService.write(pathToFile, packageConfigurationContentHandler.toString(new PackageConfiguration()));
+    }
+
     private Path createPOMFile( Path activePath,
                                 String name ) {
         return paths.convert( ioService.createFile( paths.convert( createPOMPath( activePath, name ) ) ) );
@@ -224,6 +237,11 @@ public class ProjectServiceImpl
     private boolean hasKModule( final org.kie.commons.java.nio.file.Path path ) {
         final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_FILENAME );
         return Files.exists( kmodulePath );
+    }
+
+    @Override
+    public PackageConfiguration loadPackageConfiguration(Path path) {
+        return new PackageConfiguration();  //TODO -Rikkola-
     }
 
 }

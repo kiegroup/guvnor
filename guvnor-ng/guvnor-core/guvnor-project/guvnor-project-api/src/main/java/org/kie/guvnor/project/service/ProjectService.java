@@ -19,6 +19,7 @@ package org.kie.guvnor.project.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.PackageConfiguration;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -60,4 +61,7 @@ public interface ProjectService {
     public Path newProject( Path activePath,
                             final String name );
 
+    void newPackage(Path path);
+
+    PackageConfiguration loadPackageConfiguration(Path path);
 }

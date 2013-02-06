@@ -2,8 +2,10 @@ package org.kie.guvnor.commons.ui.client.handlers;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.commons.data.Pair;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -48,9 +50,8 @@ public interface NewResourceHandler {
     public boolean validate();
 
     /**
-     * Indicates if the NewResourceHandler requires a resolved Project Path
+     * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
-    public boolean requiresProjectPath();
-
+    void acceptPath(Path path, Callback<Boolean,Void> callback);
 }

@@ -31,15 +31,9 @@ public class ProjectEditorScreenViewImpl
         implements ProjectEditorScreenView {
 
 
-    private final Event<NotificationEvent> notificationEvent;
     private Presenter presenter;
     private MetadataWidget pomMetaDataPanel = new MetadataWidget();
     private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
-
-    @Inject
-    public ProjectEditorScreenViewImpl(Event<NotificationEvent> notificationEvent) {
-        this.notificationEvent = notificationEvent;
-    }
 
     @Override
     public void setPresenter(Presenter presenter) {

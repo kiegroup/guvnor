@@ -45,4 +45,6 @@ public interface Constants
     String newItem();
 
     String NoRepositorySelectedPleaseSelectARepository();
+
+    String newPackageDescription();
 }

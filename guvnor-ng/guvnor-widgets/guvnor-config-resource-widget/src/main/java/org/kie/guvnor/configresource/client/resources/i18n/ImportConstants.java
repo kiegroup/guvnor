@@ -6,10 +6,10 @@ import com.google.gwt.i18n.client.Messages;
 /**
  *
  */
-public interface Constants extends
+public interface ImportConstants extends
                            Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final ImportConstants INSTANCE = GWT.create( ImportConstants.class );
 
     String OK();
 
@@ -70,4 +70,6 @@ public interface Constants extends
     String New();
 
     String PleaseSetAName();
+
+    String Imports();
 }

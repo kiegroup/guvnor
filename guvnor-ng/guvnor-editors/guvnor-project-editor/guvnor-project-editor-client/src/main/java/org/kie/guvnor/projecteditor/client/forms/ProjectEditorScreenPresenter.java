@@ -39,19 +39,21 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 
+import javax.enterprise.inject.New;
+
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
 public class
         ProjectEditorScreenPresenter
         implements ProjectEditorScreenView.Presenter {
 
     private ProjectEditorScreenView view;
-    private POMEditorPanel          pomPanel;
-    private KModuleEditorPanel      kModuleEditorPanel;
-    private Caller<KModuleService>  projectEditorServiceCaller;
-    private Caller<BuildService>    buildServiceCaller;
+    private POMEditorPanel pomPanel;
+    private KModuleEditorPanel kModuleEditorPanel;
+    private Caller<KModuleService> kModuleServiceCaller;
+    private Caller<BuildService> buildServiceCaller;
 
-    private Path                    pathToPomXML;
-    private Path                    pathToKModuleXML;
+    private Path pathToPomXML;
+    private Path pathToKModuleXML;
     private Caller<MetadataService> metadataService;
     private Metadata                kmoduleMetadata;
     private Metadata                pomMetadata;
@@ -65,14 +67,14 @@ public class
             @New ProjectEditorScreenView view,
             @New POMEditorPanel pomPanel,
             @New KModuleEditorPanel kModuleEditorPanel,
-            Caller<KModuleService> projectEditorServiceCaller,
+            Caller<KModuleService> kModuleServiceCaller,
             Caller<BuildService> buildServiceCaller,
             Caller<MetadataService> metadataService,
             SaveOperationService saveOperationService ) {
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
-        this.projectEditorServiceCaller = projectEditorServiceCaller;
+        this.kModuleServiceCaller = kModuleServiceCaller;
         this.buildServiceCaller = buildServiceCaller;
         this.metadataService = metadataService;
         this.saveOperationService = saveOperationService;
@@ -85,8 +87,8 @@ public class
     public void init( Path path ) {
 
         pathToPomXML = path;
-        pomPanel.init( path );
-        projectEditorServiceCaller.call(
+        pomPanel.init(path);
+        kModuleServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path pathToKModuleXML ) {
