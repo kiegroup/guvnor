@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.kie.commons.io.IOService;
@@ -61,7 +62,12 @@ public class MigrationPathManager {
         final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( "projects" ) + "/" + escapePathEntry( jcrModule.getName() ) );
         
         //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
-        final org.kie.commons.java.nio.file.Path assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + "." + jcrAsset.getFormat());
+        org.kie.commons.java.nio.file.Path assetPath = null;
+        if(AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".gre.drl");
+        } else {
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + "." + jcrAsset.getFormat());           
+        }
         
         //final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
 
