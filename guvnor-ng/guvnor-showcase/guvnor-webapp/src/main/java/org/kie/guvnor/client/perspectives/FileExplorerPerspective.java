@@ -38,6 +38,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.toolbar.IconType;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
@@ -60,8 +61,8 @@ public class FileExplorerPerspective {
     private PlaceManager placeManager;
 
     private PerspectiveDefinition perspective;
-    private MenuBar menuBar;
-    private ToolBar toolBar;
+    private MenuBar               menuBar;
+    private ToolBar               toolBar;
 
     @PostConstruct
     public void init() {
@@ -123,8 +124,7 @@ public class FileExplorerPerspective {
     }
 
     private void buildToolBar() {
-        this.toolBar = new DefaultToolBar();
-        final String url = "images/new_item.png";
+        this.toolBar = new DefaultToolBar( "guvnor.new.item" );
         final String tooltip = Constants.INSTANCE.newItem();
         final Command command = new Command() {
             @Override
@@ -132,7 +132,7 @@ public class FileExplorerPerspective {
                 newResourcePresenter.show();
             }
         };
-        toolBar.addItem( new DefaultToolBarItem( url,
+        toolBar.addItem( new DefaultToolBarItem( IconType.FILE,
                                                  tooltip,
                                                  command ) );
 

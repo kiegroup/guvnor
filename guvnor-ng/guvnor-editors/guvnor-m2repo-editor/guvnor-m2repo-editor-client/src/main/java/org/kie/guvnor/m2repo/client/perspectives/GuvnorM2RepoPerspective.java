@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -40,10 +40,10 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.toolbar.IconType;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
-import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
@@ -63,8 +63,8 @@ public class GuvnorM2RepoPerspective {
     private NewResourcePresenter newResourcePresenter;
 
     private PerspectiveDefinition perspective;
-    private MenuBar menuBar;
-    private ToolBar toolBar;
+    private MenuBar               menuBar;
+    private ToolBar               toolBar;
 
     @PostConstruct
     public void init() {
@@ -137,8 +137,7 @@ public class GuvnorM2RepoPerspective {
     }
 
     private void buildToolBar() {
-        this.toolBar = new DefaultToolBar();
-        final String url = "images/new_item.png";
+        this.toolBar = new DefaultToolBar( "guvnor.new.item" );
         final String tooltip = "Constants.INSTANCE.newItem()";
         final Command command = new Command() {
             @Override
@@ -146,7 +145,7 @@ public class GuvnorM2RepoPerspective {
                 newResourcePresenter.show();
             }
         };
-        toolBar.addItem( new DefaultToolBarItem( url,
+        toolBar.addItem( new DefaultToolBarItem( IconType.FILE,
                                                  tooltip,
                                                  command ) );
 
