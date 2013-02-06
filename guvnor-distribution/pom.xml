@@ -51,19 +51,13 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <classifier>jboss-eap-5.1</classifier>
+      <classifier>tomcat7.0</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <classifier>jboss-as-7.0</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-distribution-wars</artifactId>
-      <type>war</type>
-      <classifier>tomcat-6.0</classifier>
+      <classifier>jboss-as7.0</classifier>
     </dependency>
 
     <!-- Migration -->
