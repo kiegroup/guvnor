@@ -493,7 +493,7 @@ public class RepositoryModuleOperations {
             }
         }
 
-        rulesRepository.createModule( moduleName,
+        rulesRepository.createModuleSnapshot(moduleName,
                 snapshotName);
         ModuleItem item = rulesRepository.loadModuleSnapshot( moduleName,
                 snapshotName );
