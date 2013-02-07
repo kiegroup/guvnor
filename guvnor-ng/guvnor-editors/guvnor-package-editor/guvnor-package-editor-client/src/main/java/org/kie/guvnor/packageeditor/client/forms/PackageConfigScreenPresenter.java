@@ -25,12 +25,18 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import javax.enterprise.inject.New;
+
+import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
 
 @WorkbenchEditor(identifier = "packageConfigScreen", fileTypes = "package.config")
 public class PackageConfigScreenPresenter
@@ -40,6 +46,7 @@ public class PackageConfigScreenPresenter
     private final Caller<ProjectService> projectEditorServiceCaller;
     private final Caller<MetadataService> metadataService;
     private Path path;
+    private PackageConfiguration packageConfiguration;
 
     @Inject
     public PackageConfigScreenPresenter(@New PackageConfigScreenView view,
@@ -60,6 +67,7 @@ public class PackageConfigScreenPresenter
 
             @Override
             public void callback(PackageConfiguration packageConfiguration) {
+                PackageConfigScreenPresenter.this.packageConfiguration = packageConfiguration;
                 view.setImports(packageConfiguration.getImports());
             }
         }).loadPackageConfiguration(path);
@@ -85,6 +93,23 @@ public class PackageConfigScreenPresenter
         }).getMetadata(path);
     }
 
-    // TODO: Save -Rikkola-
+    @OnSave
+    public void onSave() {
+        projectEditorServiceCaller.call(new RemoteCallback<Void>() {
+            @Override
+            public void callback(Void v) {
 
+            }
+        }).save(path, packageConfiguration);
+    }
+
+    @WorkbenchMenu
+    public MenuBar buildMenuBar() {
+        return newResourceMenuBuilder().addSave(new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        }).build();
+    }
 }

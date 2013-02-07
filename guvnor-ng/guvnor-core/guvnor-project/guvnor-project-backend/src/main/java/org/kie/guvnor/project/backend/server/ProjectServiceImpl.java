@@ -241,7 +241,11 @@ public class ProjectServiceImpl
 
     @Override
     public PackageConfiguration loadPackageConfiguration(Path path) {
-        return new PackageConfiguration();  //TODO -Rikkola-
+        return packageConfigurationContentHandler.toModel(ioService.readAllString(paths.convert(path)));
     }
 
+    @Override
+    public void save(Path path, PackageConfiguration packageConfiguration) {
+        ioService.write(paths.convert(path), packageConfigurationContentHandler.toString(packageConfiguration));
+    }
 }

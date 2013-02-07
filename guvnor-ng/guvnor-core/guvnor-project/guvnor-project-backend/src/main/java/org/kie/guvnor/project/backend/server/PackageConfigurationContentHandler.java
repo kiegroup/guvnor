@@ -1,6 +1,7 @@
 package org.kie.guvnor.project.backend.server;
 
 
+import com.thoughtworks.xstream.XStream;
 import org.kie.guvnor.project.model.PackageConfiguration;
 
 import javax.enterprise.context.Dependent;
@@ -13,10 +14,14 @@ public class PackageConfigurationContentHandler {
     }
 
     public String toString(PackageConfiguration configuration) {
-        return "";
+        return createXStream().toXML(configuration);
     }
 
     public PackageConfiguration toModel(String text) {
-        return new PackageConfiguration();
+        return (PackageConfiguration) createXStream().fromXML(text);
+    }
+
+    private XStream createXStream() {
+        return new XStream();
     }
 }

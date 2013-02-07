@@ -64,4 +64,6 @@ public interface ProjectService {
     void newPackage(Path path);
 
     PackageConfiguration loadPackageConfiguration(Path path);
+
+    void save(Path path, PackageConfiguration packageConfiguration);
 }
