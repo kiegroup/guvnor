@@ -37,6 +37,7 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
@@ -111,9 +112,22 @@ public class GuvnorM2RepoPerspective {
 
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
-        final MenuBar subMenuBar = new DefaultMenuBar();
+        
+        final MenuBar subMenuBarExplorer = new DefaultMenuBar();
+        subMenuBarExplorer.addItem( new DefaultMenuItemCommand( "Guvnor M2 Repository Explorer",
+                                                     new Command() {
+                                                         @Override
+                                                         public void execute() {
+                                                             placeManager.goTo( "M2RepoEditor" );
+                                                         }
+                                                     } ) );
+        
+        this.menuBar.addItem( new DefaultMenuItemSubMenu( "Explore",
+                                                          subMenuBarExplorer) );
+
+        final MenuBar subMenuBarNew = new DefaultMenuBar();
         this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
-                                                          subMenuBar ) );
+                                                          subMenuBarNew ) );
 
         //Dynamic items
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
@@ -121,7 +135,7 @@ public class GuvnorM2RepoPerspective {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler handler = handlerBean.getInstance();
                 final String description = handler.getDescription();
-                subMenuBar.addItem( new DefaultMenuItemCommand( description, new Command() {
+                subMenuBarNew.addItem( new DefaultMenuItemCommand( description, new Command() {
                     @Override
                     public void execute() {
                         // TODO Need to get the currently selected path.
