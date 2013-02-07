@@ -17,15 +17,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:editor='urn:import:org.kie.guvnor.m2repo.client.editor'>
+             xmlns:editor='urn:import:org.kie.guvnor.inbox.client.editor'>
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
       <gwt:Button ui:field="refreshButton" text='Refresh'/>
-      <gwt:Button ui:field="deleteSelectedJarButton" text='Delete selected jar'/>
-      <gwt:Button ui:field="auditButton" text='ViewAuditLog'/>
+      <gwt:Button ui:field="openSelectedButton" text='Open selected'/>
+      <gwt:Button ui:field="deleteSelectedButton" text='Delete selected'/>
     </gwt:HorizontalPanel>
-    <editor:PagedJarTable ui:field="pagedJarTable"/>
+    <editor:InboxPagedTable ui:field="inboxPagedTable"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

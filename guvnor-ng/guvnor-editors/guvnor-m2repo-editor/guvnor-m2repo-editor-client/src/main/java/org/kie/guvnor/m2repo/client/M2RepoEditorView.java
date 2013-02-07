@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.m2repo.client.editor;
+package org.kie.guvnor.m2repo.client;
 
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.m2repo.client.editor.JarListEditor;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.FormStyleLayout;

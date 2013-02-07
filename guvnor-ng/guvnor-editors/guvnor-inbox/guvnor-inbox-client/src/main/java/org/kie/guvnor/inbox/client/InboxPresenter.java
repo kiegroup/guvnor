@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.m2repo.client.editor;
+package org.kie.guvnor.inbox.client;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.inbox.service.InboxService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnSave;
@@ -33,8 +33,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchScreen(identifier = "M2RepoEditor")
-public class M2RepoEditorPresenter {
+@WorkbenchScreen(identifier = "Inbox")
+public class InboxPresenter {
 
     public interface View
             extends
@@ -48,7 +48,7 @@ public class M2RepoEditorPresenter {
     private Path path;
 
     @Inject
-    private Caller<M2RepoService> m2RepoService;
+    private Caller<InboxService> m2RepoService;
     
     @PostConstruct
     public void init() {
@@ -75,7 +75,7 @@ public class M2RepoEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guvnor M2 REPOSITORY";
+        return "Inbox";
     }
 
 }

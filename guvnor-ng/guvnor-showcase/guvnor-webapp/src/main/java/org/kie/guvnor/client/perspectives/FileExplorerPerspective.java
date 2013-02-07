@@ -117,6 +117,13 @@ public class FileExplorerPerspective {
                                                              placeManager.goTo( "org.kie.guvnor.explorer" );
                                                          }
                                                      } ) );
+        subMenu.addItem( new DefaultMenuItemCommand( "Inbox",
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "Inbox" );
+                    }
+                } ) );
         final MenuItemSubMenu subMenuItem = new DefaultMenuItemSubMenu( "Explore",
                                                                         subMenu );
         this.menuBar.addItem( subMenuItem );

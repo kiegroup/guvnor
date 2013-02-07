@@ -32,8 +32,6 @@ import java.util.Date;
 public class PagedJarTable
         extends AbstractPagedTable<JarListPageRow> {
 
-    private SelectionColumn<JarListPageRow> selectionColumn;
-
     interface Binder
             extends
             UiBinder<Widget, PagedJarTable> {
@@ -44,16 +42,17 @@ public class PagedJarTable
     private final Caller<M2RepoService> m2RepoService;
     private ColumnPicker<JarListPageRow> columnPicker = new ColumnPicker<JarListPageRow>(cellTable);
 
+    private SelectionColumn<JarListPageRow> selectionColumn;
     private MultiSelectionModel<JarListPageRow> selectionModel;
-
-
+    private static final int PAGE_SIZE = 10;
+    
     public PagedJarTable(final Caller<M2RepoService> m2RepoService) {
         this(m2RepoService, null);
     }
 
     public PagedJarTable(final Caller<M2RepoService> m2RepoService,
                          final String searchFilter) {
-        super(10);
+        super(PAGE_SIZE);
         this.m2RepoService = m2RepoService;
 
         setDataProvider(new AsyncDataProvider<JarListPageRow>() {
