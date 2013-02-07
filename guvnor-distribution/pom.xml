@@ -61,6 +61,7 @@
     </dependency>
 
     <!-- Migration -->
+    <!--
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-jcr2vfs-migration-core</artifactId>
@@ -70,6 +71,7 @@
       <artifactId>guvnor-jcr2vfs-migration-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
+    -->
 
     <!-- Examples -->
     <dependency>
