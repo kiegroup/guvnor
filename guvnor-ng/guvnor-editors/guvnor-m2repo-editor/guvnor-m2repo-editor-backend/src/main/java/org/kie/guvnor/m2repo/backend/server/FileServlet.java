@@ -158,6 +158,7 @@ public class FileServlet extends HttpServlet {
                 fileData.reset();
 
                 if (pom != null) {
+                    Model model = new MavenXpp3Reader().read(new StringReader(pom));
 
                     String groupId = model.getGroupId();
                     String artifactId = model.getArtifactId();
