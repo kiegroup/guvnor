@@ -17,6 +17,7 @@ package org.kie.guvnor.commons.ui.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.commons.ui.client.resources.GuvnorSimplePagerResources;
 import org.kie.guvnor.commons.ui.client.resources.RoundedCornersResource;
 
@@ -27,6 +28,7 @@ public class GuvnorCommonsUIEntryPoint {
     public void startApp() {
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         GuvnorSimplePagerResources.INSTANCE.simplePagerStyle().ensureInjected();
+        CommonsResources.INSTANCE.css().ensureInjected();
     }
 
 }

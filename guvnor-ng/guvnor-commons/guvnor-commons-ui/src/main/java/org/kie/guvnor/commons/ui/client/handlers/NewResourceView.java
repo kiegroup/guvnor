@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.commons.data.Pair;
+import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -123,6 +124,7 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
     private RadioButton makeOption( final NewResourceHandler handler ) {
         final RadioButton option = new RadioButton( "handlers",
                                                     handler.getDescription() );
+        option.setStyleName( CommonsResources.INSTANCE.css().newHandlerOption() );
         option.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
             @Override

@@ -19,7 +19,7 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
   <ui:with field='i18n' type='org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants'/>
-  <ui:with field='resources' type='org.kie.guvnor.commons.ui.client.resources.WorkItemsResources'/>
+  <ui:with field='resources' type='org.kie.guvnor.commons.ui.client.resources.CommonsResources'/>
 
   <gwt:HorizontalPanel spacing="2">
     <gwt:Label ui:field="parameterName" styleName="{resources.css.workItemParameter}"/>
