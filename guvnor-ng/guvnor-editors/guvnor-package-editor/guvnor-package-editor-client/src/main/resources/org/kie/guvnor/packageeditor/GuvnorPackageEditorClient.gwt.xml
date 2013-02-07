@@ -32,7 +32,7 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
-  <inherits name='org.kie.guvnor.packageeditor.GuvnorProjectEditorAPI'/>
+  <inherits name='org.kie.guvnor.packageeditor.GuvnorPackageEditorAPI'/>
   <inherits name='org.kie.guvnor.project.GuvnorProjectAPI'/>
   <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
 
