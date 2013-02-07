@@ -21,9 +21,6 @@ import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.inbox.model.InboxPageRequest;
 import org.kie.guvnor.inbox.model.InboxPageRow;
-import org.kie.guvnor.inbox.model.JarListPageRow;
-import org.kie.guvnor.project.model.GAV;
-
 import java.io.InputStream;
 
 

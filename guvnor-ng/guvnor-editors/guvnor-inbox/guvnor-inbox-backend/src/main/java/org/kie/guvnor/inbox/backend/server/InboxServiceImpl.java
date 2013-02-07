@@ -22,6 +22,7 @@ import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.inbox.model.InboxPageRequest;
 import org.kie.guvnor.inbox.model.InboxPageRow;
 import org.kie.guvnor.inbox.service.InboxService;
+import org.kie.guvnor.m2repo.model.JarListPageRow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class InboxServiceImpl
         implements InboxService {
     
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) {
-/*        if ( request == null ) {
+        if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
         if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
@@ -52,9 +53,15 @@ public class InboxServiceImpl
 
         String inboxName = request.getInboxName();
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
-        long start = System.currentTimeMillis();
-
-        try {
+        
+        List<InboxPageRow> inboxRowList = new ArrayList<InboxPageRow>();
+        response.setPageRowList(inboxRowList);
+        response.setStartRowIndex(request.getStartRowIndex());
+        response.setTotalRowSize(0);
+        response.setTotalRowSizeExact(true);
+        
+        //long start = System.currentTimeMillis();
+/*        try {
 
             List<InboxEntry> entries = new UserInbox( rulesRepository ).loadEntries( inboxName );
 
@@ -81,9 +88,8 @@ public class InboxServiceImpl
             log.error( "Unable to load Inbox: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to load Inbox",
                                                       e.getMessage() );
-        }
-        return response;*/
-        return null;
+        }*/
+        return response;
     }
 
 }

@@ -16,9 +16,12 @@
 
 package org.kie.guvnor.inbox.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * A single row of a paged data
  */
+@Portable
 public class InboxIncomingPageRow
         extends InboxPageRow {
 

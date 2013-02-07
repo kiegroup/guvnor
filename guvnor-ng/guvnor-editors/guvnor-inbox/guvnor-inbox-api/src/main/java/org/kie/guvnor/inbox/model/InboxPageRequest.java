@@ -15,12 +15,14 @@
  */
 package org.kie.guvnor.inbox.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 
 
 /**
  * A Query request.
  */
+@Portable
 public class InboxPageRequest extends PageRequest {
 
     private String inboxName;
