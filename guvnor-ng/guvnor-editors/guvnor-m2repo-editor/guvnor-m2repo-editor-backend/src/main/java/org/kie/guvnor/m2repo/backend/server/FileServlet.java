@@ -158,14 +158,25 @@ public class FileServlet extends HttpServlet {
                 fileData.reset();
 
                 if (pom != null) {
-                    Model model = new MavenXpp3Reader().read(new StringReader(pom));
-                    gav = new GAV(model.getGroupId(), model.getArtifactId(),  model.getVersion());
+
+                    String groupId = model.getGroupId();
+                    String artifactId = model.getArtifactId();
+                    String version = model.getVersion();
+
+                    if (groupId == null) {
+                        groupId = model.getParent().getGroupId();
+                    }
+                    if (version == null) {
+                        version = model.getParent().getVersion();
+                    }
+
+                    gav = new GAV(groupId, artifactId, version);
                 } else {
                     return "NO VALID POM";                   
                 }
             }
             
-            m2RepoService.deployJar(fileData, uploadItem.getGav());
+            m2RepoService.deployJar(fileData, gav);
             uploadItem.getFile().getInputStream().close();
 
             return "OK";
