@@ -34,15 +34,15 @@ public class RuleModel {
      * preferred (ie it could get out of sync with the name of the file it is
      * in).
      */
-    public String name;
-    public String parentName;
+    public String          name;
+    public String          parentName;
     public String          modelVersion = "1.0";
     public RuleAttribute[] attributes   = new RuleAttribute[ 0 ];
     public RuleMetadata[]  metadataList = new RuleMetadata[ 0 ];
     public IPattern[]      lhs          = new IPattern[ 0 ];
     public IAction[]       rhs          = new IAction[ 0 ];
 
-    private Imports imports = new Imports();
+    private Imports        imports = new Imports();
 
     //Is the Rule to be negated (i.e. "not ( PatternX, PatternY... )"
     private boolean isNegated;

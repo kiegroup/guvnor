@@ -35,11 +35,12 @@ public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
                    IsWidget {
 
-    private Path resourcePath;
     private Imports resourceImports;
 
     private ImportsWidgetView view;
     private final FormPopup addImportPopup;
+
+    private Path path;
 
     private Event<ImportAddedEvent> importAddedEvent;
     private Event<ImportRemovedEvent> importRemovedEvent;
@@ -60,16 +61,15 @@ public class ImportsWidgetPresenter
         view.setupReadOnly();
     }
 
-    public void setImports( final Path resourcePath,
-                            final Imports resourceImports ) {
-        checkNotNull( "resourcePath",
-                      resourcePath );
+    public void setImports( final Path path, final Imports resourceImports ) {
+        checkNotNull( "path",
+                      path );
         checkNotNull( "imports",
                       resourceImports );
         checkNotNull( "imports",
                       resourceImports.getImports() );
 
-        this.resourcePath = resourcePath;
+        this.path=path;
         this.resourceImports = resourceImports;
 
         for ( Import item : resourceImports.getImports() ) {
@@ -79,29 +79,29 @@ public class ImportsWidgetPresenter
 
     @Override
     public void onAddImport() {
-        addImportPopup.show( new PopupSetFieldCommand() {
+        addImportPopup.show(new PopupSetFieldCommand() {
             @Override
-            public void setName( String name ) {
-                final Import item = new Import( name );
-                view.addImport( name );
-                resourceImports.getImports().add( item );
-                importAddedEvent.fire( new ImportAddedEvent( resourcePath,
-                                                             item ) );
+            public void setName(String name) {
+                final Import item = new Import(name);
+                view.addImport(name);
+                resourceImports.getImports().add(item);
+
+                importAddedEvent.fire(new ImportAddedEvent(path, item));
             }
-        } );
+        });
     }
 
     @Override
     public void onRemoveImport() {
         String selected = view.getSelected();
-        if ( selected == null ) {
+        if (selected == null) {
             view.showPleaseSelectAnImport();
         } else {
-            final Import item = new Import( selected );
-            view.removeImport( selected );
-            resourceImports.removeImport( item );
-            importRemovedEvent.fire( new ImportRemovedEvent( resourcePath,
-                                                             item ) );
+            final Import item = new Import(selected);
+            view.removeImport(selected);
+            resourceImports.removeImport(item);
+
+            importRemovedEvent.fire(new ImportRemovedEvent(path, item));
         }
     }
 

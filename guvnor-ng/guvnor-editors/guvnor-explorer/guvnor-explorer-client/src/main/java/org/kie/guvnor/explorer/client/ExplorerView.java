@@ -53,6 +53,12 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
     }
 
     @Override
+    public void reset() {
+        itemWidgetsContainer.clear();
+        breadCrumbsWidgetContainer.clear();
+    }
+    
+    @Override
     public void setContent( final ExplorerContent content ) {
 
         //Bread Crumbs

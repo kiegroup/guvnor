@@ -17,7 +17,7 @@ package org.kie.guvnor.configresource.client.resources;
 
 import com.google.gwt.user.client.ui.Image;
 import org.kie.guvnor.commons.ui.client.resources.ItemImages;
-import org.kie.guvnor.configresource.client.resources.i18n.Constants;
+import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
 
 public class Images {
 
@@ -28,31 +28,31 @@ public class Images {
 
     public Image NewItem() {
         final Image image = new Image( ItemImages.INSTANCE.newItem() );
-        image.setAltText( Constants.INSTANCE.NewItem() );
+        image.setAltText( ImportConstants.INSTANCE.NewItem() );
         return image;
     }
 
     public Image Trash() {
         final Image image = new Image( ImageResources.INSTANCE.trash() );
-        image.setAltText( Constants.INSTANCE.Trash() );
+        image.setAltText( ImportConstants.INSTANCE.Trash() );
         return image;
     }
 
     public Image NewItemDisabled() {
         final Image image = new Image( ImageResources.INSTANCE.newItemDisabled() );
-        image.setAltText( Constants.INSTANCE.NewItemDisabled() );
+        image.setAltText( ImportConstants.INSTANCE.NewItemDisabled() );
         return image;
     }
 
     public Image TrashDisabled() {
         final Image image = new Image( ImageResources.INSTANCE.trash() );
-        image.setAltText( Constants.INSTANCE.Trash() );
+        image.setAltText( ImportConstants.INSTANCE.Trash() );
         return image;
     }
 
     public Image Home() {
         final Image image = new Image( ImageResources.INSTANCE.homeIcon() );
-        image.setAltText( Constants.INSTANCE.Home() );
+        image.setAltText( ImportConstants.INSTANCE.Home() );
         return image;
     }
 }

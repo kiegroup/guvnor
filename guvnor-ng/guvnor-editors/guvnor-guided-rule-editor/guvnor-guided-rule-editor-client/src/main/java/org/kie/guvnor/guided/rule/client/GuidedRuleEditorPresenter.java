@@ -150,8 +150,7 @@ public class GuidedRuleEditorPresenter {
                 view.setContent( path,
                                  model,
                                  oracle );
-                importsWidget.setImports( path,
-                                          model.getImports() );
+                importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );
     }
@@ -201,7 +200,7 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
                     }
                 } ).delete( path,
                             comment );
@@ -221,7 +220,7 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
                     }
                 } ).rename( path,
                             newName,
@@ -242,7 +241,7 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
                     }
                 } ).copy( path,
                           newName,

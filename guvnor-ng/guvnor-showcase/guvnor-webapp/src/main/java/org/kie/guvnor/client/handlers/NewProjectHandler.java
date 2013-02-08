@@ -1,5 +1,6 @@
 package org.kie.guvnor.client.handlers;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -87,8 +88,16 @@ public class NewProjectHandler
     }
 
     @Override
-    public boolean requiresProjectPath() {
-        return false;
+    public void acceptPath(Path path, final Callback<Boolean,Void> response) {
+
+        projectServiceCaller.call(new RemoteCallback<Path>() {
+            @Override
+            public void callback(Path path) {
+                response.onSuccess(path != null);
+            }
+        }
+
+        ).resolveProject(path);
     }
 
 }

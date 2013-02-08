@@ -5,6 +5,7 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.commons.data.Pair;
@@ -52,8 +53,8 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public boolean requiresProjectPath() {
-        return true;
+    public void acceptPath(Path path, Callback<Boolean,Void> callback) {
+        callback.onSuccess(true);
     }
 
     protected Path buildFullPathName( final String fileName ) {

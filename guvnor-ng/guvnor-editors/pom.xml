@@ -42,6 +42,7 @@
     <module>guvnor-m2repo-editor</module>
     <module>guvnor-dsl-text-editor</module>
     <module>guvnor-globals-editor</module>
+    <module>guvnor-project-config-editor</module>
     <module>guvnor-inbox</module>
   </modules>
 

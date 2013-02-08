@@ -25,12 +25,11 @@ public final class ImportsParser {
     }
 
     public static Imports parseImports(final String content) {
+        Imports imports = new Imports();
+
         if (content == null || content.trim().equals("")) {
-            return new Imports();
+            return imports;
         } else {
-
-            Imports imports = new Imports();
-
             final String[] lines = content.split("\\n");
 
             for (int i = 0; i < lines.length; i++) {

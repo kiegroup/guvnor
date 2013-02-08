@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -84,22 +85,32 @@ public class NewResourcePresenter {
     public void selectedPathChanged( @Observes final PathChangeEvent event ) {
         final Path path = event.getPath();
         if ( path == null ) {
-            enableNewResourceHandlers( false );
+            enableNewResourceHandlers( path, false );
         }
         projectService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
-                enableNewResourceHandlers( path != null );
+                enableNewResourceHandlers( path, path != null );
             }
         } ).resolvePackage( path );
     }
 
-    private void enableNewResourceHandlers( final boolean enable ) {
-        for ( NewResourceHandler handler : this.handlers ) {
-            if ( handler.requiresProjectPath() ) {
-                view.enableHandler( handler,
-                                    enable );
-            }
+    private void enableNewResourceHandlers(final Path path, final boolean enable) {
+        for (final NewResourceHandler handler : this.handlers) {
+            handler.acceptPath(path, new Callback<Boolean, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+                    // Nothing to do there right now.
+                }
+
+                @Override
+                public void onSuccess(Boolean result) {
+                    if (result) {
+                        view.enableHandler(handler, enable);
+                    }
+                }
+            });
+
         }
     }
 
