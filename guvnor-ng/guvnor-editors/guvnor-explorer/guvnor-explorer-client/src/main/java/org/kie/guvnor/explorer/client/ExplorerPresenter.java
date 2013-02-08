@@ -25,6 +25,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -57,6 +58,7 @@ public class ExplorerPresenter {
             UberView<ExplorerPresenter> {
 
         void setContent( ExplorerContent content );
+        void reset();
 
     }
 
@@ -126,5 +128,17 @@ public class ExplorerPresenter {
         final RepositoryItem repositoryItem = new RepositoryItem( root.getPath() );
         return repositoryItem;
     }
-
+    
+    /**
+     * refresh on Notification message if necessary
+     * 
+     * @param event
+     */
+    public void onNotification(@Observes final NotificationEvent event) {
+        if(NotificationEvent.RefreshType.REFRESH == event.getRefreshType()) {
+            view.reset();
+            context.setActivePath(null);
+            onStart();
+        }
+    }
 }
