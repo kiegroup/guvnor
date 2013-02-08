@@ -1,1 +1,0 @@
-org.kie.guvnor.inbox.backend.server.InboxTest
