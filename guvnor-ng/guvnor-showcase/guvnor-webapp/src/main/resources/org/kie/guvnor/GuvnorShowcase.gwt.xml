@@ -30,7 +30,7 @@
   <inherits name="org.kie.guvnor.globals.GuvnorGlobalsEditorClient"/>
 
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
-  <inherits name="org.kie.guvnor.packageeditor.GuvnorPackageEditorClient"/>
+  <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
   <inherits name="org.kie.guvnor.inbox.GuvnorInboxClient"/>

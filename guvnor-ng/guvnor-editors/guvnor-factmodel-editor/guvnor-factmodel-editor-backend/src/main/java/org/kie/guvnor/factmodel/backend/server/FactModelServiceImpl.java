@@ -88,7 +88,7 @@ public class FactModelServiceImpl
             final List<FactMetaModel> models = toModel( drl );
             final FactModels factModels = new FactModels();
             factModels.getModels().addAll( models );
-            factModels.setImports( ImportsParser.parseImports( path, drl ) );
+            factModels.setImports( ImportsParser.parseImports( drl ) );
 
             return new FactModelContent( factModels,
                                          loadAllAvailableTypes( path ),

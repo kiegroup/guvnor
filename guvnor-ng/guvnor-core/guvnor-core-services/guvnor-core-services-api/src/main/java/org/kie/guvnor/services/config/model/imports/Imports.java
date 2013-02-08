@@ -16,7 +16,6 @@
 package org.kie.guvnor.services.config.model.imports;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,25 +24,14 @@ import java.util.List;
 @Portable
 public class Imports {
 
-    private Path resourcePath;
-
     private ArrayList<Import> imports = new ArrayList<Import>();
 
     public Imports() {
 
     }
 
-    public Imports(final Path resourcePath, final List<Import> imports) {
-        this.resourcePath = resourcePath;
+    public Imports(final List<Import> imports) {
         this.imports = new ArrayList<Import>(imports);
-    }
-
-    public void setResourcePath(Path resourcePath) {
-        this.resourcePath = resourcePath;
-    }
-
-    public Path getResourcePath() {
-        return resourcePath;
     }
 
     public List<Import> getImports() {

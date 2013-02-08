@@ -158,7 +158,7 @@ public class GuidedScoreCardEditorPresenter {
 
                 view.setContent( model,
                                  oracle );
-                importsWidget.setImports( model.getImports() );
+                importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );
 

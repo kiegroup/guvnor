@@ -150,7 +150,7 @@ public class FactModelsEditorPresenter {
                                  content.getSuperTypes(),
                                  modelNameHelper );
 
-                importsWidget.setImports( content.getFactModels().getImports() );
+                importsWidget.setImports( path, content.getFactModels().getImports() );
             }
         } ).loadContent( path );
 

@@ -74,11 +74,6 @@ public class FormPopupViewImpl
     }
 
     @Override
-    public void show() {
-        super.show();
-    }
-
-    @Override
     public String getName() {
         return nameTextBox.getText();
     }

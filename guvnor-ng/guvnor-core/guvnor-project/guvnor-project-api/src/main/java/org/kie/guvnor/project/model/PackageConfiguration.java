@@ -6,7 +6,15 @@ import org.kie.guvnor.services.config.model.imports.Imports;
 @Portable
 public class PackageConfiguration {
 
-    private Imports imports = new Imports();
+    private Imports imports;
+
+    public PackageConfiguration() {
+
+    }
+
+    public PackageConfiguration(Imports imports) {
+        this.imports = imports;
+    }
 
     public Imports getImports() {
         return imports;

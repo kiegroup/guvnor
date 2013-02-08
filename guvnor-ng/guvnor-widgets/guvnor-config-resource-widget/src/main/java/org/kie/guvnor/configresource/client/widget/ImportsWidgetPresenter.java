@@ -40,6 +40,8 @@ public class ImportsWidgetPresenter
     private ImportsWidgetView view;
     private final FormPopup addImportPopup;
 
+    private Path path;
+
     private Event<ImportAddedEvent> importAddedEvent;
     private Event<ImportRemovedEvent> importRemovedEvent;
 
@@ -59,14 +61,15 @@ public class ImportsWidgetPresenter
         view.setupReadOnly();
     }
 
-    public void setImports( final Imports resourceImports ) {
+    public void setImports( final Path path, final Imports resourceImports ) {
+        checkNotNull( "path",
+                      path );
         checkNotNull( "imports",
                       resourceImports );
-        checkNotNull( "resourcePath",
-                      resourceImports.getImports() );
         checkNotNull( "imports",
                       resourceImports.getImports() );
 
+        this.path=path;
         this.resourceImports = resourceImports;
 
         for ( Import item : resourceImports.getImports() ) {
@@ -76,29 +79,29 @@ public class ImportsWidgetPresenter
 
     @Override
     public void onAddImport() {
-        addImportPopup.show( new PopupSetFieldCommand() {
+        addImportPopup.show(new PopupSetFieldCommand() {
             @Override
-            public void setName( String name ) {
-                final Import item = new Import( name );
-                view.addImport( name );
-                resourceImports.getImports().add( item );
-                importAddedEvent.fire( new ImportAddedEvent( resourceImports.getResourcePath(),
-                                                             item ) );
+            public void setName(String name) {
+                final Import item = new Import(name);
+                view.addImport(name);
+                resourceImports.getImports().add(item);
+
+                importAddedEvent.fire(new ImportAddedEvent(path, item));
             }
-        } );
+        });
     }
 
     @Override
     public void onRemoveImport() {
         String selected = view.getSelected();
-        if ( selected == null ) {
+        if (selected == null) {
             view.showPleaseSelectAnImport();
         } else {
-            final Import item = new Import( selected );
-            view.removeImport( selected );
-            resourceImports.removeImport( item );
-            importRemovedEvent.fire( new ImportRemovedEvent( resourceImports.getResourcePath(),
-                                                             item ) );
+            final Import item = new Import(selected);
+            view.removeImport(selected);
+            resourceImports.removeImport(item);
+
+            importRemovedEvent.fire(new ImportRemovedEvent(path, item));
         }
     }
 
