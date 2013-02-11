@@ -8,8 +8,11 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.context.WorkbenchContext;
@@ -26,6 +29,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Inject
     protected WorkbenchContext context;
+
+    @Inject
+    private Caller<ProjectService> projectService;
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
@@ -53,8 +59,14 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public void acceptPath(Path path, Callback<Boolean,Void> callback) {
-        callback.onSuccess(true);
+    public void acceptPath( final Path path,
+                            final Callback<Boolean, Void> callback ) {
+        projectService.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path path ) {
+                callback.onSuccess( path != null );
+            }
+        } ).resolvePackage( path );
     }
 
     protected Path buildFullPathName( final String fileName ) {

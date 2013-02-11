@@ -3,6 +3,7 @@ package org.kie.guvnor.client.handlers;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -10,6 +11,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
@@ -23,6 +25,9 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
 
     @Inject
     private Caller<VFSService> vfs;
+
+    @Inject
+    private Caller<ProjectService> projectService;
 
     @Override
     public String getFileType() {
@@ -48,6 +53,21 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
                 notifySuccess();
             }
         } ).createDirectory( path );
+    }
+
+    @Override
+    public void acceptPath( final Path path,
+                            final Callback<Boolean, Void> callback ) {
+        //You can only create new Folders outside of packages
+        if ( path == null ) {
+            callback.onSuccess( false );
+        }
+        projectService.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path path ) {
+                callback.onSuccess( path == null );
+            }
+        } ).resolvePackage( path );
     }
 
 }

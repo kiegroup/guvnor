@@ -53,5 +53,6 @@ public interface NewResourceHandler {
      * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
-    void acceptPath(Path path, Callback<Boolean,Void> callback);
+    void acceptPath( final Path path,
+                     final Callback<Boolean, Void> callback );
 }

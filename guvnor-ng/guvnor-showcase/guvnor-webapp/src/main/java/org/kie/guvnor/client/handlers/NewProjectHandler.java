@@ -56,23 +56,23 @@ public class NewProjectHandler
 
     @Override
     public IsWidget getIcon() {
-        return new Image(ImageResources.INSTANCE.newProjectIcon());
+        return new Image( ImageResources.INSTANCE.newProjectIcon() );
     }
 
     @Override
-    public void create(final String projectName) {
+    public void create( final String projectName ) {
         Path activePath = context.getActivePath();
-        if (activePath != null) {
-            projectServiceCaller.call(new RemoteCallback<Path>() {
+        if ( activePath != null ) {
+            projectServiceCaller.call( new RemoteCallback<Path>() {
                 @Override
-                public void callback(Path pathToPom) {
+                public void callback( Path pathToPom ) {
 
-                    notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully()));
-                    placeManager.goTo(new ProjectEditorPlace(pathToPom));
+                    notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+                    placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
                 }
-            }).newProject(activePath, projectName);
+            } ).newProject( activePath, projectName );
         } else {
-            ErrorPopup.showMessage(Constants.INSTANCE.NoRepositorySelectedPleaseSelectARepository());
+            ErrorPopup.showMessage( Constants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }
 
     }
@@ -88,16 +88,10 @@ public class NewProjectHandler
     }
 
     @Override
-    public void acceptPath(Path path, final Callback<Boolean,Void> response) {
-
-        projectServiceCaller.call(new RemoteCallback<Path>() {
-            @Override
-            public void callback(Path path) {
-                response.onSuccess(path != null);
-            }
-        }
-
-        ).resolveProject(path);
+    public void acceptPath( final Path path,
+                            final Callback<Boolean, Void> response ) {
+        //You can always create a new Project
+        response.onSuccess( true );
     }
 
 }

@@ -8,14 +8,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.client.handlers.NewProjectHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
@@ -32,9 +29,6 @@ public class NewResourcesMenu extends DefaultMenuItemSubMenu {
 
     @Inject
     private IOCBeanManager iocBeanManager;
-
-    @Inject
-    private Caller<ProjectService> projectService;
 
     @Inject
     private NewResourcePresenter newResourcePresenter;
@@ -69,22 +63,28 @@ public class NewResourcesMenu extends DefaultMenuItemSubMenu {
 
     public void selectedPathChanged( @Observes final PathChangeEvent event ) {
         final Path path = event.getPath();
-        if ( path == null ) {
-            enableNewResourceHandlers( false );
-        }
-        projectService.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( final Path path ) {
-                enableNewResourceHandlers( path != null );
-            }
-        } ).resolvePackage( path );
+        enableNewResourceHandlers( path );
     }
 
-    private void enableNewResourceHandlers( final boolean enable ) {
+    private void enableNewResourceHandlers( final Path path ) {
         for ( Map.Entry<NewResourceHandler, MenuItem> e : this.newResourceHandlers.entrySet() ) {
-            if ( !( e.getKey() instanceof NewProjectHandler ) ) {
-                e.getValue().setEnabled( enable );
-            }
+            final NewResourceHandler handler = e.getKey();
+            final MenuItem menuItem = e.getValue();
+            handler.acceptPath( path,
+                                new Callback<Boolean, Void>() {
+                                    @Override
+                                    public void onFailure( Void reason ) {
+                                        // Nothing to do there right now.
+                                    }
+
+                                    @Override
+                                    public void onSuccess( final Boolean result ) {
+                                        if ( result != null ) {
+                                            menuItem.setEnabled( result );
+                                        }
+                                    }
+                                } );
+
         }
     }
 

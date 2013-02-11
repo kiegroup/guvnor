@@ -1,6 +1,8 @@
 package org.kie.guvnor.client.handlers;
 
-import com.google.gwt.core.client.Callback;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -10,9 +12,6 @@ import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Handler for the creation of new Folders
@@ -38,32 +37,19 @@ public class NewPackageHandler
 
     @Override
     public IsWidget getIcon() {
-        return new Image(ImageResources.INSTANCE.newFolderIcon());
+        return new Image( ImageResources.INSTANCE.newFolderIcon() );
     }
 
     @Override
-    public void create(final String fileName) {
-        final Path path = buildFullPathName(fileName);
+    public void create( final String fileName ) {
+        final Path path = buildFullPathName( fileName );
 
-        projectService.call(new RemoteCallback<Path>() {
+        projectService.call( new RemoteCallback<Path>() {
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 notifySuccess();
             }
-        }).newPackage(path);
-    }
-
-    @Override
-    public void acceptPath(Path path, final Callback<Boolean, Void> callback) {
-
-        projectService.call(
-                new RemoteCallback<Path>() {
-                    @Override
-                    public void callback(Path path) {
-                        callback.onSuccess(path != null);
-                    }
-                }
-        ).resolvePackage(path);
+        } ).newPackage( path );
     }
 
 }
