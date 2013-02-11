@@ -90,8 +90,8 @@ public class NewProjectHandler
     @Override
     public void acceptPath( final Path path,
                             final Callback<Boolean, Void> response ) {
-        //You can always create a new Project
-        response.onSuccess( true );
+        //You can always create a new Project (provided a repository has been selected)
+        response.onSuccess( path != null );
     }
 
 }

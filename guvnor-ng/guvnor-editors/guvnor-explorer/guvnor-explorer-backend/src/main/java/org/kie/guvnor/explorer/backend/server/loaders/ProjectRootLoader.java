@@ -27,6 +27,7 @@ import org.uberfire.backend.vfs.Path;
 public class ProjectRootLoader implements ItemsLoader {
 
     private static final String POM_PATH = "pom.xml";
+    private static final String PROJECT_IMPORTS_PATH = "project.imports";
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private final Filter filter;
@@ -57,6 +58,10 @@ public class ProjectRootLoader implements ItemsLoader {
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path pomPath = pRoot.resolve( POM_PATH );
         items.add( new FileItem( paths.convert( pomPath ) ) );
+
+        //Add Project Imports
+        final org.kie.commons.java.nio.file.Path projectImportsPath = pRoot.resolve( PROJECT_IMPORTS_PATH );
+        items.add( new FileItem( paths.convert( projectImportsPath ) ) );
 
         //Add Items within Project's Resources path
         final org.kie.commons.java.nio.file.Path resourcesPath = pRoot.resolve( RESOURCES_PATH );

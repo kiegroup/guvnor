@@ -186,34 +186,39 @@ public class ExplorerServiceImplTest {
 
         //Check items count
         final List<Item> items = result.getItems();
-        assertEquals( 4,
+        assertEquals( 5,
                       items.size() );
 
         //Check items' type
         assertTrue( items.get( 0 ) instanceof FileItem );
-        assertTrue( items.get( 1 ) instanceof PackageItem );
+        assertTrue( items.get( 1 ) instanceof FileItem );
         assertTrue( items.get( 2 ) instanceof PackageItem );
-        assertTrue( items.get( 3 ) instanceof ParentFolderItem );
+        assertTrue( items.get( 3 ) instanceof PackageItem );
+        assertTrue( items.get( 4 ) instanceof ParentFolderItem );
 
         //Check items' caption
         assertEquals( "pom.xml",
                       items.get( 0 ).getCaption() );
-        assertEquals( "default",
+        assertEquals( "project.imports",
                       items.get( 1 ).getCaption() );
-        assertEquals( "org",
+        assertEquals( "default",
                       items.get( 2 ).getCaption() );
-        assertEquals( "..",
+        assertEquals( "org",
                       items.get( 3 ).getCaption() );
+        assertEquals( "..",
+                      items.get( 4 ).getCaption() );
 
         //Check items' Paths
         assertEquals( makePath( "/ProjectStructureValid/pom.xml" ),
                       items.get( 0 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
+        assertEquals( makePath( "/ProjectStructureValid/project.imports" ),
                       items.get( 1 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
+        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       items.get( 2 ).getPath() );
-        assertEquals( makePath( "/" ),
+        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
                       items.get( 3 ).getPath() );
+        assertEquals( makePath( "/" ),
+                      items.get( 4 ).getPath() );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
