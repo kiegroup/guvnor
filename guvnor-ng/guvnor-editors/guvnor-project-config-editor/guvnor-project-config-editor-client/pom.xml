@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright 2012 JBoss Inc
@@ -22,11 +21,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-package-editor</artifactId>
+    <artifactId>guvnor-project-config-editor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-package-editor-client</artifactId>
+  <artifactId>guvnor-project-config-editor-client</artifactId>
   <packaging>jar</packaging>
 
   <name>Project Editor Client</name>
@@ -36,7 +35,7 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-package-editor-api</artifactId>
+      <artifactId>guvnor-project-config-editor-api</artifactId>
     </dependency>
 
     <dependency>
