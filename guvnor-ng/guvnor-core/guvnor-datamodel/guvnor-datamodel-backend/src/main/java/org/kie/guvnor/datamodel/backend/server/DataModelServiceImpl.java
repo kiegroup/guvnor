@@ -18,6 +18,7 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,23 +27,27 @@ import javax.inject.Named;
 import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.commons.service.builder.model.Message;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.guvnor.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.config.model.imports.Import;
+import org.kie.guvnor.services.config.model.imports.Imports;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -186,6 +191,21 @@ public class DataModelServiceImpl
             }
         }
 
+        //Add external imports
+        final Path externalImportsPath = paths.convert( paths.convert( projectPath ).resolve( "project.imports" ) );
+        final PackageConfiguration packageConfiguration = projectService.loadPackageConfiguration( externalImportsPath );
+        final Imports imports = packageConfiguration.getImports();
+        for ( final Import item : imports.getImports() ) {
+            try {
+                Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
+                pdBuilder.addClass( clazz );
+            } catch ( ClassNotFoundException cnfe ) {
+                results.getMessages().add( makeMessage( cnfe ) );
+            } catch ( IOException ioe ) {
+                results.getMessages().add( makeMessage( ioe ) );
+            }
+        }
+
         //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
         if ( !results.isEmpty() ) {
             messagesEvent.fire( results );
@@ -198,7 +218,7 @@ public class DataModelServiceImpl
     private DataModelOracle makePackageDataModelOracle( final Path projectPath,
                                                         final Path packagePath ) {
         final String packageName = projectService.resolvePackageName( packagePath );
-        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newDataModelBuilder(packageName);
+        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newDataModelBuilder( packageName );
         final ProjectDefinition projectDefinition = cacheProjects.getEntry( projectPath );
         dmoBuilder.setProjectDefinition( projectDefinition );
 
@@ -212,6 +232,17 @@ public class DataModelServiceImpl
 
         //TODO {manstis} - Add Globals
 
+        //Report any errors
+        final Results results = new Results();
+        final List<String> errors = dmoBuilder.getErrors();
+        for ( final String error : errors ) {
+            results.getMessages().add( makeMessage( error ) );
+        }
+        if ( !results.isEmpty() ) {
+            messagesEvent.fire( results );
+            return makeEmptyDataModelOracle();
+        }
+
         return dmoBuilder.build();
     }
 
@@ -219,6 +250,13 @@ public class DataModelServiceImpl
         final Message message = new Message();
         message.setLevel( Message.Level.ERROR );
         message.setText( e.getMessage() );
+        return message;
+    }
+
+    private Message makeMessage( final String msg ) {
+        final Message message = new Message();
+        message.setLevel( Message.Level.ERROR );
+        message.setText( msg );
         return message;
     }
 

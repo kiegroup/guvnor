@@ -156,6 +156,10 @@ public final class PackageDataModelOracleBuilder {
         return oracle;
     }
 
+    public List<String> getErrors() {
+        return errors;
+    }
+
     private void loadProjectDefinition() {
         oracle.setPackageName( packageName );
         oracle.setProjectDefinition( projectDefinition );
