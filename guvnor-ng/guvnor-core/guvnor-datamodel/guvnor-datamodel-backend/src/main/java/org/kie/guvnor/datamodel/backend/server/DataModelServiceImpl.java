@@ -192,17 +192,20 @@ public class DataModelServiceImpl
         }
 
         //Add external imports
-        final Path externalImportsPath = paths.convert( paths.convert( projectPath ).resolve( "project.imports" ) );
-        final PackageConfiguration packageConfiguration = projectService.loadPackageConfiguration( externalImportsPath );
-        final Imports imports = packageConfiguration.getImports();
-        for ( final Import item : imports.getImports() ) {
-            try {
-                Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
-                pdBuilder.addClass( clazz );
-            } catch ( ClassNotFoundException cnfe ) {
-                results.getMessages().add( makeMessage( cnfe ) );
-            } catch ( IOException ioe ) {
-                results.getMessages().add( makeMessage( ioe ) );
+        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( projectPath ).resolve( "project.imports" );
+        if ( Files.exists( nioExternalImportsPath ) ) {
+            final Path externalImportsPath = paths.convert( nioExternalImportsPath );
+            final PackageConfiguration packageConfiguration = projectService.loadPackageConfiguration( externalImportsPath );
+            final Imports imports = packageConfiguration.getImports();
+            for ( final Import item : imports.getImports() ) {
+                try {
+                    Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
+                    pdBuilder.addClass( clazz );
+                } catch ( ClassNotFoundException cnfe ) {
+                    results.getMessages().add( makeMessage( cnfe ) );
+                } catch ( IOException ioe ) {
+                    results.getMessages().add( makeMessage( ioe ) );
+                }
             }
         }
 

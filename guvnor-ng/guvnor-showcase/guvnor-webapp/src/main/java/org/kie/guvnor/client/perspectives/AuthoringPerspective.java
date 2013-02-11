@@ -45,11 +45,11 @@ import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * A Perspective for Rule authors
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective", isDefault = true)
-public class FileExplorerPerspective {
+@WorkbenchPerspective(identifier = "org.kie.guvnor.client.perspectives.authoring", isDefault = true)
+public class AuthoringPerspective {
 
     @Inject
     private NewResourcePresenter newResourcePresenter;
@@ -61,8 +61,8 @@ public class FileExplorerPerspective {
     private PlaceManager placeManager;
 
     private PerspectiveDefinition perspective;
-    private MenuBar               menuBar;
-    private ToolBar               toolBar;
+    private MenuBar menuBar;
+    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
@@ -88,14 +88,12 @@ public class FileExplorerPerspective {
 
     private void buildPerspective() {
         this.perspective = new PerspectiveDefinitionImpl();
-        this.perspective.setName( "File Explorer" );
-
-        this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        this.perspective.setName( "Author" );
 
         final PanelDefinition west = new PanelDefinitionImpl();
         west.setWidth( 300 );
         west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "org.kie.guvnor.explorer" ) ) );
 
         this.perspective.getRoot().insertChild( Position.WEST, west );
     }
@@ -103,13 +101,6 @@ public class FileExplorerPerspective {
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
         final MenuBar subMenu = new DefaultMenuBar();
-        subMenu.addItem( new DefaultMenuItemCommand( "Files",
-                                                     new Command() {
-                                                         @Override
-                                                         public void execute() {
-                                                             placeManager.goTo( "FileExplorer" );
-                                                         }
-                                                     } ) );
         subMenu.addItem( new DefaultMenuItemCommand( "Projects",
                                                      new Command() {
                                                          @Override
@@ -118,12 +109,12 @@ public class FileExplorerPerspective {
                                                          }
                                                      } ) );
         subMenu.addItem( new DefaultMenuItemCommand( "Inbox",
-                new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "Inbox" );
-                    }
-                } ) );
+                                                     new Command() {
+                                                         @Override
+                                                         public void execute() {
+                                                             placeManager.goTo( "Inbox" );
+                                                         }
+                                                     } ) );
         final MenuItemSubMenu subMenuItem = new DefaultMenuItemSubMenu( "Explore",
                                                                         subMenu );
         this.menuBar.addItem( subMenuItem );

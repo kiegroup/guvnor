@@ -38,7 +38,7 @@ import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
 
-    private final static String RESOURCE_PATH = "/src" + File.separator + "main" + File.separator + "resources";
+    private final static String RESOURCE_PATH = "/src/main/resources";
 
     private final KieBuilder kieBuilder;
     private final KieFileSystem kieFileSystem;

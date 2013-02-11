@@ -40,28 +40,8 @@ public class BreadCrumbUtilities {
         final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
         final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
-        final org.kie.commons.java.nio.file.Path e3 = e2.resolve( "java" );
-        final org.kie.commons.java.nio.file.Path e4 = e2.resolve( "resources" );
         exclusions.add( e1 );
         exclusions.add( e2 );
-        exclusions.add( e3 );
-        exclusions.add( e4 );
-        return exclusions;
-    }
-
-    public List<org.kie.commons.java.nio.file.Path> makeBreadCrumbExclusionsForDefaultPackage( final Path path ) {
-        final List<org.kie.commons.java.nio.file.Path> exclusions = new ArrayList<org.kie.commons.java.nio.file.Path>();
-        final org.uberfire.backend.vfs.Path projectRoot = projectService.resolveProject( path );
-        if ( projectRoot == null ) {
-            return exclusions;
-        }
-        final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
-        final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
-        final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
-        final org.kie.commons.java.nio.file.Path e3 = e2.resolve( "java" );
-        exclusions.add( e1 );
-        exclusions.add( e2 );
-        exclusions.add( e3 );
         return exclusions;
     }
 
@@ -75,9 +55,9 @@ public class BreadCrumbUtilities {
         final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src/main/java" );
         final org.kie.commons.java.nio.file.Path e2 = e0.resolve( "src/main/resources" );
         substitutions.put( e1,
-                           "default" );
+                           "java" );
         substitutions.put( e2,
-                           "default" );
+                           "resources" );
         return substitutions;
     }
 

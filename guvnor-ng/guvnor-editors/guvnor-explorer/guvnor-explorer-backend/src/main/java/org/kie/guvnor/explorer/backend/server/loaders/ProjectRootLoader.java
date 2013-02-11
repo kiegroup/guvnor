@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
 import org.kie.guvnor.explorer.backend.server.util.Filter;
@@ -28,6 +27,7 @@ public class ProjectRootLoader implements ItemsLoader {
 
     private static final String POM_PATH = "pom.xml";
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
+    private static final String JAVA_RESOURCES_PATH = "src/main/java";
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private final Filter filter;
@@ -57,43 +57,34 @@ public class ProjectRootLoader implements ItemsLoader {
         //Add pom.xml file
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path pomPath = pRoot.resolve( POM_PATH );
-        items.add( new FileItem( paths.convert( pomPath ) ) );
+        if ( Files.exists( pomPath ) ) {
+            items.add( new FileItem( paths.convert( pomPath ) ) );
+        }
 
         //Add Project Imports
         final org.kie.commons.java.nio.file.Path projectImportsPath = pRoot.resolve( PROJECT_IMPORTS_PATH );
-        items.add( new FileItem( paths.convert( projectImportsPath ) ) );
+        if ( Files.exists( projectImportsPath ) ) {
+            items.add( new FileItem( paths.convert( projectImportsPath ) ) );
+        }
+
+        //Add Items within Project's Java Resources path
+        final org.kie.commons.java.nio.file.Path javaResourcesPath = pRoot.resolve( JAVA_RESOURCES_PATH );
+        if ( Files.exists( javaResourcesPath ) ) {
+            items.add( new PackageItem( paths.convert( javaResourcesPath ),
+                                        "java" ) );
+        }
 
         //Add Items within Project's Resources path
         final org.kie.commons.java.nio.file.Path resourcesPath = pRoot.resolve( RESOURCES_PATH );
-        items.addAll( loadPackages( resourcesPath ) );
+        if ( Files.exists( resourcesPath ) ) {
+            items.add( new PackageItem( paths.convert( resourcesPath ),
+                                        "resources" ) );
+        }
 
         //Add ability to move up one level in the hierarchy
         items.add( new ParentFolderItem( paths.convert( pRoot.getParent() ),
                                          ".." ) );
 
-        return items;
-    }
-
-    private List<Item> loadPackages( final org.kie.commons.java.nio.file.Path path ) {
-        //Check Path exists
-        final List<Item> items = new ArrayList<Item>();
-        if ( !Files.exists( path ) ) {
-            return items;
-        }
-
-        //Default package
-        items.add( new PackageItem( paths.convert( path ),
-                                    "default" ) );
-
-        //Other packages
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( path );
-        for ( final org.kie.commons.java.nio.file.Path p : directoryStream ) {
-            if ( filter.accept( p ) ) {
-                if ( Files.isDirectory( p ) ) {
-                    items.add( new PackageItem( paths.convert( p ) ) );
-                }
-            }
-        }
         return items;
     }
 

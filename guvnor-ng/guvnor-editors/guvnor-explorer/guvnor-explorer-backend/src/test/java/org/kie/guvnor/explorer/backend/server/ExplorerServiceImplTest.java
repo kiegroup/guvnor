@@ -201,9 +201,9 @@ public class ExplorerServiceImplTest {
                       items.get( 0 ).getCaption() );
         assertEquals( "project.imports",
                       items.get( 1 ).getCaption() );
-        assertEquals( "default",
+        assertEquals( "java",
                       items.get( 2 ).getCaption() );
-        assertEquals( "org",
+        assertEquals( "resources",
                       items.get( 3 ).getCaption() );
         assertEquals( "..",
                       items.get( 4 ).getCaption() );
@@ -213,9 +213,9 @@ public class ExplorerServiceImplTest {
                       items.get( 0 ).getPath() );
         assertEquals( makePath( "/ProjectStructureValid/project.imports" ),
                       items.get( 1 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
+        assertEquals( makePath( "/ProjectStructureValid/src/main/java" ),
                       items.get( 2 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
+        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       items.get( 3 ).getPath() );
         assertEquals( makePath( "/" ),
                       items.get( 4 ).getPath() );
@@ -254,24 +254,29 @@ public class ExplorerServiceImplTest {
 
         //Check items count
         final List<Item> items = result.getItems();
-        assertEquals( 2,
+        assertEquals( 3,
                       items.size() );
 
         //Check items' type
         assertTrue( items.get( 0 ) instanceof FileItem );
-        assertTrue( items.get( 1 ) instanceof ParentPackageItem );
+        assertTrue( items.get( 1 ) instanceof PackageItem );
+        assertTrue( items.get( 2 ) instanceof ParentPackageItem );
 
         //Check items' caption
         assertEquals( "rule1.drl",
                       items.get( 0 ).getCaption() );
-        assertEquals( "..",
+        assertEquals( "org",
                       items.get( 1 ).getCaption() );
+        assertEquals( "..",
+                      items.get( 2 ).getCaption() );
 
         //Check items' Paths
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources/rule1.drl" ),
                       items.get( 0 ).getPath() );
+        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
+                      items.get( 1 ).getPath() );
         assertEquals( makePath( "/ProjectStructureValid/src/main" ).toURI(),
-                      items.get( 1 ).getPath().toURI() );
+                      items.get( 2 ).getPath().toURI() );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
@@ -282,7 +287,7 @@ public class ExplorerServiceImplTest {
         int breadCrumbIndex = breadCrumbs.size();
         assertTrue( breadCrumbIndex > 0 );
         breadCrumbIndex--;
-        assertEquals( "default",
+        assertEquals( "resources",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
@@ -353,6 +358,11 @@ public class ExplorerServiceImplTest {
         assertEquals( "org",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
+                      breadCrumbs.get( breadCrumbIndex ).getPath() );
+        breadCrumbIndex--;
+        assertEquals( "resources",
+                      breadCrumbs.get( breadCrumbIndex ).getCaption() );
+        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
         assertEquals( "ProjectStructureValid",

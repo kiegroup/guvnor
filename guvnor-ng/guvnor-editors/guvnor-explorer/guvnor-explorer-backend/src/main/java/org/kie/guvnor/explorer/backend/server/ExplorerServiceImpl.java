@@ -40,6 +40,7 @@ import org.uberfire.backend.vfs.Path;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
+    private static final String JAVA_RESOURCES_PATH = "src/main/java";
     private static final String RESOURCES_PATH = "src/main/resources";
 
     private IOService ioService;
@@ -53,10 +54,6 @@ public class ExplorerServiceImpl
     @Inject
     @Named("projectRootList")
     private ItemsLoader projectRootListLoader;
-
-    @Inject
-    @Named("projectDefaultPackageList")
-    private ItemsLoader projectDefaultPackageListLoader;
 
     @Inject
     @Named("projectPackageList")
@@ -112,13 +109,15 @@ public class ExplorerServiceImpl
                                         projectRootPath );
         }
 
+        //Check if Path is within Projects Java resources
+        final org.kie.commons.java.nio.file.Path pJavaResources = pRoot.resolve( JAVA_RESOURCES_PATH );
+        if ( pResource.startsWith( pJavaResources ) ) {
+            return makeProjectPackageList( resource,
+                                           projectRootPath );
+        }
+
         //Check if Path is within Projects resources
         final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
-        if ( Files.isSameFile( pResource,
-                               pResources ) ) {
-            return makeProjectDefaultPackageList( resource,
-                                                  projectRootPath );
-        }
         if ( pResource.startsWith( pResources ) ) {
             return makeProjectPackageList( resource,
                                            projectRootPath );
@@ -145,17 +144,6 @@ public class ExplorerServiceImpl
                                                              projectRoot );
         final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
                                                                                 breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
-        return new ExplorerContent( items,
-                                    breadCrumbs );
-    }
-
-    private ExplorerContent makeProjectDefaultPackageList( final Path path,
-                                                           final Path projectRoot ) {
-        final List<Item> items = projectDefaultPackageListLoader.load( path,
-                                                                       projectRoot );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusionsForDefaultPackage( path ),
-                                                                                breadCrumbUtilities.makeBreadCrumbCaptionSubstitutionsForDefaultPackage( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }
