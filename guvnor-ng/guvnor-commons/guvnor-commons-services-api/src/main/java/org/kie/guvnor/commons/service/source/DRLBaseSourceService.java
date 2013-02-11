@@ -26,23 +26,28 @@ public abstract class DRLBaseSourceService
         extends BaseSourceService {
 
     protected DRLBaseSourceService() {
-        super("/src/main/resources");
+        super( "/src/main/resources" );
     }
 
     @Override
-    public SourceContext getSource(final Path path) {
+    public SourceContext getSource( final Path path ) {
 
-        String packageDeclaration = returnPackageDeclaration(path);
+        String packageDeclaration = returnPackageDeclaration( path );
 
-        String drl = getIOService().readAllString(path);
-        if (!drl.contains(packageDeclaration)) {
+        String drl = getIOService().readAllString( path );
+        if ( !drl.contains( packageDeclaration ) ) {
             drl = packageDeclaration + "\n" + drl;
         }
 
-        final ByteArrayInputStream is = new ByteArrayInputStream(drl.getBytes());
-        final BufferedInputStream bis = new BufferedInputStream(is);
-        final SourceContext context = new SourceContext(bis,
-                stripProjectPrefix(path));
+        //Hack for empty byte streams not handled by the underlying KieBuilder
+        if ( drl.isEmpty() ) {
+            drl = " ";
+        }
+
+        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        final SourceContext context = new SourceContext( bis,
+                                                         stripProjectPrefix( path ) );
         return context;
     }
 
