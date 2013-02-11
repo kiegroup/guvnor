@@ -29,7 +29,10 @@ public interface DependencyGridView
         void onAddDependencyButton();
 
         void onAddDependencyFromRepositoryButton();
+
+        void onRemoveDependency(Dependency dependency);
     }
+
     void setPresenter(Presenter presenter);
 
     void setList(List<Dependency> dependencies);

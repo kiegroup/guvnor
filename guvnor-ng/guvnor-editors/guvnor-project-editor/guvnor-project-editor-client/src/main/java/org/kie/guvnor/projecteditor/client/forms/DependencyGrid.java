@@ -67,4 +67,10 @@ public class DependencyGrid
         dependencySelectorPopup.show();
     }
 
+    @Override
+    public void onRemoveDependency(Dependency dependency) {
+        dependencies.remove(dependency);
+        fillList(dependencies);
+    }
+
 }

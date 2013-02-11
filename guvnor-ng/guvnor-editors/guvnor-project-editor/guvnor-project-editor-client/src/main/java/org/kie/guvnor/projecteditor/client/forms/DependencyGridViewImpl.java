@@ -16,11 +16,15 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.ImageCell;
+import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -30,6 +34,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.project.model.Dependency;
+import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 import java.util.List;
@@ -60,6 +65,7 @@ public class DependencyGridViewImpl
         addGroupIdColumn();
         addArtifactIdColumn();
         addVersionColumn();
+        addRemoveRowColumn();
 
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -128,6 +134,26 @@ public class DependencyGridViewImpl
         });
         dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.VersionID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+
+    private void addRemoveRowColumn() {
+        Column<Dependency, ImageResource> column = new Column<Dependency, ImageResource>(new TrashCanImageCell()) {
+            @Override
+            public ImageResource getValue(Dependency dependency) {
+                return ProjectEditorResources.INSTANCE.Trash();
+            }
+        };
+
+        column.setFieldUpdater(new FieldUpdater<Dependency, ImageResource>() {
+            @Override
+            public void update(int index, Dependency dependency, ImageResource value) {
+                presenter.onRemoveDependency(dependency);
+            }
+        });
+
+
+        dataGrid.addColumn(column);
+        dataGrid.setColumnWidth(column, 40, Style.Unit.PCT);
     }
 
     @Override

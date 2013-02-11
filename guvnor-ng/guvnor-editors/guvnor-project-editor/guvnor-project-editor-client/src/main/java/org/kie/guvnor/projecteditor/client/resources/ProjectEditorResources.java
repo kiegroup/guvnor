@@ -39,4 +39,7 @@ public interface ProjectEditorResources
 
     @Source("images/information.gif")
     ImageResource Information();
+
+    @Source("images/trash.gif")
+    ImageResource Trash();
 }
