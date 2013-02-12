@@ -61,33 +61,34 @@ public class PackageDataModelOracleUtils {
                                                                final Map<String, String[]> enumDefinitions ) {
         final Map<String, String[]> scopedEnumLists = new HashMap<String, String[]>();
         for ( Map.Entry<String, String[]> e : enumDefinitions.entrySet() ) {
-            final String enumQualifiedType = e.getKey();
+            final String enumQualifiedType = getQualifiedTypeFromEnumeration( e.getKey() );
+            final String enumFieldName = getFieldNameFromEnumeration( e.getKey() );
             final String enumPackageName = getPackageName( enumQualifiedType );
             final String enumTypeName = getTypeName( enumQualifiedType );
 
             if ( enumPackageName.equals( packageName ) || isImported( enumQualifiedType,
                                                                       imports ) ) {
-                scopedEnumLists.put( enumTypeName,
+                scopedEnumLists.put( enumTypeName + "#" + enumFieldName,
                                      e.getValue() );
             }
         }
         return scopedEnumLists;
     }
 
-    //TODO Filter and rename based on package name (and imports)
+    //TODO Filter and rename based on package name and imports
     public static Map<String, List<MethodInfo>> filterMethodInformation( final String packageName,
-                                                                         final List<String> imports,
+                                                                         final Imports imports,
                                                                          final Map<String, List<MethodInfo>> projectMethodInformation ) {
         final Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
-        return scopedMethodInformation;
+        return projectMethodInformation;
     }
 
-    //TODO Filter and rename based on package name (and imports)
+    //TODO Filter and rename based on package name and imports
     public static Map<String, String> filterFieldParametersTypes( final String packageName,
-                                                                  final List<String> imports,
+                                                                  final Imports imports,
                                                                   final Map<String, String> projectFieldParametersTypes ) {
         final Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
-        return scopedFieldParametersType;
+        return projectFieldParametersTypes;
     }
 
     public static String getPackageName( final String qualifiedType ) {
@@ -108,6 +109,25 @@ public class PackageDataModelOracleUtils {
         }
         return typeName.replace( "$",
                                  "." );
+    }
+
+    private static String getQualifiedTypeFromEnumeration( final String qualifiedType ) {
+        String typeName = qualifiedType;
+        int hashIndex = typeName.lastIndexOf( "#" );
+        if ( hashIndex != -1 ) {
+            typeName = typeName.substring( 0,
+                                           hashIndex );
+        }
+        return typeName;
+    }
+
+    private static String getFieldNameFromEnumeration( final String qualifiedType ) {
+        String fieldName = qualifiedType;
+        int hashIndex = fieldName.lastIndexOf( "#" );
+        if ( hashIndex != -1 ) {
+            return fieldName.substring( hashIndex + 1 );
+        }
+        return "";
     }
 
     private static ModelField[] correctModelFields( final String packageName,

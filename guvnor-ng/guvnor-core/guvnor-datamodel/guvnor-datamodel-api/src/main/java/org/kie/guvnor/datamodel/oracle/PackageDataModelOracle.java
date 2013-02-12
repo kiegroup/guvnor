@@ -769,11 +769,17 @@ public class PackageDataModelOracle implements DataModelOracle {
                                                                                    imports,
                                                                                    projectEnumDefinitions ) );
 
-        //TODO Filter and rename based on package name (and imports)
-        scopedMethodInformation = projectMethodInformation;
+        //Filter and rename based on package name and imports
+        scopedMethodInformation.clear();
+        scopedMethodInformation.putAll( PackageDataModelOracleUtils.filterMethodInformation( packageName,
+                                                                                             imports,
+                                                                                             projectMethodInformation ) );
 
-        //TODO Filter and rename based on package name (and imports)
-        scopedFieldParametersType = projectFieldParametersTypes;
+        //Filter and rename based on package name and imports
+        scopedFieldParametersType.clear();
+        scopedFieldParametersType.putAll( PackageDataModelOracleUtils.filterFieldParametersTypes( packageName,
+                                                                                                  imports,
+                                                                                                  projectFieldParametersTypes ) );
     }
 
 }
