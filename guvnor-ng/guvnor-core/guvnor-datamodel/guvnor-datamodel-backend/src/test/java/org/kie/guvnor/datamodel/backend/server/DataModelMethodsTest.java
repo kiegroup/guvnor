@@ -40,7 +40,7 @@ public class DataModelMethodsTest {
         final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "java.util" ).setProjectDefinition( pd ).build();
 
         final String[] getters = dmo.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                          "TreeMap" );
+                                                          TreeMap.class.getSimpleName() );
         assertEquals( 17,
                       getters.length );
         assertEquals( "this",
@@ -79,7 +79,7 @@ public class DataModelMethodsTest {
                       getters[ 16 ] );
 
         final String[] setters = dmo.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                          TreeMap.class.getName() );
+                                                          TreeMap.class.getSimpleName() );
         assertEquals( 0,
                       setters.length );
     }
@@ -90,9 +90,9 @@ public class DataModelMethodsTest {
                 .addClass( ArrayList.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "java.util" ).setProjectDefinition( pd ).build();
 
-        final List<String> methodNames = dmo.getMethodNames( ArrayList.class.getName() );
+        final List<String> methodNames = dmo.getMethodNames( ArrayList.class.getSimpleName() );
 
         assertNotNull( methodNames );
         assertFalse( methodNames.isEmpty() );

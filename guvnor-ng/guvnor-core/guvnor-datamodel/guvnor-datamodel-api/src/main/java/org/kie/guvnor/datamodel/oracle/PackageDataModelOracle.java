@@ -694,7 +694,7 @@ public class PackageDataModelOracle implements DataModelOracle {
      */
     public String getParametricFieldType( final String factType,
                                           final String fieldName ) {
-        return getParametricFieldType( factType + "." + fieldName );
+        return getParametricFieldType( factType + "#" + fieldName );
     }
 
     private String getParametricFieldType( String fieldName ) {

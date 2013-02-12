@@ -30,7 +30,7 @@ public class Pattern52
         implements CompositeColumn<ConditionCol52>,
                    HasCEPWindow {
 
-    // The type of the fact - class - eg Driver, Person, Cheese etc.
+    // The type of the fact - class - eg Driver, Purchase, Cheese etc.
     private String factType;
 
     // The name that this gets referenced as. Multiple columns with the same

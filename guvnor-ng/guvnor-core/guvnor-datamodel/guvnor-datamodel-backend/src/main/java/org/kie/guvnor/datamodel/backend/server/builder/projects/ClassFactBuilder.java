@@ -101,7 +101,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                     final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
                     addField( new ModelField( fieldName,
-                                              genericReturnType,
+                                              returnType.getName(),
                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                               methodSignatures.get( qualifiedName ).accessorAndMutator,
                                               genericReturnType ) );
@@ -122,7 +122,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
                 addField( new ModelField( fieldName,
-                                          genericReturnType,
+                                          returnType.getName(),
                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                           methodSignatures.get( qualifiedName ).accessorAndMutator,
                                           genericReturnType ) );
@@ -146,7 +146,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
         for ( final MethodInfo mi : methodInformation ) {
             final String genericType = mi.getParametricReturnType();
             if ( genericType != null ) {
-                final String qualifiedFactFieldName = factType + "." + mi.getNameWithParameters();
+                final String qualifiedFactFieldName = factType + "#" + mi.getNameWithParameters();
                 this.fieldParametersType.put( qualifiedFactFieldName,
                                               genericType );
             }
@@ -261,7 +261,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             final List<String> enumValues = new ArrayList<String>();
             for ( final Field enumField : enumFields ) {
                 if ( enumField.isEnumConstant() ) {
-                    String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
+                    final String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
                     enumValues.add( shortName + "=" + shortName );
                 }
             }
@@ -276,7 +276,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private void addParametricTypeForField( final String className,
                                             final String fieldName,
                                             final Class<?> fieldClazz ) {
-        final String qualifiedFactFieldName = className + "." + fieldName;
+        final String qualifiedFactFieldName = className + "#" + fieldName;
         final String parametricType = getParametricType( fieldClazz );
         if ( parametricType != null ) {
             fieldParametersType.put( qualifiedFactFieldName,

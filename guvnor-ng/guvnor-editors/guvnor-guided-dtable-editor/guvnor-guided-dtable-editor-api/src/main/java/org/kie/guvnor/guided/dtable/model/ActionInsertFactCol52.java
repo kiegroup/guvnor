@@ -23,7 +23,7 @@ public class ActionInsertFactCol52 extends ActionCol52 {
     private static final long serialVersionUID = 510l;
 
     /**
-     * The fact type (class) that is to be created. eg Driver, Person, Cheese.
+     * The fact type (class) that is to be created. eg Driver, Purchase, Cheese.
      */
     private String factType;
 

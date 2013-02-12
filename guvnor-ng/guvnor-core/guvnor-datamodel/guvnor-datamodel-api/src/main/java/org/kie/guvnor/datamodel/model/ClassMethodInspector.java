@@ -134,16 +134,6 @@ public class ClassMethodInspector {
 
     }
 
-    public List<String> getMethodFields( final String methodName ) {
-        List<String> paramList = new ArrayList<String>();
-
-        for ( String string : paramList ) {
-            paramList.add( string );
-        }
-
-        return paramList;
-    }
-
     public List<String> getMethodNames() {
         List<String> methodList = new ArrayList<String>();
         for ( MethodInfo info : methods ) {
@@ -164,6 +154,9 @@ public class ClassMethodInspector {
                 goodType = t;
             }
             if ( goodType != null ) {
+                if ( goodType instanceof Class ) {
+                    return ( (Class) goodType ).getName();
+                }
                 int index = goodType.toString().lastIndexOf( "." );
                 return goodType.toString().substring( index + 1 );
             } else {

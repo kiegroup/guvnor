@@ -24,11 +24,11 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class MethodInfo {
 
-    private String       name;
+    private String name;
     private List<String> params;
-    private String       returnClassType;
-    private String       parametricReturnType;
-    private String       genericType;
+    private String returnClassType;
+    private String parametricReturnType;
+    private String genericType;
 
     public MethodInfo() {
     }
@@ -38,14 +38,31 @@ public class MethodInfo {
      * @param params method params list
      * @param returnType method's return type
      */
-    public MethodInfo( String name,
-                       List<String> params,
-                       Class<?> returnType,
-                       String parametricReturnType,
-                       String genericType ) {
+    public MethodInfo( final String name,
+                       final List<String> params,
+                       final Class<?> returnType,
+                       final String parametricReturnType,
+                       final String genericType ) {
         this.name = name;
         this.params = params;
         this.returnClassType = returnType.getName();
+        this.parametricReturnType = parametricReturnType;
+        this.genericType = genericType;
+    }
+
+    /**
+     * @param name method name
+     * @param params method params list
+     * @param returnType method's return type
+     */
+    public MethodInfo( final String name,
+                       final List<String> params,
+                       final String returnType,
+                       final String parametricReturnType,
+                       final String genericType ) {
+        this.name = name;
+        this.params = params;
+        this.returnClassType = returnType;
         this.parametricReturnType = parametricReturnType;
         this.genericType = genericType;
     }

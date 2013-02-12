@@ -75,12 +75,25 @@ public class PackageDataModelOracleUtils {
         return scopedEnumLists;
     }
 
-    //TODO Filter and rename based on package name and imports
+    //Filter and rename Method Information (used by ActionCallXXX and ExpressionBuilder) based on package name and imports
     public static Map<String, List<MethodInfo>> filterMethodInformation( final String packageName,
                                                                          final Imports imports,
                                                                          final Map<String, List<MethodInfo>> projectMethodInformation ) {
         final Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
-        return projectMethodInformation;
+        for ( Map.Entry<String, List<MethodInfo>> e : projectMethodInformation.entrySet() ) {
+            final String miQualifiedType = e.getKey();
+            final String miPackageName = getPackageName( miQualifiedType );
+            final String miTypeName = getTypeName( miQualifiedType );
+
+            if ( miPackageName.equals( packageName ) || isImported( miQualifiedType,
+                                                                    imports ) ) {
+                scopedMethodInformation.put( miTypeName,
+                                             correctMethodInformation( packageName,
+                                                                       e.getValue(),
+                                                                       imports ) );
+            }
+        }
+        return scopedMethodInformation;
     }
 
     //TODO Filter and rename based on package name and imports
@@ -88,7 +101,31 @@ public class PackageDataModelOracleUtils {
                                                                   final Imports imports,
                                                                   final Map<String, String> projectFieldParametersTypes ) {
         final Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
-        return projectFieldParametersTypes;
+        for ( Map.Entry<String, String> e : projectFieldParametersTypes.entrySet() ) {
+            String fieldName = e.getKey();
+            String fieldType = e.getValue();
+            final String fFieldName = getFieldNameFromEnumeration( e.getKey() );
+
+            final String fFieldName_QualifiedType = getQualifiedTypeFromEnumeration( e.getKey() );
+            final String fFieldName_PackageName = getPackageName( fFieldName_QualifiedType );
+            final String fFieldName_TypeName = getTypeName( fFieldName_QualifiedType );
+            if ( fFieldName_PackageName.equals( packageName ) || isImported( fFieldName_QualifiedType,
+                                                                             imports ) ) {
+                fieldName = fFieldName_TypeName;
+            }
+
+            final String fFieldType_QualifiedType = getQualifiedTypeFromEnumeration( e.getValue() );
+            final String fFieldType_PackageName = getPackageName( fFieldType_QualifiedType );
+            final String fFieldType_TypeName = getTypeName( fFieldType_QualifiedType );
+            if ( fFieldType_PackageName.equals( packageName ) || isImported( fFieldType_QualifiedType,
+                                                                             imports ) ) {
+                fieldType = fFieldType_TypeName;
+            }
+
+            scopedFieldParametersType.put( fieldName + "#" + fFieldName,
+                                           fieldType );
+        }
+        return scopedFieldParametersType;
     }
 
     public static String getPackageName( final String qualifiedType ) {
@@ -140,7 +177,6 @@ public class PackageDataModelOracleUtils {
             final String mfClassName_QualifiedType = mf.getClassName();
             final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
             final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
-
             if ( mfClassName_PackageName.equals( packageName ) || isImported( mfClassName_QualifiedType,
                                                                               imports ) ) {
                 mfClassName = mfClassName_TypeName;
@@ -161,6 +197,47 @@ public class PackageDataModelOracleUtils {
         }
         final ModelField[] result = new ModelField[ correctedModelFields.size() ];
         return correctedModelFields.toArray( result );
+    }
+
+    private static List<MethodInfo> correctMethodInformation( final String packageName,
+                                                              final List<MethodInfo> originalMethodInformation,
+                                                              final Imports imports ) {
+        final List<MethodInfo> correctedMethodInformation = new ArrayList<MethodInfo>();
+        for ( final MethodInfo mi : originalMethodInformation ) {
+            String miReturnType = mi.getReturnClassType();
+            String miGenericReturnType = mi.getGenericType();
+            String miParametricReturnType = mi.getParametricReturnType();
+            final String miReturnType_QualifiedType = mi.getReturnClassType();
+            final String miReturnType_PackageName = getPackageName( miReturnType_QualifiedType );
+            final String miReturnType_TypeName = getTypeName( miReturnType_QualifiedType );
+            if ( miReturnType_PackageName.equals( packageName ) || isImported( miReturnType_QualifiedType,
+                                                                               imports ) ) {
+                miReturnType = miReturnType_TypeName;
+            }
+
+            final String miGenericReturnType_QualifiedType = mi.getGenericType();
+            final String miGenericReturnType_PackageName = getPackageName( miGenericReturnType_QualifiedType );
+            final String miGenericReturnType_TypeName = getTypeName( miGenericReturnType_QualifiedType );
+            if ( miGenericReturnType_PackageName.equals( packageName ) || isImported( miGenericReturnType_QualifiedType,
+                                                                                      imports ) ) {
+                miGenericReturnType = miGenericReturnType_TypeName;
+            }
+
+            final String miParametricReturnType_QualifiedType = mi.getParametricReturnType();
+            final String miParametricReturnType_PackageName = getPackageName( miParametricReturnType_QualifiedType );
+            final String miParametricReturnType_TypeName = getTypeName( miParametricReturnType_QualifiedType );
+            if ( miParametricReturnType_PackageName.equals( packageName ) || isImported( miParametricReturnType_QualifiedType,
+                                                                                         imports ) ) {
+                miParametricReturnType = miParametricReturnType_TypeName;
+            }
+
+            correctedMethodInformation.add( new MethodInfo( mi.getName(),
+                                                            mi.getParams(),
+                                                            miReturnType,
+                                                            miParametricReturnType,
+                                                            miGenericReturnType ) );
+        }
+        return correctedMethodInformation;
     }
 
     private static boolean isImported( final String qualifiedType,
