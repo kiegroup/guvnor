@@ -190,11 +190,9 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertTrue( items.get( 0 ) instanceof FileItem );
-        assertTrue( items.get( 1 ) instanceof FileItem );
-        assertTrue( items.get( 2 ) instanceof PackageItem );
-        assertTrue( items.get( 3 ) instanceof PackageItem );
-        assertTrue( items.get( 4 ) instanceof ParentFolderItem );
+        assertContainsFileItem(items, 2);
+        assertContainsPackageItem(items, 2);
+        assertContainsParentFolderItem(items, 1);
 
         //Check items' caption
         assertEquals( "pom.xml",
@@ -258,9 +256,9 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertTrue( items.get( 0 ) instanceof FileItem );
-        assertTrue( items.get( 1 ) instanceof PackageItem );
-        assertTrue( items.get( 2 ) instanceof ParentPackageItem );
+        assertContainsFileItem(items, 1);
+        assertContainsPackageItem(items, 1);
+        assertContainsParentPackageItem(items, 1);
 
         //Check items' caption
         assertEquals( "rule1.drl",
@@ -298,6 +296,47 @@ public class ExplorerServiceImplTest {
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
     }
 
+
+    private void assertContainsParentFolderItem(List<Item> items, int amount) {
+        int count = 0;
+        for (Item item : items) {
+            if (item instanceof ParentFolderItem) {
+                count++;
+            }
+        }
+        assertEquals(amount, count);
+    }
+
+    private void assertContainsParentPackageItem(List<Item> items, int amount) {
+        int count = 0;
+        for (Item item : items) {
+            if (item instanceof ParentPackageItem) {
+                count++;
+            }
+        }
+        assertEquals(amount, count);
+    }
+
+    private void assertContainsPackageItem(List<Item> items, int amount) {
+        int count = 0;
+        for (Item item : items) {
+            if (item instanceof PackageItem) {
+                count++;
+            }
+        }
+        assertEquals(amount, count);
+    }
+
+    private void assertContainsFileItem(List<Item> items, int amount) {
+        int count = 0;
+        for (Item item : items) {
+            if (item instanceof FileItem) {
+                count++;
+            }
+        }
+        assertEquals(amount, count);
+    }
+
     @Test
     public void testContentInScopeProjectSubPackagePath() throws Exception {
 
@@ -321,8 +360,8 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertTrue( items.get( 0 ) instanceof FileItem );
-        assertTrue( items.get( 1 ) instanceof ParentPackageItem );
+        assertContainsFileItem(items, 1);
+        assertContainsParentPackageItem(items, 1);
 
         //Check items' caption
         assertEquals( "rule1.drl",
