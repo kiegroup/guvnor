@@ -104,9 +104,9 @@ public class PackageDataModelOracleUtils {
         for ( Map.Entry<String, String> e : projectFieldParametersTypes.entrySet() ) {
             String fieldName = e.getKey();
             String fieldType = e.getValue();
-            final String fFieldName = getFieldNameFromEnumeration( e.getKey() );
+            final String fFieldName = getFieldNameFromEnumeration( fieldName );
 
-            final String fFieldName_QualifiedType = getQualifiedTypeFromEnumeration( e.getKey() );
+            final String fFieldName_QualifiedType = getQualifiedTypeFromEnumeration( fieldName );
             final String fFieldName_PackageName = getPackageName( fFieldName_QualifiedType );
             final String fFieldName_TypeName = getTypeName( fFieldName_QualifiedType );
             if ( fFieldName_PackageName.equals( packageName ) || isImported( fFieldName_QualifiedType,
@@ -114,7 +114,7 @@ public class PackageDataModelOracleUtils {
                 fieldName = fFieldName_TypeName;
             }
 
-            final String fFieldType_QualifiedType = getQualifiedTypeFromEnumeration( e.getValue() );
+            final String fFieldType_QualifiedType = getQualifiedTypeFromEnumeration( fieldType );
             final String fFieldType_PackageName = getPackageName( fFieldType_QualifiedType );
             final String fFieldType_TypeName = getTypeName( fFieldType_QualifiedType );
             if ( fFieldType_PackageName.equals( packageName ) || isImported( fFieldType_QualifiedType,
@@ -174,7 +174,8 @@ public class PackageDataModelOracleUtils {
         for ( final ModelField mf : originalModelFields ) {
             String mfType = mf.getType();
             String mfClassName = mf.getClassName();
-            final String mfClassName_QualifiedType = mf.getClassName();
+
+            final String mfClassName_QualifiedType = mfClassName;
             final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
             final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
             if ( mfClassName_PackageName.equals( packageName ) || isImported( mfClassName_QualifiedType,
@@ -182,7 +183,7 @@ public class PackageDataModelOracleUtils {
                 mfClassName = mfClassName_TypeName;
             }
 
-            final String mfType_QualifiedType = mf.getType();
+            final String mfType_QualifiedType = mfType;
             final String mfType_PackageName = getPackageName( mfType_QualifiedType );
             final String mfType_TypeName = getTypeName( mfType_QualifiedType );
             if ( mfType_PackageName.equals( packageName ) || isImported( mfType_QualifiedType,
@@ -207,7 +208,8 @@ public class PackageDataModelOracleUtils {
             String miReturnType = mi.getReturnClassType();
             String miGenericReturnType = mi.getGenericType();
             String miParametricReturnType = mi.getParametricReturnType();
-            final String miReturnType_QualifiedType = mi.getReturnClassType();
+
+            final String miReturnType_QualifiedType = miReturnType;
             final String miReturnType_PackageName = getPackageName( miReturnType_QualifiedType );
             final String miReturnType_TypeName = getTypeName( miReturnType_QualifiedType );
             if ( miReturnType_PackageName.equals( packageName ) || isImported( miReturnType_QualifiedType,
@@ -215,7 +217,7 @@ public class PackageDataModelOracleUtils {
                 miReturnType = miReturnType_TypeName;
             }
 
-            final String miGenericReturnType_QualifiedType = mi.getGenericType();
+            final String miGenericReturnType_QualifiedType = miGenericReturnType;
             final String miGenericReturnType_PackageName = getPackageName( miGenericReturnType_QualifiedType );
             final String miGenericReturnType_TypeName = getTypeName( miGenericReturnType_QualifiedType );
             if ( miGenericReturnType_PackageName.equals( packageName ) || isImported( miGenericReturnType_QualifiedType,
@@ -223,12 +225,14 @@ public class PackageDataModelOracleUtils {
                 miGenericReturnType = miGenericReturnType_TypeName;
             }
 
-            final String miParametricReturnType_QualifiedType = mi.getParametricReturnType();
-            final String miParametricReturnType_PackageName = getPackageName( miParametricReturnType_QualifiedType );
-            final String miParametricReturnType_TypeName = getTypeName( miParametricReturnType_QualifiedType );
-            if ( miParametricReturnType_PackageName.equals( packageName ) || isImported( miParametricReturnType_QualifiedType,
-                                                                                         imports ) ) {
-                miParametricReturnType = miParametricReturnType_TypeName;
+            if ( miParametricReturnType != null ) {
+                final String miParametricReturnType_QualifiedType = miParametricReturnType;
+                final String miParametricReturnType_PackageName = getPackageName( miParametricReturnType_QualifiedType );
+                final String miParametricReturnType_TypeName = getTypeName( miParametricReturnType_QualifiedType );
+                if ( miParametricReturnType_PackageName.equals( packageName ) || isImported( miParametricReturnType_QualifiedType,
+                                                                                             imports ) ) {
+                    miParametricReturnType = miParametricReturnType_TypeName;
+                }
             }
 
             correctedMethodInformation.add( new MethodInfo( mi.getName(),
