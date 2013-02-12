@@ -90,7 +90,7 @@ public class PackageDataModelOracleUtils {
         return scopedFieldParametersType;
     }
 
-    private static String getPackageName( final String qualifiedType ) {
+    public static String getPackageName( final String qualifiedType ) {
         String packageName = qualifiedType;
         int dotIndex = packageName.lastIndexOf( "." );
         if ( dotIndex != -1 ) {
@@ -100,7 +100,7 @@ public class PackageDataModelOracleUtils {
         return "";
     }
 
-    private static String getTypeName( final String qualifiedType ) {
+    public static String getTypeName( final String qualifiedType ) {
         String typeName = qualifiedType;
         int dotIndex = typeName.lastIndexOf( "." );
         if ( dotIndex != -1 ) {

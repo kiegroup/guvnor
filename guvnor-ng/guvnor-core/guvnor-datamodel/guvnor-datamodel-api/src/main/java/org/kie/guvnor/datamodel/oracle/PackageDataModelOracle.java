@@ -76,13 +76,47 @@ public class PackageDataModelOracle implements DataModelOracle {
     // ####################################
 
     /**
-     * Returns all the fact types.
+     * Returns fact types available for rule authoring, i.e. those within the same package and those that have been imported.
      * @return
      */
     public String[] getFactTypes() {
         final String[] types = scopedModelFields.keySet().toArray( new String[ scopedModelFields.size() ] );
         Arrays.sort( types );
         return types;
+    }
+
+    /**
+     * Return all fact types available to the project, i.e. everything type defined within the project or externally imported
+     * @return
+     */
+    @Override
+    public String[] getAllFactTypes() {
+        final List<String> types = new ArrayList<String>();
+        types.addAll( projectDefinition.getFactsAndFields().keySet() );
+        final String[] result = new String[ types.size() ];
+        types.toArray( result );
+        Arrays.sort( result );
+        return result;
+    }
+
+    /**
+     * Return all fact types that are external to the package, i.e. they need to be imported to be used
+     * @return
+     */
+    @Override
+    public String[] getExternalFactTypes() {
+        final String[] allTypes = getAllFactTypes();
+        final List<String> externalTypes = new ArrayList<String>();
+        for ( String type : allTypes ) {
+            final String packageName = PackageDataModelOracleUtils.getPackageName( type );
+            if ( !packageName.equals( this.packageName ) ) {
+                externalTypes.add( type );
+            }
+        }
+        final String[] result = new String[ externalTypes.size() ];
+        externalTypes.toArray( result );
+        Arrays.sort( result );
+        return result;
     }
 
     /**

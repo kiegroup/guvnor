@@ -126,4 +126,8 @@ public interface CommonConstants
 
     String UnableToLoadList();
 
+    String Cancel();
+
+    String Name();
+
 }

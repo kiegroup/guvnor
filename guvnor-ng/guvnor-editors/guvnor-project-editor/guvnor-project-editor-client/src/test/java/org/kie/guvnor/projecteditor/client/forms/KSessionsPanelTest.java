@@ -16,16 +16,16 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.popup.FormPopup;
-import org.kie.guvnor.commons.ui.client.popup.PopupSetFieldCommand;
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.guvnor.project.model.KSessionModel;
-import org.mockito.ArgumentCaptor;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
+import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
+import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
+import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;

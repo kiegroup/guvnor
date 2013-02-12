@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.service;
+package org.kie.guvnor.commons.ui.client.popup.text;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
+public interface FormPopupView {
 
-@Remote
-public interface DataModelService {
+    interface Presenter{
 
-    DataModelOracle getDataModel( final Path resourcePath );
+        void onOk();
 
-    String[] getAllFactTypes( final Path resourcePath );
+    }
 
-    String[] getExternalFactTypes( final Path resourcePath );
+    void setPresenter( Presenter presenter );
 
+    void show();
+
+    String getName();
+
+    void setName( String name );
+
+    void showFieldEmptyWarning();
 }

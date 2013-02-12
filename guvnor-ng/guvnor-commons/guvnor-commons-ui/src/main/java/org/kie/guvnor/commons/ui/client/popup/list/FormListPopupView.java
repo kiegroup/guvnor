@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.popup;
+package org.kie.guvnor.commons.ui.client.popup.list;
 
-public interface FormPopupView {
+import java.util.List;
 
-    interface Presenter{
+import org.kie.commons.data.Pair;
+
+public interface FormListPopupView {
+
+    interface Presenter {
 
         void onOk();
 
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
+
+    void setItems( final List<Pair<String, String>> items );
 
     void show();
 
-    String getName();
-
-    void setName( String name );
+    Pair<String, String> getSelectedItem();
 
     void showFieldEmptyWarning();
 }

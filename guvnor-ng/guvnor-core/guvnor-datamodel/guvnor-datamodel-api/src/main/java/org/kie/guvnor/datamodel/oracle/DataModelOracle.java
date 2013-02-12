@@ -31,6 +31,10 @@ public interface DataModelOracle {
 
     String[] getFactTypes();
 
+    String[] getAllFactTypes();
+
+    String[] getExternalFactTypes();
+
     String[] getEnumValues( final String factType,
                             final String factField );
 

@@ -1,7 +1,7 @@
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetFreeFormatPresenter;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.model.imports.Imports;
@@ -16,13 +16,13 @@ public class ProjectConfigScreenViewImpl
         extends MultiPageEditorView
         implements ProjectConfigScreenView {
 
-    private final ImportsWidgetPresenter importsWidget;
+    private final ImportsWidgetFreeFormatPresenter importsWidget;
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Presenter presenter;
 
     @Inject
-    public ProjectConfigScreenViewImpl(ImportsWidgetPresenter importsWidget) {
+    public ProjectConfigScreenViewImpl(ImportsWidgetFreeFormatPresenter importsWidget) {
         this.importsWidget = importsWidget;
         addPage(new Page(importsWidget, ImportConstants.INSTANCE.Imports()) {
             @Override

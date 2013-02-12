@@ -88,9 +88,15 @@ public class DataModelServiceImpl
     private IOService ioService;
 
     @Override
-    public String[] getFactTypes( final Path resourcePath ) {
+    public String[] getAllFactTypes( final Path resourcePath ) {
         final DataModelOracle oracle = getDataModel( resourcePath );
-        return oracle.getFactTypes();
+        return oracle.getAllFactTypes();
+    }
+
+    @Override
+    public String[] getExternalFactTypes( final Path resourcePath ) {
+        final DataModelOracle oracle = getDataModel( resourcePath );
+        return oracle.getExternalFactTypes();
     }
 
     @Override

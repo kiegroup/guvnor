@@ -33,7 +33,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetPresenter;
+import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
@@ -104,7 +104,7 @@ public class GuidedScoreCardEditorPresenter {
     private boolean isReadOnly;
 
     @Inject
-    private ImportsWidgetPresenter importsWidget;
+    private ImportsWidgetFixedListPresenter importsWidget;
 
     @OnStart
     public void onStart( final Path path,
@@ -222,7 +222,7 @@ public class GuidedScoreCardEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
                     }
                 } ).delete( path,
                             comment );
@@ -242,7 +242,7 @@ public class GuidedScoreCardEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
                     }
                 } ).rename( path,
                             newName,
@@ -263,7 +263,7 @@ public class GuidedScoreCardEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
                     }
                 } ).copy( path,
                           newName,
