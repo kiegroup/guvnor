@@ -24,6 +24,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -54,9 +55,8 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
@@ -97,6 +97,9 @@ public class EnumEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject @New
+    private ResourceMenuBuilder menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -255,7 +258,7 @@ public class EnumEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation(new Command() {
+        return menuBuilder.addValidation(new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage("Wait while validating...");

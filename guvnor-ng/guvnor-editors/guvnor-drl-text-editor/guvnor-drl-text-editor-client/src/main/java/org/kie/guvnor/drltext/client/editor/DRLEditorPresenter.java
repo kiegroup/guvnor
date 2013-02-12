@@ -18,6 +18,7 @@ package org.kie.guvnor.drltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -28,6 +29,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -82,6 +84,9 @@ public class DRLEditorPresenter {
 
     @Inject
     private MultiPageEditor multiPage;
+
+    @Inject @New
+    private ResourceMenuBuilder menuBuilder;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -244,21 +249,21 @@ public class DRLEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation( new Command() {
+        return menuBuilder.addValidation(new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                drlTextEditorService.call( new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
+                drlTextEditorService.call(new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                    public void callback(BuilderResult response) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path,
-                              view.getContent() );
+                }).validate(path,
+                        view.getContent());
             }
-        } ).addSave( new Command() {
+        }).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();

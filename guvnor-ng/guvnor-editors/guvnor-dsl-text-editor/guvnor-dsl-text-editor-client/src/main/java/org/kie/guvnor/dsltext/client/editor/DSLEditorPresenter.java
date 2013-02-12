@@ -29,6 +29,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -93,6 +94,9 @@ public class DSLEditorPresenter {
 
     @Inject @New
     private MultiPageEditor multiPageEditor;
+
+    @Inject @New
+    private ResourceMenuBuilder menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -232,7 +236,7 @@ public class DSLEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation( new Command() {
+        return menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );

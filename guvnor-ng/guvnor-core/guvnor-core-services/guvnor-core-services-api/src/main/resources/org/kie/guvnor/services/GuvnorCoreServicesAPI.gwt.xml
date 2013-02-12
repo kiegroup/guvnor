@@ -24,6 +24,7 @@
   <inherits name='org.uberfire.UberfireBackend'/>
 
   <source path='config'/>
+  <source path='readonly'/>
   <source path='metadata'/>
   <source path='version'/>
 

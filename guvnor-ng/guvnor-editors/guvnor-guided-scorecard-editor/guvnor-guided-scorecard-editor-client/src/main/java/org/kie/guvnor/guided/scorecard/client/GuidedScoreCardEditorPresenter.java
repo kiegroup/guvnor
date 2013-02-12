@@ -19,6 +19,7 @@ package org.kie.guvnor.guided.scorecard.client;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -39,7 +40,7 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.kie.guvnor.metadata.client.events.RestoreEvent;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.events.ImportAddedEvent;
 import org.kie.guvnor.services.config.events.ImportRemovedEvent;
@@ -65,8 +66,6 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedScoreCardEditor", fileTypes = "*.scgd")
@@ -97,6 +96,10 @@ public class GuidedScoreCardEditorPresenter {
 
     @Inject
     private Event<RestoreEvent> restoreEvent;
+
+    @Inject
+    @New
+    private ResourceMenuBuilder menuBuilder;
 
     private Path path;
     private ScoreCardModel model = null;
@@ -310,7 +313,7 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        final ResourceMenuBuilder builder = newResourceMenuBuilder().addValidation( new Command() {
+        menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
@@ -327,26 +330,9 @@ public class GuidedScoreCardEditorPresenter {
         } );
 
         if ( isReadOnly ) {
-            builder.addRestoreVersion( new Command() {
-                @Override
-                public void execute() {
-                    new SaveOperationService().save( path, new CommandWithCommitMessage() {
-                        @Override
-                        public void execute( final String comment ) {
-                            versionService.call( new RemoteCallback<Path>() {
-                                @Override
-                                public void callback( final Path restored ) {
-                                    //TODO {porcelli} close current?
-                                    restoreEvent.fire( new RestoreEvent( restored ) );
-                                }
-                            } ).restore( path,
-                                         comment );
-                        }
-                    } );
-                }
-            } );
+            menuBuilder.addRestoreVersion( path );
         } else {
-            builder.addSave( new Command() {
+            menuBuilder.addSave( new Command() {
                 @Override
                 public void execute() {
                     onSave();
@@ -369,7 +355,7 @@ public class GuidedScoreCardEditorPresenter {
             } );
         }
 
-        return builder.build();
+        return menuBuilder.build();
     }
 
     public void onRestore( final @Observes RestoreEvent restore ) {

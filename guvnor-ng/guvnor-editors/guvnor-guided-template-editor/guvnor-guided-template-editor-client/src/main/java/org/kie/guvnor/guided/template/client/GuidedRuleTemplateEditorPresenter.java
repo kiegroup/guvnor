@@ -19,6 +19,7 @@ package org.kie.guvnor.guided.template.client;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
@@ -126,6 +127,10 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    @New
+    private ResourceMenuBuilder menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -345,21 +350,21 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return ResourceMenuBuilder.newResourceMenuBuilder().addValidation( new Command() {
+        return menuBuilder.addValidation(new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                service.call( new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
+                service.call(new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                    public void callback(BuilderResult response) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path,
-                              view.getContent() );
+                }).validate(path,
+                        view.getContent());
             }
-        } ).addSave( new Command() {
+        }).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();

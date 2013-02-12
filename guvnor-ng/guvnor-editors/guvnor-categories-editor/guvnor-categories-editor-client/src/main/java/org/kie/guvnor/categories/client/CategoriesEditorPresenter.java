@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.services.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
@@ -66,6 +67,9 @@ public class CategoriesEditorPresenter {
 
     @Inject
     private Caller<CategoriesService> categoryService;
+
+    @Inject
+    private ResourceMenuBuilder menuBuilder;
 
     private Path path;
 
@@ -121,7 +125,7 @@ public class CategoriesEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addSave( new Command() {
+        return menuBuilder.addSave( new Command() {
             @Override
             public void execute() {
                 onSave();

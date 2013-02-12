@@ -17,6 +17,7 @@
 package org.kie.guvnor.commons.ui.client.menu;
 
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
@@ -24,17 +25,17 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 /**
  *
  */
+@Dependent
 public final class ResourceMenuBuilder {
 
-    public static ResourceMenuBuilder newResourceMenuBuilder() {
-        return new ResourceMenuBuilder();
-    }
-
-    private ResourceMenuBuilder() {
-    }
+    @Inject
+    private RestoreVersionCommandProvider restoreVersionCommandProvider;
 
     private Command saveCommand     = null;
     private Command restoreCommand  = null;
@@ -51,6 +52,11 @@ public final class ResourceMenuBuilder {
 
     public ResourceMenuBuilder addSave( final Command command ) {
         this.saveCommand = command;
+        return this;
+    }
+
+    public ResourceMenuBuilder addRestoreVersion(Path path) {
+        this.restoreCommand = restoreVersionCommandProvider.getCommand(path);
         return this;
     }
 

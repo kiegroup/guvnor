@@ -36,6 +36,7 @@ import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.readonly.ReadOnlyPathPlaceRequest;
 import org.kie.guvnor.services.version.VersionService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -135,7 +136,7 @@ public class VersionBrowser extends Composite {
 
             public void onClick( ClickEvent event ) {
                 final Path path = PathFactory.newPath( metadata.getPath().getFileSystem(), metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
-                placeManager().goTo( new PathPlaceRequest( path ).addParameter( "readOnly", "yes" ) );
+                placeManager().goTo( new ReadOnlyPathPlaceRequest(path) );
             }
 
         } );

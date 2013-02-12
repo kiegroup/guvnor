@@ -30,6 +30,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -63,8 +64,6 @@ import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
@@ -109,6 +108,9 @@ public class GuidedDecisionTableEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject @New
+    private ResourceMenuBuilder menuBuilder;
 
     private Path path = null;
     private GuidedDecisionTable52 model = null;
@@ -302,7 +304,7 @@ public class GuidedDecisionTableEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addValidation( new Command() {
+        return menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );

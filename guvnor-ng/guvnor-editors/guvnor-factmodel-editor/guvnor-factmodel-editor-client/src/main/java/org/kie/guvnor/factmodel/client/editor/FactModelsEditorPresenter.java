@@ -19,6 +19,7 @@ package org.kie.guvnor.factmodel.client.editor;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -38,7 +39,7 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.service.FactModelService;
-import org.kie.guvnor.metadata.client.events.RestoreEvent;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -61,8 +62,6 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "*.model.drl")
@@ -96,6 +95,10 @@ public class FactModelsEditorPresenter {
 
     @Inject
     private Event<RestoreEvent> restoreEvent;
+
+    @Inject
+    @New
+    private ResourceMenuBuilder menuBuilder;
 
     private Path path;
     private boolean isReadOnly;
@@ -286,7 +289,7 @@ public class FactModelsEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        final ResourceMenuBuilder builder = newResourceMenuBuilder().addValidation( new Command() {
+        menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
@@ -302,25 +305,9 @@ public class FactModelsEditorPresenter {
         } );
 
         if ( isReadOnly ) {
-            builder.addRestoreVersion( new Command() {
-                @Override
-                public void execute() {
-                    new SaveOperationService().save( path, new CommandWithCommitMessage() {
-                        @Override
-                        public void execute( final String comment ) {
-                            versionService.call( new RemoteCallback<Path>() {
-                                @Override
-                                public void callback( final Path restored ) {
-                                    //TODO {porcelli} close current?
-                                    restoreEvent.fire( new RestoreEvent( restored ) );
-                                }
-                            } ).restore( path, comment );
-                        }
-                    } );
-                }
-            } );
+            menuBuilder.addRestoreVersion( path );
         } else {
-            builder.addSave( new Command() {
+            menuBuilder.addSave( new Command() {
                 @Override
                 public void execute() {
                     onSave();
@@ -343,7 +330,7 @@ public class FactModelsEditorPresenter {
             } );
         }
 
-        return builder.build();
+        return menuBuilder.build();
     }
 
     public void onRestore( @Observes RestoreEvent restore ) {

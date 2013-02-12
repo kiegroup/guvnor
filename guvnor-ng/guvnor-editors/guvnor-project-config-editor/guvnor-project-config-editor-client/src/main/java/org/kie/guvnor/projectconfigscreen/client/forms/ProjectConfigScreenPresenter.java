@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -36,8 +37,6 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import javax.enterprise.inject.New;
 
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.newResourceMenuBuilder;
-
 @WorkbenchEditor(identifier = "projectConfigScreen", fileTypes = "project.imports")
 public class ProjectConfigScreenPresenter
         implements ProjectConfigScreenView.Presenter {
@@ -48,11 +47,15 @@ public class ProjectConfigScreenPresenter
     private Path path;
     private PackageConfiguration packageConfiguration;
 
+    private ResourceMenuBuilder menuBuilder;
+
     @Inject
     public ProjectConfigScreenPresenter(@New ProjectConfigScreenView view,
+                                        @New ResourceMenuBuilder menuBuilder,
                                         Caller<ProjectService> projectEditorServiceCaller,
                                         Caller<MetadataService> metadataService) {
         this.view = view;
+        this.menuBuilder = menuBuilder;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.metadataService = metadataService;
         view.setPresenter(this);
@@ -105,7 +108,7 @@ public class ProjectConfigScreenPresenter
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return newResourceMenuBuilder().addSave(new Command() {
+        return menuBuilder.addSave(new Command() {
             @Override
             public void execute() {
                 onSave();

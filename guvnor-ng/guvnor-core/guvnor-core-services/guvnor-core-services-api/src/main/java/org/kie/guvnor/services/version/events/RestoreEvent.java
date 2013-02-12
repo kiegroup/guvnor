@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.metadata.client.events;
+package org.kie.guvnor.services.version.events;
 
 import org.uberfire.backend.vfs.Path;
 
