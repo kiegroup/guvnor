@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -47,11 +47,11 @@ public class ProjectConfigScreenPresenter
     private Path path;
     private PackageConfiguration packageConfiguration;
 
-    private ResourceMenuBuilder menuBuilder;
+    private ResourceMenuBuilderImpl menuBuilder;
 
     @Inject
     public ProjectConfigScreenPresenter(@New ProjectConfigScreenView view,
-                                        @New ResourceMenuBuilder menuBuilder,
+                                        @New ResourceMenuBuilderImpl menuBuilder,
                                         Caller<ProjectService> projectEditorServiceCaller,
                                         Caller<MetadataService> metadataService) {
         this.view = view;

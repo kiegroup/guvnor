@@ -30,7 +30,8 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -98,7 +99,7 @@ public class FactModelsEditorPresenter {
 
     @Inject
     @New
-    private ResourceMenuBuilder menuBuilder;
+    private ResourceMenuBuilderImpl menuBuilder;
 
     private Path path;
     private boolean isReadOnly;
@@ -289,7 +290,7 @@ public class FactModelsEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        ResourceMenuBuilder.FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation(new Command() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation(new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());

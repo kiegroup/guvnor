@@ -24,7 +24,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -99,7 +99,7 @@ public class EnumEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject @New
-    private ResourceMenuBuilder menuBuilder;
+    private ResourceMenuBuilderImpl menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 

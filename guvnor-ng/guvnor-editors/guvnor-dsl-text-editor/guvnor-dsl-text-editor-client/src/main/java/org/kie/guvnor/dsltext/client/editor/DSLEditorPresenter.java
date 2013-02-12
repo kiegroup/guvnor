@@ -29,7 +29,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -55,8 +55,6 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-
-import static org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder.*;
 
 /**
  * A text based editor for Domain Specific Language definitions
@@ -96,7 +94,7 @@ public class DSLEditorPresenter {
     private MultiPageEditor multiPageEditor;
 
     @Inject @New
-    private ResourceMenuBuilder menuBuilder;
+    private ResourceMenuBuilderImpl menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 

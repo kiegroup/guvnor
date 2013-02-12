@@ -19,17 +19,13 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 import static org.junit.Assert.assertTrue;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickFirst;
-import static org.kie.guvnor.projecteditor.client.forms.MenuBarTestHelpers.clickSecond;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,13 +38,13 @@ public class ProjectEditorScreenTest {
     private MockBuildServiceCaller buildServiceCaller;
     private MockMetadataServiceCaller metadataServiceCaller;
     private SaveOperationService saveOperationService;
-    private ResourceMenuBuilder menuBuilder;
+    private ResourceMenuBuilderMock menuBuilder;
 
     @Before
     public void setUp() throws Exception {
         view = mock(ProjectEditorScreenView.class);
         when(view.getSaveMenuItemText()).thenReturn("");
-        when(view.getBuildMenuItemText()).thenReturn("");
+        when(view.getBuildMenuItemText()).thenReturn("Build");
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
         pomPanel = mock(POMEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
@@ -56,8 +52,9 @@ public class ProjectEditorScreenTest {
         buildServiceCaller = new MockBuildServiceCaller();
         metadataServiceCaller = new MockMetadataServiceCaller();
         saveOperationService = mock(SaveOperationService.class);
-        menuBuilder = mock(ResourceMenuBuilder.class);
+        menuBuilder = new ResourceMenuBuilderMock();
         screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, menuBuilder, saveOperationService);
+        screen.buildMenuBar();
     }
 
     @Test
@@ -108,7 +105,7 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        clickSave();
+        menuBuilder.clickSave();
 
         clickOkToCommitPopup();
 
@@ -125,7 +122,7 @@ public class ProjectEditorScreenTest {
 
         initKModuleEditorPanel();
 
-        clickSave();
+        menuBuilder.clickSave();
 
         clickOkToCommitPopup();
 
@@ -141,8 +138,7 @@ public class ProjectEditorScreenTest {
         Path path = mock(Path.class);
         screen.init(path);
 
-        MenuBar menuBar = screen.buildMenuBar();
-        clickSecond(menuBar);
+        menuBuilder.click("Build");
 
         assertTrue(buildServiceCaller.isBuildWasCalled());
     }
@@ -153,11 +149,6 @@ public class ProjectEditorScreenTest {
         ).thenReturn(
                 true
         );
-    }
-
-    private void clickSave() {
-        MenuBar menuBar = screen.buildMenuBar();
-        clickFirst(menuBar);
     }
 
     private void clickOkToCommitPopup() {
