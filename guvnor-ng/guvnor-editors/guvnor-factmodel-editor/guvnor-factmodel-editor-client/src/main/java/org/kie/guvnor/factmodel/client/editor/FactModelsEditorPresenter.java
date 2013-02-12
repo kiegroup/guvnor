@@ -289,25 +289,25 @@ public class FactModelsEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        menuBuilder.addValidation( new Command() {
+        ResourceMenuBuilder.FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation(new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                factModelService.call( new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
+                factModelService.call(new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                    public void callback(BuilderResult response) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path, view.getContent() );
+                }).validate(path, view.getContent());
             }
-        } );
+        });
 
         if ( isReadOnly ) {
-            menuBuilder.addRestoreVersion( path );
+            fileMenuBuilder.addRestoreVersion( path );
         } else {
-            menuBuilder.addSave( new Command() {
+            fileMenuBuilder.addSave( new Command() {
                 @Override
                 public void execute() {
                     onSave();
@@ -330,7 +330,7 @@ public class FactModelsEditorPresenter {
             } );
         }
 
-        return menuBuilder.build();
+        return fileMenuBuilder.build();
     }
 
     public void onRestore( @Observes RestoreEvent restore ) {

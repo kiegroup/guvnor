@@ -313,26 +313,26 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        menuBuilder.addValidation( new Command() {
+        ResourceMenuBuilder.FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation(new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                scoreCardEditorService.call( new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
+                scoreCardEditorService.call(new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                    public void callback(BuilderResult response) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
                         LoadingPopup.close();
                         pop.show();
                     }
-                } ).validate( path,
-                              view.getModel() );
+                }).validate(path,
+                        view.getModel());
             }
-        } );
+        });
 
         if ( isReadOnly ) {
-            menuBuilder.addRestoreVersion( path );
+            fileMenuBuilder.addRestoreVersion( path );
         } else {
-            menuBuilder.addSave( new Command() {
+            fileMenuBuilder.addSave( new Command() {
                 @Override
                 public void execute() {
                     onSave();
@@ -355,7 +355,7 @@ public class GuidedScoreCardEditorPresenter {
             } );
         }
 
-        return menuBuilder.build();
+        return fileMenuBuilder.build();
     }
 
     public void onRestore( final @Observes RestoreEvent restore ) {

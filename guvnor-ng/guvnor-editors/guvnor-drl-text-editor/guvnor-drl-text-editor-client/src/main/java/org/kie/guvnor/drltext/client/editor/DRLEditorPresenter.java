@@ -249,7 +249,7 @@ public class DRLEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addValidation(new Command() {
+        return menuBuilder.addFileMenu().addValidation(new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());

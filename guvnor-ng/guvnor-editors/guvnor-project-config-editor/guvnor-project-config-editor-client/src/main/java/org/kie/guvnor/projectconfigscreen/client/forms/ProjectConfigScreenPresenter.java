@@ -108,7 +108,7 @@ public class ProjectConfigScreenPresenter
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addSave(new Command() {
+        return menuBuilder.addFileMenu().addSave(new Command() {
             @Override
             public void execute() {
                 onSave();

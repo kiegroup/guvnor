@@ -19,6 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -41,6 +42,7 @@ public class ProjectEditorScreenTest {
     private MockBuildServiceCaller buildServiceCaller;
     private MockMetadataServiceCaller metadataServiceCaller;
     private SaveOperationService saveOperationService;
+    private ResourceMenuBuilder menuBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -54,7 +56,8 @@ public class ProjectEditorScreenTest {
         buildServiceCaller = new MockBuildServiceCaller();
         metadataServiceCaller = new MockMetadataServiceCaller();
         saveOperationService = mock(SaveOperationService.class);
-        screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
+        menuBuilder = mock(ResourceMenuBuilder.class);
+        screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, menuBuilder, saveOperationService);
     }
 
     @Test

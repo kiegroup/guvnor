@@ -27,6 +27,7 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  *
@@ -34,106 +35,162 @@ import javax.inject.Inject;
 @Dependent
 public final class ResourceMenuBuilder {
 
+
     @Inject
     private RestoreVersionCommandProvider restoreVersionCommandProvider;
 
-    private Command saveCommand     = null;
-    private Command restoreCommand  = null;
-    private Command validateCommand = null;
-    private Command copyCommand = null;
-    private Command deleteCommand = null;
-    private Command renameCommand = null;
-    private Command moveCommand = null;
+    final MenuBar menuBar = new DefaultMenuBar();
 
-    public ResourceMenuBuilder addValidation( final Command command ) {
-        this.validateCommand = command;
-        return this;
+    private ResourceMenuBuilder.FileMenuBuilder fileMenuBuilder;
+
+    private ArrayList<GenericMenuBuilder> builders = new ArrayList<GenericMenuBuilder>();
+
+    public FileMenuBuilder addFileMenu() {
+        fileMenuBuilder = new FileMenuBuilder();
+        return fileMenuBuilder;
     }
 
-    public ResourceMenuBuilder addSave( final Command command ) {
-        this.saveCommand = command;
-        return this;
+    private GenericMenuBuilder addTopLevelMenuItem(String title, Command command) {
+        GenericMenuBuilder genericMenuBuilder = new GenericMenuBuilder(title, command);
+        builders.add(genericMenuBuilder);
+        return genericMenuBuilder;
     }
 
-    public ResourceMenuBuilder addRestoreVersion(Path path) {
-        this.restoreCommand = restoreVersionCommandProvider.getCommand(path);
-        return this;
-    }
-
-    public ResourceMenuBuilder addRestoreVersion( final Command command ) {
-        this.restoreCommand = command;
-        return this;
-    }
-
-    public ResourceMenuBuilder addCopy( final Command command ) {
-        this.copyCommand = command;
-        return this;
-    }
-    
-    public ResourceMenuBuilder addRename( final Command command ) {
-        this.renameCommand = command;
-        return this;
-    }
-    
-    public ResourceMenuBuilder addDelete( final Command command ) {
-        this.deleteCommand = command;
-        return this;
-    }
-    
-    public ResourceMenuBuilder addMove( final Command command ) {
-        this.moveCommand = command;
-        return this;
-    }
-    
-    public MenuBar build() {
-        final MenuBar menuBar = new DefaultMenuBar();
-        final MenuBar subMenuBar = new DefaultMenuBar();
-        menuBar.addItem( new DefaultMenuItemSubMenu( CommonConstants.INSTANCE.File(),
-                                                     subMenuBar ) );
-
-        if ( validateCommand != null ) {
-            final MenuItem validate = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Validate(),
-                                                                  validateCommand );
-            subMenuBar.addItem( validate );
+    private MenuBar build() {
+        if (fileMenuBuilder != null) {
+            fileMenuBuilder.buildFileMenu();
         }
-
-        if ( saveCommand != null ) {
-            final MenuItem save = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Save(),
-                                                              saveCommand );
-            subMenuBar.addItem( save );
+        for (GenericMenuBuilder builder : builders) {
+            builder.buildMenu();
         }
-
-        if ( restoreCommand != null ) {
-            final MenuItem restore = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Restore(),
-                                                                 restoreCommand );
-            subMenuBar.addItem( restore );
-        }
-       
-        if ( copyCommand != null ) {
-            final MenuItem copy = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Copy(),
-                                                                 copyCommand );
-            subMenuBar.addItem( copy );
-        }
-        
-        if ( deleteCommand != null ) {
-            final MenuItem delete = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Delete(),
-                                                                 deleteCommand );
-            subMenuBar.addItem( delete );
-        }
-        
-        if ( renameCommand != null ) {
-            final MenuItem rename = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Rename(),
-                                                                 renameCommand );
-            subMenuBar.addItem( rename );
-        }
-        
-        if ( moveCommand != null ) {
-            final MenuItem move = new DefaultMenuItemCommand( CommonConstants.INSTANCE.Move(),
-                                                                 moveCommand );
-            subMenuBar.addItem( move );
-        }        
         return menuBar;
-
     }
 
+    public class FileMenuBuilder {
+        private Command saveCommand = null;
+        private Command restoreCommand = null;
+        private Command validateCommand = null;
+        private Command copyCommand = null;
+        private Command deleteCommand = null;
+        private Command renameCommand = null;
+
+        private Command moveCommand = null;
+
+        public FileMenuBuilder addValidation(final Command command) {
+            this.validateCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addSave(final Command command) {
+            this.saveCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addRestoreVersion(Path path) {
+            this.restoreCommand = restoreVersionCommandProvider.getCommand(path);
+            return this;
+        }
+
+        public FileMenuBuilder addRestoreVersion(final Command command) {
+            this.restoreCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addCopy(final Command command) {
+            this.copyCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addRename(final Command command) {
+            this.renameCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addDelete(final Command command) {
+            this.deleteCommand = command;
+            return this;
+        }
+
+
+        public FileMenuBuilder addMove(final Command command) {
+            this.moveCommand = command;
+            return this;
+        }
+
+        public MenuBar build() {
+            return ResourceMenuBuilder.this.build();
+        }
+
+        public GenericMenuBuilder addTopLevelMenuItem(String title, Command command) {
+            return ResourceMenuBuilder.this.addTopLevelMenuItem(title, command);
+        }
+
+        void buildFileMenu() {
+            final MenuBar subMenuBar = new DefaultMenuBar();
+            menuBar.addItem(new DefaultMenuItemSubMenu(CommonConstants.INSTANCE.File(),
+                    subMenuBar));
+
+            if (validateCommand != null) {
+                final MenuItem validate = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Validate(),
+                        validateCommand);
+                subMenuBar.addItem(validate);
+            }
+
+            if (saveCommand != null) {
+                final MenuItem save = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Save(),
+                        saveCommand);
+                subMenuBar.addItem(save);
+            }
+
+            if (restoreCommand != null) {
+                final MenuItem restore = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Restore(),
+                        restoreCommand);
+                subMenuBar.addItem(restore);
+            }
+
+            if (copyCommand != null) {
+                final MenuItem copy = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Copy(),
+                        copyCommand);
+                subMenuBar.addItem(copy);
+            }
+
+            if (deleteCommand != null) {
+                final MenuItem delete = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Delete(),
+                        deleteCommand);
+                subMenuBar.addItem(delete);
+            }
+
+            if (renameCommand != null) {
+                final MenuItem rename = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Rename(),
+                        renameCommand);
+                subMenuBar.addItem(rename);
+            }
+
+            if (moveCommand != null) {
+                final MenuItem move = new DefaultMenuItemCommand(CommonConstants.INSTANCE.Move(),
+                        moveCommand);
+                subMenuBar.addItem(move);
+            }
+
+        }
+    }
+
+    public class GenericMenuBuilder {
+
+        private final String title;
+        private final Command command;
+
+        public GenericMenuBuilder(String title, Command command) {
+            this.title = title;
+            this.command = command;
+        }
+
+        public MenuBar build() {
+            return ResourceMenuBuilder.this.build();
+        }
+
+        void buildMenu() {
+            menuBar.addItem(new DefaultMenuItemCommand(title, command));
+        }
+    }
 }
