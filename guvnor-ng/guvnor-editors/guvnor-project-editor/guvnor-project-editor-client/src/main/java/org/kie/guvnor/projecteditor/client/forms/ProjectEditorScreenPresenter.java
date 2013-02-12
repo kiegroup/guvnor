@@ -24,7 +24,6 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
@@ -53,10 +52,12 @@ public class
     private Path pathToPomXML;
     private Path pathToKModuleXML;
     private Caller<MetadataService> metadataService;
-    private Metadata                kmoduleMetadata;
-    private Metadata                pomMetadata;
-    private SaveOperationService    saveOperationService;
-    private ResourceMenuBuilder     menuBuilder;
+    private Metadata kmoduleMetadata;
+    private Metadata pomMetadata;
+    private SaveOperationService saveOperationService;
+    private ResourceMenuBuilder menuBuilder;
+
+    private MenuBar menuBar;
 
     public ProjectEditorScreenPresenter() {
     }
@@ -82,13 +83,15 @@ public class
 
         view.setPresenter( this );
         view.setPOMEditorPanel( pomPanel );
+
+        makeMenuBar();
     }
 
     @OnStart
     public void init( Path path ) {
 
         pathToPomXML = path;
-        pomPanel.init(path);
+        pomPanel.init( path );
         kModuleServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
@@ -99,7 +102,7 @@ public class
                         }
                     }
                 }
-                                       ).pathToRelatedKModuleFileIfAny( path );
+                                 ).pathToRelatedKModuleFileIfAny( path );
     }
 
     private void setUpKProject() {
@@ -119,30 +122,34 @@ public class
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addSave(
+        return menuBar;
+    }
+
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addSave(
                 new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save(pathToPomXML, new CommandWithCommitMessage() {
+                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
                             @Override
-                            public void execute(final String comment) {
+                            public void execute( final String comment ) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.
                                 pomPanel.save(
                                         comment,
                                         new com.google.gwt.user.client.Command() {
                                             @Override
                                             public void execute() {
-                                                if (kModuleEditorPanel.hasBeenInitialized()) {
-                                                    kModuleEditorPanel.save(comment, kmoduleMetadata);
+                                                if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                                                    kModuleEditorPanel.save( comment, kmoduleMetadata );
                                                 }
                                                 // TODO: Save the metadata, use callback (check the comment above) -Rikkola-
                                             }
                                         },
-                                        pomMetadata);
+                                        pomMetadata );
                             }
-                        });
+                        } );
                     }
-                }).addTopLevelMenuItem(
+                } ).addTopLevelMenuItem(
                 view.getBuildMenuItemText(),
                 new Command() {
                     @Override
@@ -150,13 +157,13 @@ public class
                         buildServiceCaller.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback(Void v) {
+                                    public void callback( Void v ) {
 
                                     }
                                 }
-                        ).build(pathToPomXML);
+                                               ).build( pathToPomXML );
                     }
-                }).build();
+                } ).build();
 
         // For now every module is a kie project.
 //        if (pathToKModuleXML == null) {

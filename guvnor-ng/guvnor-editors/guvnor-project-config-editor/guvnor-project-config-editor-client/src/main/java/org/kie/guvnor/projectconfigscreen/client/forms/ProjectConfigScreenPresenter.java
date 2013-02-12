@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
+import javax.enterprise.inject.New;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -35,45 +37,50 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
-import javax.enterprise.inject.New;
-
 @WorkbenchEditor(identifier = "projectConfigScreen", fileTypes = "project.imports")
 public class ProjectConfigScreenPresenter
         implements ProjectConfigScreenView.Presenter {
 
-    private final ProjectConfigScreenView view;
-    private final Caller<ProjectService> projectEditorServiceCaller;
-    private final Caller<MetadataService> metadataService;
+    private ProjectConfigScreenView view;
+    private Caller<ProjectService> projectEditorServiceCaller;
+    private Caller<MetadataService> metadataService;
     private Path path;
     private PackageConfiguration packageConfiguration;
 
     private ResourceMenuBuilderImpl menuBuilder;
 
+    private MenuBar menuBar;
+
+    public ProjectConfigScreenPresenter() {
+    }
+
     @Inject
-    public ProjectConfigScreenPresenter(@New ProjectConfigScreenView view,
-                                        @New ResourceMenuBuilderImpl menuBuilder,
-                                        Caller<ProjectService> projectEditorServiceCaller,
-                                        Caller<MetadataService> metadataService) {
+    public ProjectConfigScreenPresenter( @New ProjectConfigScreenView view,
+                                         @New ResourceMenuBuilderImpl menuBuilder,
+                                         Caller<ProjectService> projectEditorServiceCaller,
+                                         Caller<MetadataService> metadataService ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.metadataService = metadataService;
-        view.setPresenter(this);
+        view.setPresenter( this );
+
+        makeMenuBar();
     }
 
     @OnStart
-    public void init(final Path path) {
+    public void init( final Path path ) {
 
         this.path = path;
 
-        projectEditorServiceCaller.call(new RemoteCallback<PackageConfiguration>() {
+        projectEditorServiceCaller.call( new RemoteCallback<PackageConfiguration>() {
 
             @Override
-            public void callback(PackageConfiguration packageConfiguration) {
+            public void callback( PackageConfiguration packageConfiguration ) {
                 ProjectConfigScreenPresenter.this.packageConfiguration = packageConfiguration;
-                view.setImports(path, packageConfiguration.getImports());
+                view.setImports( path, packageConfiguration.getImports() );
             }
-        }).loadPackageConfiguration(path);
+        } ).loadPackageConfiguration( path );
     }
 
     @WorkbenchPartTitle
@@ -88,31 +95,35 @@ public class ProjectConfigScreenPresenter
 
     @Override
     public void onShowMetadata() {
-        metadataService.call(new RemoteCallback<Metadata>() {
+        metadataService.call( new RemoteCallback<Metadata>() {
             @Override
-            public void callback(Metadata metadata) {
-                view.setMetadata(metadata);
+            public void callback( Metadata metadata ) {
+                view.setMetadata( metadata );
             }
-        }).getMetadata(path);
+        } ).getMetadata( path );
     }
 
     @OnSave
     public void onSave() {
-        projectEditorServiceCaller.call(new RemoteCallback<Void>() {
+        projectEditorServiceCaller.call( new RemoteCallback<Void>() {
             @Override
-            public void callback(Void v) {
+            public void callback( Void v ) {
 
             }
-        }).save(path, packageConfiguration);
+        } ).save( path, packageConfiguration );
     }
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addSave(new Command() {
+        return menuBar;
+    }
+
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
             }
-        }).build();
+        } ).build();
     }
 }
