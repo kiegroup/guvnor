@@ -65,6 +65,9 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 @Dependent
@@ -124,6 +127,15 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
     private Caller<MetadataService> metadataService;
@@ -223,6 +235,22 @@ public class GuidedRuleTemplateEditorPresenter {
         } ).loadContent( path );
     }
 
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
+    }
+
     @OnSave
     public void onSave() {
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
@@ -243,22 +271,6 @@ public class GuidedRuleTemplateEditorPresenter {
         } );
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
-    }
-
     public void onDelete() {
         DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
@@ -268,7 +280,8 @@ public class GuidedRuleTemplateEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                     }
                 } ).delete( path,
                             comment );
@@ -288,7 +301,9 @@ public class GuidedRuleTemplateEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
                     }
                 } ).rename( path,
                             newName,
@@ -309,7 +324,9 @@ public class GuidedRuleTemplateEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
                     }
                 } ).copy( path,
                           newName,
@@ -350,21 +367,21 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation(new Command() {
+        return menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
-                service.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path,
-                        view.getContent());
+                } ).validate( path,
+                              view.getContent() );
             }
-        }).addSave( new Command() {
+        } ).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();

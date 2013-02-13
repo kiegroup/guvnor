@@ -18,8 +18,8 @@ import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new DRL Text Rules
@@ -63,6 +63,7 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
                     @Override
                     public void callback( Void aVoid ) {
                         notifySuccess();
+                        notifyResourceAdded( path );
                         final PlaceRequest place = new PathPlaceRequest( path,
                                                                          "org.kie.guvnor.globals" );
                         placeManager.goTo( place );

@@ -15,8 +15,8 @@ import org.kie.guvnor.enums.client.resources.images.ImageResources;
 import org.kie.guvnor.enums.service.EnumService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Enumerations
@@ -48,25 +48,26 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create(final String fileName) {
-        final Path path = buildFullPathName(fileName);
+    public void create( final String fileName ) {
+        final Path path = buildFullPathName( fileName );
 
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                enumService.call(new RemoteCallback<Void>() {
+            public void execute( final String comment ) {
+                enumService.call( new RemoteCallback<Void>() {
                     @Override
-                    public void callback(Void aVoid) {
+                    public void callback( Void aVoid ) {
                         notifySuccess();
-                        final PlaceRequest place = new PathPlaceRequest(path,
-                                "EnumEditor");
-                        placeManager.goTo(place);
+                        notifyResourceAdded( path );
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "EnumEditor" );
+                        placeManager.goTo( place );
                     }
-                }).save(path,
-                        "",
-                        comment);
+                } ).save( path,
+                          "",
+                          comment );
             }
-        });
+        } );
     }
 
 }

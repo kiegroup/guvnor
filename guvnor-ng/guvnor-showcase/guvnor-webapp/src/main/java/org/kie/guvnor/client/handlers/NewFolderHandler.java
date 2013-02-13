@@ -51,6 +51,7 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
             @Override
             public void callback( final Path path ) {
                 notifySuccess();
+                notifyResourceAdded( path );
             }
         } ).createDirectory( path );
     }

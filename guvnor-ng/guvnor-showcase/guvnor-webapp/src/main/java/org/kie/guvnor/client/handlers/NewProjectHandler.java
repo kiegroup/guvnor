@@ -1,5 +1,10 @@
 package org.kie.guvnor.client.handlers;
 
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -17,11 +22,7 @@ import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.List;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 
 /**
  * Handler for the creation of new Projects
@@ -40,6 +41,9 @@ public class NewProjectHandler
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
+
+    @Inject
+    private Event<ResourceAddedEvent> resourceAddedEvent;
 
     @Inject
     private Caller<ProjectService> projectServiceCaller;
@@ -61,13 +65,13 @@ public class NewProjectHandler
 
     @Override
     public void create( final String projectName ) {
-        Path activePath = context.getActivePath();
+        final Path activePath = context.getActivePath();
         if ( activePath != null ) {
             projectServiceCaller.call( new RemoteCallback<Path>() {
                 @Override
                 public void callback( Path pathToPom ) {
-
                     notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+                    resourceAddedEvent.fire( new ResourceAddedEvent( activePath ) );
                     placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
                 }
             } ).newProject( activePath, projectName );

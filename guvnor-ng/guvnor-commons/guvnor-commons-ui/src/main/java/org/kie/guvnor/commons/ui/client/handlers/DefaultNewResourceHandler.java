@@ -17,6 +17,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 
 /**
  * Handler for the creation of new Items that require a Name and Path
@@ -35,6 +36,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
+
+    @Inject
+    private Event<ResourceAddedEvent> resourceAddedEvent;
 
     public DefaultNewResourceHandler() {
         final Pair extension = new Pair( CommonConstants.INSTANCE.ItemPathSubheading(),
@@ -86,6 +90,10 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     protected void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+    }
+
+    protected void notifyResourceAdded( final Path path ) {
+        resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
     }
 
 }

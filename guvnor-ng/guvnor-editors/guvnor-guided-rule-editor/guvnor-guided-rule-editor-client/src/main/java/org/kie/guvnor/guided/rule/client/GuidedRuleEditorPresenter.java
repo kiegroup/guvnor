@@ -63,6 +63,9 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 @Dependent
@@ -88,9 +91,19 @@ public class GuidedRuleEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
+
+    @Inject
     private Caller<MetadataService> metadataService;
 
-    @Inject @New
+    @Inject
+    @New
     private ResourceMenuBuilderImpl menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
@@ -158,6 +171,22 @@ public class GuidedRuleEditorPresenter {
         } ).loadContent( path );
     }
 
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
+    }
+
     @OnSave
     public void onSave() {
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
@@ -178,22 +207,6 @@ public class GuidedRuleEditorPresenter {
         } );
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
-    }
-
     public void onDelete() {
         DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
@@ -203,7 +216,8 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                     }
                 } ).delete( path,
                             comment );
@@ -223,7 +237,9 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
                     }
                 } ).rename( path,
                             newName,
@@ -244,7 +260,9 @@ public class GuidedRuleEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
                     }
                 } ).copy( path,
                           newName,

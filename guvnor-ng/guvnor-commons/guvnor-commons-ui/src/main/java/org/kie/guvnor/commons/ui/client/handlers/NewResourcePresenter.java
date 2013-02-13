@@ -29,9 +29,9 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.project.service.ProjectService;
-import org.uberfire.backend.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
 @ApplicationScoped
 public class NewResourcePresenter {

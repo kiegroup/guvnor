@@ -16,7 +16,6 @@ import org.kie.guvnor.explorer.model.RepositoryItem;
 import org.kie.guvnor.explorer.service.ExplorerService;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
-import org.uberfire.backend.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -25,7 +24,11 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -58,6 +61,7 @@ public class ExplorerPresenter {
             UberView<ExplorerPresenter> {
 
         void setContent( ExplorerContent content );
+
         void reset();
 
     }
@@ -128,17 +132,33 @@ public class ExplorerPresenter {
         final RepositoryItem repositoryItem = new RepositoryItem( root.getPath() );
         return repositoryItem;
     }
-    
-    /**
-     * refresh on Notification message if necessary
-     * 
-     * @param event
-     */
-    public void onNotification(@Observes final NotificationEvent event) {
-        if(NotificationEvent.RefreshType.REFRESH == event.getRefreshType()) {
-            view.reset();
-            context.setActivePath(null);
-            onStart();
-        }
+
+    // Refresh when a Resource has been added
+    public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
+        //TODO Refresh only if required
+        activePath = null;
+        onStart();
     }
+
+    // Refresh when a Resource has been deleted
+    public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
+        //TODO Refresh only if required
+        activePath = null;
+        onStart();
+    }
+
+    // Refresh when a Resource has been copied
+    public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
+        //TODO Refresh only if required
+        activePath = null;
+        onStart();
+    }
+
+    // Refresh when a Resource has been renamed
+    public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
+        //TODO Refresh only if required
+        activePath = null;
+        onStart();
+    }
+
 }

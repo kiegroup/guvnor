@@ -40,11 +40,11 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.service.FactModelService;
-import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -61,6 +61,9 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -93,6 +96,15 @@ public class FactModelsEditorPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
     private Event<RestoreEvent> restoreEvent;
@@ -183,7 +195,6 @@ public class FactModelsEditorPresenter {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-
                     }
                 } ).save( path,
                           view.getContent(),
@@ -202,7 +213,8 @@ public class FactModelsEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                     }
                 } ).delete( path,
                             comment );
@@ -222,7 +234,9 @@ public class FactModelsEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
                     }
                 } ).rename( path,
                             newName,
@@ -243,7 +257,9 @@ public class FactModelsEditorPresenter {
                     public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH ) );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
                     }
                 } ).copy( path,
                           newName,
@@ -290,20 +306,20 @@ public class FactModelsEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation(new Command() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
-                factModelService.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                factModelService.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path, view.getContent());
+                } ).validate( path, view.getContent() );
             }
-        });
+        } );
 
         if ( isReadOnly ) {
             fileMenuBuilder.addRestoreVersion( path );

@@ -57,6 +57,9 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 /**
@@ -76,6 +79,18 @@ public class DRLEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
+    private Event<NotificationEvent> notification;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
+
+    @Inject
     private DRLEditorView view;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
@@ -83,18 +98,15 @@ public class DRLEditorPresenter {
     @Inject
     private MultiPageEditor multiPage;
 
-    @Inject @New
-    private ResourceMenuBuilderImpl menuBuilder;
-
     @Inject
-    private Event<NotificationEvent> notification;
+    @New
+    private ResourceMenuBuilderImpl menuBuilder;
 
     private Path path;
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
-
 
         multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
 
@@ -138,85 +150,90 @@ public class DRLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
-                drlTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String commitMessage ) {
+                drlTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        });
+        } );
     }
-    
+
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                drlTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                drlTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
-
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                drlTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                drlTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
+                    }
+                } ).rename( path,
+                            newName,
+                            comment );
+            }
+        } );
 
-                    }
-                }).rename(path,
-                          newName,
-                          comment);
-            }
-        });
-        
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                drlTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                drlTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -247,21 +264,21 @@ public class DRLEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation(new Command() {
+        return menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage(CommonConstants.INSTANCE.WaitWhileValidating());
-                drlTextEditorService.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                drlTextEditorService.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path,
-                        view.getContent());
+                } ).validate( path,
+                              view.getContent() );
             }
-        }).addSave( new Command() {
+        } ).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();

@@ -42,7 +42,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PathPlaceRequest;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
 import static org.kie.commons.validation.PortablePreconditions.*;

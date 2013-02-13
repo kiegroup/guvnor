@@ -16,6 +16,11 @@
 
 package org.kie.guvnor.enums.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -51,12 +56,10 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
@@ -69,7 +72,7 @@ public class EnumEditorPresenter {
             extends
             IsWidget {
 
-        void setContent(String content);
+        void setContent( String content );
 
         String getContent();
 
@@ -96,138 +99,154 @@ public class EnumEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
+
+    @Inject
     private Caller<MetadataService> metadataService;
 
-    @Inject @New
+    @Inject
+    @New
     private ResourceMenuBuilderImpl menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Path path;
 
-
     @OnStart
-    public void onStart(final Path path) {
+    public void onStart( final Path path ) {
         this.path = path;
 
-        multiPage.addWidget(view, CommonConstants.INSTANCE.EditTabTitle());
-        multiPage.addPage(new Page(viewSource, CommonConstants.INSTANCE.SourceTabTitle()) {
+        multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource, CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                viewSource.setContent(view.getContent());
+                viewSource.setContent( view.getContent() );
             }
 
             @Override
             public void onLostFocus() {
                 viewSource.clear();
             }
-        });
+        } );
 
-        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
+        multiPage.addPage( new Page( metadataWidget, MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 metadataService.call(
                         new RemoteCallback<Metadata>() {
                             @Override
-                            public void callback(Metadata metadata) {
-                                metadataWidget.setContent(metadata, false);
+                            public void callback( Metadata metadata ) {
+                                metadataWidget.setContent( metadata, false );
                             }
                         }
-                ).getMetadata(path);
+                                    ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 // Nothing to do here
             }
-        });
+        } );
 
-        enumService.call(new RemoteCallback<EnumModelContent>() {
+        enumService.call( new RemoteCallback<EnumModelContent>() {
             @Override
-            public void callback(EnumModelContent response) {
-                view.setContent(response.getModel().getDRL());
+            public void callback( EnumModelContent response ) {
+                view.setContent( response.getModel().getDRL() );
             }
-        }).load(path);
+        } ).load( path );
     }
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
-                enumService.call(new RemoteCallback<Void>() {
+            public void execute( final String commitMessage ) {
+                enumService.call( new RemoteCallback<Void>() {
                     @Override
-                    public void callback(Void response) {
+                    public void callback( Void response ) {
                         view.setNotDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        });
+        } );
     }
-    
+
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                enumService.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                enumService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                enumService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                enumService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
                     }
-                }).rename(path,
-                          newName,
-                          comment);
+                } ).rename( path,
+                            newName,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                enumService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                enumService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -240,7 +259,7 @@ public class EnumEditorPresenter {
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;
@@ -258,20 +277,20 @@ public class EnumEditorPresenter {
 
     @WorkbenchMenu
     public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation(new Command() {
+        return menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
             public void execute() {
-                LoadingPopup.showMessage("Wait while validating...");
-                enumService.call(new RemoteCallback<BuilderResult>() {
+                LoadingPopup.showMessage( "Wait while validating..." );
+                enumService.call( new RemoteCallback<BuilderResult>() {
                     @Override
-                    public void callback(BuilderResult response) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget(response);
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
                         LoadingPopup.close();
                         pop.show();
                     }
-                }).validate(path, view.getContent());
+                } ).validate( path, view.getContent() );
             }
-        }).addSave(new Command() {
+        } ).addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
@@ -291,6 +310,6 @@ public class EnumEditorPresenter {
             public void execute() {
                 onCopy();
             }
-        }).build();
+        } ).build();
     }
 }

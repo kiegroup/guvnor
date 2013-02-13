@@ -16,8 +16,8 @@ import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Guided Templates
@@ -62,6 +62,7 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( Void aVoid ) {
                                                          notifySuccess();
+                                                         notifyResourceAdded( path );
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedRuleTemplateEditor" );
                                                          placeManager.goTo( place );

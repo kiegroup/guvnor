@@ -1,6 +1,7 @@
 package org.kie.guvnor.globals.client.editor;
 
 import java.util.List;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
@@ -11,6 +12,9 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 
 /**
  * Editor for Global variables
@@ -20,6 +24,15 @@ public class GlobalsEditorPresenter {
 
     @Inject
     private View view;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     private Path activePath;
 

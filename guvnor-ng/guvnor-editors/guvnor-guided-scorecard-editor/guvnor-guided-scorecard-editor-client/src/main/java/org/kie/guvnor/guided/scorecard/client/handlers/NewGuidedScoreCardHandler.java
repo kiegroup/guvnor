@@ -16,8 +16,8 @@ import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Guided Score Cards
@@ -62,6 +62,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( Void aVoid ) {
                                                          notifySuccess();
+                                                         notifyResourceAdded( path );
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedScoreCardEditor" );
                                                          placeManager.goTo( place );

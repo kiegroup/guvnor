@@ -54,6 +54,9 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 /**
@@ -90,10 +93,21 @@ public class DSLEditorPresenter {
     @Inject
     private Event<NotificationEvent> notification;
 
-    @Inject @New
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
+
+    @Inject
+    @New
     private MultiPageEditor multiPageEditor;
 
-    @Inject @New
+    @Inject
+    @New
     private ResourceMenuBuilderImpl menuBuilder;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
@@ -114,7 +128,7 @@ public class DSLEditorPresenter {
 
                 }
             }
-        } ).load(path);
+        } ).load( path );
 
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
@@ -126,79 +140,88 @@ public class DSLEditorPresenter {
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String commitMessage) {
-                dslTextEditorService.call(new RemoteCallback<Void>() {
+            public void execute( final String commitMessage ) {
+                dslTextEditorService.call( new RemoteCallback<Void>() {
                     @Override
-                    public void callback(Void response) {
+                    public void callback( Void response ) {
                         view.setNotDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+
                     }
-                }).save(path,
-                        view.getContent(),
-                        metadataWidget.getContent(),
-                        commitMessage);
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        });
+        } );
     }
 
     public void onDelete() {
-        DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                dslTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                dslTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+
                     }
-                }).delete(path,
-                          comment);
+                } ).delete( path,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onRename() {
-        RenamePopup popup = new RenamePopup(new RenameCommand() {
+        RenamePopup popup = new RenamePopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                dslTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                dslTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                                             response ) );
                     }
-                }).rename(path,
-                          newName,
-                          comment);
+                } ).rename( path,
+                            newName,
+                            comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
-    
+
     public void onCopy() {
-        CopyPopup popup = new CopyPopup(new RenameCommand() {
+        CopyPopup popup = new CopyPopup( new RenameCommand() {
             @Override
-            public void execute(final String newName, final String comment) {
-                dslTextEditorService.call(new RemoteCallback<Path>() {
+            public void execute( final String newName,
+                                 final String comment ) {
+                dslTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
-                        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully(), NotificationEvent.NotificationType.DEFAULT, NotificationEvent.RefreshType.REFRESH));
-                     }
-                }).copy(path,
-                        newName,
-                        comment);
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                           response ) );
+                    }
+                } ).copy( path,
+                          newName,
+                          comment );
             }
-        });
-        
+        } );
+
         popup.show();
     }
 
@@ -227,8 +250,8 @@ public class DSLEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        multiPageEditor.addWidget(view, DSLTextEditorConstants.INSTANCE.Edit());
-        multiPageEditor.addWidget(metadataWidget, MetadataConstants.INSTANCE.Metadata());
+        multiPageEditor.addWidget( view, DSLTextEditorConstants.INSTANCE.Edit() );
+        multiPageEditor.addWidget( metadataWidget, MetadataConstants.INSTANCE.Metadata() );
         return multiPageEditor;
     }
 

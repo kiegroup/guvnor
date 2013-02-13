@@ -48,6 +48,7 @@ public class NewPackageHandler
             @Override
             public void callback( final Path path ) {
                 notifySuccess();
+                notifyResourceAdded( path );
             }
         } ).newPackage( path );
     }
