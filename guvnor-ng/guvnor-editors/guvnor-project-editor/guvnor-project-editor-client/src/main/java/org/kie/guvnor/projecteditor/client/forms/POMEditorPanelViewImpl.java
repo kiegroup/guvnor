@@ -88,6 +88,13 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
+    public void setReadOnly() {
+        gavEditor.setReadOnly();
+        dependencyGrid.setReadOnly();
+
+    }
+
+    @Override
     public void setTitleText( String titleText ) {
         tabTitleLabel = titleText;
     }

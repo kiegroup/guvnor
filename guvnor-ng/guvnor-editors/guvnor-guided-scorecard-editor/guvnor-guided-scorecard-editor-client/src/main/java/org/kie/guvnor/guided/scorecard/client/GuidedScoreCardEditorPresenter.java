@@ -79,9 +79,6 @@ public class GuidedScoreCardEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
-    private Caller<VersionService> versionService;
-
-    @Inject
     private GuidedScoreCardEditorView view;
 
     @Inject
@@ -94,9 +91,6 @@ public class GuidedScoreCardEditorPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
-
-    @Inject
-    private Event<RestoreEvent> restoreEvent;
 
     @Inject
     @New

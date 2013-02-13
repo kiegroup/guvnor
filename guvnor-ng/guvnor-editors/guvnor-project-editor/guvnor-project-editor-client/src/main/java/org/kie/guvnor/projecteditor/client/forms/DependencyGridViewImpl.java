@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,6 +57,12 @@ public class DependencyGridViewImpl
 
     @UiField(provided = true)
     DataGrid<Dependency> dataGrid = new DataGrid<Dependency>();
+
+    @UiField
+    Button addDependencyButton;
+
+    @UiField
+    Button addFromRepositoryDependencyButton;
 
     public DependencyGridViewImpl() {
         dataGrid.setEmptyTableWidget(new Label("---"));
@@ -159,6 +166,12 @@ public class DependencyGridViewImpl
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setReadOnly() {
+        addDependencyButton.setEnabled(false);
+        addFromRepositoryDependencyButton.setEnabled(false);
     }
 
     @Override

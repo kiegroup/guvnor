@@ -45,8 +45,11 @@ public class POMEditorPanel
 
     }
 
-    public void init(Path path) {
+    public void init(Path path, boolean isReadOnly) {
         this.path = path;
+        if (isReadOnly) {
+            view.setReadOnly();
+        }
         pomServiceCaller.call(
                 new RemoteCallback<POM>() {
                     @Override

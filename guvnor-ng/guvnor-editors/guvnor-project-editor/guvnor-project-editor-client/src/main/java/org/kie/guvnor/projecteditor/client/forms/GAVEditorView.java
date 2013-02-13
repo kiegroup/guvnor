@@ -21,5 +21,7 @@ public interface GAVEditorView
 
     void setArtifactId(String id);
 
+    void setReadOnly();
+
     void setVersionId(String versionId);
 }

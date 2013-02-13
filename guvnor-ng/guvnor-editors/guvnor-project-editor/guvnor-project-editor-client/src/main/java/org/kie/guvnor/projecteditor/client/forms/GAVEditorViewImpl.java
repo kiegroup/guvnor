@@ -55,6 +55,13 @@ public class GAVEditorViewImpl
         artifactIdTextBox.setText(id);
     }
 
+    @Override
+    public void setReadOnly() {
+        groupIdTextBox.setReadOnly(true);
+        artifactIdTextBox.setReadOnly(true);
+        versionIdTextBox.setReadOnly(true);
+    }
+
     @UiHandler("artifactIdTextBox")
     public void onArtifactIdChange(KeyUpEvent event) {
         presenter.onArtifactIdChange(artifactIdTextBox.getText());

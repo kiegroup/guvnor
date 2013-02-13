@@ -37,4 +37,6 @@ public interface POMEditorPanelView
     void setGAV(GAV gav);
 
     void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler);
+
+    void setReadOnly();
 }

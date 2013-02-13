@@ -31,9 +31,11 @@ public interface DependencyGridView
         void onAddDependencyFromRepositoryButton();
 
         void onRemoveDependency(Dependency dependency);
-    }
 
+    }
     void setPresenter(Presenter presenter);
+
+    void setReadOnly();
 
     void setList(List<Dependency> dependencies);
 }

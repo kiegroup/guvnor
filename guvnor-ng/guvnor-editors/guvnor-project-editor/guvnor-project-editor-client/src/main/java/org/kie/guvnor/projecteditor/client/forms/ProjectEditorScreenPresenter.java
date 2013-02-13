@@ -37,6 +37,11 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.inject.New;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
 public class
@@ -52,12 +57,13 @@ public class
     private Path pathToPomXML;
     private Path pathToKModuleXML;
     private Caller<MetadataService> metadataService;
-    private Metadata kmoduleMetadata;
-    private Metadata pomMetadata;
-    private SaveOperationService saveOperationService;
+    private Metadata                kmoduleMetadata;
+    private Metadata                pomMetadata;
+    private SaveOperationService    saveOperationService;
     private ResourceMenuBuilder menuBuilder;
 
     private MenuBar menuBar;
+    private boolean isReadOnly;
 
     public ProjectEditorScreenPresenter() {
     }
@@ -88,25 +94,35 @@ public class
     }
 
     @OnStart
-    public void init( Path path ) {
+    public void init(final Path path,
+                     final PlaceRequest request) {
+
+        this.isReadOnly = request.getParameter("readOnly", null) == null ? false : true;
 
         pathToPomXML = path;
-        pomPanel.init( path );
+        pomPanel.init(path, isReadOnly);
+
+        if (!isReadOnly) {
+            addKModuleEditor();
+        }
+    }
+
+    private void addKModuleEditor() {
         kModuleServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Path pathToKModuleXML ) {
+                    public void callback(Path pathToKModuleXML) {
                         ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                        if ( pathToKModuleXML != null ) {
+                        if (pathToKModuleXML != null) {
                             setUpKProject();
                         }
                     }
                 }
-                                 ).pathToRelatedKModuleFileIfAny( path );
+        ).pathToRelatedKModuleFileIfAny(pathToPomXML);
     }
 
     private void setUpKProject() {
-        view.setKModuleEditorPanel( kModuleEditorPanel );
+        view.setKModuleEditorPanel(kModuleEditorPanel);
     }
 
     @WorkbenchPartTitle
@@ -130,26 +146,27 @@ public class
                 new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
+                        saveOperationService.save(pathToPomXML, new CommandWithCommitMessage() {
                             @Override
-                            public void execute( final String comment ) {
+                            public void execute(final String comment) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.
                                 pomPanel.save(
                                         comment,
                                         new com.google.gwt.user.client.Command() {
                                             @Override
                                             public void execute() {
-                                                if ( kModuleEditorPanel.hasBeenInitialized() ) {
-                                                    kModuleEditorPanel.save( comment, kmoduleMetadata );
+                                                if (kModuleEditorPanel.hasBeenInitialized()) {
+                                                    kModuleEditorPanel.save(comment, kmoduleMetadata);
                                                 }
-                                                // TODO: Save the metadata, use callback (check the comment above) -Rikkola-
                                             }
                                         },
-                                        pomMetadata );
+                                        pomMetadata);
                             }
-                        } );
+                        }
+
+                        );
                     }
-                } ).addTopLevelMenuItem(
+                }).addTopLevelMenuItem(
                 view.getBuildMenuItemText(),
                 new Command() {
                     @Override
@@ -157,13 +174,13 @@ public class
                         buildServiceCaller.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback( Void v ) {
+                                    public void callback(Void v) {
 
                                     }
                                 }
-                                               ).build( pathToPomXML );
+                        ).build(pathToPomXML);
                     }
-                } ).build();
+                }).build();
 
         // For now every module is a kie project.
 //        if (pathToKModuleXML == null) {

@@ -54,4 +54,8 @@ public class GAVEditor
     public Widget asWidget() {
         return view.asWidget();
     }
+
+    public void setReadOnly() {
+        view.setReadOnly();
+    }
 }

@@ -73,4 +73,7 @@ public class DependencyGrid
         fillList(dependencies);
     }
 
+    public void setReadOnly() {
+        view.setReadOnly();
+    }
 }

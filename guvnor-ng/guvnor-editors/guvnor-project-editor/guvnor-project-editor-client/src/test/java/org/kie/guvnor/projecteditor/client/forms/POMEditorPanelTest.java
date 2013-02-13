@@ -34,13 +34,11 @@ public class POMEditorPanelTest {
 
     private POMEditorPanelView view;
     private POMEditorPanel panel;
-    private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockPomServiceCaller pomServiceCaller;
 
     @Before
     public void setUp() throws Exception {
         view = mock(POMEditorPanelView.class);
-        projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         pomServiceCaller = new MockPomServiceCaller();
         panel = new POMEditorPanel(pomServiceCaller, view);
     }
@@ -50,7 +48,7 @@ public class POMEditorPanelTest {
         POM gavModel = createTestModel("group", "artifact", "1.1.1");
         pomServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
-        panel.init(path);
+        panel.init(path, false);
 
         verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("artifact");
@@ -62,7 +60,7 @@ public class POMEditorPanelTest {
         POM gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
         pomServiceCaller.setGav(gavModel);
         Path path = mock(Path.class);
-        panel.init(path);
+        panel.init(path, false);
 
         verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("my.artifact");
