@@ -130,37 +130,42 @@ public class GuidedRuleEditorServiceImpl
 
         ioService.write( paths.convert( resource ),
                          BRDRLPersistence.getInstance().marshal( model ),
-                         metadataService.setUpAttributes(resource, metadata),
+                         metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
     }
-    
+
     @Override
-    public void delete( final Path path, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]");
+    public void delete( final Path path,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
     }
-    
-    @Override
-    public void rename( final Path path, final String newName, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
 
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.move(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
-    }
-    
     @Override
-    public void copy( final Path path, final String newName, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.copy(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
     }
-    
+
+    @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
+    }
+
     @Override
     public String[] loadDropDownExpression( final String[] valuePairs,
                                             String expression ) {

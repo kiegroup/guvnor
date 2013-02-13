@@ -57,11 +57,13 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * This is the default rule editor widget (just text editor based).
@@ -92,6 +94,9 @@ public class DRLEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     private DRLEditorView view;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
@@ -102,10 +107,10 @@ public class DRLEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
+    private MenuBar menuBar;
 
     private Path path;
-
-    private MenuBar menuBar;
+    private PlaceRequest place;
 
     @PostConstruct
     private void makeMenuBar() {
@@ -152,8 +157,10 @@ public class DRLEditorPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
         this.path = path;
+        this.place = place;
 
         multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
 
@@ -226,6 +233,7 @@ public class DRLEditorPresenter {
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                         resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+                        placeManager.closePlace( place );
                     }
                 } ).delete( path,
                             comment );

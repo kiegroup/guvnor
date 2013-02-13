@@ -69,7 +69,7 @@ public class EnumServiceImpl implements EnumService {
 
     @Override
     public EnumModelContent load( Path path ) {
-        return new EnumModelContent(new EnumModel(ioService.readAllString( paths.convert( path ) )));
+        return new EnumModelContent( new EnumModel( ioService.readAllString( paths.convert( path ) ) ) );
     }
 
     @Override
@@ -138,34 +138,39 @@ public class EnumServiceImpl implements EnumService {
         //TODO {porcelli} verify
         return new AnalysisReport();
     }
-    
+
     @Override
-    public void delete( final Path path, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]");
+    public void delete( final Path path,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
     }
-    
-    @Override
-    public void rename( final Path path, final String newName, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
 
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.move(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
-    }
-    
     @Override
-    public void copy( final Path path, final String newName, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.copy(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
     }
-    
+
+    @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
+    }
+
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();

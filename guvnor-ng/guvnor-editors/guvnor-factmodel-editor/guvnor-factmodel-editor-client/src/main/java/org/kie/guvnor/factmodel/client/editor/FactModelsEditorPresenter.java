@@ -61,6 +61,7 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
@@ -111,11 +112,15 @@ public class FactModelsEditorPresenter {
     private Event<RestoreEvent> restoreEvent;
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
+    private MenuBar menuBar;
 
     private Path path;
-    private MenuBar menuBar;
+    private PlaceRequest place;
     private boolean isReadOnly;
 
     @PostConstruct
@@ -165,9 +170,10 @@ public class FactModelsEditorPresenter {
 
     @OnStart
     public void onStart( final Path path,
-                         final PlaceRequest request ) {
+                         final PlaceRequest place ) {
         this.path = path;
-        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
+        this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -262,6 +268,7 @@ public class FactModelsEditorPresenter {
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                         resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+                        placeManager.closePlace( place );
                     }
                 } ).delete( path,
                             comment );

@@ -63,11 +63,13 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
@@ -120,16 +122,21 @@ public class GuidedDecisionTableEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     private Caller<MetadataService> metadataService;
 
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-
-    private Path path = null;
-    private GuidedDecisionTable52 model = null;
-    private DataModelOracle oracle = null;
     private MenuBar menuBar;
+
+    private Path path;
+    private PlaceRequest place;
+
+    private GuidedDecisionTable52 model;
+    private DataModelOracle oracle;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -173,8 +180,10 @@ public class GuidedDecisionTableEditorPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
         this.path = path;
+        this.place = place;
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -278,6 +287,7 @@ public class GuidedDecisionTableEditorPresenter {
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                         resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+                        placeManager.closePlace( place );
                     }
                 } ).delete( path,
                             comment );

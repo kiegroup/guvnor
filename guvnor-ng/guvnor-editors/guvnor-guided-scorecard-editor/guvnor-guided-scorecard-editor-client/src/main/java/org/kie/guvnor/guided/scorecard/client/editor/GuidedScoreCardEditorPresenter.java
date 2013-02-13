@@ -64,6 +64,7 @@ import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
@@ -108,14 +109,20 @@ public class GuidedScoreCardEditorPresenter {
     private Event<RestoreEvent> restoreEvent;
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
+    private MenuBar menuBar;
 
     private Path path;
-    private ScoreCardModel model = null;
-    private DataModelOracle oracle = null;
+    private PlaceRequest place;
+
+    private ScoreCardModel model;
+    private DataModelOracle oracle;
+
     private boolean isReadOnly;
-    private MenuBar menuBar;
 
     @Inject
     private ImportsWidgetFixedListPresenter importsWidget;
@@ -169,8 +176,9 @@ public class GuidedScoreCardEditorPresenter {
 
     @OnStart
     public void onStart( final Path path,
-                         final PlaceRequest request ) {
+                         final PlaceRequest place ) {
         this.path = path;
+        this.place = place;
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -205,7 +213,7 @@ public class GuidedScoreCardEditorPresenter {
             public void onLostFocus() {
             }
         } );
-        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         loadContent();
     }
 
@@ -284,6 +292,7 @@ public class GuidedScoreCardEditorPresenter {
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                         resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+                        placeManager.closePlace( place );
                     }
                 } ).delete( path,
                             comment );

@@ -54,11 +54,13 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * A text based editor for Domain Specific Language definitions
@@ -104,18 +106,21 @@ public class DSLEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     @New
     private MultiPageEditor multiPageEditor;
 
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
+    private MenuBar menuBar;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Path path;
-
-    private MenuBar menuBar;
+    private PlaceRequest place;
 
     @PostConstruct
     private void makeMenuBar() {
@@ -157,8 +162,10 @@ public class DSLEditorPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
         this.path = path;
+        this.place = place;
 
         dslTextEditorService.call( new RemoteCallback<String>() {
             @Override
@@ -190,7 +197,6 @@ public class DSLEditorPresenter {
                     public void callback( Void response ) {
                         view.setNotDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-
                     }
                 } ).save( path,
                           view.getContent(),
@@ -211,7 +217,7 @@ public class DSLEditorPresenter {
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                         resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
-
+                        placeManager.closePlace( place );
                     }
                 } ).delete( path,
                             comment );
