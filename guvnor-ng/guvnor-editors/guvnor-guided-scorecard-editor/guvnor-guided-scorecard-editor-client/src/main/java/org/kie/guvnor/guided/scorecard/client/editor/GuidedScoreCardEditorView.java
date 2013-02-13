@@ -1,4 +1,4 @@
-package org.kie.guvnor.guided.scorecard.client;
+package org.kie.guvnor.guided.scorecard.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;

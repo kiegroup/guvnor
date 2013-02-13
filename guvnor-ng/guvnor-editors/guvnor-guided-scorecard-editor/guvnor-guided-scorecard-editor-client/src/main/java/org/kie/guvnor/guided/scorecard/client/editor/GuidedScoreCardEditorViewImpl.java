@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.scorecard.client;
+package org.kie.guvnor.guided.scorecard.client.editor;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditor;
+import org.kie.guvnor.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 
 public class GuidedScoreCardEditorViewImpl

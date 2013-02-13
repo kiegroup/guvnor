@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.client;
+package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -23,8 +23,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.editor.RuleModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.backend.vfs.Path;
 

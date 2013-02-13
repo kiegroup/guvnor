@@ -137,7 +137,7 @@ public class
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
+    public MenuBar getMenuBar() {
         return menuBar;
     }
 

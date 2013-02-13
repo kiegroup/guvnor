@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.categories.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -71,6 +72,18 @@ public class CategoriesEditorPresenter {
 
     private Path path;
 
+    private MenuBar menuBar;
+
+    @PostConstruct
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).build();
+    }
+
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
@@ -122,13 +135,8 @@ public class CategoriesEditorPresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).build();
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
 }

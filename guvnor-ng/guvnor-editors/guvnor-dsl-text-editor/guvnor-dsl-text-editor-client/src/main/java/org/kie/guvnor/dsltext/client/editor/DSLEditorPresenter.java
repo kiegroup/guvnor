@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.dsltext.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -113,6 +114,47 @@ public class DSLEditorPresenter {
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Path path;
+
+    private MenuBar menuBar;
+
+    @PostConstruct
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                dslTextEditorService.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).addDelete( new Command() {
+            @Override
+            public void execute() {
+                onDelete();
+            }
+        } ).addRename( new Command() {
+            @Override
+            public void execute() {
+                onRename();
+            }
+        } ).addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
+            }
+        } ).build();
+    }
 
     @OnStart
     public void onStart( final Path path ) {
@@ -256,42 +298,8 @@ public class DSLEditorPresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                dslTextEditorService.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).addDelete( new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } ).addRename( new Command() {
-            @Override
-            public void execute() {
-                onRename();
-            }
-        } ).addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } ).build();
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
 }

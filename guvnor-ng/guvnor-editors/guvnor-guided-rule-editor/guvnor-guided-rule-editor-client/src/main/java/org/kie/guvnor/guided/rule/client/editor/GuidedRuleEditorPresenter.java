@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.dtable.client;
+package org.kie.guvnor.guided.rule.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -37,9 +38,9 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
-import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
+import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.events.ImportAddedEvent;
@@ -69,42 +70,23 @@ import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
-public class GuidedDecisionTableEditorPresenter {
-
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final Path path,
-                         final DataModelOracle dataModel,
-                         final GuidedDecisionTable52 content );
-
-        GuidedDecisionTable52 getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-    }
-
-    @Inject
-    private View view;
+@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.gre.drl")
+public class GuidedRuleEditorPresenter {
 
     @Inject
     private ImportsWidgetFixedListPresenter importsWidget;
 
     @Inject
+    private GuidedRuleEditorView view;
+
+    @Inject
     private ViewSourceView viewSource;
 
     @Inject
-    @New
     private MultiPageEditor multiPage;
 
     @Inject
-    private Caller<GuidedDecisionTableEditorService> service;
+    private Caller<GuidedRuleEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -125,18 +107,58 @@ public class GuidedDecisionTableEditorPresenter {
     @New
     private ResourceMenuBuilderImpl menuBuilder;
 
-    private Path path = null;
-    private GuidedDecisionTable52 model = null;
-    private DataModelOracle oracle = null;
-
     private final MetadataWidget metadataWidget = new MetadataWidget();
+
+    private Path path = null;
+    private RuleModel model = null;
+    private DataModelOracle oracle = null;
+    private MenuBar menuBar;
+
+    @PostConstruct
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).addDelete( new Command() {
+            @Override
+            public void execute() {
+                onDelete();
+            }
+        } ).addRename( new Command() {
+            @Override
+            public void execute() {
+                onRename();
+            }
+        } ).addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
+            }
+        } ).build();
+    }
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
 
-        multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
+
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
@@ -176,18 +198,34 @@ public class GuidedDecisionTableEditorPresenter {
             }
         } );
 
-        service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
+        service.call( new RemoteCallback<GuidedEditorContent>() {
             @Override
-            public void callback( final GuidedDecisionTableEditorContent response ) {
+            public void callback( final GuidedEditorContent response ) {
                 model = response.getRuleModel();
                 oracle = response.getDataModel();
                 oracle.setImports( model.getImports() );
                 view.setContent( path,
-                                 oracle,
-                                 model );
+                                 model,
+                                 oracle );
                 importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.addImport( item );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getResourcePath().equals( this.path ) ) {
+            return;
+        }
+        final Import item = event.getImport();
+        oracle.removeImport( item );
     }
 
     @OnSave
@@ -208,22 +246,6 @@ public class GuidedDecisionTableEditorPresenter {
                           commitMessage );
             }
         } );
-    }
-
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
     }
 
     public void onDelete() {
@@ -312,51 +334,18 @@ public class GuidedDecisionTableEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Decision Table [" + path.getFileName() + "]";
+        return "Guided Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView
     public IsWidget getWidget() {
+
         return multiPage;
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                service.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).addDelete( new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } ).addRename( new Command() {
-            @Override
-            public void execute() {
-                onRename();
-            }
-        } ).addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } ).build();
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
 }

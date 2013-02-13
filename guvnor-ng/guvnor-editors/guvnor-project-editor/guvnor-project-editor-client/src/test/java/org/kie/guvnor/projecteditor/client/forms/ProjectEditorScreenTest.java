@@ -55,7 +55,7 @@ public class ProjectEditorScreenTest {
         saveOperationService = mock(SaveOperationService.class);
         menuBuilder = new ResourceMenuBuilderMock();
         screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, menuBuilder, saveOperationService);
-        screen.buildMenuBar();
+        screen.getMenuBar();
     }
 
     @Test

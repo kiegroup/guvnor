@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.template.client;
+package org.kie.guvnor.guided.scorecard.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -32,6 +31,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -39,16 +39,16 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
-import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
+import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
+import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
+import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.events.ImportAddedEvent;
 import org.kie.guvnor.services.config.events.ImportRemovedEvent;
 import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -69,61 +69,28 @@ import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", fileTypes = "*.template")
-public class GuidedRuleTemplateEditorPresenter {
-
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final Path path,
-                         final TemplateModel model,
-                         final DataModelOracle dataModel,
-                         final EventBus eventBus,
-                         final boolean isReadOnly );
-
-        TemplateModel getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-    }
-
-    public interface DataView
-            extends
-            IsWidget {
-
-        void setContent( final TemplateModel model,
-                         final DataModelOracle dataModel,
-                         final EventBus eventBus,
-                         final boolean isReadOnly );
-
-        void clear();
-
-    }
+@WorkbenchEditor(identifier = "GuidedScoreCardEditor", fileTypes = "*.scgd")
+public class GuidedScoreCardEditorPresenter {
 
     @Inject
-    private View view;
+    private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
 
     @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private Caller<MetadataService> metadataService;
+
+    @Inject
+    private GuidedScoreCardEditorView view;
 
     @Inject
     private ViewSourceView viewSource;
 
-    @Inject
-    private DataView dataView;
+    private final MetadataWidget metadataWidget = new MetadataWidget();
 
     @Inject
     private MultiPageEditor multiPage;
-
-    @Inject
-    private Caller<GuidedRuleTemplateEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -138,38 +105,86 @@ public class GuidedRuleTemplateEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
-    private Caller<MetadataService> metadataService;
+    private Event<RestoreEvent> restoreEvent;
 
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    private Path path;
+    private ScoreCardModel model = null;
+    private DataModelOracle oracle = null;
+    private boolean isReadOnly;
+    private MenuBar menuBar;
 
-    private EventBus eventBus = new SimpleEventBus();
+    @Inject
+    private ImportsWidgetFixedListPresenter importsWidget;
 
-    private Path path = null;
-    private TemplateModel model;
-    private DataModelOracle oracle;
+    @PostConstruct
+    private void makeMenuBar() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                scoreCardEditorService.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getModel() );
+            }
+        } );
 
-    private boolean isReadOnly = false;
+        if ( isReadOnly ) {
+            fileMenuBuilder.addRestoreVersion( path );
+        } else {
+            fileMenuBuilder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } ).addDelete( new Command() {
+                @Override
+                public void execute() {
+                    onDelete();
+                }
+            } ).addRename( new Command() {
+                @Override
+                public void execute() {
+                    onRename();
+                }
+            } ).addCopy( new Command() {
+                @Override
+                public void execute() {
+                    onCopy();
+                }
+            } );
+        }
+
+        menuBar = fileMenuBuilder.build();
+    }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest request ) {
         this.path = path;
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
+
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                service.call( new RemoteCallback<String>() {
+                scoreCardEditorService.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource( view.getContent() );
+                } ).toSource( view.getModel() );
             }
 
             @Override
@@ -178,61 +193,43 @@ public class GuidedRuleTemplateEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( dataView,
-                                     "Data" ) {
-
-            @Override
-            public void onFocus() {
-                dataView.setContent( model,
-                                     oracle,
-                                     eventBus,
-                                     isReadOnly );
-            }
-
-            @Override
-            public void onLostFocus() {
-                dataView.clear();
-            }
-        } );
-
         multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
         multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
-                // Nothing to do here
             }
         } );
+        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
+        loadContent();
+    }
 
-        service.call( new RemoteCallback<GuidedTemplateEditorContent>() {
+    private void loadContent() {
+        scoreCardEditorService.call( new RemoteCallback<ScoreCardModelContent>() {
             @Override
-            public void callback( final GuidedTemplateEditorContent response ) {
-                model = response.getRuleModel();
-                oracle = response.getDataModel();
-                view.setContent( path,
-                                 model,
-                                 oracle,
-                                 eventBus,
-                                 isReadOnly );
-                dataView.setContent( model,
-                                     oracle,
-                                     eventBus,
-                                     isReadOnly );
-                importsWidget.setImports( path, response.getRuleModel().getImports() );
+            public void callback( final ScoreCardModelContent content ) {
+                model = content.getModel();
+                oracle = content.getDataModel();
+                oracle.setImports( model.getImports() );
+
+                view.setContent( model,
+                                 oracle );
+                importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
+            }
+        } ).getMetadata( path );
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
@@ -253,20 +250,25 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute( final String commitMessage ) {
-                service.call( new RemoteCallback<Path>() {
+            public void execute( final String comment ) {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Path response ) {
+                    public void callback( final Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
                 } ).save( path,
-                          view.getContent(),
+                          view.getModel(),
                           metadataWidget.getContent(),
-                          commitMessage );
+                          comment );
             }
         } );
     }
@@ -275,7 +277,7 @@ public class GuidedRuleTemplateEditorPresenter {
         DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
-                service.call( new RemoteCallback<Path>() {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -296,7 +298,7 @@ public class GuidedRuleTemplateEditorPresenter {
             @Override
             public void execute( final String newName,
                                  final String comment ) {
-                service.call( new RemoteCallback<Path>() {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -319,7 +321,7 @@ public class GuidedRuleTemplateEditorPresenter {
             @Override
             public void execute( final String newName,
                                  final String comment ) {
-                service.call( new RemoteCallback<Path>() {
+                scoreCardEditorService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -337,14 +339,22 @@ public class GuidedRuleTemplateEditorPresenter {
         popup.show();
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
+    @WorkbenchPartView
+    public IsWidget getWidget() {
+        return multiPage;
     }
 
     @OnClose
     public void onClose() {
         this.path = null;
+    }
+
+    @IsDirty
+    public boolean isDirty() {
+        if ( isReadOnly ) {
+            return false;
+        }
+        return ( view.isDirty() || metadataWidget.isDirty() );
     }
 
     @OnMayClose
@@ -357,51 +367,25 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Template [" + path.getFileName() + "]";
-    }
-
-    @WorkbenchPartView
-    public IsWidget getWidget() {
-        return multiPage;
+        if ( isReadOnly ) {
+            return "Read Only Score Card  Viewer [" + path.getFileName() + "]";
+        }
+        return "Score Card Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        return menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                service.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).addDelete( new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } ).addRename( new Command() {
-            @Override
-            public void execute() {
-                onRename();
-            }
-        } ).addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } ).build();
+    public MenuBar getMenuBar() {
+        return menuBar;
+    }
+
+    public void onRestore( final @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

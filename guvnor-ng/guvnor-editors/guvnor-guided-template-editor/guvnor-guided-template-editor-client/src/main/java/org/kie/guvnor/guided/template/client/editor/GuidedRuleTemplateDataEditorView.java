@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.template.client;
+package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.template.client.editor.TemplateDataTableWidget;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 
 public class GuidedRuleTemplateDataEditorView

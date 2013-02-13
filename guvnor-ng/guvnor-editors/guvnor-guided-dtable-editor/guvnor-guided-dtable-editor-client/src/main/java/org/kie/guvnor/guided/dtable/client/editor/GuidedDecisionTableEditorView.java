@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.dtable.client;
+package org.kie.guvnor.guided.dtable.client.editor;
 
 import javax.inject.Inject;
 

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.scorecard.client;
+package org.kie.guvnor.guided.dtable.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -30,7 +31,6 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -38,17 +38,16 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
-import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.events.ImportAddedEvent;
 import org.kie.guvnor.services.config.events.ImportRemovedEvent;
 import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.services.version.VersionService;
-import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -69,28 +68,44 @@ import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedScoreCardEditor", fileTypes = "*.scgd")
-public class GuidedScoreCardEditorPresenter {
+@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
+public class GuidedDecisionTableEditorPresenter {
+
+    public interface View
+            extends
+            IsWidget {
+
+        void setContent( final Path path,
+                         final DataModelOracle dataModel,
+                         final GuidedDecisionTable52 content );
+
+        GuidedDecisionTable52 getContent();
+
+        boolean isDirty();
+
+        void setNotDirty();
+
+        boolean confirmClose();
+
+    }
 
     @Inject
-    private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
+    private View view;
 
     @Inject
-    private Caller<MetadataService> metadataService;
-
-    @Inject
-    private GuidedScoreCardEditorView view;
+    private ImportsWidgetFixedListPresenter importsWidget;
 
     @Inject
     private ViewSourceView viewSource;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    @New
+    private MultiPageEditor multiPage;
 
     @Inject
-    private MultiPageEditor multiPage;
+    private Caller<GuidedDecisionTableEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -105,37 +120,74 @@ public class GuidedScoreCardEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
-    private Event<RestoreEvent> restoreEvent;
+    private Caller<MetadataService> metadataService;
 
+    @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
 
-    private Path path;
-    private ScoreCardModel model = null;
+    private Path path = null;
+    private GuidedDecisionTable52 model = null;
     private DataModelOracle oracle = null;
-    private boolean isReadOnly;
+    private MenuBar menuBar;
 
-    @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private final MetadataWidget metadataWidget = new MetadataWidget();
+
+    @PostConstruct
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                service.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } ).addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).addDelete( new Command() {
+            @Override
+            public void execute() {
+                onDelete();
+            }
+        } ).addRename( new Command() {
+            @Override
+            public void execute() {
+                onRename();
+            }
+        } ).addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
+            }
+        } ).build();
+    }
 
     @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest request ) {
+    public void onStart( final Path path ) {
         this.path = path;
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
-
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                scoreCardEditorService.call( new RemoteCallback<String>() {
+                service.call( new RemoteCallback<String>() {
                     @Override
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource( view.getModel() );
+                } ).toSource( view.getContent() );
             }
 
             @Override
@@ -147,40 +199,56 @@ public class GuidedScoreCardEditorPresenter {
         multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
         multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                                     MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   false );
+                    }
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
+                // Nothing to do here
             }
         } );
-        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
-        loadContent();
-    }
 
-    private void loadContent() {
-        scoreCardEditorService.call( new RemoteCallback<ScoreCardModelContent>() {
+        service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
             @Override
-            public void callback( final ScoreCardModelContent content ) {
-                model = content.getModel();
-                oracle = content.getDataModel();
+            public void callback( final GuidedDecisionTableEditorContent response ) {
+                model = response.getRuleModel();
+                oracle = response.getDataModel();
                 oracle.setImports( model.getImports() );
-
-                view.setContent( model,
-                                 oracle );
+                view.setContent( path,
+                                 oracle,
+                                 model );
                 importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );
+    }
 
-        metadataService.call( new RemoteCallback<Metadata>() {
+    @OnSave
+    public void onSave() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
+            public void execute( final String commitMessage ) {
+                service.call( new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( Path response ) {
+                        view.setNotDirty();
+                        metadataWidget.resetDirty();
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                    }
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
-        } ).getMetadata( path );
+        } );
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
@@ -199,36 +267,11 @@ public class GuidedScoreCardEditorPresenter {
         oracle.removeImport( item );
     }
 
-    @OnSave
-    public void onSave() {
-        if ( isReadOnly ) {
-            view.alertReadOnly();
-            return;
-        }
-
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                scoreCardEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getModel(),
-                          metadataWidget.getContent(),
-                          comment );
-            }
-        } );
-    }
-
     public void onDelete() {
         DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
-                scoreCardEditorService.call( new RemoteCallback<Path>() {
+                service.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -249,7 +292,7 @@ public class GuidedScoreCardEditorPresenter {
             @Override
             public void execute( final String newName,
                                  final String comment ) {
-                scoreCardEditorService.call( new RemoteCallback<Path>() {
+                service.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -272,7 +315,7 @@ public class GuidedScoreCardEditorPresenter {
             @Override
             public void execute( final String newName,
                                  final String comment ) {
-                scoreCardEditorService.call( new RemoteCallback<Path>() {
+                service.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( Path response ) {
                         view.setNotDirty();
@@ -290,22 +333,14 @@ public class GuidedScoreCardEditorPresenter {
         popup.show();
     }
 
-    @WorkbenchPartView
-    public IsWidget getWidget() {
-        return multiPage;
+    @IsDirty
+    public boolean isDirty() {
+        return view.isDirty();
     }
 
     @OnClose
     public void onClose() {
         this.path = null;
-    }
-
-    @IsDirty
-    public boolean isDirty() {
-        if ( isReadOnly ) {
-            return false;
-        }
-        return ( view.isDirty() || metadataWidget.isDirty() );
     }
 
     @OnMayClose
@@ -318,67 +353,17 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        if ( isReadOnly ) {
-            return "Read Only Score Card  Viewer [" + path.getFileName() + "]";
-        }
-        return "Score Card Editor [" + path.getFileName() + "]";
+        return "Guided Decision Table [" + path.getFileName() + "]";
+    }
+
+    @WorkbenchPartView
+    public IsWidget getWidget() {
+        return multiPage;
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                scoreCardEditorService.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getModel() );
-            }
-        } );
-
-        if ( isReadOnly ) {
-            fileMenuBuilder.addRestoreVersion( path );
-        } else {
-            fileMenuBuilder.addSave( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } ).addDelete( new Command() {
-                @Override
-                public void execute() {
-                    onDelete();
-                }
-            } ).addRename( new Command() {
-                @Override
-                public void execute() {
-                    onRename();
-                }
-            } ).addCopy( new Command() {
-                @Override
-                public void execute() {
-                    onCopy();
-                }
-            } );
-        }
-
-        return fileMenuBuilder.build();
-    }
-
-    public void onRestore( final @Observes RestoreEvent restore ) {
-        if ( path == null || restore == null || restore.getPath() == null ) {
-            return;
-        }
-        if ( path.equals( restore.getPath() ) ) {
-            loadContent();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
-        }
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
 }

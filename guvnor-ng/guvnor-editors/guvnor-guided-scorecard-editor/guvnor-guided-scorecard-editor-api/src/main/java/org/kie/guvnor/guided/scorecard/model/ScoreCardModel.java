@@ -37,7 +37,7 @@ public class ScoreCardModel {
     private List<Characteristic> characteristics = new ArrayList<Characteristic>();
     private String packageName;
 
-    private Imports imports;
+    private Imports imports = new Imports();
 
     public ScoreCardModel() {
     }

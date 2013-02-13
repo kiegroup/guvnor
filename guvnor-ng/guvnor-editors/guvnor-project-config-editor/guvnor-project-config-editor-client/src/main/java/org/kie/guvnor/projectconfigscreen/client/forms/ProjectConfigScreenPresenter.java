@@ -114,7 +114,7 @@ public class ProjectConfigScreenPresenter
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
+    public MenuBar getMenuBar() {
         return menuBar;
     }
 

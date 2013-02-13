@@ -41,7 +41,7 @@ public class TemplateModel
 
     private int rowsCount = 0;
 
-    private Imports imports;
+    private Imports imports = new Imports();
 
     /**
      * Append a row of data

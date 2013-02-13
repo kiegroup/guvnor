@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.client;
+package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
