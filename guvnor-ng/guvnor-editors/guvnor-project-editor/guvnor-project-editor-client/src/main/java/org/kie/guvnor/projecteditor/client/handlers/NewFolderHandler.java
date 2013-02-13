@@ -1,4 +1,4 @@
-package org.kie.guvnor.client.handlers;
+package org.kie.guvnor.projecteditor.client.handlers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -8,10 +8,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.client.resources.i18n.Constants;
-import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
@@ -36,12 +36,12 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newFolderDescription();
+        return ProjectEditorConstants.INSTANCE.newFolderDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.newFolderIcon() );
+        return new Image( ProjectEditorResources.INSTANCE.newFolderIcon() );
     }
 
     @Override

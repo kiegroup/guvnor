@@ -38,13 +38,6 @@ public interface Constants
 
     String WelcomeUser();
 
-    String newFolderDescription();
-
-    String newProjectDescription();
-
     String newItem();
 
-    String NoRepositorySelectedPleaseSelectARepository();
-
-    String newPackageDescription();
 }

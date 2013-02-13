@@ -42,4 +42,11 @@ public interface ProjectEditorResources
 
     @Source("images/trash.gif")
     ImageResource Trash();
+
+    @Source("images/newProject.gif")
+    ImageResource newProjectIcon();
+
+
+    @Source("images/newFolder.gif")
+    ImageResource newFolderIcon();
 }

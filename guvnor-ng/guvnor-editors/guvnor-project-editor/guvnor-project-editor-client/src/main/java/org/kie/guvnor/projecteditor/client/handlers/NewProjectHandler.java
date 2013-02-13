@@ -1,4 +1,4 @@
-package org.kie.guvnor.client.handlers;
+package org.kie.guvnor.projecteditor.client.handlers;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -11,12 +11,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.client.resources.i18n.Constants;
-import org.kie.guvnor.client.resources.images.ImageResources;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
+import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.context.WorkbenchContext;
@@ -55,12 +55,12 @@ public class NewProjectHandler
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newProjectDescription();
+        return ProjectEditorConstants.INSTANCE.newProjectDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.newProjectIcon() );
+        return new Image(ProjectEditorResources.INSTANCE.newProjectIcon() );
     }
 
     @Override
@@ -76,7 +76,7 @@ public class NewProjectHandler
                 }
             } ).newProject( activePath, projectName );
         } else {
-            ErrorPopup.showMessage( Constants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
+            ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }
 
     }

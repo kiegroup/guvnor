@@ -1,4 +1,4 @@
-package org.kie.guvnor.client.perspectives;
+package org.kie.guvnor.commons.ui.client.handlers;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,8 +11,6 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;

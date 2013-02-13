@@ -116,4 +116,12 @@ public interface ProjectEditorConstants
     String PomDotXmlMetadata();
 
     String KModuleDotXmlMetadata();
+
+    String newProjectDescription();
+
+    String newPackageDescription();
+
+    String newFolderDescription();
+
+    String NoRepositorySelectedPleaseSelectARepository();
 }
