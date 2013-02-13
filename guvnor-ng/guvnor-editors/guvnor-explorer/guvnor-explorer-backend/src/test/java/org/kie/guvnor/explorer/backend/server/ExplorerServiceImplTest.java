@@ -261,20 +261,14 @@ public class ExplorerServiceImplTest {
         assertContainsParentPackageItem(items, 1);
 
         //Check items' caption
-        assertEquals( "rule1.drl",
-                      items.get( 0 ).getCaption() );
-        assertEquals( "org",
-                      items.get( 1 ).getCaption() );
-        assertEquals( "..",
-                      items.get( 2 ).getCaption() );
+        assertContainsCaption("rule1.drl", items);
+        assertContainsCaption("org", items);
+        assertContainsCaption("..", items);
 
         //Check items' Paths
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/rule1.drl" ),
-                      items.get( 0 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
-                      items.get( 1 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main" ).toURI(),
-                      items.get( 2 ).getPath().toURI() );
+        assertContainsPath(makePath("/ProjectStructureValid/src/main/resources/rule1.drl"), items);
+        assertContainsPath(makePath("/ProjectStructureValid/src/main/resources/org"), items);
+        assertContainsPathUri(makePath("/ProjectStructureValid/src/main").toURI(), items);
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
@@ -294,6 +288,36 @@ public class ExplorerServiceImplTest {
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
         assertEquals( makePath( "/ProjectStructureValid" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
+    }
+
+    private void assertContainsPathUri(String pathUri, List<Item> items) {
+        boolean found = false;
+        for (Item item : items) {
+            if (pathUri.equals(item.getPath().toURI())) {
+                found = true;
+            }
+        }
+        assertTrue("Find path uri", found);
+    }
+
+    private void assertContainsPath(Path path, List<Item> items) {
+        boolean found = false;
+        for (Item item : items) {
+            if (path.equals(item.getPath())) {
+                found = true;
+            }
+        }
+        assertTrue("Find path", found);
+    }
+
+    private void assertContainsCaption(String caption, List<Item> items) {
+        boolean found = false;
+        for (Item item : items) {
+            if (caption.equals(item.getCaption())) {
+                found = true;
+            }
+        }
+        assertTrue("Find caption", found);
     }
 
 
