@@ -59,7 +59,12 @@ public class GuidedDecisionTableSourceService
     public SourceContext getSource(final Path path) {
         //Load model and convert to DRL
         final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel(paths.convert(path));
-        final String drl = returnPackageDeclaration(path) + "\n" + guidedDecisionTableEditorService.toSource(model);
+
+        final String drl = new StringBuilder()
+                .append(returnPackageDeclaration(path)).append("\n")
+                .append(model.getImports().toString()).append("\n")
+                .append(guidedDecisionTableEditorService.toSource(model)).toString();
+
         final boolean hasDSL = hasDSLSentences(model);
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file

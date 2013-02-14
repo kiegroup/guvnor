@@ -67,9 +67,6 @@ public class GuidedDecisionTableEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private ResourceConfigService resourceConfigService;
-
-    @Inject
     private Identity identity;
 
     @Override

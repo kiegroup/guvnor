@@ -53,9 +53,6 @@ public class DRLTextEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private ResourceConfigService resourceConfigService;
-
-    @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
 
     @Inject
