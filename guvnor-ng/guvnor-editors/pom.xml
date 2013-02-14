@@ -29,6 +29,7 @@
   <name>Guvnor Editors</name>
 
   <modules>
+    <module>guvnor-default-text-editor</module>
     <module>guvnor-categories-editor</module>
     <module>guvnor-drl-text-editor</module>
     <module>guvnor-enum-editor</module>
