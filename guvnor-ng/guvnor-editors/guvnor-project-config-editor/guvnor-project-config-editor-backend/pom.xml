@@ -28,8 +28,8 @@
   <artifactId>guvnor-project-config-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Project Editor Backend</name>
-  <description>Project Editor Backend</description>
+  <name>Project Config Editor Backend</name>
+  <description>Project Config Editor Backend</description>
 
   <dependencies>
 

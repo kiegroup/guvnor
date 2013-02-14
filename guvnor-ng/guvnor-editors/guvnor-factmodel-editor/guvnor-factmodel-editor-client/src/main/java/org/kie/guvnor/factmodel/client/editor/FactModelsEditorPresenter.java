@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.factmodel.client.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -120,7 +119,42 @@ public class FactModelsEditorPresenter {
     private PlaceRequest place;
     private boolean isReadOnly;
 
-    @PostConstruct
+    @OnStart
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
+        this.path = path;
+        this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        makeMenuBar();
+
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+            @Override
+            public void onFocus() {
+                factModelService.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( final String response ) {
+                        viewSource.setContent( response );
+                    }
+                } ).toSource( view.getContent() );
+            }
+
+            @Override
+            public void onLostFocus() {
+                viewSource.clear();
+            }
+        } );
+
+        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
+
+        multiPage.addWidget( metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle() );
+
+        loadContent();
+    }
+
     private void makeMenuBar() {
         FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
@@ -163,41 +197,6 @@ public class FactModelsEditorPresenter {
             } );
         }
         menuBar = fileMenuBuilder.build();
-    }
-
-    @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-
-        multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
-            @Override
-            public void onFocus() {
-                factModelService.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String response ) {
-                        viewSource.setContent( response );
-                    }
-                } ).toSource( view.getContent() );
-            }
-
-            @Override
-            public void onLostFocus() {
-                viewSource.clear();
-            }
-        } );
-
-        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
-
-        multiPage.addWidget( metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle() );
-
-        loadContent();
     }
 
     private void loadContent() {

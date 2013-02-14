@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.categories.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -74,19 +73,11 @@ public class CategoriesEditorPresenter {
 
     private MenuBar menuBar;
 
-    @PostConstruct
-    private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).build();
-    }
-
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
+        makeMenuBar();
+
         categoryService.call( new RemoteCallback<Categories>() {
 
             @Override
@@ -94,6 +85,15 @@ public class CategoriesEditorPresenter {
                 view.setContent( response );
             }
         } ).getContent( path );
+    }
+
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).build();
     }
 
     @OnSave

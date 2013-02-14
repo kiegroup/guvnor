@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.dsltext.client.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -30,6 +29,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -121,51 +121,15 @@ public class DSLEditorPresenter {
 
     private Path path;
     private PlaceRequest place;
-
-    @PostConstruct
-    private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                dslTextEditorService.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).addDelete( new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } ).addRename( new Command() {
-            @Override
-            public void execute() {
-                onRename();
-            }
-        } ).addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } ).build();
-    }
+    private boolean isReadOnly;
 
     @OnStart
     public void onStart( final Path path,
                          final PlaceRequest place ) {
         this.path = path;
         this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        makeMenuBar();
 
         dslTextEditorService.call( new RemoteCallback<String>() {
             @Override
@@ -182,9 +146,55 @@ public class DSLEditorPresenter {
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
             public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata, false );
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
             }
         } ).getMetadata( path );
+    }
+
+    private void makeMenuBar() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                dslTextEditorService.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } );
+
+        if ( isReadOnly ) {
+            fileMenuBuilder.addRestoreVersion( path );
+        } else {
+            fileMenuBuilder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } ).addDelete( new Command() {
+                @Override
+                public void execute() {
+                    onDelete();
+                }
+            } ).addRename( new Command() {
+                @Override
+                public void execute() {
+                    onRename();
+                }
+            } ).addCopy( new Command() {
+                @Override
+                public void execute() {
+                    onCopy();
+                }
+            } );
+        }
+        menuBar = fileMenuBuilder.build();
     }
 
     @OnSave

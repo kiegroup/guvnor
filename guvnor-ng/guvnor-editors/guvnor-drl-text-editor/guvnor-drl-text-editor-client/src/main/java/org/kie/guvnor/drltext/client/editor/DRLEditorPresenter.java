@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.drltext.client.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -30,6 +29,7 @@ import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -111,56 +111,15 @@ public class DRLEditorPresenter {
 
     private Path path;
     private PlaceRequest place;
-
-    @PostConstruct
-    private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                drlTextEditorService.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } ).addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).addDelete( new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } ).addRename( new Command() {
-            @Override
-            public void execute() {
-                onRename();
-            }
-        } ).addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } )/*.addMove( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } )*/.build();
-    }
+    private boolean isReadOnly;
 
     @OnStart
     public void onStart( final Path path,
                          final PlaceRequest place ) {
         this.path = path;
         this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        makeMenuBar();
 
         multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
 
@@ -190,7 +149,7 @@ public class DRLEditorPresenter {
                     @Override
                     public void callback( Metadata metadata ) {
                         metadataWidget.setContent( metadata,
-                                                   false );
+                                                   isReadOnly );
                     }
                 } ).getMetadata( path );
             }
@@ -200,6 +159,51 @@ public class DRLEditorPresenter {
                 // Nothing to do here
             }
         } );
+    }
+
+    private void makeMenuBar() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
+            @Override
+            public void execute() {
+                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
+                drlTextEditorService.call( new RemoteCallback<BuilderResult>() {
+                    @Override
+                    public void callback( BuilderResult response ) {
+                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
+                        LoadingPopup.close();
+                        pop.show();
+                    }
+                } ).validate( path,
+                              view.getContent() );
+            }
+        } );
+
+        if ( isReadOnly ) {
+            fileMenuBuilder.addRestoreVersion( path );
+        } else {
+            fileMenuBuilder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } ).addDelete( new Command() {
+                @Override
+                public void execute() {
+                    onDelete();
+                }
+            } ).addRename( new Command() {
+                @Override
+                public void execute() {
+                    onRename();
+                }
+            } ).addCopy( new Command() {
+                @Override
+                public void execute() {
+                    onCopy();
+                }
+            } );
+        }
+        menuBar = fileMenuBuilder.build();
     }
 
     @OnSave

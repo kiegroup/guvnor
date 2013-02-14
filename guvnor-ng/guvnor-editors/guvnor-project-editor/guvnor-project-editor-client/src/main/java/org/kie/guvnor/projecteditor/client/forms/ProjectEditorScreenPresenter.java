@@ -53,9 +53,9 @@ public class
     private Path pathToPomXML;
     private Path pathToKModuleXML;
     private Caller<MetadataService> metadataService;
-    private Metadata                kmoduleMetadata;
-    private Metadata                pomMetadata;
-    private SaveOperationService    saveOperationService;
+    private Metadata kmoduleMetadata;
+    private Metadata pomMetadata;
+    private SaveOperationService saveOperationService;
     private ResourceMenuBuilder menuBuilder;
 
     private MenuBar menuBar;
@@ -88,53 +88,20 @@ public class
     }
 
     @OnStart
-    public void init(final Path path,
-                     final PlaceRequest request) {
+    public void init( final Path path,
+                      final PlaceRequest request ) {
 
-        this.isReadOnly = request.getParameter("readOnly", null) == null ? false : true;
+        this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
+        makeMenuBar();
 
         pathToPomXML = path;
-        pomPanel.init(path, isReadOnly);
+        pomPanel.init( path, isReadOnly );
 
-        if (!isReadOnly) {
+        if ( !isReadOnly ) {
             addKModuleEditor();
         }
 
         makeMenuBar();
-    }
-
-    private void addKModuleEditor() {
-        kModuleServiceCaller.call(
-                new RemoteCallback<Path>() {
-                    @Override
-                    public void callback(Path pathToKModuleXML) {
-                        ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                        if (pathToKModuleXML != null) {
-                            setUpKProject();
-                        }
-                    }
-                }
-        ).pathToRelatedKModuleFileIfAny(pathToPomXML);
-    }
-
-    private void setUpKProject() {
-        view.setKModuleEditorPanel(kModuleEditorPanel);
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        //TODO {porcelli} Needs a way to notify title updates -> return pomPanel.getTitle();
-        return "Project Editor [" + pathToPomXML.getFileName() + "]";
-    }
-
-    @WorkbenchPartView
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
     }
 
     private void makeMenuBar() {
@@ -142,27 +109,27 @@ public class
                 new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save(pathToPomXML, new CommandWithCommitMessage() {
+                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
                             @Override
-                            public void execute(final String comment) {
+                            public void execute( final String comment ) {
                                 // We need to use callback here or jgit will break when we save two files at the same time.
                                 pomPanel.save(
                                         comment,
                                         new com.google.gwt.user.client.Command() {
                                             @Override
                                             public void execute() {
-                                                if (kModuleEditorPanel.hasBeenInitialized()) {
-                                                    kModuleEditorPanel.save(comment, kmoduleMetadata);
+                                                if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                                                    kModuleEditorPanel.save( comment, kmoduleMetadata );
                                                 }
                                             }
                                         },
-                                        pomMetadata);
+                                        pomMetadata );
                             }
                         }
 
-                        );
+                                                 );
                     }
-                }).addTopLevelMenuItem(
+                } ).addTopLevelMenuItem(
                 view.getBuildMenuItemText(),
                 new Command() {
                     @Override
@@ -170,13 +137,13 @@ public class
                         buildServiceCaller.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback(Void v) {
+                                    public void callback( Void v ) {
 
                                     }
                                 }
-                        ).build(pathToPomXML);
+                                               ).build( pathToPomXML );
                     }
-                }).build();
+                } ).build();
 
         // For now every module is a kie project.
 //        if (pathToKModuleXML == null) {
@@ -199,6 +166,40 @@ public class
 //            ));
 //        }
 
+    }
+
+    private void addKModuleEditor() {
+        kModuleServiceCaller.call(
+                new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( Path pathToKModuleXML ) {
+                        ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
+                        if ( pathToKModuleXML != null ) {
+                            setUpKProject();
+                        }
+                    }
+                }
+                                 ).pathToRelatedKModuleFileIfAny( pathToPomXML );
+    }
+
+    private void setUpKProject() {
+        view.setKModuleEditorPanel( kModuleEditorPanel );
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        //TODO {porcelli} Needs a way to notify title updates -> return pomPanel.getTitle();
+        return "Project Editor [" + pathToPomXML.getFileName() + "]";
+    }
+
+    @WorkbenchPartView
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
+    @WorkbenchMenu
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
     @Override

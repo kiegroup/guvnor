@@ -28,8 +28,8 @@
   <artifactId>guvnor-project-config-editor-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Project Editor Client</name>
-  <description>Project Editor Client</description>
+  <name>Project Config Editor Client</name>
+  <description>Project Config Editor Client</description>
 
   <dependencies>
 

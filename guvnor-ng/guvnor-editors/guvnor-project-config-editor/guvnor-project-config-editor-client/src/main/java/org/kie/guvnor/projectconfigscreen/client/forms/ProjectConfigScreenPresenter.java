@@ -64,14 +64,13 @@ public class ProjectConfigScreenPresenter
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.metadataService = metadataService;
         view.setPresenter( this );
-
-        makeMenuBar();
     }
 
     @OnStart
     public void init( final Path path ) {
 
         this.path = path;
+        makeMenuBar();
 
         projectEditorServiceCaller.call( new RemoteCallback<PackageConfiguration>() {
 
@@ -81,6 +80,15 @@ public class ProjectConfigScreenPresenter
                 view.setImports( path, packageConfiguration.getImports() );
             }
         } ).loadPackageConfiguration( path );
+    }
+
+    private void makeMenuBar() {
+        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ).build();
     }
 
     @WorkbenchPartTitle
@@ -118,12 +126,4 @@ public class ProjectConfigScreenPresenter
         return menuBar;
     }
 
-    private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).build();
-    }
 }

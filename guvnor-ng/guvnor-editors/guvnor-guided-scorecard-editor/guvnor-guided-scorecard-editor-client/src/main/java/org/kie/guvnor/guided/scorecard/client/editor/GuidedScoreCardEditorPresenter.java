@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.client.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -118,16 +117,59 @@ public class GuidedScoreCardEditorPresenter {
 
     private Path path;
     private PlaceRequest place;
+    private boolean isReadOnly;
 
     private ScoreCardModel model;
     private DataModelOracle oracle;
 
-    private boolean isReadOnly;
-
     @Inject
     private ImportsWidgetFixedListPresenter importsWidget;
 
-    @PostConstruct
+    @OnStart
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
+        this.path = path;
+        this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        makeMenuBar();
+
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+            @Override
+            public void onFocus() {
+                scoreCardEditorService.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( final String response ) {
+                        viewSource.setContent( response );
+                    }
+                } ).toSource( view.getModel() );
+            }
+
+            @Override
+            public void onLostFocus() {
+                viewSource.clear();
+            }
+        } );
+
+        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        loadContent();
+    }
+
     private void makeMenuBar() {
         FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
             @Override
@@ -172,49 +214,6 @@ public class GuidedScoreCardEditorPresenter {
         }
 
         menuBar = fileMenuBuilder.build();
-    }
-
-    @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-
-        multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
-            @Override
-            public void onFocus() {
-                scoreCardEditorService.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String response ) {
-                        viewSource.setContent( response );
-                    }
-                } ).toSource( view.getModel() );
-            }
-
-            @Override
-            public void onLostFocus() {
-                viewSource.clear();
-            }
-        } );
-
-        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-        loadContent();
     }
 
     private void loadContent() {
