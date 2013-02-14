@@ -113,7 +113,7 @@ public class FactModelsEditorPresenter {
 
     @Inject
     @New
-    private ResourceMenuBuilderImpl menuBuilder;
+    private ResourceMenuBuilder menuBuilder;
     private MenuBar menuBar;
 
     private Path path;
