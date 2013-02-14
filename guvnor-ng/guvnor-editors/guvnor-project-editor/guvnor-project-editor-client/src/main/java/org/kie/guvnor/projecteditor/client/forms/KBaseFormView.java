@@ -52,4 +52,6 @@ public interface KBaseFormView
     void setStatefulSessions( Map<String, KSessionModel> statefulSessions );
 
     void setStatelessSessions( Map<String, KSessionModel> statelessSessions );
+
+    void setReadOnly();
 }

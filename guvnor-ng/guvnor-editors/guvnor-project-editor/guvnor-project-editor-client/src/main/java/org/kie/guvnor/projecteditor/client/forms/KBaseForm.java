@@ -50,6 +50,11 @@ public class KBaseForm
         setSessions(knowledgeBaseConfiguration);
     }
 
+    @Override
+    public void makeReadOnly() {
+        view.setReadOnly();
+    }
+
     private void setSessions(KBaseModel knowledgeBaseConfiguration) {
         view.setStatefulSessions(knowledgeBaseConfiguration.getStatefulSessions());
         view.setStatelessSessions(knowledgeBaseConfiguration.getStatelessSessions());

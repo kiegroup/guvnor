@@ -72,7 +72,7 @@ public class ProjectEditorScreenTest {
         screen.init(path, placeRequest);
 
         verify(pomPanel).init(path, false);
-        verify(kModuleEditorPanel, never()).init(any(Path.class));
+        verify(kModuleEditorPanel, never()).init(any(Path.class), eq(false));
     }
 
     @Test

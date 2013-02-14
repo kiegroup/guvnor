@@ -68,7 +68,7 @@ public class KModuleEditorPanelTest {
         kModuleModel.add(createKBaseConfiguration("Second"));
         kModuleModel.add(createKBaseConfiguration("Third"));
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         verify(view).addItem("First");
         verify(view).addItem("Second");
@@ -83,7 +83,7 @@ public class KModuleEditorPanelTest {
         KBaseModel theOne = createKBaseConfiguration("TheOne");
         kModuleModel.add(theOne);
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         presenter.onSelect("TheOne");
 
@@ -95,7 +95,7 @@ public class KModuleEditorPanelTest {
 
         KModuleModel kModuleModel = new KModuleModel();
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         presenter.onAdd();
 
@@ -116,7 +116,7 @@ public class KModuleEditorPanelTest {
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("RemoveMe"));
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         presenter.onSelect("RemoveMe");
 
@@ -132,7 +132,7 @@ public class KModuleEditorPanelTest {
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("RenameMe"));
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         presenter.onSelect("RenameMe");
 
@@ -153,7 +153,7 @@ public class KModuleEditorPanelTest {
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         presenter.onRemove();
 
@@ -170,7 +170,7 @@ public class KModuleEditorPanelTest {
         kModuleModel.add(createKBaseConfiguration("RemoveMe"));
         kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         // Select one and remove.
         presenter.onSelect("RemoveMe");
@@ -189,7 +189,7 @@ public class KModuleEditorPanelTest {
     public void testSave() throws Exception {
         KModuleModel kModuleModel = new KModuleModel();
         projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path);
+        screenK.init(path, false);
 
         Metadata metadata = mock(Metadata.class);
         screenK.save("my commit message", metadata);

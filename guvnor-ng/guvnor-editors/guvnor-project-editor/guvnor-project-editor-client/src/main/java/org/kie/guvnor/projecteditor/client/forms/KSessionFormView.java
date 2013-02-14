@@ -37,4 +37,6 @@ public interface KSessionFormView
     void selectPseudo();
 
     void selectRealtime();
+
+    void makeReadOnly();
 }

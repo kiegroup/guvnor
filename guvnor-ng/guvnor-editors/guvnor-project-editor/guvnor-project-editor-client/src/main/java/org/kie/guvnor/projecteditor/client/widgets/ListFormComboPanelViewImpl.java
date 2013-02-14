@@ -37,6 +37,7 @@ public class ListFormComboPanelViewImpl
         implements ListFormComboPanelView {
 
     private Presenter presenter;
+    private Form form;
 
     @UiTemplate("ListFormComboPanelViewImpl.ui.xml")
     interface ListFormComboPanelViewImplBinder
@@ -58,6 +59,15 @@ public class ListFormComboPanelViewImpl
 
     @UiField
     Button makeDefaultButton;
+
+    @UiField
+    Button addButton;
+
+    @UiField
+    Button renameButton;
+
+    @UiField
+    Button deleteButton;
 
     public ListFormComboPanelViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -96,6 +106,7 @@ public class ListFormComboPanelViewImpl
     @Override
     public void setForm(Form form) {
         kSessionForm.clear();
+        this.form = form;
         kSessionForm.add(form);
     }
 
@@ -147,5 +158,14 @@ public class ListFormComboPanelViewImpl
     @Override
     public void disableMakeDefault() {
         makeDefaultButton.setEnabled(false);
+    }
+
+    @Override
+    public void makeReadOnly() {
+        addButton.setEnabled(false);
+        renameButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        makeDefaultButton.setEnabled(false);
+        form.makeReadOnly();
     }
 }

@@ -74,6 +74,12 @@ public class KSessionFormViewImpl
         realtime.setValue(true);
     }
 
+    @Override
+    public void makeReadOnly() {
+        realtime.setEnabled(false);
+        pseudo.setEnabled(false);
+    }
+
     @UiHandler("realtime")
     public void onRealtimeChange(ValueChangeEvent<Boolean> valueChangeEvent) {
         if (realtime.getValue()) {

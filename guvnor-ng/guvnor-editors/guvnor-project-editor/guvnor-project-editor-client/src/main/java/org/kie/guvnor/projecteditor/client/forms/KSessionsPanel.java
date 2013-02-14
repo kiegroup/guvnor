@@ -25,6 +25,7 @@ import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
 public class KSessionsPanel
         extends ListFormComboPanel<KSessionModel> {
 
+
     @Inject
     public KSessionsPanel(KSessionsPanelView view,
                           KSessionForm form,
@@ -37,5 +38,9 @@ public class KSessionsPanel
         KSessionModel kSessionModel = new KSessionModel();
         kSessionModel.setName(name);
         return kSessionModel;
+    }
+
+    public void makeReadOnly() {
+        view.makeReadOnly();
     }
 }

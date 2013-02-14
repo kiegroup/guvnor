@@ -115,6 +115,16 @@ public class KBaseFormViewImpl
         statelessSessionsPanel.setItems(statefulSessions);
     }
 
+    @Override
+    public void setReadOnly() {
+        equalsBehaviorIdentity.setEnabled(false);
+        equalsBehaviorEquality.setEnabled(false);
+        eventProcessingModeStream.setEnabled(false);
+        eventProcessingModeCloud.setEnabled(false);
+        statefulSessionsPanel.makeReadOnly();
+        statelessSessionsPanel.makeReadOnly();
+    }
+
     @UiHandler("equalsBehaviorIdentity")
     public void onEqualsBehaviorIdentityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
         if (equalsBehaviorIdentity.getValue()) {

@@ -37,11 +37,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.inject.New;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
 public class
@@ -89,8 +85,6 @@ public class
 
         view.setPresenter( this );
         view.setPOMEditorPanel( pomPanel );
-
-        makeMenuBar();
     }
 
     @OnStart
@@ -105,6 +99,8 @@ public class
         if (!isReadOnly) {
             addKModuleEditor();
         }
+
+        makeMenuBar();
     }
 
     private void addKModuleEditor() {
@@ -221,7 +217,7 @@ public class
     @Override
     public void onKModuleTabSelected() {
         if ( !kModuleEditorPanel.hasBeenInitialized() ) {
-            kModuleEditorPanel.init( pathToKModuleXML );
+            kModuleEditorPanel.init( pathToKModuleXML, false);
         }
     }
 

@@ -56,6 +56,11 @@ public class KSessionForm
     }
 
     @Override
+    public void makeReadOnly() {
+        view.makeReadOnly();
+    }
+
+    @Override
     public void onRealtimeSelect() {
         model.setClockType( ClockTypeOption.REALTIME);
     }

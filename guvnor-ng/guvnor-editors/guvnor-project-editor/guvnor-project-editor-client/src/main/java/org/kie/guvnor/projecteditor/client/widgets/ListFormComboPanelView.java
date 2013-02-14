@@ -54,4 +54,6 @@ public interface ListFormComboPanelView
     void enableMakeDefault();
 
     void disableMakeDefault();
+
+    void makeReadOnly();
 }

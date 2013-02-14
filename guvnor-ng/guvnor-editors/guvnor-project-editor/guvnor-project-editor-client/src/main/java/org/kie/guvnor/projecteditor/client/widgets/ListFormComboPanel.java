@@ -28,7 +28,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
         implements IsWidget, ListFormComboPanelView.Presenter {
 
     private Map<String, T> items;
-    private final ListFormComboPanelView view;
+    protected final ListFormComboPanelView view;
     private final FormPopup namePopup;
 
     private String selectedItemName = null;

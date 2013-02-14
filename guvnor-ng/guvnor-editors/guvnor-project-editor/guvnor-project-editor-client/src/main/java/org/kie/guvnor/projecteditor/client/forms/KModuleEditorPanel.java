@@ -34,8 +34,12 @@ public class KModuleEditorPanel
         this.view = view;
     }
 
-    public void init(Path path) {
+    public void init(Path path, boolean readOnly) {
         this.path = path;
+
+        if (readOnly) {
+            view.makeReadOnly();
+        }
 
         projectEditorServiceCaller.call(new RemoteCallback<KModuleModel>() {
             @Override

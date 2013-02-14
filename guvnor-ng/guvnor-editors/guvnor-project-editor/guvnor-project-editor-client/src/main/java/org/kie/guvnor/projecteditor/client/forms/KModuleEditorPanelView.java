@@ -23,4 +23,5 @@ public interface KModuleEditorPanelView
 
     void showSaveSuccessful(String fileName);
 
+    void makeReadOnly();
 }

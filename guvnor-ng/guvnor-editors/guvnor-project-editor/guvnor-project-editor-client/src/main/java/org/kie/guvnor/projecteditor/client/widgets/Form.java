@@ -23,4 +23,5 @@ public interface Form<T>
 
     void setModel( T t );
 
+    void makeReadOnly();
 }
