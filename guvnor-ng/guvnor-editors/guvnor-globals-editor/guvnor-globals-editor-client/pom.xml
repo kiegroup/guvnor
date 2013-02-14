@@ -29,12 +29,22 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-view-source-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-metadata-widget</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-config-resource-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-error-messages-widget</artifactId>
     </dependency>
 
     <dependency>

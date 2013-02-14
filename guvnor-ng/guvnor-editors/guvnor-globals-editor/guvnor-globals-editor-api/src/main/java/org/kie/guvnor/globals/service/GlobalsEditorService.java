@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.globals.service;
 
-import java.util.List;
-
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
-import org.kie.guvnor.globals.model.Global;
+import org.kie.guvnor.globals.model.GlobalsEditorContent;
+import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -29,18 +29,30 @@ import org.uberfire.backend.vfs.Path;
  * Service definition for Globals editor
  */
 @Remote
-public interface GlobalsEditorService extends ValidationService<String>,
-                                              SimpleVerificationService<String> {
+public interface GlobalsEditorService extends ViewSourceService<GlobalsModel>,
+                                              ValidationService<GlobalsModel>,
+                                              SimpleVerificationService<GlobalsModel> {
 
-    List<Global> load( final Path path );
+    GlobalsEditorContent loadContent( final Path path );
 
     void save( final Path path,
-               final List<Global> content,
+               final GlobalsModel content,
                final Metadata metadata,
                final String comment );
 
     void save( final Path path,
-               final List<Global> content,
+               final GlobalsModel content,
+               final String comment );
+
+    void delete( final Path path,
+                 final String comment );
+
+    Path rename( final Path path,
+                 final String newName,
+                 final String comment );
+
+    Path copy( final Path path,
+               final String newName,
                final String comment );
 
 }

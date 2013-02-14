@@ -28,7 +28,9 @@ public interface GlobalsEditorConstants
 
     public static final GlobalsEditorConstants INSTANCE = GWT.create( GlobalsEditorConstants.class );
 
-    String globalsEditorTitle();
+    String globalsEditorTitle0(String resource);
+
+    String globalsEditorReadOnlyTitle0(String resource);
 
     String newGlobalDescription();
 

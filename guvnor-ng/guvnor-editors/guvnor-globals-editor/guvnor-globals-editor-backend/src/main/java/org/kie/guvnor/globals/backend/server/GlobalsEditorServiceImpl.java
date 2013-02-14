@@ -16,9 +16,7 @@
 
 package org.kie.guvnor.globals.backend.server;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,12 +26,17 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.globals.model.Global;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.globals.backend.server.util.GlobalsPersistence;
+import org.kie.guvnor.globals.model.GlobalsEditorContent;
+import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
 @Service
@@ -46,6 +49,9 @@ public class GlobalsEditorServiceImpl
     private IOService ioService;
 
     @Inject
+    private DataModelService dataModelService;
+
+    @Inject
     private MetadataService metadataService;
 
     @Inject
@@ -55,59 +61,93 @@ public class GlobalsEditorServiceImpl
     private Identity identity;
 
     @Override
+    public GlobalsEditorContent loadContent( final Path path ) {
+        final GlobalsModel model = loadGlobalsModel( path );
+        final DataModelOracle dataModel = dataModelService.getDataModel( path );
+        return new GlobalsEditorContent( model,
+                                         dataModel );
+    }
+
+    private GlobalsModel loadGlobalsModel( final Path path ) {
+        final String content = ioService.readAllString( paths.convert( path ) );
+        return GlobalsPersistence.getInstance().unmarshal( content );
+    }
+
+    @Override
+    public void save( final Path path,
+                      final GlobalsModel model,
+                      final String comment ) {
+        ioService.write( paths.convert( path ),
+                         GlobalsPersistence.getInstance().marshal( model ),
+                         makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public void save( final Path resource,
+                      final GlobalsModel model,
+                      final Metadata metadata,
+                      final String comment ) {
+        ioService.write( paths.convert( resource ),
+                         GlobalsPersistence.getInstance().marshal( model ),
+                         metadataService.setUpAttributes( resource, metadata ),
+                         makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public void delete( final Path path,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
+        ioService.delete( paths.convert( path ) );
+    }
+
+    @Override
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
+    }
+
+    @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return targetPath;
+    }
+
+    @Override
+    public String toSource( final GlobalsModel model ) {
+        return GlobalsPersistence.getInstance().marshal( model );
+    }
+
+    @Override
     public BuilderResult validate( final Path path,
-                                   final String content ) {
+                                   final GlobalsModel model ) {
         //TODO {porcelli} validate
         return new BuilderResult();
     }
 
     @Override
     public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path, content ).hasLines();
+                            final GlobalsModel model ) {
+        return !validate( path,
+                          model ).hasLines();
     }
 
     @Override
-    public AnalysisReport verify( Path path,
-                                  String content ) {
+    public AnalysisReport verify( final Path path,
+                                  final GlobalsModel model ) {
         //TODO {porcelli} verify
         return new AnalysisReport();
-    }
-
-    @Override
-    public List<Global> load( final Path path ) {
-        final String drl = ioService.readAllString( paths.convert( path ) );
-        return fromDRL( drl );
-    }
-
-    @Override
-    public void save( final Path path,
-                      final List<Global> content,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
-                         toDRL( content ),
-                         makeCommentedOption( comment ) );
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final List<Global> content,
-                      final Metadata metadata,
-                      final String comment ) {
-
-        ioService.write( paths.convert( resource ),
-                         toDRL( content ),
-                         metadataService.setUpAttributes( resource, metadata ),
-                         makeCommentedOption( comment ) );
-    }
-
-    private List<Global> fromDRL( final String drl ) {
-        final List<Global> globals = new ArrayList<Global>();
-        return globals;
-    }
-
-    private String toDRL( final List<Global> globals ) {
-        return "";
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

@@ -1,7 +1,5 @@
 package org.kie.guvnor.globals.client.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -14,7 +12,7 @@ import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.client.resources.images.GlobalsEditorImageResources;
-import org.kie.guvnor.globals.model.Global;
+import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
@@ -53,26 +51,26 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final String fileName ) {
         final Path path = buildFullPathName( fileName );
-        final List<Global> model = new ArrayList<Global>();
+        final GlobalsModel model = new GlobalsModel();
 
         new SaveOperationService().save( path,
                                          new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                globalsService.call( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void aVoid ) {
-                        notifySuccess();
-                        notifyResourceAdded( path );
-                        final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "org.kie.guvnor.globals" );
-                        placeManager.goTo( place );
-                    }
-                } ).save( path,
-                          model,
-                          comment );
-            }
-        } );
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 globalsService.call( new RemoteCallback<Void>() {
+                                                     @Override
+                                                     public void callback( Void aVoid ) {
+                                                         notifySuccess();
+                                                         notifyResourceAdded( path );
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "org.kie.guvnor.globals" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).save( path,
+                                                           model,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }
