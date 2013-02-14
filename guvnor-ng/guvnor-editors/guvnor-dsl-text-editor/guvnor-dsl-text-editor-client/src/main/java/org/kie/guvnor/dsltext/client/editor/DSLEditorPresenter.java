@@ -70,23 +70,8 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @WorkbenchEditor(identifier = "DSLEditor", supportedTypes = { DSLResourceType.class })
 public class DSLEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final String content );
-
-        String getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-    }
-
     @Inject
-    private View view;
+    private DSLEditorView view;
 
     @Inject
     private Caller<DSLTextEditorService> dslTextEditorService;
