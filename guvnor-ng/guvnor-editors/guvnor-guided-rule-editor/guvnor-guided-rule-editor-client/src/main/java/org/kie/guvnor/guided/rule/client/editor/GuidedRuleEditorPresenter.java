@@ -179,7 +179,8 @@ public class GuidedRuleEditorPresenter {
                 oracle.setImports( model.getImports() );
                 view.setContent( path,
                                  model,
-                                 oracle );
+                                 oracle,
+                                 isReadOnly );
                 importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );

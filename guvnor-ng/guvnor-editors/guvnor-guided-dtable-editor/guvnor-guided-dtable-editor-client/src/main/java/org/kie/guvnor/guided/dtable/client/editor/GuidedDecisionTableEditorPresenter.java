@@ -81,7 +81,8 @@ public class GuidedDecisionTableEditorPresenter {
 
         void setContent( final Path path,
                          final DataModelOracle dataModel,
-                         final GuidedDecisionTable52 content );
+                         final GuidedDecisionTable52 content,
+                         final boolean isReadOnly );
 
         GuidedDecisionTable52 getContent();
 
@@ -198,7 +199,8 @@ public class GuidedDecisionTableEditorPresenter {
                 oracle.setImports( model.getImports() );
                 view.setContent( path,
                                  oracle,
-                                 model );
+                                 model,
+                                 isReadOnly );
                 importsWidget.setImports( path, model.getImports() );
             }
         } ).loadContent( path );

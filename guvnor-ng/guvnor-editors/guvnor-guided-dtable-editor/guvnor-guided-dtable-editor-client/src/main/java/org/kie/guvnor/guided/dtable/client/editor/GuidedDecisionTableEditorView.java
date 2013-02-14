@@ -37,7 +37,7 @@ public class GuidedDecisionTableEditorView
     private final EventBus localBus = new SimpleEventBus();
 
     private final VerticalPanel panel = new VerticalPanel();
-    private GuidedDecisionTable52     model;
+    private GuidedDecisionTable52 model;
     private GuidedDecisionTableWidget editor;
 
     @Inject
@@ -51,13 +51,15 @@ public class GuidedDecisionTableEditorView
     @Override
     public void setContent( final Path path,
                             final DataModelOracle dataModel,
-                            final GuidedDecisionTable52 model ) {
+                            final GuidedDecisionTable52 model,
+                            final boolean isReadOnly ) {
         this.model = model;
         this.editor = new GuidedDecisionTableWidget( path,
                                                      dataModel,
                                                      model,
                                                      localBus,
-                                                     identity );
+                                                     identity,
+                                                     isReadOnly );
         panel.add( this.editor );
     }
 

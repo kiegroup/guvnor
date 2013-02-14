@@ -49,15 +49,17 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     public BRLActionColumnViewImpl( final Path path,
                                     final DataModelOracle oracle,
                                     final GuidedDecisionTable52 model,
-                                    final boolean isNew,
                                     final BRLActionColumn column,
-                                    final EventBus eventBus ) {
+                                    final EventBus eventBus,
+                                    final boolean isNew,
+                                    final boolean isReadOnly ) {
         super( path,
                oracle,
                model,
-               isNew,
                column,
-               eventBus );
+               eventBus,
+               isNew,
+               isReadOnly );
 
         setTitle( Constants.INSTANCE.ActionBRLFragmentConfiguration() );
     }

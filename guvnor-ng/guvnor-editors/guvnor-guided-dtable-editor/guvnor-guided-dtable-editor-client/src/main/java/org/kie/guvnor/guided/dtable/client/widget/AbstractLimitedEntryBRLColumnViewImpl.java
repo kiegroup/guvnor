@@ -90,18 +90,18 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
     public AbstractLimitedEntryBRLColumnViewImpl( final Path path,
                                                   final DataModelOracle oracle,
                                                   final GuidedDecisionTable52 model,
-                                                  final boolean isNew,
                                                   final BRLColumn<T, C> column,
-                                                  final EventBus eventBus ) {
+                                                  final EventBus eventBus,
+                                                  final boolean isNew,
+                                                  final boolean isReadOnly ) {
         this.model = model;
         this.isNew = isNew;
         this.eventBus = eventBus;
         this.originalCol = column;
         this.editingCol = cloneBRLColumn( column );
+        this.ruleModel = getRuleModel( editingCol );
 
         setModal( false );
-
-        this.ruleModel = getRuleModel( editingCol );
 
         //Limited Entry decision tables do not permit field values to be defined with Template Keys
         ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
@@ -111,7 +111,8 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
                                               oracle,
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
-                                              eventBus );
+                                              eventBus,
+                                              isReadOnly );
 
         this.popupContent = uiBinder.createAndBindUi( this );
 

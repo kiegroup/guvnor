@@ -157,7 +157,8 @@ public class GuidedDecisionTableWidget extends Composite
                                       final DataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
                                       final EventBus globalEventBus,
-                                      final Identity identity ) {
+                                      final Identity identity,
+                                      final boolean isReadOnly ) {
 
         this.path = path;
         this.oracle = oracle;
@@ -165,7 +166,7 @@ public class GuidedDecisionTableWidget extends Composite
         this.globalEventBus = globalEventBus;
         this.identity = identity;
         this.rm = new BRLRuleModel( model );
-        this.isReadOnly = false;
+        this.isReadOnly = isReadOnly;
 
         this.model.initAnalysisColumn();
 
@@ -433,9 +434,10 @@ public class GuidedDecisionTableWidget extends Composite
                                             LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( path,
                                                                                                                                  oracle,
                                                                                                                                  model,
-                                                                                                                                 false,
                                                                                                                                  column,
-                                                                                                                                 eventBus );
+                                                                                                                                 eventBus,
+                                                                                                                                 false,
+                                                                                                                                 isReadOnly );
                                             popup.setPresenter( LIMITED_ENTRY_BRL_ACTION_PRESENTER );
                                             popup.show();
                                         }
@@ -452,9 +454,10 @@ public class GuidedDecisionTableWidget extends Composite
                                             BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
                                                                                                          oracle,
                                                                                                          model,
-                                                                                                         false,
                                                                                                          column,
-                                                                                                         eventBus );
+                                                                                                         eventBus,
+                                                                                                         false,
+                                                                                                         isReadOnly );
                                             popup.setPresenter( BRL_ACTION_PRESENTER );
                                             popup.show();
                                         }
@@ -842,9 +845,10 @@ public class GuidedDecisionTableWidget extends Composite
                                 BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
                                                                                                    oracle,
                                                                                                    model,
-                                                                                                   true,
                                                                                                    column,
-                                                                                                   eventBus );
+                                                                                                   eventBus,
+                                                                                                   true,
+                                                                                                   isReadOnly );
                                 popup.setPresenter( BRL_CONDITION_PRESENTER );
                                 popup.show();
                                 break;
@@ -852,9 +856,10 @@ public class GuidedDecisionTableWidget extends Composite
                                 LimitedEntryBRLConditionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLConditionColumnViewImpl( path,
                                                                                                                                       oracle,
                                                                                                                                       model,
-                                                                                                                                      true,
                                                                                                                                       (LimitedEntryBRLConditionColumn) column,
-                                                                                                                                      eventBus );
+                                                                                                                                      eventBus,
+                                                                                                                                      true,
+                                                                                                                                      isReadOnly );
                                 limtedEntryPopup.setPresenter( LIMITED_ENTRY_BRL_CONDITION_PRESENTER );
                                 limtedEntryPopup.show();
                                 break;
@@ -958,9 +963,10 @@ public class GuidedDecisionTableWidget extends Composite
                                 BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
                                                                                              oracle,
                                                                                              model,
-                                                                                             true,
                                                                                              column,
-                                                                                             eventBus );
+                                                                                             eventBus,
+                                                                                             true,
+                                                                                             isReadOnly );
                                 popup.setPresenter( BRL_ACTION_PRESENTER );
                                 popup.show();
                                 break;
@@ -968,9 +974,10 @@ public class GuidedDecisionTableWidget extends Composite
                                 LimitedEntryBRLActionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLActionColumnViewImpl( path,
                                                                                                                                 oracle,
                                                                                                                                 model,
-                                                                                                                                true,
                                                                                                                                 (LimitedEntryBRLActionColumn) column,
-                                                                                                                                eventBus );
+                                                                                                                                eventBus,
+                                                                                                                                true,
+                                                                                                                                isReadOnly );
                                 limtedEntryPopup.setPresenter( LIMITED_ENTRY_BRL_ACTION_PRESENTER );
                                 limtedEntryPopup.show();
                                 break;
@@ -1158,9 +1165,10 @@ public class GuidedDecisionTableWidget extends Composite
                                             LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( path,
                                                                                                                                        oracle,
                                                                                                                                        model,
-                                                                                                                                       false,
                                                                                                                                        (LimitedEntryBRLConditionColumn) origCol,
-                                                                                                                                       eventBus );
+                                                                                                                                       eventBus,
+                                                                                                                                       false,
+                                                                                                                                       isReadOnly );
                                             popup.setPresenter( LIMITED_ENTRY_BRL_CONDITION_PRESENTER );
                                             popup.show();
                                         }
@@ -1173,9 +1181,10 @@ public class GuidedDecisionTableWidget extends Composite
                                         BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
                                                                                                            oracle,
                                                                                                            model,
-                                                                                                           false,
                                                                                                            origCol,
-                                                                                                           eventBus );
+                                                                                                           eventBus,
+                                                                                                           false,
+                                                                                                           isReadOnly );
                                         popup.setPresenter( BRL_CONDITION_PRESENTER );
                                         popup.show();
                                     }

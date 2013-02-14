@@ -64,8 +64,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
-    protected final boolean isReadOnly;
-
     @UiField(provided = true)
     RuleModeller ruleModeller;
 
@@ -104,20 +102,18 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     public AbstractBRLColumnViewImpl( final Path path,
                                       final DataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
-                                      final boolean isNew,
                                       final BRLColumn<T, C> column,
-                                      final EventBus eventBus ) {
+                                      final EventBus eventBus,
+                                      final boolean isNew,
+                                      final boolean isReadOnly ) {
         this.model = model;
         this.isNew = isNew;
         this.eventBus = eventBus;
-        this.isReadOnly = false;
-
         this.originalCol = column;
         this.editingCol = cloneBRLColumn( column );
+        this.ruleModel = getRuleModel( editingCol );
 
         setModal( false );
-
-        this.ruleModel = getRuleModel( editingCol );
 
         ModellerWidgetFactory widgetFactory = new TemplateModellerWidgetFactory();
 
@@ -126,7 +122,8 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                                               oracle,
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
-                                              eventBus );
+                                              eventBus,
+                                              isReadOnly );
 
         this.popupContent = uiBinder.createAndBindUi( this );
 

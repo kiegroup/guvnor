@@ -48,7 +48,8 @@ public class GuidedRuleTemplateEditorView
                                           model,
                                           dataModel,
                                           new TemplateModellerWidgetFactory(),
-                                          eventBus );
+                                          eventBus,
+                                          isReadOnly );
         panel.add( this.modeller );
     }
 

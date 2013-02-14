@@ -24,9 +24,10 @@ import org.uberfire.backend.vfs.Path;
 public interface GuidedRuleEditorView
         extends IsWidget {
 
-    void setContent(final Path path,
-                    final RuleModel model,
-                    final DataModelOracle dataModel);
+    void setContent( final Path path,
+                     final RuleModel model,
+                     final DataModelOracle dataModel,
+                     final boolean isReadOnly );
 
     RuleModel getContent();
 

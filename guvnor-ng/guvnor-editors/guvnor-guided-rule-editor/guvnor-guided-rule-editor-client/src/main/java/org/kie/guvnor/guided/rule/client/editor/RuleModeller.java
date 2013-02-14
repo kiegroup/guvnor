@@ -43,8 +43,8 @@ import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
 import org.kie.guvnor.guided.rule.model.RuleMetadata;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -77,7 +77,7 @@ public class RuleModeller extends DirtyableComposite
     private Path path;
     private ModellerWidgetFactory widgetFactory;
     private EventBus eventBus;
-    private boolean readOnly = false;
+    private boolean isReadOnly = false;
 
     private List<RuleModellerWidget> lhsWidgets = new ArrayList<RuleModellerWidget>();
     private List<RuleModellerWidget> rhsWidgets = new ArrayList<RuleModellerWidget>();
@@ -97,13 +97,15 @@ public class RuleModeller extends DirtyableComposite
                          final RuleModel model,
                          final DataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
-                         final EventBus eventBus ) {
+                         final EventBus eventBus,
+                         final boolean isReadOnly ) {
         this.path = path;
         this.model = model;
         this.dataModel = dataModel;
         this.widgetFactory = widgetFactory;
         this.configuration = RuleModellerConfiguration.getDefault();
         this.eventBus = eventBus;
+        this.isReadOnly = isReadOnly;
 
         doLayout();
     }
@@ -114,13 +116,15 @@ public class RuleModeller extends DirtyableComposite
                          final DataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
                          final RuleModellerConfiguration configuration,
-                         final EventBus eventBus ) {
+                         final EventBus eventBus,
+                         final boolean isReadOnly ) {
         this.path = path;
-        this.dataModel = dataModel;
         this.model = model;
-        this.eventBus = eventBus;
+        this.dataModel = dataModel;
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
+        this.eventBus = eventBus;
+        this.isReadOnly = isReadOnly;
 
         doLayout();
     }
@@ -862,7 +866,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     public boolean isReadOnly() {
-        return readOnly;
+        return isReadOnly;
     }
 
     private WorkingSetManager getWorkingSetManager() {

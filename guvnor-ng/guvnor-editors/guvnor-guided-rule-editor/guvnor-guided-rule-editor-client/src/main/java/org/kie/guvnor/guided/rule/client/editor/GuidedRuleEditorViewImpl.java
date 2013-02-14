@@ -42,12 +42,14 @@ public class GuidedRuleEditorViewImpl
     @Override
     public void setContent( final Path path,
                             final RuleModel model,
-                            final DataModelOracle dataModel ) {
+                            final DataModelOracle dataModel,
+                            final boolean isReadOnly ) {
         modeller = new RuleModeller( path,
                                      model,
                                      dataModel,
                                      new RuleModellerWidgetFactory(),
-                                     localBus );
+                                     localBus,
+                                     isReadOnly );
         panel.add( this.modeller );
     }
 
