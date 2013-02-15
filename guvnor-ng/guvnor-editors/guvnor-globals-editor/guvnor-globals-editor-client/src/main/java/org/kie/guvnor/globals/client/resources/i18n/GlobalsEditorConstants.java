@@ -28,9 +28,9 @@ public interface GlobalsEditorConstants
 
     public static final GlobalsEditorConstants INSTANCE = GWT.create( GlobalsEditorConstants.class );
 
-    String globalsEditorTitle0(String resource);
+    String globalsEditorTitle0( String resource );
 
-    String globalsEditorReadOnlyTitle0(String resource);
+    String globalsEditorReadOnlyTitle0( String resource );
 
     String newGlobalDescription();
 
@@ -43,5 +43,17 @@ public interface GlobalsEditorConstants
     String add();
 
     String remove();
+
+    String addGlobalPopupTitle();
+
+    String OK();
+
+    String cancel();
+
+    String aliasIsMandatory();
+
+    String classNameIsMandatory();
+
+    String promptForRemovalOfGlobal0( String alias );
 
 }
