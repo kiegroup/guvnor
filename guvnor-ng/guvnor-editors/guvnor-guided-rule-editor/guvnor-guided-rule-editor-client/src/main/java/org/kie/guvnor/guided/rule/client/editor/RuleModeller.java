@@ -212,43 +212,21 @@ public class RuleModeller extends DirtyableComposite
 
         if ( showAttributes() ) {
 
-            final int tmp1 = currentLayoutRow;
-            final int tmp2 = currentLayoutRow + 1;
-
-            final RuleModeller self = this;
+            final int optionsRowIndex = currentLayoutRow;
             if ( !this.showingOptions ) {
                 ClickableLabel showMoreOptions = new ClickableLabel( "(show options...)",
                                                                      new ClickHandler() {
 
                                                                          public void onClick( ClickEvent event ) {
                                                                              showingOptions = true;
-                                                                             layout.setWidget( tmp1,
-                                                                                               2,
-                                                                                               new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
-                                                                             layout.setWidget( tmp1,
-                                                                                               4,
-                                                                                               getAddAttribute() );
-                                                                             layout.setWidget( tmp2,
-                                                                                               3,
-                                                                                               new RuleAttributeWidget( self,
-                                                                                                                        self.model ) );
+                                                                             renderOptions( optionsRowIndex );
                                                                          }
                                                                      } );
-                layout.setWidget( tmp1,
+                layout.setWidget( optionsRowIndex,
                                   2,
                                   showMoreOptions );
             } else {
-                layout.setWidget( tmp1,
-                                  2,
-                                  new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
-                layout.setWidget( tmp1,
-                                  4,
-                                  getAddAttribute() );
-                layout.setWidget( tmp2,
-                                  3,
-                                  new RuleAttributeWidget( self,
-                                                           self.model ) );
-
+                renderOptions( optionsRowIndex );
             }
 
         }
@@ -262,6 +240,22 @@ public class RuleModeller extends DirtyableComposite
                                              "100%" );
 
         this.verifyRule( null );
+    }
+
+    private void renderOptions( final int optionsRowIndex ) {
+        layout.setWidget( optionsRowIndex,
+                          2,
+                          new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
+        if ( !isReadOnly ) {
+            layout.setWidget( optionsRowIndex,
+                              4,
+                              getAddAttribute() );
+        }
+        layout.setWidget( optionsRowIndex + 1,
+                          3,
+                          new RuleAttributeWidget( this,
+                                                   this.model,
+                                                   isReadOnly ) );
     }
 
     private boolean isLock( String attr ) {

@@ -50,22 +50,22 @@ public class RuleAttributeWidget extends Composite {
     /**
      * These are the names of all of the rule attributes for this widget
      */
-    public static final String SALIENCE_ATTR         = "salience";         // needs to be public
-    public static final String ENABLED_ATTR          = "enabled";
-    public static final String DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String NO_LOOP_ATTR          = "no-loop";
-    public static final String AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String SALIENCE_ATTR = "salience";         // needs to be public
+    public static final String ENABLED_ATTR = "enabled";
+    public static final String DATE_EFFECTIVE_ATTR = "date-effective";
+    public static final String DATE_EXPIRES_ATTR = "date-expires";
+    public static final String NO_LOOP_ATTR = "no-loop";
+    public static final String AGENDA_GROUP_ATTR = "agenda-group";
     public static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String DURATION_ATTR         = "duration";
-    public static final String TIMER_ATTR            = "timer";
-    public static final String CALENDARS_ATTR        = "calendars";
-    public static final String AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String DIALECT_ATTR          = "dialect";
-    public static final String LOCK_LHS              = "freeze_conditions";
-    public static final String LOCK_RHS              = "freeze_actions";
+    public static final String DURATION_ATTR = "duration";
+    public static final String TIMER_ATTR = "timer";
+    public static final String CALENDARS_ATTR = "calendars";
+    public static final String AUTO_FOCUS_ATTR = "auto-focus";
+    public static final String LOCK_ON_ACTIVE_ATTR = "lock-on-active";
+    public static final String RULEFLOW_GROUP_ATTR = "ruleflow-group";
+    public static final String DIALECT_ATTR = "dialect";
+    public static final String LOCK_LHS = "freeze_conditions";
+    public static final String LOCK_RHS = "freeze_actions";
 
     public static final String DEFAULT_DIALECT = "mvel";
 
@@ -73,14 +73,15 @@ public class RuleAttributeWidget extends Composite {
      * If the rule attribute is represented visually by a checkbox, these are
      * the values that will be stored in the model when checked/unchecked
      */
-    private static final String TRUE_VALUE  = "true";
+    private static final String TRUE_VALUE = "true";
     private static final String FALSE_VALUE = "false";
 
-    private RuleModel    model;
+    private RuleModel model;
     private RuleModeller parent;
 
-    public RuleAttributeWidget( RuleModeller parent,
-                                RuleModel model ) {
+    public RuleAttributeWidget( final RuleModeller parent,
+                                final RuleModel model,
+                                final boolean isReadOnly ) {
         this.parent = parent;
         this.model = model;
         FormStyleLayout layout = new FormStyleLayout();
@@ -95,7 +96,8 @@ public class RuleAttributeWidget extends Composite {
             RuleMetadata rmd = meta[ i ];
             layout.addAttribute( rmd.getAttributeName(),
                                  getEditorWidget( rmd,
-                                                  i ) );
+                                                  i,
+                                                  isReadOnly ) );
         }
         RuleAttribute[] attrs = model.attributes;
         if ( attrs.length > 0 ) {
@@ -107,7 +109,8 @@ public class RuleAttributeWidget extends Composite {
             RuleAttribute at = attrs[ i ];
             layout.addAttribute( at.getAttributeName(),
                                  getEditorWidget( at,
-                                                  i ) );
+                                                  i,
+                                                  isReadOnly ) );
         }
 
         initWidget( layout );
@@ -141,42 +144,53 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Widget getEditorWidget( final RuleAttribute at,
-                                    final int idx ) {
+                                    final int idx,
+                                    final boolean isReadOnly ) {
         Widget editor;
 
         if ( at.getAttributeName().equals( ENABLED_ATTR ) || at.getAttributeName().equals( AUTO_FOCUS_ATTR ) || at.getAttributeName().equals( LOCK_ON_ACTIVE_ATTR ) || at.getAttributeName().equals( NO_LOOP_ATTR ) ) {
-            editor = checkBoxEditor( at );
+            editor = checkBoxEditor( at,
+                                     isReadOnly );
         } else {
-            editor = textBoxEditor( at );
+            editor = textBoxEditor( at,
+                                    isReadOnly );
         }
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add( editor );
-        horiz.add( getRemoveIcon( idx ) );
+        if ( !isReadOnly ) {
+            horiz.add( getRemoveIcon( idx ) );
+        }
 
         return horiz;
     }
 
     private Widget getEditorWidget( final RuleMetadata rm,
-                                    final int idx ) {
+                                    final int idx,
+                                    final boolean isReadOnly ) {
         Widget editor;
 
         if ( rm.getAttributeName().equals( LOCK_LHS ) || rm.getAttributeName().equals( LOCK_RHS ) ) {
             editor = new InfoPopup( Constants.INSTANCE.FrozenAreas(),
                                     Constants.INSTANCE.FrozenExplanation() );
         } else {
-            editor = textBoxEditor( rm );
+            editor = textBoxEditor( rm,
+                                    isReadOnly );
         }
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add( editor );
-        horiz.add( getRemoveMetaIcon( idx ) );
+        if ( !isReadOnly ) {
+            horiz.add( getRemoveMetaIcon( idx ) );
+        }
 
         return horiz;
     }
 
-    private Widget checkBoxEditor( final RuleAttribute at ) {
+    private Widget checkBoxEditor( final RuleAttribute at,
+                                   final boolean isReadOnly ) {
         final CheckBox box = new CheckBox();
+        box.setEnabled( !isReadOnly );
         if ( at.getValue() == null ) {
             box.setValue( true );
             at.setValue( TRUE_VALUE );
@@ -192,8 +206,10 @@ public class RuleAttributeWidget extends Composite {
         return box;
     }
 
-    private TextBox textBoxEditor( final RuleAttribute at ) {
+    private TextBox textBoxEditor( final RuleAttribute at,
+                                   final boolean isReadOnly ) {
         final TextBox box = new TextBox();
+        box.setEnabled( !isReadOnly );
         box.setVisibleLength( ( at.getValue().length() < 3 ) ? 3 : at.getValue().length() );
         box.setText( at.getValue() );
         box.addChangeHandler( new ChangeHandler() {
@@ -219,8 +235,10 @@ public class RuleAttributeWidget extends Composite {
         return box;
     }
 
-    private TextBox textBoxEditor( final RuleMetadata rm ) {
+    private TextBox textBoxEditor( final RuleMetadata rm,
+                                   final boolean isReadOnly ) {
         final TextBox box = new TextBox();
+        box.setEnabled( !isReadOnly );
         box.setVisibleLength( ( rm.getValue().length() < 3 ) ? 3 : rm.getValue().length() );
         box.setText( rm.getValue() );
         box.addChangeHandler( new ChangeHandler() {
