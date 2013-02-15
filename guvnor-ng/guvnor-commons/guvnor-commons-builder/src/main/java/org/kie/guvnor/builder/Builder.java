@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +26,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.Message;
+import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
@@ -46,18 +46,23 @@ public class Builder {
     private final Paths paths;
     private final String artifactId;
     private final SourceServices sourceServices;
+    private final IOService ioService;
     private final BuilderFilter filter;
+
+    private final String projectPrefix;
 
     private Map<String, Path> handles = new HashMap<String, Path>();
 
     public Builder( final Path moduleDirectory,
                     final String artifactId,
                     final Paths paths,
-                    final SourceServices sourceServices ) {
+                    final SourceServices sourceServices,
+                    final IOService ioService ) {
         this( moduleDirectory,
               artifactId,
               paths,
               sourceServices,
+              ioService,
               new DefaultBuilderFilter() );
     }
 
@@ -65,12 +70,16 @@ public class Builder {
                     final String artifactId,
                     final Paths paths,
                     final SourceServices sourceServices,
+                    final IOService ioService,
                     final BuilderFilter filter ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;
         this.sourceServices = sourceServices;
+        this.ioService = ioService;
         this.filter = filter;
+
+        projectPrefix = moduleDirectory.toUri().toString();
 
         KieServices kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
@@ -97,8 +106,9 @@ public class Builder {
                 visitPaths( Files.newDirectoryStream( path ) );
 
             } else if ( filter.accept( path ) ) {
-
+/*
                 if ( sourceServices.hasServiceFor( path ) ) {
+
                     final SourceService service = sourceServices.getServiceFor( path );
                     final SourceContext context = service.getSource( path );
                     final InputStream is = context.getInputSteam();
@@ -108,8 +118,12 @@ public class Builder {
                     handles.put( destinationPath, path );
                     kieFileSystem.write( destinationPath,
                                          isr );
-                }
 
+                }
+*/
+                String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
+                String content = ioService.readAllString( path );
+                kieFileSystem.write( destinationPath, content );
             }
         }
     }

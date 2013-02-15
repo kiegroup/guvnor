@@ -18,6 +18,7 @@ package org.kie.guvnor.builder;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.impl.InternalKieModule;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
@@ -42,6 +43,7 @@ public class BuildServiceImpl
     private Event<Results> messagesEvent;
     private POMService pomService;
     private M2RepoService m2RepoService;
+    private IOService ioService;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -52,12 +54,14 @@ public class BuildServiceImpl
                             final SourceServices sourceServices,
                             final POMService pomService,
                             final M2RepoService m2RepoService,
-                            final Event<Results> messagesEvent) {
+                            final Event<Results> messagesEvent,
+                            final IOService ioService) {
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
+        this.ioService = ioService;
     }
 
     @Override
@@ -65,9 +69,10 @@ public class BuildServiceImpl
         final POM gav = pomService.loadPOM(pathToPom);
 
         final Builder builder = new Builder(paths.convert(pathToPom).getParent(),
-                gav.getGav().getArtifactId(),
-                paths,
-                sourceServices);
+                                            gav.getGav().getArtifactId(),
+                                            paths,
+                                            sourceServices,
+                                            ioService);
 
         final Results results = builder.build();
         if (results.isEmpty()) {

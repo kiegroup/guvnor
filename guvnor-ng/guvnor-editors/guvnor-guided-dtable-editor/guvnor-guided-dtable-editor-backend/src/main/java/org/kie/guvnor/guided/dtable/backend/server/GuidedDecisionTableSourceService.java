@@ -81,7 +81,7 @@ public class GuidedDecisionTableSourceService
     // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.
     // GuidedDecisionTableUtils also handles data-types, enums etc and hence requires a DataModelOracle to function. Loading
     // a DataModelOracle just to determine whether the model has DSLs is an expensive operation and not needed here.
-    private boolean hasDSLSentences(final GuidedDecisionTable52 model) {
+    static boolean hasDSLSentences(final GuidedDecisionTable52 model) {
         for (CompositeColumn<? extends BaseColumn> column : model.getConditions()) {
             if (column instanceof BRLConditionColumn) {
                 final BRLConditionColumn brlColumn = (BRLConditionColumn) column;

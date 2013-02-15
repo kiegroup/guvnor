@@ -27,6 +27,8 @@ import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+
+import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
@@ -48,15 +50,10 @@ public class BuildServiceImplTest {
     }
     @Test
     public void testBuilderSimpleKProject() throws Exception {
-        Bean sourceServicesBean = (Bean)beanManager.getBeans(SourceServices.class).iterator().next();
-        CreationalContext cc = beanManager.createCreationalContext(sourceServicesBean);
-        SourceServices sourceServices = (SourceServices)beanManager.getReference(sourceServicesBean, SourceServices.class, cc);
+        SourceServices sourceServices = getReference(SourceServices.class);
+        Paths paths = getReference(Paths.class);
+        IOService ioService = getReference(IOService.class);
 
-        Bean pathsBean = (Bean)beanManager.getBeans(Paths.class).iterator().next();
-        cc = beanManager.createCreationalContext(pathsBean);
-        Paths paths = (Paths)beanManager.getReference(pathsBean, Paths.class, cc);
-   
-        
         URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample1");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.kie.commons.java.nio.file.Path path = p.getPath(url.toURI());
@@ -64,7 +61,8 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder(path,
                 "guvnor-m2repo-dependency-example1",
                 paths,
-                sourceServices );
+                sourceServices,
+                ioService );
         
         final Results results = builder.build();
         
@@ -76,17 +74,12 @@ public class BuildServiceImplTest {
 /*        Weld weld = new Weld();
         WeldContainer weldContainer = weld.initialize();
 
-        SourceServices sourceServices = weldContainer.instance().select(SourceServices.class).get();*/             
-        
-        Bean sourceServicesBean = (Bean)beanManager.getBeans(SourceServices.class).iterator().next();
-        CreationalContext cc = beanManager.createCreationalContext(sourceServicesBean);
-        SourceServices sourceServices = (SourceServices)beanManager.getReference(sourceServicesBean, SourceServices.class, cc);
+        SourceServices sourceServices = weldContainer.instance().select(SourceServices.class).get();*/
 
-        Bean pathsBean = (Bean)beanManager.getBeans(Paths.class).iterator().next();
-        cc = beanManager.createCreationalContext(pathsBean);
-        Paths paths = (Paths)beanManager.getReference(pathsBean, Paths.class, cc);
+        SourceServices sourceServices = getReference(SourceServices.class);
+        Paths paths = getReference(Paths.class);
+        IOService ioService = getReference(IOService.class);
 
-        
         URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.kie.commons.java.nio.file.Path path = p.getPath(url.toURI());
@@ -94,13 +87,20 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder(path,
                 "guvnor-m2repo-dependency-example2",
                 paths,
-                sourceServices );
+                sourceServices,
+                ioService );
         
         final Results results = builder.build();
         
         assertTrue(results.isEmpty());
     }
-    
+
+    private <T> T getReference(Class<T> clazz) {
+        Bean bean = (Bean)beanManager.getBeans(clazz).iterator().next();
+        CreationalContext cc = beanManager.createCreationalContext(bean);
+        return (T)beanManager.getReference(bean, clazz, cc);
+    }
+
     private void setUpGuvnorM2Repo() {        
         Bean m2RepoServiceBean = (Bean)beanManager.getBeans(M2RepoService.class).iterator().next();
         CreationalContext cc = beanManager.createCreationalContext(m2RepoServiceBean);

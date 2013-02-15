@@ -157,6 +157,7 @@ public class DataModelServiceImpl
                                              gav.getGav().getArtifactId(),
                                              paths,
                                              sourceServices,
+                                             ioService,
                                              new ModelBuilderFilter() );
 
         //If the Project had errors report them to the user and return an empty ProjectDefinition
