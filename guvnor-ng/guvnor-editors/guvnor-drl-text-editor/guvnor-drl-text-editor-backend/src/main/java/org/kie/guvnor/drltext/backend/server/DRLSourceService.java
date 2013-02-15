@@ -17,6 +17,7 @@
 package org.kie.guvnor.drltext.backend.server;
 
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
 
 import javax.inject.Inject;

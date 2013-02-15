@@ -18,11 +18,13 @@ package org.kie.guvnor.commons.service.source;
 
 import org.kie.commons.java.nio.file.Path;
 
-public interface SourceService {
+public interface SourceService<T> {
 
     boolean accepts( final Path path );
 
     SourceContext getSource( final Path path );
+
+    String getSource( final Path path, final T model );
 
     String getPattern();
 

@@ -17,6 +17,7 @@
 package org.kie.guvnor.projecteditor.backend.server;
 
 import org.junit.Test;
+import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.model.KModuleModel;
 
 import java.io.BufferedReader;

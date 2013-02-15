@@ -23,7 +23,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 public abstract class DRLBaseSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<String> {
 
     protected DRLBaseSourceService() {
         super( "/src/main/resources" );
@@ -32,9 +32,19 @@ public abstract class DRLBaseSourceService
     @Override
     public SourceContext getSource( final Path path ) {
 
-        String packageDeclaration = returnPackageDeclaration( path );
+        String drl = getSource(path, getIOService().readAllString( path ));
 
-        String drl = getIOService().readAllString( path );
+        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        final SourceContext context = new SourceContext( bis,
+                                                         stripProjectPrefix( path ) );
+        return context;
+    }
+
+    @Override
+    public String getSource(Path path, String drl) {
+        String packageDeclaration = returnPackageDeclaration(path);
+
         if ( !drl.contains( packageDeclaration ) ) {
             drl = packageDeclaration + "\n" + drl;
         }
@@ -44,11 +54,7 @@ public abstract class DRLBaseSourceService
             drl = " ";
         }
 
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         stripProjectPrefix( path ) );
-        return context;
+        return drl;
     }
 
     abstract protected IOService getIOService();

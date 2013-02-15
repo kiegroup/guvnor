@@ -11,6 +11,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
@@ -23,13 +25,15 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class POMServiceImpl
-        implements POMService {
+        implements POMService,
+        ViewSourceService<POM>{
 
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
     private IOService ioService;
     private Paths paths;
     private POMContentHandler pomContentHandler;
     private MetadataService metadataService;
+    private SourceServices sourceServices;
 
     @Inject
     private Identity identity;
@@ -42,11 +46,13 @@ public class POMServiceImpl
     public POMServiceImpl( Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
                            @Named("ioStrategy") IOService ioService,
                            MetadataService metadataService,
+                           SourceServices sourceServices,
                            Paths paths,
                            POMContentHandler pomContentHandler ) {
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.ioService = ioService;
         this.metadataService = metadataService;
+        this.sourceServices = sourceServices;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
     }
@@ -128,4 +134,9 @@ public class POMServiceImpl
         return co;
     }
 
+    @Override
+    public String toSource(Path path, POM model) {
+
+        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path),model);
+    }
 }

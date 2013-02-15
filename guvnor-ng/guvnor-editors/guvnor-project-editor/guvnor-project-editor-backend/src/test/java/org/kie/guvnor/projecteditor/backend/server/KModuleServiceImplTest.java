@@ -19,6 +19,8 @@ package org.kie.guvnor.projecteditor.backend.server;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
+import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
@@ -48,7 +50,8 @@ public class KModuleServiceImplTest {
         invalidateDMOProjectCache = mock(Event.class);
 
         setUpWrite();
-        serviceImpl = new KModuleServiceImpl(ioService, mock(MetadataService.class), paths, kProjectContentHandler);
+        SourceServices sourceServices = mock(SourceServices.class);
+        serviceImpl = new KModuleServiceImpl(ioService, mock(MetadataService.class), sourceServices, paths, kProjectContentHandler);
     }
 
     private void setUpWrite() {

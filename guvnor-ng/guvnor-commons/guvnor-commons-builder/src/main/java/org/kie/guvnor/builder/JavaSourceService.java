@@ -11,7 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 public class JavaSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<String> {
 
     private static final String PATTERN = ".java";
 
@@ -33,5 +33,10 @@ public class JavaSourceService
     @Override
     public String getPattern() {
         return PATTERN;
+    }
+
+    @Override
+    public String getSource(Path path, String model) {
+        return model;
     }
 }

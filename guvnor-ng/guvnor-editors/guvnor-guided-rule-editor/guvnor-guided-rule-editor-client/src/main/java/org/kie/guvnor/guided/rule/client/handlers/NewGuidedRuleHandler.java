@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.guided.rule.GuidedRuleFileType;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -25,8 +26,6 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "gre.drl";
-
     @Inject
     private PlaceManager placeManager;
 
@@ -35,7 +34,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getFileType() {
-        return FILE_TYPE;
+        return GuidedRuleFileType.TYPE;
     }
 
     @Override

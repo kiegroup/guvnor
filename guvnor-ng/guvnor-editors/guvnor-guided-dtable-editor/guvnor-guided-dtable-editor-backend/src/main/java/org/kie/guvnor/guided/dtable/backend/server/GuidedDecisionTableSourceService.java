@@ -22,6 +22,7 @@ import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.model.IAction;
 import org.kie.guvnor.datamodel.model.IPattern;
+import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTDRLPersistence;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
 import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
@@ -36,7 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 public class GuidedDecisionTableSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<GuidedDecisionTable52> {
 
     private static final String PATTERN = ".gdst";
 
@@ -60,10 +61,7 @@ public class GuidedDecisionTableSourceService
         //Load model and convert to DRL
         final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel(paths.convert(path));
 
-        final String drl = new StringBuilder()
-                .append(returnPackageDeclaration(path)).append("\n")
-                .append(model.getImports().toString()).append("\n")
-                .append(guidedDecisionTableEditorService.toSource(model)).toString();
+        final String drl = getSource(path, model);
 
         final boolean hasDSL = hasDSLSentences(model);
 
@@ -76,6 +74,14 @@ public class GuidedDecisionTableSourceService
         final SourceContext context = new SourceContext(bis,
                 destinationPath);
         return context;
+    }
+
+    @Override
+    public String getSource(Path path, GuidedDecisionTable52 model) {
+        return new StringBuilder()
+                .append(returnPackageDeclaration(path)).append("\n")
+                .append(model.getImports().toString()).append("\n")
+                .append(GuidedDTDRLPersistence.getInstance().marshal(model)).toString();
     }
 
     // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.

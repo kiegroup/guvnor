@@ -40,6 +40,7 @@ import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.guided.rule.GuidedRuleFileType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -71,7 +72,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*.gre.drl")
+@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*." + GuidedRuleFileType.TYPE)
 public class GuidedRuleEditorPresenter {
 
     @Inject
@@ -140,7 +141,7 @@ public class GuidedRuleEditorPresenter {
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource( view.getContent() );
+                } ).toSource(path, view.getContent() );
             }
 
             @Override

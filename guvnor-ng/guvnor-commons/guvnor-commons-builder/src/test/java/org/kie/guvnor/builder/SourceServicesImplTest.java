@@ -119,6 +119,11 @@ public class SourceServicesImplTest {
             }
 
             @Override
+            public String getSource(Path path, Object model) {
+                return null;  //TODO -Rikkola-
+            }
+
+            @Override
             public String getPattern() {
                 return extension;
             }

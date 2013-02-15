@@ -34,6 +34,7 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -175,13 +176,12 @@ public class FactModelServiceImpl
         return targetPath;
     }
 
+    @Inject
+    private SourceServices sourceServices;
+
     @Override
-    public String toSource( final FactModels model ) {
-        StringBuilder sb = new StringBuilder();
-        for ( FactMetaModel factMetaModel : model.getModels() ) {
-            sb.append( toDRL( factMetaModel ) ).append( "\n\n" );
-        }
-        return sb.toString().trim();
+    public String toSource(Path path, final FactModels model) {
+        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), toDRL(model));
     }
 
     private List<FactMetaModel> toModel( String drl )

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.backend.server;
+package org.kie.guvnor.project.backend.server;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -25,13 +25,13 @@ import org.kie.guvnor.project.model.KSessionModel;
 import org.kie.guvnor.project.model.ListenerModel;
 import org.kie.guvnor.project.model.QualifierModel;
 import org.kie.guvnor.project.model.WorkItemHandlerModel;
-import org.kie.guvnor.projecteditor.backend.server.converters.ClockTypeConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.KBaseConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.KModuleConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.KSessionConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.ListenerConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.QualifierConverter;
-import org.kie.guvnor.projecteditor.backend.server.converters.WorkItemHandelerConverter;
+import org.kie.guvnor.project.backend.server.converters.ClockTypeConverter;
+import org.kie.guvnor.project.backend.server.converters.KBaseConverter;
+import org.kie.guvnor.project.backend.server.converters.KModuleConverter;
+import org.kie.guvnor.project.backend.server.converters.KSessionConverter;
+import org.kie.guvnor.project.backend.server.converters.ListenerConverter;
+import org.kie.guvnor.project.backend.server.converters.QualifierConverter;
+import org.kie.guvnor.project.backend.server.converters.WorkItemHandelerConverter;
 
 public class KModuleContentHandler {
 

@@ -10,12 +10,14 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
+import org.kie.guvnor.project.backend.server.KModuleContentHandler;
+import org.kie.guvnor.project.model.KModuleModel;
 
 /**
  * Source provider for KModule.xml
  */
 public class KModuleSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<KModuleModel> {
 
     //NOTE: Platform specific separators are handled by Path already
     private static final String PATTERN = "src/main/resources/META-INF/kmodule.xml";
@@ -26,6 +28,9 @@ public class KModuleSourceService
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private KModuleContentHandler moduleContentHandler;
 
     protected KModuleSourceService() {
         super("/src/main/resources");
@@ -39,6 +44,11 @@ public class KModuleSourceService
         final SourceContext context = new SourceContext( bis,
                                                          DESTINATION );
         return context;
+    }
+
+    @Override
+    public String getSource(Path path, KModuleModel model) {
+        return moduleContentHandler.toString(model);
     }
 
     @Override

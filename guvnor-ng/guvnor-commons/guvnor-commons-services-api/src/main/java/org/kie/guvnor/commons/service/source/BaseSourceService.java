@@ -5,7 +5,8 @@ import org.kie.commons.java.nio.file.Path;
 /**
  * Base implementation of all SourceServices
  */
-public abstract class BaseSourceService implements SourceService {
+public abstract class BaseSourceService<T>
+        implements SourceService<T> {
 
     private final String prefix;
 

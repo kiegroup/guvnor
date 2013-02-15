@@ -24,11 +24,12 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.guided.template.model.TemplateModel;
+import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.server.util.Paths;
 
 public class GuidedRuleTemplateSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<TemplateModel> {
 
     private static final String PATTERN = ".template";
 
@@ -51,10 +52,7 @@ public class GuidedRuleTemplateSourceService
     public SourceContext getSource( final Path path ) {
         //Load model and convert to DRL
         final TemplateModel model = guidedRuleTemplateEditorService.loadTemplateModel( paths.convert( path ) );
-        final String drl = new StringBuilder()
-                .append(returnPackageDeclaration(path)).append("\n")
-                .append(model.getImports().toString()).append("\n")
-                .append(guidedRuleTemplateEditorService.toSource(model)).toString();
+        final String drl = getSource(path,model);
         final boolean hasDSL = model.hasDSLSentences();
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
@@ -66,6 +64,14 @@ public class GuidedRuleTemplateSourceService
         final SourceContext context = new SourceContext( bis,
                                                          destinationPath );
         return context;
+    }
+
+    @Override
+    public String getSource(Path path, TemplateModel model) {
+        return new StringBuilder()
+                .append(returnPackageDeclaration(path)).append("\n")
+                .append(model.getImports().toString()).append("\n")
+                .append(BRDRTPersistence.getInstance().marshal(model)).toString();
     }
 
 }

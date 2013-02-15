@@ -26,6 +26,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -59,10 +60,10 @@ public class GuidedRuleTemplateEditorServiceImpl
     private DataModelService dataModelService;
 
     @Inject
-    private ResourceConfigService resourceConfigService;
+    private MetadataService metadataService;
 
     @Inject
-    private MetadataService metadataService;
+    private SourceServices sourceServices;
 
     @Inject
     private Identity identity;
@@ -139,8 +140,8 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    public String toSource( final TemplateModel model ) {
-        return BRDRTPersistence.getInstance().marshal( model );
+    public String toSource(Path path, final TemplateModel model) {
+        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
     }
 
     @Override

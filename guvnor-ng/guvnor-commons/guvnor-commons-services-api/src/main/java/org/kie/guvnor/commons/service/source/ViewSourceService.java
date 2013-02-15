@@ -16,11 +16,13 @@
 
 package org.kie.guvnor.commons.service.source;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  *
  */
 public interface ViewSourceService<T> {
 
-    String toSource( final T model );
+    String toSource(Path path, final T model);
 
 }

@@ -4,17 +4,20 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
+import org.kie.guvnor.project.backend.server.POMContentHandler;
+import org.kie.guvnor.project.model.POM;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * Source provider for KModule.xml
  */
 public class PomSourceService
-        extends BaseSourceService {
+        extends BaseSourceService<POM> {
 
     private static final String PATTERN = "pom.xml";
 
@@ -23,6 +26,9 @@ public class PomSourceService
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private POMContentHandler pomContentHandler;
 
     protected PomSourceService() {
         super("");
@@ -36,6 +42,16 @@ public class PomSourceService
         final SourceContext context = new SourceContext(bis,
                 DESTINATION);
         return context;
+    }
+
+    @Override
+    public String getSource(Path path, POM model) {
+        try {
+            return pomContentHandler.toString(model);
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO -Rikkola-
+        }
+        return null;
     }
 
     @Override

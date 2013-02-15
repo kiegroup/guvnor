@@ -29,19 +29,19 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
+import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
+import org.kie.guvnor.guided.rule.GuidedRuleFileType;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mvel2.MVEL;
@@ -70,9 +70,6 @@ public class GuidedRuleEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private ResourceConfigService resourceConfigService;
-
-    @Inject
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
@@ -80,6 +77,9 @@ public class GuidedRuleEditorServiceImpl
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SourceServices sourceServices;
 
     public GuidedRuleEditorServiceImpl() {
     }
@@ -207,8 +207,8 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public String toSource( final RuleModel model ) {
-        return BRDRLPersistence.getInstance().marshal( model );
+    public String toSource(Path path, final RuleModel model) {
+        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
     }
 
     @Override

@@ -107,9 +107,6 @@ public class FactModelsEditorPresenter {
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
-    private Event<RestoreEvent> restoreEvent;
-
-    @Inject
     private PlaceManager placeManager;
 
     @Inject
