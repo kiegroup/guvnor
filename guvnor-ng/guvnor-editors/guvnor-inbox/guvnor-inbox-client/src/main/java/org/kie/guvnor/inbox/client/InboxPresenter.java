@@ -50,7 +50,6 @@ public class InboxPresenter {
     @Inject
     private View view;
 
-    private Path path;
     private String inboxName = INCOMING_ID;
 
     @Inject
@@ -61,9 +60,7 @@ public class InboxPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest place  ) {
-        this.path = path;
+    public void onStart( final PlaceRequest place  ) {
         this.inboxName = place.getParameter( "inboxname", INCOMING_ID );
         view.setContent(inboxName);
     }
@@ -79,7 +76,6 @@ public class InboxPresenter {
 
     @OnClose
     public void onClose() {
-        this.path = null;
     }
 
     @WorkbenchPartTitle

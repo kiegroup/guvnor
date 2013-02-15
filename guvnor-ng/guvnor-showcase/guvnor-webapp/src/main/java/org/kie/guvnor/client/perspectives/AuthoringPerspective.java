@@ -46,6 +46,7 @@ import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * A Perspective for Rule authors
@@ -115,9 +116,9 @@ public class AuthoringPerspective {
                                                      new Command() {
                                                          @Override
                                                          public void execute() {
-                                                             PlaceRequest p = new DefaultPlaceRequest("Inbox");
-                                                             p.addParameter("inboxname", InboxPresenter.INCOMING_ID);
-                                                             placeManager.goTo(p);
+                                                             //PlaceRequest p = new PathPlaceRequest("Inbox");
+                                                             //p.addParameter("inboxname", InboxPresenter.INCOMING_ID);
+                                                             placeManager.goTo("Inbox");
                                                          }
                                                      } ) );
         subMenu.addItem( new DefaultMenuItemCommand( "Recently Edited",
