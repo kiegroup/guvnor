@@ -39,8 +39,11 @@ public class GlobalsPersistence {
 
     public String marshal( final GlobalsModel model ) {
         final StringBuilder sb = new StringBuilder();
-        sb.append( model.getImports().toString() );
-        sb.append( "\n" );
+        final Imports imports = model.getImports();
+        sb.append( imports.toString() );
+        if ( imports.getImports().size() > 0 ) {
+            sb.append( "\n" );
+        }
         for ( Global global : model.getGlobals() ) {
             sb.append( "global " ).append( global.getClassName() ).append( " " ).append( global.getAlias() ).append( ";\n" );
         }

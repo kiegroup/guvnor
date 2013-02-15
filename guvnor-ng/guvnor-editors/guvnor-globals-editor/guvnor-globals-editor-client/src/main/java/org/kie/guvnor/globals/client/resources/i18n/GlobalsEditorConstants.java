@@ -34,4 +34,14 @@ public interface GlobalsEditorConstants
 
     String newGlobalDescription();
 
+    String noGlobalsDefined();
+
+    String alias();
+
+    String className();
+
+    String add();
+
+    String remove();
+
 }
