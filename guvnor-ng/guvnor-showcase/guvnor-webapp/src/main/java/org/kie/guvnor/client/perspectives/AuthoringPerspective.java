@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcesMenu;
+import org.kie.guvnor.inbox.client.InboxPresenter;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -43,6 +44,7 @@ import org.uberfire.client.workbench.widgets.toolbar.IconType;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
+import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
@@ -109,13 +111,34 @@ public class AuthoringPerspective {
                                                              placeManager.goTo( "org.kie.guvnor.explorer" );
                                                          }
                                                      } ) );
-        subMenu.addItem( new DefaultMenuItemCommand( "Inbox",
+        subMenu.addItem( new DefaultMenuItemCommand( "Incoming Changes",
                                                      new Command() {
                                                          @Override
                                                          public void execute() {
-                                                             placeManager.goTo( "Inbox" );
+                                                             PlaceRequest p = new DefaultPlaceRequest("Inbox");
+                                                             p.addParameter("inboxname", InboxPresenter.INCOMING_ID);
+                                                             placeManager.goTo(p);
                                                          }
                                                      } ) );
+        subMenu.addItem( new DefaultMenuItemCommand( "Recently Edited",
+                new Command() {
+                    @Override
+                    public void execute() {
+                        PlaceRequest p = new DefaultPlaceRequest("Inbox");
+                        p.addParameter("inboxname", InboxPresenter.RECENT_EDITED_ID);
+                        placeManager.goTo(p);
+                    }
+                } ) );        
+        subMenu.addItem( new DefaultMenuItemCommand( "Recently Opened",
+                new Command() {
+                    @Override
+                    public void execute() {
+                        PlaceRequest p = new DefaultPlaceRequest("Inbox");
+                        p.addParameter("inboxname", InboxPresenter.RECENT_VIEWED_ID);
+                        placeManager.goTo(p);
+                    }
+                } ) );
+        
         final MenuItemSubMenu subMenuItem = new DefaultMenuItemSubMenu( "Explore",
                                                                         subMenu );
         this.menuBar.addItem( subMenuItem );

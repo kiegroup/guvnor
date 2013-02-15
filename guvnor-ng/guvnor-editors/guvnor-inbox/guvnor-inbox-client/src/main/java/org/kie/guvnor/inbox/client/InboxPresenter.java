@@ -31,21 +31,27 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchScreen(identifier = "Inbox")
 public class InboxPresenter {
-
+    
+    public static final String RECENT_EDITED_ID = "recentEdited";
+    public static final String RECENT_VIEWED_ID = "recentViewed";
+    public static final String INCOMING_ID = "incoming";
+    
     public interface View
             extends
             IsWidget {
-
+        void setContent( final String inboxName );
     }
 
     @Inject
     private View view;
 
     private Path path;
+    private String inboxName = INCOMING_ID;
 
     @Inject
     private Caller<InboxService> m2RepoService;
@@ -55,8 +61,11 @@ public class InboxPresenter {
     }
 
     @OnStart
-    public void onStart( final Path path ) {
+    public void onStart( final Path path,
+                         final PlaceRequest place  ) {
         this.path = path;
+        this.inboxName = place.getParameter( "inboxname", INCOMING_ID );
+        view.setContent(inboxName);
     }
 
     @OnSave
@@ -75,7 +84,16 @@ public class InboxPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Inbox";
+        //TODO: this does not work. 
+        if(INCOMING_ID.equals(inboxName)) {
+            return "Incoming Changes";
+        } else if(RECENT_EDITED_ID.equals(inboxName)) {
+            return "Recently Edited";
+        } else if(RECENT_VIEWED_ID.equals(inboxName)) {
+            return "Recently Opened";
+        }
+        
+        return "Incoming Changes";
     }
 
 }

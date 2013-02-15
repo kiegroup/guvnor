@@ -39,15 +39,15 @@ public class InboxView
         this.inboxService = s;
 
         layout = new VerticalPanel();
-        doEditor();
         layout.setWidth( "100%" );
         initWidget( layout );
         setWidth( "100%" );
     }
     
-    private void doEditor() {
-        InboxEditor table = new InboxEditor(inboxService, null);       
+    @Override
+    public void setContent( final String inboxName ) {
+        InboxEditor table = new InboxEditor(inboxService, inboxName);    
         layout.add(table);
     }
-    
+
  }
