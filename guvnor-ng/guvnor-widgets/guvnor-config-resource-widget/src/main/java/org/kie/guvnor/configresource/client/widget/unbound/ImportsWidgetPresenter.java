@@ -14,61 +14,40 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.configresource.client.widget;
-
-import javax.enterprise.event.Event;
+package org.kie.guvnor.configresource.client.widget.unbound;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
-import org.kie.guvnor.services.config.events.ImportAddedEvent;
-import org.kie.guvnor.services.config.events.ImportRemovedEvent;
 import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.config.model.imports.Imports;
-import org.uberfire.backend.vfs.Path;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
-public class ImportsWidgetFreeFormatPresenter
+public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
                    IsWidget {
 
     private final ImportsWidgetView view;
     private final FormPopup addImportPopup;
 
-    private final Event<ImportAddedEvent> importAddedEvent;
-    private final Event<ImportRemovedEvent> importRemovedEvent;
-
-    private Path path;
     private Imports resourceImports;
 
     @Inject
-    public ImportsWidgetFreeFormatPresenter( final ImportsWidgetView view,
-                                             final FormPopup addImportPopup,
-                                             final Event<ImportAddedEvent> importAddedEvent,
-                                             final Event<ImportRemovedEvent> importRemovedEvent ) {
+    public ImportsWidgetPresenter( final ImportsWidgetView view,
+                                   final FormPopup addImportPopup) {
         this.view = view;
         this.addImportPopup = addImportPopup;
-        this.importAddedEvent = importAddedEvent;
-        this.importRemovedEvent = importRemovedEvent;
         view.setPresenter( this );
     }
 
     @Override
-    public void setContent( final Path path,
-                            final Imports resourceImports,
+    public void setContent( final Imports resourceImports,
                             final boolean isReadOnly ) {
-        checkNotNull( "path",
-                      path );
-        checkNotNull( "imports",
-                      resourceImports );
-        checkNotNull( "imports",
-                      resourceImports.getImports() );
-
-        this.path = path;
-        this.resourceImports = resourceImports;
+        this.resourceImports = checkNotNull( "resourceImports",
+                                             resourceImports );
 
         view.setReadOnly( isReadOnly );
 
@@ -85,8 +64,6 @@ public class ImportsWidgetFreeFormatPresenter
                 final Import item = new Import( name );
                 view.addImport( name );
                 resourceImports.getImports().add( item );
-
-                importAddedEvent.fire( new ImportAddedEvent( path, item ) );
             }
         } );
     }
@@ -100,8 +77,6 @@ public class ImportsWidgetFreeFormatPresenter
             final Import item = new Import( selected );
             view.removeImport( selected );
             resourceImports.removeImport( item );
-
-            importRemovedEvent.fire( new ImportRemovedEvent( path, item ) );
         }
     }
 

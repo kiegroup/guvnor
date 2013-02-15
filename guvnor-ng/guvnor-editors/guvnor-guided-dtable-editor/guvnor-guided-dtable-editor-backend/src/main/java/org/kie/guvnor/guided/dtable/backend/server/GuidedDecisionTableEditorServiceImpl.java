@@ -71,9 +71,14 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
+        //De-serialize model
         final GuidedDecisionTable52 model = loadRuleModel( path );
-        final DataModelOracle dataModel = dataModelService.getDataModel( path );
-        return new GuidedDecisionTableEditorContent( dataModel,
+
+        //Set imports on DataModelOracle
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        oracle.filter( model.getImports() );
+
+        return new GuidedDecisionTableEditorContent( oracle,
                                                      model );
     }
 

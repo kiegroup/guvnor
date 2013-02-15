@@ -163,7 +163,7 @@ public final class PackageDataModelOracleBuilder {
     private void loadProjectDefinition() {
         oracle.setPackageName( packageName );
         oracle.setProjectDefinition( projectDefinition );
-        oracle.initialize();
+        oracle.filter();
     }
 
     private void loadEnums() {

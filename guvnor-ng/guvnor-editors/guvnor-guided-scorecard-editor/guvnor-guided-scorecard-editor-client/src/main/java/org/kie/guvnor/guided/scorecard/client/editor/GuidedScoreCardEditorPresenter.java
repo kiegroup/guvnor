@@ -35,16 +35,13 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
+import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.events.ImportAddedEvent;
-import org.kie.guvnor.services.config.events.ImportRemovedEvent;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -123,7 +120,7 @@ public class GuidedScoreCardEditorPresenter {
     private DataModelOracle oracle;
 
     @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private ImportsWidgetPresenter importsWidget;
 
     @OnStart
     public void onStart( final Path path,
@@ -222,11 +219,9 @@ public class GuidedScoreCardEditorPresenter {
             public void callback( final ScoreCardModelContent content ) {
                 model = content.getModel();
                 oracle = content.getDataModel();
-                oracle.setImports( model.getImports() );
-
                 view.setContent( model,
                                  oracle );
-                importsWidget.setContent( path,
+                importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
             }
@@ -239,22 +234,6 @@ public class GuidedScoreCardEditorPresenter {
                                            isReadOnly );
             }
         } ).getMetadata( path );
-    }
-
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
     }
 
     @OnSave

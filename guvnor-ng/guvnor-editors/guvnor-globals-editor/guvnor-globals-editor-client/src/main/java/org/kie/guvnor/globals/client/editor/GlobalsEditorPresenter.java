@@ -19,7 +19,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
+import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
@@ -28,9 +28,6 @@ import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.events.ImportAddedEvent;
-import org.kie.guvnor.services.config.events.ImportRemovedEvent;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
@@ -66,7 +63,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 public class GlobalsEditorPresenter {
 
     @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private Caller<GlobalsEditorService> globalsEditorService;
@@ -218,33 +215,16 @@ public class GlobalsEditorPresenter {
         menuBar = fileMenuBuilder.build();
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
-    }
-
     private void loadContent() {
         globalsEditorService.call( new RemoteCallback<GlobalsEditorContent>() {
             @Override
             public void callback( final GlobalsEditorContent content ) {
                 model = content.getModel();
                 oracle = content.getDataModel();
-                oracle.setImports( model.getImports() );
                 view.setContent( content.getModel().getGlobals(),
                                  content.getDataModel() );
 
-                importsWidget.setContent( path,
+                importsWidget.setContent( content.getDataModel(),
                                           content.getModel().getImports(),
                                           isReadOnly );
             }

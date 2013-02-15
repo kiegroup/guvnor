@@ -69,9 +69,15 @@ public class GuidedRuleTemplateEditorServiceImpl
 
     @Override
     public GuidedTemplateEditorContent loadContent( final Path path ) {
+        //De-serialize model
         final TemplateModel model = loadTemplateModel( path );
-        final DataModelOracle dataModel = dataModelService.getDataModel( path );
-        return new GuidedTemplateEditorContent( dataModel, model );
+
+        //Set imports on DataModelOracle
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        oracle.filter( model.getImports() );
+
+        return new GuidedTemplateEditorContent( oracle,
+                                                model );
     }
 
     @Override

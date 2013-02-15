@@ -18,7 +18,6 @@ package org.kie.guvnor.guided.template.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -37,7 +36,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
+import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
@@ -45,9 +44,6 @@ import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.events.ImportAddedEvent;
-import org.kie.guvnor.services.config.events.ImportRemovedEvent;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -114,7 +110,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private View view;
 
     @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private ViewSourceView viewSource;
@@ -242,7 +238,7 @@ public class GuidedRuleTemplateEditorPresenter {
                                      oracle,
                                      eventBus,
                                      isReadOnly );
-                importsWidget.setContent( path,
+                importsWidget.setContent( oracle,
                                           response.getRuleModel().getImports(),
                                           isReadOnly );
             }
@@ -292,22 +288,6 @@ public class GuidedRuleTemplateEditorPresenter {
             } );
         }
         menuBar = fileMenuBuilder.build();
-    }
-
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.addImport( item );
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getResourcePath().equals( this.path ) ) {
-            return;
-        }
-        final Import item = event.getImport();
-        oracle.removeImport( item );
     }
 
     @OnSave

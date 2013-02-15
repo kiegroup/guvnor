@@ -1,8 +1,7 @@
-package org.kie.guvnor.configresource.client.widget;
+package org.kie.guvnor.configresource.client.widget.unbound;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.services.config.model.imports.Imports;
-import org.uberfire.backend.vfs.Path;
 
 public interface ImportsWidgetView
         extends IsWidget {
@@ -13,8 +12,7 @@ public interface ImportsWidgetView
 
         void onRemoveImport();
 
-        void setContent( final Path path,
-                         final Imports resourceImports,
+        void setContent( final Imports resourceImports,
                          final boolean isReadOnly );
 
     }

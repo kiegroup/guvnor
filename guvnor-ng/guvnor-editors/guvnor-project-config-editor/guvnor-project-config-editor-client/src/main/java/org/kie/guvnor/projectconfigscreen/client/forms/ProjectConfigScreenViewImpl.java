@@ -3,7 +3,7 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 import javax.inject.Inject;
 
 import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetFreeFormatPresenter;
+import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.config.model.imports.Imports;
@@ -16,13 +16,13 @@ public class ProjectConfigScreenViewImpl
         extends MultiPageEditorView
         implements ProjectConfigScreenView {
 
-    private final ImportsWidgetFreeFormatPresenter importsWidget;
+    private final ImportsWidgetPresenter importsWidget;
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private Presenter presenter;
 
     @Inject
-    public ProjectConfigScreenViewImpl( final ImportsWidgetFreeFormatPresenter importsWidget ) {
+    public ProjectConfigScreenViewImpl( final ImportsWidgetPresenter importsWidget ) {
         this.importsWidget = importsWidget;
         addPage( new Page( importsWidget, ImportConstants.INSTANCE.Imports() ) {
             @Override
@@ -54,8 +54,7 @@ public class ProjectConfigScreenViewImpl
     @Override
     public void setImports( final Path path,
                             final Imports imports ) {
-        importsWidget.setContent( path,
-                                  imports,
+        importsWidget.setContent( imports,
                                   false );
     }
 

@@ -15,7 +15,6 @@ import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
@@ -701,49 +700,12 @@ public class PackageDataModelOracle implements DataModelOracle {
         return scopedFieldParametersType.get( fieldName );
     }
 
-    @Override
-    public void addImport( final Import item ) {
-        this.imports.addImport( item );
-        initialize();
-    }
-
-    @Override
-    public void removeImport( final Import item ) {
-        this.imports.removeImport( item );
-        initialize();
-    }
-
-    public void setImports( final Imports imports ) {
+    public void filter( final Imports imports ) {
         this.imports = imports;
-        initialize();
+        filter();
     }
 
-    // ##############################################################################################
-    // Non-interface methods for the Builder to use.
-    // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
-    // ##############################################################################################
-
-    public void setPackageName( final String packageName ) {
-        this.packageName = packageName;
-    }
-
-    public void setProjectDefinition( final ProjectDefinition projectDefinition ) {
-        this.projectDefinition = projectDefinition;
-    }
-
-    public void addPackageEnums( final Map<String, String[]> dataEnumLists ) {
-        this.packageEnumDefinitions.putAll( dataEnumLists );
-    }
-
-    public void addPackageDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
-        this.packageDSLConditionSentences.addAll( dslConditionSentences );
-    }
-
-    public void addPackageDslActionSentences( final List<DSLSentence> dslActionSentences ) {
-        this.packageDSLActionSentences.addAll( dslActionSentences );
-    }
-
-    public void initialize() {
+    public void filter() {
         final Map<String, ModelField[]> projectModelFields = projectDefinition.getFactsAndFields();
         final Map<String, Boolean> projectEventTypes = projectDefinition.getEventTypes();
         final Map<String, String[]> projectEnumDefinitions = projectDefinition.getEnumDefinitions();
@@ -780,6 +742,31 @@ public class PackageDataModelOracle implements DataModelOracle {
         scopedFieldParametersType.putAll( PackageDataModelOracleUtils.filterFieldParametersTypes( packageName,
                                                                                                   imports,
                                                                                                   projectFieldParametersTypes ) );
+    }
+
+    // ##############################################################################################
+    // Non-interface methods for the Builder to use.
+    // Ideally these should be package-protected but Errai Marshaller doesn't like non-public methods
+    // ##############################################################################################
+
+    public void setPackageName( final String packageName ) {
+        this.packageName = packageName;
+    }
+
+    public void setProjectDefinition( final ProjectDefinition projectDefinition ) {
+        this.projectDefinition = projectDefinition;
+    }
+
+    public void addPackageEnums( final Map<String, String[]> dataEnumLists ) {
+        this.packageEnumDefinitions.putAll( dataEnumLists );
+    }
+
+    public void addPackageDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
+        this.packageDSLConditionSentences.addAll( dslConditionSentences );
+    }
+
+    public void addPackageDslActionSentences( final List<DSLSentence> dslActionSentences ) {
+        this.packageDSLActionSentences.addAll( dslActionSentences );
     }
 
 }

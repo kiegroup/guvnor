@@ -18,16 +18,11 @@ package org.kie.guvnor.datamodel.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DataModelService {
 
     DataModelOracle getDataModel( final Path resourcePath );
-
-    String[] getAllFactTypes( final Path resourcePath );
-
-    String[] getExternalFactTypes( final Path resourcePath );
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.configresource.client.widget;
+package org.kie.guvnor.configresource.client.widget.unbound;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

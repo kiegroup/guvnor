@@ -37,4 +37,6 @@ public interface GuidedRuleEditorView
 
     boolean confirmClose();
 
+    void refresh();
+
 }

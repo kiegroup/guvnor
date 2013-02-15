@@ -92,8 +92,13 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Override
     public ScoreCardModelContent loadContent( final Path path ) {
+        //De-serialize model
         final ScoreCardModel model = loadModel( path );
+
+        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
+        oracle.filter( model.getImports() );
+
         return new ScoreCardModelContent( model,
                                           oracle );
     }

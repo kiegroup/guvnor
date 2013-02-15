@@ -35,12 +35,15 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.ImportsWidgetFixedListPresenter;
+import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.guvnor.datamodel.events.ImportAddedEvent;
+import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -72,7 +75,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 public class FactModelsEditorPresenter {
 
     @Inject
-    private ImportsWidgetFixedListPresenter importsWidget;
+    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private Caller<FactModelService> factModelService;
@@ -147,9 +150,11 @@ public class FactModelsEditorPresenter {
             }
         } );
 
-        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
+        multiPage.addWidget( importsWidget,
+                             CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addWidget( metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle() );
+        multiPage.addWidget( metadataWidget,
+                             CommonConstants.INSTANCE.MetadataTabTitle() );
 
         loadContent();
     }
@@ -214,7 +219,7 @@ public class FactModelsEditorPresenter {
                                  content.getSuperTypes(),
                                  modelNameHelper );
 
-                importsWidget.setContent( path,
+                importsWidget.setContent( content.getDataModel(),
                                           content.getFactModels().getImports(),
                                           isReadOnly );
             }

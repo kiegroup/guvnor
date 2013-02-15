@@ -72,4 +72,10 @@ public class GuidedRuleEditorViewImpl
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
+
+    @Override
+    public void refresh() {
+        modeller.refreshWidget();
+    }
+
 }

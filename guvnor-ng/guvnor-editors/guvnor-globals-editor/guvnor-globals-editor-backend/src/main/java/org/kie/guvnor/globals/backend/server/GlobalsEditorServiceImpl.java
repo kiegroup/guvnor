@@ -62,10 +62,15 @@ public class GlobalsEditorServiceImpl
 
     @Override
     public GlobalsEditorContent loadContent( final Path path ) {
+        //De-serialize model
         final GlobalsModel model = loadGlobalsModel( path );
-        final DataModelOracle dataModel = dataModelService.getDataModel( path );
+
+        //Set imports on DataModelOracle
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        oracle.filter( model.getImports() );
+
         return new GlobalsEditorContent( model,
-                                         dataModel );
+                                         oracle );
     }
 
     private GlobalsModel loadGlobalsModel( final Path path ) {

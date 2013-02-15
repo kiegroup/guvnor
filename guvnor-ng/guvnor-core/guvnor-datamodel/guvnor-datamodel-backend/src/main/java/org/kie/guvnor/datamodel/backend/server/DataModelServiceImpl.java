@@ -88,18 +88,6 @@ public class DataModelServiceImpl
     private IOService ioService;
 
     @Override
-    public String[] getAllFactTypes( final Path resourcePath ) {
-        final DataModelOracle oracle = getDataModel( resourcePath );
-        return oracle.getAllFactTypes();
-    }
-
-    @Override
-    public String[] getExternalFactTypes( final Path resourcePath ) {
-        final DataModelOracle oracle = getDataModel( resourcePath );
-        return oracle.getExternalFactTypes();
-    }
-
-    @Override
     public DataModelOracle getDataModel( final Path resourcePath ) {
         PortablePreconditions.checkNotNull( "resourcePath",
                                             resourcePath );

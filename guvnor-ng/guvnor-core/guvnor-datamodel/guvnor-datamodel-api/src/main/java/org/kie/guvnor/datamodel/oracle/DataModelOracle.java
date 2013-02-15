@@ -24,7 +24,6 @@ import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.config.model.imports.Imports;
 
 public interface DataModelOracle {
@@ -40,7 +39,7 @@ public interface DataModelOracle {
 
     Map<String, ModelField[]> getModelFields();
 
-    boolean hasEnums( String qualifiedFactField );
+    boolean hasEnums( final String qualifiedFactField );
 
     boolean hasEnums( final String factType,
                       final String factField );
@@ -52,42 +51,42 @@ public interface DataModelOracle {
     DropDownData getEnums( final String type,
                            final String field );
 
-    DropDownData getEnums( String factType,
-                           String factField,
-                           Map<String, String> currentValueMap );
+    DropDownData getEnums( final String factType,
+                           final String factField,
+                           final Map<String, String> currentValueMap );
 
-    boolean isFactTypeRecognized( String factType );
+    boolean isFactTypeRecognized( final String factType );
 
-    boolean isFactTypeAnEvent( String factType );
+    boolean isFactTypeAnEvent( final String factType );
 
-    String[] getConnectiveOperatorCompletions( String factType,
-                                               String fieldName );
+    String[] getConnectiveOperatorCompletions( final String factType,
+                                               final String fieldName );
 
-    String[] getOperatorCompletions( String factType,
-                                     String fieldName );
+    String[] getOperatorCompletions( final String factType,
+                                     final String fieldName );
 
-    String[] getFieldCompletions( String factType );
+    String[] getFieldCompletions( final String factType );
 
-    String getFactNameFromType( String classType );
+    String getFactNameFromType( final String classType );
 
-    List<String> getMethodNames( String factType );
+    List<String> getMethodNames( final String factType );
 
-    List<String> getMethodNames( String factName,
-                                 int i );
+    List<String> getMethodNames( final String factName,
+                                 final int i );
 
     String[] getGlobalVariables();
 
-    boolean isGlobalVariable( String variable );
+    boolean isGlobalVariable( final String variable );
 
-    String[] getFieldCompletionsForGlobalVariable( String variable );
+    String[] getFieldCompletionsForGlobalVariable( final String variable );
 
-    String getGlobalVariable( String variable );
+    String getGlobalVariable( final String variable );
 
-    String getFieldType( String variableClass,
-                         String fieldName );
+    String getFieldType( final String variableClass,
+                         final String fieldName );
 
-    List<String> getMethodParams( String factType,
-                                  String methodNameWithParams );
+    List<String> getMethodParams( final String factType,
+                                  final String methodNameWithParams );
 
     List<DSLSentence> getDSLActions();
 
@@ -95,24 +94,22 @@ public interface DataModelOracle {
 
     List<DSLSentence> getDSLConditions();
 
-    String getParametricFieldType( String factType,
-                                   String fieldName );
+    String getParametricFieldType( final String factType,
+                                   final String fieldName );
 
-    String[] getFieldCompletions( FieldAccessorsAndMutators accessor,
-                                  String factType );
+    String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
+                                  final String factType );
 
-    List<MethodInfo> getMethodInfosForGlobalVariable( String variable );
+    List<MethodInfo> getMethodInfosForGlobalVariable( final String variable );
 
-    MethodInfo getMethodInfo( String factName,
-                              String methodName );
+    MethodInfo getMethodInfo( final String factName,
+                              final String methodName );
 
-    String getFieldClassName( String factName,
-                              String fieldName );
+    String getFieldClassName( final String factName,
+                              final String fieldName );
 
-    void addImport( Import item );
+    void filter( final Imports imports );
 
-    void removeImport( Import item );
-
-    void setImports( Imports imports );
+    void filter();
 
 }

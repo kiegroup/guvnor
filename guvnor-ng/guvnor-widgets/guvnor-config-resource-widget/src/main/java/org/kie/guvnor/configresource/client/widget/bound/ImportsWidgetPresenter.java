@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.configresource.client.widget;
+package org.kie.guvnor.configresource.client.widget.bound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,18 @@ import javax.enterprise.event.Event;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.popup.list.FormListPopup;
 import org.kie.guvnor.commons.ui.client.popup.list.PopupItemSelectedCommand;
-import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.services.config.events.ImportAddedEvent;
-import org.kie.guvnor.services.config.events.ImportRemovedEvent;
+import org.kie.guvnor.datamodel.events.ImportAddedEvent;
+import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.config.model.imports.Imports;
-import org.uberfire.backend.vfs.Path;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
-public class ImportsWidgetFixedListPresenter
+public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
                    IsWidget {
 
@@ -47,39 +44,30 @@ public class ImportsWidgetFixedListPresenter
     private final Event<ImportAddedEvent> importAddedEvent;
     private final Event<ImportRemovedEvent> importRemovedEvent;
 
-    private final Caller<DataModelService> dataModelService;
-
-    private Path path;
+    private DataModelOracle oracle;
     private Imports resourceImports;
     private List<Pair<String, String>> imports;
 
     @Inject
-    public ImportsWidgetFixedListPresenter( final ImportsWidgetView view,
-                                            final FormListPopup addImportPopup,
-                                            final Event<ImportAddedEvent> importAddedEvent,
-                                            final Event<ImportRemovedEvent> importRemovedEvent,
-                                            final Caller<DataModelService> dataModelService ) {
+    public ImportsWidgetPresenter( final ImportsWidgetView view,
+                                   final FormListPopup addImportPopup,
+                                   final Event<ImportAddedEvent> importAddedEvent,
+                                   final Event<ImportRemovedEvent> importRemovedEvent ) {
         this.view = view;
         this.addImportPopup = addImportPopup;
         this.importAddedEvent = importAddedEvent;
         this.importRemovedEvent = importRemovedEvent;
-        this.dataModelService = dataModelService;
         view.setPresenter( this );
     }
 
     @Override
-    public void setContent( final Path path,
+    public void setContent( final DataModelOracle oracle,
                             final Imports resourceImports,
                             final boolean isReadOnly ) {
-        checkNotNull( "path",
-                      path );
-        checkNotNull( "imports",
-                      resourceImports );
-        checkNotNull( "imports",
-                      resourceImports.getImports() );
-
-        this.path = path;
-        this.resourceImports = resourceImports;
+        this.oracle = checkNotNull( "oracle",
+                                    oracle );
+        this.resourceImports = checkNotNull( "resourceImports",
+                                             resourceImports );
 
         view.setReadOnly( isReadOnly );
 
@@ -89,18 +77,12 @@ public class ImportsWidgetFixedListPresenter
         }
 
         //Get list of potential imports
-        dataModelService.call( new RemoteCallback<String[]>() {
-
-            @Override
-            public void callback( final String[] response ) {
-                imports = new ArrayList<Pair<String, String>>();
-                for ( String item : response ) {
-                    Pair<String, String> pair = new Pair( item,
-                                                          item );
-                    imports.add( pair );
-                }
-            }
-        } ).getExternalFactTypes( path );
+        imports = new ArrayList<Pair<String, String>>();
+        for ( String item : oracle.getExternalFactTypes() ) {
+            Pair<String, String> pair = new Pair( item,
+                                                  item );
+            imports.add( pair );
+        }
     }
 
     @Override
@@ -114,7 +96,11 @@ public class ImportsWidgetFixedListPresenter
                                      final Import item = new Import( importClassName );
                                      view.addImport( importClassName );
                                      resourceImports.getImports().add( item );
-                                     importAddedEvent.fire( new ImportAddedEvent( path, item ) );
+                                     oracle.filter();
+
+                                     //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
+                                     importAddedEvent.fire( new ImportAddedEvent( oracle,
+                                                                                  item ) );
                                  }
 
                              } );
@@ -129,8 +115,11 @@ public class ImportsWidgetFixedListPresenter
             final Import item = new Import( selected );
             view.removeImport( selected );
             resourceImports.removeImport( item );
+            oracle.filter();
 
-            importRemovedEvent.fire( new ImportRemovedEvent( path, item ) );
+            //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
+            importRemovedEvent.fire( new ImportRemovedEvent( oracle,
+                                                             item ) );
         }
     }
 

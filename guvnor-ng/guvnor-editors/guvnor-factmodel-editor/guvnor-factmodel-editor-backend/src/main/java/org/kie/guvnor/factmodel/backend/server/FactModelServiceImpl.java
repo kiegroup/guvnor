@@ -37,6 +37,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
@@ -44,6 +45,7 @@ import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.services.config.model.imports.Imports;
 import org.kie.guvnor.services.config.model.imports.ImportsParser;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -85,14 +87,23 @@ public class FactModelServiceImpl
     public FactModelContent loadContent( final Path path ) {
         try {
             String drl = ioService.readAllString( paths.convert( path ) );
+
+            //De-serialize model
             final List<FactMetaModel> models = toModel( drl );
             final FactModels factModels = new FactModels();
             factModels.getModels().addAll( models );
-            factModels.setImports( ImportsParser.parseImports( drl ) );
+
+            //De-serialize imports
+            final Imports imports = ImportsParser.parseImports( drl );
+            factModels.setImports( imports );
+
+            //Set imports on DataModelOracle
+            final DataModelOracle oracle = dataModelService.getDataModel( path );
+            oracle.filter( imports );
 
             return new FactModelContent( factModels,
                                          loadAllAvailableTypes( path ),
-                                         dataModelService.getDataModel( path ) );
+                                         oracle );
         } catch ( final DroolsParserException e ) {
             throw new RuntimeException( e );
         }
