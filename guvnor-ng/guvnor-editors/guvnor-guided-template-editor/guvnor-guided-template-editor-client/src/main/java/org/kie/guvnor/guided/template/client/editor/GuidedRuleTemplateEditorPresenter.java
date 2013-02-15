@@ -242,7 +242,9 @@ public class GuidedRuleTemplateEditorPresenter {
                                      oracle,
                                      eventBus,
                                      isReadOnly );
-                importsWidget.setImports( path, response.getRuleModel().getImports() );
+                importsWidget.setContent( path,
+                                          response.getRuleModel().getImports(),
+                                          isReadOnly );
             }
         } ).loadContent( path );
     }

@@ -17,19 +17,11 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:uberfire='urn:import:org.uberfire.client.common'>
-
-  <ui:with field="images" type="org.kie.guvnor.configresource.client.resources.Images"/>
-  <ui:with field="i18n" type="org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources"/>
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
   <gwt:HorizontalPanel>
     <gwt:ListBox ui:field="importsList" width="300px" visibleItemCount="40" />
-    <gwt:VerticalPanel>
-      <uberfire:ImageButton img='{images.NewItem}' ui:field="newImport"/>
-      <uberfire:ImageButton img='{images.Trash}' ui:field="removeImport"/>
-    </gwt:VerticalPanel>
+    <gwt:VerticalPanel ui:field="buttonContainer" />
   </gwt:HorizontalPanel>
 
 </ui:UiBinder>

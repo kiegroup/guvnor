@@ -43,7 +43,6 @@ import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
@@ -215,7 +214,9 @@ public class FactModelsEditorPresenter {
                                  content.getSuperTypes(),
                                  modelNameHelper );
 
-                importsWidget.setImports( path, content.getFactModels().getImports() );
+                importsWidget.setContent( path,
+                                          content.getFactModels().getImports(),
+                                          isReadOnly );
             }
         } ).loadContent( path );
 

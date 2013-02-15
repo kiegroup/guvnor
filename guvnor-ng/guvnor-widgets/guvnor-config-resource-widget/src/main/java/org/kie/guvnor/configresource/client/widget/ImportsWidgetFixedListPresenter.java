@@ -67,12 +67,10 @@ public class ImportsWidgetFixedListPresenter
         view.setPresenter( this );
     }
 
-    public void setReadOnly() {
-        view.setupReadOnly();
-    }
-
-    public void setImports( final Path path,
-                            final Imports resourceImports ) {
+    @Override
+    public void setContent( final Path path,
+                            final Imports resourceImports,
+                            final boolean isReadOnly ) {
         checkNotNull( "path",
                       path );
         checkNotNull( "imports",
@@ -82,6 +80,8 @@ public class ImportsWidgetFixedListPresenter
 
         this.path = path;
         this.resourceImports = resourceImports;
+
+        view.setReadOnly( isReadOnly );
 
         //Add existing imports to view
         for ( Import item : resourceImports.getImports() ) {

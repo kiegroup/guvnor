@@ -18,12 +18,16 @@ package org.kie.guvnor.configresource.client.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.configresource.client.resources.Images;
+import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
+import org.uberfire.client.common.ImageButton;
 
 public class ImportsWidgetViewImpl
         extends Composite
@@ -31,21 +35,39 @@ public class ImportsWidgetViewImpl
 
     interface Binder
             extends UiBinder<Widget, ImportsWidgetViewImpl> {
+
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     ListBox importsList;
 
+    @UiField
+    VerticalPanel buttonContainer;
+
+    private ImageButton newImport;
+    private ImageButton removeImport;
+
     private Presenter presenter;
 
     public ImportsWidgetViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        //Add buttons manually (rather that with UiBinder) otherwise we can't control whether their enabled or not
+        this.newImport = new ImageButton( Images.INSTANCE.NewItem(),
+                                          Images.INSTANCE.NewItemDisabled(),
+                                          ImportConstants.INSTANCE.NewItem(),
+                                          makeNewImportClickHandler() );
+        this.removeImport = new ImageButton( Images.INSTANCE.Trash(),
+                                             Images.INSTANCE.TrashDisabled(),
+                                             ImportConstants.INSTANCE.Trash(),
+                                             makeRemoveImportClickHandler() );
+        initWidget( uiBinder.createAndBindUi( this ) );
+        buttonContainer.add( newImport );
+        buttonContainer.add( removeImport );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -55,38 +77,48 @@ public class ImportsWidgetViewImpl
     }
 
     @Override
-    public void addImport(String type) {
-        importsList.addItem(type);
+    public void addImport( String type ) {
+        importsList.addItem( type );
     }
 
     @Override
     public String getSelected() {
-        return importsList.getValue(importsList.getSelectedIndex());
+        return importsList.getValue( importsList.getSelectedIndex() );
     }
 
     @Override
-    public void removeImport(String selected) {
-        for (int i = 0; i < importsList.getItemCount(); i++) {
-            if (importsList.getValue(i).equals(selected)) {
-                importsList.removeItem(i);
+    public void removeImport( String selected ) {
+        for ( int i = 0; i < importsList.getItemCount(); i++ ) {
+            if ( importsList.getValue( i ).equals( selected ) ) {
+                importsList.removeItem( i );
                 break;
             }
         }
     }
 
     @Override
-    public void setupReadOnly() {
-        importsList.setEnabled(false);
+    public void setReadOnly( final boolean isReadOnly ) {
+        importsList.setEnabled( !isReadOnly );
+        newImport.setEnabled( !isReadOnly );
+        removeImport.setEnabled( !isReadOnly );
     }
 
-    @UiHandler("newImport")
-    public void onAddNew(ClickEvent clickEvent) {
-        presenter.onAddImport();
+    private ClickHandler makeNewImportClickHandler() {
+        return new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                presenter.onAddImport();
+            }
+        };
     }
 
-    @UiHandler("removeImport")
-    public void onRemoveImport(ClickEvent clickEvent) {
-        presenter.onRemoveImport();
+    public ClickHandler makeRemoveImportClickHandler() {
+        return new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                presenter.onRemoveImport();
+            }
+        };
     }
 
 }

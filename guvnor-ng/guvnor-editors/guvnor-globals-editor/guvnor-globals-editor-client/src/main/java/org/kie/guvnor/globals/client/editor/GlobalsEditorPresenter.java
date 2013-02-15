@@ -1,7 +1,6 @@
 package org.kie.guvnor.globals.client.editor;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
@@ -219,7 +218,6 @@ public class GlobalsEditorPresenter {
         menuBar = fileMenuBuilder.build();
     }
 
-
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
         if ( !event.getResourcePath().equals( this.path ) ) {
             return;
@@ -246,8 +244,9 @@ public class GlobalsEditorPresenter {
                 view.setContent( content.getModel().getGlobals(),
                                  content.getDataModel() );
 
-                importsWidget.setImports( path,
-                                          content.getModel().getImports() );
+                importsWidget.setContent( path,
+                                          content.getModel().getImports(),
+                                          isReadOnly );
             }
         } ).loadContent( path );
 

@@ -201,7 +201,9 @@ public class GuidedDecisionTableEditorPresenter {
                                  oracle,
                                  model,
                                  isReadOnly );
-                importsWidget.setImports( path, model.getImports() );
+                importsWidget.setContent( path,
+                                          model.getImports(),
+                                          isReadOnly );
             }
         } ).loadContent( path );
     }

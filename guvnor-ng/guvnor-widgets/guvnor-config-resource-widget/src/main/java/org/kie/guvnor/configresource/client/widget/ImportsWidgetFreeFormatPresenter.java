@@ -56,12 +56,10 @@ public class ImportsWidgetFreeFormatPresenter
         view.setPresenter( this );
     }
 
-    public void setReadOnly() {
-        view.setupReadOnly();
-    }
-
-    public void setImports( final Path path,
-                            final Imports resourceImports ) {
+    @Override
+    public void setContent( final Path path,
+                            final Imports resourceImports,
+                            final boolean isReadOnly ) {
         checkNotNull( "path",
                       path );
         checkNotNull( "imports",
@@ -71,6 +69,8 @@ public class ImportsWidgetFreeFormatPresenter
 
         this.path = path;
         this.resourceImports = resourceImports;
+
+        view.setReadOnly( isReadOnly );
 
         for ( Import item : resourceImports.getImports() ) {
             view.addImport( item.getType() );

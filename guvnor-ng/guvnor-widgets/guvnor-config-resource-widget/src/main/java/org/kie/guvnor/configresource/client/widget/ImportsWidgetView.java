@@ -13,20 +13,21 @@ public interface ImportsWidgetView
 
         void onRemoveImport();
 
-        void setImports( final Path path,
-                         final Imports resourceImports );
+        void setContent( final Path path,
+                         final Imports resourceImports,
+                         final boolean isReadOnly );
 
     }
 
-    void addImport( String type );
+    void addImport( final String type );
 
     String getSelected();
 
-    void removeImport( String selected );
+    void removeImport( final String selected );
 
-    void setupReadOnly();
+    void setReadOnly( final boolean isReadOnly );
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
     void showPleaseSelectAnImport();
 }
