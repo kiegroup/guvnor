@@ -130,7 +130,7 @@ public class GlobalsEditorServiceImpl
     }
 
     @Override
-    public String toSource( final GlobalsModel model ) {
+    public String toSource( Path path, final GlobalsModel model ) {
         return GlobalsPersistence.getInstance().marshal( model );
     }
 

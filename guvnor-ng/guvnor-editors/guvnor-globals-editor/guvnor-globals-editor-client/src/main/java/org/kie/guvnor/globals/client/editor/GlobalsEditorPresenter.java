@@ -152,7 +152,7 @@ public class GlobalsEditorPresenter {
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource( model );
+                } ).toSource( path, model );
             }
 
             @Override

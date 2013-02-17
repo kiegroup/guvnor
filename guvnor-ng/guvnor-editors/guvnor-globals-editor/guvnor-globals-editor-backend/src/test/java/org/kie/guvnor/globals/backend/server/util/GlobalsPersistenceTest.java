@@ -1,7 +1,6 @@
 package org.kie.guvnor.globals.backend.server.util;
 
 import org.junit.Test;
-import org.kie.guvnor.globals.backend.server.util.GlobalsPersistence;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.services.config.model.imports.Import;

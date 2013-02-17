@@ -142,7 +142,7 @@ public class GuidedScoreCardEditorPresenter {
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource( view.getModel() );
+                } ).toSource( path, view.getModel() );
             }
 
             @Override
