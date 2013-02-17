@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.project.backend.server;
+package org.kie.guvnor.explorer.backend.server;
 
 import java.net.URL;
 import javax.enterprise.context.spi.CreationalContext;
@@ -31,7 +31,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
-public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
+public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -66,7 +66,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
     }
 
     @Test
-    public void testResolveProjectWithNonProjectPath() throws Exception {
+    public void testResolvePackageWithNonProjectPath() throws Exception {
 
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
@@ -79,12 +79,12 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( testNioPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Path result = projectService.resolvePackage( testPath );
         assertNull( result );
     }
 
     @Test
-    public void testResolveProjectWithRootPath() throws Exception {
+    public void testResolvePackageWithRootPath() throws Exception {
 
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
@@ -97,12 +97,12 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path rootPath = paths.convert( nioRootPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( rootPath );
+        final Path result = projectService.resolvePackage( rootPath );
         assertNull( result );
     }
 
     @Test
-    public void testResolveProjectWithChildPath() throws Exception {
+    public void testResolvePackageWithSrcPath() throws Exception {
 
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
@@ -110,21 +110,57 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM" );
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src" );
+        //Test a non-Project Path resolves to null
+        final Path result = projectService.resolvePackage( rootPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageWithMainPath() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main" );
+        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        //Test a non-Project Path resolves to null
+        final Path result = projectService.resolvePackage( rootPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageDefaultJava() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/java" );
+        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/java" );
         final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Path result = projectService.resolvePackage( testPath );
         assertNull( result );
     }
 
     @Test
-    public void testResolveProjectWithJavaFile() throws Exception {
+    public void testResolvePackageDefaultResources() throws Exception {
 
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
@@ -132,7 +168,51 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM" );
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/resources" );
+        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/resources" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a non-Project Path resolves to null
+        final Path result = projectService.resolvePackage( testPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageWithJavaFileInDefaultPackage() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/java" );
+        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/java/Bean.java" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a non-Project Path resolves to null
+        final Path result = projectService.resolvePackage( testPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageWithJavaFileInSubPackage() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/java/org/kie/test" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
@@ -141,12 +221,12 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Path result = projectService.resolvePackage( testPath );
         assertNull( result );
     }
 
     @Test
-    public void testResolveProjectWithResourcesFile() throws Exception {
+    public void testResolvePackageWithResourcesFileInDefaultPackage() throws Exception {
 
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
@@ -154,7 +234,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM" );
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/resources" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
@@ -163,7 +243,29 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Path result = projectService.resolvePackage( testPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageWithResourcesFileInSubPackage() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/resources/org/kie/test" );
+        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectStructureInvalidNoPOM/src/main/resources/org/kie/test/rule1.drl" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a non-Project Path resolves to null
+        final Path result = projectService.resolvePackage( testPath );
         assertNull( result );
     }
 

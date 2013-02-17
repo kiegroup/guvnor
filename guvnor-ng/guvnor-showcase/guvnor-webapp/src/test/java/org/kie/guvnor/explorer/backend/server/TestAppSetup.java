@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.project.backend.server;
+package org.kie.guvnor.explorer.backend.server;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
