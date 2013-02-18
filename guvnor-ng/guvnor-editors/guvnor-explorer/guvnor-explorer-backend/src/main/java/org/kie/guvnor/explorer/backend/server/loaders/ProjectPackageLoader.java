@@ -71,26 +71,10 @@ public class ProjectPackageLoader implements ItemsLoader {
         }
 
         //Add ability to move up one level in the hierarchy
-        final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
-        items.add( new ParentPackageItem( paths.convert( getParent( pPath,
-                                                                    pRoot ) ),
+        items.add( new ParentPackageItem( paths.convert( pPath.getParent() ),
                                           ".." ) );
 
         return items;
-    }
-
-    //Explorer flattens the folder hierarchy from /src/main/resources/p1 to /resources and /p1
-    //where /resources represents the default package and /p1 a user-defined package. Therefore
-    //when navigating up the hierarchy we need to translate /p1's parent into /src/main.
-    private org.kie.commons.java.nio.file.Path getParent( final org.kie.commons.java.nio.file.Path pPath,
-                                                          final org.kie.commons.java.nio.file.Path pRoot ) {
-        org.kie.commons.java.nio.file.Path pParent = pPath.getParent();
-        final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
-        if ( Files.isSameFile( pParent,
-                               pResources ) ) {
-            pParent = pParent.getParent();
-        }
-        return pParent;
     }
 
 }

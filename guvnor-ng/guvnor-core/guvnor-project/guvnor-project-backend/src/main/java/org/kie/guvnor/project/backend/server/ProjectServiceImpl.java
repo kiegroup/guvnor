@@ -45,8 +45,10 @@ public class ProjectServiceImpl
     private static final String POM_FILENAME = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
 
-    private static final String JAVA_PATH = "src/main/java";
-    private static final String RESOURCES_PATH = "src/main/resources";
+    private static final String SOURCE_JAVA_PATH = "src/main/java";
+    private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
+    private static final String TEST_JAVA_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private IOService ioService;
     private Paths paths;
@@ -132,15 +134,20 @@ public class ProjectServiceImpl
             return null;
         }
 
-        //The Path must be within a Project's src/main/resources path
+        //The Path must be within a Project's src/main/resources or src/test/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path javaPath = paths.convert( projectRoot ).resolve( JAVA_PATH );
-        if ( path.startsWith( javaPath ) ) {
+        final org.kie.commons.java.nio.file.Path srcJavaPath = paths.convert( projectRoot ).resolve( SOURCE_JAVA_PATH );
+        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( SOURCE_RESOURCES_PATH );
+        final org.kie.commons.java.nio.file.Path testJavaPath = paths.convert( projectRoot ).resolve( TEST_JAVA_PATH );
+        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
+        if ( path.startsWith( srcJavaPath ) ) {
             resolved = true;
-        }
-        final org.kie.commons.java.nio.file.Path resourcesPath = paths.convert( projectRoot ).resolve( RESOURCES_PATH );
-        if ( path.startsWith( resourcesPath ) ) {
+        } else if ( path.startsWith( srcResourcesPath ) ) {
+            resolved = true;
+        } else if ( path.startsWith( testJavaPath ) ) {
+            resolved = true;
+        } else if ( path.startsWith( testResourcesPath ) ) {
             resolved = true;
         }
         if ( !resolved ) {
@@ -177,12 +184,17 @@ public class ProjectServiceImpl
 
         //Build package name
         String packageName = nioDelta.toString();
-        if ( packageName.startsWith( JAVA_PATH ) ) {
-            packageName = packageName.replace( JAVA_PATH,
+        if ( packageName.startsWith( SOURCE_JAVA_PATH ) ) {
+            packageName = packageName.replace( SOURCE_JAVA_PATH,
                                                "" );
-        }
-        if ( packageName.startsWith( RESOURCES_PATH ) ) {
-            packageName = packageName.replace( RESOURCES_PATH,
+        } else if ( packageName.startsWith( SOURCE_RESOURCES_PATH ) ) {
+            packageName = packageName.replace( SOURCE_RESOURCES_PATH,
+                                               "" );
+        } else if ( packageName.startsWith( TEST_JAVA_PATH ) ) {
+            packageName = packageName.replace( TEST_JAVA_PATH,
+                                               "" );
+        } else if ( packageName.startsWith( TEST_RESOURCES_PATH ) ) {
+            packageName = packageName.replace( TEST_RESOURCES_PATH,
                                                "" );
         }
         if ( packageName.length() == 0 ) {

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -40,8 +41,10 @@ public class BreadCrumbUtilities {
         final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src" );
         final org.kie.commons.java.nio.file.Path e2 = e1.resolve( "main" );
+        final org.kie.commons.java.nio.file.Path e3 = e1.resolve( "test" );
         exclusions.add( e1 );
         exclusions.add( e2 );
+        exclusions.add( e3 );
         return exclusions;
     }
 
@@ -54,10 +57,16 @@ public class BreadCrumbUtilities {
         final org.kie.commons.java.nio.file.Path e0 = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path e1 = e0.resolve( "src/main/java" );
         final org.kie.commons.java.nio.file.Path e2 = e0.resolve( "src/main/resources" );
+        final org.kie.commons.java.nio.file.Path e3 = e0.resolve( "src/test/java" );
+        final org.kie.commons.java.nio.file.Path e4 = e0.resolve( "src/test/resources" );
         substitutions.put( e1,
-                           "java" );
+                           ItemNames.SOURCE_JAVA );
         substitutions.put( e2,
-                           "resources" );
+                           ItemNames.SOURCE_RESOURCES );
+        substitutions.put( e3,
+                           ItemNames.TEST_JAVA );
+        substitutions.put( e4,
+                           ItemNames.TEST_RESOURCES );
         return substitutions;
     }
 

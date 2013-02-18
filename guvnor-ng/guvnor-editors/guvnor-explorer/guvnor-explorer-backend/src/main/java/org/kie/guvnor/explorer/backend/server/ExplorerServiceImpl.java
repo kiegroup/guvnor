@@ -40,8 +40,10 @@ import org.uberfire.backend.vfs.Path;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final String JAVA_RESOURCES_PATH = "src/main/java";
-    private static final String RESOURCES_PATH = "src/main/resources";
+    private static final String SOURCE_JAVA_RESOURCES_PATH = "src/main/java";
+    private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
+    private static final String TEST_JAVA_RESOURCES_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private IOService ioService;
     private ProjectService projectService;
@@ -109,16 +111,30 @@ public class ExplorerServiceImpl
                                         projectRootPath );
         }
 
-        //Check if Path is within Projects Java resources
-        final org.kie.commons.java.nio.file.Path pJavaResources = pRoot.resolve( JAVA_RESOURCES_PATH );
-        if ( pResource.startsWith( pJavaResources ) ) {
+        //Check if Path is within Projects Source Java resources
+        final org.kie.commons.java.nio.file.Path pSrcJavaResources = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
+        if ( pResource.startsWith( pSrcJavaResources ) ) {
             return makeProjectPackageList( resource,
                                            projectRootPath );
         }
 
-        //Check if Path is within Projects resources
-        final org.kie.commons.java.nio.file.Path pResources = pRoot.resolve( RESOURCES_PATH );
-        if ( pResource.startsWith( pResources ) ) {
+        //Check if Path is within Projects Source resources
+        final org.kie.commons.java.nio.file.Path pSrcResources = pRoot.resolve( SOURCE_RESOURCES_PATH );
+        if ( pResource.startsWith( pSrcResources ) ) {
+            return makeProjectPackageList( resource,
+                                           projectRootPath );
+        }
+
+        //Check if Path is within Projects Test Java resources
+        final org.kie.commons.java.nio.file.Path pTestJavaResources = pRoot.resolve( TEST_JAVA_RESOURCES_PATH );
+        if ( pResource.startsWith( pTestJavaResources ) ) {
+            return makeProjectPackageList( resource,
+                                           projectRootPath );
+        }
+
+        //Check if Path is within Projects Test resources
+        final org.kie.commons.java.nio.file.Path pTestResources = pRoot.resolve( TEST_RESOURCES_PATH );
+        if ( pResource.startsWith( pTestResources ) ) {
             return makeProjectPackageList( resource,
                                            projectRootPath );
         }
@@ -153,7 +169,8 @@ public class ExplorerServiceImpl
         final List<Item> items = projectPackageListLoader.load( path,
                                                                 projectRoot );
         final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
+                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ),
+                                                                                breadCrumbUtilities.makeBreadCrumbCaptionSubstitutionsForDefaultPackage( path ) );
         return new ExplorerContent( items,
                                     breadCrumbs );
     }

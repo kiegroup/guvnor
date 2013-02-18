@@ -10,10 +10,11 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
 import org.kie.guvnor.explorer.backend.server.util.Filter;
+import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.backend.server.util.MetaInfFolderFilter;
 import org.kie.guvnor.explorer.model.FileItem;
+import org.kie.guvnor.explorer.model.FolderItem;
 import org.kie.guvnor.explorer.model.Item;
-import org.kie.guvnor.explorer.model.PackageItem;
 import org.kie.guvnor.explorer.model.ParentFolderItem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -27,8 +28,10 @@ public class ProjectRootLoader implements ItemsLoader {
 
     private static final String POM_PATH = "pom.xml";
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
-    private static final String JAVA_RESOURCES_PATH = "src/main/java";
-    private static final String RESOURCES_PATH = "src/main/resources";
+    private static final String SOURCE_JAVA_RESOURCES_PATH = "src/main/java";
+    private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
+    private static final String TEST_JAVA_RESOURCES_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private final Filter filter;
 
@@ -67,18 +70,32 @@ public class ProjectRootLoader implements ItemsLoader {
             items.add( new FileItem( paths.convert( projectImportsPath ) ) );
         }
 
-        //Add Items within Project's Java Resources path
-        final org.kie.commons.java.nio.file.Path javaResourcesPath = pRoot.resolve( JAVA_RESOURCES_PATH );
-        if ( Files.exists( javaResourcesPath ) ) {
-            items.add( new PackageItem( paths.convert( javaResourcesPath ),
-                                        "java" ) );
+        //Add Items within Project's Java Source Resources path
+        final org.kie.commons.java.nio.file.Path srcJavaResourcesPath = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
+        if ( Files.exists( srcJavaResourcesPath ) ) {
+            items.add( new FolderItem( paths.convert( srcJavaResourcesPath ),
+                                       ItemNames.SOURCE_JAVA ) );
         }
 
-        //Add Items within Project's Resources path
-        final org.kie.commons.java.nio.file.Path resourcesPath = pRoot.resolve( RESOURCES_PATH );
-        if ( Files.exists( resourcesPath ) ) {
-            items.add( new PackageItem( paths.convert( resourcesPath ),
-                                        "resources" ) );
+        //Add Items within Project's Source Resources path
+        final org.kie.commons.java.nio.file.Path srcResourcesPath = pRoot.resolve( SOURCE_RESOURCES_PATH );
+        if ( Files.exists( srcResourcesPath ) ) {
+            items.add( new FolderItem( paths.convert( srcResourcesPath ),
+                                       ItemNames.SOURCE_RESOURCES ) );
+        }
+
+        //Add Items within Project's Java Test Resources path
+        final org.kie.commons.java.nio.file.Path testJavaResourcesPath = pRoot.resolve( TEST_JAVA_RESOURCES_PATH );
+        if ( Files.exists( testJavaResourcesPath ) ) {
+            items.add( new FolderItem( paths.convert( testJavaResourcesPath ),
+                                       ItemNames.TEST_JAVA ) );
+        }
+
+        //Add Items within Project's Test Resources path
+        final org.kie.commons.java.nio.file.Path testResourcesPath = pRoot.resolve( TEST_RESOURCES_PATH );
+        if ( Files.exists( testResourcesPath ) ) {
+            items.add( new FolderItem( paths.convert( testResourcesPath ),
+                                       ItemNames.TEST_RESOURCES ) );
         }
 
         //Add ability to move up one level in the hierarchy
