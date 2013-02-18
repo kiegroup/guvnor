@@ -73,9 +73,7 @@ public class GuidedScoreCardEditorServiceImpl
         //De-serialize model
         final ScoreCardModel model = loadModel( path );
 
-        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
-        oracle.filter( model.getImports() );
 
         return new ScoreCardModelContent( model,
                                           oracle );
@@ -140,7 +138,8 @@ public class GuidedScoreCardEditorServiceImpl
     }
 
     @Override
-    public String toSource(Path path, final ScoreCardModel model) {
+    public String toSource( Path path,
+                            final ScoreCardModel model ) {
         final BuilderResult result = validateScoreCard( model );
         if ( !result.hasLines() ) {
             return toDRL( path, model );
@@ -169,9 +168,10 @@ public class GuidedScoreCardEditorServiceImpl
         return new AnalysisReport();
     }
 
-    public String toDRL(Path path, final ScoreCardModel model) {
+    public String toDRL( Path path,
+                         final ScoreCardModel model ) {
 
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
     private String toDRL( final BuilderResult result ) {

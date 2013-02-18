@@ -38,9 +38,6 @@ public final class PackageDataModelOracleBuilder {
     // Package-level map of Globals (name is key) and their type (value).
     private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
 
-    // Package-level Globals that are a collection type.
-    private List<String> packageGlobalCollections = new ArrayList<String>();
-
     private List<String> errors = new ArrayList<String>();
 
     public static PackageDataModelOracleBuilder newDataModelBuilder() {

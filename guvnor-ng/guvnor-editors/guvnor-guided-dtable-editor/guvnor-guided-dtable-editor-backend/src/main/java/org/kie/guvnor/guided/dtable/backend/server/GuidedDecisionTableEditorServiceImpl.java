@@ -73,9 +73,7 @@ public class GuidedDecisionTableEditorServiceImpl
         //De-serialize model
         final GuidedDecisionTable52 model = loadRuleModel( path );
 
-        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
-        oracle.filter( model.getImports() );
 
         return new GuidedDecisionTableEditorContent( oracle,
                                                      model );

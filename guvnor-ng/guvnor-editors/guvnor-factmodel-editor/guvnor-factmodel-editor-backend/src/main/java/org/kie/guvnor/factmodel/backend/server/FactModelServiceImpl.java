@@ -101,9 +101,7 @@ public class FactModelServiceImpl
             final Imports imports = ImportsParser.parseImports( drl );
             factModels.setImports( imports );
 
-            //Set imports on DataModelOracle
             final DataModelOracle oracle = dataModelService.getDataModel( path );
-            oracle.filter( imports );
 
             return new FactModelContent( factModels,
                                          loadAllAvailableTypes( path ),
@@ -180,8 +178,9 @@ public class FactModelServiceImpl
     }
 
     @Override
-    public String toSource(Path path, final FactModels model) {
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), toDRL(model));
+    public String toSource( Path path,
+                            final FactModels model ) {
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), toDRL( model ) );
     }
 
     private List<FactMetaModel> toModel( String drl )

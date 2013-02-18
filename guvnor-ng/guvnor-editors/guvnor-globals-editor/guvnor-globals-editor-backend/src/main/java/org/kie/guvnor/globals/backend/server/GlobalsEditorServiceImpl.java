@@ -74,9 +74,7 @@ public class GlobalsEditorServiceImpl
         //De-serialize model
         final GlobalsModel model = loadGlobalsModel( path );
 
-        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
-        oracle.filter( model.getImports() );
 
         return new GlobalsEditorContent( model,
                                          oracle );

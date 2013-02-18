@@ -131,11 +131,11 @@ public class AddGlobalPopup extends PopupPanel {
     }
 
     public void setContent( final Command okCommand,
-                            final String[] classNames ) {
+                            final String[] allClassNames ) {
         this.okCommand = okCommand;
         this.classNameListBox.clear();
         this.aliasTextBox.setText( "" );
-        for ( String className : classNames ) {
+        for ( String className : allClassNames ) {
             classNameListBox.addItem( className );
         }
     }

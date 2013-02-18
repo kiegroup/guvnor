@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.factmodel.client.editor;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -36,10 +37,12 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.factmodel.client.FactModelResourceType;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
+import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -115,6 +118,10 @@ public class FactModelsEditorPresenter {
     private Path         path;
     private PlaceRequest place;
     private boolean      isReadOnly;
+
+    private FactModels model;
+    private DataModelOracle oracle;
+    private List<FactMetaModel> superTypes;
 
     @OnStart
     public void onStart( final Path path,
@@ -202,20 +209,24 @@ public class FactModelsEditorPresenter {
         factModelService.call( new RemoteCallback<FactModelContent>() {
             @Override
             public void callback( final FactModelContent content ) {
+                model = content.getFactModels();
+                oracle = content.getDataModel();
+                oracle.filter( model.getImports() );
+                superTypes = content.getSuperTypes();
 
                 final ModelNameHelper modelNameHelper = new ModelNameHelper();
 
-                for ( final FactMetaModel currentModel : content.getSuperTypes() ) {
+                for ( final FactMetaModel currentModel : superTypes ) {
                     modelNameHelper.getTypeDescriptions().put( currentModel.getName(),
                                                                currentModel.getName() );
                 }
 
-                view.setContent( content.getFactModels(),
-                                 content.getSuperTypes(),
+                view.setContent( model,
+                                 superTypes,
                                  modelNameHelper );
 
-                importsWidget.setContent( content.getDataModel(),
-                                          content.getFactModels().getImports(),
+                importsWidget.setContent( oracle,
+                                          model.getImports(),
                                           isReadOnly );
             }
         } ).loadContent( path );

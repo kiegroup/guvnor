@@ -26,7 +26,7 @@ public class DataModelGlobalsTest {
 
         final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" )
                 .setProjectDefinition( pd )
-                .addGlobals( "global Product g;" )
+                .addGlobals( "global org.kie.guvnor.datamodel.backend.server.testclasses.Product g;" )
                 .build();
 
         assertNotNull( dmo );
@@ -60,7 +60,7 @@ public class DataModelGlobalsTest {
 
         final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" )
                 .setProjectDefinition( pd )
-                .addGlobals( "global List list;" )
+                .addGlobals( "global java.util.List list;" )
                 .build();
 
         final Imports imports = new Imports();

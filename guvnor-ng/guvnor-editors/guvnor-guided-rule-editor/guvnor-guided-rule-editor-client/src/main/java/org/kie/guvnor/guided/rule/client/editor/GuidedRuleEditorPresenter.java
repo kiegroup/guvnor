@@ -176,6 +176,8 @@ public class GuidedRuleEditorPresenter {
             public void callback( final GuidedEditorContent response ) {
                 model = response.getRuleModel();
                 oracle = response.getDataModel();
+                oracle.filter( model.getImports() );
+
                 view.setContent( path,
                                  model,
                                  oracle,

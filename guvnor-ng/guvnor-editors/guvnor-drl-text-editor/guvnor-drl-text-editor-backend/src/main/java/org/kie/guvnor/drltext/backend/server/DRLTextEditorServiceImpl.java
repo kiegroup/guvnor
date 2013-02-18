@@ -114,6 +114,7 @@ public class DRLTextEditorServiceImpl
                 metadataService.setUpAttributes(resource, metadata),
                 makeCommentedOption(comment));
 
+        //Invalidate Package-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
         invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
     }
     

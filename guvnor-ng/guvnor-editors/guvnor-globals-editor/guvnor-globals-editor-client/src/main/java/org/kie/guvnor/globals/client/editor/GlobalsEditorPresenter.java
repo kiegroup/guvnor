@@ -19,7 +19,6 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.globals.client.GlobalResourceType;
@@ -62,9 +61,6 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 @WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = { GlobalResourceType.class }, priority = 101)
 public class GlobalsEditorPresenter {
-
-    @Inject
-    private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private Caller<GlobalsEditorService> globalsEditorService;
@@ -163,9 +159,6 @@ public class GlobalsEditorPresenter {
             }
         } );
 
-        multiPage.addWidget( importsWidget,
-                             CommonConstants.INSTANCE.ConfigTabTitle() );
-
         multiPage.addWidget( metadataWidget,
                              CommonConstants.INSTANCE.MetadataTabTitle() );
 
@@ -223,13 +216,11 @@ public class GlobalsEditorPresenter {
             public void callback( final GlobalsEditorContent content ) {
                 model = content.getModel();
                 oracle = content.getDataModel();
+                oracle.filter();
+
                 view.setContent( content.getDataModel(),
                                  content.getModel().getGlobals(),
                                  isReadOnly );
-
-                importsWidget.setContent( content.getDataModel(),
-                                          content.getModel().getImports(),
-                                          isReadOnly );
             }
         } ).loadContent( path );
 
@@ -349,7 +340,7 @@ public class GlobalsEditorPresenter {
         if ( isReadOnly ) {
             return false;
         }
-        return ( view.isDirty() || importsWidget.isDirty() || metadataWidget.isDirty() );
+        return ( view.isDirty() || metadataWidget.isDirty() );
     }
 
     @OnMayClose

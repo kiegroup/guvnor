@@ -230,6 +230,8 @@ public class GuidedRuleTemplateEditorPresenter {
             public void callback( final GuidedTemplateEditorContent response ) {
                 model = response.getRuleModel();
                 oracle = response.getDataModel();
+                oracle.filter( model.getImports() );
+
                 view.setContent( path,
                                  model,
                                  oracle,

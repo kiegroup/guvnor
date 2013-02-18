@@ -193,6 +193,8 @@ public class GuidedDecisionTableEditorPresenter {
             public void callback( final GuidedDecisionTableEditorContent response ) {
                 model = response.getRuleModel();
                 oracle = response.getDataModel();
+                oracle.filter( model.getImports() );
+
                 view.setContent( path,
                                  oracle,
                                  model,

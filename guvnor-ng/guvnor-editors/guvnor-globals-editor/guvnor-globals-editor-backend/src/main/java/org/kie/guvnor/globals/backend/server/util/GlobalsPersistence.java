@@ -23,8 +23,6 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsModel;
-import org.kie.guvnor.services.config.model.imports.Imports;
-import org.kie.guvnor.services.config.model.imports.ImportsParser;
 
 /**
  * This class persists the rule model to DRL and back
@@ -42,11 +40,6 @@ public class GlobalsPersistence {
 
     public String marshal( final GlobalsModel model ) {
         final StringBuilder sb = new StringBuilder();
-        final Imports imports = model.getImports();
-        sb.append( imports.toString() );
-        if ( imports.getImports().size() > 0 ) {
-            sb.append( "\n" );
-        }
         for ( Global global : model.getGlobals() ) {
             sb.append( "global " ).append( global.getClassName() ).append( " " ).append( global.getAlias() ).append( ";\n" );
         }
@@ -54,11 +47,9 @@ public class GlobalsPersistence {
     }
 
     public GlobalsModel unmarshal( final String content ) {
-        final Imports imports = ImportsParser.parseImports( content );
         final List<Pair<String, String>> parsedGlobalsContent = GlobalsParser.parseGlobals( content );
         final List<Global> globals = makeGlobals( parsedGlobalsContent );
         final GlobalsModel model = new GlobalsModel();
-        model.setImports( imports );
         model.setGlobals( globals );
         return model;
     }

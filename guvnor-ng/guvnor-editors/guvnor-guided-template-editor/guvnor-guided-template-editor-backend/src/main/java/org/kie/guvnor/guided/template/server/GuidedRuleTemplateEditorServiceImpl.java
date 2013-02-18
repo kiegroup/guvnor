@@ -33,10 +33,8 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
-import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.template.server.util.BRDRTXMLPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -73,9 +71,7 @@ public class GuidedRuleTemplateEditorServiceImpl
         //De-serialize model
         final TemplateModel model = loadTemplateModel( path );
 
-        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
-        oracle.filter( model.getImports() );
 
         return new GuidedTemplateEditorContent( oracle,
                                                 model );
@@ -140,8 +136,9 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    public String toSource(Path path, final TemplateModel model) {
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
+    public String toSource( Path path,
+                            final TemplateModel model ) {
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
     @Override

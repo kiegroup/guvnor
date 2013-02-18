@@ -220,6 +220,8 @@ public class GuidedScoreCardEditorPresenter {
             public void callback( final ScoreCardModelContent content ) {
                 model = content.getModel();
                 oracle = content.getDataModel();
+                oracle.filter( model.getImports() );
+
                 view.setContent( model,
                                  oracle );
                 importsWidget.setContent( oracle,

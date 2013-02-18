@@ -169,7 +169,7 @@ public class GlobalsEditorView extends Composite implements GlobalsEditorPresent
     @UiHandler("addGlobalButton")
     public void onClickAddGlobalButton( final ClickEvent event ) {
         addGlobalPopup.setContent( addGlobalCommand,
-                                   oracle.getFactTypes() );
+                                   oracle.getAllFactTypes() );
         addGlobalPopup.show();
     }
 

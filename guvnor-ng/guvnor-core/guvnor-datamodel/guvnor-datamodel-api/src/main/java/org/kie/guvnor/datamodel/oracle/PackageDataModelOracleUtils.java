@@ -55,6 +55,25 @@ public class PackageDataModelOracleUtils {
         return scopedCollectionTypes;
     }
 
+    //Filter and rename Global Types based on package name and imports
+    public static Map<String, String> filterGlobalTypes( final String packageName,
+                                                         final Imports imports,
+                                                         final Map<String, String> packageGlobalTypes ) {
+        final Map<String, String> scopedGlobalTypes = new HashMap<String, String>();
+        for ( Map.Entry<String, String> e : packageGlobalTypes.entrySet() ) {
+            final String globalQualifiedType = e.getValue();
+            final String globalPackageName = getPackageName( globalQualifiedType );
+            final String globalTypeName = getTypeName( globalQualifiedType );
+
+            if ( globalPackageName.equals( packageName ) || isImported( globalQualifiedType,
+                                                                        imports ) ) {
+                scopedGlobalTypes.put( e.getKey(),
+                                       globalTypeName );
+            }
+        }
+        return scopedGlobalTypes;
+    }
+
     //Filter and rename Event Types based on package name and imports
     public static Map<String, Boolean> filterEventTypes( final String packageName,
                                                          final Imports imports,

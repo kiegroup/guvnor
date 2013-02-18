@@ -88,9 +88,7 @@ public class GuidedRuleEditorServiceImpl
         //De-serialize model
         final RuleModel model = loadRuleModel( path );
 
-        //Set imports on DataModelOracle
         final DataModelOracle oracle = dataModelService.getDataModel( path );
-        oracle.filter( model.getImports() );
 
         return new GuidedEditorContent( oracle,
                                         model );
