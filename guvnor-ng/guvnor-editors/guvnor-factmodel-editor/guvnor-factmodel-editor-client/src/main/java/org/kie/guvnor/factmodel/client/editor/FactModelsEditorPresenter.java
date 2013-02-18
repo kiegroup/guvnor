@@ -36,14 +36,12 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.guvnor.datamodel.events.ImportAddedEvent;
-import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.factmodel.client.FactModelResourceType;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.model.imports.Import;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -71,7 +69,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "FactModelsEditor", fileTypes = "*.model.drl")
+@WorkbenchEditor(identifier = "FactModelsEditor", supportedTypes = { FactModelResourceType.class }, priority = 100)
 public class FactModelsEditorPresenter {
 
     @Inject
@@ -112,11 +110,11 @@ public class FactModelsEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilder menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar             menuBar;
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
     @OnStart
     public void onStart( final Path path,

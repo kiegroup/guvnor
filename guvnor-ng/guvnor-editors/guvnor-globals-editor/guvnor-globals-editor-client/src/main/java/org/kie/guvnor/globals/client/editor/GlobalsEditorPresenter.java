@@ -22,6 +22,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.globals.client.GlobalResourceType;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
@@ -59,7 +60,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 /**
  * Editor for Global variables
  */
-@WorkbenchEditor(identifier = "org.kie.guvnor.globals", fileTypes = "*.global.drl")
+@WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = { GlobalResourceType.class }, priority = 101)
 public class GlobalsEditorPresenter {
 
     @Inject
@@ -124,13 +125,13 @@ public class GlobalsEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
-    private GlobalsModel model;
+    private GlobalsModel    model;
     private DataModelOracle oracle;
 
     @OnStart

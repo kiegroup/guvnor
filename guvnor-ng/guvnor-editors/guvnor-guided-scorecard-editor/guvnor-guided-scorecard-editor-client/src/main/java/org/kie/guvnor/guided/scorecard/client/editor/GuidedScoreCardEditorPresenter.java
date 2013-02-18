@@ -38,6 +38,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.guided.scorecard.client.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
@@ -69,7 +70,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedScoreCardEditor", fileTypes = "*.scgd")
+@WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = { GuidedScoreCardResourceType.class })
 public class GuidedScoreCardEditorPresenter {
 
     @Inject
@@ -110,13 +111,13 @@ public class GuidedScoreCardEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
-    private ScoreCardModel model;
+    private ScoreCardModel  model;
     private DataModelOracle oracle;
 
     @Inject

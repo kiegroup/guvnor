@@ -42,7 +42,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
  *
  */
 @Dependent
-@WorkbenchEditor(identifier = "CategoryManager", fileTypes = "categories.xml")
+@WorkbenchEditor(identifier = "CategoryManager", supportedTypes = { CategoryDefinitionResourceType.class })
 public class CategoriesEditorPresenter {
 
     public interface View

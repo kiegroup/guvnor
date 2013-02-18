@@ -27,6 +27,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.projecteditor.client.POMResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
@@ -39,24 +40,24 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-@WorkbenchEditor(identifier = "projectEditorScreen", fileTypes = "pom.xml")
+@WorkbenchEditor(identifier = "projectEditorScreen", supportedTypes = { POMResourceType.class })
 public class
         ProjectEditorScreenPresenter
         implements ProjectEditorScreenView.Presenter {
 
     private ProjectEditorScreenView view;
-    private POMEditorPanel pomPanel;
-    private KModuleEditorPanel kModuleEditorPanel;
-    private Caller<KModuleService> kModuleServiceCaller;
-    private Caller<BuildService> buildServiceCaller;
+    private POMEditorPanel          pomPanel;
+    private KModuleEditorPanel      kModuleEditorPanel;
+    private Caller<KModuleService>  kModuleServiceCaller;
+    private Caller<BuildService>    buildServiceCaller;
 
-    private Path pathToPomXML;
-    private Path pathToKModuleXML;
+    private Path                    pathToPomXML;
+    private Path                    pathToKModuleXML;
     private Caller<MetadataService> metadataService;
-    private Metadata kmoduleMetadata;
-    private Metadata pomMetadata;
-    private SaveOperationService saveOperationService;
-    private ResourceMenuBuilder menuBuilder;
+    private Metadata                kmoduleMetadata;
+    private Metadata                pomMetadata;
+    private SaveOperationService    saveOperationService;
+    private ResourceMenuBuilder     menuBuilder;
 
     private MenuBar menuBar;
     private boolean isReadOnly;
@@ -218,7 +219,7 @@ public class
     @Override
     public void onKModuleTabSelected() {
         if ( !kModuleEditorPanel.hasBeenInitialized() ) {
-            kModuleEditorPanel.init( pathToKModuleXML, false);
+            kModuleEditorPanel.init( pathToKModuleXML, false );
         }
     }
 

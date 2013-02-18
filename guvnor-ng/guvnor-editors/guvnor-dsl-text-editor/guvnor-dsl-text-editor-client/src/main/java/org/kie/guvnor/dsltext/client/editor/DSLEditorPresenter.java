@@ -34,6 +34,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.dsltext.client.DSLResourceType;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -66,7 +67,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * A text based editor for Domain Specific Language definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "DSLEditor", fileTypes = "*.dsl")
+@WorkbenchEditor(identifier = "DSLEditor", supportedTypes = { DSLResourceType.class })
 public class DSLEditorPresenter {
 
     public interface View
@@ -115,13 +116,13 @@ public class DSLEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
     @OnStart
     public void onStart( final Path path,

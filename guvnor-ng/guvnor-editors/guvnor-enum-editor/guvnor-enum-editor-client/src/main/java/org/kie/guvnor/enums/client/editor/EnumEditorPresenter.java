@@ -34,6 +34,7 @@ import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.enums.client.EnumResourceType;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -68,7 +69,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * This is the default rule editor widget (just text editor based) - more to come later.
  */
 @Dependent
-@WorkbenchEditor(identifier = "EnumEditor", fileTypes = "*.enumeration")
+@WorkbenchEditor(identifier = "EnumEditor", supportedTypes = { EnumResourceType.class })
 public class EnumEditorPresenter {
 
     public interface View
@@ -119,13 +120,13 @@ public class EnumEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
     @OnStart
     public void onStart( final Path path,

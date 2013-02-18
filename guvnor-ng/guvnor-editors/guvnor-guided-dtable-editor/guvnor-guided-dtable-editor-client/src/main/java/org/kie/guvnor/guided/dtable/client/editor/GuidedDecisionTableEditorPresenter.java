@@ -37,6 +37,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
+import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -68,7 +69,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", fileTypes = "*.gdst")
+@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = { GuidedDTableResourceType.class })
 public class GuidedDecisionTableEditorPresenter {
 
     public interface View
@@ -127,14 +128,14 @@ public class GuidedDecisionTableEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
     private GuidedDecisionTable52 model;
-    private DataModelOracle oracle;
+    private DataModelOracle       oracle;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -157,7 +158,7 @@ public class GuidedDecisionTableEditorPresenter {
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource(path, view.getContent() );
+                } ).toSource( path, view.getContent() );
             }
 
             @Override

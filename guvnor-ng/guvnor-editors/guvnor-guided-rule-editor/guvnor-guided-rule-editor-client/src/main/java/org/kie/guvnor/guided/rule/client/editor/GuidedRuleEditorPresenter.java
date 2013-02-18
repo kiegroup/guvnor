@@ -40,7 +40,7 @@ import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.rule.GuidedRuleFileType;
+import org.kie.guvnor.guided.rule.client.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -72,7 +72,7 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", fileTypes = "*." + GuidedRuleFileType.TYPE)
+@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleResourceType.class }, priority = 102)
 public class GuidedRuleEditorPresenter {
 
     @Inject
@@ -111,15 +111,15 @@ public class GuidedRuleEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
-    private RuleModel model;
+    private RuleModel       model;
     private DataModelOracle oracle;
 
     @OnStart
@@ -141,7 +141,7 @@ public class GuidedRuleEditorPresenter {
                     public void callback( final String response ) {
                         viewSource.setContent( response );
                     }
-                } ).toSource(path, view.getContent() );
+                } ).toSource( path, view.getContent() );
             }
 
             @Override

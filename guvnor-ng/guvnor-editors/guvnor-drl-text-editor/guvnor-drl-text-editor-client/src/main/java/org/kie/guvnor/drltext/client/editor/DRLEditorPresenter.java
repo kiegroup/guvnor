@@ -36,6 +36,7 @@ import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.drltext.client.DRLResourceType;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
@@ -69,7 +70,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * This is the default rule editor widget (just text editor based).
  */
 @Dependent
-@WorkbenchEditor(identifier = "DRLEditor", fileTypes = "*.drl")
+@WorkbenchEditor(identifier = "DRLEditor", supportedTypes = { DRLResourceType.class })
 public class DRLEditorPresenter {
 
     @Inject
@@ -107,11 +108,11 @@ public class DRLEditorPresenter {
     @Inject
     @New
     private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar menuBar;
+    private MenuBar                 menuBar;
 
-    private Path path;
+    private Path         path;
     private PlaceRequest place;
-    private boolean isReadOnly;
+    private boolean      isReadOnly;
 
     @OnStart
     public void onStart( final Path path,
