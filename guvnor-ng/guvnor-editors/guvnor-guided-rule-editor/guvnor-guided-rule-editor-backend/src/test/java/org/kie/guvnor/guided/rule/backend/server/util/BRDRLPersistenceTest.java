@@ -16,7 +16,10 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
+import java.util.List;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
 import org.kie.guvnor.datamodel.model.DSLSentence;
@@ -59,8 +62,6 @@ import org.kie.guvnor.guided.rule.model.RuleAttribute;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -356,7 +357,7 @@ public class BRDRLPersistenceTest {
 
         checkMarshallUnmarshall( expected, m );
 
-        String drl = brlPersistence.marshal(m);
+        String drl = brlPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
@@ -364,8 +365,8 @@ public class BRDRLPersistenceTest {
         RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
-        DSLSentence dslSentence = (DSLSentence)actions[actions.length-1];
-        assertEquals("Send an email to {administrator}", dslSentence.getDefinition());
+        DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
+        assertEquals( "Send an email to {administrator}", dslSentence.getDefinition() );
 
         assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
     }
@@ -374,11 +375,11 @@ public class BRDRLPersistenceTest {
     public void testDSLExpansion() {
         String expected =
                 "rule \"Rule With DSL\"\n" +
-                "\tdialect \"mvel\"\n" +
-                "\twhen\n" +
-                "\t\tThe credit rating is AA\n" +
-                "\tthen\n" +
-                "end\n";
+                        "\tdialect \"mvel\"\n" +
+                        "\twhen\n" +
+                        "\t\tThe credit rating is AA\n" +
+                        "\tthen\n" +
+                        "end\n";
         final String dslDefinition = "The credit rating is {rating:ENUM:Applicant.creditRating}";
 
         final DSLSentence dsl = new DSLSentence();
@@ -409,15 +410,15 @@ public class BRDRLPersistenceTest {
         m.name = "Rule With DSL";
         m.addLhsItem( dsl );
 
-        String drl = brlPersistence.marshal(m);
+        String drl = brlPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
 
         String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
 
         RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
 
-        DSLSentence dslSentence = (DSLSentence)unmarshalledModel.lhs[0];
-        assertEquals(dslDefinition, dslSentence.getDefinition());
+        DSLSentence dslSentence = (DSLSentence) unmarshalledModel.lhs[ 0 ];
+        assertEquals( dslDefinition, dslSentence.getDefinition() );
         assertEquals( 1, dslSentence.getValues().size() );
         assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
         DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
@@ -2855,6 +2856,146 @@ public class BRDRLPersistenceTest {
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
+    }
+
+    @Test
+    public void testImports() {
+        final String drl = "import java.util.ArrayList;\n" +
+                "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "then\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.getImports().getImports().size() );
+        assertEquals( "java.util.ArrayList",
+                      m.getImports().getImports().get( 0 ).getType() );
+    }
+
+    @Test
+    public void testActionSetFieldValue() {
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "$a : Applicant( )\n" +
+                "then\n" +
+                "$a.setName( \"Michael\" );\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        //LHS
+        assertEquals( 1,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+
+        final FactPattern p = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "$a",
+                      p.getBoundName() );
+        assertEquals( "Applicant",
+                      p.getFactType() );
+
+        //RHS
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+
+        final ActionSetField a = (ActionSetField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      a.getVariable() );
+        assertEquals( 1,
+                      a.getFieldValues().length );
+
+        final ActionFieldValue fv = a.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      fv.getField() );
+        assertEquals( "Michael",
+                      fv.getValue() );
+    }
+
+    @Test
+    public void testActionCallMethod() {
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "$a : Applicant( )\n" +
+                "then\n" +
+                "$a.addName( \"Michael\" );\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        //LHS
+        assertEquals( 1,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+
+        final FactPattern p = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "$a",
+                      p.getBoundName() );
+        assertEquals( "Applicant",
+                      p.getFactType() );
+
+        //RHS
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+
+        final ActionCallMethod a = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      a.getVariable() );
+        assertEquals( "addName",
+                      a.getMethodName() );
+        assertEquals( 1,
+                      a.getFieldValues().length );
+
+        final ActionFieldValue fv = a.getFieldValue( 0 );
+        assertEquals( "Michael",
+                      fv.getValue() );
+    }
+
+    @Test
+    @Ignore("Actions using Globals do not work at the moment")
+    public void testAddToGlobalCollection() {
+        final String drl = "global java.util.ArrayList list\n" +
+                "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "$a : Applicant( )\n" +
+                "then\n" +
+                "list.add( $a );\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        //LHS
+        assertEquals( 1,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+
+        final FactPattern p = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "$a",
+                      p.getBoundName() );
+        assertEquals( "Applicant",
+                      p.getFactType() );
+
+        //RHS
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionGlobalCollectionAdd );
+
+        final ActionGlobalCollectionAdd a = (ActionGlobalCollectionAdd) m.rhs[ 0 ];
+        assertEquals( "list",
+                      a.getGlobalName() );
+        assertEquals( "$a",
+                      a.getFactName() );
     }
 
 }
