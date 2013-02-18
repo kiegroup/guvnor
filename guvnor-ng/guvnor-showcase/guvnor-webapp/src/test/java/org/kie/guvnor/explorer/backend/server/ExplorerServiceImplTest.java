@@ -30,7 +30,9 @@ import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.explorer.model.BreadCrumb;
 import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.FileItem;
+import org.kie.guvnor.explorer.model.FolderItem;
 import org.kie.guvnor.explorer.model.Item;
+import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.model.PackageItem;
 import org.kie.guvnor.explorer.model.ParentFolderItem;
 import org.kie.guvnor.explorer.model.ParentPackageItem;
@@ -190,18 +192,18 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertContainsFileItem(items, 2);
-        assertContainsPackageItem(items, 2);
-        assertContainsParentFolderItem(items, 1);
+        assertContainsFileItem( items, 2 );
+        assertContainsFolderItem( items, 2 );
+        assertContainsParentFolderItem( items, 1 );
 
         //Check items' caption
         assertEquals( "pom.xml",
                       items.get( 0 ).getCaption() );
         assertEquals( "project.imports",
                       items.get( 1 ).getCaption() );
-        assertEquals( "java",
+        assertEquals( ItemNames.SOURCE_JAVA,
                       items.get( 2 ).getCaption() );
-        assertEquals( "resources",
+        assertEquals( ItemNames.SOURCE_RESOURCES,
                       items.get( 3 ).getCaption() );
         assertEquals( "..",
                       items.get( 4 ).getCaption() );
@@ -256,19 +258,19 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertContainsFileItem(items, 1);
-        assertContainsPackageItem(items, 1);
-        assertContainsParentPackageItem(items, 1);
+        assertContainsFileItem( items, 1 );
+        assertContainsPackageItem( items, 1 );
+        assertContainsParentPackageItem( items, 1 );
 
         //Check items' caption
-        assertContainsCaption("rule1.drl", items);
-        assertContainsCaption("org", items);
-        assertContainsCaption("..", items);
+        assertContainsCaption( "rule1.drl", items );
+        assertContainsCaption( "org", items );
+        assertContainsCaption( "..", items );
 
         //Check items' Paths
-        assertContainsPath(makePath("/ProjectStructureValid/src/main/resources/rule1.drl"), items);
-        assertContainsPath(makePath("/ProjectStructureValid/src/main/resources/org"), items);
-        assertContainsPathUri(makePath("/ProjectStructureValid/src/main").toURI(), items);
+        assertContainsPath( makePath( "/ProjectStructureValid/src/main/resources/rule1.drl" ), items );
+        assertContainsPath( makePath( "/ProjectStructureValid/src/main/resources/org" ), items );
+        assertContainsPathUri( makePath( "/ProjectStructureValid/src/main" ).toURI(), items );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
@@ -279,7 +281,7 @@ public class ExplorerServiceImplTest {
         int breadCrumbIndex = breadCrumbs.size();
         assertTrue( breadCrumbIndex > 0 );
         breadCrumbIndex--;
-        assertEquals( "resources",
+        assertEquals( ItemNames.SOURCE_RESOURCES,
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
@@ -290,75 +292,92 @@ public class ExplorerServiceImplTest {
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
     }
 
-    private void assertContainsPathUri(String pathUri, List<Item> items) {
+    private void assertContainsPathUri( String pathUri,
+                                        List<Item> items ) {
         boolean found = false;
-        for (Item item : items) {
-            if (pathUri.equals(item.getPath().toURI())) {
+        for ( Item item : items ) {
+            if ( pathUri.equals( item.getPath().toURI() ) ) {
                 found = true;
             }
         }
-        assertTrue("Find path uri", found);
+        assertTrue( "Find path uri", found );
     }
 
-    private void assertContainsPath(Path path, List<Item> items) {
+    private void assertContainsPath( Path path,
+                                     List<Item> items ) {
         boolean found = false;
-        for (Item item : items) {
-            if (path.equals(item.getPath())) {
+        for ( Item item : items ) {
+            if ( path.equals( item.getPath() ) ) {
                 found = true;
             }
         }
-        assertTrue("Find path", found);
+        assertTrue( "Find path", found );
     }
 
-    private void assertContainsCaption(String caption, List<Item> items) {
+    private void assertContainsCaption( String caption,
+                                        List<Item> items ) {
         boolean found = false;
-        for (Item item : items) {
-            if (caption.equals(item.getCaption())) {
+        for ( Item item : items ) {
+            if ( caption.equals( item.getCaption() ) ) {
                 found = true;
             }
         }
-        assertTrue("Find caption", found);
+        assertTrue( "Find caption", found );
     }
 
-
-    private void assertContainsParentFolderItem(List<Item> items, int amount) {
+    private void assertContainsParentFolderItem( List<Item> items,
+                                                 int amount ) {
         int count = 0;
-        for (Item item : items) {
-            if (item instanceof ParentFolderItem) {
+        for ( Item item : items ) {
+            if ( item instanceof ParentFolderItem ) {
                 count++;
             }
         }
-        assertEquals(amount, count);
+        assertEquals( amount, count );
     }
 
-    private void assertContainsParentPackageItem(List<Item> items, int amount) {
+    private void assertContainsParentPackageItem( List<Item> items,
+                                                  int amount ) {
         int count = 0;
-        for (Item item : items) {
-            if (item instanceof ParentPackageItem) {
+        for ( Item item : items ) {
+            if ( item instanceof ParentPackageItem ) {
                 count++;
             }
         }
-        assertEquals(amount, count);
+        assertEquals( amount, count );
     }
 
-    private void assertContainsPackageItem(List<Item> items, int amount) {
+    private void assertContainsPackageItem( List<Item> items,
+                                            int amount ) {
         int count = 0;
-        for (Item item : items) {
-            if (item instanceof PackageItem) {
+        for ( Item item : items ) {
+            if ( item instanceof PackageItem ) {
                 count++;
             }
         }
-        assertEquals(amount, count);
+        assertEquals( amount, count );
     }
 
-    private void assertContainsFileItem(List<Item> items, int amount) {
+    private void assertContainsFolderItem( List<Item> items,
+                                           int amount ) {
         int count = 0;
-        for (Item item : items) {
-            if (item instanceof FileItem) {
+        for ( Item item : items ) {
+            if ( item instanceof FolderItem ) {
                 count++;
             }
         }
-        assertEquals(amount, count);
+        assertEquals( amount, count );
+    }
+
+    private void assertContainsFileItem( List<Item> items,
+                                         int amount ) {
+        int count = 0;
+        for ( Item item : items ) {
+            if ( item instanceof FileItem ) {
+                count++;
+            }
+        }
+        assertEquals( amount, count );
     }
 
     @Test
@@ -384,8 +403,8 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertContainsFileItem(items, 1);
-        assertContainsParentPackageItem(items, 1);
+        assertContainsFileItem( items, 1 );
+        assertContainsParentPackageItem( items, 1 );
 
         //Check items' caption
         assertEquals( "rule1.drl",
@@ -423,7 +442,7 @@ public class ExplorerServiceImplTest {
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
-        assertEquals( "resources",
+        assertEquals( ItemNames.SOURCE_RESOURCES,
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
         assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );

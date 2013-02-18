@@ -19,6 +19,7 @@ package org.kie.guvnor.explorer.backend.server;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
@@ -26,6 +27,7 @@ import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 
 @Singleton
+@Alternative
 public class TestIdentityFactory {
 
     private Identity identity;
@@ -50,6 +52,7 @@ public class TestIdentityFactory {
     }
 
     @Produces
+    @Alternative
     public Identity getIdentity() {
         return identity;
     }

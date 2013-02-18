@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.explorer.backend.server;
 
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -28,6 +29,7 @@ import org.kie.guvnor.project.service.KModuleService;
 import static org.mockito.Mockito.*;
 
 @Singleton
+@Alternative
 public class TestAppSetup {
 
     private final IOService ioService = new IOServiceDotFileImpl();
@@ -39,11 +41,13 @@ public class TestAppSetup {
     }
 
     @Produces
+    @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );
     }
 
     @Produces
+    @Alternative
     public KModuleService kModuleService() {
         return mock( KModuleService.class );
     }

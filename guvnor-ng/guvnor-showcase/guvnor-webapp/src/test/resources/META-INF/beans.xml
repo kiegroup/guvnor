@@ -1,0 +1,6 @@
+<beans>
+  <alternatives>
+    <class>org.kie.guvnor.explorer.backend.server.TestAppSetup</class>
+    <class>org.kie.guvnor.explorer.backend.server.TestIdentityFactory</class>
+  </alternatives>
+</beans>
