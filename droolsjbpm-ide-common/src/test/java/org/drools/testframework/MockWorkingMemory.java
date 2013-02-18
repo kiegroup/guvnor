@@ -635,4 +635,8 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         // TODO Auto-generated method stub
     }
 
+    public ProcessInstance getProcessInstance( long l,
+                                               boolean b ) {
+        return null;
+    }
 }
