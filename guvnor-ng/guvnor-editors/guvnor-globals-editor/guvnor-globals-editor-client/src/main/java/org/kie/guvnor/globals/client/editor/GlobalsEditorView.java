@@ -60,6 +60,7 @@ public class GlobalsEditorView extends Composite implements GlobalsEditorPresent
     private GlobalsEditorPresenter presenter;
 
     private boolean isDirty = false;
+    private boolean isReadOnly = false;
 
     public GlobalsEditorView() {
         setup();
@@ -106,6 +107,9 @@ public class GlobalsEditorView extends Composite implements GlobalsEditorPresent
             public void update( final int index,
                                 final Global global,
                                 final String value ) {
+                if ( isReadOnly ) {
+                    return;
+                }
                 if ( Window.confirm( GlobalsEditorConstants.INSTANCE.promptForRemovalOfGlobal0( global.getAlias() ) ) ) {
                     dataProvider.getList().remove( index );
                     isDirty = true;
@@ -123,7 +127,6 @@ public class GlobalsEditorView extends Composite implements GlobalsEditorPresent
         //Link data
         dataProvider.addDataDisplay( table );
         dataProvider.setList( globals );
-
     }
 
     @Override
@@ -133,11 +136,13 @@ public class GlobalsEditorView extends Composite implements GlobalsEditorPresent
 
     @Override
     public void setContent( final DataModelOracle oracle,
-                            final List<Global> globals ) {
+                            final List<Global> globals,
+                            final boolean isReadOnly ) {
         this.oracle = oracle;
         this.globals = globals;
         this.dataProvider.setList( globals );
-        this.addGlobalButton.setEnabled( true );
+        this.addGlobalButton.setEnabled( !isReadOnly );
+        this.isReadOnly = isReadOnly;
         setNotDirty();
     }
 

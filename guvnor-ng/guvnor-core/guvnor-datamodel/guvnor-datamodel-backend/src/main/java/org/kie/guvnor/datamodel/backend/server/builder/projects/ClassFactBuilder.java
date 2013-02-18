@@ -51,24 +51,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
     @Override
     public void build( final ProjectDefinition oracle ) {
         super.build( oracle );
-        oracle.addMethodInformation( buildMethodInformation() );
-        oracle.addFieldParametersType( buildFieldParametersType() );
-    }
-
-    private Map<String, List<MethodInfo>> buildMethodInformation() {
-        final Map<String, List<MethodInfo>> loadableMethodInformation = new HashMap<String, List<MethodInfo>>();
-        if ( methodInformation.size() > 0 ) {
-            loadableMethodInformation.putAll( methodInformation );
-        }
-        return loadableMethodInformation;
-    }
-
-    private Map<String, String> buildFieldParametersType() {
-        final Map<String, String> loadableFieldParametersType = new HashMap<String, String>();
-        if ( fieldParametersType.size() > 0 ) {
-            loadableFieldParametersType.putAll( fieldParametersType );
-        }
-        return loadableFieldParametersType;
+        oracle.addMethodInformation( methodInformation );
+        oracle.addFieldParametersType( fieldParametersType );
     }
 
     private void loadClassFields( final Class<?> clazz ) throws IOException {

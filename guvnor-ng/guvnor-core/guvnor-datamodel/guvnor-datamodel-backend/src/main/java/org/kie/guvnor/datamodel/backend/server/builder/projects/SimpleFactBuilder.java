@@ -19,6 +19,7 @@ public class SimpleFactBuilder extends BaseFactBuilder {
                               final boolean isEvent ) {
         super( builder,
                factType,
+               false,
                isEvent );
     }
 

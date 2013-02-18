@@ -16,8 +16,11 @@
 
 package org.kie.guvnor.globals.backend.server.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.commons.data.Pair;
+import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.services.config.model.imports.Imports;
@@ -52,11 +55,21 @@ public class GlobalsPersistence {
 
     public GlobalsModel unmarshal( final String content ) {
         final Imports imports = ImportsParser.parseImports( content );
-        final List<Global> globals = GlobalsParser.parseGlobals( content );
+        final List<Pair<String, String>> parsedGlobalsContent = GlobalsParser.parseGlobals( content );
+        final List<Global> globals = makeGlobals( parsedGlobalsContent );
         final GlobalsModel model = new GlobalsModel();
         model.setImports( imports );
         model.setGlobals( globals );
         return model;
+    }
+
+    private List<Global> makeGlobals( final List<Pair<String, String>> parsedGlobalsContent ) {
+        final List<Global> globals = new ArrayList<Global>();
+        for ( Pair<String, String> p : parsedGlobalsContent ) {
+            globals.add( new Global( p.getK1(),
+                                     p.getK2() ) );
+        }
+        return globals;
     }
 
 }

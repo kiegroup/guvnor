@@ -31,7 +31,7 @@ import org.uberfire.backend.server.util.Paths;
 public class GuidedRuleSourceService
         extends BaseSourceService<RuleModel> {
 
-    private static final String PATTERN = ".brl";
+    private static final String PATTERN = ".gre.drl";
 
     @Inject
     private Paths paths;

@@ -39,25 +39,14 @@ public class PackageDataModelOracle implements DataModelOracle {
     private List<DSLSentence> packageDSLConditionSentences = new ArrayList<DSLSentence>();
     private List<DSLSentence> packageDSLActionSentences = new ArrayList<DSLSentence>();
 
-    // Package-level map of Globals (name is key) and their type (value).
-    //TODO {manstis} The following are not setup by DataModelBuilder
-    private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
-
-    // Package-level Globals that are a collection type.
-    //TODO {manstis} The following are not setup by DataModelBuilder
-    private String[] packageGlobalCollections = new String[ 0 ];
-
-    // Details of Fact Types and their corresponding fields
-    private Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
+    // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    private Map<String, Boolean> scopedCollectionTypes = new HashMap<String, Boolean>();
 
     // A map of FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
     private Map<String, Boolean> scopedEventTypes = new HashMap<String, Boolean>();
 
-    // A map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
-    private Map<String, String[]> scopedEnumLists = new HashMap<String, String[]>();
-
-    // This is used to calculate what fields an enum list may depend on.
-    private transient Map<String, Object> scopedEnumLookupFields;
+    // Details of Fact Types and their corresponding fields
+    private Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
 
     // Details of Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
     private Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
@@ -65,6 +54,15 @@ public class PackageDataModelOracle implements DataModelOracle {
     // A map of the field that contains the parametrized type of a collection
     // for example given "List<String> name", key = "name" value = "String"
     private Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
+
+    // A map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
+    private Map<String, String[]> scopedEnumLists = new HashMap<String, String[]>();
+
+    // This is used to calculate what fields an enum list may depend on.
+    private transient Map<String, Object> scopedEnumLookupFields;
+
+    // Package-level map of Globals (name is key) and their type (value).
+    private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
 
     //Public constructor is needed for Errai Marshaller :(
     public PackageDataModelOracle() {
@@ -345,7 +343,15 @@ public class PackageDataModelOracle implements DataModelOracle {
     }
 
     public String[] getGlobalCollections() {
-        return packageGlobalCollections;
+        final List<String> globalCollections = new ArrayList<String>();
+        for ( Map.Entry<String, String> e : packageGlobalTypes.entrySet() ) {
+            if ( scopedCollectionTypes.containsKey( e.getValue() ) ) {
+                if ( Boolean.TRUE.equals( scopedCollectionTypes.get( e.getValue() ) ) ) {
+                    globalCollections.add( e.getKey() );
+                }
+            }
+        }
+        return OracleUtils.toStringArray( globalCollections );
     }
 
     // ####################################
@@ -707,6 +713,7 @@ public class PackageDataModelOracle implements DataModelOracle {
 
     public void filter() {
         final Map<String, ModelField[]> projectModelFields = projectDefinition.getFactsAndFields();
+        final Map<String, Boolean> projectCollectionTypes = projectDefinition.getCollectionTypes();
         final Map<String, Boolean> projectEventTypes = projectDefinition.getEventTypes();
         final Map<String, String[]> projectEnumDefinitions = projectDefinition.getEnumDefinitions();
         final Map<String, List<MethodInfo>> projectMethodInformation = projectDefinition.getMethodInformation();
@@ -717,6 +724,12 @@ public class PackageDataModelOracle implements DataModelOracle {
         scopedModelFields.putAll( PackageDataModelOracleUtils.filterModelFields( packageName,
                                                                                  imports,
                                                                                  projectModelFields ) );
+
+        //Filter and rename Collection Types based on package name and imports
+        scopedCollectionTypes.clear();
+        scopedCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
+                                                                                         imports,
+                                                                                         projectCollectionTypes ) );
 
         //Filter and rename Event Types based on package name and imports
         scopedEventTypes.clear();
@@ -767,6 +780,10 @@ public class PackageDataModelOracle implements DataModelOracle {
 
     public void addPackageDslActionSentences( final List<DSLSentence> dslActionSentences ) {
         this.packageDSLActionSentences.addAll( dslActionSentences );
+    }
+
+    public void addPackageGlobals( final Map<String, String> packageGlobalTypes ) {
+        this.packageGlobalTypes.putAll( packageGlobalTypes );
     }
 
 }

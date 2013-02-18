@@ -17,6 +17,9 @@ public class ProjectDefinition {
     // Details of Fact Types and their corresponding fields
     private Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
 
+    // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    private Map<String, Boolean> collectionTypes = new HashMap<String, Boolean>();
+
     // A map of FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
     private Map<String, Boolean> eventTypes = new HashMap<String, Boolean>();
 
@@ -29,14 +32,6 @@ public class ProjectDefinition {
     // A map of the field that contains the parametrized type of a collection
     // for example given "List<String> name", key = "name" value = "String"
     private Map<String, String> fieldParametersType = new HashMap<String, String>();
-
-    //TODO {manstis} The following are not setup by ProjectDefinitionBuilder
-    // A map of globals (name is key) and their type (value).
-    private Map<String, String> globalTypes = new HashMap<String, String>();
-
-    //TODO {manstis} The following are not setup by ProjectDefinitionBuilder
-    // Globals that are a collection type.
-    private String[] globalCollections = new String[ 0 ];
 
     public void addFactsAndFields( final Map<String, ModelField[]> modelFields ) {
         this.modelFields.putAll( modelFields );
@@ -76,6 +71,14 @@ public class ProjectDefinition {
 
     public Map<String, String[]> getEnumDefinitions() {
         return dataEnumLists;
+    }
+
+    public void addCollectionType( final Map<String, Boolean> collectionTypes ) {
+        this.collectionTypes.putAll( collectionTypes );
+    }
+
+    public Map<String, Boolean> getCollectionTypes() {
+        return this.collectionTypes;
     }
 
 }

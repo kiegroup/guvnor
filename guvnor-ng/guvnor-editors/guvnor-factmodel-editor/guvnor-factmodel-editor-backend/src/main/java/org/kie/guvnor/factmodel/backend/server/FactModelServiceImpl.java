@@ -84,6 +84,9 @@ public class FactModelServiceImpl
     @Inject
     private Identity identity;
 
+    @Inject
+    private SourceServices sourceServices;
+
     @Override
     public FactModelContent loadContent( final Path path ) {
         try {
@@ -175,9 +178,6 @@ public class FactModelServiceImpl
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
         return targetPath;
     }
-
-    @Inject
-    private SourceServices sourceServices;
 
     @Override
     public String toSource(Path path, final FactModels model) {

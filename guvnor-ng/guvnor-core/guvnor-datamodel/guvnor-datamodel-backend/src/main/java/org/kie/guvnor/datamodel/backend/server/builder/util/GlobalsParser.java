@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.globals.backend.server.util;
+package org.kie.guvnor.datamodel.backend.server.builder.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.guvnor.globals.model.Global;
+import org.kie.commons.data.Pair;
 
 /**
  * Utility methods to parse Globals
@@ -30,8 +30,13 @@ public final class GlobalsParser {
     private GlobalsParser() {
     }
 
-    public static List<Global> parseGlobals( final String content ) {
-        final List<Global> globals = new ArrayList<Global>();
+    /**
+     * Parse global definitions from String
+     * @param content
+     * @return A List of Global definitions; k1=alias, k2=className
+     */
+    public static List<Pair<String, String>> parseGlobals( final String content ) {
+        final List<Pair<String, String>> globals = new ArrayList<Pair<String, String>>();
 
         if ( content == null || content.isEmpty() ) {
             return globals;
@@ -40,7 +45,7 @@ public final class GlobalsParser {
             final String[] lines = content.split( "\\n" );
             for ( int i = 0; i < lines.length; i++ ) {
                 final String line = lines[ i ].trim();
-                final Global g = parseGlobal( line );
+                final Pair<String, String> g = parseGlobal( line );
                 if ( g != null ) {
                     globals.add( g );
                 }
@@ -49,7 +54,7 @@ public final class GlobalsParser {
         return globals;
     }
 
-    private static Global parseGlobal( final String line ) {
+    private static Pair<String, String> parseGlobal( final String line ) {
         if ( line.equals( "" ) || line.startsWith( "#" ) ) {
             return null;
         }
@@ -62,9 +67,10 @@ public final class GlobalsParser {
         if ( !fragments[ 0 ].equalsIgnoreCase( KEYWORD ) ) {
             return null;
         }
-        final Global g = new Global();
-        g.setClassName( fragments[ 1 ] );
-        g.setAlias( stripSemiColon( fragments[ 2 ] ) );
+        final String className = fragments[ 1 ];
+        final String alias = stripSemiColon( fragments[ 2 ] );
+        final Pair<String, String> g = new Pair<String, String>( alias,
+                                                                 className );
         return g;
     }
 

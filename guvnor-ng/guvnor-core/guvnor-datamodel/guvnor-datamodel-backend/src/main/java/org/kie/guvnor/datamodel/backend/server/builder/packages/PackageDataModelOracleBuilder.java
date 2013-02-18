@@ -10,7 +10,9 @@ import java.util.Map;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.DataEnumLoader;
+import org.kie.commons.data.Pair;
+import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
+import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -32,6 +34,12 @@ public final class PackageDataModelOracleBuilder {
     //These are not used anywhere in Guvnor 5.5.x, but have been retained for future scope
     private List<DSLSentence> dslKeywordItems = new ArrayList<DSLSentence>();
     private List<DSLSentence> dslAnyScopeItems = new ArrayList<DSLSentence>();
+
+    // Package-level map of Globals (name is key) and their type (value).
+    private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
+
+    // Package-level Globals that are a collection type.
+    private List<String> packageGlobalCollections = new ArrayList<String>();
 
     private List<String> errors = new ArrayList<String>();
 
@@ -149,9 +157,19 @@ public final class PackageDataModelOracleBuilder {
         }
     }
 
+    public PackageDataModelOracleBuilder addGlobals( final String definition ) {
+        List<Pair<String, String>> globals = GlobalsParser.parseGlobals( definition );
+        for ( Pair<String, String> g : globals ) {
+            packageGlobalTypes.put( g.getK1(),
+                                    g.getK2() );
+        }
+        return this;
+    }
+
     public DataModelOracle build() {
         loadEnums();
         loadDsls();
+        loadGlobals();
         loadProjectDefinition();
         return oracle;
     }
@@ -179,6 +197,10 @@ public final class PackageDataModelOracleBuilder {
     private void loadDsls() {
         oracle.addPackageDslConditionSentences( dslConditionSentences );
         oracle.addPackageDslActionSentences( dslActionSentences );
+    }
+
+    private void loadGlobals() {
+        oracle.addPackageGlobals( packageGlobalTypes );
     }
 
 }

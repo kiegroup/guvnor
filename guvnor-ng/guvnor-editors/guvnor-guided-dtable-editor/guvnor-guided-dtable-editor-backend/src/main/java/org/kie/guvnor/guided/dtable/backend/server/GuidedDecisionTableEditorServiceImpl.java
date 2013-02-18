@@ -33,7 +33,6 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTDRLPersistence;
 import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -65,6 +64,9 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SourceServices sourceServices;
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
@@ -137,12 +139,11 @@ public class GuidedDecisionTableEditorServiceImpl
         return targetPath;
     }
 
-    @Inject
-    private SourceServices sourceServices;
-
     @Override
-    public String toSource(Path path, final GuidedDecisionTable52 model) {
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
+    public String toSource( final Path path,
+                            final GuidedDecisionTable52 model ) {
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ),
+                                                                                model );
     }
 
     @Override

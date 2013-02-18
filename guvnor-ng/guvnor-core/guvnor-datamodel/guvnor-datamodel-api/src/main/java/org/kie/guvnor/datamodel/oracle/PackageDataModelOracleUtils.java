@@ -36,6 +36,25 @@ public class PackageDataModelOracleUtils {
         return scopedModelFields;
     }
 
+    //Filter and rename Collection Types based on package name and imports
+    public static Map<String, Boolean> filterCollectionTypes( final String packageName,
+                                                              final Imports imports,
+                                                              final Map<String, Boolean> projectCollectionTypes ) {
+        final Map<String, Boolean> scopedCollectionTypes = new HashMap<String, Boolean>();
+        for ( Map.Entry<String, Boolean> e : projectCollectionTypes.entrySet() ) {
+            final String collectionQualifiedType = e.getKey();
+            final String collectionPackageName = getPackageName( collectionQualifiedType );
+            final String collectionTypeName = getTypeName( collectionQualifiedType );
+
+            if ( collectionPackageName.equals( packageName ) || isImported( collectionQualifiedType,
+                                                                            imports ) ) {
+                scopedCollectionTypes.put( collectionTypeName,
+                                           e.getValue() );
+            }
+        }
+        return scopedCollectionTypes;
+    }
+
     //Filter and rename Event Types based on package name and imports
     public static Map<String, Boolean> filterEventTypes( final String packageName,
                                                          final Imports imports,
@@ -96,7 +115,7 @@ public class PackageDataModelOracleUtils {
         return scopedMethodInformation;
     }
 
-    //TODO Filter and rename based on package name and imports
+    //Filter and rename based on package name and imports
     public static Map<String, String> filterFieldParametersTypes( final String packageName,
                                                                   final Imports imports,
                                                                   final Map<String, String> projectFieldParametersTypes ) {

@@ -18,18 +18,18 @@ package org.kie.guvnor.datamodel.backend.server.testclasses;
 
 public class Product {
 
-    public enum Color {
+    public enum Colour {
         GREEN, YELLOW, BLACK
     }
 
-    private Color color;
+    private Colour colour;
 
-    public Color getColor() {
-        return color;
+    public Colour getColour() {
+        return colour;
     }
 
-    public void setColor( Color color ) {
-        this.color = color;
+    public void setColour( Colour color ) {
+        this.colour = color;
     }
 
 }

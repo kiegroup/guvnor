@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.backend.server.builder.projects;
+package org.kie.guvnor.datamodel.backend.server.builder.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

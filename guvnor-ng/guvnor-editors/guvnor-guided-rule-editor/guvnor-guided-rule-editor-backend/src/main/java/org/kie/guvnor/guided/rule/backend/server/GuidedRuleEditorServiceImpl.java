@@ -36,7 +36,6 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
-import org.kie.guvnor.guided.rule.GuidedRuleFileType;
 import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -124,19 +123,22 @@ public class GuidedRuleEditorServiceImpl
                       final RuleModel model,
                       final String comment ) {
         ioService.write( paths.convert( path ),
-                         BRDRLPersistence.getInstance().marshal( model ),
+                         toSource( path,
+                                   model ),
                          makeCommentedOption( comment ) );
     }
 
     @Override
-    public void save( final Path resource,
+    public void save( final Path path,
                       final RuleModel model,
                       final Metadata metadata,
                       final String comment ) {
 
-        ioService.write( paths.convert( resource ),
-                         BRDRLPersistence.getInstance().marshal( model ),
-                         metadataService.setUpAttributes( resource, metadata ),
+        ioService.write( paths.convert( path ),
+                         toSource( path,
+                                   model ),
+                         metadataService.setUpAttributes( path,
+                                                          metadata ),
                          makeCommentedOption( comment ) );
     }
 
@@ -207,8 +209,9 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public String toSource(Path path, final RuleModel model) {
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path), model);
+    public String toSource( Path path,
+                            final RuleModel model ) {
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
     @Override

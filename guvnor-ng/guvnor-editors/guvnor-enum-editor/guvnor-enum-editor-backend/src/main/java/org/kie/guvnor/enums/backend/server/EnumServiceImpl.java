@@ -30,7 +30,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.DataEnumLoader;
+import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.model.EnumModel;
 import org.kie.guvnor.enums.model.EnumModelContent;

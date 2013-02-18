@@ -108,7 +108,8 @@ public class GlobalsEditorPresenter {
             UberView<GlobalsEditorPresenter> {
 
         void setContent( final DataModelOracle oracle,
-                         final List<Global> globals );
+                         final List<Global> globals,
+                         final boolean isReadOnly );
 
         boolean isDirty();
 
@@ -222,7 +223,8 @@ public class GlobalsEditorPresenter {
                 model = content.getModel();
                 oracle = content.getDataModel();
                 view.setContent( content.getDataModel(),
-                                 content.getModel().getGlobals() );
+                                 content.getModel().getGlobals(),
+                                 isReadOnly );
 
                 importsWidget.setContent( content.getDataModel(),
                                           content.getModel().getImports(),

@@ -16,6 +16,10 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
@@ -31,10 +35,6 @@ import org.kie.guvnor.services.config.model.imports.Imports;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @Service
 @ApplicationScoped
@@ -61,12 +61,12 @@ public class ProjectServiceImpl
     }
 
     @Inject
-    public ProjectServiceImpl(M2RepoService m2RepoService,
-                              final @Named("ioStrategy") IOService ioService,
-                              final Paths paths,
-                              KModuleService kModuleService,
-                              POMService pomService,
-                              PackageConfigurationContentHandler packageConfigurationContentHandler) {
+    public ProjectServiceImpl( final M2RepoService m2RepoService,
+                               final @Named("ioStrategy") IOService ioService,
+                               final Paths paths,
+                               final KModuleService kModuleService,
+                               final POMService pomService,
+                               final PackageConfigurationContentHandler packageConfigurationContentHandler ) {
         this.m2RepoService = m2RepoService;
         this.ioService = ioService;
         this.paths = paths;
@@ -76,181 +76,182 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public WorkingSetSettings loadWorkingSetConfig(final Path project) {
+    public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
 
     @Override
-    public Path resolveProject(final Path resource) {
+    public Path resolveProject( final Path resource ) {
 
         //Null resource paths cannot resolve to a Project
-        if (resource == null) {
+        if ( resource == null ) {
             return null;
         }
 
         //Check if resource is the project root
-        org.kie.commons.java.nio.file.Path path = paths.convert(resource).normalize();
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
 
         //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-        if (Files.isRegularFile(path)) {
+        if ( Files.isRegularFile( path ) ) {
             path = path.getParent();
         }
-        if (hasPom(path) && hasKModule(path)) {
+        if ( hasPom( path ) && hasKModule( path ) ) {
             return resource;
         }
-        while (path.getNameCount() > 0 && !path.getFileName().toString().equals(SOURCE_FILENAME)) {
+        while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
             path = path.getParent();
         }
-        if (path.getNameCount() == 0) {
+        if ( path.getNameCount() == 0 ) {
             return null;
         }
         path = path.getParent();
-        if (path.getNameCount() == 0 || path == null) {
+        if ( path.getNameCount() == 0 || path == null ) {
             return null;
         }
-        if (!hasPom(path)) {
+        if ( !hasPom( path ) ) {
             return null;
         }
-        if (!hasKModule(path)) {
+        if ( !hasKModule( path ) ) {
             return null;
         }
-        return paths.convert(path);
+        return paths.convert( path );
     }
 
     @Override
-    public Path resolvePackage(final Path resource) {
+    public Path resolvePackage( final Path resource ) {
 
         //Null resource paths cannot resolve to a Project
-        if (resource == null) {
+        if ( resource == null ) {
             return null;
         }
 
         //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = resolveProject(resource);
-        if (projectRoot == null) {
+        final Path projectRoot = resolveProject( resource );
+        if ( projectRoot == null ) {
             return null;
         }
 
         //The Path must be within a Project's src/main/resources path
         boolean resolved = false;
-        org.kie.commons.java.nio.file.Path path = paths.convert(resource).normalize();
-        final org.kie.commons.java.nio.file.Path javaPath = paths.convert(projectRoot).resolve(JAVA_PATH);
-        if (path.startsWith(javaPath)) {
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path javaPath = paths.convert( projectRoot ).resolve( JAVA_PATH );
+        if ( path.startsWith( javaPath ) ) {
             resolved = true;
         }
-        final org.kie.commons.java.nio.file.Path resourcesPath = paths.convert(projectRoot).resolve(RESOURCES_PATH);
-        if (path.startsWith(resourcesPath)) {
+        final org.kie.commons.java.nio.file.Path resourcesPath = paths.convert( projectRoot ).resolve( RESOURCES_PATH );
+        if ( path.startsWith( resourcesPath ) ) {
             resolved = true;
         }
-        if (!resolved) {
+        if ( !resolved ) {
             return null;
         }
 
         //If the Path is already a folder simply return it
-        if (Files.isDirectory(path)) {
+        if ( Files.isDirectory( path ) ) {
             return resource;
         }
 
         path = path.getParent();
 
-        return paths.convert(path);
+        return paths.convert( path );
     }
 
     @Override
-    public String resolvePackageName(final Path path) {
+    public String resolvePackageName( final Path path ) {
 
         //Check path is actually within a Package within a Project
-        final Path packagePath = resolvePackage(path);
-        if (packagePath == null) {
+        final Path packagePath = resolvePackage( path );
+        if ( packagePath == null ) {
             return null;
         }
-        final Path projectPath = resolveProject(packagePath);
-        if (projectPath == null) {
+        final Path projectPath = resolveProject( packagePath );
+        if ( projectPath == null ) {
             return null;
         }
 
         //Use the relative path between Project root and Package path to build the package name
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert(projectPath);
-        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert(packagePath);
-        final org.kie.commons.java.nio.file.Path nioDelta = nioProjectPath.relativize(nioPackagePath);
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectPath );
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.kie.commons.java.nio.file.Path nioDelta = nioProjectPath.relativize( nioPackagePath );
 
         //Build package name
         String packageName = nioDelta.toString();
-        if (packageName.startsWith(JAVA_PATH)) {
-            packageName = packageName.replace(JAVA_PATH,
-                    "");
+        if ( packageName.startsWith( JAVA_PATH ) ) {
+            packageName = packageName.replace( JAVA_PATH,
+                                               "" );
         }
-        if (packageName.startsWith(RESOURCES_PATH)) {
-            packageName = packageName.replace(RESOURCES_PATH,
-                    "");
+        if ( packageName.startsWith( RESOURCES_PATH ) ) {
+            packageName = packageName.replace( RESOURCES_PATH,
+                                               "" );
         }
-        if (packageName.length() == 0) {
+        if ( packageName.length() == 0 ) {
             return "defaultpkg";
         }
-        if (packageName.startsWith("/")) {
-            packageName = packageName.substring(1);
+        if ( packageName.startsWith( "/" ) ) {
+            packageName = packageName.substring( 1 );
         }
-        return packageName.replaceAll("/",
-                ".");
+        return packageName.replaceAll( "/",
+                                       "." );
     }
 
     @Override
-    public Path newProject(Path activePath,
-                           String name) {
+    public Path newProject( final Path activePath,
+                            final String name ) {
         POM pomModel = new POM();
         Repository repository = new Repository();
-        repository.setId("guvnor-m2-repo");
-        repository.setName("Guvnor M2 Repo");
-        repository.setUrl(m2RepoService.getRepositoryURL());
-        pomModel.addRepository(repository);
+        repository.setId( "guvnor-m2-repo" );
+        repository.setName( "Guvnor M2 Repo" );
+        repository.setUrl( m2RepoService.getRepositoryURL() );
+        pomModel.addRepository( repository );
 
-        Path pathToPom = createPOMFile(activePath, name);
-        kModuleService.setUpKModuleStructure(pathToPom);
+        Path pathToPom = createPOMFile( activePath, name );
+        kModuleService.setUpKModuleStructure( pathToPom );
 
-        saveImportSuggestions(paths.convert(pathToPom).getParent());
+        saveImportSuggestions( paths.convert( pathToPom ).getParent() );
 
-        return pomService.savePOM(pathToPom, pomModel);
+        return pomService.savePOM( pathToPom, pomModel );
     }
 
     @Override
-    public void newPackage(Path path) {
-        ioService.createDirectory(paths.convert(path));
+    public Path newPackage( final Path path ) {
+        return paths.convert( ioService.createDirectory( paths.convert( path ) ) );
     }
 
-    private void saveImportSuggestions(org.kie.commons.java.nio.file.Path folderPath) {
-        Path path = paths.convert(folderPath);
-        org.kie.commons.java.nio.file.Path pathToFile = ioService.createFile(paths.convert(PathFactory.newPath(path.getFileSystem(), "project.imports", path.toURI() + "/project.imports")));
-        ioService.write(pathToFile, packageConfigurationContentHandler.toString(new PackageConfiguration(new Imports())));
+    private void saveImportSuggestions( final org.kie.commons.java.nio.file.Path folderPath ) {
+        Path path = paths.convert( folderPath );
+        org.kie.commons.java.nio.file.Path pathToFile = ioService.createFile( paths.convert( PathFactory.newPath( path.getFileSystem(), "project.imports", path.toURI() + "/project.imports" ) ) );
+        ioService.write( pathToFile, packageConfigurationContentHandler.toString( new PackageConfiguration( new Imports() ) ) );
     }
 
-    private Path createPOMFile(Path activePath,
-                               String name) {
-        return paths.convert(ioService.createFile(paths.convert(createPOMPath(activePath, name))));
+    private Path createPOMFile( final Path activePath,
+                                final String name ) {
+        return paths.convert( ioService.createFile( paths.convert( createPOMPath( activePath, name ) ) ) );
     }
 
-    private Path createPOMPath(Path activePath,
-                               String name) {
-        return PathFactory.newPath(activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml");
+    private Path createPOMPath( final Path activePath,
+                                final String name ) {
+        return PathFactory.newPath( activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml" );
     }
 
-    private boolean hasPom(final org.kie.commons.java.nio.file.Path path) {
-        final org.kie.commons.java.nio.file.Path pomPath = path.resolve(POM_FILENAME);
-        return Files.exists(pomPath);
+    private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
+        final org.kie.commons.java.nio.file.Path pomPath = path.resolve( POM_FILENAME );
+        return Files.exists( pomPath );
     }
 
-    private boolean hasKModule(final org.kie.commons.java.nio.file.Path path) {
-        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve(KMODULE_FILENAME);
-        return Files.exists(kmodulePath);
-    }
-
-    @Override
-    public PackageConfiguration loadPackageConfiguration(Path path) {
-        return packageConfigurationContentHandler.toModel(ioService.readAllString(paths.convert(path)));
+    private boolean hasKModule( final org.kie.commons.java.nio.file.Path path ) {
+        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_FILENAME );
+        return Files.exists( kmodulePath );
     }
 
     @Override
-    public void save(Path path, PackageConfiguration packageConfiguration) {
-        ioService.write(paths.convert(path), packageConfigurationContentHandler.toString(packageConfiguration));
+    public PackageConfiguration loadPackageConfiguration( final Path path ) {
+        return packageConfigurationContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
+    }
+
+    @Override
+    public void save( final Path path,
+                      final PackageConfiguration packageConfiguration ) {
+        ioService.write( paths.convert( path ), packageConfigurationContentHandler.toString( packageConfiguration ) );
     }
 }

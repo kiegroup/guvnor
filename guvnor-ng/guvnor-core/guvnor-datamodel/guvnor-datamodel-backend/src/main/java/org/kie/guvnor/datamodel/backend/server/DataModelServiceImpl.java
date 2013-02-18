@@ -228,7 +228,9 @@ public class DataModelServiceImpl
         loadDslsForPackage( dmoBuilder,
                             packagePath );
 
-        //TODO {manstis} - Add Globals
+        //Add Globals
+        loadGlobalsForPackage( dmoBuilder,
+                               packagePath );
 
         //Report any errors
         final Results results = new Results();
@@ -277,6 +279,17 @@ public class DataModelServiceImpl
         for ( final org.kie.commons.java.nio.file.Path path : dslFiles ) {
             final String dslDefinition = ioService.readAllString( path );
             dmoBuilder.addDsl( dslDefinition );
+        }
+    }
+
+    private void loadGlobalsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
+                                        final Path packagePath ) {
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final Collection<org.kie.commons.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
+                                                                                                               ".global.drl" );
+        for ( final org.kie.commons.java.nio.file.Path path : globalFiles ) {
+            final String definition = ioService.readAllString( path );
+            dmoBuilder.addGlobals( definition );
         }
     }
 

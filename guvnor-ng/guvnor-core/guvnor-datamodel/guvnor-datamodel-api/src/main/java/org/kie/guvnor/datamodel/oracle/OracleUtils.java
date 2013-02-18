@@ -1,6 +1,7 @@
 package org.kie.guvnor.datamodel.oracle;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -51,6 +52,20 @@ public class OracleUtils {
         final String[] f = new String[ set.size() ];
         int i = 0;
         for ( final Iterator<?> iter = set.iterator(); iter.hasNext(); i++ ) {
+            f[ i ] = iter.next().toString();
+        }
+        return f;
+    }
+
+    /**
+     * Return a List as a String array
+     * @param list
+     * @return
+     */
+    public static String[] toStringArray( final List<?> list ) {
+        final String[] f = new String[ list.size() ];
+        int i = 0;
+        for ( final Iterator<?> iter = list.iterator(); iter.hasNext(); i++ ) {
             f[ i ] = iter.next().toString();
         }
         return f;
