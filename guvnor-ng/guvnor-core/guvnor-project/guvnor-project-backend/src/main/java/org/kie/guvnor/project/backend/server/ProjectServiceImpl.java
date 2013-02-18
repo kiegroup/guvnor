@@ -41,21 +41,21 @@ import org.uberfire.backend.vfs.PathFactory;
 public class ProjectServiceImpl
         implements ProjectService {
 
-    private static final String SOURCE_FILENAME = "src";
-    private static final String POM_FILENAME = "pom.xml";
+    private static final String SOURCE_FILENAME  = "src";
+    private static final String POM_FILENAME     = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
 
-    private static final String SOURCE_JAVA_PATH = "src/main/java";
+    private static final String SOURCE_JAVA_PATH      = "src/main/java";
     private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_JAVA_PATH = "src/test/java";
-    private static final String TEST_RESOURCES_PATH = "src/test/resources";
+    private static final String TEST_JAVA_PATH        = "src/test/java";
+    private static final String TEST_RESOURCES_PATH   = "src/test/resources";
 
     private IOService ioService;
-    private Paths paths;
+    private Paths     paths;
 
-    private POMService pomService;
-    private M2RepoService m2RepoService;
-    private KModuleService kModuleService;
+    private POMService                         pomService;
+    private M2RepoService                      m2RepoService;
+    private KModuleService                     kModuleService;
     private PackageConfigurationContentHandler packageConfigurationContentHandler;
 
     public ProjectServiceImpl() {
@@ -226,8 +226,15 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path newPackage( final Path path ) {
-        return paths.convert( ioService.createDirectory( paths.convert( path ) ) );
+    public Path newPackage( final Path contextPath,
+                            final String packageName ) {
+        return newDirectory( contextPath, packageName );
+    }
+
+    @Override
+    public Path newDirectory( final Path contextPath,
+                              final String dirName ) {
+        return paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
     }
 
     private void saveImportSuggestions( final org.kie.commons.java.nio.file.Path folderPath ) {
