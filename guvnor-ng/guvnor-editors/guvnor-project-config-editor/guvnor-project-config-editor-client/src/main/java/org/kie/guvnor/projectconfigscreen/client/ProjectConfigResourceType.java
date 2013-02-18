@@ -20,7 +20,17 @@ public class ProjectConfigResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "project";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "imports";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "project.imports" );
+        return path.getFileName().endsWith( getPrefix() + "." + getSuffix() );
     }
 }

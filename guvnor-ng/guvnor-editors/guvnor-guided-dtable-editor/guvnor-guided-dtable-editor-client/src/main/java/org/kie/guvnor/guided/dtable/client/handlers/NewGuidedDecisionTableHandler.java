@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -25,18 +26,14 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "gdst";
-
     @Inject
     private PlaceManager placeManager;
 
     @Inject
     private Caller<GuidedDecisionTableEditorService> service;
 
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
+    @Inject
+    private GuidedDTableResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -49,27 +46,26 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
         final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
-        ruleModel.setTableName( stripFileExtension( fileName ) );
+        ruleModel.setTableName( baseFileName );
 
-        new SaveOperationService().save( path,
+        new SaveOperationService().save( contextPath,
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 service.call( new RemoteCallback<Void>() {
+                                                 service.call( new RemoteCallback<Path>() {
                                                      @Override
-                                                     public void callback( Void aVoid ) {
+                                                     public void callback( final Path path ) {
                                                          notifySuccess();
                                                          notifyResourceAdded( path );
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedDecisionTableEditor" );
                                                          placeManager.goTo( place );
                                                      }
-                                                 } ).save( path,
-                                                           ruleModel,
-                                                           comment );
+                                                 } ).save( contextPath, buildFileName( resourceType, baseFileName ), ruleModel, comment );
+
                                              }
                                          } );
     }

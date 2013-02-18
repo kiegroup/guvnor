@@ -20,7 +20,17 @@ public class EnumResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "enumeration";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".enumeration" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

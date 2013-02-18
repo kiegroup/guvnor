@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;

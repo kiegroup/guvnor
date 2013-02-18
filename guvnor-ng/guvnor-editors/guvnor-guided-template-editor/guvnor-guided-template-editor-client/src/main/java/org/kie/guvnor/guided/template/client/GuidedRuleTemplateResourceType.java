@@ -20,7 +20,17 @@ public class GuidedRuleTemplateResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "template";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".template" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

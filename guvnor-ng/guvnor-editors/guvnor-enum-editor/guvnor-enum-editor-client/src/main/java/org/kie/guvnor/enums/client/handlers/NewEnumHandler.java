@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.enums.client.EnumResourceType;
 import org.kie.guvnor.enums.client.resources.i18n.Constants;
 import org.kie.guvnor.enums.client.resources.images.ImageResources;
 import org.kie.guvnor.enums.service.EnumService;
@@ -24,18 +25,14 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewEnumHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "enumeration";
-
     @Inject
     private Caller<EnumService> enumService;
 
     @Inject
     private PlaceManager placeManager;
 
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
+    @Inject
+    private EnumResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -48,24 +45,21 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
-
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
+        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
-                enumService.call( new RemoteCallback<Void>() {
+                enumService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Void aVoid ) {
+                    public void callback( final Path path ) {
                         notifySuccess();
                         notifyResourceAdded( path );
                         final PlaceRequest place = new PathPlaceRequest( path,
                                                                          "EnumEditor" );
                         placeManager.goTo( place );
                     }
-                } ).save( path,
-                          "",
-                          comment );
+                } ).save( contextPath, buildFileName( resourceType, baseFileName ), "", comment );
             }
         } );
     }

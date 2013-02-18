@@ -17,10 +17,6 @@
 package org.kie.guvnor.testscenario.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
-import org.kie.guvnor.services.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface TestScenarioEditorService {

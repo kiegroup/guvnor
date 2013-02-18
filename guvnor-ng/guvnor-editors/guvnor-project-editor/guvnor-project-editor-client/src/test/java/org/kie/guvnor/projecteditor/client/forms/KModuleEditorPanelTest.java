@@ -23,7 +23,7 @@ import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 

@@ -73,9 +73,9 @@ public class NewResourceView extends FormStylePopup implements NewResourcePresen
                       handlersContainer );
 
         //Extensions for Handler
-        final List<Pair<String, IsWidget>> extensions = handler.getExtensions();
+        final List<Pair<String, ? extends IsWidget>> extensions = handler.getExtensions();
         if ( extensions != null ) {
-            for ( Pair<String, IsWidget> extension : extensions ) {
+            for ( Pair<String, ? extends IsWidget> extension : extensions ) {
                 addAttribute( extension.getK1(),
                               extension.getK2() );
             }

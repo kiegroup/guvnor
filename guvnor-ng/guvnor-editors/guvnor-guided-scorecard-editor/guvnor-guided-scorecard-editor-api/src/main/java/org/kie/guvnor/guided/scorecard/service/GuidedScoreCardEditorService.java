@@ -17,36 +17,22 @@
 package org.kie.guvnor.guided.scorecard.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedScoreCardEditorService
-        extends ViewSourceService<ScoreCardModel>,
+        extends FileService<ScoreCardModel>,
+                ViewSourceService<ScoreCardModel>,
                 ValidationService<ScoreCardModel>,
                 SimpleVerificationService<ScoreCardModel> {
 
     ScoreCardModelContent loadContent( final Path path );
 
     ScoreCardModel loadModel( final Path path );
-
-    void save( final Path path,
-               final ScoreCardModel content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final ScoreCardModel model,
-               final String comment );
-        
-    void delete( final Path path, String comment );
-
-    Path rename( final Path path, String newName, String comment );
-
-    Path copy( final Path path, String newName, String comment );
 }

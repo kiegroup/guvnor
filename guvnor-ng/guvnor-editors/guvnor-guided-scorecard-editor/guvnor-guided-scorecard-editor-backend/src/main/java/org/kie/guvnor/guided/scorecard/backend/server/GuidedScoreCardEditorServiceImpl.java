@@ -25,6 +25,7 @@ import org.codehaus.plexus.util.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
@@ -36,7 +37,6 @@ import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -91,6 +91,18 @@ public class GuidedScoreCardEditorServiceImpl
         ioService.write( paths.convert( path ),
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final ScoreCardModel model,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        save( newPath, model, comment );
+
+        return newPath;
     }
 
     @Override

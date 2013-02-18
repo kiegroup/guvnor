@@ -1,4 +1,4 @@
-package org.kie.guvnor.services.metadata.model;
+package org.kie.guvnor.commons.service.metadata.model;
 
 import java.util.Iterator;
 

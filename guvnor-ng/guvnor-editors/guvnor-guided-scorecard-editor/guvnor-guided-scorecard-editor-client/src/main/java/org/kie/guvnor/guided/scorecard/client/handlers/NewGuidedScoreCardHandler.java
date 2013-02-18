@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.guided.scorecard.client.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
@@ -25,18 +26,14 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "scgd";
-
     @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardService;
 
     @Inject
     private PlaceManager placeManager;
 
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
+    @Inject
+    private GuidedScoreCardResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -49,27 +46,25 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( stripFileExtension( fileName ) );
+        model.setName( baseFileName );
 
-        new SaveOperationService().save( path,
+        new SaveOperationService().save( contextPath,
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 scoreCardService.call( new RemoteCallback<Void>() {
+                                                 scoreCardService.call( new RemoteCallback<Path>() {
                                                      @Override
-                                                     public void callback( Void aVoid ) {
+                                                     public void callback( final Path path ) {
                                                          notifySuccess();
                                                          notifyResourceAdded( path );
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedScoreCardEditor" );
                                                          placeManager.goTo( place );
                                                      }
-                                                 } ).save( path,
-                                                           model,
-                                                           comment );
+                                                 } ).save( contextPath, buildFileName( resourceType, baseFileName ), model, comment );
                                              }
                                          } );
     }

@@ -30,7 +30,7 @@ import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;

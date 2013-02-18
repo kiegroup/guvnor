@@ -20,7 +20,17 @@ public class DSLResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "dsl";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".dsl" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

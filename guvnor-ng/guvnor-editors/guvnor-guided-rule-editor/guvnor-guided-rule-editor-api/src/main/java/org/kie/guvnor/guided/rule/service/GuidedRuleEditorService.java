@@ -17,38 +17,24 @@
 package org.kie.guvnor.guided.rule.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedRuleEditorService
-        extends ViewSourceService<RuleModel>,
+        extends FileService<RuleModel>,
+                ViewSourceService<RuleModel>,
                 ValidationService<RuleModel>,
                 ScopedVerificationService<RuleModel> {
 
     GuidedEditorContent loadContent( final Path path );
 
     RuleModel loadRuleModel( final Path path );
-
-    void save( final Path path,
-               final RuleModel content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final RuleModel factModel,
-               final String comment );
-    
-    void delete( final Path path, String comment );
-
-    Path rename( final Path path, String newName, String comment );
-
-    Path copy( final Path path, String newName, String comment );
 
     /**
      * @param valuePairs key=value pairs to be interpolated into the expression.

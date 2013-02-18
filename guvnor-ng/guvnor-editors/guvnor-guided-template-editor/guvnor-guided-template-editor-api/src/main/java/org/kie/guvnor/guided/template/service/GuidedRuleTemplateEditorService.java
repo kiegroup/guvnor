@@ -17,37 +17,22 @@
 package org.kie.guvnor.guided.template.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedRuleTemplateEditorService
-        extends ViewSourceService<TemplateModel>,
+        extends FileService<TemplateModel>,
+                ViewSourceService<TemplateModel>,
                 ValidationService<TemplateModel>,
                 ScopedVerificationService<TemplateModel> {
 
     GuidedTemplateEditorContent loadContent( final Path path );
 
     TemplateModel loadTemplateModel( final Path path );
-
-    void save( final Path path,
-               final TemplateModel content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final TemplateModel factModel,
-               final String comment );
-
-    void delete(final Path path, String comment);
-
-    Path rename(final Path path, String newName, String comment);
-
-    Path copy(final Path path, String newName, String comment);
-
 }

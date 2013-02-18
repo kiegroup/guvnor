@@ -19,8 +19,7 @@ package org.kie.guvnor.services.metadata;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 /**

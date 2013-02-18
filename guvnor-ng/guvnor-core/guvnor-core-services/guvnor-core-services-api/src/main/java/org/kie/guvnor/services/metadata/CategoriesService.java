@@ -1,7 +1,7 @@
 package org.kie.guvnor.services.metadata;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.services.metadata.model.Categories;
+import org.kie.guvnor.commons.service.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

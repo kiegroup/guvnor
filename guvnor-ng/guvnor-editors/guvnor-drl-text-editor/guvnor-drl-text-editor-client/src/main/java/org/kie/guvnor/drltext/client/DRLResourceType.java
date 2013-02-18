@@ -20,7 +20,17 @@ public class DRLResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "drl";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".drl" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

@@ -35,7 +35,7 @@ import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.services.readonly.ReadOnlyPathPlaceRequest;
 import org.kie.guvnor.services.version.VersionService;
 import org.uberfire.backend.vfs.Path;

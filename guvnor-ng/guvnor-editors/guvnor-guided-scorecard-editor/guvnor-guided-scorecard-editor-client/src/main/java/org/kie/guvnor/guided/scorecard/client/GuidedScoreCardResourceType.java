@@ -20,7 +20,17 @@ public class GuidedScoreCardResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "scgd";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".scgd" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

@@ -14,8 +14,8 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.context.WorkbenchContext;
+import org.uberfire.client.workbench.file.ResourceType;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 
@@ -24,7 +24,7 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
  */
 public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
-    private final List<Pair<String, IsWidget>> extensions = new LinkedList<Pair<String, IsWidget>>();
+    private final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
 
     protected final PathLabel pathLabel = new PathLabel();
 
@@ -41,13 +41,11 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     private Event<ResourceAddedEvent> resourceAddedEvent;
 
     public DefaultNewResourceHandler() {
-        final Pair extension = new Pair( CommonConstants.INSTANCE.ItemPathSubheading(),
-                                         pathLabel );
-        this.extensions.add( extension );
+        this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(), pathLabel ) );
     }
 
     @Override
-    public List<Pair<String, IsWidget>> getExtensions() {
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
         this.pathLabel.setPath( context.getActivePath() );
         return this.extensions;
     }
@@ -73,19 +71,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         } ).resolvePackage( path );
     }
 
-    protected Path buildFullPathName( final String fileName ) {
-        final String pathName = this.pathLabel.getPath().toURI();
-        final Path assetPath = PathFactory.newPath( pathLabel.getPath().getFileSystem(), fileName, pathName + "/" + fileName );
-        return assetPath;
-    }
-
-    protected String stripFileExtension( final String fileName ) {
-        final int dotIndex = fileName.indexOf( "." );
-        if ( dotIndex == -1 ) {
-            return fileName;
-        }
-        return fileName.substring( 0,
-                                   dotIndex );
+    protected String buildFileName( final ResourceType resourceType,
+                                    final String baseFileName ) {
+        return resourceType.getPrefix() + baseFileName + "." + resourceType.getSuffix();
     }
 
     protected void notifySuccess() {

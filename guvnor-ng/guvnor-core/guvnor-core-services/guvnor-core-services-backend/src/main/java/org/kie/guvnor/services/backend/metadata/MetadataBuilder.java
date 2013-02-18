@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.kie.commons.java.nio.base.version.VersionRecord;
-import org.kie.guvnor.services.metadata.model.DiscussionRecord;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 import static org.kie.commons.validation.Preconditions.*;

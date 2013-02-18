@@ -20,7 +20,17 @@ public class FactModelResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "model.drl";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".model.drl" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

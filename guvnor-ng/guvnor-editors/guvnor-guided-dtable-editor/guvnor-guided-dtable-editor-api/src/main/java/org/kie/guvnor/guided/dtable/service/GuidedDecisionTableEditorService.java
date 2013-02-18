@@ -19,18 +19,19 @@ package org.kie.guvnor.guided.dtable.service;
 import java.util.Set;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedDecisionTableEditorService
-        extends ViewSourceService<GuidedDecisionTable52>,
+        extends FileService<GuidedDecisionTable52>,
+                ViewSourceService<GuidedDecisionTable52>,
                 ValidationService<GuidedDecisionTable52>,
                 ScopedVerificationService<GuidedDecisionTable52> {
 
@@ -38,20 +39,5 @@ public interface GuidedDecisionTableEditorService
 
     GuidedDecisionTable52 loadRuleModel( final Path path );
 
-    void save( final Path path,
-               final GuidedDecisionTable52 content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final GuidedDecisionTable52 factModel,
-               final String comment );
-    
-    void delete( final Path path, String comment );
-
-    Path rename( final Path path, String newName, String comment );
-
-    Path copy( final Path path, String newName, String comment );
-    
     Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 }

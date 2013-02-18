@@ -17,31 +17,17 @@
 package org.kie.guvnor.enums.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.enums.model.EnumModelContent;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface EnumService
-        extends ValidationService<String>,
+        extends FileService<String>,
+                ValidationService<String>,
                 SimpleVerificationService<String> {
 
     EnumModelContent load( final Path path );
-
-    void save( final Path path,
-               final String content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final String content,
-               final String comment );
-    
-    void delete( final Path path, String comment );
-
-    Path rename( final Path path, String newName, String comment );
-
-    Path copy( final Path path, String newName, String comment );
 }

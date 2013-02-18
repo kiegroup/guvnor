@@ -17,34 +17,21 @@
 package org.kie.guvnor.factmodel.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface FactModelService
-        extends ViewSourceService<FactModels>,
+        extends FileService<FactModels>,
+                ViewSourceService<FactModels>,
                 ValidationService<FactModels>,
                 SimpleVerificationService<FactModels> {
 
     FactModelContent loadContent( final Path path );
 
-    void save( final Path path,
-               final FactModels content,
-               final Metadata metadata,
-               final String comment );
-
-    void save(final Path path,
-              final FactModels factModel,
-              final String comment);
-    
-    void delete( final Path path, String comment );
-
-    Path rename( final Path path, String newName, String comment );
-
-    Path copy( final Path path, String newName, String comment );
 }

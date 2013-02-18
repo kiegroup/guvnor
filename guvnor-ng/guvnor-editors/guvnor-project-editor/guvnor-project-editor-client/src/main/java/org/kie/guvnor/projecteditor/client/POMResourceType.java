@@ -20,7 +20,17 @@ public class POMResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "pom";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "xml";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "pom.xml" );
+        return path.getFileName().equals( getPrefix() + "." + getSuffix() );
     }
 }

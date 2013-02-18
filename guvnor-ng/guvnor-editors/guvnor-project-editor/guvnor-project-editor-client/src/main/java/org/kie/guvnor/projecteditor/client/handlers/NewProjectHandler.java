@@ -19,7 +19,6 @@ import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
-import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
@@ -30,11 +29,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 @ApplicationScoped
 public class NewProjectHandler
         implements NewResourceHandler {
-
-    private static String FILE_TYPE = null;
-
-    @Inject
-    protected WorkbenchContext context;
 
     @Inject
     private PlaceManager placeManager;
@@ -49,40 +43,34 @@ public class NewProjectHandler
     private Caller<ProjectService> projectServiceCaller;
 
     @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
-
-    @Override
     public String getDescription() {
         return ProjectEditorConstants.INSTANCE.newProjectDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image(ProjectEditorResources.INSTANCE.newProjectIcon() );
+        return new Image( ProjectEditorResources.INSTANCE.newProjectIcon() );
     }
 
     @Override
-    public void create( final String projectName ) {
-        final Path activePath = context.getActivePath();
-        if ( activePath != null ) {
+    public void create( final Path path,
+                        final String projectName ) {
+        if ( path != null ) {
             projectServiceCaller.call( new RemoteCallback<Path>() {
                 @Override
                 public void callback( Path pathToPom ) {
                     notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                    resourceAddedEvent.fire( new ResourceAddedEvent( activePath ) );
+                    resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
                     placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
                 }
-            } ).newProject( activePath, projectName );
+            } ).newProject( path, projectName );
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }
-
     }
 
     @Override
-    public List<Pair<String, IsWidget>> getExtensions() {
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
         return null;
     }
 

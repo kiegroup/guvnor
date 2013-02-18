@@ -17,8 +17,7 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 
 public interface ProjectEditorScreenView
         extends IsWidget {

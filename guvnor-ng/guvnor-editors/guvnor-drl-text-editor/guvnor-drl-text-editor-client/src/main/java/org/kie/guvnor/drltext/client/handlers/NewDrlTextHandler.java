@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.drltext.client.DRLResourceType;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.resources.images.ImageResources;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
@@ -24,18 +25,14 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewDrlTextHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "drl";
-
     @Inject
     private Caller<DRLTextEditorService> drlTextService;
 
     @Inject
     private PlaceManager placeManager;
 
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
+    @Inject
+    private DRLResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -48,24 +45,21 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
-
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
+        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
-                drlTextService.call( new RemoteCallback<Void>() {
+                drlTextService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Void aVoid ) {
+                    public void callback( final Path path ) {
                         notifySuccess();
                         notifyResourceAdded( path );
                         final PlaceRequest place = new PathPlaceRequest( path,
                                                                          "DRLEditor" );
                         placeManager.goTo( place );
                     }
-                } ).save( path,
-                          "",
-                          comment );
+                } ).save( contextPath, buildFileName( resourceType, baseFileName ), "", comment );
             }
         } );
     }

@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.guided.template.client.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.kie.guvnor.guided.template.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.template.model.TemplateModel;
@@ -25,18 +26,14 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = "template";
-
     @Inject
     private PlaceManager placeManager;
 
     @Inject
     private Caller<GuidedRuleTemplateEditorService> service;
 
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
+    @Inject
+    private GuidedRuleTemplateResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -49,29 +46,26 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
         final TemplateModel templateModel = new TemplateModel();
-        templateModel.name = stripFileExtension( fileName );
+        templateModel.name = baseFileName;
 
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 service.call( new RemoteCallback<Void>() {
-                                                     @Override
-                                                     public void callback( Void aVoid ) {
-                                                         notifySuccess();
-                                                         notifyResourceAdded( path );
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "GuidedRuleTemplateEditor" );
-                                                         placeManager.goTo( place );
-                                                     }
-                                                 } ).save( path,
-                                                           templateModel,
-                                                           comment );
-                                             }
-                                         } );
+        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
+            @Override
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( final Path path ) {
+                        notifySuccess();
+                        notifyResourceAdded( path );
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "GuidedRuleTemplateEditor" );
+                        placeManager.goTo( place );
+                    }
+                } ).save( contextPath, buildFileName( resourceType, baseFileName ), templateModel, comment );
+            }
+        } );
     }
 
 }

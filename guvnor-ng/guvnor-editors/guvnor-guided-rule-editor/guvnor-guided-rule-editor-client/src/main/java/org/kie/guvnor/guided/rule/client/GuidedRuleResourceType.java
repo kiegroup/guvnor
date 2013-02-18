@@ -20,7 +20,17 @@ public class GuidedRuleResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "gre.drl";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".gre.drl" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

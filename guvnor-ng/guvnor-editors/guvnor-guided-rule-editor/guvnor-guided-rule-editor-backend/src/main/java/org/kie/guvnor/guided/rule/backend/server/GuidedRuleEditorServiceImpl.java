@@ -30,6 +30,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -42,7 +43,6 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
@@ -124,6 +124,18 @@ public class GuidedRuleEditorServiceImpl
                          toSource( path,
                                    model ),
                          makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final RuleModel model,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        save( newPath, model, comment );
+
+        return newPath;
     }
 
     @Override

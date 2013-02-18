@@ -2,7 +2,7 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.services.config.model.imports.Imports;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public interface ProjectConfigScreenView

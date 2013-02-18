@@ -22,8 +22,8 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.categories.client.resources.ImageResources;
-import org.kie.guvnor.services.metadata.model.Categories;
-import org.kie.guvnor.services.metadata.model.CategoryItem;
+import org.kie.guvnor.commons.service.metadata.model.Categories;
+import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 

@@ -17,8 +17,6 @@
 package org.kie.guvnor.drltext.backend.server;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,14 +25,12 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
-import org.kie.guvnor.services.config.ResourceConfigService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -96,6 +92,18 @@ public class DRLTextEditorServiceImpl
     }
 
     @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final String content,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        save( newPath, content, comment );
+
+        return newPath;
+    }
+
+    @Override
     public void save( final Path path,
                       final String content ) {
         ioService.write( paths.convert( path ),
@@ -109,42 +117,47 @@ public class DRLTextEditorServiceImpl
                       final String comment ) {
 
         ioService.write(
-                paths.convert(resource),
+                paths.convert( resource ),
                 content,
-                metadataService.setUpAttributes(resource, metadata),
-                makeCommentedOption(comment));
+                metadataService.setUpAttributes( resource, metadata ),
+                makeCommentedOption( comment ) );
 
         //Invalidate Package-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
     }
-    
+
     @Override
-    public void delete( final Path path, final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]");
+    public void delete( final Path path,
+                        final String comment ) {
+        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
         ioService.delete( paths.convert( path ) );
     }
-    
+
     @Override
-    public Path rename( final Path path, final String newName, final String comment ) {
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
         System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
 
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.move(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
         return targetPath;
     }
-    
+
     @Override
-    public Path copy( final Path path, final String newName, final String comment ) {
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
         System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring(0, path.getFileName().lastIndexOf("/")+1) + newName;
-        String targetURI = path.toURI().substring(0, path.toURI().lastIndexOf("/")+1) + newName;
-        Path targetPath = PathFactory.newPath(path.getFileSystem(), targetName, targetURI);
-        ioService.copy(paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ));
+        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
+        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
+        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
         return targetPath;
     }
-    
+
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();

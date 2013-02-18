@@ -24,7 +24,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.services.metadata.CategoriesService;
-import org.kie.guvnor.services.metadata.model.Categories;
+import org.kie.guvnor.commons.service.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;

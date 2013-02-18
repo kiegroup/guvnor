@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 

@@ -20,7 +20,17 @@ public class GuidedDTableResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "gdst";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".gdst" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

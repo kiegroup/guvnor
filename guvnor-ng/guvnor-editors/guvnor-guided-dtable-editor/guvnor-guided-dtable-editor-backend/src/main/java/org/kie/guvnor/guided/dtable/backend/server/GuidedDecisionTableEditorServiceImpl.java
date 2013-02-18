@@ -38,7 +38,7 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -91,6 +91,18 @@ public class GuidedDecisionTableEditorServiceImpl
         ioService.write( paths.convert( path ),
                          GuidedDTXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final GuidedDecisionTable52 model,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        save( newPath, model, comment );
+
+        return newPath;
     }
 
     @Override

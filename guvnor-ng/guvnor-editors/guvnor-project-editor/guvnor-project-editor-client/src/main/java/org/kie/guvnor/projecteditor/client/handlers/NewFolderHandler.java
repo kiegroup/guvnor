@@ -13,7 +13,6 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 
 /**
  * Handler for the creation of new Folders
@@ -21,18 +20,8 @@ import org.uberfire.backend.vfs.VFSService;
 @ApplicationScoped
 public class NewFolderHandler extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = null;
-
-    @Inject
-    private Caller<VFSService> vfs;
-
     @Inject
     private Caller<ProjectService> projectService;
-
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
 
     @Override
     public String getDescription() {
@@ -45,15 +34,15 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
-        vfs.call( new RemoteCallback<Path>() {
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
+        projectService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
                 notifySuccess();
                 notifyResourceAdded( path );
             }
-        } ).createDirectory( path );
+        } ).newDirectory( contextPath, baseFileName );
     }
 
     @Override

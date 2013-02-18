@@ -36,8 +36,8 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.CategoriesService;
-import org.kie.guvnor.services.metadata.model.Categories;
-import org.kie.guvnor.services.metadata.model.CategoryItem;
+import org.kie.guvnor.commons.service.metadata.model.Categories;
+import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 import org.uberfire.backend.vfs.Path;
 
 import static org.kie.commons.validation.PortablePreconditions.*;

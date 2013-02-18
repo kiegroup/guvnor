@@ -60,7 +60,11 @@ public interface ProjectService {
     Path newProject( final Path activePath,
                      final String name );
 
-    Path newPackage( final Path path );
+    Path newPackage( final Path contextPath,
+                     final String packageName );
+
+    Path newDirectory( final Path contextPath,
+                       final String dirName );
 
     PackageConfiguration loadPackageConfiguration( Path path );
 

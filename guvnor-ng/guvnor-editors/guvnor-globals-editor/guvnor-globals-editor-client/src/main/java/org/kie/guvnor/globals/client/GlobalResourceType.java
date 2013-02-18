@@ -20,7 +20,17 @@ public class GlobalResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "global.drl";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".global.drl" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

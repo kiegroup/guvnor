@@ -28,6 +28,7 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
@@ -37,7 +38,6 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
@@ -56,6 +56,9 @@ public class GuvnorM2RepoPerspective {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    protected WorkbenchContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;
@@ -112,18 +115,18 @@ public class GuvnorM2RepoPerspective {
 
     private void buildMenuBar() {
         this.menuBar = new DefaultMenuBar();
-        
+
         final MenuBar subMenuBarExplorer = new DefaultMenuBar();
         subMenuBarExplorer.addItem( new DefaultMenuItemCommand( "Guvnor M2 Repository Explorer",
-                                                     new Command() {
-                                                         @Override
-                                                         public void execute() {
-                                                             placeManager.goTo( "M2RepoEditor" );
-                                                         }
-                                                     } ) );
-        
+                                                                new Command() {
+                                                                    @Override
+                                                                    public void execute() {
+                                                                        placeManager.goTo( "M2RepoEditor" );
+                                                                    }
+                                                                } ) );
+
         this.menuBar.addItem( new DefaultMenuItemSubMenu( "Explore",
-                                                          subMenuBarExplorer) );
+                                                          subMenuBarExplorer ) );
 
         final MenuBar subMenuBarNew = new DefaultMenuBar();
         this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
@@ -142,7 +145,7 @@ public class GuvnorM2RepoPerspective {
                         // This will entail adding a new ApplicationContext class to UberFire
                         // that observes PathChangeEvents raised by the FileExplorer (and others)
                         // that sets the currently selected Path.
-                        handler.create( null );
+                        handler.create( context.getActivePath(), null );
                     }
                 } ) );
             }

@@ -27,6 +27,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -36,7 +37,6 @@ import org.kie.guvnor.enums.model.EnumModel;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -79,6 +79,18 @@ public class EnumServiceImpl implements EnumService {
         ioService.write( paths.convert( path ),
                          content,
                          makeCommentedOption( comment ) );
+    }
+
+    @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final String content,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        save( newPath, content, comment );
+
+        return newPath;
     }
 
     @Override

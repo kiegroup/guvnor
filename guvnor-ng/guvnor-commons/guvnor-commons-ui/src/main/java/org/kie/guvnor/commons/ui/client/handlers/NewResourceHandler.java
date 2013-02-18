@@ -13,12 +13,6 @@ import org.uberfire.backend.vfs.Path;
 public interface NewResourceHandler {
 
     /**
-     * The file type of the new resource
-     * @return
-     */
-    public String getFileType();
-
-    /**
      * A description of the new resource type
      * @return
      */
@@ -32,16 +26,18 @@ public interface NewResourceHandler {
 
     /**
      * An entry-point for the creation of the new resource
-     * @param name Name of the new resource including file extension
+     * @param context the path context where new resource should be created
+     * @param baseFileName the base name of the new resource
      */
-    public void create( final String name );
+    public void create( final Path context,
+                        final String baseFileName );
 
     /**
      * Return a List of Widgets that the NewResourceHandler can use to gather additional parameters for the
      * new resource. The List is of Pairs, where each Pair consists of a String caption and IsWidget editor.
      * @return null if no extension is provided
      */
-    public List<Pair<String, IsWidget>> getExtensions();
+    public List<Pair<String, ? extends IsWidget>> getExtensions();
 
     /**
      * Provide NewResourceHandlers with the ability to validate additional parameters before the creation of the new resource

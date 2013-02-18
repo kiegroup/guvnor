@@ -28,5 +28,7 @@
   <source path='source'/>
   <source path='validation'/>
   <source path='verification'/>
+  <source path='metadata'/>
+  <source path='file'/>
 
 </module>

@@ -10,7 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.guided.rule.GuidedRuleFileType;
+import org.kie.guvnor.guided.rule.client.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.model.RuleModel;
@@ -32,10 +32,8 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     @Inject
     private Caller<GuidedRuleEditorService> service;
 
-    @Override
-    public String getFileType() {
-        return GuidedRuleFileType.TYPE;
-    }
+    @Inject
+    private GuidedRuleResourceType resourceType;
 
     @Override
     public String getDescription() {
@@ -48,29 +46,26 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
         final RuleModel ruleModel = new RuleModel();
-        ruleModel.name = stripFileExtension( fileName );
+        ruleModel.name = baseFileName;
 
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 service.call( new RemoteCallback<Void>() {
-                                                     @Override
-                                                     public void callback( Void aVoid ) {
-                                                         notifySuccess();
-                                                         notifyResourceAdded( path );
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "GuidedRuleEditor" );
-                                                         placeManager.goTo( place );
-                                                     }
-                                                 } ).save( path,
-                                                           ruleModel,
-                                                           comment );
-                                             }
-                                         } );
+        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
+            @Override
+            public void execute( final String comment ) {
+                service.call( new RemoteCallback<Path>() {
+                    @Override
+                    public void callback( final Path path ) {
+                        notifySuccess();
+                        notifyResourceAdded( path );
+                        final PlaceRequest place = new PathPlaceRequest( path,
+                                                                         "GuidedRuleEditor" );
+                        placeManager.goTo( place );
+                    }
+                } ).save( contextPath, buildFileName( resourceType, baseFileName ), ruleModel, comment );
+            }
+        } );
     }
 
 }

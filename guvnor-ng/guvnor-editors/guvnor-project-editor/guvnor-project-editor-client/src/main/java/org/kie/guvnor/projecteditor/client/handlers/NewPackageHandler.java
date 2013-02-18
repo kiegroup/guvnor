@@ -20,15 +20,8 @@ import org.uberfire.backend.vfs.Path;
 public class NewPackageHandler
         extends DefaultNewResourceHandler {
 
-    private static String FILE_TYPE = null;
-
     @Inject
     private Caller<ProjectService> projectService;
-
-    @Override
-    public String getFileType() {
-        return FILE_TYPE;
-    }
 
     @Override
     public String getDescription() {
@@ -41,8 +34,8 @@ public class NewPackageHandler
     }
 
     @Override
-    public void create( final String fileName ) {
-        final Path path = buildFullPathName( fileName );
+    public void create( final Path contextPath,
+                        final String baseFileName ) {
 
         projectService.call( new RemoteCallback<Path>() {
             @Override
@@ -50,7 +43,7 @@ public class NewPackageHandler
                 notifySuccess();
                 notifyResourceAdded( path );
             }
-        } ).newPackage( path );
+        } ).newPackage( contextPath, baseFileName );
     }
 
 }

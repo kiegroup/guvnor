@@ -30,6 +30,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
@@ -56,6 +57,9 @@ public class NewResourcePresenter {
                             final boolean enable );
 
     }
+
+    @Inject
+    protected WorkbenchContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;
@@ -128,23 +132,11 @@ public class NewResourcePresenter {
         if ( activeHandler != null ) {
             if ( validate() ) {
                 if ( activeHandler.validate() ) {
-                    final String fileName = view.getFileName();
-                    final String fileType = activeHandler.getFileType();
-                    final String fullFileName = makeFullFileName( fileName,
-                                                                  fileType );
-                    activeHandler.create( fullFileName );
+                    activeHandler.create( context.getActivePath(), view.getFileName() );
                     view.hide();
                 }
             }
         }
-    }
-
-    private String makeFullFileName( final String fileName,
-                                     final String fileType ) {
-        if ( fileType == null ) {
-            return fileName;
-        }
-        return fileName + "." + fileType;
     }
 
     private boolean validate() {

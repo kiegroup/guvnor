@@ -32,7 +32,7 @@ import org.kie.commons.java.nio.base.NotImplementedException;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
-import org.kie.guvnor.services.metadata.model.DiscussionRecord;
+import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
 
 import static org.kie.commons.data.Pair.*;
 import static org.kie.commons.validation.Preconditions.*;

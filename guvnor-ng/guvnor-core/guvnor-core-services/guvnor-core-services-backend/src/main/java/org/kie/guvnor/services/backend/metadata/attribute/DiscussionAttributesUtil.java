@@ -19,7 +19,7 @@ package org.kie.guvnor.services.backend.metadata.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.services.metadata.model.DiscussionRecord;
+import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
 
 import static org.kie.commons.validation.Preconditions.*;
 import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionView.*;
