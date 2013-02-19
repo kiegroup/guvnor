@@ -19,6 +19,8 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,6 +56,7 @@ import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
 /**
  * An implementation of the Fact Patterns page
  */
+@Dependent
 public class FactPatternsPageViewImpl extends Composite
         implements
         FactPatternsPageView {
@@ -117,14 +120,18 @@ public class FactPatternsPageViewImpl extends Composite
 
     private static FactPatternsPageWidgetBinder uiBinder = GWT.create( FactPatternsPageWidgetBinder.class );
 
-    public FactPatternsPageViewImpl( final Validator validator ) {
+    public FactPatternsPageViewImpl() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
         this.availableTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
                                                                       WizardCellListResources.INSTANCE );
         this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
                                                                         WizardCellListResources.INSTANCE );
 
-        initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailableTypes();
         initialiseChosenPatterns();
         initialiseBinding();
@@ -303,12 +310,14 @@ public class FactPatternsPageViewImpl extends Composite
         } );
     }
 
+    @Override
     public void setAvailableFactTypes( final List<String> types ) {
         availableTypesWidget.setRowCount( types.size(),
                                           true );
         availableTypesWidget.setRowData( types );
     }
 
+    @Override
     public void setChosenPatterns( final List<Pattern52> types ) {
         chosenPatterns = types;
         chosenPatternWidget.setRowCount( types.size(),
@@ -319,10 +328,12 @@ public class FactPatternsPageViewImpl extends Composite
         presenter.stateChanged();
     }
 
-    public void setPresenter( final Presenter presenter ) {
+    @Override
+    public void init( final FactPatternsPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternWidget.redraw();

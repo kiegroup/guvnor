@@ -18,18 +18,19 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * View and Presenter definitions for the ActionInsertFactsFields page
  */
 public interface ActionInsertFactFieldsPageView
         extends
-        IsWidget {
+        UberView<ActionInsertFactFieldsPageView.Presenter>,
+        RequiresValidator {
 
     interface Presenter {
 
@@ -48,12 +49,6 @@ public interface ActionInsertFactFieldsPageView
         void assertDefaultValue( ActionInsertFactCol52 selectedAction );
 
     }
-
-    /**
-     * Set the Presenter for the View to callback to
-     * @param presenter
-     */
-    void setPresenter( Presenter presenter );
 
     void setDTCellValueWidgetFactory( DTCellValueWidgetFactory factory );
 

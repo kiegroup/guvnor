@@ -16,28 +16,22 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * View and Presenter definitions for the Summary page
  */
 public interface SummaryPageView
         extends
-        IsWidget {
+        UberView<SummaryPageView.Presenter> {
 
     interface Presenter {
 
         void stateChanged();
 
     }
-
-    /**
-     * Set the Presenter for the View to callback to
-     * @param presenter
-     */
-    void setPresenter( Presenter presenter );
 
     String getBaseFileName();
 

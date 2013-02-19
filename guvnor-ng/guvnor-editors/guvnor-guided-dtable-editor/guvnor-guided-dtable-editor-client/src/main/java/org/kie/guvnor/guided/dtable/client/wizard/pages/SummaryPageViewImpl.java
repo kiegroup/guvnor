@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -34,6 +36,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * An implementation of the Summary page
  */
+@Dependent
 public class SummaryPageViewImpl extends Composite
         implements
         SummaryPageView {
@@ -90,7 +93,8 @@ public class SummaryPageViewImpl extends Composite
         }
     }
 
-    public void setPresenter( Presenter presenter ) {
+    @Override
+    public void init( final SummaryPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 

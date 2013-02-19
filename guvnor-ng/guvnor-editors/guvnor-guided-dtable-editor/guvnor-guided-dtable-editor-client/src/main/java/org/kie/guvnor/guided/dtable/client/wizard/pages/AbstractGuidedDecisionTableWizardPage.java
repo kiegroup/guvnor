@@ -15,15 +15,14 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
@@ -38,31 +37,26 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     protected final SimplePanel content = new SimplePanel();
 
-    protected final NewAssetWizardContext context;
-    protected final GuidedDecisionTable52 model;
-    protected final EventBus eventBus;
-    protected final Validator validator;
+    protected NewAssetWizardContext context;
+    protected GuidedDecisionTable52 model;
+    protected Validator validator;
 
     protected GuidedDecisionTableUtils modelUtils;
     protected DTCellValueUtilities cellUtils;
     protected DataModelOracle oracle;
 
-    public AbstractGuidedDecisionTableWizardPage( final NewAssetWizardContext context,
-                                                  final GuidedDecisionTable52 model,
-                                                  final EventBus eventBus,
-                                                  final Validator validator ) {
-        this.context = context;
-        this.model = model;
-        this.eventBus = eventBus;
-        this.validator = validator;
-    }
-
     public Widget asWidget() {
         return content;
     }
 
-    public void setDataModelOracle( final DataModelOracle oracle ) {
+    public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
+                            final DataModelOracle oracle,
+                            final GuidedDecisionTable52 model,
+                            final Validator validator ) {
+        this.context = context;
         this.oracle = oracle;
+        this.model = model;
+        this.validator = validator;
         this.cellUtils = new DTCellValueUtilities( this.model,
                                                    this.oracle );
         this.modelUtils = new GuidedDecisionTableUtils( this.oracle,
@@ -77,9 +71,9 @@ public abstract class AbstractGuidedDecisionTableWizardPage
      * Broadcast a change in state on a page
      */
     public void stateChanged() {
-        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        eventBus.fireEventFromSource( event,
-                                      context );
+        //WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        //eventBus.fireEventFromSource( event,
+        //                              context );
     }
 
     /**

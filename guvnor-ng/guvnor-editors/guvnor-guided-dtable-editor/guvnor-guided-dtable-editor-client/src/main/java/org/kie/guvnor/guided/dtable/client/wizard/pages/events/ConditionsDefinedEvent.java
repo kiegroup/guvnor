@@ -15,22 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An event representing whether Conditions are correctly defined
  */
-public class ConditionsDefinedEvent extends GwtEvent<ConditionsDefinedEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onConditionsDefined( ConditionsDefinedEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class ConditionsDefinedEvent {
 
     private boolean areConditionsDefined;
 
@@ -40,16 +28,6 @@ public class ConditionsDefinedEvent extends GwtEvent<ConditionsDefinedEvent.Hand
 
     public boolean getAreConditionsDefined() {
         return this.areConditionsDefined;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final ConditionsDefinedEvent.Handler handler ) {
-        handler.onConditionsDefined( this );
     }
 
 }

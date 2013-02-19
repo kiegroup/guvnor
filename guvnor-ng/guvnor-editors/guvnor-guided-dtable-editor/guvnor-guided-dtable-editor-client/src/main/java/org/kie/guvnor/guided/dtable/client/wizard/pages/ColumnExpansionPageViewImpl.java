@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,6 +47,7 @@ import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 /**
  * An implementation of the Column Expansion page
  */
+@Dependent
 public class ColumnExpansionPageViewImpl extends Composite
         implements
         ColumnExpansionPageView {
@@ -93,13 +96,17 @@ public class ColumnExpansionPageViewImpl extends Composite
 
     private static ColumnExpansionPageWidgetBinder uiBinder = GWT.create( ColumnExpansionPageWidgetBinder.class );
 
-    public ColumnExpansionPageViewImpl( final Validator validator ) {
+    public ColumnExpansionPageViewImpl() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
         this.availableColumnsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
                                                                                 WizardCellListResources.INSTANCE );
         this.chosenColumnsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
                                                                              WizardCellListResources.INSTANCE );
 
-        initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailableColumns();
         initialiseChosenColumns();
         initialiseExpandInFull();
@@ -165,6 +172,7 @@ public class ColumnExpansionPageViewImpl extends Composite
         chosenColumnsWidget.setRowData( columns );
     }
 
+    @Override
     public void setAvailableColumns( final List<ConditionCol52> columns ) {
         availableColumns = columns;
         availableColumns.removeAll( chosenColumns );
@@ -173,10 +181,12 @@ public class ColumnExpansionPageViewImpl extends Composite
         availableColumnsWidget.setRowData( columns );
     }
 
-    public void setPresenter( final Presenter presenter ) {
+    @Override
+    public void init( final ColumnExpansionPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void setAreConditionsDefined( final boolean areConditionsDefined ) {
         msgIncompleteConditions.setVisible( !areConditionsDefined );
         availableColumnsWidget.redraw();

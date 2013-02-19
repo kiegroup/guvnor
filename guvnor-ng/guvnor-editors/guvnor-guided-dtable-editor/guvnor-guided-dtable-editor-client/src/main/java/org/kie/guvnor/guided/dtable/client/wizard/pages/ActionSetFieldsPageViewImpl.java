@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -60,6 +62,7 @@ import org.kie.guvnor.guided.dtable.model.Pattern52;
 /**
  * An implementation of the ActionSetFields page
  */
+@Dependent
 public class ActionSetFieldsPageViewImpl extends Composite
         implements
         ActionSetFieldsPageView {
@@ -144,7 +147,12 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     private static ActionSetFieldPageWidgetBinder uiBinder = GWT.create( ActionSetFieldPageWidgetBinder.class );
 
-    public ActionSetFieldsPageViewImpl( final Validator validator ) {
+    public ActionSetFieldsPageViewImpl() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
         this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ActionSetFieldPatternCell( validator ),
                                                                             WizardCellListResources.INSTANCE );
@@ -153,7 +161,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
         this.chosenFieldsWidget = new MinimumWidthCellList<ActionSetFieldCol52>( new ActionSetFieldCell( validator ),
                                                                                  WizardCellListResources.INSTANCE );
 
-        initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
@@ -352,24 +359,29 @@ public class ActionSetFieldsPageViewImpl extends Composite
         } );
     }
 
-    public void setPresenter( final Presenter presenter ) {
+    @Override
+    public void init( final ActionSetFieldsPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void setDTCellValueWidgetFactory( final DTCellValueWidgetFactory factory ) {
         this.factory = factory;
     }
 
+    @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         availablePatternsWidget.redraw();
     }
 
+    @Override
     public void setAreActionSetFieldsDefined( final boolean areActionSetFieldsDefined ) {
         msgIncompleteActionSetFields.setVisible( !areActionSetFieldsDefined );
         chosenFieldsWidget.redraw();
     }
 
+    @Override
     public void setAvailablePatterns( final List<Pattern52> patterns ) {
         availablePatterns = patterns;
         availablePatternsWidget.setRowCount( availablePatterns.size(),
@@ -398,12 +410,14 @@ public class ActionSetFieldsPageViewImpl extends Composite
         }
     }
 
+    @Override
     public void setAvailableFields( final List<AvailableField> fields ) {
         availableFieldsWidget.setRowCount( fields.size(),
                                            true );
         availableFieldsWidget.setRowData( fields );
     }
 
+    @Override
     public void setChosenFields( final List<ActionSetFieldCol52> fields ) {
         chosenFields = fields;
         chosenFieldsWidget.setRowCount( fields.size(),

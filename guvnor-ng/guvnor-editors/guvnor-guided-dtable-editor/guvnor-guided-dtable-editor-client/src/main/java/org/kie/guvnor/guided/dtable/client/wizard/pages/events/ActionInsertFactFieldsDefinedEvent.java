@@ -15,22 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An event representing whether Action Insert Fact Fields are correctly defined
  */
-public class ActionInsertFactFieldsDefinedEvent extends GwtEvent<ActionInsertFactFieldsDefinedEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onActionInsertFactFieldsDefined( ActionInsertFactFieldsDefinedEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class ActionInsertFactFieldsDefinedEvent {
 
     private boolean areActionInsertFactFieldsDefined;
 
@@ -40,16 +28,6 @@ public class ActionInsertFactFieldsDefinedEvent extends GwtEvent<ActionInsertFac
 
     public boolean getAreActionInsertFactFieldsDefined() {
         return this.areActionInsertFactFieldsDefined;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final ActionInsertFactFieldsDefinedEvent.Handler handler ) {
-        handler.onActionInsertFactFieldsDefined( this );
     }
 
 }

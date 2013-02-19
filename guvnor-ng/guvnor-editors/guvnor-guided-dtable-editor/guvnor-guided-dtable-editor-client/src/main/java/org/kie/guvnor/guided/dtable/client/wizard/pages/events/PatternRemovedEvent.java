@@ -15,23 +15,12 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 /**
  * An event representing the removal of a Pattern
  */
-public class PatternRemovedEvent extends GwtEvent<PatternRemovedEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onPatternRemoved( PatternRemovedEvent event );
-    }
-
-    public static Type<Handler> TYPE = new Type<Handler>();
+public class PatternRemovedEvent {
 
     private final Pattern52 pattern;
 
@@ -41,16 +30,6 @@ public class PatternRemovedEvent extends GwtEvent<PatternRemovedEvent.Handler> {
 
     public Pattern52 getPattern() {
         return pattern;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final PatternRemovedEvent.Handler handler ) {
-        handler.onPatternRemoved( this );
     }
 
 }

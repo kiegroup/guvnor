@@ -15,22 +15,10 @@
  */
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An event representing the selection of a page within a Wizard
  */
-public class WizardPageSelectedEvent extends GwtEvent<WizardPageSelectedEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onPageSelected( final WizardPageSelectedEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class WizardPageSelectedEvent {
 
     private final WizardPage selectedPage;
 
@@ -40,16 +28,6 @@ public class WizardPageSelectedEvent extends GwtEvent<WizardPageSelectedEvent.Ha
 
     public WizardPage getSelectedPage() {
         return selectedPage;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final WizardPageSelectedEvent.Handler handler ) {
-        handler.onPageSelected( this );
     }
 
 }

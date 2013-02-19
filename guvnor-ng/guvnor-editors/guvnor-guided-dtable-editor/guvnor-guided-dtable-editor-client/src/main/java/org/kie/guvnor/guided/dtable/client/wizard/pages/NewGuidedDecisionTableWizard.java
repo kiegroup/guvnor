@@ -19,14 +19,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.wizards.AbstractWizard;
-import org.kie.guvnor.commons.ui.client.wizards.WizardView;
+import org.kie.guvnor.commons.ui.client.wizards.Wizard;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.Analysis;
 import org.kie.guvnor.guided.dtable.model.BaseColumn;
@@ -37,64 +34,46 @@ import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 /**
  * Wizard for creating a Guided Decision Table
  */
-public class NewGuidedDecisionTableWizard extends AbstractWizard<NewAssetWizardContext> {
+public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTableAssetWizardContext> {
 
     private DataModelOracle oracle;
 
-    private List<WizardPage> pages = new ArrayList<WizardPage>();
+    private final List<WizardPage> pages = new ArrayList<WizardPage>();
 
-    private GuidedDecisionTable52 model = new GuidedDecisionTable52();
+    private final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+
+    private final Validator validator = new Validator( model.getConditions() );
 
     private SummaryPage summaryPage;
 
     private ColumnExpansionPage columnExpansionPage;
 
-    public NewGuidedDecisionTableWizard( final EventBus eventBus,
-                                         final NewGuidedDecisionTableAssetWizardContext context,
-                                         final WizardView.Presenter presenter,
-                                         final DataModelOracle oracle ) {
-        super( eventBus,
-               context,
-               presenter );
-        this.oracle = oracle;
-
-        final Validator validator = new Validator( model.getConditions() );
-        this.summaryPage = new SummaryPage( context,
-                                            model,
-                                            eventBus,
-                                            validator );
-        this.columnExpansionPage = new ColumnExpansionPage( context,
-                                                            model,
-                                                            eventBus,
-                                                            validator );
+    public NewGuidedDecisionTableWizard( final NewGuidedDecisionTableAssetWizardContext context ) {
+        this.summaryPage = new SummaryPage();
+        this.columnExpansionPage = new ColumnExpansionPage();
 
         pages.add( summaryPage );
-        pages.add( new FactPatternsPage( context,
-                                         model,
-                                         eventBus,
-                                         validator ) );
-        pages.add( new FactPatternConstraintsPage( context,
-                                                   model,
-                                                   eventBus,
-                                                   validator ) );
-        pages.add( new ActionSetFieldsPage( context,
-                                            model,
-                                            eventBus,
-                                            validator ) );
-        pages.add( new ActionInsertFactFieldsPage( context,
-                                                   model,
-                                                   eventBus,
-                                                   validator ) );
+        pages.add( new FactPatternsPage() );
+        pages.add( new FactPatternConstraintsPage() );
+        pages.add( new ActionSetFieldsPage() );
+        pages.add( new ActionInsertFactFieldsPage() );
         pages.add( columnExpansionPage );
 
         model.setTableFormat( context.getTableFormat() );
 
+    }
+
+    public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
+                            final DataModelOracle oracle ) {
+        this.oracle = oracle;
         for ( WizardPage page : pages ) {
-            AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
-            dtp.setDataModelOracle( oracle );
+            final AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
+            dtp.setContent( context,
+                            oracle,
+                            model,
+                            validator );
             dtp.initialise();
         }
-
     }
 
     public String getTitle() {
@@ -132,7 +111,7 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard<NewAssetWizardC
     public void complete() {
 
         //Show a "busy" indicator
-        presenter.showSavingIndicator();
+        //TODO presenter.showSavingIndicator();
 
         //Ensure each page updates the decision table as necessary
         for ( WizardPage page : this.pages ) {
@@ -142,7 +121,7 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard<NewAssetWizardC
 
         //Expand rows
         final RowExpander re = new RowExpander( model,
-                                          oracle );
+                                                oracle );
 
         //Mark columns on which we are to expand (default is to include all)
         for ( BaseColumn c : model.getExpandedColumns() ) {

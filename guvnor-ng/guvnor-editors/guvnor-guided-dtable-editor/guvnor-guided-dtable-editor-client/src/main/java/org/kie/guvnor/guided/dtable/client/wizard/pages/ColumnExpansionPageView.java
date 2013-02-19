@@ -18,27 +18,22 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * View and Presenter definitions for the Column Expansion page
  */
 public interface ColumnExpansionPageView
         extends
-        IsWidget {
+        UberView<ColumnExpansionPageView.Presenter>,
+        RequiresValidator {
 
     interface Presenter {
 
         void setColumnsToExpand( List<ConditionCol52> columns );
 
     }
-
-    /**
-     * Set the Presenter for the View to callback to
-     * @param presenter
-     */
-    void setPresenter( Presenter presenter );
 
     void setAvailableColumns( List<ConditionCol52> columns );
 

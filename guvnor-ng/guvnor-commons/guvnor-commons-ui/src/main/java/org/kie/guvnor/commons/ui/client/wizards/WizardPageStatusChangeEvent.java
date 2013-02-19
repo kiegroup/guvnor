@@ -15,23 +15,10 @@
  */
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
- * An event representing the change in status (i.e. completed, not-completed) of
- * a page within a Wizard.
+ * An event representing the change in status (i.e. completed, not-completed) of a page within a Wizard.
  */
-public class WizardPageStatusChangeEvent extends GwtEvent<WizardPageStatusChangeEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onStatusChange( WizardPageStatusChangeEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class WizardPageStatusChangeEvent {
 
     private final WizardPage page;
 
@@ -41,16 +28,6 @@ public class WizardPageStatusChangeEvent extends GwtEvent<WizardPageStatusChange
 
     public WizardPage getPage() {
         return page;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final WizardPageStatusChangeEvent.Handler handler ) {
-        handler.onStatusChange( this );
     }
 
 }

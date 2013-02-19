@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Things a Wizard needs to implement
  */
-public interface Wizard {
+public interface Wizard<T extends WizardContext> {
 
     /**
      * Provide a title

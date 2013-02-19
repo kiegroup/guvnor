@@ -15,22 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An event representing whether Pattern bindings are unique
  */
-public class DuplicatePatternsEvent extends GwtEvent<DuplicatePatternsEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onDuplicatePatterns( DuplicatePatternsEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class DuplicatePatternsEvent {
 
     private boolean arePatternBindingsUnique;
 
@@ -40,16 +28,6 @@ public class DuplicatePatternsEvent extends GwtEvent<DuplicatePatternsEvent.Hand
 
     public boolean getArePatternBindingsUnique() {
         return this.arePatternBindingsUnique;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final DuplicatePatternsEvent.Handler handler ) {
-        handler.onDuplicatePatterns( this );
     }
 
 }

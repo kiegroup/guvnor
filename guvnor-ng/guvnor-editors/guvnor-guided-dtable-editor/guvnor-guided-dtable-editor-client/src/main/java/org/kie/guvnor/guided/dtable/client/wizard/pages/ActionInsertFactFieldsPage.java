@@ -20,16 +20,16 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
@@ -42,12 +42,12 @@ import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
  * This page does not use the GuidedDecisionTable model directly; instead
  * maintaining its own Pattern-to-Action associations.
  */
+@Dependent
 public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizardPage
         implements
-        ActionInsertFactFieldsPageView.Presenter,
-        DuplicatePatternsEvent.Handler,
-        ActionInsertFactFieldsDefinedEvent.Handler {
+        ActionInsertFactFieldsPageView.Presenter {
 
+    @Inject
     private ActionInsertFactFieldsPageView view;
 
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
@@ -59,26 +59,6 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     //removed that is handled here to synchronise the Pattern lists.
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionsMap = new IdentityHashMap<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>>();
 
-    public ActionInsertFactFieldsPage( final NewAssetWizardContext context,
-                                       final GuidedDecisionTable52 model,
-                                       final EventBus eventBus,
-                                       final Validator validator ) {
-        super( context,
-               model,
-               eventBus,
-               validator );
-
-        //Set-up validator for the pattern-to-action mapping voodoo
-        getValidator().setPatternToActionInsertFactFieldsMap( patternToActionsMap );
-        this.view = new ActionInsertFactFieldsPageViewImpl( getValidator() );
-
-        //Wire-up the events
-        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
-                             this );
-        eventBus.addHandler( ActionInsertFactFieldsDefinedEvent.TYPE,
-                             this );
-    }
-
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardActionInsertFacts();
     }
@@ -87,7 +67,11 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         if ( oracle == null ) {
             return;
         }
-        view.setPresenter( this );
+        view.init( this );
+        view.setValidator( getValidator() );
+
+        //Set-up validator for the pattern-to-action mapping voodoo
+        getValidator().setPatternToActionInsertFactFieldsMap( patternToActionsMap );
 
         //Set-up a factory for value editors
         view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
@@ -135,10 +119,10 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         //Do all Patterns have unique bindings?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
-        //Signal duplicates to other pages
+        //TODO Signal duplicates to other pages
         final DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        eventBus.fireEventFromSource( event,
-                                      context );
+        //eventBus.fireEventFromSource( event,
+        //                              context );
 
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
@@ -151,25 +135,19 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
             }
         }
 
-        //Signal Action Insert Fact Fields to other pages
+        //TODO Signal Action Insert Fact Fields to other pages
         final ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
-        eventBus.fireEventFromSource( eventFactFields,
-                                      context );
+        //eventBus.fireEventFromSource( eventFactFields,
+        //                              context );
 
         return arePatternBindingsUnique && areActionInsertFieldsDefined;
     }
 
-    public void onDuplicatePatterns( final DuplicatePatternsEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
-    public void onActionInsertFactFieldsDefined( final ActionInsertFactFieldsDefinedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onActionInsertFactFieldsDefined( final @Observes ActionInsertFactFieldsDefinedEvent event ) {
         view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
     }
 

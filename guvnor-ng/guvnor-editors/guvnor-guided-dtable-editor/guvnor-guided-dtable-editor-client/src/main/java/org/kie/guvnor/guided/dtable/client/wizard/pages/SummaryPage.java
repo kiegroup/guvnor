@@ -15,31 +15,22 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import com.google.gwt.event.shared.EventBus;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 
 /**
  * A summary page for the guided Decision Table Wizard
  */
+@Dependent
 public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
-    implements
-    SummaryPageView.Presenter {
+        implements
+        SummaryPageView.Presenter {
 
-    private final SummaryPageView  view      = new SummaryPageViewImpl();
-
-    public SummaryPage(final NewAssetWizardContext context,
-                       final GuidedDecisionTable52 dtable,
-                       final EventBus eventBus,
-                       final Validator validator) {
-        super( context,
-               dtable,
-               eventBus,
-               validator );
-    }
+    @Inject
+    private SummaryPageView view;
 
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardSummary();
@@ -47,16 +38,16 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     public boolean isComplete() {
         String assetName = view.getBaseFileName();
-        boolean isValid = (assetName != null && !assetName.equals( "" ));
+        boolean isValid = ( assetName != null && !assetName.equals( "" ) );
         view.setHasInvalidAssetName( !isValid );
         return isValid;
     }
 
     public void initialise() {
-        view.setPresenter( this );
+        view.init( this );
         view.setBaseFileName( context.getBaseFileName() );
         view.setContextPath( context.getContextPath() );
-        view.setTableFormat( ((NewGuidedDecisionTableAssetWizardContext) context).getTableFormat() );
+        view.setTableFormat( ( (NewGuidedDecisionTableAssetWizardContext) context ).getTableFormat() );
         content.setWidget( view );
     }
 

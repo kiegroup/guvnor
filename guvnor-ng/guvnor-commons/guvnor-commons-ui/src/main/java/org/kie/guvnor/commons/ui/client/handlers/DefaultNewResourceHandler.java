@@ -2,6 +2,7 @@ package org.kie.guvnor.commons.ui.client.handlers;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
  */
 public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
-    private final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
+    protected final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
 
     protected final PathLabel pathLabel = new PathLabel();
 
@@ -40,8 +41,10 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
 
-    public DefaultNewResourceHandler() {
-        this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(), pathLabel ) );
+    @PostConstruct
+    private void setupExtensions() {
+        this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(),
+                                           pathLabel ) );
     }
 
     @Override

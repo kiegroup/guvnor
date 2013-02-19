@@ -1,7 +1,5 @@
 package org.kie.guvnor.guided.dtable.client.handlers;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,9 +12,12 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
 import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.NewGuidedDecisionTableWizard;
+import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -42,12 +43,11 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Inject
     private GuidedDecisionTableOptions options;
 
-    private final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
+    @Inject
+    private WizardPresenter wizardPresenter;
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.clear();
-        extensions.addAll( super.getExtensions() );
         extensions.add( new Pair<String, GuidedDecisionTableOptions>( Constants.INSTANCE.Options(),
                                                                       options ) );
     }
@@ -63,26 +63,21 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        return extensions;
-    }
-
-    @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
         if ( !options.isUsingWizard() ) {
-            createEmptyDecisionTable( contextPath,
-                                      baseFileName,
+            createEmptyDecisionTable( baseFileName,
+                                      contextPath,
                                       options.getTableFormat() );
         } else {
-            createDecisionTableWithWizard( contextPath,
-                                           baseFileName,
+            createDecisionTableWithWizard( baseFileName,
+                                           contextPath,
                                            options.getTableFormat() );
         }
     }
 
-    private void createEmptyDecisionTable( final Path contextPath,
-                                           final String baseFileName,
+    private void createEmptyDecisionTable( final String baseFileName,
+                                           final Path contextPath,
                                            final GuidedDecisionTable52.TableFormat tableFormat ) {
         final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
         ruleModel.setTableFormat( tableFormat );
@@ -107,10 +102,15 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                          } );
     }
 
-    private void createDecisionTableWithWizard( final Path contextPath,
-                                                final String baseFileName,
+    private void createDecisionTableWithWizard( final String baseFileName,
+                                                final Path contextPath,
                                                 final GuidedDecisionTable52.TableFormat tableFormat ) {
-        //TODO!
+        final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
+                                                                                                               contextPath,
+                                                                                                               tableFormat );
+
+        final NewGuidedDecisionTableWizard wizard = new NewGuidedDecisionTableWizard( context );
+        wizardPresenter.start( wizard );
     }
 
 }

@@ -18,10 +18,11 @@ package org.kie.guvnor.commons.ui.client.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -30,15 +31,20 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.common.Popup;
 
 /**
  * The generic Wizard view implementation
  */
+@ApplicationScoped
 public class WizardViewImpl extends Popup
         implements
         WizardView {
+
+    @Inject
+    private IOCBeanManager iocBeanManager;
 
     @UiField
     protected VerticalPanel sideBar;
@@ -68,8 +74,6 @@ public class WizardViewImpl extends Popup
     private int pageNumberTotal;
 
     private WizardView.Presenter presenter;
-    private WizardContext context;
-    private EventBus eventBus;
 
     interface WizardActivityViewImplBinder
             extends
@@ -79,13 +83,13 @@ public class WizardViewImpl extends Popup
 
     private static WizardActivityViewImplBinder uiBinder = GWT.create( WizardActivityViewImplBinder.class );
 
-    private static CommonConstants constants = GWT.create( CommonConstants.class );
-
-    public WizardViewImpl( WizardContext context,
-                           EventBus eventBus ) {
-        this.context = context;
-        this.eventBus = eventBus;
+    public WizardViewImpl() {
         content = uiBinder.createAndBindUi( this );
+    }
+
+    @Override
+    public void init( final WizardPresenter presenter ) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -93,34 +97,53 @@ public class WizardViewImpl extends Popup
         return this.content;
     }
 
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
-    }
+    public void setPageTitles( final List<WizardPage> pages ) {
+        //Clear existing titles
+        releaseWizardPageTitles();
+        sideBar.clear();
 
-    public void setPageTitles( List<WizardPage> pages ) {
-        this.pageNumberTotal = pages.size() - 1;
+        //Add new titles for pages
+        this.pageNumberTotal = pages.size();
         for ( WizardPage page : pages ) {
-            WizardPageTitle wpt = new WizardPageTitle( context,
-                                                       eventBus,
-                                                       page );
+            final WizardPageTitle wpt = makeWizardPageTitle( page );
             pageTitleWidgets.add( wpt );
             sideBar.add( wpt );
         }
     }
 
+    private void releaseWizardPageTitles() {
+        for ( WizardPageTitle wpt : pageTitleWidgets ) {
+            iocBeanManager.destroyBean( wpt );
+        }
+        pageTitleWidgets.clear();
+    }
+
+    private WizardPageTitle makeWizardPageTitle( final WizardPage page ) {
+        final IOCBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean( WizardPageTitle.class );
+        final WizardPageTitle bean = beanDefinition.getInstance();
+        bean.setContent( page );
+        return bean;
+    }
+
+    @Override
+    public void hide() {
+        releaseWizardPageTitles();
+        super.hide();
+    }
+
     @UiHandler(value = "btnCancel")
-    public void btnCancelClick( ClickEvent event ) {
+    public void btnCancelClick( final ClickEvent event ) {
         this.hide();
     }
 
     @UiHandler(value = "btnFinish")
-    public void btnFinishClick( ClickEvent event ) {
+    public void btnFinishClick( final ClickEvent event ) {
         presenter.complete();
     }
 
     @UiHandler(value = "btnNext")
-    public void btnNextClick( ClickEvent event ) {
-        if ( pageNumber == pageNumberTotal ) {
+    public void btnNextClick( final ClickEvent event ) {
+        if ( pageNumber == pageNumberTotal - 1 ) {
             return;
         }
         selectPage( pageNumber + 1 );
@@ -128,7 +151,7 @@ public class WizardViewImpl extends Popup
     }
 
     @UiHandler(value = "btnPrevious")
-    public void btnPreviousClick( ClickEvent event ) {
+    public void btnPreviousClick( final ClickEvent event ) {
         if ( pageNumber == 0 ) {
             return;
         }
@@ -136,41 +159,41 @@ public class WizardViewImpl extends Popup
         btnPrevious.setFocus( false );
     }
 
-    public void selectPage( int pageNumber ) {
-        if ( pageNumber < 0 || pageNumber > this.pageTitleWidgets.size() - 1 ) {
+    public void selectPage( final int pageNumber ) {
+        if ( pageNumber < 0 || pageNumber > pageNumberTotal - 1 ) {
             return;
         }
         this.pageNumber = pageNumber;
         for ( int i = 0; i < this.pageTitleWidgets.size(); i++ ) {
-            WizardPageTitle wpt = this.pageTitleWidgets.get( i );
+            final WizardPageTitle wpt = this.pageTitleWidgets.get( i );
             wpt.setPageSelected( i == pageNumber );
         }
-        btnNext.setEnabled( pageNumber < pageNumberTotal );
+        btnNext.setEnabled( pageNumber < pageNumberTotal - 1);
         btnPrevious.setEnabled( pageNumber > 0 );
         presenter.pageSelected( pageNumber );
     }
 
-    public void setBodyWidget( Widget w ) {
+    public void setBodyWidget( final Widget w ) {
         body.setWidget( w );
         center();
     }
 
-    public void setPreferredHeight( int height ) {
+    public void setPreferredHeight( final int height ) {
         bodyContainer.setHeight( height + "px" );
         sideBarContainer.setHeight( height + "px" );
     }
 
-    public void setPreferredWidth( int width ) {
+    public void setPreferredWidth( final int width ) {
         bodyContainer.setWidth( width + "px" );
     }
 
-    public void setPageCompletionState( int pageIndex,
-                                        boolean isComplete ) {
-        WizardPageTitle wpt = this.pageTitleWidgets.get( pageIndex );
+    public void setPageCompletionState( final int pageIndex,
+                                        final boolean isComplete ) {
+        final WizardPageTitle wpt = this.pageTitleWidgets.get( pageIndex );
         wpt.setComplete( isComplete );
     }
 
-    public void setCompletionStatus( boolean isComplete ) {
+    public void setCompletionStatus( final boolean isComplete ) {
         btnFinish.setEnabled( isComplete );
     }
 

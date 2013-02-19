@@ -15,22 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-
 /**
  * An event representing whether Action Set Fields are correctly defined
  */
-public class ActionSetFieldsDefinedEvent extends GwtEvent<ActionSetFieldsDefinedEvent.Handler> {
-
-    public static interface Handler
-            extends
-            EventHandler {
-
-        void onActionSetFieldsDefined( ActionSetFieldsDefinedEvent event );
-    }
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
+public class ActionSetFieldsDefinedEvent {
 
     private boolean areActionSetFieldsDefined;
 
@@ -40,16 +28,6 @@ public class ActionSetFieldsDefinedEvent extends GwtEvent<ActionSetFieldsDefined
 
     public boolean getAreActionSetFieldsDefined() {
         return this.areActionSetFieldsDefined;
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch( final ActionSetFieldsDefinedEvent.Handler handler ) {
-        handler.onActionSetFieldsDefined( this );
     }
 
 }

@@ -15,11 +15,14 @@
  */
 package org.kie.guvnor.commons.ui.client.wizards;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -33,6 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
  * (a tick) that the page has been completed and whether it is the currently
  * displayed page (title is made bold).
  */
+@Dependent
 public class WizardPageTitle extends Composite {
 
     @UiField
@@ -44,6 +48,9 @@ public class WizardPageTitle extends Composite {
     @UiField
     protected HorizontalPanel container;
 
+    @Inject
+    private Event<WizardPageSelectedEvent> selectPageEvent;
+
     interface WizardPageTitleViewBinder
             extends
             UiBinder<Widget, WizardPageTitle> {
@@ -52,21 +59,17 @@ public class WizardPageTitle extends Composite {
 
     private static WizardPageTitleViewBinder uiBinder = GWT.create( WizardPageTitleViewBinder.class );
 
-    public WizardPageTitle( final WizardContext context,
-                            final EventBus eventBus,
-                            final WizardPage page ) {
+    public WizardPageTitle() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
-        this.lblTitle.setText( page.getTitle() );
-
+    public void setContent( final WizardPage page ) {
+        lblTitle.setText( page.getTitle() );
         setComplete( page.isComplete() );
-
         container.addDomHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                WizardPageSelectedEvent wpse = new WizardPageSelectedEvent( page );
-                eventBus.fireEventFromSource( wpse,
-                                              context );
+            public void onClick( final ClickEvent event ) {
+                selectPageEvent.fire( new WizardPageSelectedEvent( page ) );
             }
 
         },

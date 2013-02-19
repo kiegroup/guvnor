@@ -18,16 +18,16 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
@@ -38,30 +38,13 @@ import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
  * A page for the guided Decision Table Wizard to define Fact Pattern
  * Constraints
  */
+@Dependent
 public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizardPage
         implements
-        FactPatternConstraintsPageView.Presenter,
-        DuplicatePatternsEvent.Handler,
-        ConditionsDefinedEvent.Handler {
+        FactPatternConstraintsPageView.Presenter {
 
+    @Inject
     private FactPatternConstraintsPageView view;
-
-    public FactPatternConstraintsPage( final NewAssetWizardContext context,
-                                       final GuidedDecisionTable52 dtable,
-                                       final EventBus eventBus,
-                                       final Validator validator ) {
-        super( context,
-               dtable,
-               eventBus,
-               validator );
-        this.view = new FactPatternConstraintsPageViewImpl( getValidator() );
-
-        //Wire-up the events
-        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
-                             this );
-        eventBus.addHandler( ConditionsDefinedEvent.TYPE,
-                             this );
-    }
 
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardFactPatternConstraints();
@@ -71,7 +54,8 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         if ( oracle == null ) {
             return;
         }
-        view.setPresenter( this );
+        view.init( this );
+        view.setValidator( getValidator() );
 
         //Set-up a factory for value editors
         view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
@@ -99,25 +83,19 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
             }
         }
 
-        //Signal Condition definitions to other pages
+        //TODO Signal Condition definitions to other pages
         final ConditionsDefinedEvent event = new ConditionsDefinedEvent( areConditionsDefined );
-        eventBus.fireEventFromSource( event,
-                                      context );
+        //eventBus.fireEventFromSource( event,
+        //                              context );
 
         return areConditionsDefined;
     }
 
-    public void onDuplicatePatterns( final DuplicatePatternsEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
-    public void onConditionsDefined( final ConditionsDefinedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onConditionsDefined( final @Observes ConditionsDefinedEvent event ) {
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 

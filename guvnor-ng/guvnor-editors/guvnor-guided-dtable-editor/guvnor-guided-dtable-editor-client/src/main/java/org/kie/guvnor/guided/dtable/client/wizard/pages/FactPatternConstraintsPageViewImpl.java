@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -66,6 +68,7 @@ import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 /**
  * An implementation of the Fact Patterns Constraints page
  */
+@Dependent
 public class FactPatternConstraintsPageViewImpl extends Composite
         implements
         FactPatternConstraintsPageView {
@@ -179,7 +182,12 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private static FactPatternConstraintsPageWidgetBinder uiBinder = GWT.create( FactPatternConstraintsPageWidgetBinder.class );
 
-    public FactPatternConstraintsPageViewImpl( final Validator validator ) {
+    public FactPatternConstraintsPageViewImpl() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
         this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ConditionPatternCell( validator ),
                                                                             WizardCellListResources.INSTANCE );
@@ -188,7 +196,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         this.chosenConditionsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
                                                                                 WizardCellListResources.INSTANCE );
 
-        initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
@@ -571,26 +578,30 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         btnMoveDown.setEnabled( index < chosenConditions.size() - 1 );
     }
 
-    final
-    public void setPresenter( Presenter presenter ) {
+    @Override
+    public void init( final FactPatternConstraintsPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void setDTCellValueWidgetFactory( final DTCellValueWidgetFactory factory ) {
         this.factory = factory;
     }
 
+    @Override
     public void setAreConditionsDefined( final boolean areConditionsDefined ) {
         msgIncompleteConditions.setVisible( !areConditionsDefined );
         chosenConditionsWidget.redraw();
         availablePatternsWidget.redraw();
     }
 
+    @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         availablePatternsWidget.redraw();
     }
 
+    @Override
     public void setAvailablePatterns( final List<Pattern52> patterns ) {
         availablePatterns = patterns;
         availablePatternsWidget.setRowCount( availablePatterns.size(),
@@ -619,12 +630,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         }
     }
 
+    @Override
     public void setAvailableFields( final List<AvailableField> fields ) {
         availableFieldsWidget.setRowCount( fields.size(),
                                            true );
         availableFieldsWidget.setRowData( fields );
     }
 
+    @Override
     public void setChosenConditions( final List<ConditionCol52> conditions ) {
         chosenConditions = conditions;
         chosenConditionsWidget.setRowCount( conditions.size(),

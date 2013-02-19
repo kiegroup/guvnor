@@ -20,17 +20,17 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionSetFieldsDefinedEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.ActionCol52;
 import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
@@ -43,13 +43,12 @@ import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
  * on previously bound patterns. This page does not use the GuidedDecisionTable
  * model directly; instead maintaining its own Pattern-to-Action associations.
  */
+@Dependent
 public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         implements
-        ActionSetFieldsPageView.Presenter,
-        PatternRemovedEvent.Handler,
-        DuplicatePatternsEvent.Handler,
-        ActionSetFieldsDefinedEvent.Handler {
+        ActionSetFieldsPageView.Presenter {
 
+    @Inject
     private ActionSetFieldsPageView view;
 
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
@@ -61,36 +60,6 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     //removed that is handled here to synchronise the Pattern lists.
     private Map<Pattern52, List<ActionSetFieldCol52>> patternToActionsMap = new IdentityHashMap<Pattern52, List<ActionSetFieldCol52>>();
 
-    public ActionSetFieldsPage( final NewAssetWizardContext context,
-                                final GuidedDecisionTable52 dtable,
-                                final EventBus eventBus,
-                                final Validator validator ) {
-        super( context,
-               dtable,
-               eventBus,
-               validator );
-
-        //Set-up validator for the pattern-to-action mapping voodoo
-        getValidator().setPatternToActionSetFieldsMap( patternToActionsMap );
-        this.view = new ActionSetFieldsPageViewImpl( getValidator() );
-
-        //Wire-up the events
-        eventBus.addHandler( PatternRemovedEvent.TYPE,
-                             this );
-        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
-                             this );
-        eventBus.addHandler( ActionSetFieldsDefinedEvent.TYPE,
-                             this );
-    }
-
-    //See comments about use of IdentityHashMap in instance member declaration section
-    public void onPatternRemoved( final PatternRemovedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
-        patternToActionsMap.remove( event.getPattern() );
-    }
-
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardActionSetFields();
     }
@@ -99,7 +68,11 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         if ( oracle == null ) {
             return;
         }
-        view.setPresenter( this );
+        view.init( this );
+        view.setValidator( getValidator() );
+
+        //Set-up validator for the pattern-to-action mapping voodoo
+        getValidator().setPatternToActionSetFieldsMap( patternToActionsMap );
 
         //Set-up a factory for value editors
         view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
@@ -142,25 +115,24 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
 
-        //Signal Action Set Fields definitions to other pages
+        //TODO Signal Action Set Fields definitions to other pages
         final ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
-        eventBus.fireEventFromSource( event,
-                                      context );
+        //eventBus.fireEventFromSource( event,
+        //                              context );
 
         return areActionSetFieldsDefined;
     }
 
-    public void onDuplicatePatterns( final DuplicatePatternsEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    //See comments about use of IdentityHashMap in instance member declaration section
+    public void onPatternRemoved( final @Observes PatternRemovedEvent event ) {
+        patternToActionsMap.remove( event.getPattern() );
+    }
+
+    public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
-    public void onActionSetFieldsDefined( final ActionSetFieldsDefinedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onActionSetFieldsDefined( final @Observes ActionSetFieldsDefinedEvent event ) {
         view.setAreActionSetFieldsDefined( event.getAreActionSetFieldsDefined() );
     }
 

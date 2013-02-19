@@ -17,45 +17,29 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.CompositeColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 /**
  * A page for the guided Decision Table Wizard to define which columns will be
  * expanded when the Decision Table is generated
  */
+@Dependent
 public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         implements
-        ColumnExpansionPageView.Presenter,
-        ConditionsDefinedEvent.Handler {
+        ColumnExpansionPageView.Presenter {
 
+    @Inject
     private ColumnExpansionPageView view;
 
     private List<ConditionCol52> columnsToExpand;
-
-    public ColumnExpansionPage( final NewAssetWizardContext context,
-                                final GuidedDecisionTable52 dtable,
-                                final EventBus eventBus,
-                                final Validator validator ) {
-        super( context,
-               dtable,
-               eventBus,
-               validator );
-        this.view = new ColumnExpansionPageViewImpl( validator );
-
-        //Wire-up the events
-        eventBus.addHandler( ConditionsDefinedEvent.TYPE,
-                             this );
-
-    }
 
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardColumnExpansion();
@@ -65,7 +49,8 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         if ( oracle == null ) {
             return;
         }
-        view.setPresenter( this );
+        view.init( this );
+        view.setValidator( getValidator() );
         content.setWidget( view );
     }
 
@@ -109,10 +94,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         return true;
     }
 
-    public void onConditionsDefined( final ConditionsDefinedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
+    public void onConditionsDefined( final @Observes ConditionsDefinedEvent event ) {
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 

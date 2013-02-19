@@ -16,7 +16,11 @@
 
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import com.google.gwt.event.shared.EventBus;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -24,43 +28,26 @@ import com.google.gwt.user.client.ui.Widget;
  * titles, buttons to navigate the Wizard pages and a mechanism to display
  * different pages of the Wizard.
  */
+@ApplicationScoped
 public class WizardPresenter implements
-                             WizardView.Presenter,
-                             WizardPageStatusChangeEvent.Handler,
-                             WizardPageSelectedEvent.Handler {
+                             WizardView.Presenter {
 
-    private final Wizard wizard;
-    private final WizardView view;
-    private final WizardContext context;
+    @Inject
+    //The generic view
+    private WizardView view;
 
-    //TODO clientFactory.getWizardFactory().getWizard( place.getContext(), this );
-    //TODO clientFactory.getNavigationViewFactory().getWizardView( context );
-    public WizardPresenter( final Wizard wizard,
-                            final WizardView view,
-                            final WizardContext context ) {
+    //The specific "page factory" for a particular Wizard
+    private Wizard<? extends WizardContext> wizard;
 
-        //The specific "page factory" for a particular Wizard
-        this.wizard = wizard;
-
-        //The generic view
-        this.view = view;
-
-        //The context of this Wizard instance
-        this.context = context;
-
-        view.setPresenter( this );
+    @PostConstruct
+    public void setup() {
+        view.init( this );
     }
 
-    public void onStatusChange( final WizardPageStatusChangeEvent event ) {
-
-        //The event might not have been raised by a page belonging to this Wizard instance
-        if ( event.getSource() != context ) {
-            return;
-        }
-
+    public void onStatusChange( final @Observes WizardPageStatusChangeEvent event ) {
         //Update the status of each belonging to this Wizard
         for ( WizardPage wp : wizard.getPages() ) {
-            int index = wizard.getPages().indexOf( wp );
+            final int index = wizard.getPages().indexOf( wp );
             view.setPageCompletionState( index,
                                          wp.isComplete() );
         }
@@ -69,24 +56,17 @@ public class WizardPresenter implements
         view.setCompletionStatus( wizard.isComplete() );
     }
 
-    public void onPageSelected( final WizardPageSelectedEvent event ) {
-        if ( event.getSource() != context ) {
-            return;
-        }
-        WizardPage page = event.getSelectedPage();
-        int index = wizard.getPages().indexOf( page );
+    public void onPageSelected( final @Observes WizardPageSelectedEvent event ) {
+        final WizardPage page = event.getSelectedPage();
+        final int index = wizard.getPages().indexOf( page );
         view.selectPage( index );
     }
 
-    public void start( final EventBus eventBus ) {
+    public void start( final Wizard<? extends WizardContext> wizard ) {
 
-        //Wire-up the events
-        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
-                             this );
-        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
-                             this );
+        this.wizard = wizard;
 
-        //Go, Go gadget Wizard
+        //Go, Go gadget Wizard!
         view.setTitle( wizard.getTitle() );
         view.setPreferredHeight( wizard.getPreferredHeight() );
         view.setPreferredWidth( wizard.getPreferredWidth() );
@@ -96,7 +76,7 @@ public class WizardPresenter implements
     }
 
     public void pageSelected( final int pageNumber ) {
-        Widget w = wizard.getPageWidget( pageNumber );
+        final Widget w = wizard.getPageWidget( pageNumber );
         view.setBodyWidget( w );
     }
 

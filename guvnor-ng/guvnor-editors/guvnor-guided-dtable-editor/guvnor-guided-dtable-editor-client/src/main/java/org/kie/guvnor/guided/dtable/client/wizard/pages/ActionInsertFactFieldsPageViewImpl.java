@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -62,6 +64,7 @@ import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 /**
  * An implementation of the ActionInsertFactFields page
  */
+@Dependent
 public class ActionInsertFactFieldsPageViewImpl extends Composite
         implements
         ActionInsertFactFieldsPageView {
@@ -168,7 +171,12 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     private static ActionInsertFactFieldsPageWidgetBinder uiBinder = GWT.create( ActionInsertFactFieldsPageWidgetBinder.class );
 
-    public ActionInsertFactFieldsPageViewImpl( final Validator validator ) {
+    public ActionInsertFactFieldsPageViewImpl() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
         this.availableFactTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
                                                                           WizardCellListResources.INSTANCE );
@@ -179,7 +187,6 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         this.chosenFieldsWidget = new MinimumWidthCellList<ActionInsertFactCol52>( new ActionInsertFactFieldCell( validator ),
                                                                                    WizardCellListResources.INSTANCE );
 
-        initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailableFactTypes();
         initialiseChosenPatterns();
         initialiseAvailableFields();
@@ -451,32 +458,38 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         } );
     }
 
-    public void setPresenter( final Presenter presenter ) {
+    @Override
+    public void init( final ActionInsertFactFieldsPageView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void setDTCellValueWidgetFactory( final DTCellValueWidgetFactory factory ) {
         this.factory = factory;
     }
 
+    @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternsWidget.redraw();
         validateBinding();
     }
 
+    @Override
     public void setAreActionInsertFactFieldsDefined( final boolean areActionInsertFactFieldsDefined ) {
         msgIncompleteActions.setVisible( !areActionInsertFactFieldsDefined );
         chosenPatternsWidget.redraw();
         chosenFieldsWidget.redraw();
     }
 
+    @Override
     public void setAvailableFactTypes( final List<String> types ) {
         availableFactTypesWidget.setRowCount( types.size(),
                                               true );
         availableFactTypesWidget.setRowData( types );
     }
 
+    @Override
     public void setChosenPatterns( final List<ActionInsertFactFieldsPattern> patterns ) {
         chosenPatterns = patterns;
         chosenPatternsWidget.setRowCount( chosenPatterns.size(),
@@ -484,12 +497,14 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         chosenPatternsWidget.setRowData( chosenPatterns );
     }
 
+    @Override
     public void setAvailableFields( final List<AvailableField> fields ) {
         availableFieldsWidget.setRowCount( fields.size(),
                                            true );
         availableFieldsWidget.setRowData( fields );
     }
 
+    @Override
     public void setChosenFields( final List<ActionInsertFactCol52> fields ) {
         chosenFields = fields;
         chosenFieldsWidget.setRowCount( fields.size(),

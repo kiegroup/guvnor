@@ -20,13 +20,14 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * View and Presenter definitions for the generic Wizard
  */
 public interface WizardView
         extends
-        IsWidget {
+        UberView<WizardPresenter> {
 
     interface Presenter {
 
@@ -72,12 +73,6 @@ public interface WizardView
         void hide();
 
     }
-
-    /**
-     * Set the Presenter for the View to callback to
-     * @param presenter
-     */
-    void setPresenter( Presenter presenter );
 
     /**
      * Show the Wizard
