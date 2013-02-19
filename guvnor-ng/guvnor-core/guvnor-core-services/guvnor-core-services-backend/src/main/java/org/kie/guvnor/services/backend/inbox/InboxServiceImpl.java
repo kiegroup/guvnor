@@ -16,11 +16,8 @@
 
 package org.kie.guvnor.services.backend.inbox;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.data.tables.PageResponse;
@@ -29,11 +26,11 @@ import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.inbox.InboxService;
 import org.kie.guvnor.services.inbox.model.InboxPageRequest;
 import org.kie.guvnor.services.inbox.model.InboxPageRow;
+import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.security.Identity;
 
 import com.thoughtworks.xstream.XStream;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -51,31 +48,23 @@ import java.util.List;
 @ApplicationScoped
 public class InboxServiceImpl
         implements InboxService {
+    static final int            MAX_RECENT_EDITED = 200;    
+    
     public static final String RECENT_EDITED_ID = "recentEdited";
     public static final String RECENT_VIEWED_ID = "recentViewed";
     public static final String INCOMING_ID = "incoming";
-    static final int            MAX_RECENT_EDITED = 200;
     private static final String INBOX             = "inbox";
+    
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
+    private UserServices userServices;
+    
+    @Inject
     @SessionScoped
     private Identity identity;
-    private Path bootstrapRoot = null;
-    
-    @PostConstruct
-    public void init() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-        if ( fsIterator.hasNext() ) {
-            final FileSystem bootstrap = fsIterator.next();
-            final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
-            if ( rootIterator.hasNext() ) {
-                this.bootstrapRoot = rootIterator.next();
-            }
-        }
-    }
     
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) {
         if ( request == null ) {
@@ -127,22 +116,20 @@ public class InboxServiceImpl
     }
 
     public List<InboxEntry> loadRecentEdited() {
-        return readEntries( INBOX,
-                                     RECENT_EDITED_ID );
+        return readEntries( RECENT_EDITED_ID );
     }
 
     public List<InboxEntry> loadRecentOpened() {
-        return readEntries( INBOX,
-                                     RECENT_VIEWED_ID );
+        return readEntries( RECENT_VIEWED_ID );
     }
 
     public List<InboxEntry> loadIncoming() {
-        return readEntries( INBOX,
-                                     INCOMING_ID );
+        return readEntries( INCOMING_ID );
     }
     
-    public List<InboxEntry> readEntries(String serviceType, String propertyName) {
-        Path path = buildPath(identity.getName(), serviceType, propertyName);
+    public List<InboxEntry> readEntries(String boxName) {
+        Path path = userServices.buildPath(identity.getName(), INBOX, boxName);
+
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
             if (!(xml == null || xml.equals(""))) {
@@ -154,13 +141,7 @@ public class InboxServiceImpl
         
         return new ArrayList<InboxEntry>();
     }
-    
 
-    //@Override
-    public Path buildPath(String username, String serviceType, String relativePath) {
-        return bootstrapRoot.resolve( "/.metadata/.users/" + username + "/." + serviceType + "/." + relativePath );
-    }
-    
     public void recordOpeningEvent( @Observes final AssetOpenedEvent event ) {
         PortablePreconditions.checkNotNull( "event", event );
         final  org.uberfire.backend.vfs.Path resourcePath = event.getResourcePath();
@@ -171,9 +152,9 @@ public class InboxServiceImpl
      * Helper method to log the opening. Will remove any inbox items that have
      * the same id.
      */
-    public synchronized void recordOpeningEvent(String itemUUID, String itemName) {
-        addToRecentOpened( itemUUID, itemName );
-        List<InboxEntry> unreadIncoming = removeAnyExisting( itemUUID,
+    public synchronized void recordOpeningEvent(String itemPath, String itemName) {
+        addToRecentOpened( itemPath, itemName );
+        List<InboxEntry> unreadIncoming = removeAnyExisting( itemPath,
                                                              loadIncoming() );
         writeEntries( INCOMING_ID, unreadIncoming );
     }
@@ -188,55 +169,54 @@ public class InboxServiceImpl
      * Helper method to note the event
      */
     @Override
-    public synchronized void recordUserEditEvent(String itemUUID, String itemName) {
-        addToRecentEdited( itemUUID, itemName );
+    public synchronized void recordUserEditEvent(String itemPath, String itemName) {
+        addToRecentEdited( itemPath, itemName );
     }
     
     /**
      * This should be called when the user edits or comments on an asset. Simply
      * adds to the list...
      */
-    public void addToRecentEdited(String assetId,
+    public void addToRecentEdited(String itemPath,
                                   String note) {
         addToInbox( RECENT_EDITED_ID,
-                    assetId,
+                    itemPath,
                     note,
                     identity.getName() );
     }
 
-    public void addToRecentOpened(String assetId,
+    public void addToRecentOpened(String itemPath,
                                   String note) {
         addToInbox( RECENT_VIEWED_ID,
-                    assetId,
+                    itemPath,
                     note,
                     identity.getName() );
     }
 
-    public void addToIncoming(String assetId,
+    public void addToIncoming(String itemPath,
                               String note,
                               String userFrom) {
         addToInbox( INCOMING_ID,
-                    assetId,
+                    itemPath,
                     note,
                     userFrom );
     }
 
     private void addToInbox(String boxName,
-                            String assetId,
+                            String itemPath,
                             String note,
                             String userFrom) {
         assert boxName.equals( RECENT_EDITED_ID ) || boxName.equals( RECENT_VIEWED_ID ) || boxName.equals( INCOMING_ID );
-        List<InboxEntry> entries = removeAnyExisting( assetId,
-                                                      readEntries( INBOX,
-                                                                            boxName ) );
+        List<InboxEntry> entries = removeAnyExisting( itemPath,
+                                                      readEntries( boxName ) );
 
         if ( entries.size() >= MAX_RECENT_EDITED ) {
             entries.remove( 0 );
-            entries.add( new InboxEntry( assetId,
+            entries.add( new InboxEntry( itemPath,
                                          note,
                                          userFrom ) );
         } else {
-            entries.add( new InboxEntry( assetId,
+            entries.add( new InboxEntry( itemPath,
                                          note,
                                          userFrom ) );
         }
@@ -244,12 +224,12 @@ public class InboxServiceImpl
         writeEntries( boxName, entries );
     }
 
-    private List<InboxEntry> removeAnyExisting(String assetId,
+    private List<InboxEntry> removeAnyExisting(String itemPath,
             List<InboxEntry> inboxEntries) {
         Iterator<InboxEntry> it = inboxEntries.iterator();
         while (it.hasNext()) {
             InboxEntry e = it.next();
-            if (e.assetUUID.equals(assetId)) {
+            if (e.itemPath.equals(itemPath)) {
                 it.remove();
                 return inboxEntries;
             }
@@ -258,7 +238,7 @@ public class InboxServiceImpl
     }
     
     public void writeEntries(String boxName, List<InboxEntry> entries) {
-        Path path = buildPath(identity.getName(), INBOX, boxName);
+        Path path = userServices.buildPath(identity.getName(), INBOX, boxName);
 
         System.out.println("writeEntries: " +path.toString());
             String entry = getXStream().toXML(entries);
@@ -282,13 +262,13 @@ public class InboxServiceImpl
         public String from;
 
         public InboxEntry() {}
-        public InboxEntry(String assetId, String note, String userFrom) {
-            this.assetUUID = assetId;
+        public InboxEntry(String itemPath, String note, String userFrom) {
+            this.itemPath = itemPath;
             this.note = note;
             this.timestamp = System.currentTimeMillis();
             this.from = userFrom;
         }
-        public String assetUUID;
+        public String itemPath;
         public String note;
         public long timestamp;
     }
