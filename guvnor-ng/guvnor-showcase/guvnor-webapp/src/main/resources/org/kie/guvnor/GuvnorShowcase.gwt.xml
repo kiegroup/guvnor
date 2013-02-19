@@ -28,6 +28,7 @@
   <inherits name="org.kie.guvnor.guided.scorecard.GuvnorGuidedScoreCardEditorClient"/>
   <inherits name="org.kie.guvnor.dsltext.GuvnorDSLTextEditorClient"/>
   <inherits name="org.kie.guvnor.globals.GuvnorGlobalsEditorClient"/>
+  <inherits name="org.kie.guvnor.defaulteditor.DefaultEditorClient"/>
 
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
