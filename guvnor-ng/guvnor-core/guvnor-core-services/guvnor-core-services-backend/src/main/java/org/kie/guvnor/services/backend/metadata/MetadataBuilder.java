@@ -16,17 +16,16 @@
 
 package org.kie.guvnor.services.backend.metadata;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.kie.commons.validation.Preconditions.checkNotEmpty;
-import static org.kie.commons.validation.Preconditions.checkNotNull;
+import static org.kie.commons.validation.Preconditions.*;
 
 /**
  *
@@ -34,9 +33,6 @@ import static org.kie.commons.validation.Preconditions.checkNotNull;
 public final class MetadataBuilder {
 
     private Path path;
-
-    //automatic by file extension
-    private String format = "model.drl";
 
     //git info
     private String checkinComment;
@@ -69,11 +65,6 @@ public final class MetadataBuilder {
 
     public MetadataBuilder withPath( final Path path ) {
         this.path = checkNotNull( "path", path );
-        return this;
-    }
-
-    public MetadataBuilder withFormat( final String format ) {
-        this.format = checkNotEmpty( "format", format );
         return this;
     }
 
@@ -148,7 +139,7 @@ public final class MetadataBuilder {
     }
 
     public Metadata build() {
-        return new Metadata( path, format, checkinComment, lastContributor, creator,
+        return new Metadata( path, checkinComment, lastContributor, creator,
                              lastModified, dateCreated, subject, type,
                              externalRelation, externalSource,
                              description, disabled, categories, discussion, version );

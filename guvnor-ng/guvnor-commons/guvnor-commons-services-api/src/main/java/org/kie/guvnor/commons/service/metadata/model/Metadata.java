@@ -32,9 +32,6 @@ public class Metadata {
 
     private Path path;
 
-    //automatic by file extension
-    private String format = "model.drl";
-
     //git info
     private String checkinComment;
     private String lastContributor;
@@ -61,7 +58,6 @@ public class Metadata {
     }
 
     public Metadata( final Path path,
-                     final String format,
                      final String checkinComment,
                      final String lastContributor,
                      final String creator,
@@ -77,7 +73,6 @@ public class Metadata {
                      final List<DiscussionRecord> discussion,
                      final List<VersionRecord> version ) {
         this.path = path;
-        this.format = format;
         this.checkinComment = checkinComment;
         this.lastContributor = lastContributor;
         this.creator = creator;
@@ -96,10 +91,6 @@ public class Metadata {
 
     public Path getPath() {
         return path;
-    }
-
-    public String getFormat() {
-        return format;
     }
 
     public String getCheckinComment() {

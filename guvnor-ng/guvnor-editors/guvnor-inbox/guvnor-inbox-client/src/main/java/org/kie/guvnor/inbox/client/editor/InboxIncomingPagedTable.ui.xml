@@ -17,12 +17,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:cellview='urn:import:com.google.gwt.user.cellview.client'
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
              xmlns:guvnor-pager='urn:import:org.kie.guvnor.commons.ui.client.tables'>
 
   <gwt:VerticalPanel>
     <gwt:ToggleButton ui:field="columnPickerButton"/>
-    <cellview:CellTable ui:field="cellTable"/>
+    <b:CellTable ui:field="cellTable"/>
     <guvnor-pager:GuvnorSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 

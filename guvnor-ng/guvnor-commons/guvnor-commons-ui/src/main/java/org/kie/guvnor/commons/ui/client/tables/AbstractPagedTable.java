@@ -16,8 +16,10 @@
 
 package org.kie.guvnor.commons.ui.client.tables;
 
+import com.github.gwtbootstrap.client.ui.CellTable;
+import com.github.gwtbootstrap.client.ui.SimplePager;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.AbstractPager;
 import com.google.gwt.view.client.AsyncDataProvider;
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 
@@ -27,22 +29,24 @@ import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 public abstract class AbstractPagedTable<T extends AbstractPageRow>
         extends AbstractSimpleTable<T> {
 
-
-    protected int                    pageSize;
-    protected AsyncDataProvider<T>   dataProvider;
+    protected int                  pageSize;
+    protected AsyncDataProvider<T> dataProvider;
 
     @UiField
-    public GuvnorSimplePager      pager;
+    public AbstractPager pager;
 
     /**
      * Constructor
-     *
      * @param pageSize
      */
-    public AbstractPagedTable(int pageSize) {
+    public AbstractPagedTable( int pageSize ) {
         this.pageSize = pageSize;
         pager.setDisplay( cellTable );
-        pager.setPageSize( pageSize );
+        if ( pager instanceof GuvnorSimplePager ) {
+            ( (GuvnorSimplePager) pager ).setPageSize( pageSize );
+        } else if ( pager instanceof SimplePager ) {
+            ( (SimplePager) pager ).setPageSize( pageSize );
+        }
     }
 
     /**
@@ -67,10 +71,9 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow>
 
     /**
      * Link a data provider to the table
-     *
      * @param dataProvider
      */
-    public void setDataProvider(AsyncDataProvider<T> dataProvider) {
+    public void setDataProvider( AsyncDataProvider<T> dataProvider ) {
         this.dataProvider = dataProvider;
         this.dataProvider.addDataDisplay( cellTable );
     }

@@ -16,6 +16,10 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,18 +31,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.workbench.file.ResourceTypeManager;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
@@ -46,6 +48,8 @@ import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
  */
 public class MetadataWidget
         extends DirtyableComposite {
+
+    private ResourceTypeManager resourceTypeManager = null;
 
     private Metadata metadata = null;
     private boolean readOnly;
@@ -111,7 +115,7 @@ public class MetadataWidget
                       }, MetadataConstants.INSTANCE.DisableTip() ) );
 
         addAttribute( MetadataConstants.INSTANCE.FormatMetaData(),
-                      readOnlyText( metadata.getFormat() ) );
+                      readOnlyText( getResourceTypeManager().resolve( metadata.getPath() ).getShortName() ) );
         addAttribute( "URI:",
                       readOnlyText( metadata.getPath().toURI() ) );
 
@@ -333,4 +337,12 @@ public class MetadataWidget
     public Metadata getContent() {
         return metadata;
     }
+
+    public ResourceTypeManager getResourceTypeManager() {
+        if ( this.resourceTypeManager == null ) {
+            resourceTypeManager = IOC.getBeanManager().lookupBean( ResourceTypeManager.class ).getInstance();
+        }
+        return resourceTypeManager;
+    }
+
 }

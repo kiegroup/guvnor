@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.commons.ui.client.tables;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -30,32 +33,28 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.commons.ui.client.resources.TableImageResources;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import org.kie.guvnor.commons.ui.client.resources.TableResources;
 
 public class ColumnPicker<T> {
 
-    private final Image                      COLUMN_PICKER_IMAGE   = new Image( TableImageResources.INSTANCE.columnPicker() );
+    private final Image COLUMN_PICKER_IMAGE = new Image( TableResources.INSTANCE.columnPicker() );
 
-    private final CellTable<T>               cellTable;
-    private List<ColumnMeta<T>>              columnMetaList        = new ArrayList<ColumnMeta<T>>();
+    private final CellTable<T> cellTable;
+    private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
 
-    public ColumnPicker(CellTable<T> cellTable) {
+    public ColumnPicker( CellTable<T> cellTable ) {
         this.cellTable = cellTable;
     }
 
-    public void addColumn(Column<T, ? > column,
-                          Header<String> header,
-                          boolean visible) {
+    public void addColumn( Column<T, ?> column,
+                           Header<String> header,
+                           boolean visible ) {
         addColumn( new ColumnMeta<T>( column,
                                       header,
                                       visible ) );
     }
 
-    private void addColumn(ColumnMeta<T> columnMeta) {
+    private void addColumn( ColumnMeta<T> columnMeta ) {
         columnMetaList.add( columnMeta );
         if ( columnMeta.isVisible() ) {
             cellTable.addColumn( columnMeta.getColumn(),
@@ -68,7 +67,7 @@ public class ColumnPicker<T> {
         final PopupPanel popup = new PopupPanel( true );
         popup.addAutoHidePartner( button.getElement() );
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
-            public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
+            public void onClose( CloseEvent<PopupPanel> popupPanelCloseEvent ) {
                 button.setDown( false );
             }
         } );
@@ -77,7 +76,7 @@ public class ColumnPicker<T> {
             final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
             checkBox.setValue( columnMeta.isVisible() );
             checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-                public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
+                public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
                     boolean visible = booleanValueChangeEvent.getValue();
                     if ( visible ) {
                         // WORKAROUND because CellTable does not support insertColumn at this time
@@ -103,13 +102,13 @@ public class ColumnPicker<T> {
         }
         popup.add( popupContent );
         button.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 if ( button.isDown() ) {
                     popup.setPopupPosition( button.getAbsoluteLeft(),
                                             button.getAbsoluteTop() + button.getOffsetHeight() );
                     popup.show();
                 } else {
-                    popup.hide(false);
+                    popup.hide( false );
                 }
             }
         } );
@@ -117,19 +116,20 @@ public class ColumnPicker<T> {
     }
 
     private static class ColumnMeta<T> {
-        private Column<T, ? >  column;
+
+        private Column<T, ?>   column;
         private Header<String> header;
         private boolean        visible;
 
-        private ColumnMeta(Column<T, ? > column,
-                           Header<String> header,
-                           boolean visible) {
+        private ColumnMeta( Column<T, ?> column,
+                            Header<String> header,
+                            boolean visible ) {
             this.column = column;
             this.header = header;
             this.visible = visible;
         }
 
-        public Column<T, ? > getColumn() {
+        public Column<T, ?> getColumn() {
             return column;
         }
 
@@ -141,7 +141,7 @@ public class ColumnPicker<T> {
             return visible;
         }
 
-        public void setVisible(boolean visible) {
+        public void setVisible( boolean visible ) {
             this.visible = visible;
         }
     }

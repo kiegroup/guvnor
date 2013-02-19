@@ -47,6 +47,7 @@
     <module>guvnor-test-scenario-editor</module>
     <module>guvnor-inbox</module>
     <module>guvnor-dtable-xls-editor</module>
+    <module>guvnor-search-screen</module>
   </modules>
 
 </project>

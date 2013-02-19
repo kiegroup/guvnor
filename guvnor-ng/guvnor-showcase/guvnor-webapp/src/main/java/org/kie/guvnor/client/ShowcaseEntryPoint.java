@@ -15,6 +15,16 @@
  */
 package org.kie.guvnor.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Inject;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -35,21 +45,13 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.MenuPosition;
+import org.uberfire.client.workbench.widgets.menu.MenuSearchItem;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
 
 /**
  * GWT's Entry-point for Guvnor-Showcase
@@ -75,8 +77,8 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         loadPreferences();
-        setupMenu();
         hideLoadingPopup();
+        setupMenu();
     }
 
     private void loadPreferences() {
@@ -105,16 +107,35 @@ public class ShowcaseEntryPoint {
                 } )
                 .endMenu()
                 .newTopLevelMenu( "Perspectives" )
-                .withItems( getPerspectives() )
+                    .withItems( getPerspectives() )
                 .endMenu()
                 .newTopLevelMenu( "Logout" )
-                .respondsWith( new Command() {
+                    .respondsWith( new Command() {
                     @Override
                     public void execute() {
                         redirect( GWT.getModuleBaseURL() + "uf_logout" );
                     }
                 } )
-                .endMenu().build();
+                .endMenu()
+                .newTopLevelMenu( "Find" )
+                    .position( MenuPosition.RIGHT )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
+                            placeManager.goTo( "FindForm" );
+                        }
+                    } )
+                .endMenu()
+                .newSearchItem( "Search..." )
+                    .position( MenuPosition.RIGHT )
+                    .respondsWith( new MenuSearchItem.SearchCommand() {
+                        @Override
+                        public void execute( final String term ) {
+                            placeManager.goTo( new DefaultPlaceRequest( "FullTextSearchForm" ).addParameter( "term", term ) );
+                        }
+                    } )
+                .endMenu()
+                .build();
 
         menubar.aggregateWorkbenchMenus( menus );
     }

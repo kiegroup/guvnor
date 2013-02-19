@@ -21,6 +21,7 @@ import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.commons.ui.client.resources.GuvnorSimplePagerResources;
 import org.kie.guvnor.commons.ui.client.resources.RoundedCornersResource;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
+import org.kie.guvnor.commons.ui.client.resources.TableResources;
 
 @EntryPoint
 public class GuvnorCommonsUIEntryPoint {
@@ -28,9 +29,9 @@ public class GuvnorCommonsUIEntryPoint {
     @AfterInitialization
     public void startApp() {
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
-        GuvnorSimplePagerResources.INSTANCE.simplePagerStyle().ensureInjected();
         CommonsResources.INSTANCE.css().ensureInjected();
         WizardResources.INSTANCE.css().ensureInjected();
+        TableResources.INSTANCE.titledTextCellCss().ensureInjected();
     }
 
 }

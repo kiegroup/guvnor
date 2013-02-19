@@ -20,8 +20,7 @@ package org.kie.guvnor.commons.data.tables;
  * A single row of a paged data
  */
 public abstract class AbstractPageRow
-        implements
-        Comparable<AbstractPageRow> {
+        implements Comparable<AbstractPageRow> {
 
     public int compareTo( AbstractPageRow o ) {
         return 0;

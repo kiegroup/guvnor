@@ -4,10 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface TableImageResources
+public interface TableResources
         extends ClientBundle {
 
-    TableImageResources INSTANCE = GWT.create(TableImageResources.class);
+    TableResources INSTANCE = GWT.create( TableResources.class );
 
     @Source("images/downArrow.png")
     ImageResource downArrow();
@@ -23,5 +23,8 @@ public interface TableImageResources
 
     @Source("images/columnPicker.png")
     ImageResource columnPicker();
+
+    @Source("css/TitledTextCell.css")
+    TitledTextCellCss titledTextCellCss();
 
 }

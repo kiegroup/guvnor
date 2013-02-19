@@ -46,10 +46,10 @@
 
   <!-- Deferred binding to handle different check-box behaviours -->
   <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.decoratedgrid.CheckboxCellImpl">
-    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImpl" />
+    <when-type-is class="org.kie.guvnor.commons.ui.client.tables.CheckboxCellImpl" />
   </replace-with>
   <replace-with class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImplIE">
-    <when-type-is class="org.kie.guvnor.decoratedgrid.client.widget.CheckboxCellImpl" />
+    <when-type-is class="org.kie.guvnor.commons.ui.client.tables.CheckboxCellImpl" />
     <any>
       <when-property-is name="user.agent" value="ie6" />
       <when-property-is name="user.agent" value="ie8" />
