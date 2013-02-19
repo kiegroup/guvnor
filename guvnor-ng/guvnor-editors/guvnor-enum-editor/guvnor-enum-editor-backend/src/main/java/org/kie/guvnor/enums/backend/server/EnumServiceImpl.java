@@ -36,6 +36,8 @@ import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.model.EnumModel;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.InboxService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -54,7 +56,10 @@ public class EnumServiceImpl implements EnumService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
+    
+    @Inject
+    private InboxService inboxService;
+    
     @Inject
     private MetadataService metadataService;
 
@@ -63,6 +68,8 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
 
     @Inject
     private Identity identity;
@@ -79,6 +86,7 @@ public class EnumServiceImpl implements EnumService {
         ioService.write( paths.convert( path ),
                          content,
                          makeCommentedOption( comment ) );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );        
     }
 
     @Override
@@ -89,6 +97,7 @@ public class EnumServiceImpl implements EnumService {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
         save( newPath, content, comment );
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
 
         return newPath;
     }
@@ -114,6 +123,7 @@ public class EnumServiceImpl implements EnumService {
         }
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
     }
 
     @Override

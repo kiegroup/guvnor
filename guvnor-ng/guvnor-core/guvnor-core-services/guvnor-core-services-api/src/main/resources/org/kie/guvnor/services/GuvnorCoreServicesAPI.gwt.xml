@@ -28,5 +28,6 @@
   <source path='readonly'/>
   <source path='metadata'/>
   <source path='version'/>
-
+  <source path='inbox'/>
+  
 </module>
