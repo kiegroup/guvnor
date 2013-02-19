@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class KModuleResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "kmodule xml config";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class KModuleResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "xml";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

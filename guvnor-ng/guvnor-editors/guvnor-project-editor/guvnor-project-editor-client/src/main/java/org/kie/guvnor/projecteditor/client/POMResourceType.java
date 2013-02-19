@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class POMResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "pom xml";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class POMResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "xml";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

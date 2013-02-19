@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class GlobalResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "global";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class GlobalResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "global.drl";
+    }
+
+    @Override
+    public int getPriority() {
+        return 101;
     }
 
     @Override

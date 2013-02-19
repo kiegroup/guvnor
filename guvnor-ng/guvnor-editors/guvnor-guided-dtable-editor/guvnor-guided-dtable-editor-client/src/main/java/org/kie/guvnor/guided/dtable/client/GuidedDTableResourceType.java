@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class GuidedDTableResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "guided dtable";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class GuidedDTableResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "gdst";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

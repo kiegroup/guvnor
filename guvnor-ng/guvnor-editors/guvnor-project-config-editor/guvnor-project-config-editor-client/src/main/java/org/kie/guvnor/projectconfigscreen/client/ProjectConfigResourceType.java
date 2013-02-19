@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class ProjectConfigResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "project imports";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class ProjectConfigResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "imports";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

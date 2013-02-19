@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class EnumResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "enum";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class EnumResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "enumeration";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

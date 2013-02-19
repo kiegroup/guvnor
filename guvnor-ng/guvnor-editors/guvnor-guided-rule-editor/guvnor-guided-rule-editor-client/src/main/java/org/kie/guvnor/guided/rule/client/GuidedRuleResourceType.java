@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class GuidedRuleResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "guided rule";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class GuidedRuleResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "gre.drl";
+    }
+
+    @Override
+    public int getPriority() {
+        return 102;
     }
 
     @Override

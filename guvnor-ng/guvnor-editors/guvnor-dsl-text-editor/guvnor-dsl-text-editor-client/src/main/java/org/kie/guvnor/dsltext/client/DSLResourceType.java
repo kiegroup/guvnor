@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class DSLResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "dsl";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class DSLResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "dsl";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

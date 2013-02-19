@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class GuidedScoreCardResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "guided score card";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class GuidedScoreCardResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "scgd";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

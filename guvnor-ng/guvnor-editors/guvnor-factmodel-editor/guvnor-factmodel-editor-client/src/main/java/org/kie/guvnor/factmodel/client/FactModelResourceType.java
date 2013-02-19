@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class FactModelResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "fact model";
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
@@ -27,6 +32,11 @@ public class FactModelResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "model.drl";
+    }
+
+    @Override
+    public int getPriority() {
+        return 100;
     }
 
     @Override
