@@ -18,7 +18,6 @@ package org.kie.guvnor.guided.dtable.client;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
-import org.kie.guvnor.guided.dtable.client.resources.WizardResources;
 
 @EntryPoint
 public class GuidedDecisionTableEditorEntryPoint {
@@ -26,7 +25,6 @@ public class GuidedDecisionTableEditorEntryPoint {
     @AfterInitialization
     public void startApp() {
         Resources.INSTANCE.css().ensureInjected();
-        WizardResources.INSTANCE.css().ensureInjected();
     }
 
 }

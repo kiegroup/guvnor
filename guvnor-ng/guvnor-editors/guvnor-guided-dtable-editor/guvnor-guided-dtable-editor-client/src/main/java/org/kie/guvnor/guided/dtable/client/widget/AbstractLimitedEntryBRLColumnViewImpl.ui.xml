@@ -21,7 +21,7 @@
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants"/>
   <ui:with field="images" type="org.kie.guvnor.guided.dtable.client.resources.images.ImageResources"/>
-  <ui:with field="wizardResources" type="org.kie.guvnor.guided.dtable.client.resources.WizardResources"/>
+  <ui:with field="wizardResources" type="org.kie.guvnor.commons.ui.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel width="100%">
     <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">

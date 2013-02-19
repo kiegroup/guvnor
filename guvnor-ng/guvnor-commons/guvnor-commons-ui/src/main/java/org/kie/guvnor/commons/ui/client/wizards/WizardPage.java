@@ -13,22 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.dtable.client.resources;
+package org.kie.guvnor.commons.ui.client.wizards;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import org.kie.guvnor.guided.dtable.client.resources.css.WizardCss;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Wizard resources
+ * A page for a Wizard
  */
-public interface WizardResources
+public interface WizardPage
         extends
-        ClientBundle {
+        IsWidget {
 
-    WizardResources INSTANCE = GWT.create( WizardResources.class );
+    /**
+     * Page title
+     * @return
+     */
+    String getTitle();
 
-    @Source("css/Wizard.css")
-    WizardCss css();
+    /**
+     * Is the page completed
+     * @return
+     */
+    boolean isComplete();
+
+    /**
+     * Initialise the page with things that don't change between page visits
+     */
+    void initialise();
+
+    /**
+     * Prepare the page before it is displayed with things that can change
+     * between page visits
+     */
+    void prepareView();
 
 }

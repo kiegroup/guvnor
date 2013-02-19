@@ -76,16 +76,6 @@ public interface Constants
 
     String chooseType();
 
-    String WholeNumberInteger();
-
-    String TrueOrFalse();
-
-    String Text();
-
-    String Date();
-
-    String DecimalNumber();
-
     String newFactModelDescription();
 
 }

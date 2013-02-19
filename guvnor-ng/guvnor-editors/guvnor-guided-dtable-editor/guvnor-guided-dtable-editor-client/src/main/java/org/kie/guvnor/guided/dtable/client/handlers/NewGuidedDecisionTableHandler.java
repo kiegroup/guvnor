@@ -1,5 +1,8 @@
 package org.kie.guvnor.guided.dtable.client.handlers;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -7,6 +10,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -35,6 +39,19 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Inject
     private GuidedDTableResourceType resourceType;
 
+    @Inject
+    private GuidedDecisionTableOptions options;
+
+    private final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
+
+    @PostConstruct
+    private void setupExtensions() {
+        extensions.clear();
+        extensions.addAll( super.getExtensions() );
+        extensions.add( new Pair<String, GuidedDecisionTableOptions>( Constants.INSTANCE.Options(),
+                                                                      options ) );
+    }
+
     @Override
     public String getDescription() {
         return Constants.INSTANCE.NewGuidedDecisionTableDescription();
@@ -46,9 +63,29 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        return extensions;
+    }
+
+    @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
+        if ( !options.isUsingWizard() ) {
+            createEmptyDecisionTable( contextPath,
+                                      baseFileName,
+                                      options.getTableFormat() );
+        } else {
+            createDecisionTableWithWizard( contextPath,
+                                           baseFileName,
+                                           options.getTableFormat() );
+        }
+    }
+
+    private void createEmptyDecisionTable( final Path contextPath,
+                                           final String baseFileName,
+                                           final GuidedDecisionTable52.TableFormat tableFormat ) {
         final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
+        ruleModel.setTableFormat( tableFormat );
         ruleModel.setTableName( baseFileName );
 
         new SaveOperationService().save( contextPath,
@@ -68,6 +105,12 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
                                              }
                                          } );
+    }
+
+    private void createDecisionTableWithWizard( final Path contextPath,
+                                                final String baseFileName,
+                                                final GuidedDecisionTable52.TableFormat tableFormat ) {
+        //TODO!
     }
 
 }

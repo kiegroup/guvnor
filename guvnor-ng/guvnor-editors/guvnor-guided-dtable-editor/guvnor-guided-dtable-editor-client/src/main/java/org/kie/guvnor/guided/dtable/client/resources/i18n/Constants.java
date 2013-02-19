@@ -219,7 +219,7 @@ public interface Constants
 
     String RemoveThisActionColumn();
 
-    String DeleteActionColumnWarning(String p0);
+    String DeleteActionColumnWarning( String p0 );
 
     String NewColumn();
 
@@ -261,9 +261,9 @@ public interface Constants
 
     String RemoveThisConditionColumn();
 
-    String UnableToDeleteConditionColumn(String p0);
+    String UnableToDeleteConditionColumn( String p0 );
 
-    String DeleteConditionColumnWarning(String p0);
+    String DeleteConditionColumnWarning( String p0 );
 
     String Attributes();
 
@@ -278,7 +278,6 @@ public interface Constants
     String DeleteItem();
 
     String NewItem();
-
 
     //Audit Log
     String DecisionTableAuditLog();
@@ -341,6 +340,91 @@ public interface Constants
                                                    String originalValue );
 
     String AreYouSureYouWantToRemoveThisItem();
+
+    //Wizard
+    String UseWizardToBuildAsset();
+
+    String DecisionTableWizardSummary();
+
+    String DecisionTableWizardFactPatterns();
+
+    String DecisionTableWizardFactPatternConstraints();
+
+    String DecisionTableWizardActions();
+
+    String DecisionTableWizardNoAvailablePatterns();
+
+    String DecisionTableWizardNoChosenPatterns();
+
+    String DecisionTableWizardAvailableTypes();
+
+    String DecisionTableWizardChosenTypes();
+
+    String DecisionTableWizardDuplicateBindings();
+
+    String DecisionTableWizardAvailableFields();
+
+    String DecisionTableWizardChosenConditions();
+
+    String DecisionTableWizardNoAvailableFields();
+
+    String DecisionTableWizardNoChosenFields();
+
+    String DecisionTableWizardIncompleteConditions();
+
+    String DecisionTableWizardPredicate();
+
+    String DecisionTableWizardPredicateExpression();
+
+    String MandatoryField();
+
+    String DecisionTableWizardActionSetFields();
+
+    String DecisionTableWizardChosenFields();
+
+    String DecisionTableWizardActionInsertFacts();
+
+    String DecisionTableWizardIncompleteActions();
+
+    String DecisionTableWizardSummaryNameMissing();
+
+    String DecisionTableWizardColumnExpansion();
+
+    String DecisionTableWizardAvailableColumns();
+
+    String DecisionTableWizardChosenColumns();
+
+    String DecisionTableWizardNoAvailableColumns();
+
+    String DecisionTableWizardNoChosenColumns();
+
+    String DecisionTableWizardDescriptionSummaryPage();
+
+    String DecisionTableWizardDescriptionFactPatternsPage();
+
+    String DecisionTableWizardDescriptionFactPatternConstraintsPage();
+
+    String DecisionTableWizardDescriptionActionSetFieldsPage();
+
+    String DecisionTableWizardDescriptionActionInsertFactFieldsPage();
+
+    String DecisionTableWizardDescriptionExpandColumnsPage();
+
+    String DecisionTableWizardExpandInFull();
+
+    String BindingFact();
+
+    String BindingDescription();
+
+    String TableFormat();
+
+    String TableFormatExtendedEntry();
+
+    String TableFormatLimitedEntry();
+
+    String NameColon();
+
+    String PathColon();
 
     //NewResourceHandler
     String NewGuidedDecisionTableDescription();

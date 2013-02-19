@@ -56,4 +56,10 @@ public interface ImageResources
     @Source("guidedDecisionTableIcon.gif")
     ImageResource guidedDecisionTableIcon();
 
+    @ClientBundle.Source("shuffle_down.gif")
+    ImageResource shuffleDown();
+
+    @ClientBundle.Source("shuffle_up.gif")
+    ImageResource shuffleUp();
+
 }

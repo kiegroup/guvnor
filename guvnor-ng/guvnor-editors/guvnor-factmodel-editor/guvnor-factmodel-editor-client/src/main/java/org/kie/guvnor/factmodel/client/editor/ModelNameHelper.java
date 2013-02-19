@@ -18,26 +18,15 @@ package org.kie.guvnor.factmodel.client.editor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
+import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 
 public class ModelNameHelper {
 
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
-        private static final long serialVersionUID = 510l;
 
         {
-            put( "Integer",
-                 Constants.INSTANCE.WholeNumberInteger() );
-            put( "Boolean",
-                 Constants.INSTANCE.TrueOrFalse() );
-            put( "String",
-                 Constants.INSTANCE.Text() );
-            put( "java.util.Date",
-                 Constants.INSTANCE.Date() );
-            put( "java.math.BigDecimal",
-                 Constants.INSTANCE.DecimalNumber() );
-
+            putAll( HumanReadableDataTypes.getTypeDescriptions() );
         }
     };
 
