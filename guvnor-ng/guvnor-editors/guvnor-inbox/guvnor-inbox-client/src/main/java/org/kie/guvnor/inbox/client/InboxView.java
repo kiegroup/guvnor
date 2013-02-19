@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.inbox.client.editor.InboxEditor;
-import org.kie.guvnor.inbox.service.InboxService;
+import org.kie.guvnor.services.inbox.InboxService;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;

@@ -21,9 +21,9 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
-import org.kie.guvnor.inbox.model.InboxIncomingPageRow;
-import org.kie.guvnor.inbox.model.InboxPageRow;
-import org.kie.guvnor.inbox.service.InboxService;
+import org.kie.guvnor.services.inbox.InboxService;
+import org.kie.guvnor.services.inbox.model.InboxIncomingPageRow;
+import org.kie.guvnor.services.inbox.model.InboxPageRow;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
