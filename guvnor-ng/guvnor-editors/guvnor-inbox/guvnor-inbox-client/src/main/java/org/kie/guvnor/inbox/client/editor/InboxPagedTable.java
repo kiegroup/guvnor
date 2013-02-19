@@ -143,7 +143,7 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
                         sortableHeaderGroup,
                         "Created Date",
                         dateColumn ),
-                false );
+                true );
 
     }
 
