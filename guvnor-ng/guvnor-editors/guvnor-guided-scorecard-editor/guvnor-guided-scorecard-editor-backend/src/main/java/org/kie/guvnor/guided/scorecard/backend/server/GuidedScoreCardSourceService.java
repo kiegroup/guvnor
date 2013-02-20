@@ -91,13 +91,13 @@ public class GuidedScoreCardSourceService
                 .append(getDRLBody(model)).toString();
     }
 
-    private String getDRLBody(ScoreCardModel model) {
+    static String getDRLBody(ScoreCardModel model) {
         final PMML pmml = createPMMLDocument(model);
         return ScorecardCompiler.convertToDRL(pmml,
                 ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL);
     }
 
-    private PMML createPMMLDocument( final ScoreCardModel model ) {
+    private static PMML createPMMLDocument( final ScoreCardModel model ) {
         final Scorecard pmmlScorecard = ScorecardPMMLUtils.createScorecard();
         final Output output = new Output();
         final Characteristics characteristics = new Characteristics();
@@ -231,7 +231,7 @@ public class GuidedScoreCardSourceService
         return new PMMLGenerator().generateDocument( pmmlScorecard );
     }
 
-    private String convertToJavaIdentifier( final String modelName ) {
+    private static String convertToJavaIdentifier( final String modelName ) {
         final StringBuilder sb = new StringBuilder();
         if ( !Character.isJavaIdentifierStart( modelName.charAt( 0 ) ) ) {
             sb.append( "_" );
