@@ -66,6 +66,9 @@ public class InboxServiceImpl
     @SessionScoped
     private Identity identity;
     
+    @Inject
+    MailboxService mailboxService;
+    
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -116,19 +119,27 @@ public class InboxServiceImpl
     }
 
     public List<InboxEntry> loadRecentEdited() {
-        return readEntries( RECENT_EDITED_ID );
+        return readEntries( identity.getName(), RECENT_EDITED_ID );
     }
 
+    public List<InboxEntry> loadRecentEdited(String userName) {
+        return readEntries( userName, RECENT_EDITED_ID );
+    }
+    
     public List<InboxEntry> loadRecentOpened() {
-        return readEntries( RECENT_VIEWED_ID );
+        return readEntries( identity.getName(), RECENT_VIEWED_ID );
     }
 
     public List<InboxEntry> loadIncoming() {
-        return readEntries( INCOMING_ID );
+        return readEntries( identity.getName(), INCOMING_ID );
     }
     
-    public List<InboxEntry> readEntries(String boxName) {
-        Path path = userServices.buildPath(identity.getName(), INBOX, boxName);
+    public List<InboxEntry> loadIncoming(String userName) {
+        return readEntries( userName, INCOMING_ID );
+    }
+    
+    public List<InboxEntry> readEntries(String userName, String boxName) {
+        Path path = userServices.buildPath(userName, INBOX, boxName);
 
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
@@ -171,6 +182,11 @@ public class InboxServiceImpl
     @Override
     public synchronized void recordUserEditEvent(String itemPath, String itemName) {
         addToRecentEdited( itemPath, itemName );
+        
+        //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
+        addToIncoming(itemPath, itemName, identity.getName(), MailboxService.MAIL_MAN);
+        mailboxService.processOutgoing();
+        mailboxService.wakeUp();
     }
     
     /**
@@ -182,6 +198,7 @@ public class InboxServiceImpl
         addToInbox( RECENT_EDITED_ID,
                     itemPath,
                     note,
+                    identity.getName(),
                     identity.getName() );
     }
 
@@ -190,25 +207,29 @@ public class InboxServiceImpl
         addToInbox( RECENT_VIEWED_ID,
                     itemPath,
                     note,
+                    identity.getName(),
                     identity.getName() );
     }
 
     public void addToIncoming(String itemPath,
                               String note,
-                              String userFrom) {
+                              String userFrom,
+                              String userName) {
         addToInbox( INCOMING_ID,
                     itemPath,
                     note,
-                    userFrom );
+                    userFrom,
+                    userName);
     }
 
     private void addToInbox(String boxName,
                             String itemPath,
                             String note,
-                            String userFrom) {
+                            String userFrom,
+                            String userName) {
         assert boxName.equals( RECENT_EDITED_ID ) || boxName.equals( RECENT_VIEWED_ID ) || boxName.equals( INCOMING_ID );
         List<InboxEntry> entries = removeAnyExisting( itemPath,
-                                                      readEntries( boxName ) );
+                                                      readEntries( userName, boxName ) );
 
         if ( entries.size() >= MAX_RECENT_EDITED ) {
             entries.remove( 0 );

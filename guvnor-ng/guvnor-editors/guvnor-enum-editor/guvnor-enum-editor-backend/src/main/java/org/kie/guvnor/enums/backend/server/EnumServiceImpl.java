@@ -37,8 +37,10 @@ import org.kie.guvnor.enums.model.EnumModel;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.services.inbox.AssetEditedEvent;
-import org.kie.guvnor.services.inbox.InboxService;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -50,15 +52,13 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class EnumServiceImpl implements EnumService {
+    private static final Logger log = LoggerFactory.getLogger( EnumServiceImpl.class );
 
     private static final String FORMAT = "enumeration";
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-    
-    @Inject
-    private InboxService inboxService;
     
     @Inject
     private MetadataService metadataService;
@@ -68,16 +68,21 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
+    
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     @Inject
     private Identity identity;
 
     @Override
     public EnumModelContent load( Path path ) {
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );        
         return new EnumModelContent( new EnumModel( ioService.readAllString( paths.convert( path ) ) ) );
-    }
+     }
 
     @Override
     public void save( final Path path,
@@ -164,20 +169,24 @@ public class EnumServiceImpl implements EnumService {
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
+        log.info( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        log.info( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
         return targetPath;
     }
 
@@ -185,11 +194,14 @@ public class EnumServiceImpl implements EnumService {
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        log.info( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
         return targetPath;
     }
 
