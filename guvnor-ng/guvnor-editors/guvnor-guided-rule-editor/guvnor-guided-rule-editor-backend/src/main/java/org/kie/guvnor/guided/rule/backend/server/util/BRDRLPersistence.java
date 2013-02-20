@@ -27,6 +27,7 @@ import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -1378,7 +1379,7 @@ public class BRDRLPersistence
     }
 
     private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo ) {
-        RuleDescr ruleDescr = parseDrl( expandedDRLInfo.plainDrl );
+        RuleDescr ruleDescr = parseDrl( expandedDRLInfo );
         RuleModel m = new RuleModel();
         m.name = ruleDescr.getName();
         addImports( m,
@@ -1487,6 +1488,8 @@ public class BRDRLPersistence
         private List<String> lhsDslPatterns;
         private List<String> rhsDslPatterns;
 
+        private List<GlobalDescr> globals;
+
         private ExpandedDRLInfo( boolean hasDsl ) {
             this.hasDsl = hasDsl;
             dslStatementsInLhs = new HashMap<Integer, String>();
@@ -1494,17 +1497,27 @@ public class BRDRLPersistence
             lhsDslPatterns = new ArrayList<String>();
             rhsDslPatterns = new ArrayList<String>();
         }
+
+        public GlobalDescr getGlobal(String name) {
+            for (GlobalDescr global : globals) {
+                if (global.getIdentifier().equals(name)) {
+                    return global;
+                }
+            }
+            return null;
+        }
     }
 
-    private RuleDescr parseDrl( String drl ) {
+    private RuleDescr parseDrl( ExpandedDRLInfo expandedDRLInfo ) {
         DrlParser drlParser = new DrlParser();
         PackageDescr packageDescr = null;
         try {
-            packageDescr = drlParser.parse( true, drl );
+            packageDescr = drlParser.parse( true, expandedDRLInfo.plainDrl );
         } catch ( DroolsParserException e ) {
             throw new RuntimeException( e );
         }
-        return packageDescr.getRules().get( 0 );
+        expandedDRLInfo.globals = packageDescr.getGlobals();
+        return packageDescr.getRules().get(0);
     }
 
     private boolean parseAttributes( RuleModel m,
@@ -1745,6 +1758,12 @@ public class BRDRLPersistence
                                 setStatements.put( variable, setters );
                             }
                             setters.add( line );
+                        } else if (methodName.equals("add") && expandedDRLInfo.getGlobal(variable) != null) {
+                            String factName = line.substring( argStart+1, line.lastIndexOf(')') ).trim();
+                            ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
+                            actionGlobalCollectionAdd.setGlobalName( variable );
+                            actionGlobalCollectionAdd.setFactName (factName );
+                            m.addRhsItem( actionGlobalCollectionAdd );
                         } else {
                             ActionCallMethod acm = new ActionCallMethod();
                             acm.setMethodName( methodName );
