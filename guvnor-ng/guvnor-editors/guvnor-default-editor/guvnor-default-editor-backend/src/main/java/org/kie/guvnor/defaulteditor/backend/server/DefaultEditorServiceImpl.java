@@ -16,18 +16,9 @@
 
 package org.kie.guvnor.defaulteditor.backend.server;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -40,15 +31,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
 
 @Service
 @ApplicationScoped
 public class DefaultEditorServiceImpl
-        implements DSLTextEditorService {
+        implements DefaultEditorService {
+
     private static final Logger log = LoggerFactory.getLogger( DefaultEditorServiceImpl.class );
-    
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -72,121 +68,29 @@ public class DefaultEditorServiceImpl
     private Event<AssetOpenedEvent> assetOpenedEvent;
     
     @Override
-    public BuilderResult validate( final Path path,
-                                   final String content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
+    public void save(Path path, String content, Metadata metadata, String comment) {
+
+        ioService.write(
+                paths.convert(path),
+                content,
+                metadataService.setUpAttributes(path, metadata),
+                makeCommentedOption(comment));
     }
 
     @Override
-    public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path,
-                          content ).hasLines();
+    public void save(Path path, String content, String comment) {
+        ioService.write(paths.convert(path),
+                content,
+                makeCommentedOption(comment));
     }
 
-    @Override
-    public AnalysisReport verify( final Path path,
-                                  final String content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
-    }
-
-    @Override
-    public String load( Path path ) {
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
-        return ioService.readAllString( paths.convert( path ) );
-    }
-
-    @Override
-    public void save( final Path path,
-                      final String content,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
-                         content,
-                         makeCommentedOption( comment ) );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-    }
-
-    @Override
-    public Path save(Path context, String fileName, String content, String comment) {
-        return null;  //TODO -Rikkola-
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final String content,
-                      final Metadata metadata,
-                      final String comment ) {
-
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
-                         content,
-                         attrs,
-                         makeCommentedOption( comment ) );
-
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
-    }
-
-    @Override
-    public void delete( final Path path,
-                        final String comment ) {
-        log.info( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
-
-        ioService.delete( paths.convert( path ) );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-    }
-
-    @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
-        log.info( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
-    }
-
-    @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
-        log.info( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
+    private CommentedOption makeCommentedOption(final String commitMessage) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
+        final CommentedOption co = new CommentedOption(name,
+                null,
+                commitMessage,
+                when);
         return co;
     }
 }

@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.defaulteditor.service;
+package org.kie.guvnor.inbox.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
-import org.uberfire.backend.vfs.Path;
+import org.kie.guvnor.commons.data.tables.PageRequest;
+import org.kie.guvnor.commons.data.tables.PageResponse;
+import org.kie.guvnor.inbox.model.InboxPageRequest;
+import org.kie.guvnor.inbox.model.InboxPageRow;
+import java.io.InputStream;
+
 
 @Remote
-public interface DefaultEditorService {
-
-    void save( final Path path,
-               final String content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final String content,
-               final String comment );
+public interface InboxService {
+    /**
+     * Load the data for a given inbox for the currently logged in user.
+     */
+    public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request);
 
 }

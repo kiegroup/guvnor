@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.guvnor.defaulteditor.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -23,9 +39,9 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
-import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.editors.texteditor.TextResourceType;
+import org.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.file.AnyResourceType;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -33,10 +49,13 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+/**
+ * A text based editor for Domain Specific Language definitions
+ */
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = {TextResourceType.class}, priority = -1)
-public class GuvnorTextEditorPresenter
-        extends TextEditorPresenter {
+@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
+public class GuvnorDefaultEditorPresenter
+        extends DefaultFileEditorPresenter {
 
     @Inject
     private MultiPageEditor multiPage;
@@ -45,12 +64,11 @@ public class GuvnorTextEditorPresenter
     private Caller<DefaultEditorService> defaultEditorService;
 
     @Inject
-    @New
-    private ResourceMenuBuilder menuBuilder;
-
-    @Inject
     private Caller<MetadataService> metadataService;
 
+    @Inject
+    @New
+    private ResourceMenuBuilder menuBuilder;
     private MenuBar menuBar;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
@@ -63,7 +81,6 @@ public class GuvnorTextEditorPresenter
         super.onStart(path);
 
         this.path = path;
-
         isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
 
         makeMenuBar();
@@ -86,6 +103,11 @@ public class GuvnorTextEditorPresenter
                     .addDelete(path)
                     .build();
         }
+    }
+
+    @WorkbenchMenu
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 
     @OnSave
@@ -115,11 +137,6 @@ public class GuvnorTextEditorPresenter
                 }
             }
         });
-    }
-
-    @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
     }
 
     @IsDirty

@@ -16,16 +16,30 @@
 
 package org.kie.guvnor.commons.ui.client.menu;
 
+import com.google.gwt.core.client.Callback;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
+import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
+import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
+import org.kie.guvnor.services.file.GenericFileService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.ArrayList;
 
@@ -38,6 +52,21 @@ public class ResourceMenuBuilderImpl
 
     @Inject
     private RestoreVersionCommandProvider restoreVersionCommandProvider;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Caller<GenericFileService> fileService;
+
+    @Inject
+    private Event<NotificationEvent> notification;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private PlaceManager placeManager;
 
     final MenuBar menuBar = new DefaultMenuBar();
 
@@ -83,6 +112,7 @@ public class ResourceMenuBuilderImpl
             return this;
         }
 
+
         public FileMenuBuilder addSave(final Command command) {
             this.saveCommand = command;
             return this;
@@ -98,13 +128,147 @@ public class ResourceMenuBuilderImpl
             return this;
         }
 
+        @Override
+        public FileMenuBuilder addCopy(final Path path) {
+            addCopy(path, new Callback<Path, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+
+                }
+
+                @Override
+                public void onSuccess(Path result) {
+
+                }
+            });
+
+            return this;
+        }
+
+        @Override
+        public FileMenuBuilder addCopy(final Path path, final Callback<Path, Void> callback) {
+            this.copyCommand = new Command() {
+                @Override
+                public void execute() {
+                    RenamePopup popup = new RenamePopup(new RenameCommand() {
+                        @Override
+                        public void execute(final String newName,
+                                            final String comment) {
+                            fileService.call(
+                                    new RemoteCallback<Path>() {
+                                        @Override
+                                        public void callback(Path result) {
+                                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                                            resourceRenamedEvent.fire(new ResourceRenamedEvent(path,
+                                                    result));
+
+                                            callback.onSuccess(result);
+                                        }
+                                    }
+                            ).copy(path, newName, comment);
+                        }
+                    });
+                    popup.show();
+                }
+            };
+
+            return this;
+        }
+
         public FileMenuBuilder addCopy(final Command command) {
             this.copyCommand = command;
             return this;
         }
 
+        public FileMenuBuilder addRename(final Path path) {
+            addRename(path, new Callback<Path, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+
+                }
+
+                @Override
+                public void onSuccess(Path result) {
+
+                }
+            });
+
+            return this;
+        }
+
+        public FileMenuBuilder addRename(final Path path, final Callback<Path, Void> callback) {
+            this.copyCommand = new Command() {
+                @Override
+                public void execute() {
+                    RenamePopup popup = new RenamePopup(new RenameCommand() {
+                        @Override
+                        public void execute(final String newName,
+                                            final String comment) {
+                            fileService.call(new RemoteCallback<Path>() {
+                                @Override
+                                public void callback(Path response) {
+                                    notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                                    resourceRenamedEvent.fire(new ResourceRenamedEvent(path,
+                                            response));
+                                    callback.onSuccess(response);
+                                }
+                            }).rename(path,
+                                    newName,
+                                    comment);
+                        }
+                    });
+
+                    popup.show();
+                }
+            };
+
+            return this;
+        }
+
         public FileMenuBuilder addRename(final Command command) {
             this.renameCommand = command;
+            return this;
+        }
+
+        public FileMenuBuilder addDelete(final Path path) {
+            addDelete(path, new Callback<Void, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+
+                }
+            });
+
+            return this;
+        }
+
+        public FileMenuBuilder addDelete(final Path path,final Callback<Void,Void> callback) {
+            this.deleteCommand = new Command() {
+                @Override
+                public void execute() {
+                    DeletePopup popup = new DeletePopup(new CommandWithCommitMessage() {
+                        @Override
+                        public void execute(final String comment) {
+                            fileService.call(new RemoteCallback<Path>() {
+                                @Override
+                                public void callback(Path response) {
+                                    notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                                    resourceDeletedEvent.fire(new ResourceDeletedEvent(path));
+                                    placeManager.closePlace( new PathPlaceRequest(path));
+                                    callback.onSuccess(null);
+                                }
+                            }).delete(path,
+                                    comment);
+                        }
+                    });
+
+                    popup.show();
+                }
+            };
             return this;
         }
 

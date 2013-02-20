@@ -1,5 +1,6 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.core.client.Callback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.GenericMenuBuilder;
 import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
@@ -70,6 +71,16 @@ public class ResourceMenuBuilderMock
         }
 
         @Override
+        public FileMenuBuilder addDelete(Path path) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
+        public FileMenuBuilder addDelete(Path path, Callback<Void, Void> callback) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
         public FileMenuBuilder addDelete(Command command) {
             deleteCommand = command;
             return this;
@@ -79,6 +90,26 @@ public class ResourceMenuBuilderMock
         public FileMenuBuilder addRename(Command command) {
             renameCommand = command;
             return this;
+        }
+
+        @Override
+        public FileMenuBuilder addRename(Path path) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
+        public FileMenuBuilder addRename(Path path, Callback<Path, Void> callback) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
+        public FileMenuBuilder addCopy(Path path) {
+            return null;  //TODO -Rikkola-
+        }
+
+        @Override
+        public FileMenuBuilder addCopy(Path path, Callback<Path, Void> callback) {
+            return null;  //TODO -Rikkola-
         }
 
         @Override

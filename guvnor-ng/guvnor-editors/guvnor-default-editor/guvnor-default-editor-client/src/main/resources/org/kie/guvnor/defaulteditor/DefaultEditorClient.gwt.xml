@@ -34,6 +34,6 @@
   <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>
   <inherits name="org.kie.guvnor.configresource.GuvnorConfigResourceWidget"/>
 
-  <inherits name='org.kie.guvnor.dsltext.GuvnorDSLTextEditorAPI'/>
+  <inherits name='org.kie.guvnor.defaulteditor.DefaultEditorAPI'/>
 
 </module>

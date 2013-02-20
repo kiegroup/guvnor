@@ -25,6 +25,7 @@
   <inherits name="org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI"/>
 
   <source path='config'/>
+  <source path='file'/>
   <source path='readonly'/>
   <source path='metadata'/>
   <source path='version'/>

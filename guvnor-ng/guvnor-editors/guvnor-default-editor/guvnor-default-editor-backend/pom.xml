@@ -19,7 +19,7 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-dsl-text-editor-api</artifactId>
+      <artifactId>guvnor-default-editor-api</artifactId>
     </dependency>
 
     <dependency>
