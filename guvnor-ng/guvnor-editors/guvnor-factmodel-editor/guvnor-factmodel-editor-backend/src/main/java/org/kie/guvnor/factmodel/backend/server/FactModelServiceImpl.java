@@ -49,6 +49,8 @@ import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.services.config.model.imports.Imports;
 import org.kie.guvnor.services.config.model.imports.ImportsParser;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -86,6 +88,12 @@ public class FactModelServiceImpl
 
     @Inject
     private SourceServices sourceServices;
+    
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
 
     @Override
     public FactModelContent loadContent( final Path path ) {
@@ -103,6 +111,8 @@ public class FactModelServiceImpl
 
             final DataModelOracle oracle = dataModelService.getDataModel( path );
 
+            assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+            
             return new FactModelContent( factModels,
                                          loadAllAvailableTypes( path ),
                                          oracle );
@@ -126,6 +136,8 @@ public class FactModelServiceImpl
     public void save( Path path,
                       FactModels factModel,
                       String comment ) {
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+        
         ioService.write( paths.convert( path ),
                          toDRL( factModel ),
                          makeCommentedOption( comment ) );
@@ -155,6 +167,7 @@ public class FactModelServiceImpl
                          makeCommentedOption( comment ) );
 
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
@@ -163,6 +176,7 @@ public class FactModelServiceImpl
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -174,6 +188,8 @@ public class FactModelServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
@@ -186,6 +202,8 @@ public class FactModelServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 

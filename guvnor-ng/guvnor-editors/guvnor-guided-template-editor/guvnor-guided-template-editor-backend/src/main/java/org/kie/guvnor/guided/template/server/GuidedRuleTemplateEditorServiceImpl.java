@@ -19,6 +19,7 @@ package org.kie.guvnor.guided.template.server;
 import java.util.Collection;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -36,6 +37,8 @@ import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.server.util.BRDRTXMLPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -66,6 +69,12 @@ public class GuidedRuleTemplateEditorServiceImpl
     @Inject
     private Identity identity;
 
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     @Override
     public GuidedTemplateEditorContent loadContent( final Path path ) {
         //De-serialize model
@@ -73,6 +82,8 @@ public class GuidedRuleTemplateEditorServiceImpl
 
         final DataModelOracle oracle = dataModelService.getDataModel( path );
 
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+        
         return new GuidedTemplateEditorContent( oracle,
                                                 model );
     }
@@ -89,6 +100,8 @@ public class GuidedRuleTemplateEditorServiceImpl
         ioService.write( paths.convert( path ),
                          BRDRTXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -100,6 +113,7 @@ public class GuidedRuleTemplateEditorServiceImpl
 
         save( newPath, model, comment );
 
+        assetEditedEvent.fire( new AssetEditedEvent( context ) );   
         return newPath;
     }
 
@@ -113,6 +127,8 @@ public class GuidedRuleTemplateEditorServiceImpl
                          BRDRTXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
@@ -121,6 +137,8 @@ public class GuidedRuleTemplateEditorServiceImpl
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -132,6 +150,8 @@ public class GuidedRuleTemplateEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
@@ -144,6 +164,8 @@ public class GuidedRuleTemplateEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 

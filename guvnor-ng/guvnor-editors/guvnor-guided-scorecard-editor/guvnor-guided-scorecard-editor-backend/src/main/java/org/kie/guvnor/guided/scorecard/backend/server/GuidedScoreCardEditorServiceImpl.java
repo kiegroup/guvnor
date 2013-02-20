@@ -18,6 +18,7 @@ package org.kie.guvnor.guided.scorecard.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -36,6 +37,8 @@ import org.kie.guvnor.guided.scorecard.backend.server.util.ScoreCardsXMLPersiste
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -66,6 +69,12 @@ public class GuidedScoreCardEditorServiceImpl
     @Inject
     private Identity identity;
 
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     private static final String RESOURCE_EXTENSION = "scgd";
 
     @Override
@@ -75,6 +84,7 @@ public class GuidedScoreCardEditorServiceImpl
 
         final DataModelOracle oracle = dataModelService.getDataModel( path );
 
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
         return new ScoreCardModelContent( model,
                                           oracle );
     }
@@ -91,6 +101,8 @@ public class GuidedScoreCardEditorServiceImpl
         ioService.write( paths.convert( path ),
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -115,6 +127,8 @@ public class GuidedScoreCardEditorServiceImpl
                          ScoreCardsXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
@@ -123,6 +137,8 @@ public class GuidedScoreCardEditorServiceImpl
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -134,6 +150,8 @@ public class GuidedScoreCardEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
@@ -146,6 +164,8 @@ public class GuidedScoreCardEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 

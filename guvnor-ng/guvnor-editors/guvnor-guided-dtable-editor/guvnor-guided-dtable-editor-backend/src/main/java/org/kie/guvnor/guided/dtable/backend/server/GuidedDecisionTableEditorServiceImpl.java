@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,6 +38,8 @@ import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -67,7 +70,13 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Inject
     private SourceServices sourceServices;
-
+    
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         //De-serialize model
@@ -75,6 +84,8 @@ public class GuidedDecisionTableEditorServiceImpl
 
         final DataModelOracle oracle = dataModelService.getDataModel( path );
 
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+        
         return new GuidedDecisionTableEditorContent( oracle,
                                                      model );
     }
@@ -88,6 +99,8 @@ public class GuidedDecisionTableEditorServiceImpl
     public void save( final Path path,
                       final GuidedDecisionTable52 model,
                       final String comment ) {
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+        
         ioService.write( paths.convert( path ),
                          GuidedDTXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
@@ -115,6 +128,8 @@ public class GuidedDecisionTableEditorServiceImpl
                          GuidedDTXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
@@ -122,7 +137,9 @@ public class GuidedDecisionTableEditorServiceImpl
                         final String comment ) {
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
-        ioService.delete( paths.convert( path ) );
+        ioService.delete( paths.convert( path ) );        
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -134,6 +151,8 @@ public class GuidedDecisionTableEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
@@ -146,6 +165,8 @@ public class GuidedDecisionTableEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+                       
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 

@@ -33,7 +33,11 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -43,7 +47,8 @@ import org.uberfire.security.Identity;
 @ApplicationScoped
 public class DefaultEditorServiceImpl
         implements DSLTextEditorService {
-
+    private static final Logger log = LoggerFactory.getLogger( DefaultEditorServiceImpl.class );
+    
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -59,7 +64,13 @@ public class DefaultEditorServiceImpl
 
     @Inject
     private Identity identity;
-
+    
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
@@ -83,6 +94,7 @@ public class DefaultEditorServiceImpl
 
     @Override
     public String load( Path path ) {
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
         return ioService.readAllString( paths.convert( path ) );
     }
 
@@ -93,6 +105,7 @@ public class DefaultEditorServiceImpl
         ioService.write( paths.convert( path ),
                          content,
                          makeCommentedOption( comment ) );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -127,25 +140,29 @@ public class DefaultEditorServiceImpl
                          makeCommentedOption( comment ) );
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
+        log.info( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        log.info( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -153,11 +170,13 @@ public class DefaultEditorServiceImpl
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+        log.info( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 

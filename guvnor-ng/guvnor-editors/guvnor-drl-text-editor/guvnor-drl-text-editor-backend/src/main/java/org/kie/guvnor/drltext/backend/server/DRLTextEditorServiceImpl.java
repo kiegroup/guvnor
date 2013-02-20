@@ -30,6 +30,8 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
+import org.kie.guvnor.services.inbox.AssetEditedEvent;
+import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -50,7 +52,13 @@ public class DRLTextEditorServiceImpl
 
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
-
+    
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+    
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+    
     @Inject
     private Paths paths;
 
@@ -79,6 +87,7 @@ public class DRLTextEditorServiceImpl
 
     @Override
     public String load( Path path ) {
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
         return ioService.readAllString( paths.convert( path ) );
     }
 
@@ -86,6 +95,7 @@ public class DRLTextEditorServiceImpl
     public void save( final Path path,
                       final String content,
                       final String comment ) {
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         ioService.write( paths.convert( path ),
                          content,
                          makeCommentedOption( comment ) );
@@ -108,6 +118,7 @@ public class DRLTextEditorServiceImpl
                       final String content ) {
         ioService.write( paths.convert( path ),
                          content );
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -124,6 +135,7 @@ public class DRLTextEditorServiceImpl
 
         //Invalidate Package-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
     }
 
     @Override
@@ -131,6 +143,8 @@ public class DRLTextEditorServiceImpl
                         final String comment ) {
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
         ioService.delete( paths.convert( path ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
     }
 
     @Override
@@ -143,6 +157,8 @@ public class DRLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
@@ -155,6 +171,8 @@ public class DRLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
         return targetPath;
     }
 
