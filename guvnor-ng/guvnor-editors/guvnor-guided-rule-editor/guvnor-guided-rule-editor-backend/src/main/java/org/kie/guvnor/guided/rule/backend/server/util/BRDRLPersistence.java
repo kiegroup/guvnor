@@ -1349,8 +1349,9 @@ public class BRDRLPersistence
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
+                                        final List<String> globals,
                                         final String... dsls ) {
-        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ) );
+        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ).registerGlobals(globals) );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1488,7 +1489,7 @@ public class BRDRLPersistence
         private List<String> lhsDslPatterns;
         private List<String> rhsDslPatterns;
 
-        private List<GlobalDescr> globals;
+        private Set<String> globals = new HashSet<String>();
 
         private ExpandedDRLInfo( boolean hasDsl ) {
             this.hasDsl = hasDsl;
@@ -1498,13 +1499,45 @@ public class BRDRLPersistence
             rhsDslPatterns = new ArrayList<String>();
         }
 
-        public GlobalDescr getGlobal(String name) {
-            for (GlobalDescr global : globals) {
-                if (global.getIdentifier().equals(name)) {
-                    return global;
+        public boolean hasGlobal(String name) {
+            return globals.contains(name);
+        }
+
+        public ExpandedDRLInfo registerGlobals(List<String> globalStatements) {
+            if (globalStatements != null) {
+                for (String globalStatement : globalStatements) {
+                    String identifier = getIdentifier(globalStatement);
+                    if (identifier != null) {
+                        globals.add(identifier);
+                    }
                 }
             }
-            return null;
+            return this;
+        }
+
+        private String getIdentifier(String globalStatement) {
+            globalStatement = globalStatement.trim();
+            if ( !globalStatement.startsWith("global") ) {
+                return null;
+            }
+            int lastSpace = globalStatement.lastIndexOf(' ');
+            if ( lastSpace < 0 ) {
+                return null;
+            }
+            String identifier = globalStatement.substring(lastSpace+1);
+            if ( identifier.endsWith(";") ) {
+                identifier = identifier.substring(0, identifier.length()-1);
+            }
+            return identifier;
+        }
+
+        public ExpandedDRLInfo registerGlobalDescrs(List<GlobalDescr> globalDescrs) {
+            if (globalDescrs != null) {
+                for (GlobalDescr globalDescr : globalDescrs) {
+                    globals.add(globalDescr.getIdentifier());
+                }
+            }
+            return this;
         }
     }
 
@@ -1516,7 +1549,7 @@ public class BRDRLPersistence
         } catch ( DroolsParserException e ) {
             throw new RuntimeException( e );
         }
-        expandedDRLInfo.globals = packageDescr.getGlobals();
+        expandedDRLInfo.registerGlobalDescrs(packageDescr.getGlobals());
         return packageDescr.getRules().get(0);
     }
 
@@ -1758,12 +1791,12 @@ public class BRDRLPersistence
                                 setStatements.put( variable, setters );
                             }
                             setters.add( line );
-                        } else if (methodName.equals("add") && expandedDRLInfo.getGlobal(variable) != null) {
+                        } else if ( methodName.equals("add") && expandedDRLInfo.hasGlobal(variable) ) {
                             String factName = line.substring( argStart+1, line.lastIndexOf(')') ).trim();
                             ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
                             actionGlobalCollectionAdd.setGlobalName( variable );
-                            actionGlobalCollectionAdd.setFactName (factName );
-                            m.addRhsItem( actionGlobalCollectionAdd );
+                            actionGlobalCollectionAdd.setFactName(factName);
+                            m.addRhsItem(actionGlobalCollectionAdd);
                         } else {
                             ActionCallMethod acm = new ActionCallMethod();
                             acm.setMethodName( methodName );

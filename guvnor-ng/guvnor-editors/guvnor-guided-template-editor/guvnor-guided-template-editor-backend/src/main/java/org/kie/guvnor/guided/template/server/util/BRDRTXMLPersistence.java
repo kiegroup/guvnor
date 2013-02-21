@@ -22,6 +22,8 @@ import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.server.util.upgrade.TemplateModelUpgradeHelper1;
 
+import java.util.List;
+
 /**
  * This class persists the template rule model to XML and back. This is the
  * 'brl' xml format (Business Rule Language).
@@ -60,7 +62,7 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     }
 
     @Override
-    public RuleModel unmarshalUsingDSL( final String str, final String... dsls ) {
+    public RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls ) {
         throw new UnsupportedOperationException();
     }
 

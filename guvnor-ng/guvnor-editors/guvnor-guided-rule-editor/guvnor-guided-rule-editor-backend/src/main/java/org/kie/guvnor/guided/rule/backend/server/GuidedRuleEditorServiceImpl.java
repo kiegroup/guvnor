@@ -113,6 +113,7 @@ public class GuidedRuleEditorServiceImpl
         assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
         
         return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
+                                                                 null, // TODO globals
                                                                  dsls );
     }
 
