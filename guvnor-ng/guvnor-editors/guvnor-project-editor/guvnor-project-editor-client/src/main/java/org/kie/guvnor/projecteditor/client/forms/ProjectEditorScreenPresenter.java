@@ -93,7 +93,6 @@ public class
                       final PlaceRequest request ) {
 
         this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
-        makeMenuBar();
 
         pathToPomXML = path;
         pomPanel.init( path, isReadOnly );
