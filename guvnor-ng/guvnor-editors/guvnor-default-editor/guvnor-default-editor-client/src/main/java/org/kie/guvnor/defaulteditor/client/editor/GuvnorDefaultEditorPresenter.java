@@ -16,11 +16,15 @@
 
 package org.kie.guvnor.defaulteditor.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -42,18 +46,14 @@ import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.file.AnyResourceType;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 /**
  * A text based editor for Domain Specific Language definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
+@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = { AnyResourceType.class }, priority = -1)
 public class GuvnorDefaultEditorPresenter
         extends DefaultFileEditorPresenter {
 
@@ -68,75 +68,75 @@ public class GuvnorDefaultEditorPresenter
 
     @Inject
     @New
-    private ResourceMenuBuilder menuBuilder;
-    private MenuBar menuBar;
+    private FileMenuBuilder menuBuilder;
+    private Menus           menus;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
     private boolean isReadOnly;
-    private Path path;
+    private Path    path;
 
     @OnStart
-    public void onStart(final Path path,
-                        final PlaceRequest place) {
-        super.onStart(path);
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
+        super.onStart( path );
 
         this.path = path;
-        isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
+        isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
         makeMenuBar();
     }
 
     private void makeMenuBar() {
-        if (isReadOnly) {
-            menuBar = menuBuilder.addFileMenu().addRestoreVersion(path).build();
+        if ( isReadOnly ) {
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
-            menuBar = menuBuilder.addFileMenu()
+            menus = menuBuilder
                     .addSave(
                             new Command() {
                                 @Override
                                 public void execute() {
                                     onSave();
                                 }
-                            })
-                    .addCopy(path)
-                    .addRename(path)
-                    .addDelete(path)
+                            } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
                     .build();
         }
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                if (metadataWidget.isDirty()) {
+            public void execute( final String comment ) {
+                if ( metadataWidget.isDirty() ) {
                     defaultEditorService.call(
                             new RemoteCallback<Void>() {
                                 @Override
-                                public void callback(Void o) {
+                                public void callback( Void o ) {
                                     metadataWidget.resetDirty();
-                                    view.setDirty(false);
+                                    view.setDirty( false );
                                 }
                             }
-                    ).save(path, view.getContent(), metadataWidget.getContent(), comment);
+                                             ).save( path, view.getContent(), metadataWidget.getContent(), comment );
                 } else {
                     defaultEditorService.call(
                             new RemoteCallback<Void>() {
                                 @Override
-                                public void callback(Void o) {
-                                    view.setDirty(false);
+                                public void callback( Void o ) {
+                                    view.setDirty( false );
                                 }
                             }
-                    ).save(path, view.getContent(), comment);
+                                             ).save( path, view.getContent(), comment );
                 }
             }
-        });
+        } );
     }
 
     @IsDirty
@@ -161,26 +161,26 @@ public class GuvnorDefaultEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        multiPage.addWidget(super.getWidget(),
-                CommonConstants.INSTANCE.EditTabTitle());
+        multiPage.addWidget( super.getWidget(),
+                             CommonConstants.INSTANCE.EditTabTitle() );
 
-        multiPage.addPage(new Page(metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle()) {
+        multiPage.addPage( new Page( metadataWidget, CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataService.call(new RemoteCallback<Metadata>() {
+                metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
-                    public void callback(final Metadata metadata) {
-                        metadataWidget.setContent(metadata,
-                                isReadOnly);
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
                     }
-                }).getMetadata(path);
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
 
             }
-        });
+        } );
 
         return multiPage;
     }
