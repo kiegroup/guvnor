@@ -35,7 +35,8 @@
 
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
   <inherits name="org.kie.guvnor.inbox.GuvnorInboxClient"/>
-  
+  <inherits name="org.kie.guvnor.dtablexls.GuvnorDecisionTableXLSEditorClient"/>
+    
   <inherits name="org.kie.guvnor.explorer.GuvnorExplorerClient"/>
 
   <!-- Specify the application specific style sheet. -->

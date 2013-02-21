@@ -229,6 +229,21 @@
       <artifactId>guvnor-inbox-backend</artifactId>
     </dependency>
     
+        <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-dtable-xls-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-dtable-xls-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-dtable-xls-editor-backend</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-explorer-api</artifactId>
@@ -455,6 +470,9 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-client</compileSourcesArtifact>
             
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-client</compileSourcesArtifact>
+                        
             <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-client</compileSourcesArtifact>
 
