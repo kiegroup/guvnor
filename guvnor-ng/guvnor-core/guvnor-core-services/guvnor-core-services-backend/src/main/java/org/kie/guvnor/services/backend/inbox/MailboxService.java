@@ -32,6 +32,7 @@ import org.kie.guvnor.services.backend.inbox.InboxServiceImpl.InboxEntry;
 import org.kie.guvnor.services.inbox.InboxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.client.workbench.services.UserServices;
 
 
 /**
@@ -49,6 +50,9 @@ public class MailboxService {
 
     @Inject
     private InboxService inboxService;
+    
+    @Inject
+    private UserServices userServices;
     
     @PostConstruct
     public void setup() {
@@ -102,19 +106,20 @@ public class MailboxService {
                 log.debug("Outgoing messages size " + es.size());
                 //wipe out inbox for mailman here...
                 
-                //TODO: get user list
-                String[] userList = new String[]{"admin"};
+                String[] userList = userServices.listUsers();
+                System.out.println("userServices:" + userList.length);
                 for(String toUser : userList) {
-                        log.debug("Processing any inbound messages for " + toUser);
-                        if (toUser.equals(MAIL_MAN)) return;
+                    System.out.println("userServices:" + toUser);
+                    log.debug("Processing any inbound messages for " + toUser);
+                    if (toUser.equals(MAIL_MAN)) return;
                         
-                        Set<String> recentEdited = makeSetOf(((InboxServiceImpl)inboxService).loadRecentEdited(toUser));
-                        for (InboxEntry e : es) {
+                    Set<String> recentEdited = makeSetOf(((InboxServiceImpl)inboxService).loadRecentEdited(toUser));
+                    for (InboxEntry e : es) {
                             //the user who edited the item wont receive a message in inbox.
-                            if (!e.from.equals(toUser) && recentEdited.contains(e.itemPath)) {
-                                ((InboxServiceImpl)inboxService).addToIncoming(e.itemPath, e.note, e.from, toUser);
-                            }
-                        }                    
+                        if (!e.from.equals(toUser) && recentEdited.contains(e.itemPath)) {
+                            ((InboxServiceImpl)inboxService).addToIncoming(e.itemPath, e.note, e.from, toUser);
+                        }
+                    }                    
                 }
             }
         });
