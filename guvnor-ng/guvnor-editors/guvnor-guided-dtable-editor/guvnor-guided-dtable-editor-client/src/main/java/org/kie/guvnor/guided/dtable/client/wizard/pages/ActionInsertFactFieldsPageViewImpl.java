@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -163,6 +165,14 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     @UiField
     SimplePanel defaultValueWidgetContainer;
 
+    @New
+    @Inject
+    private ActionInsertFactFieldPatternCell actionInsertFactFieldPatternCell;
+
+    @New
+    @Inject
+    private ActionInsertFactFieldCell actionInsertFactFieldCell;
+
     interface ActionInsertFactFieldsPageWidgetBinder
             extends
             UiBinder<Widget, ActionInsertFactFieldsPageViewImpl> {
@@ -175,18 +185,16 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @Override
-    public void setValidator( final Validator validator ) {
-        this.validator = validator;
+    @PostConstruct
+    public void setup() {
         this.availableFactTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
                                                                           WizardCellListResources.INSTANCE );
-        this.chosenPatternsWidget = new MinimumWidthCellList<ActionInsertFactFieldsPattern>( new ActionInsertFactFieldPatternCell( validator ),
+        this.chosenPatternsWidget = new MinimumWidthCellList<ActionInsertFactFieldsPattern>( actionInsertFactFieldPatternCell,
                                                                                              WizardCellListResources.INSTANCE );
         this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
                                                                                WizardCellListResources.INSTANCE );
-        this.chosenFieldsWidget = new MinimumWidthCellList<ActionInsertFactCol52>( new ActionInsertFactFieldCell( validator ),
+        this.chosenFieldsWidget = new MinimumWidthCellList<ActionInsertFactCol52>( actionInsertFactFieldCell,
                                                                                    WizardCellListResources.INSTANCE );
-
         initialiseAvailableFactTypes();
         initialiseChosenPatterns();
         initialiseAvailableFields();
@@ -195,6 +203,13 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         initialiseLogicalInsert();
         initialiseColumnHeader();
         initialiseValueList();
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
+        this.validator = validator;
+        this.actionInsertFactFieldPatternCell.setValidator( validator );
+        this.actionInsertFactFieldCell.setValidator( validator );
     }
 
     private void initialiseAvailableFactTypes() {
@@ -211,6 +226,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableFactTypesSelections = selectionModel.getSelectedSet();
                 btnAddFactTypes.setEnabled( availableFactTypesSelections.size() > 0 );
@@ -233,6 +249,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenPatternsSelections = selectionModel.getSelectedSet();
                 chosenPatternsSelected( chosenPatternsSelections );
@@ -284,6 +301,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableFieldsSelections = selectionModel.getSelectedSet();
                 btnAdd.setEnabled( availableFieldsSelections.size() > 0 );
@@ -306,6 +324,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenFieldsSelections = new HashSet<ActionInsertFactCol52>();
                 final Set<ActionInsertFactCol52> selections = selectionModel.getSelectedSet();
@@ -381,6 +400,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     private void initialiseBinding() {
         txtBinding.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String binding = txtBinding.getText();
                 chosenPatternsSelection.setBoundName( binding );
@@ -405,6 +425,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     private void initialiseColumnHeader() {
         txtColumnHeader.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String header = txtColumnHeader.getText();
                 chosenFieldsSelection.setHeader( header );
@@ -428,6 +449,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         //Copy value back to model
         txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String valueList = txtValueList.getText();
                 chosenFieldsSelection.setValueList( valueList );
@@ -439,6 +461,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         //Update Default Value widget if necessary
         txtValueList.addBlurHandler( new BlurHandler() {
 
+            @Override
             public void onBlur( final BlurEvent event ) {
                 presenter.assertDefaultValue( chosenFieldsSelection );
                 makeDefaultValueWidget();
@@ -451,6 +474,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     private void initialiseLogicalInsert() {
         chkLogicalInsert.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 chosenPatternsSelection.setInsertedLogically( chkLogicalInsert.getValue() );
             }

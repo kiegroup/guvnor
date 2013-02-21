@@ -31,6 +31,8 @@ public interface SummaryPageView
 
         void stateChanged();
 
+        String getBaseFileName();
+
     }
 
     String getBaseFileName();

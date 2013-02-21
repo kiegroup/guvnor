@@ -22,6 +22,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 
@@ -30,9 +31,9 @@ import org.kie.guvnor.guided.dtable.model.Pattern52;
  * Additional validation is performed on the Pattern's fields to determine
  * whether the cell should be rendered as valid or invalid
  */
-public class ActionInsertFactFieldPatternCell extends AbstractCell<ActionInsertFactFieldsPattern> {
+public class ActionInsertFactFieldPatternCell extends AbstractCell<ActionInsertFactFieldsPattern> implements RequiresValidator {
 
-    protected final Validator validator;
+    protected Validator validator;
 
     interface ActionInsertFactFieldPatternCellTemplate
             extends
@@ -45,7 +46,8 @@ public class ActionInsertFactFieldPatternCell extends AbstractCell<ActionInsertF
 
     private static final ActionInsertFactFieldPatternCellTemplate TEMPLATE = GWT.create( ActionInsertFactFieldPatternCellTemplate.class );
 
-    public ActionInsertFactFieldPatternCell( Validator validator ) {
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
     }
 

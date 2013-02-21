@@ -19,8 +19,10 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -139,6 +141,14 @@ public class ActionSetFieldsPageViewImpl extends Composite
     @UiField
     SimplePanel defaultValueWidgetContainer;
 
+    @New
+    @Inject
+    private ActionSetFieldPatternCell actionSetFieldPatternCell;
+
+    @New
+    @Inject
+    private ActionSetFieldCell actionSetFieldCell;
+
     interface ActionSetFieldPageWidgetBinder
             extends
             UiBinder<Widget, ActionSetFieldsPageViewImpl> {
@@ -151,22 +161,27 @@ public class ActionSetFieldsPageViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @Override
-    public void setValidator( final Validator validator ) {
-        this.validator = validator;
-        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ActionSetFieldPatternCell( validator ),
+    @PostConstruct
+    public void setup() {
+        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( actionSetFieldPatternCell,
                                                                             WizardCellListResources.INSTANCE );
         this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
                                                                                WizardCellListResources.INSTANCE );
-        this.chosenFieldsWidget = new MinimumWidthCellList<ActionSetFieldCol52>( new ActionSetFieldCell( validator ),
+        this.chosenFieldsWidget = new MinimumWidthCellList<ActionSetFieldCol52>( actionSetFieldCell,
                                                                                  WizardCellListResources.INSTANCE );
-
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
         initialiseColumnHeader();
         initialiseValueList();
         initialiseUpdateEngine();
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
+        this.validator = validator;
+        this.actionSetFieldPatternCell.setValidator( validator );
+        this.actionSetFieldCell.setValidator( validator );
     }
 
     private void initialiseAvailablePatterns() {
@@ -183,6 +198,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availablePatternsSelection = selectionModel.getSelectedObject();
                 presenter.selectPattern( availablePatternsSelection );
@@ -205,6 +221,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableFieldsSelections = selectionModel.getSelectedSet();
                 btnAdd.setEnabled( availableFieldsSelections.size() > 0 );
@@ -227,6 +244,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenFieldsSelections = selectionModel.getSelectedSet();
                 chosenConditionsSelected( chosenFieldsSelections );
@@ -313,6 +331,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private void initialiseColumnHeader() {
         txtColumnHeader.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( ValueChangeEvent<String> event ) {
                 final String header = txtColumnHeader.getText();
                 chosenFieldsSelection.setHeader( header );
@@ -328,6 +347,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         //Copy value back to model
         txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String valueList = txtValueList.getText();
                 chosenFieldsSelection.setValueList( valueList );
@@ -339,6 +359,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         //Update Default Value widget if necessary
         txtValueList.addBlurHandler( new BlurHandler() {
 
+            @Override
             public void onBlur( final BlurEvent event ) {
                 presenter.assertDefaultValue( availablePatternsSelection,
                                               chosenFieldsSelection );
@@ -352,6 +373,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private void initialiseUpdateEngine() {
         chkUpdateEngine.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 chosenFieldsSelection.setUpdate( chkUpdateEngine.getValue() );
             }

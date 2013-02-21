@@ -19,8 +19,10 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,7 +67,7 @@ public class ColumnExpansionPageViewImpl extends Composite
     private MultiSelectionModel<ConditionCol52> availableSelectionModel = new MultiSelectionModel<ConditionCol52>();
     private MultiSelectionModel<ConditionCol52> chosenSelectionModel = new MultiSelectionModel<ConditionCol52>();
 
-    private boolean isExandInFull = true;
+    private boolean isFullyExpanded = true;
 
     @UiField
     CheckBox chkExpandInFull;
@@ -88,6 +90,14 @@ public class ColumnExpansionPageViewImpl extends Composite
     @UiField
     HorizontalPanel msgIncompleteConditions;
 
+    @New
+    @Inject
+    private ConditionCell availableConditionsCell;
+
+    @New
+    @Inject
+    private ConditionCell chosenConditionsCell;
+
     interface ColumnExpansionPageWidgetBinder
             extends
             UiBinder<Widget, ColumnExpansionPageViewImpl> {
@@ -100,16 +110,21 @@ public class ColumnExpansionPageViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @Override
-    public void setValidator( final Validator validator ) {
-        this.availableColumnsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
+    @PostConstruct
+    public void setup() {
+        this.availableColumnsWidget = new MinimumWidthCellList<ConditionCol52>( availableConditionsCell,
                                                                                 WizardCellListResources.INSTANCE );
-        this.chosenColumnsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
+        this.chosenColumnsWidget = new MinimumWidthCellList<ConditionCol52>( chosenConditionsCell,
                                                                              WizardCellListResources.INSTANCE );
-
         initialiseAvailableColumns();
         initialiseChosenColumns();
         initialiseExpandInFull();
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
+        this.availableConditionsCell.setValidator( validator );
+        this.chosenConditionsCell.setValidator( validator );
     }
 
     private void initialiseAvailableColumns() {
@@ -125,6 +140,7 @@ public class ColumnExpansionPageViewImpl extends Composite
 
         availableSelectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableColumnsSelections = availableSelectionModel.getSelectedSet();
                 btnAdd.setEnabled( availableColumnsSelections.size() > 0 );
@@ -146,6 +162,7 @@ public class ColumnExpansionPageViewImpl extends Composite
 
         chosenSelectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenColumnsSelections = chosenSelectionModel.getSelectedSet();
                 btnRemove.setEnabled( chosenColumnsSelections.size() > 0 );
@@ -157,16 +174,18 @@ public class ColumnExpansionPageViewImpl extends Composite
     private void initialiseExpandInFull() {
         chkExpandInFull.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
-                isExandInFull = chkExpandInFull.getValue();
-                columnSelectorContainer.setVisible( !isExandInFull );
+                isFullyExpanded = chkExpandInFull.getValue();
+                columnSelectorContainer.setVisible( !isFullyExpanded );
                 presenter.setColumnsToExpand( getColumnsToExpand() );
             }
 
         } );
     }
 
-    private void setChosenColumns( final List<ConditionCol52> columns ) {
+    @Override
+    public void setChosenColumns( final List<ConditionCol52> columns ) {
         chosenColumnsWidget.setRowCount( columns.size(),
                                          true );
         chosenColumnsWidget.setRowData( columns );
@@ -195,7 +214,7 @@ public class ColumnExpansionPageViewImpl extends Composite
 
     private List<ConditionCol52> getColumnsToExpand() {
         final List<ConditionCol52> columns = new ArrayList<ConditionCol52>();
-        if ( isExandInFull ) {
+        if ( isFullyExpanded ) {
             columns.addAll( availableColumns );
         }
         columns.addAll( chosenColumns );

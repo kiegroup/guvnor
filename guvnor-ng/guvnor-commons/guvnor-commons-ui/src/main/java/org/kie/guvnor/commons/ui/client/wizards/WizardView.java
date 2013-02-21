@@ -18,7 +18,6 @@ package org.kie.guvnor.commons.ui.client.wizards;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
 
@@ -30,31 +29,6 @@ public interface WizardView
         UberView<WizardPresenter> {
 
     interface Presenter {
-
-        /**
-         * Show an indicator that a save operation is in progress
-         */
-        void showSavingIndicator();
-
-        /**
-         * Hide the indicator that a save operation is in ro
-         */
-        void hideSavingIndicator();
-
-        /**
-         * Show a message that the asset is a duplicate and cannot be saved
-         */
-        void showDuplicateAssetNameError();
-
-        /**
-         * Show a message that an unspecified error occurred during the save
-         */
-        void showUnspecifiedCheckinError();
-
-        /**
-         * Show a message that a specified error occurred during the save
-         */
-        void showCheckinError( String message );
 
         /**
          * A page has been selected from the UI
@@ -128,31 +102,6 @@ public interface WizardView
      * @param isComplete
      */
     void setCompletionStatus( boolean isComplete );
-
-    /**
-     * Show an indicator that a save operation is in progress
-     */
-    void showSavingIndicator();
-
-    /**
-     * Hide the indicator that a save operation is in ro
-     */
-    void hideSavingIndicator();
-
-    /**
-     * Show a message that the asset is a duplicate and cannot be saved
-     */
-    void showDuplicateAssetNameError();
-
-    /**
-     * Show a message that an unspecified error occurred during the save
-     */
-    void showUnspecifiedCheckinError();
-
-    /**
-     * Show a message that a specified error occurred during the save
-     */
-    void showCheckinError( String message );
 
     /**
      * Hide the Wizard

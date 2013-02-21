@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -174,6 +176,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     @UiField(provided = true)
     PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( Resources.INSTANCE.images().shuffleDown() ).createImage() );
 
+    @New
+    @Inject
+    private ConditionPatternCell availableConditionsCell;
+
+    @New
+    @Inject
+    private ConditionCell chosenConditionsCell;
+
     interface FactPatternConstraintsPageWidgetBinder
             extends
             UiBinder<Widget, FactPatternConstraintsPageViewImpl> {
@@ -186,16 +196,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @Override
-    public void setValidator( final Validator validator ) {
-        this.validator = validator;
-        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ConditionPatternCell( validator ),
+    @PostConstruct
+    public void setup() {
+        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( availableConditionsCell,
                                                                             WizardCellListResources.INSTANCE );
         this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
                                                                                WizardCellListResources.INSTANCE );
-        this.chosenConditionsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
+        this.chosenConditionsWidget = new MinimumWidthCellList<ConditionCol52>( chosenConditionsCell,
                                                                                 WizardCellListResources.INSTANCE );
-
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
@@ -204,6 +212,13 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         initialisePredicateExpression();
         initialiseValueList();
         initialiseShufflers();
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
+        this.validator = validator;
+        this.availableConditionsCell.setValidator( validator );
+        this.chosenConditionsCell.setValidator( validator );
     }
 
     private void initialiseAvailablePatterns() {
@@ -220,6 +235,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availablePatternsSelection = selectionModel.getSelectedObject();
                 presenter.selectPattern( availablePatternsSelection );
@@ -242,6 +258,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableFieldsSelections = selectionModel.getSelectedSet();
                 btnAdd.setEnabled( availableFieldsSelections.size() > 0 );
@@ -264,6 +281,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenConditionsSelections = new HashSet<ConditionCol52>();
                 final Set<ConditionCol52> selections = selectionModel.getSelectedSet();
@@ -345,6 +363,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
                         ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
+                            @Override
                             public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
                                 chosenConditionsSelection.setOperator( event.getValue().getValue() );
                                 final boolean requiresValueList = presenter.requiresValueList( availablePatternsSelection,
@@ -387,6 +406,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                         // value can change
                         ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
+                            @Override
                             public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
                                 chosenConditionsSelection.setOperator( event.getValue().getValue() );
                                 validateConditionOperator();
@@ -451,6 +471,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private void initialiseCalculationTypes() {
         optLiteral.addClickHandler( new ClickHandler() {
+
+            @Override
             public void onClick( final ClickEvent w ) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
                 chosenConditionsWidget.redraw();
@@ -461,6 +483,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         } );
 
         optFormula.addClickHandler( new ClickHandler() {
+
+            @Override
             public void onClick( final ClickEvent w ) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
                 chosenConditionsWidget.redraw();
@@ -470,6 +494,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             }
         } );
         optPredicate.addClickHandler( new ClickHandler() {
+
+            @Override
             public void onClick( final ClickEvent w ) {
                 chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
                 chosenConditionsWidget.redraw();
@@ -484,6 +510,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseColumnHeader() {
         txtColumnHeader.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String header = txtColumnHeader.getText();
                 chosenConditionsSelection.setHeader( header );
@@ -497,6 +524,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialisePredicateExpression() {
         txtPredicateExpression.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String expression = txtPredicateExpression.getText();
                 chosenConditionsSelection.setFactField( expression );
@@ -514,6 +542,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         //Copy value back to model
         txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 final String valueList = txtValueList.getText();
                 chosenConditionsSelection.setValueList( valueList );
@@ -524,6 +553,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         //Update Default Value widget if necessary
         txtValueList.addBlurHandler( new BlurHandler() {
+
+            @Override
             public void onBlur( final BlurEvent event ) {
                 presenter.assertDefaultValue( availablePatternsSelection,
                                               chosenConditionsSelection );
@@ -536,6 +567,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseShufflers() {
         btnMoveUp.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 final int index = chosenConditions.indexOf( chosenConditionsSelection );
                 final ConditionCol52 c = chosenConditions.remove( index );
@@ -548,6 +580,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         } );
         btnMoveDown.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 final int index = chosenConditions.indexOf( chosenConditionsSelection );
                 final ConditionCol52 c = chosenConditions.remove( index );

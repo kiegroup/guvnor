@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
@@ -46,16 +48,23 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     @Inject
     private FactPatternConstraintsPageView view;
 
+    @Inject
+    private Event<ConditionsDefinedEvent> conditionsDefinedEvent;
+
+    @Inject
+    private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardFactPatternConstraints();
     }
 
+    @Override
     public void initialise() {
-        if ( oracle == null ) {
-            return;
-        }
         view.init( this );
         view.setValidator( getValidator() );
+
+        view.setChosenConditions( new ArrayList<ConditionCol52>() );
 
         //Set-up a factory for value editors
         view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
@@ -65,11 +74,13 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         content.setWidget( view );
     }
 
+    @Override
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
         view.setAvailablePatterns( this.model.getPatterns() );
     }
 
+    @Override
     public boolean isComplete() {
 
         //Have all patterns conditions been defined?
@@ -83,10 +94,9 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
             }
         }
 
-        //TODO Signal Condition definitions to other pages
+        //Signal Condition definitions to other pages
         final ConditionsDefinedEvent event = new ConditionsDefinedEvent( areConditionsDefined );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
+        conditionsDefinedEvent.fire( event );
 
         return areConditionsDefined;
     }
@@ -99,6 +109,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 
+    @Override
     public void selectPattern( final Pattern52 pattern ) {
 
         //Pattern is null when programmatically deselecting an item
@@ -132,12 +143,14 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         view.setChosenConditions( pattern.getChildColumns() );
     }
 
+    @Override
     public void setChosenConditions( final Pattern52 pattern,
                                      final List<ConditionCol52> conditions ) {
         pattern.getChildColumns().clear();
         pattern.getChildColumns().addAll( conditions );
     }
 
+    @Override
     public String[] getOperatorCompletions( final Pattern52 selectedPattern,
                                             final ConditionCol52 selectedCondition ) {
 
@@ -167,6 +180,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         return displayOps;
     }
 
+    @Override
     public GuidedDecisionTable52.TableFormat getTableFormat() {
         return model.getTableFormat();
     }
@@ -219,6 +233,12 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
                                          defaultValue );
         }
 
+    }
+
+    @Override
+    public void stateChanged() {
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        wizardPageStatusChangeEvent.fire( event );
     }
 
 }

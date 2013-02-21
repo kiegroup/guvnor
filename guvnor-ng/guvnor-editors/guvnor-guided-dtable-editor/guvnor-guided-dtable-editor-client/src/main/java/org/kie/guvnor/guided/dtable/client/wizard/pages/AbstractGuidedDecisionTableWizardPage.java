@@ -21,8 +21,8 @@ import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewAssetWizardContext;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.NewAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
@@ -45,6 +45,7 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected DTCellValueUtilities cellUtils;
     protected DataModelOracle oracle;
 
+    @Override
     public Widget asWidget() {
         return content;
     }
@@ -65,15 +66,6 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     public Validator getValidator() {
         return this.validator;
-    }
-
-    /**
-     * Broadcast a change in state on a page
-     */
-    public void stateChanged() {
-        //WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
     }
 
     /**

@@ -22,14 +22,15 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 /**
  * A cell to display a Fact Pattern
  */
-public class PatternCell extends AbstractCell<Pattern52> {
+public class PatternCell extends AbstractCell<Pattern52> implements RequiresValidator {
 
-    protected final Validator validator;
+    protected Validator validator;
 
     interface FactPatternCellTemplate
             extends
@@ -42,7 +43,8 @@ public class PatternCell extends AbstractCell<Pattern52> {
 
     private static final FactPatternCellTemplate TEMPLATE = GWT.create( FactPatternCellTemplate.class );
 
-    public PatternCell( final Validator validator ) {
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
     }
 

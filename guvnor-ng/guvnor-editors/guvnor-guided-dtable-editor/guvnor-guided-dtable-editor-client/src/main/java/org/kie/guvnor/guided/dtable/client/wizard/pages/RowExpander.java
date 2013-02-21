@@ -63,8 +63,8 @@ public class RowExpander {
      * @param model
      * @param oracle
      */
-    RowExpander( final GuidedDecisionTable52 model,
-                 final DataModelOracle oracle ) {
+    public RowExpander( final GuidedDecisionTable52 model,
+                        final DataModelOracle oracle ) {
         this.columns = new ArrayList<ColumnValues>();
         this.model = model;
         this.oracle = oracle;
@@ -79,7 +79,7 @@ public class RowExpander {
         addActionColumns();
     }
 
-    List<ColumnValues> getColumns() {
+    public List<ColumnValues> getColumns() {
         return this.columns;
     }
 
@@ -232,7 +232,7 @@ public class RowExpander {
      * from this class will be transformed into other representations.
      * @return
      */
-    RowIterator iterator() {
+    public RowIterator iterator() {
         return new RowIterator();
     }
 
@@ -243,8 +243,8 @@ public class RowExpander {
      * @param column
      * @param expandColumn
      */
-    void setExpandColumn( final BaseColumn column,
-                          final boolean expandColumn ) {
+    public void setExpandColumn( final BaseColumn column,
+                                 final boolean expandColumn ) {
         final ColumnValues cv = this.expandedColumns.get( column );
         if ( cv == null ) {
             return;
@@ -260,6 +260,7 @@ public class RowExpander {
             Iterator<List<DTCellValue52>> {
 
         //Check if all columns have had their value lists consumed
+        @Override
         public boolean hasNext() {
             for ( ColumnValues cv : columns ) {
                 if ( !cv.isAllValuesUsed() ) {
@@ -273,6 +274,7 @@ public class RowExpander {
         //check whether all their values have been used and advance the subsequent column
         //so a ripple effect can be observed, with one column advancing the next, which
         //advances the next and so on...
+        @Override
         public List<DTCellValue52> next() {
 
             //We have a row that is potentially partially populated as the dependent enum data has not been set
@@ -299,6 +301,7 @@ public class RowExpander {
             return row;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException( "remove is not supported on RowIterator" );
         }

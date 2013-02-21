@@ -125,12 +125,6 @@ public class WizardViewImpl extends Popup
         return bean;
     }
 
-    @Override
-    public void hide() {
-        releaseWizardPageTitles();
-        super.hide();
-    }
-
     @UiHandler(value = "btnCancel")
     public void btnCancelClick( final ClickEvent event ) {
         this.hide();
@@ -168,7 +162,7 @@ public class WizardViewImpl extends Popup
             final WizardPageTitle wpt = this.pageTitleWidgets.get( i );
             wpt.setPageSelected( i == pageNumber );
         }
-        btnNext.setEnabled( pageNumber < pageNumberTotal - 1);
+        btnNext.setEnabled( pageNumber < pageNumberTotal - 1 );
         btnPrevious.setEnabled( pageNumber > 0 );
         presenter.pageSelected( pageNumber );
     }
@@ -195,26 +189,6 @@ public class WizardViewImpl extends Popup
 
     public void setCompletionStatus( final boolean isComplete ) {
         btnFinish.setEnabled( isComplete );
-    }
-
-    public void showSavingIndicator() {
-        //TODO LoadingPopup.showMessage( constants.SavingPleaseWait() );
-    }
-
-    public void hideSavingIndicator() {
-        //TODO LoadingPopup.close();
-    }
-
-    public void showDuplicateAssetNameError() {
-        //TODO Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
-    }
-
-    public void showUnspecifiedCheckinError() {
-        //TODO ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
-    }
-
-    public void showCheckinError( String message ) {
-        //TODO ErrorPopup.showMessage( message );
     }
 
 }

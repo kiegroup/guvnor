@@ -39,21 +39,25 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private ColumnExpansionPageView view;
 
-    private List<ConditionCol52> columnsToExpand;
+    private List<ConditionCol52> columnsToExpand = new ArrayList<ConditionCol52>();
 
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardColumnExpansion();
     }
 
+    @Override
     public void initialise() {
-        if ( oracle == null ) {
-            return;
-        }
         view.init( this );
         view.setValidator( getValidator() );
+        columnsToExpand.clear();
+
+        view.setChosenColumns( new ArrayList<ConditionCol52>() );
+
         content.setWidget( view );
     }
 
+    @Override
     public void prepareView() {
         //Setup the available columns, that could have changed each time this page is visited
         final List<ConditionCol52> availableColumns = findAvailableColumnsToExpand();
@@ -89,6 +93,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         return availableColumns;
     }
 
+    @Override
     public boolean isComplete() {
         //Expansion can involve zero or more columns, so the page is always complete
         return true;
@@ -98,10 +103,12 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         view.setAreConditionsDefined( event.getAreConditionsDefined() );
     }
 
+    @Override
     public void setColumnsToExpand( final List<ConditionCol52> columns ) {
         this.columnsToExpand = columns;
     }
 
+    @Override
     public List<ConditionCol52> getColumnsToExpand() {
         //If the page has not been viewed the default setting is to use all columns
         if ( this.columnsToExpand == null ) {

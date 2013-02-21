@@ -21,10 +21,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
@@ -51,6 +53,12 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private ActionSetFieldsPageView view;
 
+    @Inject
+    private Event<ActionSetFieldsDefinedEvent> actionSetFieldsDefinedEvent;
+
+    @Inject
+    private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
     //patterns are bound to the same name we cannot distinguish which Actions relate to which Patterns. The Wizard therefore 
     //maintains it's own internal association of Patterns to Actions. IdentityHashMap is used as it is possible to have two 
@@ -60,16 +68,16 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     //removed that is handled here to synchronise the Pattern lists.
     private Map<Pattern52, List<ActionSetFieldCol52>> patternToActionsMap = new IdentityHashMap<Pattern52, List<ActionSetFieldCol52>>();
 
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardActionSetFields();
     }
 
+    @Override
     public void initialise() {
-        if ( oracle == null ) {
-            return;
-        }
         view.init( this );
         view.setValidator( getValidator() );
+        patternToActionsMap.clear();
 
         //Set-up validator for the pattern-to-action mapping voodoo
         getValidator().setPatternToActionSetFieldsMap( patternToActionsMap );
@@ -94,14 +102,18 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
 
+        view.setChosenFields( new ArrayList<ActionSetFieldCol52>() );
+
         content.setWidget( view );
     }
 
+    @Override
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
         view.setAvailablePatterns( model.getPatterns() );
     }
 
+    @Override
     public boolean isComplete() {
 
         //Have all Actions been defined?
@@ -115,10 +127,9 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
 
-        //TODO Signal Action Set Fields definitions to other pages
+        //Signal Action Set Fields definitions to other pages
         final ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
+        actionSetFieldsDefinedEvent.fire( event );
 
         return areActionSetFieldsDefined;
     }
@@ -136,6 +147,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         view.setAreActionSetFieldsDefined( event.getAreActionSetFieldsDefined() );
     }
 
+    @Override
     public void selectPattern( final Pattern52 pattern ) {
 
         //Pattern is null when programmatically deselecting an item
@@ -186,6 +198,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         }
     }
 
+    @Override
     public GuidedDecisionTable52.TableFormat getTableFormat() {
         return model.getTableFormat();
     }
@@ -220,6 +233,12 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             cellUtils.assertDTCellValue( dataType,
                                          defaultValue );
         }
+    }
+
+    @Override
+    public void stateChanged() {
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        wizardPageStatusChangeEvent.fire( event );
     }
 
 }

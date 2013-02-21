@@ -16,10 +16,12 @@
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 
 /**
  * A summary page for the guided Decision Table Wizard
@@ -32,10 +34,15 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private SummaryPageView view;
 
+    @Inject
+    private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardSummary();
     }
 
+    @Override
     public boolean isComplete() {
         String assetName = view.getBaseFileName();
         boolean isValid = ( assetName != null && !assetName.equals( "" ) );
@@ -43,6 +50,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         return isValid;
     }
 
+    @Override
     public void initialise() {
         view.init( this );
         view.setBaseFileName( context.getBaseFileName() );
@@ -51,8 +59,20 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         content.setWidget( view );
     }
 
+    @Override
     public void prepareView() {
         //Nothing required
+    }
+
+    @Override
+    public void stateChanged() {
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        wizardPageStatusChangeEvent.fire( event );
+    }
+
+    @Override
+    public String getBaseFileName() {
+        return view.getBaseFileName();
     }
 
 }

@@ -22,14 +22,15 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
 import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
 
 /**
  * A cell to display Actions
  */
-public class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
+public class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> implements RequiresValidator {
 
-    private final Validator validator;
+    private Validator validator;
 
     interface ActionSetFieldCellTemplate
             extends
@@ -42,7 +43,8 @@ public class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
 
     private static final ActionSetFieldCellTemplate TEMPLATE = GWT.create( ActionSetFieldCellTemplate.class );
 
-    public ActionSetFieldCell( final Validator validator ) {
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
     }
 

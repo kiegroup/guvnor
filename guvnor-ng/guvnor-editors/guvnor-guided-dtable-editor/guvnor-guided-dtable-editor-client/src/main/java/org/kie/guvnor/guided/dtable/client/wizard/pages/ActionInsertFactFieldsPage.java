@@ -21,10 +21,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
@@ -50,6 +52,15 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     @Inject
     private ActionInsertFactFieldsPageView view;
 
+    @Inject
+    private Event<DuplicatePatternsEvent> duplicatePatternsEvent;
+
+    @Inject
+    private Event<ActionInsertFactFieldsDefinedEvent> actionInsertFactFieldsDefinedEvent;
+
+    @Inject
+    private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
     //patterns are bound to the same name we cannot distinguish which Actions relate to which Patterns. The Wizard therefore 
     //maintains it's own internal association of Patterns to Actions. IdentityHashMap is used as it is possible to have two 
@@ -59,16 +70,17 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     //removed that is handled here to synchronise the Pattern lists.
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionsMap = new IdentityHashMap<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>>();
 
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardActionInsertFacts();
     }
 
+    @Override
     public void initialise() {
-        if ( oracle == null ) {
-            return;
-        }
         view.init( this );
         view.setValidator( getValidator() );
+
+        patternToActionsMap.clear();
 
         //Set-up validator for the pattern-to-action mapping voodoo
         getValidator().setPatternToActionInsertFactFieldsMap( patternToActionsMap );
@@ -93,7 +105,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
                 actions.add( aif );
             }
         }
-        view.setChosenPatterns( new ArrayList<ActionInsertFactFieldsPattern>( patternToActionsMap.keySet() ) );
+        view.setChosenPatterns( new ArrayList<ActionInsertFactFieldsPattern>() );
+        view.setAvailableFields( new ArrayList<AvailableField>() );
+        view.setChosenFields( new ArrayList<ActionInsertFactCol52>() );
 
         content.setWidget( view );
     }
@@ -110,19 +124,20 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         return p;
     }
 
+    @Override
     public void prepareView() {
         //Nothing to do here, this page is self-contained
     }
 
+    @Override
     public boolean isComplete() {
 
         //Do all Patterns have unique bindings?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
-        //TODO Signal duplicates to other pages
+        //Signal duplicates to other pages
         final DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
+        duplicatePatternsEvent.fire( event );
 
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
@@ -135,10 +150,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
             }
         }
 
-        //TODO Signal Action Insert Fact Fields to other pages
+        //Signal Action Insert Fact Fields to other pages
         final ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
-        //eventBus.fireEventFromSource( eventFactFields,
-        //                              context );
+        actionInsertFactFieldsDefinedEvent.fire( eventFactFields );
 
         return arePatternBindingsUnique && areActionInsertFieldsDefined;
     }
@@ -151,17 +165,20 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
     }
 
+    @Override
     public void addPattern( final ActionInsertFactFieldsPattern pattern ) {
         patternToActionsMap.put( pattern,
                                  new ArrayList<ActionInsertFactCol52>() );
         getValidator().addActionPattern( pattern );
     }
 
+    @Override
     public void removePattern( final ActionInsertFactFieldsPattern pattern ) {
         patternToActionsMap.remove( pattern );
         getValidator().removeActionPattern( pattern );
     }
 
+    @Override
     public void selectPattern( final ActionInsertFactFieldsPattern pattern ) {
 
         //Add fields available
@@ -219,6 +236,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     }
 
+    @Override
     public GuidedDecisionTable52.TableFormat getTableFormat() {
         return model.getTableFormat();
     }
@@ -253,4 +271,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         }
     }
 
+    @Override
+    public void stateChanged() {
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        wizardPageStatusChangeEvent.fire( event );
+    }
 }

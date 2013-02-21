@@ -33,9 +33,13 @@ public interface ColumnExpansionPageView
 
         void setColumnsToExpand( List<ConditionCol52> columns );
 
+        List<ConditionCol52> getColumnsToExpand();
+
     }
 
     void setAvailableColumns( List<ConditionCol52> columns );
+
+    void setChosenColumns( List<ConditionCol52> columns );
 
     void setAreConditionsDefined( boolean areConditionsDefined );
 

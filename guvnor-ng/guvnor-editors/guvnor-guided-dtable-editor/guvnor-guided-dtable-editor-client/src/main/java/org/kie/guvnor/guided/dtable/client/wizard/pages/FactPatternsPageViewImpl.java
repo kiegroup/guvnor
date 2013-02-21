@@ -18,8 +18,10 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -112,6 +114,10 @@ public class FactPatternsPageViewImpl extends Composite
     @UiField(provided = true)
     PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( Resources.INSTANCE.images().shuffleDown() ).createImage() );
 
+    @New
+    @Inject
+    private PatternCell patternCell;
+
     interface FactPatternsPageWidgetBinder
             extends
             UiBinder<Widget, FactPatternsPageViewImpl> {
@@ -124,20 +130,24 @@ public class FactPatternsPageViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @Override
-    public void setValidator( final Validator validator ) {
-        this.validator = validator;
+    @PostConstruct
+    public void setup() {
         this.availableTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
                                                                       WizardCellListResources.INSTANCE );
-        this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
+        this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>( patternCell,
                                                                         WizardCellListResources.INSTANCE );
-
         initialiseAvailableTypes();
         initialiseChosenPatterns();
         initialiseBinding();
         initialiseEntryPoint();
         initialiseCEPWindow();
         initialiseShufflers();
+    }
+
+    @Override
+    public void setValidator( final Validator validator ) {
+        this.validator = validator;
+        this.patternCell.setValidator( validator );
     }
 
     private void initialiseAvailableTypes() {
@@ -154,6 +164,7 @@ public class FactPatternsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 availableTypesSelections = selectionModel.getSelectedSet();
                 btnAdd.setEnabled( availableTypesSelections.size() > 0 );
@@ -176,6 +187,7 @@ public class FactPatternsPageViewImpl extends Composite
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
+            @Override
             public void onSelectionChange( final SelectionChangeEvent event ) {
                 chosenPatternSelections = selectionModel.getSelectedSet();
                 chosenTypesSelected( chosenPatternSelections );
@@ -245,6 +257,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseBinding() {
         txtBinding.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 String binding = txtBinding.getText();
                 chosenPatternSelection.setBoundName( binding );
@@ -258,6 +271,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseEntryPoint() {
         txtEntryPoint.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 if ( chosenPatternSelection == null ) {
                     return;
@@ -271,6 +285,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseCEPWindow() {
         ddCEPWindow.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
+            @Override
             public void onValueChange( final ValueChangeEvent<OperatorSelection> event ) {
                 if ( chosenPatternSelection == null ) {
                     return;
@@ -286,6 +301,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseShufflers() {
         btnMoveUp.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 int index = chosenPatterns.indexOf( chosenPatternSelection );
                 final Pattern52 p = chosenPatterns.remove( index );
@@ -298,6 +314,7 @@ public class FactPatternsPageViewImpl extends Composite
         } );
         btnMoveDown.addClickHandler( new ClickHandler() {
 
+            @Override
             public void onClick( final ClickEvent event ) {
                 int index = chosenPatterns.indexOf( chosenPatternSelection );
                 final Pattern52 p = chosenPatterns.remove( index );

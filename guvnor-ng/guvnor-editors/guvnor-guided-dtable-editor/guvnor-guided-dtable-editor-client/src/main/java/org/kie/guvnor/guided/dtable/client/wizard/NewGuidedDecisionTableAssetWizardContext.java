@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.dtable.client.wizard.util;
+package org.kie.guvnor.guided.dtable.client.wizard;
 
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
@@ -36,28 +36,6 @@ public class NewGuidedDecisionTableAssetWizardContext extends NewAssetWizardCont
 
     public GuidedDecisionTable52.TableFormat getTableFormat() {
         return this.tableFormat;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = hash + 31 * tableFormat.hashCode();
-        return hash;
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( !( o instanceof NewGuidedDecisionTableAssetWizardContext ) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
-            return false;
-        }
-        NewGuidedDecisionTableAssetWizardContext that = (NewGuidedDecisionTableAssetWizardContext) o;
-        if ( !tableFormat.equals( that.tableFormat ) ) {
-            return false;
-        }
-        return true;
     }
 
 }

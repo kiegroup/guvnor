@@ -22,15 +22,16 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 
 /**
  * A cell to display Conditions
  */
-public class ConditionCell extends AbstractCell<ConditionCol52> {
+public class ConditionCell extends AbstractCell<ConditionCol52> implements RequiresValidator {
 
-    private final Validator validator;
+    private Validator validator;
 
     interface ConditionCellTemplate
             extends
@@ -43,7 +44,8 @@ public class ConditionCell extends AbstractCell<ConditionCol52> {
 
     private static final ConditionCellTemplate TEMPLATE = GWT.create( ConditionCellTemplate.class );
 
-    public ConditionCell( final Validator validator ) {
+    @Override
+    public void setValidator( final Validator validator ) {
         this.validator = validator;
     }
 

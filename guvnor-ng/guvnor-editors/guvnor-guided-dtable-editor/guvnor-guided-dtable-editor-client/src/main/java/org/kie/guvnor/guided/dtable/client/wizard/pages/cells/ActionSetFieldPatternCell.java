@@ -16,7 +16,6 @@
 package org.kie.guvnor.guided.dtable.client.wizard.pages.cells;
 
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
-import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 /**
@@ -25,10 +24,6 @@ import org.kie.guvnor.guided.dtable.model.Pattern52;
  * should be rendered as valid or invalid
  */
 public class ActionSetFieldPatternCell extends PatternCell {
-
-    public ActionSetFieldPatternCell( final Validator validator ) {
-        super( validator );
-    }
 
     protected String getCssStyleName( final Pattern52 p ) {
         if ( !validator.isPatternBindingUnique( p ) ) {

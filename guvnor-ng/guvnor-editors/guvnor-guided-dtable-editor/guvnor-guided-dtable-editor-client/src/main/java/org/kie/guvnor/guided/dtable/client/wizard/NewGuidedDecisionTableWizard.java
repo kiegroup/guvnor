@@ -13,59 +13,91 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.dtable.client.wizard.pages;
+package org.kie.guvnor.guided.dtable.client.wizard;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.wizards.Wizard;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.dtable.client.handlers.NewGuidedDecisionTableHandler;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.AbstractGuidedDecisionTableWizardPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.ActionInsertFactFieldsPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.ActionSetFieldsPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.ColumnExpansionPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternConstraintsPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternsPage;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpander;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.SummaryPage;
 import org.kie.guvnor.guided.dtable.model.Analysis;
 import org.kie.guvnor.guided.dtable.model.BaseColumn;
 import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 import org.kie.guvnor.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
 
 /**
  * Wizard for creating a Guided Decision Table
  */
 public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTableAssetWizardContext> {
 
-    private DataModelOracle oracle;
+    @Inject
+    private SummaryPage summaryPage;
+
+    @Inject
+    private ColumnExpansionPage columnExpansionPage;
+
+    @Inject
+    private FactPatternsPage factPatternsPage;
+
+    @Inject
+    private FactPatternConstraintsPage factPatternConstraintsPage;
+
+    @Inject
+    private ActionSetFieldsPage actionSetFieldsPage;
+
+    @Inject
+    private ActionInsertFactFieldsPage actionInsertFactFieldsPage;
+
+    @Inject
+    private WizardPresenter presenter;
 
     private final List<WizardPage> pages = new ArrayList<WizardPage>();
 
-    private final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+    private NewGuidedDecisionTableAssetWizardContext context;
+    private GuidedDecisionTable52 model;
+    private DataModelOracle oracle;
+    private NewGuidedDecisionTableHandler handler;
 
-    private final Validator validator = new Validator( model.getConditions() );
-
-    private SummaryPage summaryPage;
-
-    private ColumnExpansionPage columnExpansionPage;
-
-    public NewGuidedDecisionTableWizard( final NewGuidedDecisionTableAssetWizardContext context ) {
-        this.summaryPage = new SummaryPage();
-        this.columnExpansionPage = new ColumnExpansionPage();
-
+    @PostConstruct
+    public void setupPages() {
         pages.add( summaryPage );
-        pages.add( new FactPatternsPage() );
-        pages.add( new FactPatternConstraintsPage() );
-        pages.add( new ActionSetFieldsPage() );
-        pages.add( new ActionInsertFactFieldsPage() );
+        pages.add( factPatternsPage );
+        pages.add( factPatternConstraintsPage );
+        pages.add( actionSetFieldsPage );
+        pages.add( actionInsertFactFieldsPage );
         pages.add( columnExpansionPage );
-
-        model.setTableFormat( context.getTableFormat() );
-
     }
 
     public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
-                            final DataModelOracle oracle ) {
+                            final DataModelOracle oracle,
+                            final NewGuidedDecisionTableHandler handler ) {
+        this.context = context;
+        this.model = new GuidedDecisionTable52();
+        this.model.setTableFormat( context.getTableFormat() );
         this.oracle = oracle;
+        this.handler = handler;
+
+        final Validator validator = new Validator( model.getConditions() );
+
         for ( WizardPage page : pages ) {
             final AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
             dtp.setContent( context,
@@ -76,14 +108,17 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
         }
     }
 
+    @Override
     public String getTitle() {
         return "Guided Decision Table Wizard";
     }
 
+    @Override
     public List<WizardPage> getPages() {
         return this.pages;
     }
 
+    @Override
     public Widget getPageWidget( final int pageNumber ) {
         final AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) this.pages.get( pageNumber );
         final Widget w = dtp.asWidget();
@@ -91,14 +126,17 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
         return w;
     }
 
+    @Override
     public int getPreferredHeight() {
         return 500;
     }
 
+    @Override
     public int getPreferredWidth() {
         return 800;
     }
 
+    @Override
     public boolean isComplete() {
         for ( WizardPage page : this.pages ) {
             if ( !page.isComplete() ) {
@@ -108,10 +146,8 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
         return true;
     }
 
+    @Override
     public void complete() {
-
-        //Show a "busy" indicator
-        //TODO presenter.showSavingIndicator();
 
         //Ensure each page updates the decision table as necessary
         for ( WizardPage page : this.pages ) {
@@ -147,15 +183,20 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
         }
 
         //Save it!
-        //NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( summaryPage.getAssetName(),
-        //                                                                                                context.getPackageName(),
-        //                                                                                                context.getPackageUUID(),
-        //                                                                                                context.getDescription(),
-        //                                                                                                context.getInitialCategory(),
-        //                                                                                                context.getFormat(),
-        //                                                                                                dtable );
-        //save( config,
-        //      dtable );
+        final String baseFileName = summaryPage.getBaseFileName();
+        final Path contextPath = context.getContextPath();
+        model.setTableName( baseFileName );
+        handler.save( baseFileName,
+                      contextPath,
+                      model,
+                      new Command() {
+
+                          @Override
+                          public void execute() {
+                              presenter.hide();
+                          }
+
+                      } );
     }
 
 }

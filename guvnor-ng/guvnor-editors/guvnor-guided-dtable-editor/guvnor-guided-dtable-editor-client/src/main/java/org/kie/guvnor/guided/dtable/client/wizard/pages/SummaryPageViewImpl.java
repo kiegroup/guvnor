@@ -76,6 +76,7 @@ public class SummaryPageViewImpl extends Composite
     private void initialiseBaseFileName() {
         txtBaseFileName.addValueChangeHandler( new ValueChangeHandler<String>() {
 
+            @Override
             public void onValueChange( ValueChangeEvent<String> event ) {
                 baseFileName = txtBaseFileName.getText();
                 presenter.stateChanged();
@@ -115,6 +116,7 @@ public class SummaryPageViewImpl extends Composite
         lblContextPath.setText( contextPath.toURI() );
     }
 
+    @Override
     public void setTableFormat( GuidedDecisionTable52.TableFormat tableFormat ) {
         switch ( tableFormat ) {
             case EXTENDED_ENTRY:
@@ -126,6 +128,7 @@ public class SummaryPageViewImpl extends Composite
         }
     }
 
+    @Override
     public void setHasInvalidAssetName( final boolean isInvalid ) {
         messages.setVisible( isInvalid );
     }

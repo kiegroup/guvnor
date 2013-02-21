@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
@@ -39,37 +41,46 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private FactPatternsPageView view;
 
+    @Inject
+    private Event<DuplicatePatternsEvent> duplicatePatternsEvent;
+
+    @Inject
+    private Event<PatternRemovedEvent> patternRemovedEvent;
+
+    @Inject
+    private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
+    @Override
     public String getTitle() {
         return Constants.INSTANCE.DecisionTableWizardFactPatterns();
     }
 
+    @Override
     public void initialise() {
-        if ( oracle == null ) {
-            return;
-        }
         view.init( this );
         view.setValidator( getValidator() );
 
         final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
-        view.setChosenPatterns( new ArrayList<Pattern52>() );
         view.setAvailableFactTypes( availableTypes );
+        view.setChosenPatterns( new ArrayList<Pattern52>() );
 
         content.setWidget( view );
     }
 
+    @Override
     public void prepareView() {
         // Nothing needs to be done when the page is viewed; it is setup in initialise
     }
 
+    @Override
     public boolean isComplete() {
 
         //Are the patterns valid?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
-        //TODO Signal duplicates to other pages
+        //Signal duplicates to other pages
         final DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
+        duplicatePatternsEvent.fire( event );
 
         return arePatternBindingsUnique;
     }
@@ -78,17 +89,18 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
+    @Override
     public boolean isPatternEvent( final Pattern52 pattern ) {
         return oracle.isFactTypeAnEvent( pattern.getFactType() );
     }
 
-    //TODO
+    @Override
     public void signalRemovalOfPattern( final Pattern52 pattern ) {
         final PatternRemovedEvent event = new PatternRemovedEvent( pattern );
-        //eventBus.fireEventFromSource( event,
-        //                              context );
+        patternRemovedEvent.fire( event );
     }
 
+    @Override
     public void setConditionPatterns( final List<Pattern52> patterns ) {
         model.getConditions().clear();
         model.getConditions().addAll( patterns );
@@ -108,6 +120,12 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
                 }
             }
         }
+    }
+
+    @Override
+    public void stateChanged() {
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        wizardPageStatusChangeEvent.fire( event );
     }
 
 }

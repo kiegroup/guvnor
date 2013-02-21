@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.guided.dtable.client.wizard.util;
+package org.kie.guvnor.guided.dtable.client.wizard;
 
 import org.kie.guvnor.commons.ui.client.wizards.WizardContext;
 import org.uberfire.backend.vfs.Path;
@@ -38,30 +38,6 @@ public abstract class NewAssetWizardContext implements WizardContext {
 
     public Path getContextPath() {
         return contextPath;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = hash + 31 * ( baseFileName == null ? 0 : baseFileName.hashCode() );
-        hash = hash + 31 * ( contextPath == null ? 0 : contextPath.hashCode() );
-        return hash;
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( !( o instanceof NewAssetWizardContext ) ) {
-            return false;
-        }
-        NewAssetWizardContext that = (NewAssetWizardContext) o;
-
-        if ( baseFileName != null ? !baseFileName.equals( that.baseFileName ) : that.baseFileName != null ) {
-            return false;
-        }
-        if ( contextPath != null ? !contextPath.equals( that.contextPath ) : that.contextPath != null ) {
-            return false;
-        }
-        return true;
     }
 
 }

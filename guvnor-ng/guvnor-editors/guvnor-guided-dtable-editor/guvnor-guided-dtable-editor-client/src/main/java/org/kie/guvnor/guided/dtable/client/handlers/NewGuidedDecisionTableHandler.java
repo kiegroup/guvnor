@@ -13,14 +13,17 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.NewGuidedDecisionTableWizard;
-import org.kie.guvnor.guided.dtable.client.wizard.util.NewGuidedDecisionTableAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
+import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -38,6 +41,9 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private Caller<GuidedDecisionTableEditorService> service;
 
     @Inject
+    private Caller<DataModelService> dmoService;
+
+    @Inject
     private GuidedDTableResourceType resourceType;
 
     @Inject
@@ -45,6 +51,9 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Inject
     private WizardPresenter wizardPresenter;
+
+    @Inject
+    private NewGuidedDecisionTableWizard wizard;
 
     @PostConstruct
     private void setupExtensions() {
@@ -79,38 +88,67 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private void createEmptyDecisionTable( final String baseFileName,
                                            final Path contextPath,
                                            final GuidedDecisionTable52.TableFormat tableFormat ) {
-        final GuidedDecisionTable52 ruleModel = new GuidedDecisionTable52();
-        ruleModel.setTableFormat( tableFormat );
-        ruleModel.setTableName( baseFileName );
-
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 service.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path path ) {
-                                                         notifySuccess();
-                                                         notifyResourceAdded( path );
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "GuidedDecisionTableEditor" );
-                                                         placeManager.goTo( place );
-                                                     }
-                                                 } ).save( contextPath, buildFileName( resourceType, baseFileName ), ruleModel, comment );
-
-                                             }
-                                         } );
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.setTableFormat( tableFormat );
+        model.setTableName( baseFileName );
+        save( baseFileName,
+              contextPath,
+              model,
+              null );
     }
 
     private void createDecisionTableWithWizard( final String baseFileName,
                                                 final Path contextPath,
                                                 final GuidedDecisionTable52.TableFormat tableFormat ) {
-        final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
-                                                                                                               contextPath,
-                                                                                                               tableFormat );
+        dmoService.call( new RemoteCallback<DataModelOracle>() {
 
-        final NewGuidedDecisionTableWizard wizard = new NewGuidedDecisionTableWizard( context );
-        wizardPresenter.start( wizard );
+            @Override
+            public void callback( final DataModelOracle oracle ) {
+                final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
+                                                                                                                       contextPath,
+                                                                                                                       tableFormat );
+                wizard.setContent( context,
+                                   oracle,
+                                   NewGuidedDecisionTableHandler.this );
+                wizardPresenter.start( wizard );
+            }
+        } ).getDataModel( contextPath );
+
+    }
+
+    public void save( final String baseFileName,
+                      final Path contextPath,
+                      final GuidedDecisionTable52 model,
+                      final Command postSaveCommand ) {
+        new SaveOperationService().save( contextPath,
+                                         new CommandWithCommitMessage() {
+
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Path>() {
+
+                                                     @Override
+                                                     public void callback( final Path path ) {
+                                                         notifySuccess();
+                                                         notifyResourceAdded( path );
+                                                         executePostSaveCommand();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedDecisionTableEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+
+                                                     private void executePostSaveCommand() {
+                                                         if ( postSaveCommand != null ) {
+                                                             postSaveCommand.execute();
+                                                         }
+                                                     }
+                                                 } ).save( contextPath,
+                                                           buildFileName( resourceType,
+                                                                          baseFileName ),
+                                                           model,
+                                                           comment );
+                                             }
+                                         } );
     }
 
 }

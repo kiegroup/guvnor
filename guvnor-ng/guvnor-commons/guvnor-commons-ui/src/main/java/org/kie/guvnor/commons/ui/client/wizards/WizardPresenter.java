@@ -44,8 +44,12 @@ public class WizardPresenter implements
         view.init( this );
     }
 
+    //Update the status of each belonging to this Wizard
     public void onStatusChange( final @Observes WizardPageStatusChangeEvent event ) {
-        //Update the status of each belonging to this Wizard
+        //It is possible that this event is raised by the Wizard implementation before the start method has been called
+        if ( wizard == null ) {
+            return;
+        }
         for ( WizardPage wp : wizard.getPages() ) {
             final int index = wizard.getPages().indexOf( wp );
             view.setPageCompletionState( index,
@@ -57,6 +61,10 @@ public class WizardPresenter implements
     }
 
     public void onPageSelected( final @Observes WizardPageSelectedEvent event ) {
+        //It is possible that this event is raised by the Wizard implementation before the start method has been called
+        if ( wizard == null ) {
+            return;
+        }
         final WizardPage page = event.getSelectedPage();
         final int index = wizard.getPages().indexOf( page );
         view.selectPage( index );
@@ -82,26 +90,6 @@ public class WizardPresenter implements
 
     public void complete() {
         wizard.complete();
-    }
-
-    public void showSavingIndicator() {
-        view.showSavingIndicator();
-    }
-
-    public void hideSavingIndicator() {
-        view.hideSavingIndicator();
-    }
-
-    public void showDuplicateAssetNameError() {
-        view.showDuplicateAssetNameError();
-    }
-
-    public void showUnspecifiedCheckinError() {
-        view.showUnspecifiedCheckinError();
-    }
-
-    public void showCheckinError( String message ) {
-        view.showCheckinError( message );
     }
 
     public void hide() {
