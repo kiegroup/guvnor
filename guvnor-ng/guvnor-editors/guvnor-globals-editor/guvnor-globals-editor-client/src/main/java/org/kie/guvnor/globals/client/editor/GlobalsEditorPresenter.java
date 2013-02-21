@@ -9,13 +9,13 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -29,7 +29,6 @@ import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -53,7 +52,7 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -120,8 +119,8 @@ public class GlobalsEditorPresenter {
 
     @Inject
     @New
-    private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar                 menuBar;
+    private FileMenuBuilder menuBuilder;
+    private Menus           menus;
 
     private Path         path;
     private PlaceRequest place;
@@ -166,7 +165,7 @@ public class GlobalsEditorPresenter {
     }
 
     private void makeMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
@@ -207,7 +206,7 @@ public class GlobalsEditorPresenter {
                 }
             } );
         }
-        menuBar = fileMenuBuilder.build();
+        menus = fileMenuBuilder.build();
     }
 
     private void loadContent() {
@@ -360,8 +359,8 @@ public class GlobalsEditorPresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
     public void onRestore( @Observes RestoreEvent restore ) {

@@ -16,30 +16,32 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 public class MenuBarTestHelpers {
 
-    public static void clickFirst(MenuBar menuBar) {
-        click(menuBar, 1);
+    public static void clickFirst( Menus menus ) {
+        click( menus, 1 );
     }
 
-    public static void clickSecond(MenuBar menuBar) {
-        click(menuBar, 2);
+    public static void clickSecond( Menus menus ) {
+        click( menus, 2 );
     }
 
-    public static void clickThird(MenuBar menuBar) {
-        click(menuBar, 3);
+    public static void clickThird( Menus menus ) {
+        click( menus, 3 );
     }
 
-    public static void click(MenuBar menuBar, int itemNumber) {
+    public static void click( Menus menus,
+                              int itemNumber ) {
+
         int i = 0;
-        for (MenuItem menuItem : menuBar.getItems()) {
-            if (menuItem instanceof DefaultMenuItemCommand) {
-                if (i == itemNumber - 1) {
-                    DefaultMenuItemCommand defaultMenuItemCommand = (DefaultMenuItemCommand) menuItem;
+        for ( MenuItem menuItem : menus.getItems() ) {
+            if ( menuItem instanceof MenuItemCommand ) {
+                if ( i == itemNumber - 1 ) {
+                    MenuItemCommand defaultMenuItemCommand = (MenuItemCommand) menuItem;
                     defaultMenuItemCommand.getCommand().execute();
                     break;
                 }

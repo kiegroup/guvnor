@@ -15,7 +15,9 @@
  */
 package org.kie.guvnor.m2repo.client.perspectives;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,15 +39,16 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.IconType;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
 
 /**
  * A Perspective to show Guvnor's M2_REPO related screens
@@ -67,7 +70,7 @@ public class GuvnorM2RepoPerspective {
     private NewResourcePresenter newResourcePresenter;
 
     private PerspectiveDefinition perspective;
-    private MenuBar               menuBar;
+    private Menus                 menus;
     private ToolBar               toolBar;
 
     @PostConstruct
@@ -83,8 +86,8 @@ public class GuvnorM2RepoPerspective {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return this.menuBar;
+    public Menus getMenus() {
+        return this.menus;
     }
 
     @WorkbenchToolBar
@@ -114,31 +117,32 @@ public class GuvnorM2RepoPerspective {
     }
 
     private void buildMenuBar() {
-        this.menuBar = new DefaultMenuBar();
+        this.menus = MenuFactory
+                .newTopLevelMenu( "Explore" )
+                .menus()
+                .menu( "Guvnor M2 Repository Explorer" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "M2RepoEditor" );
+                    }
+                } )
+                .endMenu()
+                .endMenus()
+                .endMenu()
+                .newTopLevelMenu( "New" )
+                .withItems( getNewMenuItems() )
+                .endMenu().build();
+    }
 
-        final MenuBar subMenuBarExplorer = new DefaultMenuBar();
-        subMenuBarExplorer.addItem( new DefaultMenuItemCommand( "Guvnor M2 Repository Explorer",
-                                                                new Command() {
-                                                                    @Override
-                                                                    public void execute() {
-                                                                        placeManager.goTo( "M2RepoEditor" );
-                                                                    }
-                                                                } ) );
-
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "Explore",
-                                                          subMenuBarExplorer ) );
-
-        final MenuBar subMenuBarNew = new DefaultMenuBar();
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "New",
-                                                          subMenuBarNew ) );
-
-        //Dynamic items
+    private List<MenuItem> getNewMenuItems() {
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
+        final List<MenuItem> newItems = new ArrayList<MenuItem>( handlerBeans.size() );
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler handler = handlerBean.getInstance();
                 final String description = handler.getDescription();
-                subMenuBarNew.addItem( new DefaultMenuItemCommand( description, new Command() {
+                newItems.add( newSimpleItem( description ).respondsWith( new Command() {
                     @Override
                     public void execute() {
                         // TODO Need to get the currently selected path.
@@ -147,10 +151,11 @@ public class GuvnorM2RepoPerspective {
                         // that sets the currently selected Path.
                         handler.create( context.getActivePath(), null );
                     }
-                } ) );
+                } ).endMenu().build().getItems().get( 0 ) );
             }
         }
 
+        return newItems;
     }
 
     private void buildToolBar() {

@@ -23,13 +23,14 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilder;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.projecteditor.client.POMResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -37,7 +38,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", supportedTypes = { POMResourceType.class })
@@ -57,9 +59,8 @@ public class
     private Metadata                kmoduleMetadata;
     private Metadata                pomMetadata;
     private SaveOperationService    saveOperationService;
-    private ResourceMenuBuilder     menuBuilder;
 
-    private MenuBar menuBar;
+    private Menus   menus;
     private boolean isReadOnly;
 
     public ProjectEditorScreenPresenter() {
@@ -73,7 +74,6 @@ public class
             Caller<KModuleService> kModuleServiceCaller,
             Caller<BuildService> buildServiceCaller,
             Caller<MetadataService> metadataService,
-            @New ResourceMenuBuilder menuBuilder,
             SaveOperationService saveOperationService ) {
         this.view = view;
         this.pomPanel = pomPanel;
@@ -82,7 +82,6 @@ public class
         this.buildServiceCaller = buildServiceCaller;
         this.metadataService = metadataService;
         this.saveOperationService = saveOperationService;
-        this.menuBuilder = menuBuilder;
 
         view.setPresenter( this );
         view.setPOMEditorPanel( pomPanel );
@@ -105,49 +104,48 @@ public class
     }
 
     private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addSave(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
+        menus = MenuFactory
+                .newTopLevelMenu( CommonConstants.INSTANCE.File() )
+                    .menus()
+                        .menu( CommonConstants.INSTANCE.Save() )
+                        .respondsWith( new Command() {
                             @Override
-                            public void execute( final String comment ) {
-                                // We need to use callback here or jgit will break when we save two files at the same time.
-                                pomPanel.save(
-                                        comment,
-                                        new com.google.gwt.user.client.Command() {
+                            public void execute() {
+                                saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
+                                    @Override
+                                    public void execute( final String comment ) {
+                                        // We need to use callback here or jgit will break when we save two files at the same time.
+                                        pomPanel.save( comment, new com.google.gwt.user.client.Command() {
                                             @Override
                                             public void execute() {
                                                 if ( kModuleEditorPanel.hasBeenInitialized() ) {
                                                     kModuleEditorPanel.save( comment, kmoduleMetadata );
                                                 }
                                             }
-                                        },
-                                        pomMetadata );
-                            }
-                        }
-
-                                                 );
-                    }
-                } ).addTopLevelMenuItem(
-                view.getBuildMenuItemText(),
-                new Command() {
-                    @Override
-                    public void execute() {
+                                        }, pomMetadata );
+                                    }
+                                } );
+                            }} )
+                        .endMenu()
+                    .endMenus()
+                .endMenu()
+                .newTopLevelMenu( view.getBuildMenuItemText() )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
                         buildServiceCaller.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback( Void v ) {
-
+                                    public void callback( final Void v ) {
                                     }
-                                }
-                                               ).build( pathToPomXML );
-                    }
-                } ).build();
+                                }).build( pathToPomXML );
+                        }
+                    } )
+                .endMenu().build();
 
-        // For now every module is a kie project.
+// For now every module is a kie project.
 //        if (pathToKModuleXML == null) {
-//            menuBar.addItem(new DefaultMenuItemCommand(
+//            menus.addItem(new DefaultMenuItemCommand(
 //                    view.getEnableKieProjectMenuItemText(),
 //                    new Command() {
 //                        @Override
@@ -198,8 +196,8 @@ public class
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
     @Override

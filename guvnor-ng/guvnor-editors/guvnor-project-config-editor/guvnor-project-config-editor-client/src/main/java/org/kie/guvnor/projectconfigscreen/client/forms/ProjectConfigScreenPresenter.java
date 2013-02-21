@@ -22,12 +22,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projectconfigscreen.client.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
@@ -36,7 +36,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectConfigResourceType.class })
 public class ProjectConfigScreenPresenter
@@ -48,16 +48,16 @@ public class ProjectConfigScreenPresenter
     private Path                    path;
     private PackageConfiguration    packageConfiguration;
 
-    private ResourceMenuBuilderImpl menuBuilder;
+    private FileMenuBuilder menuBuilder;
 
-    private MenuBar menuBar;
+    private Menus menus;
 
     public ProjectConfigScreenPresenter() {
     }
 
     @Inject
     public ProjectConfigScreenPresenter( @New ProjectConfigScreenView view,
-                                         @New ResourceMenuBuilderImpl menuBuilder,
+                                         @New FileMenuBuilder menuBuilder,
                                          Caller<ProjectService> projectEditorServiceCaller,
                                          Caller<MetadataService> metadataService ) {
         this.view = view;
@@ -84,7 +84,7 @@ public class ProjectConfigScreenPresenter
     }
 
     private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
+        menus = menuBuilder.addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
@@ -123,8 +123,8 @@ public class ProjectConfigScreenPresenter
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
 }

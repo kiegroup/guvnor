@@ -18,8 +18,6 @@ package org.kie.guvnor.defaulteditor.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

@@ -16,6 +16,16 @@
 
 package org.kie.guvnor.services.backend.inbox;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
@@ -29,18 +39,6 @@ import org.kie.guvnor.services.inbox.model.InboxPageRow;
 import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.security.Identity;
 
-import com.thoughtworks.xstream.XStream;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  *
  */
@@ -48,28 +46,29 @@ import java.util.List;
 @ApplicationScoped
 public class InboxServiceImpl
         implements InboxService {
-    static final int            MAX_RECENT_EDITED = 200;    
-    
-    public static final String RECENT_EDITED_ID = "recentEdited";
-    public static final String RECENT_VIEWED_ID = "recentViewed";
-    public static final String INCOMING_ID = "incoming";
-    private static final String INBOX             = "inbox";
-    
+
+    static final int MAX_RECENT_EDITED = 200;
+
+    public static final  String RECENT_EDITED_ID = "recentEdited";
+    public static final  String RECENT_VIEWED_ID = "recentViewed";
+    public static final  String INCOMING_ID      = "incoming";
+    private static final String INBOX            = "inbox";
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
     private UserServices userServices;
-    
+
     @Inject
     @SessionScoped
     private Identity identity;
-    
+
     @Inject
     MailboxService mailboxService;
-    
-    public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) {
+
+    public PageResponse<InboxPageRow> loadInbox( InboxPageRequest request ) {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
@@ -79,22 +78,22 @@ public class InboxServiceImpl
 
         String inboxName = request.getInboxName();
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
-        
+
         List<InboxEntry> entries = loadEntries( inboxName );
         Iterator<InboxEntry> iterator = entries.iterator();
         List<InboxPageRow> rowList = new InboxPageRowBuilder()
-                                        .withPageRequest( request )
-                                        .withIdentity( identity )
-                                        .withContent( iterator )
-                                        .build();
+                .withPageRequest( request )
+                .withIdentity( identity )
+                .withContent( iterator )
+                .build();
 
         response = new PageResponseBuilder<InboxPageRow>()
-                        .withStartRowIndex( request.getStartRowIndex() )
-                        .withTotalRowSize( entries.size() )
-                        .withTotalRowSizeExact()
-                        .withPageRowList( rowList )
-                        .withLastPage( !iterator.hasNext() )
-                        .build();
+                .withStartRowIndex( request.getStartRowIndex() )
+                .withTotalRowSize( entries.size() )
+                .withTotalRowSizeExact()
+                .withPageRowList( rowList )
+                .withLastPage( !iterator.hasNext() )
+                .build();
 /*        
         List<InboxPageRow> inboxRowList = new ArrayList<InboxPageRow>();
         response.setPageRowList(inboxRowList);
@@ -104,8 +103,8 @@ public class InboxServiceImpl
 
         return response;
     }
-    
-    public List<InboxEntry> loadEntries(final String inboxName) {
+
+    public List<InboxEntry> loadEntries( final String inboxName ) {
         List<InboxEntry> entries;
         if ( inboxName.equals( RECENT_VIEWED_ID ) ) {
             entries = loadRecentOpened();
@@ -122,10 +121,10 @@ public class InboxServiceImpl
         return readEntries( identity.getName(), RECENT_EDITED_ID );
     }
 
-    public List<InboxEntry> loadRecentEdited(String userName) {
+    public List<InboxEntry> loadRecentEdited( String userName ) {
         return readEntries( userName, RECENT_EDITED_ID );
     }
-    
+
     public List<InboxEntry> loadRecentOpened() {
         return readEntries( identity.getName(), RECENT_VIEWED_ID );
     }
@@ -133,37 +132,39 @@ public class InboxServiceImpl
     public List<InboxEntry> loadIncoming() {
         return readEntries( identity.getName(), INCOMING_ID );
     }
-    
-    public List<InboxEntry> loadIncoming(String userName) {
+
+    public List<InboxEntry> loadIncoming( String userName ) {
         return readEntries( userName, INCOMING_ID );
     }
-    
-    public List<InboxEntry> readEntries(String userName, String boxName) {
-        Path path = userServices.buildPath(userName, INBOX, boxName);
+
+    public List<InboxEntry> readEntries( String userName,
+                                         String boxName ) {
+        Path path = userServices.buildPath( INBOX, boxName );
 
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
-            if (!(xml == null || xml.equals(""))) {
-                return (List<InboxEntry>) getXStream().fromXML(xml);
+            if ( !( xml == null || xml.equals( "" ) ) ) {
+                return (List<InboxEntry>) getXStream().fromXML( xml );
             } else {
                 return new ArrayList<InboxEntry>();
-            }            
+            }
         }
-        
+
         return new ArrayList<InboxEntry>();
     }
 
     public void recordOpeningEvent( @Observes final AssetOpenedEvent event ) {
         PortablePreconditions.checkNotNull( "event", event );
-        final  org.uberfire.backend.vfs.Path resourcePath = event.getResourcePath();
-        recordOpeningEvent(resourcePath.toURI(), resourcePath.getFileName().toString());
+        final org.uberfire.backend.vfs.Path resourcePath = event.getResourcePath();
+        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString() );
     }
 
     /**
      * Helper method to log the opening. Will remove any inbox items that have
      * the same id.
      */
-    public synchronized void recordOpeningEvent(String itemPath, String itemName) {
+    public synchronized void recordOpeningEvent( String itemPath,
+                                                 String itemName ) {
         addToRecentOpened( itemPath, itemName );
         List<InboxEntry> unreadIncoming = removeAnyExisting( itemPath,
                                                              loadIncoming() );
@@ -172,29 +173,30 @@ public class InboxServiceImpl
 
     public void recordUserEditEvent( @Observes final AssetEditedEvent event ) {
         PortablePreconditions.checkNotNull( "event", event );
-        final  org.uberfire.backend.vfs.Path resourcePath = event.getResourcePath();
-        recordUserEditEvent(resourcePath.toURI(), resourcePath.getFileName().toString());
+        final org.uberfire.backend.vfs.Path resourcePath = event.getResourcePath();
+        recordUserEditEvent( resourcePath.toURI(), resourcePath.getFileName().toString() );
     }
-    
+
     /**
      * Helper method to note the event
      */
     @Override
-    public synchronized void recordUserEditEvent(String itemPath, String itemName) {
+    public synchronized void recordUserEditEvent( String itemPath,
+                                                  String itemName ) {
         addToRecentEdited( itemPath, itemName );
-        
+
         //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
-        addToIncoming(itemPath, itemName, identity.getName(), MailboxService.MAIL_MAN);
+        addToIncoming( itemPath, itemName, identity.getName(), MailboxService.MAIL_MAN );
         mailboxService.processOutgoing();
         mailboxService.wakeUp();
     }
-    
+
     /**
      * This should be called when the user edits or comments on an asset. Simply
      * adds to the list...
      */
-    public void addToRecentEdited(String itemPath,
-                                  String note) {
+    public void addToRecentEdited( String itemPath,
+                                   String note ) {
         addToInbox( RECENT_EDITED_ID,
                     itemPath,
                     note,
@@ -202,8 +204,8 @@ public class InboxServiceImpl
                     identity.getName() );
     }
 
-    public void addToRecentOpened(String itemPath,
-                                  String note) {
+    public void addToRecentOpened( String itemPath,
+                                   String note ) {
         addToInbox( RECENT_VIEWED_ID,
                     itemPath,
                     note,
@@ -211,22 +213,22 @@ public class InboxServiceImpl
                     identity.getName() );
     }
 
-    public void addToIncoming(String itemPath,
-                              String note,
-                              String userFrom,
-                              String userName) {
+    public void addToIncoming( String itemPath,
+                               String note,
+                               String userFrom,
+                               String userName ) {
         addToInbox( INCOMING_ID,
                     itemPath,
                     note,
                     userFrom,
-                    userName);
+                    userName );
     }
 
-    private void addToInbox(String boxName,
-                            String itemPath,
-                            String note,
-                            String userFrom,
-                            String userName) {
+    private void addToInbox( String boxName,
+                             String itemPath,
+                             String note,
+                             String userFrom,
+                             String userName ) {
         assert boxName.equals( RECENT_EDITED_ID ) || boxName.equals( RECENT_VIEWED_ID ) || boxName.equals( INCOMING_ID );
         List<InboxEntry> entries = removeAnyExisting( itemPath,
                                                       readEntries( userName, boxName ) );
@@ -245,53 +247,60 @@ public class InboxServiceImpl
         writeEntries( boxName, entries );
     }
 
-    private List<InboxEntry> removeAnyExisting(String itemPath,
-            List<InboxEntry> inboxEntries) {
+    private List<InboxEntry> removeAnyExisting( String itemPath,
+                                                List<InboxEntry> inboxEntries ) {
         Iterator<InboxEntry> it = inboxEntries.iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             InboxEntry e = it.next();
-            if (e.itemPath.equals(itemPath)) {
+            if ( e.itemPath.equals( itemPath ) ) {
                 it.remove();
                 return inboxEntries;
             }
         }
         return inboxEntries;
     }
-    
-    public void writeEntries(String boxName, List<InboxEntry> entries) {
-        Path path = userServices.buildPath(identity.getName(), INBOX, boxName);
 
-        System.out.println("writeEntries: " +path.toString());
-            String entry = getXStream().toXML(entries);
-            System.out.println("writeEntries: " +entry);
+    public void writeEntries( String boxName,
+                              List<InboxEntry> entries ) {
+        Path path = userServices.buildPath( INBOX, boxName );
 
-            ioService.write( path, entry );
+        System.out.println( "writeEntries: " + path.toString() );
+        String entry = getXStream().toXML( entries );
+        System.out.println( "writeEntries: " + entry );
+
+        ioService.write( path, entry );
 
     }
-    
+
     private XStream getXStream() {
         XStream xs = new XStream();
-        xs.alias("inbox-entries", List.class);
-        xs.alias("entry", InboxEntry.class);
+        xs.alias( "inbox-entries", List.class );
+        xs.alias( "entry", InboxEntry.class );
         return xs;
     }
-    
-     /**
+
+    /**
      * And entry in an inbox.
      */
     public static class InboxEntry {
+
         public String from;
 
-        public InboxEntry() {}
-        public InboxEntry(String itemPath, String note, String userFrom) {
+        public InboxEntry() {
+        }
+
+        public InboxEntry( String itemPath,
+                           String note,
+                           String userFrom ) {
             this.itemPath = itemPath;
             this.note = note;
             this.timestamp = System.currentTimeMillis();
             this.from = userFrom;
         }
+
         public String itemPath;
         public String note;
-        public long timestamp;
+        public long   timestamp;
     }
 
 }

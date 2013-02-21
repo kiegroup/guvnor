@@ -22,9 +22,9 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
-import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.commons.service.metadata.model.Categories;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.services.metadata.CategoriesService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -36,7 +36,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 /**
  *
@@ -67,11 +67,11 @@ public class CategoriesEditorPresenter {
     private Caller<CategoriesService> categoryService;
 
     @Inject
-    private ResourceMenuBuilderImpl menuBuilder;
+    private FileMenuBuilder menuBuilder;
 
     private Path path;
 
-    private MenuBar menuBar;
+    private Menus menus;
 
     @OnStart
     public void onStart( final Path path ) {
@@ -88,7 +88,7 @@ public class CategoriesEditorPresenter {
     }
 
     private void makeMenuBar() {
-        menuBar = menuBuilder.addFileMenu().addSave( new Command() {
+        menus = menuBuilder.addSave( new Command() {
             @Override
             public void execute() {
                 onSave();
@@ -135,8 +135,8 @@ public class CategoriesEditorPresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
 }

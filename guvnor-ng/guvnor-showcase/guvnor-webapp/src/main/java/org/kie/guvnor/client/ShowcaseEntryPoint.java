@@ -29,6 +29,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -42,14 +43,13 @@ import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
 
 /**
  * GWT's Entry-point for Guvnor-Showcase
@@ -89,25 +89,39 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupMenu() {
-
-        //Home
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-        if ( defaultPerspective != null ) {
-            menubar.addWorkbenchItem( new DefaultMenuItemCommand( "Home",
-                                                                  new Command() {
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
-                                                                      }
-                                                                  } ) );
-        }
 
-        //Perspectives
-        final MenuBar perspectivesMenuBar = new DefaultMenuBar();
-        final MenuItemSubMenu perspectivesMenu = new DefaultMenuItemSubMenu( "Perspectives",
-                                                                             perspectivesMenuBar );
-        final List<AbstractWorkbenchPerspectiveActivity> perspectives = getPerspectiveActivities();
-        for ( final AbstractWorkbenchPerspectiveActivity perspective : perspectives ) {
+        final Menus menus = MenuFactory
+                .newTopLevelMenu( "Home" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        if ( defaultPerspective != null ) {
+                            placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                        } else {
+                            Window.alert( "Default perspective not found." );
+                        }
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( "Perspectives" )
+                .withItems( getPerspectives() )
+                .endMenu()
+                .newTopLevelMenu( "Logout" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        redirect( GWT.getModuleBaseURL() + "uf_logout" );
+                    }
+                } )
+                .endMenu().build();
+
+        menubar.aggregateWorkbenchMenus( menus );
+    }
+
+    private List<MenuItem> getPerspectives() {
+        final List<MenuItem> perspectives = new ArrayList<MenuItem>();
+        for ( final AbstractWorkbenchPerspectiveActivity perspective : getPerspectiveActivities() ) {
             final String name = perspective.getPerspective().getName();
             final Command cmd = new Command() {
 
@@ -117,22 +131,11 @@ public class ShowcaseEntryPoint {
                 }
 
             };
-            final MenuItemCommand item = new DefaultMenuItemCommand( name,
-                                                                     cmd );
-            perspectivesMenuBar.addItem( item );
+            final MenuItem item = newSimpleItem( name ).respondsWith( cmd ).endMenu().build().getItems().get( 0 );
+            perspectives.add( item );
         }
-        menubar.addWorkbenchItem( perspectivesMenu );
 
-        //Static places
-        final MenuItemCommand logout = new DefaultMenuItemCommand( "Logout",
-                                                                   new Command() {
-                                                                       @Override
-                                                                       public void execute() {
-                                                                           redirect( GWT.getModuleBaseURL() + "uf_logout" );
-                                                                       }
-                                                                   } );
-
-        menubar.addWorkbenchItem( logout );
+        return perspectives;
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {

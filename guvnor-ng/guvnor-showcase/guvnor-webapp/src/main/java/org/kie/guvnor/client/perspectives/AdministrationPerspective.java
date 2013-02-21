@@ -38,11 +38,8 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
@@ -68,12 +65,12 @@ public class AdministrationPerspective {
     @Inject
     private IOCBeanManager iocManager;
 
-    private Command newRepoCommand = null;
+    private Command newRepoCommand   = null;
     private Command cloneRepoCommand = null;
 
     private PerspectiveDefinition perspective;
-    private MenuBar menuBar;
-    private ToolBar toolBar;
+    private Menus                 menus;
+    private ToolBar               toolBar;
 
     @PostConstruct
     public void init() {
@@ -89,8 +86,8 @@ public class AdministrationPerspective {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return this.menuBar;
+    public Menus getMenus() {
+        return this.menus;
     }
 
     @WorkbenchToolBar
@@ -149,31 +146,32 @@ public class AdministrationPerspective {
     }
 
     private void buildMenuBar() {
-        this.menuBar = new DefaultMenuBar();
-        final MenuBar subMenuBar1 = new DefaultMenuBar();
-        final MenuItem sm1i1 = new DefaultMenuItemCommand( "Files",
-                                                           new Command() {
-                                                               @Override
-                                                               public void execute() {
-                                                                   placeManager.goTo( "FileExplorer" );
-                                                               }
-                                                           } );
-        sm1i1.setRoles( PERMISSIONS_ADMIN );
-        subMenuBar1.addItem( sm1i1 );
-        this.menuBar.addItem( new DefaultMenuItemSubMenu( "Explore",
-                                                          subMenuBar1 ) );
-
-        final MenuBar subMenuBar2 = new DefaultMenuBar();
-        final MenuItem sm2i1 = new DefaultMenuItemCommand( "Clone Repo",
-                                                           cloneRepoCommand );
-        final MenuItem sm2i2 = new DefaultMenuItemCommand( "New Repo",
-                                                           newRepoCommand );
-        sm2i1.setRoles( PERMISSIONS_ADMIN );
-        sm2i2.setRoles( PERMISSIONS_ADMIN );
-        subMenuBar2.addItem( sm2i1 );
-        subMenuBar2.addItem( sm2i2 );
-        menuBar.addItem( new DefaultMenuItemSubMenu( "Repositories",
-                                                     subMenuBar2 ) );
+        this.menus = MenuFactory
+                .newTopLevelMenu( "Explore" )
+                    .menus()
+                        .menu( "Files" )
+                            .withRoles( PERMISSIONS_ADMIN )
+                            .respondsWith( new Command() {
+                                @Override
+                                public void execute() {
+                                    placeManager.goTo( "FileExplorer" );
+                                }
+                            }  )
+                        .endMenu()
+                    .endMenus()
+                .endMenu()
+                .newTopLevelMenu( "Repositories" )
+                    .menus()
+                        .menu( "Clone Repo" )
+                            .withRoles( PERMISSIONS_ADMIN )
+                            .respondsWith( cloneRepoCommand  )
+                        .endMenu()
+                        .menu( "New Repo" )
+                            .withRoles( PERMISSIONS_ADMIN )
+                            .respondsWith( newRepoCommand  )
+                        .endMenu()
+                    .endMenus()
+                .endMenu().build();
     }
 
     private void buildToolBar() {

@@ -24,13 +24,13 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.menu.ResourceMenuBuilderImpl;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -41,7 +41,6 @@ import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -62,7 +61,7 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -119,8 +118,8 @@ public class EnumEditorPresenter {
 
     @Inject
     @New
-    private ResourceMenuBuilderImpl menuBuilder;
-    private MenuBar                 menuBar;
+    private FileMenuBuilder menuBuilder;
+    private Menus           menus;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
@@ -177,7 +176,7 @@ public class EnumEditorPresenter {
     }
 
     private void makeMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addFileMenu().addValidation( new Command() {
+        FileMenuBuilder fileMenuBuilder = menuBuilder.addValidation( new Command() {
             @Override
             public void execute() {
                 LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
@@ -218,7 +217,7 @@ public class EnumEditorPresenter {
                 }
             } );
         }
-        menuBar = fileMenuBuilder.build();
+        menus = fileMenuBuilder.build();
     }
 
     @OnSave
@@ -336,8 +335,8 @@ public class EnumEditorPresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return menuBar;
+    public Menus getMenus() {
+        return menus;
     }
 
 }
