@@ -18,11 +18,13 @@ package org.kie.guvnor.guided.rule.backend.server.util;
 
 import org.kie.guvnor.guided.rule.model.RuleModel;
 
+import java.util.List;
+
 public interface BRLPersistence {
 
     String marshal( final RuleModel model );
 
     RuleModel unmarshal( final String str );
 
-    RuleModel unmarshalUsingDSL( final String str, final String... dsls );
+    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls );
 }

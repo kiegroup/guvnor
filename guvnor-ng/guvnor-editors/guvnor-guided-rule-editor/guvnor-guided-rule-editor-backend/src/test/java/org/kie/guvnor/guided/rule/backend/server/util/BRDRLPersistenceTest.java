@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -362,7 +363,7 @@ public class BRDRLPersistenceTest {
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
@@ -415,7 +416,7 @@ public class BRDRLPersistenceTest {
 
         String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, dslFile );
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, dslFile );
 
         DSLSentence dslSentence = (DSLSentence) unmarshalledModel.lhs[ 0 ];
         assertEquals( dslDefinition, dslSentence.getDefinition() );
@@ -2962,7 +2963,8 @@ public class BRDRLPersistenceTest {
 
     @Test
     public void testAddToGlobalCollection() {
-        final String drl = "global java.util.ArrayList list\n" +
+        String global = "global java.util.ArrayList list";
+        String drl =
                 "rule \"r0\"\n" +
                 "dialect \"mvel\"" +
                 "when\n" +
@@ -2971,13 +2973,10 @@ public class BRDRLPersistenceTest {
                 "list.add( $a );\n" +
                 "end\n";
 
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList(global) );
 
-        // TODO now the test is green but the unmarshal/marshal still doesn't work because
-        // the marshal doesn't print the global. Should I fix it?
-        // assertEqualsIgnoreWhitespace(drl, BRDRLPersistence.getInstance().marshal( m ));
-
-        assertNotNull( m );
+        assertNotNull(m);
+        assertEqualsIgnoreWhitespace(drl, BRDRLPersistence.getInstance().marshal( m ));
 
         //LHS
         assertEquals( 1,

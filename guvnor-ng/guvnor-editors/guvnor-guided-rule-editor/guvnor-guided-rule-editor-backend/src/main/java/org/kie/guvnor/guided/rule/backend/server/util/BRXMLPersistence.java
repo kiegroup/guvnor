@@ -50,6 +50,8 @@ import org.kie.guvnor.guided.rule.model.RuleMetadata;
 import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
 
+import java.util.List;
+
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
  * format (Business Rule Language).
@@ -186,7 +188,7 @@ public class BRXMLPersistence
         return rm;
     }
 
-    public RuleModel unmarshalUsingDSL( final String str, final String... dsls ) {
+    public RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls ) {
         throw new UnsupportedOperationException();
     }
 
