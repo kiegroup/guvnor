@@ -67,13 +67,22 @@ profile in pom.xml to use that. -->
 
   <servlet>
     <servlet-name>FileServlet</servlet-name>
-    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
+    <servlet-class>org.kie.guvnor.dtablexls.backend.server.FileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>FileServlet</servlet-name>
     <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/fileupload</url-pattern>
+  </servlet-mapping>
+    
   <servlet>
     <servlet-name>FileDownloadServlet</servlet-name>
     <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>

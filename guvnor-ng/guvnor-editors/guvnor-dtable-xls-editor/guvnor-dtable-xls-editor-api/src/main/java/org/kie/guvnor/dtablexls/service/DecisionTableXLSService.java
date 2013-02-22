@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.dtablexls.service;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
@@ -28,8 +31,7 @@ public interface DecisionTableXLSService
                 ValidationService<String>,
                 SimpleVerificationService<String> {
 
-    String load( final Path path );
+    InputStream load( final Path path );
 
-    void save( Path path,
-               String content );
+    OutputStream save( Path path );
 }

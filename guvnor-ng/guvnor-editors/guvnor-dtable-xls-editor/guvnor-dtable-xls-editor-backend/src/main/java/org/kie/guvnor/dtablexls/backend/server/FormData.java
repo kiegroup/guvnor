@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.dtablexls.service;
+package org.kie.guvnor.dtablexls.backend.server;
 
-/**
- * This is a central location for all form fields use in HTML forms for submission to the file servlet.
- * The all must be unique, of course.
- */
-public class HTMLFileManagerFields {
+import org.apache.commons.fileupload.FileItem;
 
-    public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
-    public static final String FORM_FIELD_PATH = "attachmentPath";
 
-   
+public class FormData {
+    private FileItem file;
+    private String path;
+
+    public FileItem getFile() {
+        return file;
+    }
+
+    public void setFile(FileItem file) {
+        this.file = file;
+    }
+
+    public void closeFile() {
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
 }

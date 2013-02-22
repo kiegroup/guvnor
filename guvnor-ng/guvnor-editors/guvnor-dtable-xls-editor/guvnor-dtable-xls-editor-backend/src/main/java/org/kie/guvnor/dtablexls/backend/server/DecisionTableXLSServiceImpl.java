@@ -16,6 +16,15 @@
 
 package org.kie.guvnor.dtablexls.backend.server;
 
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -32,12 +41,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -85,54 +88,28 @@ public class DecisionTableXLSServiceImpl
     }
 
     @Override
-    public String load( Path path ) {
+    public InputStream load( Path path ) {
         assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
-        return ioService.readAllString( paths.convert( path ) );
+        return ioService.newInputStream(paths.convert( path ), null );
     }
 
     @Override
-    public void save( final Path path,
-                      final String content,
-                      final String comment ) {
+    public OutputStream save(final Path path) {
+        log.info("USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]");
+
+        System.out.println("USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]");
+        
+        assetEditedEvent.fire(new AssetEditedEvent(path));
+        return ioService.newOutputStream(paths.convert(path), makeCommentedOption("uploaded"));
+    }
+    
+    public OutputStream save( final Path path,
+                              final String comment ) {
+        log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
+
         assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-        ioService.write( paths.convert( path ),
-                         content,
-                         makeCommentedOption( comment ) );
-    }
-
-    @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final String content,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-
-        save( newPath, content, comment );
-
-        return newPath;
-    }
-
-    @Override
-    public void save( final Path path,
-                      final String content ) {
-        ioService.write( paths.convert( path ),
-                         content );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-    }
-
-    @Override
-    public void save( final Path resource,
-                      final String content,
-                      final Metadata metadata,
-                      final String comment ) {
-
-        ioService.write(
-                paths.convert( resource ),
-                content,
-                metadataService.setUpAttributes( resource, metadata ),
-                makeCommentedOption( comment ) );
-
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
+        return ioService.newOutputStream( paths.convert( path ),
+                                          makeCommentedOption( comment ) );
     }
 
     @Override
@@ -181,5 +158,25 @@ public class DecisionTableXLSServiceImpl
                                                         commitMessage,
                                                         when );
         return co;
+    }
+
+    @Override
+    public void save(Path path, String content, Metadata metadata,
+            String comment) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void save(Path path, String content, String comment) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Path save(Path context, String fileName, String content,
+            String comment) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
