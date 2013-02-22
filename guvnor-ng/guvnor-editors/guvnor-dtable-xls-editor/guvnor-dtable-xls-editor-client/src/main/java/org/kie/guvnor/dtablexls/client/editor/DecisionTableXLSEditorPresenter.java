@@ -111,24 +111,7 @@ public class DecisionTableXLSEditorPresenter {
         makeMenuBar();
 
         multiPage.addWidget( view, DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
-
-/*        dataModelService.call( new RemoteCallback<DataModelOracle>() {
-            @Override
-            public void callback( final DataModelOracle model ) {
-                drlTextEditorService.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( String response ) {
-                        if ( response == null || response.isEmpty() ) {
-                            view.setContent( null,
-                                             model );
-                        } else {
-                            view.setContent( response,
-                                             model );
-                        }
-                    }
-                } ).load( path );
-            }
-        } ).getDataModel( path );*/
+        view.setPath(path);
 
         multiPage.addPage( new Page( metadataWidget,
                                      MetadataConstants.INSTANCE.Metadata() ) {
@@ -170,12 +153,7 @@ public class DecisionTableXLSEditorPresenter {
         if ( isReadOnly ) {
             fileMenuBuilder.addRestoreVersion( path );
         } else {
-            fileMenuBuilder.addSave( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } ).addDelete( new Command() {
+            fileMenuBuilder.addDelete( new Command() {
                 @Override
                 public void execute() {
                     onDelete();
@@ -193,26 +171,6 @@ public class DecisionTableXLSEditorPresenter {
             } );
         }
         menus = fileMenuBuilder.build();
-    }
-
-    @OnSave
-    public void onSave() {
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String commitMessage ) {
-/*                drlTextEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getContent(),
-                          metadataWidget.getContent(),
-                          commitMessage );*/
-            }
-        } );
     }
 
     public void onDelete() {

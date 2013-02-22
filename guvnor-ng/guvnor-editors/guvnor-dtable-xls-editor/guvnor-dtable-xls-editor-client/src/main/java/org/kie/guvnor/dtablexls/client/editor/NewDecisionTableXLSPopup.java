@@ -25,11 +25,18 @@ import com.google.gwt.user.client.Command;
 
 public class NewDecisionTableXLSPopup extends FormStylePopup {
 
-    public NewDecisionTableXLSPopup(Path contextPath, String fileName, Command createdCallback) {
+    public NewDecisionTableXLSPopup(final Path contextPath, final String fileName, final Command createdCallback) {
         super(ImageResources.INSTANCE.decisionTable(),
                 DecisionTableXLSEditorConstants.INSTANCE.NewDecisionTableDescription() );
 
-        addAttribute( "", new AttachmentFileWidget(contextPath, fileName, createdCallback));
+        addAttribute( "", new AttachmentFileWidget(contextPath, fileName, new Command() {
+            @Override
+            public void execute() {
+                hide();
+                createdCallback.execute();
+            }
+            
+        }));
     }
 
  }

@@ -19,6 +19,7 @@ package org.kie.guvnor.dtablexls.client.editor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,6 +35,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
 import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.LoadingPopup;
 
@@ -47,26 +49,32 @@ public class DecisionTableXLSEditorViewImpl
     
     private VerticalPanel       layout;
     private FormPanel           form;
+    private Path contextPath;
     
     final SimplePanel resultsP = new SimplePanel();
+    FormStyleLayout ts = new FormStyleLayout(getIcon(), DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
     
     @PostConstruct
     public void init() {
         layout = new VerticalPanel();
-        layout.setWidth( "100%" );
-        
-
-        FormStyleLayout ts = new FormStyleLayout(getIcon(), "formName");
-        
-        ts.addAttribute( "Upload:", doUploadForm() );       
-        
+        layout.setWidth( "100%" );       
         layout.add(ts);
         
         initWidget( layout );
         setWidth( "100%" );
     }
     
-    
+    public void setPath(Path path) {
+        this.contextPath = path;
+        //ts.clear();
+        ts.addAttribute( "", new AttachmentFileWidget(contextPath, null, new Command() {
+            @Override
+            public void execute() {
+            }
+            
+        }));         
+    }
+        
     public FormPanel doUploadForm() {
         form = new FormPanel();
         form.setAction(GWT.getModuleBaseURL() + "file");
@@ -99,9 +107,6 @@ public class DecisionTableXLSEditorViewImpl
                     //JarListEditor table = new JarListEditor(m2RepoService);
                     //resultsP.add( table );                  
                         
-                } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {
-                    LoadingPopup.close();
-                    Window.alert("The Jar does not contain a valid POM file. Please specify GAV info manually.");
                 } else {
                     LoadingPopup.close();
                     Window.alert("Upload failed:" + event.getResults()); 

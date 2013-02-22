@@ -50,7 +50,8 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
-        NewDecisionTableXLSPopup popup = new NewDecisionTableXLSPopup(contextPath, buildFileName( resourceType, baseFileName ), new Command() {
+        NewDecisionTableXLSPopup popup = null;
+        popup = new NewDecisionTableXLSPopup(contextPath, buildFileName( resourceType, baseFileName ), new Command() {
 
             @Override
             public void execute() {
