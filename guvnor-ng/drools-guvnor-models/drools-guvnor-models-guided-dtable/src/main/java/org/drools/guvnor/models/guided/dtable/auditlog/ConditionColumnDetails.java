@@ -13,30 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Basic details of a column
+ * Details of a Condition column
  */
 @Portable
-public class ColumnDetails {
+public class ConditionColumnDetails extends ColumnDetails {
 
-    private static final long serialVersionUID = -2111038793296621482L;
+    private static final long serialVersionUID = -4296771936396335786L;
 
-    private String columnHeader;
+    private String factField;
+    private String operator;
 
-    public ColumnDetails() {
+    public ConditionColumnDetails() {
     }
 
-    public ColumnDetails( final BaseColumn column ) {
-        this.columnHeader = column.getHeader();
+    public ConditionColumnDetails( final ConditionCol52 column ) {
+        super( column );
+        this.factField = column.getFactField();
+        this.operator = column.getOperator();
     }
 
-    public String getColumnHeader() {
-        return columnHeader;
+    public String getFactField() {
+        return factField;
+    }
+
+    public String getOperator() {
+        return operator;
     }
 
 }

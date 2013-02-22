@@ -13,32 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
 
 /**
- * Details of a Limited Entry Condition column
+ * Basic details of a column
  */
 @Portable
-public class LimitedEntryConditionColumnDetails extends ConditionColumnDetails {
+public class ColumnDetails {
 
-    private static final long serialVersionUID = 7986730411677479010L;
+    private static final long serialVersionUID = -2111038793296621482L;
 
-    private DTCellValue52 value;
+    private String columnHeader;
 
-    public LimitedEntryConditionColumnDetails() {
+    public ColumnDetails() {
     }
 
-    public LimitedEntryConditionColumnDetails( final LimitedEntryConditionCol52 column ) {
-        super( column );
-        this.value = column.getValue();
+    public ColumnDetails( final BaseColumn column ) {
+        this.columnHeader = column.getHeader();
     }
 
-    public DTCellValue52 getValue() {
-        return value;
+    public String getColumnHeader() {
+        return columnHeader;
     }
 
 }

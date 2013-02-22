@@ -13,37 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
 
 /**
- * Details of an ActionSetField column
+ * Details of a Limited Entry ActionInsertFact column
  */
 @Portable
-public class ActionSetFieldColumnDetails extends ColumnDetails {
+public class LimitedEntryActionInsertFactColumnDetails extends ActionInsertFactColumnDetails {
 
-    private static final long serialVersionUID = 6286258564202555988L;
+    private static final long serialVersionUID = -177913089353678680L;
 
-    private String boundName;
-    private String factField;
+    private DTCellValue52 value;
 
-    public ActionSetFieldColumnDetails() {
+    public LimitedEntryActionInsertFactColumnDetails() {
     }
 
-    public ActionSetFieldColumnDetails( final ActionSetFieldCol52 column ) {
+    public LimitedEntryActionInsertFactColumnDetails( final LimitedEntryActionInsertFactCol52 column ) {
         super( column );
-        this.boundName = column.getBoundName();
-        this.factField = column.getFactField();
+        this.value = column.getValue();
     }
 
-    public String getBoundName() {
-        return boundName;
-    }
-
-    public String getFactField() {
-        return factField;
+    public DTCellValue52 getValue() {
+        return value;
     }
 
 }

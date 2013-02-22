@@ -13,26 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
 import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
 
 /**
- * Details of a Limited Entry ActionInsertFact column
+ * Details of a Limited Entry Condition column
  */
 @Portable
-public class LimitedEntryActionInsertFactColumnDetails extends ActionInsertFactColumnDetails {
+public class LimitedEntryConditionColumnDetails extends ConditionColumnDetails {
 
-    private static final long serialVersionUID = -177913089353678680L;
+    private static final long serialVersionUID = 7986730411677479010L;
 
     private DTCellValue52 value;
 
-    public LimitedEntryActionInsertFactColumnDetails() {
+    public LimitedEntryConditionColumnDetails() {
     }
 
-    public LimitedEntryActionInsertFactColumnDetails( final LimitedEntryActionInsertFactCol52 column ) {
+    public LimitedEntryConditionColumnDetails( final LimitedEntryConditionCol52 column ) {
         super( column );
         this.value = column.getValue();
     }

@@ -13,31 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
-import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Details of a Metadata column
+ * Details of an ActionInsertFact column
  */
 @Portable
-public class MetadataColumnDetails extends ColumnDetails {
+public class ActionInsertFactColumnDetails extends ColumnDetails {
 
-    private static final long serialVersionUID = -4815318257058328788L;
+    private static final long serialVersionUID = 7045573579522193502L;
 
-    private String metadata;
+    private String factType;
+    private String factField;
 
-    public MetadataColumnDetails() {
+    public ActionInsertFactColumnDetails() {
     }
 
-    public MetadataColumnDetails( final MetadataCol52 column ) {
+    public ActionInsertFactColumnDetails( final ActionInsertFactCol52 column ) {
         super( column );
-        this.metadata = column.getMetadata();
+        this.factType = column.getFactType();
+        this.factField = column.getFactField();
     }
 
-    public String getMetadata() {
-        return metadata;
+    public String getFactType() {
+        return factType;
+    }
+
+    public String getFactField() {
+        return factField;
     }
 
 }

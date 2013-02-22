@@ -11,8 +11,8 @@
   <artifactId>guvnor-dtable-xls-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>XSL Decision Table Backend</name>
-  <description>XSL Decision Table Backend</description>
+  <name>XLS Decision Table Backend</name>
+  <description>XLS Decision Table Backend</description>
 
   <dependencies>
     <dependency>

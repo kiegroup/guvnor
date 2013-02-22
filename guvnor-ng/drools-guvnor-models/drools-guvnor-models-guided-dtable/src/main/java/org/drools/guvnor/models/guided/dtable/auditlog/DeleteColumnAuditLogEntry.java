@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
 import org.drools.guvnor.models.commons.auditlog.DefaultAuditLogEntry;
 import org.drools.guvnor.models.guided.dtable.auditlog.DecisionTableAuditEvents;

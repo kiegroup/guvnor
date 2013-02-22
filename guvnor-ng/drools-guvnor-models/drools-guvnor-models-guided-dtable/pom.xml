@@ -12,6 +12,9 @@
   <groupId>org.drools</groupId>
   <artifactId>drools-guvnor-models-guided-dtable</artifactId>
 
+  <name>Drools Guvnor - Guided Decision Table model</name>
+  <description>Drools Guvnor - Guided Decision Table model</description>
+
   <dependencies>
     <dependency>
       <groupId>org.jboss.errai</groupId>

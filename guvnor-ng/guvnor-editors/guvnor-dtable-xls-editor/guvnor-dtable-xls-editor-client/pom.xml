@@ -11,8 +11,8 @@
   <artifactId>guvnor-dtable-xls-editor-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>XSL Decision Table Client</name>
-  <description>XSL Decision Table Client</description>
+  <name>XLS Decision Table Client</name>
+  <description>XLS Decision Table Client</description>
 
   <dependencies>
 

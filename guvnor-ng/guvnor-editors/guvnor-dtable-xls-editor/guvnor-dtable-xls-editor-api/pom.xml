@@ -11,8 +11,8 @@
   <artifactId>guvnor-dtable-xls-editor-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>XSL Decision Table API</name>
-  <description>XSL Decision Table API</description>
+  <name>XLS Decision Table API</name>
+  <description>XLS Decision Table API</description>
 
   <dependencies>
 

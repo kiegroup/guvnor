@@ -34,8 +34,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-data</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor-models-commons</artifactId>
     </dependency>
 
     <dependency>
@@ -44,14 +44,15 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-commons-data</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-commons</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

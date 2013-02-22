@@ -25,8 +25,11 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
+
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
+
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name="org.kie.commons.KieCommonsValidation"/>

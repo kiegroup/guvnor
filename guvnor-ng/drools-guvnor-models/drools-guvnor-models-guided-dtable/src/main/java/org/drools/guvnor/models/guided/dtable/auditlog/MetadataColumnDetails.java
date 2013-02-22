@@ -13,31 +13,31 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.dtable.model.auditlog;
+package org.drools.guvnor.models.guided.dtable.auditlog;
 
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Details of an Attribute column
+ * Details of a Metadata column
  */
 @Portable
-public class AttributeColumnDetails extends ColumnDetails {
+public class MetadataColumnDetails extends ColumnDetails {
 
     private static final long serialVersionUID = -4815318257058328788L;
 
-    private String attribute;
+    private String metadata;
 
-    public AttributeColumnDetails() {
+    public MetadataColumnDetails() {
     }
 
-    public AttributeColumnDetails( final AttributeCol52 column ) {
+    public MetadataColumnDetails( final MetadataCol52 column ) {
         super( column );
-        this.attribute = column.getAttribute();
+        this.metadata = column.getMetadata();
     }
 
-    public String getAttribute() {
-        return attribute;
+    public String getMetadata() {
+        return metadata;
     }
 
 }
