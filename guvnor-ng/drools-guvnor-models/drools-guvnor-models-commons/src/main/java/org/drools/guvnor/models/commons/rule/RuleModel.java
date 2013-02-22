@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
 import org.drools.guvnor.models.commons.imports.Imports;
 import org.jboss.errai.common.client.api.annotations.Portable;
 

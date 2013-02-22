@@ -15,10 +15,6 @@
  */
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.FieldNatureType;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
 import org.drools.guvnor.models.commons.oracle.DataType;
 
 import java.util.Map;

@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.drools.guvnor.models.commons.DSLVariableValue;
+import org.drools.guvnor.models.commons.rule.DSLVariableValue;
 
 import java.util.Collection;
 

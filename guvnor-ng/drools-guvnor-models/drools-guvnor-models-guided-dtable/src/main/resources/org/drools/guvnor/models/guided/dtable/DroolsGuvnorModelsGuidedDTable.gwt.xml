@@ -24,7 +24,7 @@
 
   <inherits name='org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon'/>
 
+  <source path="auditlog"/>
   <source path="model"/>
-  <source path="service"/>
 
 </module>

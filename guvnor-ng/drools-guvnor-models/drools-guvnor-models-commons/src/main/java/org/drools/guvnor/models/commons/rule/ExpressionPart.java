@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
-
 public abstract class ExpressionPart
         implements IPattern,
                    IAction,

@@ -1,9 +1,9 @@
 package org.drools.guvnor.models.guided.dtable;
 
-import org.drools.guvnor.models.commons.BaseConverter;
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.backend.BaseConverter;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.guvnor.models.guided.dtable.model.ActionCol52;

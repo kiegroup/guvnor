@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.models.commons;
+package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.rule.RuleModel;
+public interface IAction {
 
-import java.util.List;
-
-public interface BRLPersistence {
-
-    String marshal( final RuleModel model );
-
-    RuleModel unmarshal( final String str );
-
-    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls );
 }

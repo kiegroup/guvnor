@@ -16,8 +16,8 @@
 package org.kie.guvnor.guided.rule.backend.server.util;
 
 import org.junit.Test;
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.DSLVariableValue;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLVariableValue;
 import org.drools.guvnor.models.commons.rule.RuleModel;
 
 import static org.junit.Assert.assertEquals;

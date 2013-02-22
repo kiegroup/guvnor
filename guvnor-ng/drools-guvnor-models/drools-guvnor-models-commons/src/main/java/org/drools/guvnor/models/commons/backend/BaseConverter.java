@@ -1,4 +1,4 @@
-package org.drools.guvnor.models.commons;
+package org.drools.guvnor.models.commons.backend;
 
 import org.kie.builder.impl.FormatConverter;
 

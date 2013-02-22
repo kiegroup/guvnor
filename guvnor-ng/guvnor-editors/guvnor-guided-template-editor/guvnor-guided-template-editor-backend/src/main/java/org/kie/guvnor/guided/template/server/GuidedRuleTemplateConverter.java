@@ -1,6 +1,6 @@
 package org.kie.guvnor.guided.template.server;
 
-import org.drools.guvnor.models.commons.BaseConverter;
+import org.drools.guvnor.models.commons.backend.BaseConverter;
 import org.kie.builder.impl.FormatConversionResult;
 import org.kie.builder.impl.FormatConverter;
 import org.kie.guvnor.guided.template.model.TemplateModel;

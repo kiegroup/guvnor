@@ -443,6 +443,9 @@
           <module>org.kie.guvnor.FastCompiledGuvnorShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.drools:drools-guvnor-models-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-dtable</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-categories-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-enum-editor-client</compileSourcesArtifact>

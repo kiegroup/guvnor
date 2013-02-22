@@ -16,8 +16,8 @@
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.cell.client.Cell.Context;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;

@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
 import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;

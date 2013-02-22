@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.IAction;
 import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
 import org.jboss.errai.common.client.api.annotations.Portable;
 

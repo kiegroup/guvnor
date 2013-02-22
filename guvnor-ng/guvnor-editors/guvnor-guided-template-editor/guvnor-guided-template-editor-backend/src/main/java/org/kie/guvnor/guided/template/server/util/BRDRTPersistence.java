@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.template.server.util;
 
-import org.drools.guvnor.models.commons.BRLPersistence;
+import org.drools.guvnor.models.commons.backend.BRLPersistence;
 import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
 import org.drools.guvnor.models.commons.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.rule.RuleModel;

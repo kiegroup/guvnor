@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.FactPattern;
 import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
 import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;

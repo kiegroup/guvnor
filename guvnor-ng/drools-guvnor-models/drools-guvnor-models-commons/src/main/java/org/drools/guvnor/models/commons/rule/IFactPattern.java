@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.IPattern;
-
 /**
  * Interface for Patterns that contains a Fact Type
  */

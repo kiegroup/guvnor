@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.guvnor.models.commons.imports.Imports;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;

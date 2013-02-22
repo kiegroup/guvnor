@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.models.commons;
+package org.drools.guvnor.models.commons.rule;
 
 public interface FieldNature {
 

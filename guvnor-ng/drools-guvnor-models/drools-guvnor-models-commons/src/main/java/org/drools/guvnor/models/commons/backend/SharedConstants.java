@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.models.commons;
+package org.drools.guvnor.models.commons.backend;
 
 import java.io.Serializable;
 

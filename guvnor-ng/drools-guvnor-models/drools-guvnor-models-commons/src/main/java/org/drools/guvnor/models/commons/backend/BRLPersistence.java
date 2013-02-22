@@ -13,32 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.models.commons;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+package org.drools.guvnor.models.commons.backend;
 
-/**
- * This class represents the value of a simple variable inside a DSLSentence.
- * "Simple variable" means that it only contains a single value.
- */
-@Portable
-public class DSLVariableValue {
+import org.drools.guvnor.models.commons.rule.RuleModel;
 
-    private String value;
+import java.util.List;
 
-    public DSLVariableValue() {
-    }
+public interface BRLPersistence {
 
-    public DSLVariableValue( String value ) {
-        this.value = value;
-    }
+    String marshal( final RuleModel model );
 
-    public String getValue() {
-        return value;
-    }
+    RuleModel unmarshal( final String str );
 
-    public void setValue( String value ) {
-        this.value = value;
-    }
-
+    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls );
 }

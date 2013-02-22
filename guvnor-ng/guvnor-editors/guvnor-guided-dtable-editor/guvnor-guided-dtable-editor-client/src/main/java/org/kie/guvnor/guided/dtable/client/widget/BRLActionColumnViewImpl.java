@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.rule.IAction;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.drools.guvnor.models.commons.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.rule.RuleModel;

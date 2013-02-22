@@ -17,9 +17,9 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.ActionCallMethod;
 import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
 import org.drools.guvnor.models.commons.rule.ActionInsertFact;

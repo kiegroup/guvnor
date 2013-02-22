@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.guvnor.models.commons.rule.ActionCallMethod;
 import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
 import org.drools.guvnor.models.commons.rule.ActionInsertFact;

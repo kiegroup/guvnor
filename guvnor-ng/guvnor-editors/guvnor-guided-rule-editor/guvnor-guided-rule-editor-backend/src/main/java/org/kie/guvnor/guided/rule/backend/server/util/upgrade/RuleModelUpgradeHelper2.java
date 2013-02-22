@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util.upgrade;
 
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
 import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
 import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;

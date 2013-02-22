@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
 import org.drools.guvnor.models.commons.rule.ActionExecuteWorkItem;
 import org.drools.guvnor.models.commons.rule.ActionFieldList;

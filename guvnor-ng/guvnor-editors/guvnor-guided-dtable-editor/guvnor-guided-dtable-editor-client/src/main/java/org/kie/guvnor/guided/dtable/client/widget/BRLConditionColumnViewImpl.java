@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;

@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.models.guided.dtable.model;
 
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.ActionInsertFact;
 import org.drools.guvnor.models.commons.rule.ActionRetractFact;
 import org.drools.guvnor.models.commons.rule.ActionSetField;

@@ -18,8 +18,8 @@ package org.kie.guvnor.guided.rule.backend.server.util;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.guvnor.models.commons.BRLPersistence;
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.backend.BRLPersistence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.guvnor.models.commons.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
 import org.drools.guvnor.models.commons.rule.ActionInsertFact;

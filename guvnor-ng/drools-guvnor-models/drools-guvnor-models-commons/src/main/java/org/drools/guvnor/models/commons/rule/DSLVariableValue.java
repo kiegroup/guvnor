@@ -13,9 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.guvnor.models.commons.rule;
 
-package org.drools.guvnor.models.commons;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public interface IAction {
+/**
+ * This class represents the value of a simple variable inside a DSLSentence.
+ * "Simple variable" means that it only contains a single value.
+ */
+@Portable
+public class DSLVariableValue {
+
+    private String value;
+
+    public DSLVariableValue() {
+    }
+
+    public DSLVariableValue( String value ) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue( String value ) {
+        this.value = value;
+    }
 
 }

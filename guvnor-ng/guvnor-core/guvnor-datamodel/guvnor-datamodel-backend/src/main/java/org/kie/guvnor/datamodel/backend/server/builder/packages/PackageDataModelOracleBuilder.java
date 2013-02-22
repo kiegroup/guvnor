@@ -1,6 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server.builder.packages;
 
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;

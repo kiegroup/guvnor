@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.models.guided.dtable.model;
 
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;

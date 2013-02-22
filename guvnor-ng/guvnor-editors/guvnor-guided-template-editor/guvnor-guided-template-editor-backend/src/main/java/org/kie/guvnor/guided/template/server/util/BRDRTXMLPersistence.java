@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.template.server.util;
 
-import org.drools.guvnor.models.commons.BRLPersistence;
+import org.drools.guvnor.models.commons.backend.BRLPersistence;
 import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.guided.rule.backend.server.util.BRXMLPersistence;
 import org.kie.guvnor.guided.template.model.TemplateModel;

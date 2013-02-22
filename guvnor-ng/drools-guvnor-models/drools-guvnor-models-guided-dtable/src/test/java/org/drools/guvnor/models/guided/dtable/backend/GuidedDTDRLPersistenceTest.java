@@ -16,13 +16,11 @@
 
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.guided.dtable.backend.DataUtilities;
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDTTemplateDataProvider;
 import org.drools.guvnor.models.guided.dtable.backend.util.TemplateDataProvider;
 import org.junit.Test;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.workitems.PortableBooleanParameterDefinition;
 import org.drools.guvnor.models.commons.workitems.PortableFloatParameterDefinition;
 import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;

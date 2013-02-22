@@ -15,9 +15,9 @@
  */
 package org.kie.guvnor.guided.template.model;
 
-import org.drools.guvnor.models.commons.FieldNatureType;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.FieldNatureType;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.ActionFieldList;
 import org.drools.guvnor.models.commons.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;

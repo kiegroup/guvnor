@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
 import org.drools.guvnor.models.commons.rule.FactPattern;
 import org.drools.guvnor.models.commons.rule.FreeFormLine;

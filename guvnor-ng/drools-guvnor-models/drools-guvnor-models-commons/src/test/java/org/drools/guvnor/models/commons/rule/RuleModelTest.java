@@ -2,21 +2,6 @@ package org.drools.guvnor.models.commons.rule;
 
 import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
-import org.drools.guvnor.models.commons.rule.ActionRetractFact;
-import org.drools.guvnor.models.commons.rule.ActionSetField;
-import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
-import org.drools.guvnor.models.commons.rule.ExpressionField;
-import org.drools.guvnor.models.commons.rule.FactPattern;
-import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.RuleAttribute;
-import org.drools.guvnor.models.commons.rule.RuleMetadata;
-import org.drools.guvnor.models.commons.rule.RuleModel;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
 
 import java.util.List;
 

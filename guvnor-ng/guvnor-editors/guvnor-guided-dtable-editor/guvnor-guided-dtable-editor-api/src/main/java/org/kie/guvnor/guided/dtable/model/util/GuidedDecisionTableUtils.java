@@ -1,8 +1,8 @@
 package org.kie.guvnor.guided.dtable.model.util;
 
-import org.drools.guvnor.models.commons.DSLSentence;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
 import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;

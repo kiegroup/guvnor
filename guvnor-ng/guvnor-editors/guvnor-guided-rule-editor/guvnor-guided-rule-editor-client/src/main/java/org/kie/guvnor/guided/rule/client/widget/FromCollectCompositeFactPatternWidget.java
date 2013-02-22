@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.FactPattern;
 import org.drools.guvnor.models.commons.rule.FreeFormLine;
 import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;

@@ -1,6 +1,6 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.DSLSentence;
 import org.drools.guvnor.models.commons.imports.Imports;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.drools.guvnor.models.commons.oracle.OperatorsOracle;

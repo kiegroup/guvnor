@@ -17,8 +17,8 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.IAction;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IAction;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
 
 public interface ModellerWidgetFactory {

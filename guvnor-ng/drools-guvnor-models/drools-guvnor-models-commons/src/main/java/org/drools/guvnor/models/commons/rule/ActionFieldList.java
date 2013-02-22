@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.models.commons.rule;
 
-import org.drools.guvnor.models.commons.IAction;
-
 /**
  * This class is the parent for field setting or assertion actions.
  * <p/>

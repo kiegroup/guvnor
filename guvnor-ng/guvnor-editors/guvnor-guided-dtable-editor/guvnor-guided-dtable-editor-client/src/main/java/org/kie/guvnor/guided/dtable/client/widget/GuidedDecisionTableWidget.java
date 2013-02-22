@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.IPattern;
 import org.drools.guvnor.models.commons.rule.FactPattern;
 import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;

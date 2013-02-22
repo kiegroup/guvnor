@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.FieldNatureType;
+import org.drools.guvnor.models.commons.rule.FieldNatureType;
 import org.drools.guvnor.models.commons.oracle.DataType;
 import org.drools.guvnor.models.commons.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.rule.ActionInsertFact;

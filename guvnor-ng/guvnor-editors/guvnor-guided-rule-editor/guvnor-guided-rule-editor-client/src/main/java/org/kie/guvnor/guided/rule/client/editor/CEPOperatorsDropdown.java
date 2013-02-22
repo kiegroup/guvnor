@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.SharedConstants;
+import org.drools.guvnor.models.commons.backend.SharedConstants;
 import org.drools.guvnor.models.commons.rule.HasParameterizedOperator;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
