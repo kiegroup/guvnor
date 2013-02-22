@@ -1,5 +1,9 @@
 package org.kie.guvnor.explorer.client;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -14,10 +18,6 @@ import org.kie.guvnor.explorer.client.widget.ProjectWidget;
 import org.kie.guvnor.explorer.client.widget.RepositoryWidget;
 import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * The ExplorerPresenter's view implementation
@@ -50,12 +50,6 @@ public class ExplorerView extends Composite implements ExplorerPresenter.View {
         this.breadCrumbsWidget.setPresenter( presenter );
     }
 
-    @Override
-    public void reset() {
-        itemWidgetsContainer.clear();
-        breadCrumbsWidgetContainer.clear();
-    }
-    
     @Override
     public void setContent( final ExplorerContent content ) {
 

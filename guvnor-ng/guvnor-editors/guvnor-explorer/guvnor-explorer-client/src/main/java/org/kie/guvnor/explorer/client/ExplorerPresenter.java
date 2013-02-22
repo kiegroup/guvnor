@@ -62,15 +62,12 @@ public class ExplorerPresenter {
 
         void setContent( ExplorerContent content );
 
-        void reset();
-
     }
 
     @OnStart
     public void onStart() {
         final Path p = context.getActivePath();
         loadItems( p );
-        setContext( p );
     }
 
     @WorkbenchPartView
