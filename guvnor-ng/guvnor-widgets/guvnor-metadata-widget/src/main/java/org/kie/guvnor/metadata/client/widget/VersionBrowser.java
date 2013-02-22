@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -32,10 +30,10 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.services.readonly.ReadOnlyPathPlaceRequest;
 import org.kie.guvnor.services.version.VersionService;
 import org.uberfire.backend.vfs.Path;
@@ -43,8 +41,10 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
 
+import java.util.List;
+
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This widget shows a list of versions for packages or assets

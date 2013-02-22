@@ -16,36 +16,36 @@
 
 package org.kie.guvnor.guided.dtable.backend.server;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
+import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTXMLPersistence;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.services.inbox.AssetEditedEvent;
 import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
 
 @Service
 @ApplicationScoped

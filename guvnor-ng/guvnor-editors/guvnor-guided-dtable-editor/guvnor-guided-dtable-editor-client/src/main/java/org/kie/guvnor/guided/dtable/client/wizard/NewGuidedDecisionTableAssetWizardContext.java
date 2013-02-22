@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard;
 
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 
 /**

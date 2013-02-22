@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.client.editor;
 
-import javax.inject.Inject;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
@@ -26,9 +24,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.GuidedDecisionTableWidget;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
+
+import javax.inject.Inject;
 
 public class GuidedDecisionTableEditorView
         extends Composite

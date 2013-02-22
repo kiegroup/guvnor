@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.commons.service.verification.model;
 
-import java.util.Map;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.Map;
 
 /**
  * This is a single line of an analysis report.

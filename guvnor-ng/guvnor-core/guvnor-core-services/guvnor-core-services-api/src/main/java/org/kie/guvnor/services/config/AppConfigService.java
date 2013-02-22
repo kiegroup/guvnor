@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.services.config;
 
-import java.util.Map;
-
 import org.jboss.errai.bus.server.annotations.Remote;
+
+import java.util.Map;
 
 /**
  *

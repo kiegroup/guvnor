@@ -16,17 +16,17 @@
 
 package org.kie.guvnor.guided.dtable.service;
 
-import java.util.Set;
-
+import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
-import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.Set;
 
 @Remote
 public interface GuidedDecisionTableEditorService

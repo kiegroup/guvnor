@@ -30,19 +30,19 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionInsertLogicalFact;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionInsertLogicalFact;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -185,7 +185,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         };
 
         String assertType = "assert"; //NON-NLS
-        if ( this.model instanceof ActionInsertLogicalFact ) {
+        if ( this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical"; //NON-NLS
         }
 

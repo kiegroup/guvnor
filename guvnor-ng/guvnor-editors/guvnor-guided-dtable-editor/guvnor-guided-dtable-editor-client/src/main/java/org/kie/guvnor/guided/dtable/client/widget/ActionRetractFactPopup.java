@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,15 +24,17 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52.TableFormat;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52.TableFormat;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
 import org.uberfire.client.common.FormStylePopup;
+
+import java.util.List;
 
 /**
  * A popup to define the parameters of an Action to retract a Fact

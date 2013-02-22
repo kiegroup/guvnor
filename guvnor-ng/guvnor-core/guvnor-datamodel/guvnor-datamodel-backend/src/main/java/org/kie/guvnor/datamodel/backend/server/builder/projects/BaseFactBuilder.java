@@ -1,15 +1,15 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 /**
  * Base FactBuilder containing common code

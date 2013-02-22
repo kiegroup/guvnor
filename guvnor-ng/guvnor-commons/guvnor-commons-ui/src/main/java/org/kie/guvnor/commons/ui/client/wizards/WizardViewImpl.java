@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +29,11 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.common.Popup;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The generic Wizard view implementation
@@ -141,7 +141,7 @@ public class WizardViewImpl extends Popup
             return;
         }
         selectPage( pageNumber + 1 );
-        btnNext.setFocus( false );
+        btnNext.setFocus(false);
     }
 
     @UiHandler(value = "btnPrevious")
@@ -150,7 +150,7 @@ public class WizardViewImpl extends Popup
             return;
         }
         selectPage( pageNumber - 1 );
-        btnPrevious.setFocus( false );
+        btnPrevious.setFocus(false);
     }
 
     public void selectPage( final int pageNumber ) {
@@ -164,7 +164,7 @@ public class WizardViewImpl extends Popup
         }
         btnNext.setEnabled( pageNumber < pageNumberTotal - 1 );
         btnPrevious.setEnabled( pageNumber > 0 );
-        presenter.pageSelected( pageNumber );
+        presenter.pageSelected(pageNumber);
     }
 
     public void setBodyWidget( final Widget w ) {

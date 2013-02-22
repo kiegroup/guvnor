@@ -1,15 +1,15 @@
 package org.kie.guvnor.services.backend.metadata;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.commons.service.metadata.model.Categories;
+import org.kie.guvnor.services.metadata.CategoriesService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @Service
 @ApplicationScoped

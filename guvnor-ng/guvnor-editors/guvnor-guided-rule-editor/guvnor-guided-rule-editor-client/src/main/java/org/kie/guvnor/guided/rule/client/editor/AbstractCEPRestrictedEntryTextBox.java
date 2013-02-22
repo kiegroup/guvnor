@@ -17,8 +17,8 @@ package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import org.drools.guvnor.models.commons.rule.HasParameterizedOperator;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.guvnor.guided.rule.model.HasParameterizedOperator;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**

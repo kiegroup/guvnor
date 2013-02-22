@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server;
 
-import java.util.Date;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.codehaus.plexus.util.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -44,6 +38,12 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
 
 @Service
 @ApplicationScoped

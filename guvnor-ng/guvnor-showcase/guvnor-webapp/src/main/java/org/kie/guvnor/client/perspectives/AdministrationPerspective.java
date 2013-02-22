@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.client.perspectives;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -45,7 +41,12 @@ import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import static org.uberfire.client.workbench.widgets.toolbar.IconType.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import static org.uberfire.client.workbench.widgets.toolbar.IconType.DOWNLOAD_ALT;
+import static org.uberfire.client.workbench.widgets.toolbar.IconType.FOLDER_CLOSE_ALT;
 
 /**
  * A Perspective for Administrators

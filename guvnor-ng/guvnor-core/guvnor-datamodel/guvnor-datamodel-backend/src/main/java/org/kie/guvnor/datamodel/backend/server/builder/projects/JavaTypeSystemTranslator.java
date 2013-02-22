@@ -1,12 +1,12 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
-
-import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
-import org.kie.guvnor.datamodel.oracle.DataType;
 
 /**
  * Translates Java's Type System to Guvnor's Type System

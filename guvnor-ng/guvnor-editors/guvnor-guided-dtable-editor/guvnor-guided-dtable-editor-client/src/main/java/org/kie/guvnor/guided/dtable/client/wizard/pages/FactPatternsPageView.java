@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.List;
-
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.uberfire.client.mvp.UberView;
+
+import java.util.List;
 
 /**
  * View and Presenter definitions for the Fact Patterns page

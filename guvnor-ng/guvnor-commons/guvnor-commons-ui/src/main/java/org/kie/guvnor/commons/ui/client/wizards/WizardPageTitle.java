@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,6 +26,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 /**
  * A widget containing the page title of a Wizard page, along with an indicator
@@ -64,12 +64,12 @@ public class WizardPageTitle extends Composite {
     }
 
     public void setContent( final WizardPage page ) {
-        lblTitle.setText( page.getTitle() );
-        setComplete( page.isComplete() );
+        lblTitle.setText(page.getTitle());
+        setComplete(page.isComplete());
         container.addDomHandler( new ClickHandler() {
 
             public void onClick( final ClickEvent event ) {
-                selectPageEvent.fire( new WizardPageSelectedEvent( page ) );
+                selectPageEvent.fire(new WizardPageSelectedEvent(page));
             }
 
         },

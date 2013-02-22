@@ -2,7 +2,7 @@ package org.kie.guvnor.guided.scorecard.backend.server;
 
 import org.kie.builder.impl.FormatConversionResult;
 import org.kie.builder.impl.FormatConverter;
-import org.kie.guvnor.commons.service.source.BaseConverter;
+import org.drools.guvnor.models.commons.BaseConverter;
 import org.kie.guvnor.guided.scorecard.backend.server.util.ScoreCardsXMLPersistence;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 

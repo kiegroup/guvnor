@@ -16,17 +16,6 @@
 
 package org.kie.guvnor.workingset.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.data.events.OnWorkingSetApplied;
 import org.kie.guvnor.commons.data.events.OnWorkingSetDisabled;
@@ -37,6 +26,17 @@ import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 //import org.kie.commons.data.Pair;
 

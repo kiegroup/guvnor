@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.inbox.model;
 
-import java.util.Date;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
+
+import java.util.Date;
 
 /**
  * A single row of a paged data

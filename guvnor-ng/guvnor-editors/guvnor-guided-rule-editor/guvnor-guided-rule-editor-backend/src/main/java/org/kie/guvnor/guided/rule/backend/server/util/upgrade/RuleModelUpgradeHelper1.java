@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util.upgrade;
 
-import org.kie.guvnor.guided.rule.model.ActionCallMethod;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.RuleMetadata;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.drools.guvnor.models.commons.rule.ActionCallMethod;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.RuleMetadata;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 
 /**
  * Utility class to support upgrades of the RuleModel model. Release pre-5.2
@@ -45,7 +45,7 @@ public class RuleModelUpgradeHelper1
     private RuleModel updateMethodCall( RuleModel model ) {
 
         for ( int i = 0; i < model.rhs.length; i++ ) {
-            if ( model.rhs[ i ] instanceof ActionCallMethod ) {
+            if ( model.rhs[ i ] instanceof ActionCallMethod) {
                 ActionCallMethod action = (ActionCallMethod) model.rhs[ i ];
                 // Check if method name is filled, if not this was made with an older Guvnor version
                 if ( action.getMethodName() == null || "".equals( action.getMethodName() ) ) {

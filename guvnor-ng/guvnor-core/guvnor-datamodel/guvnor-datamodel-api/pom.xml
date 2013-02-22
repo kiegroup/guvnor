@@ -48,6 +48,10 @@
       <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor-models-commons</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

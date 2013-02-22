@@ -1,11 +1,5 @@
 package org.kie.guvnor.globals.client.editor;
 
-import java.util.List;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -54,6 +48,12 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Editor for Global variables

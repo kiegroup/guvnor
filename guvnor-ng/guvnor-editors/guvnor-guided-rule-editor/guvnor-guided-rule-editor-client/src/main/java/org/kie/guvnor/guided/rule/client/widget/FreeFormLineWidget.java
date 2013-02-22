@@ -26,13 +26,13 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
 import org.kie.guvnor.guided.rule.client.editor.DynamicTextArea;
 import org.kie.guvnor.guided.rule.client.editor.FreeFormLinePopup;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.DirtyableFlexTable;
 
 /**

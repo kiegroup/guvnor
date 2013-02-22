@@ -16,15 +16,9 @@
 
 package org.kie.guvnor.inbox.client;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
-
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.inbox.service.InboxService;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
@@ -32,6 +26,10 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen(identifier = "Inbox")

@@ -1,16 +1,16 @@
 package org.kie.guvnor.explorer.backend.server.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utilities for BreadCrumbs

@@ -1,10 +1,5 @@
 package org.kie.guvnor.projecteditor.client.handlers;
 
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -22,6 +17,11 @@ import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Handler for the creation of new Projects

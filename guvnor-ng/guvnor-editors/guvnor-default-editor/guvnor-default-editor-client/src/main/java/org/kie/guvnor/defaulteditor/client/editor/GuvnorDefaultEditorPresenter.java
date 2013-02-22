@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.defaulteditor.client.editor;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -48,6 +44,10 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.file.AnyResourceType;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 /**
  * A text based editor for Domain Specific Language definitions

@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -31,6 +26,10 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.RuleMetadata;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -39,15 +38,11 @@ import org.kie.guvnor.commons.security.UserCapabilities;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReportLine;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
-import org.kie.guvnor.guided.rule.model.RuleMetadata;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.workingset.client.WorkingSetManager;
 import org.uberfire.backend.vfs.Path;
@@ -58,6 +53,11 @@ import org.uberfire.client.common.DirtyableHorizontalPane;
 import org.uberfire.client.common.DirtyableVerticalPane;
 import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This is the parent widget that contains the model based rule builder.

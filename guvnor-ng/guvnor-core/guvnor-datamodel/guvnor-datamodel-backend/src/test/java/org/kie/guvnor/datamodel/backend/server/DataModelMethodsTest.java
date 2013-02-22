@@ -16,16 +16,16 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 

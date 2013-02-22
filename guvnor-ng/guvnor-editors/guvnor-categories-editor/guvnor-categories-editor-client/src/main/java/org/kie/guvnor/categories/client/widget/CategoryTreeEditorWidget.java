@@ -25,7 +25,7 @@ import org.kie.guvnor.categories.client.resources.ImageResources;
 import org.kie.guvnor.commons.service.metadata.model.Categories;
 import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to

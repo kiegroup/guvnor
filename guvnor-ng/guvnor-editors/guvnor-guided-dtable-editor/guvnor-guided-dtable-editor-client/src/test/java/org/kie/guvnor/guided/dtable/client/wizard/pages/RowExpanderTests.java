@@ -15,27 +15,27 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryConditionCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 

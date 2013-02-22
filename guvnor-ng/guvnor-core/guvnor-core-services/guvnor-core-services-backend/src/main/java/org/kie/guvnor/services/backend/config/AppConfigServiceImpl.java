@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import java.util.Date;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.services.config.AppConfigService;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.Date;
+import java.util.Map;
 
 @Service
 @ApplicationScoped

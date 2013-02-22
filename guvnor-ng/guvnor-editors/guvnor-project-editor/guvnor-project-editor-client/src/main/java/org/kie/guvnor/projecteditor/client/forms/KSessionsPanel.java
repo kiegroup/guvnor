@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import javax.inject.Inject;
-
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.project.model.KSessionModel;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
+
+import javax.inject.Inject;
 
 public class KSessionsPanel
         extends ListFormComboPanel<KSessionModel> {

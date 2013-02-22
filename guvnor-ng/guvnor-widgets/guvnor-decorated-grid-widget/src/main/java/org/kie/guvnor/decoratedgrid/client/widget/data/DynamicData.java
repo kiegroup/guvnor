@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.data;
 
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
 
 /**
  * A simple container for rows of data.

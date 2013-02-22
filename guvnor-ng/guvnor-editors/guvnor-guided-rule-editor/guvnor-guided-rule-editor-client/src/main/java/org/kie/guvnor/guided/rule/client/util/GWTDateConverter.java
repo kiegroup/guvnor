@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.guided.rule.client.util;
 
-import java.util.Date;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.datamodel.model.DateConverter;
+
+import java.util.Date;
 
 /**
  * Convenience class to handle date conversion when running under GWT.

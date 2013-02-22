@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.template.client.editor;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -68,6 +63,11 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })

@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.drltext.client.editor;
 
-import javax.annotation.PostConstruct;
-
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -27,6 +25,8 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.drltext.client.widget.FactTypeBrowserWidget;
 import org.kie.guvnor.drltext.client.widget.RuleContentWidget;
+
+import javax.annotation.PostConstruct;
 
 public class DRLEditorViewImpl
         extends Composite

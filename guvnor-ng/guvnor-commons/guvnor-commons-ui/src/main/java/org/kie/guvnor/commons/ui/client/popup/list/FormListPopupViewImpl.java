@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.popup.list;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -30,6 +28,8 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
+
+import java.util.List;
 
 public class FormListPopupViewImpl
         extends Popup

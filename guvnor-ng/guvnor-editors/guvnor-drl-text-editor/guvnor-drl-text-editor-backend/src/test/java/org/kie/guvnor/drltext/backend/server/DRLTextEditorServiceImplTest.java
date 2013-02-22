@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
-import java.net.URISyntaxException;
-import java.net.URL;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,7 +25,14 @@ import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class DRLTextEditorServiceImplTest {
 

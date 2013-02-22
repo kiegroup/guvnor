@@ -1,16 +1,16 @@
 package org.kie.guvnor.services.backend.repositories;
 
+import org.kie.guvnor.services.config.AppConfigService;
+import org.kie.guvnor.services.repositories.Repository;
+import org.kie.guvnor.services.repositories.RepositoryService;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.kie.guvnor.services.config.AppConfigService;
-import org.kie.guvnor.services.repositories.Repository;
-import org.kie.guvnor.services.repositories.RepositoryService;
 
 /**
  * Server-side utilities to manipulate repository information

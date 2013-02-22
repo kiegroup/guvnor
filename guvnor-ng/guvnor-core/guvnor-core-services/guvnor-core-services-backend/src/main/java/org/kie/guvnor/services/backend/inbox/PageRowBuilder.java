@@ -1,10 +1,10 @@
 package org.kie.guvnor.services.backend.inbox;
 
-import java.util.List;
-
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.uberfire.security.Identity;
+
+import java.util.List;
 
 
 public interface PageRowBuilder<REQUEST extends PageRequest, CONTENT> {

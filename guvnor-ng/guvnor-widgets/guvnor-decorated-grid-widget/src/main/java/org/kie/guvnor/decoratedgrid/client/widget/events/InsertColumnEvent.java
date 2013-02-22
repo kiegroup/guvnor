@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An event to insert a column

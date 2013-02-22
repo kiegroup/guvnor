@@ -15,13 +15,13 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.kie.guvnor.datamodel.model.DSLVariableValue;
+import org.drools.guvnor.models.commons.DSLVariableValue;
+
+import java.util.Collection;
 
 /**
  * This XStream converter converts legacy String DSL values into
@@ -44,7 +44,7 @@ public class DSLVariableValuesConverter extends CollectionConverter {
         Object item = readItem( reader,
                                 context,
                                 collection );
-        if ( item instanceof DSLVariableValue ) {
+        if ( item instanceof DSLVariableValue) {
             target.add( item );
         } else if ( item instanceof String ) {
             //The only other possible legacy type is a String, so using toString() should be OK

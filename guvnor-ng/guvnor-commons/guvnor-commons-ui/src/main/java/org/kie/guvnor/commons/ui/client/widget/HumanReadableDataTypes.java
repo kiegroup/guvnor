@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.commons.ui.client.widget;
 
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 public class HumanReadableDataTypes {
 

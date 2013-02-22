@@ -1,9 +1,8 @@
 package org.kie.guvnor.configresource.client.widget.bound;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.commons.imports.Imports;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.config.model.imports.Imports;
-import org.uberfire.backend.vfs.Path;
 
 public interface ImportsWidgetView
         extends IsWidget {

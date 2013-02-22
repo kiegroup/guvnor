@@ -20,9 +20,11 @@ import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.client.widget.table.AbstractDecisionTableWidget;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 
 /**
  * A Drag Handler for Actions in the Configuration section of the Guided

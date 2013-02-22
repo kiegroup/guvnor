@@ -16,14 +16,10 @@
 
 package org.kie.guvnor.commons.ui.client.tables;
 
-import org.kie.guvnor.commons.data.tables.AbstractPageRow;
-
-import com.google.gwt.core.client.GWT;
-
-
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 
 /**
  * Widget that shows rows of paged data.

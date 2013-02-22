@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table.events;
 
-import java.util.List;
-
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+
+import java.util.List;
 
 /**
  * An event to set the internal model for a Guided Decision Table

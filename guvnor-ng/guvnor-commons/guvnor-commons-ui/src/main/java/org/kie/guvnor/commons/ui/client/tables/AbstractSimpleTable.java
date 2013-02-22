@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.tables;
 
-import java.util.List;
-
-import org.kie.guvnor.commons.data.tables.AbstractPageRow;
-
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -34,6 +28,9 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.kie.guvnor.commons.data.tables.AbstractPageRow;
+
+import java.util.List;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"

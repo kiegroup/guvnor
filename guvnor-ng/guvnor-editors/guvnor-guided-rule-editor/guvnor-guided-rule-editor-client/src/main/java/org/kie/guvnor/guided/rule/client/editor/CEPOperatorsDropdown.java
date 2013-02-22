@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.guided.rule.client.editor;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -34,13 +31,16 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.model.SharedConstants;
+import org.drools.guvnor.models.commons.SharedConstants;
+import org.drools.guvnor.models.commons.rule.HasParameterizedOperator;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.HasParameterizedOperator;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Drop-down Widget for Operators including supplementary controls for CEP

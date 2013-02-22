@@ -23,7 +23,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
 
 /**
  * A cell to display Actions

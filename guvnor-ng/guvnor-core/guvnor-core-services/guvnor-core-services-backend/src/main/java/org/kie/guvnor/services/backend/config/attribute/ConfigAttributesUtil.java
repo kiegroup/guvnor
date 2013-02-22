@@ -19,8 +19,7 @@ package org.kie.guvnor.services.backend.config.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.config.attribute.ConfigView.*;
+import static org.kie.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  *

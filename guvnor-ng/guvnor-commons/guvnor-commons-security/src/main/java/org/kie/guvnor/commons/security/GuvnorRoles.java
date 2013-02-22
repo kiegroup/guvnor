@@ -16,13 +16,14 @@
 
 package org.kie.guvnor.commons.security;
 
+import org.uberfire.security.annotations.RolesType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.uberfire.security.annotations.RolesType;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @RolesType
 @Retention(RUNTIME)

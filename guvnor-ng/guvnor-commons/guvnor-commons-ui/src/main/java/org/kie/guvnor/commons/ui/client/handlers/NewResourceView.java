@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -35,6 +30,11 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.common.FormStylePopup;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class NewResourceView extends FormStylePopup implements NewResourcePresenter.View {

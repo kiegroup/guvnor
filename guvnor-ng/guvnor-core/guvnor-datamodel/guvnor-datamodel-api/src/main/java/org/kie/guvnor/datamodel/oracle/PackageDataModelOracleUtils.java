@@ -1,14 +1,14 @@
 package org.kie.guvnor.datamodel.oracle;
 
+import org.drools.guvnor.models.commons.imports.Import;
+import org.drools.guvnor.models.commons.imports.Imports;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
  * Utilities for PackageDataModelOracle

@@ -15,35 +15,35 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.gwt.cell.client.Cell.Context;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLActionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor;
 import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor.ValueHolder;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A utility class to get the values of all Constraints\Actions in the scope of

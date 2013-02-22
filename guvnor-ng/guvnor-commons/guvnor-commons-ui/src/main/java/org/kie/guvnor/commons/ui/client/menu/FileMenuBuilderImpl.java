@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -42,7 +36,13 @@ import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
 
 /**
  *

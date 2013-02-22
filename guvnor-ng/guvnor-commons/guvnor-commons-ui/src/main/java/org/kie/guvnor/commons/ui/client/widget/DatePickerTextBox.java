@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.widget;
 
-import java.util.Date;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,6 +26,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ImageButton;
+
+import java.util.Date;
 
 public class DatePickerTextBox extends DatePicker {
 

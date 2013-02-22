@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.template.client.resources.images;
 
-import com.google.gwt.user.client.ui.Image;
-import org.kie.guvnor.commons.ui.client.resources.CommonImages;
-import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-
 public class GuidedTemplateEditorImages508 {
 
     public static GuidedTemplateEditorImages508 INSTANCE = new GuidedTemplateEditorImages508();

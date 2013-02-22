@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.globals.backend.server;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class GlobalsSourceService
         extends DRLBaseSourceService {

@@ -1,12 +1,12 @@
 package org.kie.guvnor.commons.ui.client.tables;
 
+import com.google.gwt.user.cellview.client.CellTable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.google.gwt.user.cellview.client.CellTable;
 
 public class SortableHeaderGroup<T extends Comparable> {
 

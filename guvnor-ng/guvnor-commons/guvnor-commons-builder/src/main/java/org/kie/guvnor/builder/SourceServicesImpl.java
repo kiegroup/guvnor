@@ -16,19 +16,19 @@
 
 package org.kie.guvnor.builder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.SourceService;
 import org.kie.guvnor.commons.service.source.SourceServices;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @ApplicationScoped

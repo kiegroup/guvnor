@@ -16,17 +16,10 @@
 
 package org.kie.guvnor.factmodel.backend.server;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.imports.ImportsParser;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -47,8 +40,6 @@ import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
-import org.kie.guvnor.services.config.model.imports.Imports;
-import org.kie.guvnor.services.config.model.imports.ImportsParser;
 import org.kie.guvnor.services.inbox.AssetEditedEvent;
 import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -57,7 +48,16 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
-import static java.util.Collections.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyList;
 
 /**
  *
@@ -106,7 +106,7 @@ public class FactModelServiceImpl
             factModels.getModels().addAll( models );
 
             //De-serialize imports
-            final Imports imports = ImportsParser.parseImports( drl );
+            final Imports imports = ImportsParser.parseImports(drl);
             factModels.setImports( imports );
 
             final DataModelOracle oracle = dataModelService.getDataModel( path );

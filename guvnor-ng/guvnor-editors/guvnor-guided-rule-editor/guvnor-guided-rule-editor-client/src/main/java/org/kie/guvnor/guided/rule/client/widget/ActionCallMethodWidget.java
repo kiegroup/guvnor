@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,22 +26,25 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.ActionCallMethod;
+import org.drools.guvnor.models.commons.rule.ActionFieldFunction;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.FactPattern;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.MethodParameterValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
-import org.kie.guvnor.guided.rule.model.ActionCallMethod;
-import org.kie.guvnor.guided.rule.model.ActionFieldFunction;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This widget is for modifying facts bound to a variable.

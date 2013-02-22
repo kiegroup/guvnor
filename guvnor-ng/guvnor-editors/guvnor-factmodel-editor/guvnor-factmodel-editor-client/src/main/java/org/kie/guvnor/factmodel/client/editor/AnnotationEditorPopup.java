@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.regexp.shared.RegExp;
@@ -31,6 +28,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.uberfire.client.common.FormStylePopup;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A pop-up editor for a single Fact annotation

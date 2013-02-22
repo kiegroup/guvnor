@@ -1,9 +1,9 @@
 package org.kie.guvnor.explorer.client.util;
 
-import java.util.Comparator;
-
 import org.kie.guvnor.explorer.model.Item;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.Comparator;
 
 /**
  * A comparator to sort a list of items alphabetically by folder and then files.

@@ -1,11 +1,5 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
@@ -17,6 +11,12 @@ import org.kie.guvnor.explorer.model.ProjectItem;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Loader to add Projects, Folders and Files

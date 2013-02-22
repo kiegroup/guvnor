@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server.util;
 
-import java.math.BigDecimal;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
+
+import java.math.BigDecimal;
 
 public class ScoreCardsXMLPersistence {
 

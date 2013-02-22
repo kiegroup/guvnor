@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.factmodel.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class AnnotationMetaModel {

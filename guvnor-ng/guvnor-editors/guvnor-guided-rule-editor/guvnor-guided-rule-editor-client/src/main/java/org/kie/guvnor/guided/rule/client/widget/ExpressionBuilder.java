@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,8 +30,17 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.ExpressionCollectionIndex;
+import org.drools.guvnor.models.commons.rule.ExpressionFieldVariable;
+import org.drools.guvnor.models.commons.rule.ExpressionFormLine;
+import org.drools.guvnor.models.commons.rule.ExpressionMethod;
+import org.drools.guvnor.models.commons.rule.ExpressionPart;
+import org.drools.guvnor.models.commons.rule.ExpressionText;
+import org.drools.guvnor.models.commons.rule.ExpressionVariable;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeEvent;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeHandler;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionTypeChangeEvent;
@@ -45,18 +49,14 @@ import org.kie.guvnor.guided.rule.client.editor.HasExpressionChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.ExpressionCollectionIndex;
-import org.kie.guvnor.guided.rule.model.ExpressionFieldVariable;
-import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
-import org.kie.guvnor.guided.rule.model.ExpressionMethod;
-import org.kie.guvnor.guided.rule.model.ExpressionPart;
-import org.kie.guvnor.guided.rule.model.ExpressionText;
-import org.kie.guvnor.guided.rule.model.ExpressionVariable;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExpressionBuilder extends RuleModellerWidget
         implements

@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -30,6 +27,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A line on the Declarative Modelling screen representing a Fact annotation

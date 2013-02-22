@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.tables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.kie.guvnor.commons.ui.client.resources.TableImageResources;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -35,6 +30,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.kie.guvnor.commons.ui.client.resources.TableImageResources;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ColumnPicker<T> {

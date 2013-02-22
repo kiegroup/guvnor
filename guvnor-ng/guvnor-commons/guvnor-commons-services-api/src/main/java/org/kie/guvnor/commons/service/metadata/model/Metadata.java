@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.commons.service.metadata.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *

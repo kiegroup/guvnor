@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.resources.i18n;
 
-import org.uberfire.client.mvp.Command;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 

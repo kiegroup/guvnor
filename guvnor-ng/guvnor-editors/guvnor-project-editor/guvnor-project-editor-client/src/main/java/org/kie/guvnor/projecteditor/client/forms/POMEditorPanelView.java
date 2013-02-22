@@ -17,8 +17,8 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.Dependency;
+import org.kie.guvnor.project.model.GAV;
 
 import java.util.List;
 

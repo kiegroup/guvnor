@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.scorecard.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Characteristic {

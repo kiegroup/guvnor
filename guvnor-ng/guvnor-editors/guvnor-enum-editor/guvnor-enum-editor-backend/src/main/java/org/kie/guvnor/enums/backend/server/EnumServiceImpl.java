@@ -16,14 +16,6 @@
 
 package org.kie.guvnor.enums.backend.server;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -45,6 +37,14 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *

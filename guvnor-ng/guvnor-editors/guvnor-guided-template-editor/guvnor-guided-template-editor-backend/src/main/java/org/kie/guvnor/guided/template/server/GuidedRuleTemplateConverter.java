@@ -1,8 +1,8 @@
 package org.kie.guvnor.guided.template.server;
 
+import org.drools.guvnor.models.commons.BaseConverter;
 import org.kie.builder.impl.FormatConversionResult;
 import org.kie.builder.impl.FormatConverter;
-import org.kie.guvnor.commons.service.source.BaseConverter;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.template.server.util.BRDRTXMLPersistence;

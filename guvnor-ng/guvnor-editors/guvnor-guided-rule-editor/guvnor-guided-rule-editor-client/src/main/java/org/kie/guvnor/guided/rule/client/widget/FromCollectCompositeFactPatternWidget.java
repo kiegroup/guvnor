@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,20 +27,23 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.model.IPattern;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromEntryPointFactPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromEntryPointFactPattern;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
@@ -123,7 +123,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             IPattern rPattern = this.getFromCollectPattern().getRightPattern();
 
             RuleModellerWidget patternWidget = null;
-            if ( rPattern instanceof FactPattern ) {
+            if ( rPattern instanceof FactPattern) {
                 patternWidget = new FactPatternWidget( this.getModeller(),
                                                        this.getEventBus(),
                                                        rPattern,
@@ -131,7 +131,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                        true,
                                                        this.readOnly );
 
-            } else if ( rPattern instanceof FromAccumulateCompositeFactPattern ) {
+            } else if ( rPattern instanceof FromAccumulateCompositeFactPattern) {
                 patternWidget = new FromAccumulateCompositeFactPatternWidget( this.getModeller(),
                                                                               this.getEventBus(),
                                                                               (FromAccumulateCompositeFactPattern) rPattern,
@@ -155,7 +155,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                                     (FromCompositeFactPattern) rPattern,
                                                                     this.readOnly );
 
-            } else if ( rPattern instanceof FreeFormLine ) {
+            } else if ( rPattern instanceof FreeFormLine) {
                 patternWidget = new FreeFormLineWidget( this.getModeller(),
                                                         this.getEventBus(),
                                                         (FreeFormLine) rPattern,

@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.commons.ui.client.widget;
 
-import java.util.Date;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,6 +39,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+
+import java.util.Date;
 
 /**
  * A Date Picker that renders its value as a Label. When the Label is clicked on

@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.commons.data.factconstraints.helper;
 
+import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
+import org.kie.guvnor.commons.data.factconstraints.config.SimpleConstraintConfigurationImpl;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,9 +26,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
-import org.kie.guvnor.commons.data.factconstraints.config.SimpleConstraintConfigurationImpl;
 
 public class ConstraintsContainer {
 

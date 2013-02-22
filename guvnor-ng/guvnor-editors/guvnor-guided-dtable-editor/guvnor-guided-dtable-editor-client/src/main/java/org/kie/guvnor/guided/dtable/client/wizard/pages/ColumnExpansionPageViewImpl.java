@@ -16,14 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -44,7 +36,15 @@ import org.kie.guvnor.commons.ui.client.resources.WizardCellListResources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ConditionCell;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * An implementation of the Column Expansion page

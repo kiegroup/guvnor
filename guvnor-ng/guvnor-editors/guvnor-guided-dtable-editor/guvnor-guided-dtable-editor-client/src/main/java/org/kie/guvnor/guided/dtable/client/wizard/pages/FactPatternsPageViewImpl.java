@@ -16,13 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.List;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,10 +43,17 @@ import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.PatternCell;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Set;
 
 /**
  * An implementation of the Fact Patterns page

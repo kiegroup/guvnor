@@ -1,7 +1,5 @@
 package org.kie.guvnor.explorer.client.widget;
 
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -11,6 +9,8 @@ import com.google.gwt.user.client.ui.Label;
 import org.kie.guvnor.explorer.client.ExplorerPresenter;
 import org.kie.guvnor.explorer.client.resources.Resources;
 import org.kie.guvnor.explorer.model.BreadCrumb;
+
+import java.util.List;
 
 /**
  * A Simple Bread Crumbs Widget

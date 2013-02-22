@@ -17,9 +17,22 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.ActionCallMethod;
+import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.rule.ActionSetField;
+import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.ExpressionFormLine;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromEntryPointFactPattern;
 import org.kie.guvnor.guided.rule.client.widget.ActionCallMethodWidget;
 import org.kie.guvnor.guided.rule.client.widget.ActionInsertFactWidget;
 import org.kie.guvnor.guided.rule.client.widget.ActionRetractFactWidget;
@@ -35,19 +48,6 @@ import org.kie.guvnor.guided.rule.client.widget.FromCompositeFactPatternWidget;
 import org.kie.guvnor.guided.rule.client.widget.FromEntryPointFactPatternWidget;
 import org.kie.guvnor.guided.rule.client.widget.GlobalCollectionAddWidget;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
-import org.kie.guvnor.guided.rule.model.ActionCallMethod;
-import org.kie.guvnor.guided.rule.model.ActionGlobalCollectionAdd;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionRetractFact;
-import org.kie.guvnor.guided.rule.model.ActionSetField;
-import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromEntryPointFactPattern;
 
 public class RuleModellerWidgetFactory
         implements
@@ -57,31 +57,31 @@ public class RuleModellerWidgetFactory
                                          EventBus eventBus,
                                          IAction action,
                                          Boolean readOnly ) {
-        if ( action instanceof ActionCallMethod ) {
+        if ( action instanceof ActionCallMethod) {
             return new ActionCallMethodWidget( ruleModeller,
                                                eventBus,
                                                (ActionCallMethod) action,
                                                readOnly );
         }
-        if ( action instanceof ActionSetField ) {
+        if ( action instanceof ActionSetField) {
             return new ActionSetFieldWidget( ruleModeller,
                                              eventBus,
                                              (ActionSetField) action,
                                              readOnly );
         }
-        if ( action instanceof ActionInsertFact ) {
+        if ( action instanceof ActionInsertFact) {
             return new ActionInsertFactWidget( ruleModeller,
                                                eventBus,
                                                (ActionInsertFact) action,
                                                readOnly );
         }
-        if ( action instanceof ActionRetractFact ) {
+        if ( action instanceof ActionRetractFact) {
             return new ActionRetractFactWidget( ruleModeller,
                                                 eventBus,
                                                 (ActionRetractFact) action,
                                                 readOnly );
         }
-        if ( action instanceof DSLSentence ) {
+        if ( action instanceof DSLSentence) {
             RuleModellerWidget w = new DSLSentenceWidget( ruleModeller,
                                                           eventBus,
                                                           (DSLSentence) action,
@@ -89,13 +89,13 @@ public class RuleModellerWidgetFactory
             w.addStyleName( "model-builderInner-Background" ); //NON-NLS
             return w;
         }
-        if ( action instanceof FreeFormLine ) {
+        if ( action instanceof FreeFormLine) {
             return new FreeFormLineWidget( ruleModeller,
                                            eventBus,
                                            (FreeFormLine) action,
                                            readOnly );
         }
-        if ( action instanceof ActionGlobalCollectionAdd ) {
+        if ( action instanceof ActionGlobalCollectionAdd) {
             return new GlobalCollectionAddWidget( ruleModeller,
                                                   eventBus,
                                                   (ActionGlobalCollectionAdd) action,
@@ -108,7 +108,7 @@ public class RuleModellerWidgetFactory
                                          EventBus eventBus,
                                          IPattern pattern,
                                          Boolean readOnly ) {
-        if ( pattern instanceof FactPattern ) {
+        if ( pattern instanceof FactPattern) {
             return new FactPatternWidget( ruleModeller,
                                           eventBus,
                                           pattern,
@@ -139,7 +139,7 @@ public class RuleModellerWidgetFactory
                                                         (FromEntryPointFactPattern) pattern,
                                                         readOnly );
         }
-        if ( pattern instanceof FromCompositeFactPattern ) {
+        if ( pattern instanceof FromCompositeFactPattern) {
             return new FromCompositeFactPatternWidget( ruleModeller,
                                                        eventBus,
                                                        (FromCompositeFactPattern) pattern,
@@ -157,7 +157,7 @@ public class RuleModellerWidgetFactory
                                            (FreeFormLine) pattern,
                                            readOnly );
         }
-        if ( pattern instanceof ExpressionFormLine ) {
+        if ( pattern instanceof ExpressionFormLine) {
             return new ExpressionBuilder( ruleModeller,
                                           eventBus,
                                           (ExpressionFormLine) pattern,

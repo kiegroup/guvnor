@@ -15,17 +15,19 @@
  */
 package org.kie.guvnor.guided.template.model;
 
+import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.RuleModelVisitor;
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.services.config.model.imports.Imports;
 
 @Portable
 public class TemplateModel

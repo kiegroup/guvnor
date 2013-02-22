@@ -16,11 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.ImageCell;
-import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;

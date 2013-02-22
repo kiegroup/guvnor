@@ -1,9 +1,9 @@
 package org.kie.guvnor.globals.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * The model for Globals

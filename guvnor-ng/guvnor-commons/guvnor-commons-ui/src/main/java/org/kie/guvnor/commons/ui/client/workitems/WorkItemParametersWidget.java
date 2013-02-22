@@ -16,7 +16,7 @@
 package org.kie.guvnor.commons.ui.client.workitems;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.datamodel.model.workitems.PortableParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableParameterDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -15,13 +15,13 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.view.client.SelectionModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A CellList that can maintain a minimum width

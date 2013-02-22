@@ -15,24 +15,24 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.models.commons.IAction;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLActionColumn;
+import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
+import org.uberfire.backend.vfs.Path;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.gwt.event.shared.EventBus;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLColumn;
-import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLActionColumn;
-import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * An editor for a Limited Entry BRL Action Columns

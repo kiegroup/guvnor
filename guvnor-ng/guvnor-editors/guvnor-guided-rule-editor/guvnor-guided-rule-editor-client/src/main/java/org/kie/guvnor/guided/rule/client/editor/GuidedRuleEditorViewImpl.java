@@ -21,9 +21,9 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.backend.vfs.Path;
 
 public class GuidedRuleEditorViewImpl

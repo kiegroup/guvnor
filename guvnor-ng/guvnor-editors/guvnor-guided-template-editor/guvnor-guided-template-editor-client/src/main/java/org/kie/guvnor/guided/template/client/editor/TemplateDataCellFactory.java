@@ -16,8 +16,8 @@
 package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;

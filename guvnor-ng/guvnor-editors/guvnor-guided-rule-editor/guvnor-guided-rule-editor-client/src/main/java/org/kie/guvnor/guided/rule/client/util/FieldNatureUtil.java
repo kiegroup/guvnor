@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.rule.client.util;
 
+import org.drools.guvnor.models.commons.FieldNature;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.kie.guvnor.datamodel.model.FieldNature;
 
 /**
  *

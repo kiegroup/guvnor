@@ -16,12 +16,7 @@
 
 package org.kie.guvnor.m2repo.client;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
-
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.backend.vfs.Path;
@@ -31,6 +26,10 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen(identifier = "M2RepoEditor")

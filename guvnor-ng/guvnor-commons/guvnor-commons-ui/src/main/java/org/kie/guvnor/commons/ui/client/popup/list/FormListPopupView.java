@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.commons.ui.client.popup.list;
 
-import java.util.List;
-
 import org.kie.commons.data.Pair;
+
+import java.util.List;
 
 public interface FormListPopupView {
 

@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
 
 /**
  * Details of an Attribute column

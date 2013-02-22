@@ -16,10 +16,7 @@
 
 package org.kie.guvnor.project.backend.server;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.drools.guvnor.models.commons.imports.Imports;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
@@ -31,10 +28,13 @@ import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.config.model.imports.Imports;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Service
 @ApplicationScoped

@@ -16,14 +16,14 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.ExpressionCollection;
+import org.drools.guvnor.models.commons.rule.ExpressionField;
+import org.drools.guvnor.models.commons.rule.ExpressionGlobalVariable;
+import org.drools.guvnor.models.commons.rule.ExpressionMethod;
+import org.drools.guvnor.models.commons.rule.ExpressionPart;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.rule.model.ExpressionCollection;
-import org.kie.guvnor.guided.rule.model.ExpressionField;
-import org.kie.guvnor.guided.rule.model.ExpressionGlobalVariable;
-import org.kie.guvnor.guided.rule.model.ExpressionMethod;
-import org.kie.guvnor.guided.rule.model.ExpressionPart;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 public class ExpressionPartHelper {
 

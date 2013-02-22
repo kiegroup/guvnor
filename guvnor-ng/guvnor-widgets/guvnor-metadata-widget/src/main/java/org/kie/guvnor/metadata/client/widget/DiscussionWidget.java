@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
-import java.util.Date;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -33,18 +31,20 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.security.AppRoles;
+import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.config.AppConfigService;
-import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
-import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import java.util.Date;
+
+import static com.google.gwt.user.client.ui.HasHorizontalAlignment.ALIGN_RIGHT;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Does the discussion panel for artifacts.

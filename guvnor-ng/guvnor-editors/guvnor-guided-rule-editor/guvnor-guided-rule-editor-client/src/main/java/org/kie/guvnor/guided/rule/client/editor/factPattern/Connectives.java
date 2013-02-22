@@ -27,18 +27,18 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.SmallLabel;
 
 public class Connectives {

@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 
 /**
  * Interface defining commands relating to Condition Column operations

@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelNameHelper {
 

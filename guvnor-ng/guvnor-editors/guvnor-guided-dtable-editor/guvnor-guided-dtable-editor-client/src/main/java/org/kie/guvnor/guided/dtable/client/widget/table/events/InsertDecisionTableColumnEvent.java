@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table.events;
 
-import java.util.List;
-
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.InsertColumnEvent;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+
+import java.util.List;
 
 /**
  * An event to insert a Decision Table column

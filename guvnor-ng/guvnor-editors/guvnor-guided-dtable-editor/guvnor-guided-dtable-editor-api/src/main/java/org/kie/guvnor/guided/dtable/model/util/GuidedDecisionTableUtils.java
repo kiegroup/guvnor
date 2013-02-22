@@ -1,31 +1,31 @@
 package org.kie.guvnor.guided.dtable.model.util;
 
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTColumnConfig52;
+import org.drools.guvnor.models.guided.dtable.model.DescriptionCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.RowNumberCol52;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLActionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.CompositeColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.DescriptionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.RowNumberCol52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.FactPattern;
 
 /**
  * Utilities for GuidedDecisionTable
@@ -46,9 +46,9 @@ public class GuidedDecisionTableUtils {
     }
 
     public String getType( final BaseColumn col ) {
-        if ( col instanceof RowNumberCol52 ) {
+        if ( col instanceof RowNumberCol52) {
             return getType( (RowNumberCol52) col );
-        } else if ( col instanceof AttributeCol52 ) {
+        } else if ( col instanceof AttributeCol52) {
             return getType( (AttributeCol52) col );
         } else if ( col instanceof BRLConditionVariableColumn ) {
             return getType( (BRLConditionVariableColumn) col );
@@ -112,7 +112,7 @@ public class GuidedDecisionTableUtils {
         }
 
         // Operator "in" and "not in" requires a List as the value. These are always Text (for now)
-        if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
+        if ( OperatorsOracle.operatorRequiresList(col.getOperator()) ) {
             return DataType.TYPE_STRING;
         }
 
@@ -353,10 +353,10 @@ public class GuidedDecisionTableUtils {
         if ( col instanceof RowNumberCol52 ) {
             return true;
         }
-        if ( col instanceof DescriptionCol52 ) {
+        if ( col instanceof DescriptionCol52) {
             return true;
         }
-        if ( col instanceof MetadataCol52 ) {
+        if ( col instanceof MetadataCol52) {
             return true;
         }
         if ( col instanceof AttributeCol52 ) {
@@ -414,14 +414,14 @@ public class GuidedDecisionTableUtils {
             if ( column instanceof BRLConditionColumn ) {
                 final BRLConditionColumn brlColumn = (BRLConditionColumn) column;
                 for ( IPattern pattern : brlColumn.getDefinition() ) {
-                    if ( pattern instanceof DSLSentence ) {
+                    if ( pattern instanceof DSLSentence) {
                         return true;
                     }
                 }
             }
         }
         for ( ActionCol52 column : this.model.getActionCols() ) {
-            if ( column instanceof BRLActionColumn ) {
+            if ( column instanceof BRLActionColumn) {
                 final BRLActionColumn brlColumn = (BRLActionColumn) column;
                 for ( IAction action : brlColumn.getDefinition() ) {
                     if ( action instanceof DSLSentence ) {

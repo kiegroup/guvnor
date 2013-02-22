@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.action;
 
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
 
 public class SetFieldColActionDetectorKey extends ActionDetectorKey {
 

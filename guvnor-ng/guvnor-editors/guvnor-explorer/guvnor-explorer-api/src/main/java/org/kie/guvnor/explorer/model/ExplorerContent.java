@@ -1,11 +1,11 @@
 package org.kie.guvnor.explorer.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.validation.PortablePreconditions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * DTO for information required for Explorer widget

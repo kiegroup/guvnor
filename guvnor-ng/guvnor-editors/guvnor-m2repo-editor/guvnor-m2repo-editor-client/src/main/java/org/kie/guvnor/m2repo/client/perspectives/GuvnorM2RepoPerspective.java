@@ -15,13 +15,6 @@
  */
 package org.kie.guvnor.m2repo.client.perspectives;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
@@ -48,7 +41,14 @@ import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
 
 /**
  * A Perspective to show Guvnor's M2_REPO related screens

@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.cells;
 
-import java.math.BigInteger;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -27,6 +25,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
 import org.uberfire.client.common.NumericBigIntegerTextBox;
+
+import java.math.BigInteger;
 
 /**
  * A Popup Text Editor for BigInteger values

@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.widgets;
 
-import java.util.Map;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
+
+import java.util.Map;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {

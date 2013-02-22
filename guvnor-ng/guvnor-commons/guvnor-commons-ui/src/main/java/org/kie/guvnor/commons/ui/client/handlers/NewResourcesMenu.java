@@ -1,15 +1,5 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -18,6 +8,16 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A menu to create New Resources

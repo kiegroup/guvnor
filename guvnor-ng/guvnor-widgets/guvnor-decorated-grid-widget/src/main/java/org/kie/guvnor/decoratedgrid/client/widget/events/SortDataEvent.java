@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
-import java.util.List;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
+
+import java.util.List;
 
 /**
  * An event to sort the data

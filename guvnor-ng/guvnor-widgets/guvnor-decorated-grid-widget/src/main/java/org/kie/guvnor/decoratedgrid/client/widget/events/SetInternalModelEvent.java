@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
-import java.util.List;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
+
+import java.util.List;
 
 /**
  * An event to set the model used within the table

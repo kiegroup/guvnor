@@ -15,11 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -47,7 +42,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
@@ -58,30 +53,35 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemCol52;
-import org.kie.guvnor.guided.dtable.model.AnalysisCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.DescriptionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.RowNumberCol52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemCol52;
+import org.drools.guvnor.models.guided.dtable.model.AnalysisCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.DTColumnConfig52;
+import org.drools.guvnor.models.guided.dtable.model.DescriptionCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.RowNumberCol52;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Header for a Vertical Decision Table

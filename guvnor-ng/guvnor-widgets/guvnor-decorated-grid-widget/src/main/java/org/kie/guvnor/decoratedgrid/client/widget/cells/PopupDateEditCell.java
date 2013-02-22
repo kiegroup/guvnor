@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.cells;
 
-import java.util.Date;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -24,6 +22,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.datepicker.client.DatePicker;
+
+import java.util.Date;
 
 /**
  * A Popup Date Editor.

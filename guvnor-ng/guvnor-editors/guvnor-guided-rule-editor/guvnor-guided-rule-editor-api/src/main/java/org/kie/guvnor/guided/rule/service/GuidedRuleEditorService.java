@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.guided.rule.service;
 
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

@@ -15,20 +15,20 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
+import com.google.gwt.cell.client.Cell.Context;
+import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor;
+import org.kie.guvnor.guided.template.model.TemplateModel;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.gwt.cell.client.Cell.Context;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.guvnor.guided.template.model.InterpolationVariable;
-import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 
 /**
  * A utility class to get the values of all InterpolationVariables in the scope

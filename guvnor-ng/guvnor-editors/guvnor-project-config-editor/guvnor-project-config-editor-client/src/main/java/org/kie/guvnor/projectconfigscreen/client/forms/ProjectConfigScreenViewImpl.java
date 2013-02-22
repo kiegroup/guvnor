@@ -1,16 +1,16 @@
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
-import javax.inject.Inject;
-
+import org.drools.guvnor.models.commons.imports.Imports;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
 import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.services.config.model.imports.Imports;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
+
+import javax.inject.Inject;
 
 public class ProjectConfigScreenViewImpl
         extends MultiPageEditorView

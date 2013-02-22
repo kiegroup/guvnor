@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.enums.client.editor;
 
-import javax.annotation.PostConstruct;
-
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +29,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.client.widget.DeleteButtonCellWidget;
+
+import javax.annotation.PostConstruct;
 
 public class EnumEditorView
         extends Composite

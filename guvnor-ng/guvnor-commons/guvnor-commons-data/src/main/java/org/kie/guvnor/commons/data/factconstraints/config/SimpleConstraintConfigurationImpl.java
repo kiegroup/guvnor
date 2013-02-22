@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.commons.data.factconstraints.config;
 
+import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
 
 public class SimpleConstraintConfigurationImpl
         implements ConstraintConfiguration {

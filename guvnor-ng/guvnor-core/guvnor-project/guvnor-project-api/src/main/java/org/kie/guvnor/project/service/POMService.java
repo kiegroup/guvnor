@@ -1,8 +1,8 @@
 package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.project.model.POM;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

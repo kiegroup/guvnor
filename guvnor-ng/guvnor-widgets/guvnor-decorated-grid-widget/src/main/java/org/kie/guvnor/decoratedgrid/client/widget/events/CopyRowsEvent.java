@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
-
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * An event to copy row(s)

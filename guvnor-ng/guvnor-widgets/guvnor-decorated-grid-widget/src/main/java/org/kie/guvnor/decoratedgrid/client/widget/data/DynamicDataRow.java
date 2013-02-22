@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.data;
 
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 
 /**
  * A row of data in the Decision Table

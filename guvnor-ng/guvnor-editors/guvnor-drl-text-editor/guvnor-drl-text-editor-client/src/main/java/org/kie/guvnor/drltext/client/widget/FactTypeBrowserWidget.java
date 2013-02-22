@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.drltext.client.resources.Resources;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.resources.images.ImageResources;
-import org.kie.guvnor.drltext.client.resources.Resources;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
 

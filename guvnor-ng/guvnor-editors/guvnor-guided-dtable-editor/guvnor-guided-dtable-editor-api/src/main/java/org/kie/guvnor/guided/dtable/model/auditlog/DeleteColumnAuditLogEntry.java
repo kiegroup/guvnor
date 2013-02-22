@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.commons.auditlog.DefaultAuditLogEntry;
+import org.drools.guvnor.models.guided.dtable.auditlog.DecisionTableAuditEvents;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
-import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogEntry;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
 
 /**
  * An Audit Event for when a column is deleted
@@ -44,9 +44,9 @@ public class DeleteColumnAuditLogEntry extends DefaultAuditLogEntry {
     public DeleteColumnAuditLogEntry( final String userName,
                                       final BaseColumn column ) {
         super( userName );
-        if ( column instanceof MetadataCol52 ) {
+        if ( column instanceof MetadataCol52) {
             this.columnHeader = ( (MetadataCol52) column ).getMetadata();
-        } else if ( column instanceof AttributeCol52 ) {
+        } else if ( column instanceof AttributeCol52) {
             this.columnHeader = ( (AttributeCol52) column ).getAttribute();
         } else {
             this.columnHeader = column.getHeader();

@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An event to signal that the UI has changed the underlying model data

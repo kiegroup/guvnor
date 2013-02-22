@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import java.util.List;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -29,6 +25,10 @@ import org.kie.guvnor.project.model.Dependency;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.List;
 
 public class POMEditorPanelViewImpl
         extends ResizeComposite

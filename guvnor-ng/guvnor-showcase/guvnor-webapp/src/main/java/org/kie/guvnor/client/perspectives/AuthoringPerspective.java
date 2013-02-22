@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.client.perspectives;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcesMenu;
@@ -43,6 +39,10 @@ import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * A Perspective for Rule authors

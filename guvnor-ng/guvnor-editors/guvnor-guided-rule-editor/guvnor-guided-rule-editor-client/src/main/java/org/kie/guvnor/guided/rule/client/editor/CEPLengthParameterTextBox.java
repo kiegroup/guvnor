@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.regexp.shared.RegExp;
-import org.kie.guvnor.guided.rule.model.HasParameterizedOperator;
+import org.drools.guvnor.models.commons.rule.HasParameterizedOperator;
 
 /**
  * A TextBox to handle CEP 'window length' parameters

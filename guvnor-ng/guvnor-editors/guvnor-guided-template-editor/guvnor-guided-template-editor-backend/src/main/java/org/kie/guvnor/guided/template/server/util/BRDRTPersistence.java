@@ -16,18 +16,18 @@
 
 package org.kie.guvnor.guided.template.server.util;
 
-import java.io.ByteArrayInputStream;
-
+import org.drools.guvnor.models.commons.BRLPersistence;
+import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
-import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
-import org.kie.guvnor.guided.rule.backend.server.util.BRLPersistence;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.template.model.InterpolationVariable;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
 
 /**
  * This class persists a {@link TemplateModel} to DRL template

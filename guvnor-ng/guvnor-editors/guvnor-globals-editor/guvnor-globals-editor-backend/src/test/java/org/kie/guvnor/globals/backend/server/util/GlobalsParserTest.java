@@ -1,12 +1,13 @@
 package org.kie.guvnor.globals.backend.server.util;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 
-import static org.junit.Assert.*;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for GlobalsParser.

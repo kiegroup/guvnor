@@ -1,5 +1,15 @@
 package org.kie.guvnor.datamodel.oracle;
 
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,14 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.services.config.model.imports.Imports;
 
 /**
  * Default implementation of DataModelOracle

@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.datamodel.backend.server.builder.util;
 
+import org.kie.commons.data.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.kie.commons.data.Pair;
 
 /**
  * Utility methods to parse Globals

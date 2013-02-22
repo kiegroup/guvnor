@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -53,6 +49,10 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.MoveColumnsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetColumnVisibilityEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateColumnDefinitionEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * An abstract "Header" widget to decorate a <code>DecoratedGridWidget</code>

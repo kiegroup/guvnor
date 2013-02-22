@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
 
 /**
  * Details of a Metadata column

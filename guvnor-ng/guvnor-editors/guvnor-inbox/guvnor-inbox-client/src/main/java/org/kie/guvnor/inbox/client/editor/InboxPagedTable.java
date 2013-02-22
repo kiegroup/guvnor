@@ -28,10 +28,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
-
-
-import java.util.Date;
-
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.data.tables.PageResponse;
@@ -46,6 +42,8 @@ import org.kie.guvnor.inbox.client.resources.images.ImageResources;
 import org.kie.guvnor.services.inbox.InboxService;
 import org.kie.guvnor.services.inbox.model.InboxPageRequest;
 import org.kie.guvnor.services.inbox.model.InboxPageRow;
+
+import java.util.Date;
 
 /**
  * Widget with a table of inbox entries results.

@@ -1,8 +1,8 @@
 package org.kie.guvnor.commons.service.metadata.model;
 
-import java.util.Iterator;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.Iterator;
 
 /**
  *

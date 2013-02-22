@@ -15,24 +15,20 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.guided.dtable.auditlog.DecisionTableAuditEvents;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
 import org.kie.guvnor.guided.dtable.model.auditlog.ActionInsertFactColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.ActionSetFieldColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.AttributeColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.ColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.ConditionColumnDetails;
-import org.kie.guvnor.guided.dtable.model.auditlog.DecisionTableAuditEvents;
 import org.kie.guvnor.guided.dtable.model.auditlog.DeleteColumnAuditLogEntry;
 import org.kie.guvnor.guided.dtable.model.auditlog.DeleteRowAuditLogEntry;
 import org.kie.guvnor.guided.dtable.model.auditlog.InsertColumnAuditLogEntry;
@@ -42,6 +38,10 @@ import org.kie.guvnor.guided.dtable.model.auditlog.LimitedEntryActionSetFieldCol
 import org.kie.guvnor.guided.dtable.model.auditlog.LimitedEntryConditionColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.MetadataColumnDetails;
 import org.kie.guvnor.guided.dtable.model.auditlog.UpdateColumnAuditLogEntry;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * Render different HTML for different AuditLogEvents

@@ -1,10 +1,10 @@
 package org.kie.guvnor.categories.client;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.file.ResourceType;
+
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class CategoryDefinitionResourceType implements ResourceType {

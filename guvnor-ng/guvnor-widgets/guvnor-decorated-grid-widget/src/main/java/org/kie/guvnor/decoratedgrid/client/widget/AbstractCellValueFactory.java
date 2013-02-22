@@ -15,13 +15,13 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A Factory to create CellValues applicable to given columns.

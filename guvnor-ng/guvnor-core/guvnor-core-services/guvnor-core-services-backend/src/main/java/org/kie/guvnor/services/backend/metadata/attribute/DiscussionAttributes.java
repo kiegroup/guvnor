@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.services.backend.metadata.attribute;
 
-import java.util.List;
-
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
+
+import java.util.List;
 
 /**
  *

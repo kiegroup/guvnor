@@ -1,5 +1,13 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
+import org.drools.core.util.asm.ClassFieldInspector;
+import org.kie.guvnor.datamodel.model.ClassMethodInspector;
+import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
 import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,14 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.guvnor.datamodel.model.ClassMethodInspector;
-import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 /**
  * Builder for Fact Types originating from a .class

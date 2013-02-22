@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
+import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
 
 /**
  * This is a wrapper around a value. The wrapper provides additional information

@@ -16,10 +16,9 @@
 
 package org.kie.guvnor.services.config;
 
-import java.util.Map;
-
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
+
+import java.util.Map;
 
 /**
  *

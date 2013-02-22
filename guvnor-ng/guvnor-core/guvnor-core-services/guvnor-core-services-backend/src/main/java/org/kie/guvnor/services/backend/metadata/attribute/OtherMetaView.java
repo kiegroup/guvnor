@@ -16,13 +16,6 @@
 
 package org.kie.guvnor.services.backend.metadata.attribute;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 import org.kie.commons.data.Pair;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.AbstractBasicFileAttributeView;
@@ -33,9 +26,17 @@ import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
 
-import static org.kie.commons.data.Pair.*;
-import static org.kie.commons.validation.Preconditions.*;
-import static org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static org.kie.commons.data.Pair.newPair;
+import static org.kie.commons.validation.Preconditions.checkCondition;
+import static org.kie.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil.toMap;
 
 public class OtherMetaView
         extends AbstractBasicFileAttributeView<AbstractPath>

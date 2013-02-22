@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
@@ -37,22 +34,25 @@ import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertDecisionTab
 import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.AnalysisCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLActionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionVariableColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.CompositeColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.AnalysisCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Decorated Grid for Decision Tables

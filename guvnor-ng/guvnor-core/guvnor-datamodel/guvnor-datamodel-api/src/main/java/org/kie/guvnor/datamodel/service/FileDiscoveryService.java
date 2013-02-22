@@ -1,8 +1,8 @@
 package org.kie.guvnor.datamodel.service;
 
-import java.util.Collection;
-
 import org.kie.commons.java.nio.file.Path;
+
+import java.util.Collection;
 
 /**
  * Service to discover files in a given Path

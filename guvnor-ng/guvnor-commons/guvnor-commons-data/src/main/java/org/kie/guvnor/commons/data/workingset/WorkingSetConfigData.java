@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.commons.data.workingset;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
+
+import java.util.List;
 
 @Portable
 public class WorkingSetConfigData {

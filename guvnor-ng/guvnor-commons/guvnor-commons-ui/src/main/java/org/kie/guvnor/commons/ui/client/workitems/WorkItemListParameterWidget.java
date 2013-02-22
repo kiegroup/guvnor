@@ -15,7 +15,8 @@
  */
 package org.kie.guvnor.commons.ui.client.workitems;
 
-import org.kie.guvnor.datamodel.model.workitems.PortableListParameterDefinition;
+
+import org.drools.guvnor.models.commons.workitems.PortableListParameterDefinition;
 
 /**
  * A Widget to display a Work Item List parameter

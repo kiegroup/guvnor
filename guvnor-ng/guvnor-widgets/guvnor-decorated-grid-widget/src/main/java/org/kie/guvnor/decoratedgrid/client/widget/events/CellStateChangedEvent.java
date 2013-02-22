@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.events;
 
-import java.util.Set;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+
+import java.util.Set;
 
 /**
  * An event to signal that the state of the selected cells needs to be updated.

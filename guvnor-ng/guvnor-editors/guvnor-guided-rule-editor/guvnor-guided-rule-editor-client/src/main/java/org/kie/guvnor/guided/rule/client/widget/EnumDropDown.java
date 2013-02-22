@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,6 +31,9 @@ import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
 import org.uberfire.client.common.LoadingPopup;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * A drop down for enumerated values

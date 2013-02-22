@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Tests for DynamicData

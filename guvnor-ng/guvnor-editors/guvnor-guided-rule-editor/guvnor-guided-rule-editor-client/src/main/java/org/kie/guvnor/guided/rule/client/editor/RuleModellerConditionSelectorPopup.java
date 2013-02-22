@@ -28,19 +28,19 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromEntryPointFactPattern;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromEntryPointFactPattern;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.client.common.InfoPopup;
 
 /**

@@ -15,16 +15,6 @@
  */
 package org.kie.guvnor.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -48,6 +38,16 @@ import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
 

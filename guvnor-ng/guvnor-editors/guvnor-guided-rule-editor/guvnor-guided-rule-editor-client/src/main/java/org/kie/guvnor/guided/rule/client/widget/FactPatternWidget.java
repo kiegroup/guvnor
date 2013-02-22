@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,9 +36,16 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.model.IPattern;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
+import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.rule.HasCEPWindow;
+import org.drools.guvnor.models.commons.rule.HasConstraints;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
@@ -53,20 +55,18 @@ import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.Connectives;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.PopupCreator;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FieldConstraint;
-import org.kie.guvnor.guided.rule.model.HasCEPWindow;
-import org.kie.guvnor.guided.rule.model.HasConstraints;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is the new smart widget that works off the model.
@@ -339,7 +339,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          hasConstraints,
                                          showBinding,
                                          tabs );
-        } else if ( constraint instanceof CompositeFieldConstraint ) {
+        } else if ( constraint instanceof CompositeFieldConstraint) {
             inner.setWidget( row,
                              1,
                              compositeFieldConstraintEditor( (CompositeFieldConstraint) constraint ) );
@@ -732,7 +732,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                         return;
                     }
 
-                    final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( selected );
+                    final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList(selected);
                     final boolean oldOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( c.getOperator() );
                     c.setOperator( selected );
                     if ( c.getOperator().equals( "" ) ) {

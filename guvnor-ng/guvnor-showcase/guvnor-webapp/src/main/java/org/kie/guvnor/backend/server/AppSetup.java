@@ -16,16 +16,6 @@
 
 package org.kie.guvnor.backend.server;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.file.FileSystem;
@@ -36,7 +26,17 @@ import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
 
 @Singleton
 public class AppSetup {

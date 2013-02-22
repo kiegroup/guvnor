@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.condition;
 
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 public class NumericBigIntegerConditionDetector extends ConditionDetector<NumericBigIntegerConditionDetector> {
 

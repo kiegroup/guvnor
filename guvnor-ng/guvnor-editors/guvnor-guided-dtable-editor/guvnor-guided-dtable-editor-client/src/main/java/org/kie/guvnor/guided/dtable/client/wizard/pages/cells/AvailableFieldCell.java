@@ -21,7 +21,7 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.AvailableField;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
 
 /**
  * A cell to display a available Fields

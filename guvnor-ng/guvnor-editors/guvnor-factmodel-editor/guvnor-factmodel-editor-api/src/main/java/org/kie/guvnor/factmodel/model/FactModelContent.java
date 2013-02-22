@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.factmodel.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Portable
 public class FactModelContent {

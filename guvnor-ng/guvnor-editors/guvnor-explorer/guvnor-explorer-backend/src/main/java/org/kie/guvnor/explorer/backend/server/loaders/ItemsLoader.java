@@ -1,9 +1,9 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
-import java.util.List;
-
 import org.kie.guvnor.explorer.model.Item;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.List;
 
 /**
  * Loader of items at a Path into a View

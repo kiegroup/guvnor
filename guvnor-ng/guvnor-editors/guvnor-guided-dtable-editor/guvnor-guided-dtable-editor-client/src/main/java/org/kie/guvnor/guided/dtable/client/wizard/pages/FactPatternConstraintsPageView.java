@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.List;
-
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.uberfire.client.mvp.UberView;
+
+import java.util.List;
 
 /**
  * View and Presenter definitions for the Fact Pattern Constraints page

@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -36,6 +32,10 @@ import org.uberfire.client.common.AbstractLazyStackPanelHeader;
 import org.uberfire.client.common.AddButton;
 import org.uberfire.client.common.LazyStackPanel;
 import org.uberfire.client.common.LoadContentCommand;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class FactModelsEditorViewImpl
         extends Composite

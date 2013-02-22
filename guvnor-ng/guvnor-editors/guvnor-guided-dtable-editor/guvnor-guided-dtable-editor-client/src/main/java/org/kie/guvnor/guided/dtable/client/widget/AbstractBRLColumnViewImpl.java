@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,22 +32,26 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.RuleModelVisitor;
+import org.drools.guvnor.models.guided.dtable.model.BRLColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.model.BRLColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.rule.client.editor.ModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.client.editor.RuleModelEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.template.client.editor.TemplateModellerWidgetFactory;
-import org.kie.guvnor.guided.template.model.InterpolationVariable;
-import org.kie.guvnor.guided.template.model.RuleModelVisitor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Popup;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An editor for BRL Column definitions

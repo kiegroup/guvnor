@@ -1,7 +1,5 @@
 package org.kie.guvnor.commons.ui.client.tables;
 
-import org.kie.guvnor.commons.ui.client.resources.TableImageResources;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -10,6 +8,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.kie.guvnor.commons.ui.client.resources.TableImageResources;
 
 /**
  * Based on GWT bikeshed example.

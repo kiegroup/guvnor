@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.rule.client.resources;
 
+import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable

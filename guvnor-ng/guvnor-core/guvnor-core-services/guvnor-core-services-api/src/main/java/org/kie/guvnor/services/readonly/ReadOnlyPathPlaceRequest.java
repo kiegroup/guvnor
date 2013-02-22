@@ -1,10 +1,10 @@
 package org.kie.guvnor.services.readonly;
 
-import java.util.Map;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+
+import java.util.Map;
 
 @Portable
 public class ReadOnlyPathPlaceRequest

@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.services.version.model;
 
-import java.util.Date;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.java.nio.base.version.VersionRecord;
+
+import java.util.Date;
 
 /**
  *

@@ -16,13 +16,15 @@
 
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import org.kie.guvnor.commons.ui.client.resources.CommonImages;
-import org.uberfire.client.common.FormStylePopup;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+import org.uberfire.client.common.FormStylePopup;
 
 public class RenamePopup extends FormStylePopup {
     final private TextBox         nameTextBox     = new TextBox();

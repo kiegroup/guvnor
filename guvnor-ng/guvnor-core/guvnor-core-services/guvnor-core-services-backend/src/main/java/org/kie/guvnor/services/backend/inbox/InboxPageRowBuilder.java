@@ -15,16 +15,16 @@
  */
 package org.kie.guvnor.services.backend.inbox;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import org.kie.guvnor.services.backend.inbox.InboxServiceImpl.InboxEntry;
 import org.kie.guvnor.services.inbox.model.InboxIncomingPageRow;
 import org.kie.guvnor.services.inbox.model.InboxPageRequest;
 import org.kie.guvnor.services.inbox.model.InboxPageRow;
 import org.uberfire.security.Identity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class InboxPageRowBuilder

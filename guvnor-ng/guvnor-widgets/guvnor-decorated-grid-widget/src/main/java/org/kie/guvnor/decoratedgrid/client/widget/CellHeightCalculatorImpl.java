@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.*;
+import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.INSTANCE;
 
 /**
  * Default implementation of utility class to calculate the height of a merged

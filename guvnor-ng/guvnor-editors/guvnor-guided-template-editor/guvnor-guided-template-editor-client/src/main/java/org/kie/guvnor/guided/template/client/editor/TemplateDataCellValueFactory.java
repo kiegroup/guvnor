@@ -15,20 +15,20 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.kie.guvnor.datamodel.model.DateConverter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.guvnor.guided.template.model.TemplateModel;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.kie.guvnor.datamodel.model.DateConverter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.guvnor.guided.template.model.InterpolationVariable;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 
 /**
  * A Factory to create CellValues applicable to given columns.

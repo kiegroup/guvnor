@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 

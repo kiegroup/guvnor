@@ -16,14 +16,14 @@
 
 package org.kie.guvnor.datamodel.backend.server.builder.util;
 
+import org.mvel2.MVEL;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.mvel2.MVEL;
 
 /**
  * Use MVEL to load up map/list of valid items for fields - used by the Guided rule editor.

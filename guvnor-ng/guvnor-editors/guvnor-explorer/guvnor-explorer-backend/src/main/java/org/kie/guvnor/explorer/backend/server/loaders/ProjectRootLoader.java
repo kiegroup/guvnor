@@ -1,23 +1,23 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
 import org.kie.guvnor.explorer.backend.server.util.Filter;
-import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.backend.server.util.MetaInfFolderFilter;
 import org.kie.guvnor.explorer.model.FileItem;
 import org.kie.guvnor.explorer.model.FolderItem;
 import org.kie.guvnor.explorer.model.Item;
+import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.model.ParentFolderItem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Loader to add Projects structure being pom.xml and immediate packages under src/main/resources

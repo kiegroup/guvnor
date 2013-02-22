@@ -16,13 +16,8 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
@@ -42,7 +37,6 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.rule.client.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -69,6 +63,12 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleResourceType.class }, priority = 102)
@@ -118,7 +118,7 @@ public class GuidedRuleEditorPresenter {
     private PlaceRequest place;
     private boolean      isReadOnly;
 
-    private RuleModel       model;
+    private RuleModel    model;
     private DataModelOracle oracle;
 
     @OnStart

@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,31 +37,31 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.rule.ExpressionFormLine;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.rule.HasOperator;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
-import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.OperatorsOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
 import org.kie.guvnor.guided.rule.client.widget.ExpressionBuilder;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FieldConstraint;
-import org.kie.guvnor.guided.rule.model.HasOperator;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
 import org.kie.guvnor.workingset.client.WorkingSetManager;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
@@ -75,6 +69,12 @@ import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is an editor for constraint values. How this behaves depends on the
@@ -129,7 +129,7 @@ public class ConstraintValueEditor
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
 
-        } else if ( con instanceof ConnectiveConstraint ) {
+        } else if ( con instanceof ConnectiveConstraint) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             this.factType = cc.getFactType();
             this.fieldName = cc.getFieldName();
@@ -280,7 +280,7 @@ public class ConstraintValueEditor
         //Enumeration (these support multi-select for "in" and "not in", so check before comma separated lists) 
         if ( this.dropDownData != null ) {
             final String operator = constraint.getOperator();
-            final boolean multipleSelect = OperatorsOracle.operatorRequiresList( operator );
+            final boolean multipleSelect = OperatorsOracle.operatorRequiresList(operator);
             EnumDropDown enumDropDown = new EnumDropDown( constraint.getValue(),
                                                           new DropDownValueChanged() {
 

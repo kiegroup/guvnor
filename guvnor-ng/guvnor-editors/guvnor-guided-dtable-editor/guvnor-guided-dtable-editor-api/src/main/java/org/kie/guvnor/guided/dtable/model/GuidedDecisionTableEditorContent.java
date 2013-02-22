@@ -16,12 +16,9 @@
 
 package org.kie.guvnor.guided.dtable.model;
 
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
-
-import java.util.List;
 
 @Portable
 public class GuidedDecisionTableEditorContent {

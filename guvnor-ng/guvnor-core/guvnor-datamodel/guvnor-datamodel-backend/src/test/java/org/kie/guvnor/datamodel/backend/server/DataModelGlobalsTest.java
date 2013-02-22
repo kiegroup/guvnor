@@ -1,15 +1,15 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import java.util.Arrays;
-
+import org.drools.guvnor.models.commons.imports.Import;
+import org.drools.guvnor.models.commons.imports.Imports;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 

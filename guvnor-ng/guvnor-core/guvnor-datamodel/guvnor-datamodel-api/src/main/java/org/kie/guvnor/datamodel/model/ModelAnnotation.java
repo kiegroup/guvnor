@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.datamodel.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * An annotation on a Fact type

@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import org.dmg.pmml.pmml_4_1.descr.Attribute;
 import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
@@ -45,6 +39,12 @@ import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.uberfire.backend.server.util.Paths;
+
+import javax.inject.Inject;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuidedScoreCardSourceService
         extends BaseSourceService<ScoreCardModel> {

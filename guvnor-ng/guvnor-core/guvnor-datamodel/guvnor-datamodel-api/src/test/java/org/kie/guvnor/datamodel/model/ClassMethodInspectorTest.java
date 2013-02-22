@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.datamodel.model;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class ClassMethodInspectorTest {
 

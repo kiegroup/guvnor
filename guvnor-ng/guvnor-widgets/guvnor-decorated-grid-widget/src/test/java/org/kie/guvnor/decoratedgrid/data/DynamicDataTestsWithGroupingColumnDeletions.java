@@ -21,7 +21,8 @@ import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.guvnor.decoratedgrid.client.widget.data.GroupedDynamicDataRow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for DynamicData

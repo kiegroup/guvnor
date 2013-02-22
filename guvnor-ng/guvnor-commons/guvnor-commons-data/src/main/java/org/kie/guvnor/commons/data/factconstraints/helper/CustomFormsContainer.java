@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.commons.data.factconstraints.helper;
 
+import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
+import org.kie.guvnor.commons.data.factconstraints.customform.predefined.DefaultCustomFormImplementation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
-import org.kie.guvnor.commons.data.factconstraints.customform.predefined.DefaultCustomFormImplementation;
 
 public class CustomFormsContainer {
 

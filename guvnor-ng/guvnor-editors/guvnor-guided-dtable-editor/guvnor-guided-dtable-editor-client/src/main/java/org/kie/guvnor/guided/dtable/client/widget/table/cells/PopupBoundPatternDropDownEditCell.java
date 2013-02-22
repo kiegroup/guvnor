@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table.cells;
 
-import java.util.List;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -31,6 +29,8 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.AbstractPopupEditCell;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.BoundFactsChangedEvent;
+
+import java.util.List;
 
 /**
  * A Popup drop-down Editor for bound Fact Patterns. This cell listens for

@@ -15,27 +15,27 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue.CellState;
+import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.drools.guvnor.models.guided.dtable.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.model.AnalysisCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.RowNumberCol52;
+import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue.CellState;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.guvnor.guided.dtable.model.Analysis;
-import org.kie.guvnor.guided.dtable.model.AnalysisCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
-import org.kie.guvnor.guided.dtable.model.RowNumberCol52;
-import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 
 /**
  * A Factory to create CellValues applicable to given columns.

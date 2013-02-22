@@ -24,10 +24,10 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
 /**
  * A Popup drop-down Editor ;-)

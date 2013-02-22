@@ -15,8 +15,9 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.commons.auditlog.DefaultAuditLogEntry;
+import org.drools.guvnor.models.guided.dtable.auditlog.DecisionTableAuditEvents;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogEntry;
 
 /**
  * An Audit Event when a row is deleted

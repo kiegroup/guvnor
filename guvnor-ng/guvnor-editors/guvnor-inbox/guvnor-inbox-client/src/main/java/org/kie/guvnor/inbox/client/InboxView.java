@@ -15,14 +15,13 @@
  */
 package org.kie.guvnor.inbox.client;
 
-import javax.inject.Inject;
-
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.inbox.client.editor.InboxEditor;
 import org.kie.guvnor.services.inbox.InboxService;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import javax.inject.Inject;
 
 
 public class InboxView

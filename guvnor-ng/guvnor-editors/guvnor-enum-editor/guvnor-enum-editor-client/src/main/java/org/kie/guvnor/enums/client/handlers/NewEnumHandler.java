@@ -1,8 +1,5 @@
 package org.kie.guvnor.enums.client.handlers;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -18,6 +15,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Handler for the creation of new Enumerations

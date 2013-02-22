@@ -15,12 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.wizards.Wizard;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
@@ -36,13 +30,19 @@ import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternConstraintsPa
 import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternsPage;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpander;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.SummaryPage;
-import org.kie.guvnor.guided.dtable.model.Analysis;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wizard for creating a Guided Decision Table

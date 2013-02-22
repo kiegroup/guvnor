@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.services.backend.metadata.attribute;
 
-import java.util.List;
-
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
+
+import java.util.List;
 
 /**
  *

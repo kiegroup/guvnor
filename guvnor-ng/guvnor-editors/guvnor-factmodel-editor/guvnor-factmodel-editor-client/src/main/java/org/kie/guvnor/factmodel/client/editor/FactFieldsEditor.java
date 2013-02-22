@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -31,6 +29,8 @@ import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.uberfire.client.common.AddButton;
+
+import java.util.List;
 
 public class FactFieldsEditor
         extends Composite {

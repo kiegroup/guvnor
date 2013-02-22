@@ -33,14 +33,14 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.kie.guvnor.commons.service.metadata.model.Categories;
+import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.CategoriesService;
-import org.kie.guvnor.commons.service.metadata.model.Categories;
-import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to

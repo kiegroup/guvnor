@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.uberfire.client.common.DirtyableComposite;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A superclass for the widgets present in RuleModeller.

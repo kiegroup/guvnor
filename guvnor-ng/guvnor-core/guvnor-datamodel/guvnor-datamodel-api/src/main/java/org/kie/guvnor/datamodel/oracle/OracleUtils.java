@@ -1,10 +1,10 @@
 package org.kie.guvnor.datamodel.oracle;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Utilities shared between the different Oracles

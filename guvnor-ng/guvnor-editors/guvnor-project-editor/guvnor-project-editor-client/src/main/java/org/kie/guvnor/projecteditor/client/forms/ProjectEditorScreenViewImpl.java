@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
 

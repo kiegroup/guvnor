@@ -15,19 +15,20 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.commons.auditlog.DefaultAuditLogEntry;
+import org.drools.guvnor.models.guided.dtable.auditlog.DecisionTableAuditEvents;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.auditlog.DefaultAuditLogEntry;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryConditionCol52;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
 
 /**
  * An Audit Event for when a column is inserted
@@ -57,21 +58,21 @@ public class InsertColumnAuditLogEntry extends DefaultAuditLogEntry {
     protected ColumnDetails getDetails( final BaseColumn column ) {
         if ( column instanceof MetadataCol52 ) {
             return new MetadataColumnDetails( (MetadataCol52) column );
-        } else if ( column instanceof AttributeCol52 ) {
+        } else if ( column instanceof AttributeCol52) {
             return new AttributeColumnDetails( (AttributeCol52) column );
-        } else if ( column instanceof BRLConditionColumn ) {
+        } else if ( column instanceof BRLConditionColumn) {
             return new ColumnDetails( column );
-        } else if ( column instanceof ConditionCol52 ) {
+        } else if ( column instanceof ConditionCol52) {
             return new ConditionColumnDetails( (ConditionCol52) column );
         } else if ( column instanceof LimitedEntryConditionCol52 ) {
             return new LimitedEntryConditionColumnDetails( (LimitedEntryConditionCol52) column );
-        } else if ( column instanceof BRLActionColumn ) {
+        } else if ( column instanceof BRLActionColumn) {
             return new ColumnDetails( column );
-        } else if ( column instanceof ActionInsertFactCol52 ) {
+        } else if ( column instanceof ActionInsertFactCol52) {
             return new ActionInsertFactColumnDetails( (ActionInsertFactCol52) column );
         } else if ( column instanceof LimitedEntryActionInsertFactCol52 ) {
             return new LimitedEntryActionInsertFactColumnDetails( (LimitedEntryActionInsertFactCol52) column );
-        } else if ( column instanceof ActionSetFieldCol52 ) {
+        } else if ( column instanceof ActionSetFieldCol52) {
             return new ActionSetFieldColumnDetails( (ActionSetFieldCol52) column );
         } else if ( column instanceof LimitedEntryActionSetFieldCol52 ) {
             return new LimitedEntryActionSetFieldColumnDetails( (LimitedEntryActionSetFieldCol52) column );

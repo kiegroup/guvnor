@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import java.util.ArrayList;
-
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
@@ -47,6 +45,8 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.PasteRowsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.ToggleMergingEvent;
+
+import java.util.ArrayList;
 
 /**
  * A sidebar for a VericalDecisionTable. This provides a vertical list of

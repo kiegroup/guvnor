@@ -15,15 +15,6 @@
  */
 package org.kie.guvnor.m2repo.client;
 
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.m2repo.client.editor.JarListEditor;
-import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.LoadingPopup;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,6 +32,14 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.m2repo.client.editor.JarListEditor;
+import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
+import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.uberfire.client.common.FormStyleLayout;
+import org.uberfire.client.common.LoadingPopup;
+
+import javax.inject.Inject;
 
 
 public class M2RepoEditorView

@@ -15,6 +15,29 @@
  */
 package org.kie.guvnor.guided.dtable;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
+import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -22,30 +45,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
-import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Tests for CellValueFactory

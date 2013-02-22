@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.datamodel.oracle;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * An Oracle for all things "CEP" related

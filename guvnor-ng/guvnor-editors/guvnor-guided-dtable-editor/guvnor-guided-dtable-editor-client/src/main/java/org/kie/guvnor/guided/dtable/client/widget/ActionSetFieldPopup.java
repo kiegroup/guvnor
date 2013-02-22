@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,23 +31,26 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52.TableFormat;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52.TableFormat;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ActionSetFieldPopup extends FormStylePopup {
 

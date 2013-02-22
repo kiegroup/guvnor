@@ -1,19 +1,19 @@
 package org.kie.guvnor.explorer.backend.server.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileStore;
 import org.kie.guvnor.explorer.model.BreadCrumb;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Factory to make Bread Crumbs!

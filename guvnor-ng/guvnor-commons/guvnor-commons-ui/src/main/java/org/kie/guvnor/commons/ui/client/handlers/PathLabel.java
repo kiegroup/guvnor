@@ -1,8 +1,5 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.Map;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Label;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -12,6 +9,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.VFSTempUtil;
+
+import javax.inject.Inject;
+import java.util.Map;
 
 /**
  * A Label to show a Path, truncated to the closest folder level

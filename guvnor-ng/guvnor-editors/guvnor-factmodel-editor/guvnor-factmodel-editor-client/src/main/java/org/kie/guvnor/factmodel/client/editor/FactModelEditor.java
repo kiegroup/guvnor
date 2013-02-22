@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,6 +35,8 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CollapseExpandConstants;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.uberfire.client.common.AbstractLazyStackPanelHeader;
+
+import java.util.List;
 
 public class FactModelEditor
         extends AbstractLazyStackPanelHeader {

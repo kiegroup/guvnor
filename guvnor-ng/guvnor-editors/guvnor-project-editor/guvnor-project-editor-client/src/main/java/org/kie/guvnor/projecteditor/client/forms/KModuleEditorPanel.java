@@ -1,16 +1,16 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
-import javax.inject.Inject;
-
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+
+import javax.inject.Inject;
 
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {

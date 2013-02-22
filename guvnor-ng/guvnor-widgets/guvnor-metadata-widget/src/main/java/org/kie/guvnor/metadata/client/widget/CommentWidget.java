@@ -20,9 +20,9 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.widget.DecoratedTextArea;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 

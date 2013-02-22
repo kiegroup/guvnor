@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.guided.scorecard.client.widget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwt.cell.client.AbstractInputCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -29,6 +25,10 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A {@link com.google.gwt.cell.client.Cell} used to render a drop-down list.

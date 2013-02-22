@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.ConditionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.ConditionDetectorKey;
-import org.kie.guvnor.guided.dtable.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.model.Analysis;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RowDetector {
 

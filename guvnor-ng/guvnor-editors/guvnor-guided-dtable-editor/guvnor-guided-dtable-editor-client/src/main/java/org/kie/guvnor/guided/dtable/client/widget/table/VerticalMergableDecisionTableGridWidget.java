@@ -20,8 +20,8 @@ import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalMergableGridWi
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 
 /**
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,

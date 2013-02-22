@@ -16,17 +16,8 @@
 
 package org.kie.guvnor.guided.rule.backend.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -38,9 +29,7 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
-import org.kie.guvnor.guided.rule.backend.server.util.BRDRLPersistence;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.inbox.AssetEditedEvent;
@@ -52,6 +41,17 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @ApplicationScoped

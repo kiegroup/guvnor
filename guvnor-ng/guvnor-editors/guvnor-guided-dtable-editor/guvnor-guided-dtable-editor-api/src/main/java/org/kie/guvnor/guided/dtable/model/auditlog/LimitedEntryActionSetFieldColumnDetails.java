@@ -15,9 +15,9 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionSetFieldCol52;
 
 /**
  * Details of a Limited Entry ActionSetField column

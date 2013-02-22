@@ -1,8 +1,8 @@
 package org.kie.guvnor.commons.service.source;
 
-import java.io.InputStream;
-
 import org.kie.commons.validation.PortablePreconditions;
+
+import java.io.InputStream;
 
 /**
  * DTO for parameters needed to write a source file to KieFileSystem

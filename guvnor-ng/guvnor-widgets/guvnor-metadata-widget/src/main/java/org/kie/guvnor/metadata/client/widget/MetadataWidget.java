@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,14 +27,18 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.SmallLabel;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures

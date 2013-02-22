@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.model.auditlog;
 
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
 
 /**
  * Details of a Condition column

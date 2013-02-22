@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLActionColumn;
 
 /**
  * Presenter and View interfaces for an editor of LimitedEntryBRLActionColumns

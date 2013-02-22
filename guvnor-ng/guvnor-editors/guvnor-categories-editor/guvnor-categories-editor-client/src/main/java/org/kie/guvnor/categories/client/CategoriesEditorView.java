@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.categories.client;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -32,12 +29,15 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.categories.client.resources.Images;
 import org.kie.guvnor.categories.client.resources.i18n.Constants;
 import org.kie.guvnor.categories.client.widget.CategoryTreeEditorWidget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.service.metadata.model.Categories;
 import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.PrettyFormLayout;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 
 /**
  *

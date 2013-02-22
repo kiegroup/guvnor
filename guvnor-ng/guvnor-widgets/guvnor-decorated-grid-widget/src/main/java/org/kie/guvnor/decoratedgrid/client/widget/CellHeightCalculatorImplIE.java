@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.*;
+import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.INSTANCE;
 
 /**
  * Class to calculate the height of a cell in a VerticalMergedGrid for IE.

@@ -1,17 +1,16 @@
 package org.kie.guvnor.builder;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.model.KModuleModel;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 
 /**
  * Source provider for KModule.xml

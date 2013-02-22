@@ -1,13 +1,13 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
+import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 /**
  * Builder for DataModelOracle

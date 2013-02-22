@@ -15,6 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.model;
 
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+
 /**
  * A Fact Pattern used by the ActionInsertFactFieldsPage adding a flag
  * indicating whether the Pattern is inserted Logically or not

@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table.events;
 
-import java.util.List;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+
+import java.util.List;
 
 /**
  * An event representing a change in Patterns (added, deleted, edited)

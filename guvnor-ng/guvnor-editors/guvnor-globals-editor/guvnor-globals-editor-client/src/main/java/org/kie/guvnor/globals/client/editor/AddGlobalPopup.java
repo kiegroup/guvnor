@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.globals.client.editor;
 
-import javax.enterprise.context.Dependent;
-
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -35,6 +33,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.uberfire.client.mvp.Command;
+
+import javax.enterprise.context.Dependent;
 
 @Dependent
 public class AddGlobalPopup extends PopupPanel {

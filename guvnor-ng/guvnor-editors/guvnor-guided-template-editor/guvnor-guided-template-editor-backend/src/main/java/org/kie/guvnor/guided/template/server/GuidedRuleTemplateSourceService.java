@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.guided.template.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import javax.inject.Inject;
-
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
@@ -27,6 +23,10 @@ import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.server.util.Paths;
+
+import javax.inject.Inject;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 
 public class GuidedRuleTemplateSourceService
         extends BaseSourceService<TemplateModel> {

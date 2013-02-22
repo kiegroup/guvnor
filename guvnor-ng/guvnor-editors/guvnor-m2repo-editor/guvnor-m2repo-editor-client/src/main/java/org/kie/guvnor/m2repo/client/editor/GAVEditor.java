@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.m2repo.client.editor;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.m2repo.client.resources.ImageResources;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.ResizableTextArea;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
 
 public class GAVEditor extends FormStylePopup {
 

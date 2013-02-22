@@ -15,26 +15,26 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A page for the guided Decision Table Wizard to define Fact Pattern

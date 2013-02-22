@@ -16,26 +16,24 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.InputStream;
-import java.net.URL;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
-
 import org.uberfire.backend.server.util.Paths;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import java.io.InputStream;
+import java.net.URL;
+
+import static org.junit.Assert.assertTrue;
 
 
 public class BuildServiceImplTest {

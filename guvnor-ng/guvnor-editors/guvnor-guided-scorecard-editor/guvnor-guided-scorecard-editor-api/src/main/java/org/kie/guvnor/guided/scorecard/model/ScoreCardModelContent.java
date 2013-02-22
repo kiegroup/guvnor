@@ -18,10 +18,6 @@ package org.kie.guvnor.guided.scorecard.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
-
-import java.util.List;
 
 @Portable
 public class ScoreCardModelContent {

@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,26 +36,30 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
+import org.drools.guvnor.models.commons.FieldNatureType;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FieldConstraint;
-import org.kie.guvnor.guided.rule.model.FieldNatureType;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
+import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This provides for editing of fields in the RHS of a rule.

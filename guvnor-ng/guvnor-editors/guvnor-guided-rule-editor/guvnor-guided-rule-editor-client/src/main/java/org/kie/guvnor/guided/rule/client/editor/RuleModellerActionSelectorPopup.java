@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -32,20 +29,23 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.rule.ActionCallMethod;
+import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionInsertLogicalFact;
+import org.drools.guvnor.models.commons.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.rule.ActionSetField;
+import org.drools.guvnor.models.commons.rule.ActionUpdateField;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.ActionCallMethod;
-import org.kie.guvnor.guided.rule.model.ActionGlobalCollectionAdd;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionInsertLogicalFact;
-import org.kie.guvnor.guided.rule.model.ActionRetractFact;
-import org.kie.guvnor.guided.rule.model.ActionSetField;
-import org.kie.guvnor.guided.rule.model.ActionUpdateField;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.client.common.InfoPopup;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Pop-up for adding Actions to the (RuleModeller) guided editor

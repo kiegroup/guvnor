@@ -15,35 +15,36 @@
  */
 package org.kie.guvnor.guided.template.model;
 
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.DSLVariableValue;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.rule.ActionSetField;
+import org.drools.guvnor.models.commons.rule.ActionUpdateField;
+import org.drools.guvnor.models.commons.rule.CEPWindow;
+import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.rule.ExpressionFormLine;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.IFactPattern;
+import org.drools.guvnor.models.commons.rule.RuleAttribute;
+import org.drools.guvnor.models.commons.rule.RuleMetadata;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.DSLVariableValue;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionRetractFact;
-import org.kie.guvnor.guided.rule.model.ActionSetField;
-import org.kie.guvnor.guided.rule.model.ActionUpdateField;
-import org.kie.guvnor.guided.rule.model.CEPWindow;
-import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.guided.rule.model.ExpressionFormLine;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FieldConstraint;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.IFactPattern;
-import org.kie.guvnor.guided.rule.model.RuleAttribute;
-import org.kie.guvnor.guided.rule.model.RuleMetadata;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
 
 /**
  * A Rule Model Visitor to create a clone TODO Clone LHS of model...
@@ -54,37 +55,37 @@ public class RuleModelCloneVisitor {
         if ( o == null ) {
             return null;
         }
-        if ( o instanceof RuleModel ) {
+        if ( o instanceof RuleModel) {
             return visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof RuleAttribute ) {
+        } else if ( o instanceof RuleAttribute) {
             return visitRuleAttribute( (RuleAttribute) o );
         } else if ( o instanceof RuleMetadata ) {
             return visitRuleMetadata( (RuleMetadata) o );
-        } else if ( o instanceof FactPattern ) {
+        } else if ( o instanceof FactPattern) {
             return visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint ) {
+        } else if ( o instanceof CompositeFieldConstraint) {
             return visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
+        } else if ( o instanceof SingleFieldConstraintEBLeftSide) {
             return visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint ) {
+        } else if ( o instanceof SingleFieldConstraint) {
             return visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof ExpressionFormLine ) {
+        } else if ( o instanceof ExpressionFormLine) {
             return visitExpressionFormLine( (ExpressionFormLine) o );
-        } else if ( o instanceof ConnectiveConstraint ) {
+        } else if ( o instanceof ConnectiveConstraint) {
             return visitConnectiveConstraint( (ConnectiveConstraint) o );
-        } else if ( o instanceof CompositeFactPattern ) {
+        } else if ( o instanceof CompositeFactPattern) {
             return visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FreeFormLine ) {
+        } else if ( o instanceof FreeFormLine) {
             return visitFreeFormLine( (FreeFormLine) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
+        } else if ( o instanceof FromAccumulateCompositeFactPattern) {
             return visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern ) {
+        } else if ( o instanceof FromCollectCompositeFactPattern) {
             return visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern ) {
+        } else if ( o instanceof FromCompositeFactPattern) {
             return visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof DSLSentence ) {
+        } else if ( o instanceof DSLSentence) {
             return visitDSLSentence( (DSLSentence) o );
-        } else if ( o instanceof DSLVariableValue ) {
+        } else if ( o instanceof DSLVariableValue) {
             return visitDSLVariableValue( (DSLVariableValue) o );
         } else if ( o instanceof ActionInsertFact ) {
             return visitActionFieldList( (ActionInsertFact) o );
@@ -92,7 +93,7 @@ public class RuleModelCloneVisitor {
             return visitActionFieldList( (ActionUpdateField) o );
         } else if ( o instanceof ActionSetField ) {
             return visitActionFieldList( (ActionSetField) o );
-        } else if ( o instanceof ActionRetractFact ) {
+        } else if ( o instanceof ActionRetractFact) {
             return visitActionRetractFact( (ActionRetractFact) o );
         }
         throw new IllegalArgumentException( "Class " + o.getClass().getName() + " is not recognised" );

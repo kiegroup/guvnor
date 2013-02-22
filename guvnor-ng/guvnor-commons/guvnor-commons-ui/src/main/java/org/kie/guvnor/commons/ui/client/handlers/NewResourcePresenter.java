@@ -16,14 +16,6 @@
 
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -33,6 +25,14 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @ApplicationScoped
 public class NewResourcePresenter {

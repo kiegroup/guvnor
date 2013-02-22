@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -27,6 +24,9 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteColumnEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.MoveColumnsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.PasteRowsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A context menu for the copying\pasting rows

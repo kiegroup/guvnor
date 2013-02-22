@@ -27,6 +27,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionSetField;
+import org.drools.guvnor.models.commons.rule.ActionUpdateField;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
@@ -34,14 +38,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionSetField;
-import org.kie.guvnor.guided.rule.model.ActionUpdateField;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -191,7 +191,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             }
         };
         String modifyType = "set";
-        if ( this.model instanceof ActionUpdateField ) {
+        if ( this.model instanceof ActionUpdateField) {
             modifyType = "modify";
         }
 

@@ -1,11 +1,11 @@
 package org.kie.guvnor.services.backend.repositories;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.guvnor.services.repositories.GitRepository;
 import org.kie.guvnor.services.repositories.Repository;
 
-import static org.kie.commons.validation.Preconditions.*;
+import javax.enterprise.context.ApplicationScoped;
+
+import static org.kie.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Factory for Repository implementations

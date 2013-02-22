@@ -16,11 +16,8 @@
 
 package org.kie.guvnor.explorer.service;
 
-import java.util.List;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.explorer.model.ExplorerContent;
-import org.kie.guvnor.explorer.model.Item;
 import org.uberfire.backend.vfs.Path;
 
 /**

@@ -22,10 +22,10 @@ import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitio
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataModelGettersAndSettersTest {
 

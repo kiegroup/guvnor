@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.action;
 
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
 
 public abstract class ActionDetectorKey {
 

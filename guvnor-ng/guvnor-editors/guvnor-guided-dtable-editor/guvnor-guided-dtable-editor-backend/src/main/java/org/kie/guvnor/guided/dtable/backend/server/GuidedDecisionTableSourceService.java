@@ -16,25 +16,19 @@
 
 package org.kie.guvnor.guided.dtable.backend.server;
 
+import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
-import org.kie.guvnor.guided.dtable.backend.server.util.GuidedDTDRLPersistence;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.CompositeColumn;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.server.util.Paths;
 
 import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+
+import static org.drools.guvnor.models.guided.dtable.GuidedDecisionTableConverter.hasDSLSentences;
 
 public class GuidedDecisionTableSourceService
         extends BaseSourceService<GuidedDecisionTable52> {
@@ -85,31 +79,5 @@ public class GuidedDecisionTableSourceService
                 .append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
-    // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.
-    // GuidedDecisionTableUtils also handles data-types, enums etc and hence requires a DataModelOracle to function. Loading
-    // a DataModelOracle just to determine whether the model has DSLs is an expensive operation and not needed here.
-    static boolean hasDSLSentences( final GuidedDecisionTable52 model ) {
-        for ( CompositeColumn<? extends BaseColumn> column : model.getConditions() ) {
-            if ( column instanceof BRLConditionColumn ) {
-                final BRLConditionColumn brlColumn = (BRLConditionColumn) column;
-                for ( IPattern pattern : brlColumn.getDefinition() ) {
-                    if ( pattern instanceof DSLSentence ) {
-                        return true;
-                    }
-                }
-            }
-        }
-        for ( ActionCol52 column : model.getActionCols() ) {
-            if ( column instanceof BRLActionColumn ) {
-                final BRLActionColumn brlColumn = (BRLActionColumn) column;
-                for ( IAction action : brlColumn.getDefinition() ) {
-                    if ( action instanceof DSLSentence ) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
 }

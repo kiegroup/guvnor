@@ -24,12 +24,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
-
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A popup and confirmation dialog for committing an asset.

@@ -1,22 +1,22 @@
 package org.kie.guvnor.datamodel.backend.server.builder.packages;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.drools.guvnor.models.commons.DSLSentence;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
-import org.kie.guvnor.datamodel.model.DSLSentence;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Builder for PackageDataModelOracle

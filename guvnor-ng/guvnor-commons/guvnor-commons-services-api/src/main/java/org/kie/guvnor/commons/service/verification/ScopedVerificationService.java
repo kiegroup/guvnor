@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.commons.service.verification;
 
-import java.util.Collection;
-
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.Collection;
 
 /**
  *

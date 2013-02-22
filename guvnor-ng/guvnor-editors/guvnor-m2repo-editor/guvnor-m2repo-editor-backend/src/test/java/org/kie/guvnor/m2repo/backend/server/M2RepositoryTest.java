@@ -26,9 +26,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class M2RepositoryTest {
     private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );

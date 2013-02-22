@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.commons.data.tables;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.List;
 
 /**
  * A Page of data for display in a PagedTable

@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.commons.service.validation.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Returned by the builder.

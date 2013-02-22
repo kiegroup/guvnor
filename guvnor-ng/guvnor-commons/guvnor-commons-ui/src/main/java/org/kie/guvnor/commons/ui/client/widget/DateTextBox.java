@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.commons.ui.client.widget;
 
-import java.util.Date;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
+
+import java.util.Date;
 
 /**
  * A TextBox to handle numeric BigDecimal values

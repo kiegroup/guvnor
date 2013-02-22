@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 public class DataModelDSLTest {
 

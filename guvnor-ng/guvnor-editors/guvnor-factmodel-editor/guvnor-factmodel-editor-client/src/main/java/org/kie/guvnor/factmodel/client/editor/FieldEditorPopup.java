@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +29,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.uberfire.client.common.FormStylePopup;
+
+import java.util.List;
+import java.util.Map;
 
 public class FieldEditorPopup {
 

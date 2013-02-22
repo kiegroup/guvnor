@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -25,10 +22,12 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A column showing an icon to delete an AuditLogEntry

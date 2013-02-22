@@ -1,16 +1,16 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.service.FileDiscoveryService;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Default implementation of FileDiscoveryService

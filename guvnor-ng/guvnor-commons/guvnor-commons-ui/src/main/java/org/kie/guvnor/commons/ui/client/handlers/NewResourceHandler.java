@@ -1,11 +1,11 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.List;
-
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.List;
 
 /**
  * Definition of Handler to support creation of new resources

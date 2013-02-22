@@ -16,29 +16,30 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
+import org.drools.guvnor.models.commons.BRLPersistence;
+import org.junit.Test;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
+import org.drools.guvnor.models.commons.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.rule.ActionUpdateField;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.rule.RuleAttribute;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import org.junit.Test;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.ActionGlobalCollectionAdd;
-import org.kie.guvnor.guided.rule.model.ActionInsertFact;
-import org.kie.guvnor.guided.rule.model.ActionRetractFact;
-import org.kie.guvnor.guided.rule.model.ActionUpdateField;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.ConnectiveConstraint;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FreeFormLine;
-import org.kie.guvnor.guided.rule.model.RuleAttribute;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
 
 import static org.junit.Assert.*;
 

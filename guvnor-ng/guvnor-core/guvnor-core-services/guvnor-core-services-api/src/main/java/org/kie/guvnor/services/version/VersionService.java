@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.services.version;
 
-import java.util.List;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
+
+import java.util.List;
 
 /**
  *

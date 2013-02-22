@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.commons.service.metadata.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-import static java.util.Collections.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static java.util.Collections.unmodifiableList;
+import static org.kie.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @Portable
 public class CategoryItem {

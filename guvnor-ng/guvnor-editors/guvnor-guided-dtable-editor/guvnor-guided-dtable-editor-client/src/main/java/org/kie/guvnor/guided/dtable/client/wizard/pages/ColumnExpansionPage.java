@@ -15,17 +15,17 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
+import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
-import org.kie.guvnor.guided.dtable.model.CompositeColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A page for the guided Decision Table Wizard to define which columns will be

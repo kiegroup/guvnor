@@ -30,16 +30,16 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.model.IPattern;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromEntryPointFactPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromEntryPointFactPattern;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -109,7 +109,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
             IPattern rPattern = this.getFromAccumulatePattern().getSourcePattern();
 
             RuleModellerWidget sourcePatternWidget;
-            if ( rPattern instanceof FactPattern ) {
+            if ( rPattern instanceof FactPattern) {
                 sourcePatternWidget = new FactPatternWidget( this.getModeller(),
                                                              getEventBus(),
                                                              rPattern,
@@ -123,13 +123,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                                                                                     (FromAccumulateCompositeFactPattern) rPattern,
                                                                                     this.readOnly );
 
-            } else if ( rPattern instanceof FromCollectCompositeFactPattern ) {
+            } else if ( rPattern instanceof FromCollectCompositeFactPattern) {
                 sourcePatternWidget = new FromCollectCompositeFactPatternWidget( this.getModeller(),
                                                                                  this.getEventBus(),
                                                                                  (FromCollectCompositeFactPattern) rPattern,
                                                                                  this.readOnly );
 
-            } else if ( rPattern instanceof FromEntryPointFactPattern ) {
+            } else if ( rPattern instanceof FromEntryPointFactPattern) {
                 sourcePatternWidget = new FromEntryPointFactPatternWidget( this.getModeller(),
                                                                            this.getEventBus(),
                                                                            (FromEntryPointFactPattern) rPattern,

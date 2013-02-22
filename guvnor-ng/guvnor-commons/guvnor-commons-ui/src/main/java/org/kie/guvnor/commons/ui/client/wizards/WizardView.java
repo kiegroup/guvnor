@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
+
+import java.util.List;
 
 /**
  * View and Presenter definitions for the generic Wizard

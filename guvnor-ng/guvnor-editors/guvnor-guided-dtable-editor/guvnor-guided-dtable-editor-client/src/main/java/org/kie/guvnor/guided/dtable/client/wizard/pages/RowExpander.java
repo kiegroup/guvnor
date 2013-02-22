@@ -15,26 +15,26 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
+import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
 /**
  * A utility class to expand Condition column definitions into rows. Action

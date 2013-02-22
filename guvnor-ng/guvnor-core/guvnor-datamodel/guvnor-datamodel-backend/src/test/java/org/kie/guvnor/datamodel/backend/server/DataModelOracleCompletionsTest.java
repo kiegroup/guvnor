@@ -2,14 +2,14 @@ package org.kie.guvnor.datamodel.backend.server;
 
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for the ProjectDefinition completions

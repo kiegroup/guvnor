@@ -1,12 +1,12 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Container for everything needed to build a DataModelOracle for a Project

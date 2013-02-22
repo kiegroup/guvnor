@@ -1,12 +1,12 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
-import java.util.List;
+import org.kie.guvnor.explorer.model.Item;
+import org.uberfire.backend.vfs.Path;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.kie.guvnor.explorer.model.Item;
-import org.uberfire.backend.vfs.Path;
+import java.util.List;
 
 /**
  * Loader to add Projects, Folders and Files for a Project path that is not within a Package

@@ -16,17 +16,17 @@
 
 package org.kie.guvnor.explorer.backend.server;
 
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.service.KModuleService;
 
-import static org.mockito.Mockito.*;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import static org.mockito.Mockito.mock;
 
 @Singleton
 @Alternative

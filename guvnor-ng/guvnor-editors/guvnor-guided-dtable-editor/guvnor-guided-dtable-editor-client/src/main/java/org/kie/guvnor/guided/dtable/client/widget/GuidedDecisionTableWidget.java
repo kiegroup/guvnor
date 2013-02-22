@@ -15,10 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -44,41 +40,41 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.DTColumnConfig52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
-import org.kie.guvnor.datamodel.model.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.kie.guvnor.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.AttributeCol52;
-import org.kie.guvnor.guided.dtable.model.BRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.BRLRuleModel;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.CompositeColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionRetractFactCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLActionColumn;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryBRLConditionColumn;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryConditionCol52;
-import org.kie.guvnor.guided.dtable.model.MetadataCol52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
-import org.kie.guvnor.guided.rule.model.FactPattern;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.AddButton;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
@@ -88,6 +84,10 @@ import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.PrettyFormLayout;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -303,7 +303,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     } );
 
-        } else if ( c instanceof ActionSetFieldCol52 ) {
+        } else if ( c instanceof ActionSetFieldCol52) {
             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
             Image edit = ImageResources508.INSTANCE.Edit();
             edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
@@ -398,7 +398,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     } );
 
-        } else if ( c instanceof ActionWorkItemCol52 ) {
+        } else if ( c instanceof ActionWorkItemCol52) {
             final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
             Image edit = ImageResources508.INSTANCE.Edit();
             edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
@@ -468,7 +468,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAction( final ActionCol52 c ) {
-        if ( c instanceof LimitedEntryBRLActionColumn ) {
+        if ( c instanceof LimitedEntryBRLActionColumn) {
             Image image = ImageResources508.INSTANCE.DeleteItemSmall();
             image.setAltText( Constants.INSTANCE.RemoveThisActionColumn() );
             return new ImageButton( image,
@@ -546,7 +546,7 @@ public class GuidedDecisionTableWidget extends Composite
         List<CompositeColumn<? extends BaseColumn>> columns = model.getConditions();
         boolean arePatternsDraggable = columns.size() > 1 && !isReadOnly;
         for ( CompositeColumn<?> column : columns ) {
-            if ( column instanceof Pattern52 ) {
+            if ( column instanceof Pattern52) {
                 Pattern52 p = (Pattern52) column;
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
@@ -598,7 +598,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                           patternLabel );
                 }
 
-            } else if ( column instanceof BRLConditionColumn ) {
+            } else if ( column instanceof BRLConditionColumn) {
                 BRLConditionColumn brl = (BRLConditionColumn) column;
 
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();

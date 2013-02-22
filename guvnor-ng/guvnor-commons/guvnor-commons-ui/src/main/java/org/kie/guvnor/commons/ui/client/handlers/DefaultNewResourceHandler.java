@@ -1,11 +1,5 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
-import java.util.LinkedList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -19,6 +13,12 @@ import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.workbench.file.ResourceType;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Handler for the creation of new Items that require a Name and Path

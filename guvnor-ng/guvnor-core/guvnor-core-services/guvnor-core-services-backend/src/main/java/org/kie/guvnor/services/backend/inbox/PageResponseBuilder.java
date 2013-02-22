@@ -16,10 +16,10 @@
 package org.kie.guvnor.services.backend.inbox;
 
 
-import java.util.List;
-
 import org.kie.guvnor.commons.data.tables.AbstractPageRow;
 import org.kie.guvnor.commons.data.tables.PageResponse;
+
+import java.util.List;
 
 public class PageResponseBuilder<T extends AbstractPageRow> {
     private final PageResponse<T> pageResponse = new PageResponse<T>();

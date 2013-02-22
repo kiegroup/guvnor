@@ -17,8 +17,8 @@ package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
+import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
 
 /**
  * A column for the Audit Log summary

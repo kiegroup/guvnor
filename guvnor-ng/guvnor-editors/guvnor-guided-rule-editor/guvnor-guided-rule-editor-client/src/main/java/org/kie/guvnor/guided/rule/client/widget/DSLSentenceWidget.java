@@ -16,10 +16,6 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,12 +31,12 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.DSLComplexVariableValue;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.DSLVariableValue;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerLabel;
-import org.kie.guvnor.datamodel.model.DSLComplexVariableValue;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.DSLVariableValue;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CustomFormPopUp;
@@ -52,6 +48,10 @@ import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.client.common.ValueChanged;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This displays a widget to edit a DSL sentence.
@@ -426,7 +426,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         public DSLVariableValue getSelectedValue() {
             //if oldVariableValue was of type DSLComplexVariableValue, then return a
             //copy of it with only the 'value' part modified
-            if ( oldVariableValue instanceof DSLComplexVariableValue ) {
+            if ( oldVariableValue instanceof DSLComplexVariableValue) {
                 return new DSLComplexVariableValue( ( (DSLComplexVariableValue) oldVariableValue ).getId(),
                                                     box.getText() );
             }

@@ -15,12 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -31,25 +25,25 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
 import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager.Context;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.DTColumnConfig52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.DTColumnConfig52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
@@ -61,6 +55,12 @@ import org.uberfire.client.common.NumericIntegerTextBox;
 import org.uberfire.client.common.NumericLongTextBox;
 import org.uberfire.client.common.NumericShortTextBox;
 import org.uberfire.client.common.NumericTextBox;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A Factory for Widgets to edit DTCellValues

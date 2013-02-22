@@ -16,14 +16,14 @@
 
 package org.kie.guvnor.dtablexls.backend.server;
 
-import java.util.Collections;
-import java.util.List;
+import org.uberfire.security.Identity;
+import org.uberfire.security.Role;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
-
-import org.uberfire.security.Identity;
-import org.uberfire.security.Role;
+import java.util.Collections;
+import java.util.List;
 
 @Singleton
 public class TestIdentityFactory {

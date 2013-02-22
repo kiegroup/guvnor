@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages.events;
 
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 
 /**
  * An event representing the removal of a Pattern

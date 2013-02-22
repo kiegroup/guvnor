@@ -15,15 +15,6 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -61,6 +52,15 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateColumnDefinitionEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateModelEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateSelectedCellsEvent;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * An abstract grid of data. Implementations can choose the orientation to

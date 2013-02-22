@@ -1,10 +1,5 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
-
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,8 +8,13 @@ import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitio
 import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
 import org.kie.guvnor.datamodel.backend.server.testclasses.Purchase;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 

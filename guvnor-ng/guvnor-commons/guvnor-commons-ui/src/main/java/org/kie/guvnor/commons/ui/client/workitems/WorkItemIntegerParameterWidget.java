@@ -15,8 +15,6 @@
  */
 package org.kie.guvnor.commons.ui.client.workitems;
 
-import java.util.Set;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,9 +24,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.model.workitems.PortableIntegerParameterDefinition;
 import org.uberfire.client.common.NumericIntegerTextBox;
+
+import java.util.Set;
 
 /**
  * A Widget to display a Work Item Integer parameter

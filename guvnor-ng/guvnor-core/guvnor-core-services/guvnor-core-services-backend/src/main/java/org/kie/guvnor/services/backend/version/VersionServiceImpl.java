@@ -16,12 +16,6 @@
 
 package org.kie.guvnor.services.backend.version;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -33,7 +27,13 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
 
-import static org.kie.commons.java.nio.file.StandardCopyOption.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.kie.commons.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
 @ApplicationScoped

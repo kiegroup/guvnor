@@ -24,6 +24,17 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import org.kie.guvnor.services.backend.inbox.InboxServiceImpl.InboxEntry;
+import org.kie.guvnor.services.inbox.InboxService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.client.workbench.services.UserServices;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -49,7 +60,7 @@ public class MailboxService {
 
     private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
 
-    private             ExecutorService executor = null;
+    private ExecutorService executor = null;
     public static final String          MAIL_MAN = "mailman";
 
     @Inject

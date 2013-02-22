@@ -15,12 +15,6 @@
  */
 package org.kie.guvnor.guided.scorecard.client.widget;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -50,15 +44,19 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.scorecard.client.widget.CustomEditTextCell;
-import org.kie.guvnor.guided.scorecard.client.widget.DynamicSelectionCell;
 import org.kie.guvnor.guided.scorecard.model.Attribute;
 import org.kie.guvnor.guided.scorecard.model.Characteristic;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GuidedScoreCardEditor extends Composite {
 

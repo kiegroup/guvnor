@@ -15,11 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -46,13 +41,17 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
 import org.kie.guvnor.commons.security.AppRoles;
 import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLog;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.uberfire.client.common.Popup;
 import org.uberfire.security.Identity;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The AuditLog View implementation
@@ -64,7 +63,7 @@ public class AuditLogViewImpl extends Popup
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
-    private final AuditLog auditLog;
+    private final org.drools.guvnor.models.commons.auditlog.AuditLog auditLog;
 
     private final Widget popupContent;
 
@@ -86,7 +85,7 @@ public class AuditLogViewImpl extends Popup
 
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
-    public AuditLogViewImpl( final AuditLog auditLog,
+    public AuditLogViewImpl( final org.drools.guvnor.models.commons.auditlog.AuditLog auditLog,
                              final Identity identity ) {
         setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
         this.auditLog = auditLog;

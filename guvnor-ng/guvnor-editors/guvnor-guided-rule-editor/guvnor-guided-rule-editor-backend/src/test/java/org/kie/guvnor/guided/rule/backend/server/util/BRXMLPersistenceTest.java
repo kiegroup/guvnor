@@ -16,11 +16,13 @@
 package org.kie.guvnor.guided.rule.backend.server.util;
 
 import org.junit.Test;
-import org.kie.guvnor.datamodel.model.DSLSentence;
-import org.kie.guvnor.datamodel.model.DSLVariableValue;
-import org.kie.guvnor.guided.rule.model.RuleModel;
+import org.drools.guvnor.models.commons.DSLSentence;
+import org.drools.guvnor.models.commons.DSLVariableValue;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class BRXMLPersistenceTest {
 

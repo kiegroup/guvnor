@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget.data;
 
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 
 /**
  * A grouped row of data in the Decision Table. This object represents the row

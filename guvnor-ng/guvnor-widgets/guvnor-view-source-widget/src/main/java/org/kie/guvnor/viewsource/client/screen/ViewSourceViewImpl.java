@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.viewsource.client.screen;
 
-import javax.enterprise.context.Dependent;
-
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.guvnor.viewsource.client.widget.ViewDRLSourceWidget;
+
+import javax.enterprise.context.Dependent;
 
 @Dependent
 public class ViewSourceViewImpl

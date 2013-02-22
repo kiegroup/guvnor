@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.user.cellview.client.Column;
-import org.kie.guvnor.datamodel.model.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
 
 /**
  * A column for Audit Log User comments

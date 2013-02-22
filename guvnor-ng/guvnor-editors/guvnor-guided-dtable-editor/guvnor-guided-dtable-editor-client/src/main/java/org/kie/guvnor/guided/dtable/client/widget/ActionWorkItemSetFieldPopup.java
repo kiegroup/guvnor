@@ -15,14 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,21 +27,29 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.model.workitems.PortableParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableWorkDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A popup to define an Action to set a field on an existing Fact to the value

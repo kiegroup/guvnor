@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.guided.dtable;
 
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.datamodel.model.DateConverter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.kie.guvnor.datamodel.model.DateConverter;
 
 /**
  * Convenience class to handle date conversion in a normal JVM (i.e. not running

@@ -1,7 +1,7 @@
 package org.kie.guvnor.configresource.client.widget.unbound;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.services.config.model.imports.Imports;
+import org.drools.guvnor.models.commons.imports.Imports;
 
 public interface ImportsWidgetView
         extends IsWidget {

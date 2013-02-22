@@ -16,15 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -57,11 +48,20 @@ import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldPatternCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
 import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * An implementation of the ActionInsertFactFields page

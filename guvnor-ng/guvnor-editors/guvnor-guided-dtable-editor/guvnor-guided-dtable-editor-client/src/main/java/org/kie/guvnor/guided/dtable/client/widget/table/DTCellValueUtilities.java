@@ -15,24 +15,24 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
+import org.kie.guvnor.datamodel.model.DateConverter;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionWorkItemSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import org.kie.guvnor.datamodel.model.DateConverter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.dtable.model.ActionSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionWorkItemSetFieldCol52;
-import org.kie.guvnor.guided.dtable.model.BaseColumn;
-import org.kie.guvnor.guided.dtable.model.ConditionCol52;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.model.LimitedEntryCol;
-import org.kie.guvnor.guided.dtable.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
 /**
  * Utilities relating to the use of DTCellValue's

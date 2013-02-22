@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.commons.ui.client.popup.list;
 
-import java.util.List;
-import javax.inject.Inject;
-
 import org.kie.commons.data.Pair;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class FormListPopup
         implements FormListPopupView.Presenter {

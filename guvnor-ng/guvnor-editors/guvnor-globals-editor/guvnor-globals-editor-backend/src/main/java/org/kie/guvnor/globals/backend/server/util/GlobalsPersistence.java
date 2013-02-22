@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.globals.backend.server.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class persists the rule model to DRL and back

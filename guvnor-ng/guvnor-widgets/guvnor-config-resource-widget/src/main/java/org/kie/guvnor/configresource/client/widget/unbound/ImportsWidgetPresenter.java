@@ -19,12 +19,12 @@ package org.kie.guvnor.configresource.client.widget.unbound;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.drools.guvnor.models.commons.imports.Import;
+import org.drools.guvnor.models.commons.imports.Imports;
 import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
 import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,

@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.commons.ui.client.workitems;
 
-import org.kie.guvnor.datamodel.model.workitems.PortableBooleanParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableEnumParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableFloatParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableIntegerParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableListParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableObjectParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableParameterDefinition;
-import org.kie.guvnor.datamodel.model.workitems.PortableStringParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableBooleanParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableEnumParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableFloatParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableListParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableObjectParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableParameterDefinition;
+import org.drools.guvnor.models.commons.workitems.PortableStringParameterDefinition;
 
 /**
  * A Factory to create Widgets to edit Work Item parameters
@@ -37,32 +37,32 @@ public class WorkItemParameterWidgetFactory {
                                                        bindingProvider,
                                                        isReadOnly );
         }
-        if ( ppd instanceof PortableEnumParameterDefinition ) {
+        if ( ppd instanceof PortableEnumParameterDefinition) {
             return new WorkItemEnumParameterWidget( (PortableEnumParameterDefinition) ppd,
                                                     bindingProvider,
                                                     isReadOnly );
         }
-        if ( ppd instanceof PortableFloatParameterDefinition ) {
+        if ( ppd instanceof PortableFloatParameterDefinition) {
             return new WorkItemFloatParameterWidget( (PortableFloatParameterDefinition) ppd,
                                                      bindingProvider,
                                                      isReadOnly );
         }
-        if ( ppd instanceof PortableIntegerParameterDefinition ) {
+        if ( ppd instanceof PortableIntegerParameterDefinition) {
             return new WorkItemIntegerParameterWidget( (PortableIntegerParameterDefinition) ppd,
                                                        bindingProvider,
                                                        isReadOnly );
         }
-        if ( ppd instanceof PortableListParameterDefinition ) {
+        if ( ppd instanceof PortableListParameterDefinition) {
             return new WorkItemListParameterWidget( (PortableListParameterDefinition) ppd,
                                                     bindingProvider,
                                                     isReadOnly );
         }
-        if ( ppd instanceof PortableObjectParameterDefinition ) {
+        if ( ppd instanceof PortableObjectParameterDefinition) {
             return new WorkItemObjectParameterWidget( (PortableObjectParameterDefinition) ppd,
                                                       bindingProvider,
                                                       isReadOnly );
         }
-        if ( ppd instanceof PortableStringParameterDefinition ) {
+        if ( ppd instanceof PortableStringParameterDefinition) {
             return new WorkItemStringParameterWidget( (PortableStringParameterDefinition) ppd,
                                                       bindingProvider,
                                                       isReadOnly );

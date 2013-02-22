@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.client.editor;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -38,7 +33,7 @@ import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
@@ -66,6 +61,11 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = { GuidedDTableResourceType.class })

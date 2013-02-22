@@ -15,14 +15,15 @@
  */
 package org.kie.guvnor.decoratedgrid.data;
 
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
 
-import static org.junit.Assert.*;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for DynamicData

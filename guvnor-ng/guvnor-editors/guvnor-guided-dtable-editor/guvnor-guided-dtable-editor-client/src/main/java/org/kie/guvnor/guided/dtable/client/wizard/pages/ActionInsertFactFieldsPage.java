@@ -15,29 +15,29 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
+import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
+import org.drools.guvnor.models.commons.oracle.DataType;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
+import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
+import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
+import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
-import org.kie.guvnor.datamodel.oracle.DataType;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.guvnor.guided.dtable.model.ActionCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
-import org.kie.guvnor.guided.dtable.model.DTCellValue52;
-import org.kie.guvnor.guided.dtable.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
 
 /**
  * A page for the guided Decision Table Wizard to define new Facts and fields.

@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.dtablexls.client.editor;
 
-import javax.annotation.PostConstruct;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,24 +24,20 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
 import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.LoadingPopup;
+
+import javax.annotation.PostConstruct;
 
 public class DecisionTableXLSEditorViewImpl
         extends Composite

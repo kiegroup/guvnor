@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.commons.service.metadata.model;
 
-import java.util.Date;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.Date;
 
 /**
  * This is a discussion record item.

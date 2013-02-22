@@ -2,7 +2,7 @@ package org.kie.guvnor.guided.rule.backend.server;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for GuidedRuleEditorService.loadDropDownExpression

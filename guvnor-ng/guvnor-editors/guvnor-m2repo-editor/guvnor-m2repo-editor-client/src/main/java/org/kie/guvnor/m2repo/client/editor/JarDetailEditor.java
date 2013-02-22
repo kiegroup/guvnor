@@ -20,8 +20,6 @@ import org.kie.guvnor.m2repo.client.resources.ImageResources;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ResizableTextArea;
 
-import com.google.gwt.user.client.ui.*;
-
 //Select JAR from list to see information on it:-
 //                maven info,
 //                artifact information,

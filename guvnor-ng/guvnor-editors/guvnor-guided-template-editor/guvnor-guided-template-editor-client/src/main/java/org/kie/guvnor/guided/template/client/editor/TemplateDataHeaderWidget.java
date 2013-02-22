@@ -15,9 +15,6 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
@@ -52,6 +49,9 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Header for a Vertical Decision Table

@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.condition;
 
+import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.kie.guvnor.guided.dtable.model.Pattern52;
 
 public abstract class AbstractNumericConditionDetector<T extends Comparable<T>> extends ConditionDetector<AbstractNumericConditionDetector<T>> {
 

@@ -1,9 +1,5 @@
 package org.kie.guvnor.globals.client.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
 import com.github.gwtbootstrap.client.ui.CellTable;
@@ -29,6 +25,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
 import org.uberfire.client.mvp.Command;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The GlobalsEditorPresenter's view implementation

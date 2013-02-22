@@ -15,9 +15,9 @@
  */
 package org.kie.guvnor.commons.ui.client.wizards;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.List;
 
 /**
  * Things a Wizard needs to implement

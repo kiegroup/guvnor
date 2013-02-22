@@ -1,8 +1,8 @@
 package org.kie.guvnor.datamodel.events;
 
+import org.drools.guvnor.models.commons.imports.Import;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.config.model.imports.Import;
 
 /**
  * An event signalling adding an import

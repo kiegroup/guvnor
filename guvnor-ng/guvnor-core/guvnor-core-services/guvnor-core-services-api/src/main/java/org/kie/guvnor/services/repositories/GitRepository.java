@@ -1,10 +1,9 @@
 package org.kie.guvnor.services.repositories;
 
+import org.kie.commons.validation.PortablePreconditions;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * A repository. This is only available server-side.

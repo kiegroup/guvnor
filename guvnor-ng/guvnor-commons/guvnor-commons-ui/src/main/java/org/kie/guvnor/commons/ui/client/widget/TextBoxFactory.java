@@ -16,7 +16,7 @@
 package org.kie.guvnor.commons.ui.client.widget;
 
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.datamodel.oracle.DataType;
+import org.drools.guvnor.models.commons.oracle.DataType;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
 import org.uberfire.client.common.NumericBigIntegerTextBox;
 import org.uberfire.client.common.NumericByteTextBox;

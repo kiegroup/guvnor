@@ -16,15 +16,12 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import javax.enterprise.inject.New;
-
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
@@ -41,6 +38,8 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import javax.enterprise.inject.New;
 
 @WorkbenchEditor(identifier = "projectEditorScreen", supportedTypes = { POMResourceType.class })
 public class

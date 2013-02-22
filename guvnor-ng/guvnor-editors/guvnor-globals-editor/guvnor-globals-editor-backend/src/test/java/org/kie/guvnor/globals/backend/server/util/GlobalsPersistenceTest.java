@@ -4,7 +4,8 @@ import org.junit.Test;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsModel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for GlobalsPersistence

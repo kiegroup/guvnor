@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.commons.data.workingset;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 
 /**
  *

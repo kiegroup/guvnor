@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.action;
 
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
 
 public class InsertFactActionDetectorKey extends ActionDetectorKey {
 

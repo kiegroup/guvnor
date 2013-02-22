@@ -16,23 +16,23 @@
 
 package org.kie.guvnor.configresource.client.widget.bound;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.event.Event;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.drools.guvnor.models.commons.imports.Import;
+import org.drools.guvnor.models.commons.imports.Imports;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.popup.list.FormListPopup;
 import org.kie.guvnor.commons.ui.client.popup.list.PopupItemSelectedCommand;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.services.config.model.imports.Import;
-import org.kie.guvnor.services.config.model.imports.Imports;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import javax.enterprise.event.Event;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,

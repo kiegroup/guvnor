@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.builder;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.io.impl.InputStreamResource;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -31,10 +26,11 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
-import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.commons.service.source.SourceService;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Builder {
 

@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
-import javax.enterprise.inject.New;
-
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -37,6 +35,8 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.Menus;
+
+import javax.enterprise.inject.New;
 
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectConfigResourceType.class })
 public class ProjectConfigScreenPresenter

@@ -15,25 +15,25 @@
  */
 package org.kie.guvnor.guided.template.model;
 
+import org.drools.guvnor.models.commons.FieldNatureType;
+import org.drools.guvnor.models.commons.IAction;
+import org.drools.guvnor.models.commons.IPattern;
+import org.drools.guvnor.models.commons.rule.ActionFieldList;
+import org.drools.guvnor.models.commons.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.rule.FactPattern;
+import org.drools.guvnor.models.commons.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.kie.guvnor.datamodel.model.IAction;
-import org.kie.guvnor.datamodel.model.IPattern;
-import org.kie.guvnor.guided.rule.model.ActionFieldList;
-import org.kie.guvnor.guided.rule.model.ActionFieldValue;
-import org.kie.guvnor.guided.rule.model.BaseSingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.CompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.CompositeFieldConstraint;
-import org.kie.guvnor.guided.rule.model.FactPattern;
-import org.kie.guvnor.guided.rule.model.FieldConstraint;
-import org.kie.guvnor.guided.rule.model.FieldNatureType;
-import org.kie.guvnor.guided.rule.model.FromAccumulateCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCollectCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.FromCompositeFactPattern;
-import org.kie.guvnor.guided.rule.model.RuleModel;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraint;
-import org.kie.guvnor.guided.rule.model.SingleFieldConstraintEBLeftSide;
 
 /**
  * A Rule Model Visitor to extract InterpolationVariables that are defined on
@@ -97,23 +97,23 @@ public class RuleModelPeerVariableVisitor {
         }
         if ( o instanceof RuleModel ) {
             visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof FactPattern ) {
+        } else if ( o instanceof FactPattern) {
             visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint ) {
+        } else if ( o instanceof CompositeFieldConstraint) {
             visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
+        } else if ( o instanceof SingleFieldConstraintEBLeftSide) {
             visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint ) {
+        } else if ( o instanceof SingleFieldConstraint) {
             visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof CompositeFactPattern ) {
+        } else if ( o instanceof CompositeFactPattern) {
             visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
+        } else if ( o instanceof FromAccumulateCompositeFactPattern) {
             visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern ) {
+        } else if ( o instanceof FromCollectCompositeFactPattern) {
             visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern ) {
+        } else if ( o instanceof FromCompositeFactPattern) {
             visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof ActionFieldList ) {
+        } else if ( o instanceof ActionFieldList) {
             visitActionFieldList( (ActionFieldList) o );
         }
     }

@@ -17,8 +17,8 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.commons.rule.RuleModel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.model.RuleModel;
 import org.uberfire.backend.vfs.Path;
 
 public interface GuidedRuleEditorView

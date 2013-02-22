@@ -16,11 +16,6 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.service.builder.model.Message;
