@@ -16,7 +16,9 @@
 
 package org.kie.guvnor.services.backend.inbox;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -26,12 +28,17 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.services.backend.inbox.InboxServiceImpl.InboxEntry;
 import org.kie.guvnor.services.inbox.InboxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.client.workbench.services.UserServices;
+import org.kie.commons.java.nio.file.FileSystem;
+
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
@@ -49,10 +56,22 @@ public class MailboxService {
     private InboxService inboxService;
 
     @Inject
-    private UserServices userServices;
+    @Named("ioStrategy")
+    private IOService ioService;
+    
+    private org.kie.commons.java.nio.file.Path bootstrapRoot = null;
 
     @PostConstruct
     public void setup() {
+        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+        if ( fsIterator.hasNext() ) {
+            final FileSystem bootstrap = fsIterator.next();
+            final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = bootstrap.getRootDirectories().iterator();
+            if ( rootIterator.hasNext() ) {
+                this.bootstrapRoot = rootIterator.next();
+            }
+        }
+        
         executor = Executors.newSingleThreadExecutor();
         log.info( "mailbox service is up" );
         wakeUp();
@@ -104,8 +123,7 @@ public class MailboxService {
                 log.debug( "Outgoing messages size " + es.size() );
                 //wipe out inbox for mailman here...
 
-                //TODO {porcelli -> jliu} removed listuser reference here
-                String[] userList = new String[]{ };//userServices.listUsers();
+                String[] userList = listUsers();
                 System.out.println( "userServices:" + userList.length );
                 for ( String toUser : userList ) {
                     System.out.println( "userServices:" + toUser );
@@ -133,6 +151,20 @@ public class MailboxService {
             entries.add( e.itemPath );
         }
         return entries;
+    }
+    
+    public String[] listUsers() {
+        //TODO: a temporary hack to retrieve user list. Please refactor later.
+        List<String> userList = new ArrayList<String>();
+        org.kie.commons.java.nio.file.Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/");
+        final Iterator<org.kie.commons.java.nio.file.Path> userIterator = userRoot.iterator();
+        if ( userIterator.hasNext() ) {
+            org.kie.commons.java.nio.file.Path userDir = userIterator.next();
+            userList.add(userDir.getFileName().toString());
+        }
+        
+        String[] result = new String[userList.size()];
+        return userList.toArray(result);
     }
 
 }
