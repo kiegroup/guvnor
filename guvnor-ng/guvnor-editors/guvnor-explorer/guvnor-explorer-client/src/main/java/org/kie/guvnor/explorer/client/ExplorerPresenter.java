@@ -1,5 +1,12 @@
 package org.kie.guvnor.explorer.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.explorer.client.resources.i18n.Constants;
@@ -22,13 +29,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -70,6 +70,7 @@ public class ExplorerPresenter {
     public void onStart() {
         final Path p = context.getActivePath();
         loadItems( p );
+        setContext( p );
     }
 
     @WorkbenchPartView
