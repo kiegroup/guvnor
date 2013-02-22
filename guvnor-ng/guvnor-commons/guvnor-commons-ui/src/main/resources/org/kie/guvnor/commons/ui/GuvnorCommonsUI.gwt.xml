@@ -25,6 +25,8 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
+
   <inherits name="org.kie.commons.KieCommonsData"/>
   <inherits name="org.kie.guvnor.datamodel.GuvnorDataModelAPI"/>
 

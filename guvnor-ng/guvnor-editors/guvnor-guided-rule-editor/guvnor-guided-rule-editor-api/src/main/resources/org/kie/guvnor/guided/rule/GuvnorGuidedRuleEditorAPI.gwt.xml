@@ -22,6 +22,8 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
+  <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
+
   <inherits name="org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
 
