@@ -23,9 +23,9 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
-import org.kie.guvnor.services.inbox.InboxService;
-import org.kie.guvnor.services.inbox.model.InboxIncomingPageRow;
-import org.kie.guvnor.services.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.model.InboxIncomingPageRow;
+import org.kie.guvnor.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.service.InboxService;
 
 /**
  * Widget with a table of inbox entries results.

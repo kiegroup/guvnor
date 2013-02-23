@@ -20,6 +20,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.data.events.AssetEditedEvent;
+import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
@@ -31,8 +33,6 @@ import org.kie.guvnor.guided.scorecard.backend.server.util.ScoreCardsXMLPersiste
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.kie.guvnor.services.inbox.AssetEditedEvent;
-import org.kie.guvnor.services.inbox.AssetOpenedEvent;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;

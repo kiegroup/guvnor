@@ -39,9 +39,9 @@ import org.kie.guvnor.commons.ui.client.tables.SelectionColumn;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
 import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
 import org.kie.guvnor.inbox.client.resources.images.ImageResources;
-import org.kie.guvnor.services.inbox.InboxService;
-import org.kie.guvnor.services.inbox.model.InboxPageRequest;
-import org.kie.guvnor.services.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.model.InboxPageRequest;
+import org.kie.guvnor.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.service.InboxService;
 
 import java.util.Date;
 

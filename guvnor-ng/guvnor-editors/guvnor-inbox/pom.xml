@@ -29,6 +29,8 @@
   <name>Guvnor Inbox</name>
 
   <modules>
+    <module>guvnor-inbox-api</module>
     <module>guvnor-inbox-client</module>
+    <module>guvnor-inbox-backend</module>
   </modules>
 </project>

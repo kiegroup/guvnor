@@ -1,5 +1,0 @@
-org.kie.guvnor.inbox.model.JarListPageRow
-org.kie.guvnor.inbox.service.InboxService
-org.kie.guvnor.inbox.model.InboxIncomingPageRow
-org.kie.guvnor.inbox.model.InboxPageRow
-org.kie.guvnor.inbox.model.InboxPageRequest

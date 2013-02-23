@@ -31,8 +31,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.services.inbox.InboxService;
-import org.kie.guvnor.services.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.model.InboxPageRow;
+import org.kie.guvnor.inbox.service.InboxService;
 
 /**
  * Widget with a table of inbox
