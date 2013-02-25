@@ -30,4 +30,6 @@ public interface DecisionTableXLSEditorConstants
 
     String DecisionTable();
     String NewDecisionTableDescription();
+    String UploadNewVersion();
+    String DownloadCurrentVersion();
 }

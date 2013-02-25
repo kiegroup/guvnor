@@ -30,7 +30,6 @@ import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorCons
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
 import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.FormStyleLayout;
 
 import javax.annotation.PostConstruct;
@@ -61,7 +60,7 @@ public class DecisionTableXLSEditorViewImpl
     public void setPath(Path path) {
         this.fullPath = path;
         //ts.clear();
-        ts.addAttribute( "Upload new version:", new AttachmentFileWidget(fullPath, new Command() {
+        ts.addAttribute( DecisionTableXLSEditorConstants.INSTANCE.UploadNewVersion() + ":", new AttachmentFileWidget(fullPath, new Command() {
             @Override
             public void execute() {
             }
@@ -78,7 +77,7 @@ public class DecisionTableXLSEditorViewImpl
                         "resizable=no,scrollbars=yes,status=no");
             }
         });
-        ts.addAttribute("Download current version:", dl);
+        ts.addAttribute(DecisionTableXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":", dl);
     }
 
     @Override
