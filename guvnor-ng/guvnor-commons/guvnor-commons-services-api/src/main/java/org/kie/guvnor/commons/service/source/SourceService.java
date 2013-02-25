@@ -23,19 +23,12 @@ public interface SourceService<T> {
     boolean accepts( final Path path );
 
     /**
-     *
-     * @param path to the file where the source is generated.
-     * @return SourceContext contains the information about where this file should be added and an input stream that has the source.
-     */
-    SourceContext getSource( final Path path );
-
-    /**
-     *
      * @param path path to the file
      * @param model the current model. Originally loaded from the file, but the content might have changed.
      * @return Source generated from the model, not from the file that the path points to.
      */
-    String getSource( final Path path, final T model );
+    String getSource( final Path path,
+                      final T model );
 
     String getPattern();
 

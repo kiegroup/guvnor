@@ -20,27 +20,14 @@ import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
-import org.uberfire.backend.server.util.Paths;
-
-import javax.inject.Inject;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 
 public class GuidedRuleSourceService
         extends BaseSourceService<RuleModel> {
 
     private static final String PATTERN = ".gre.drl";
 
-    @Inject
-    private Paths paths;
-
-    @Inject
-    private GuidedRuleEditorService guidedRuleEditorService;
-
     protected GuidedRuleSourceService() {
-        super("/src/main/resources");
+        super( "/src/main/resources" );
     }
 
     @Override
@@ -49,29 +36,12 @@ public class GuidedRuleSourceService
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
-        //Load model and convert to DRL
-        final RuleModel model = guidedRuleEditorService.loadRuleModel( paths.convert( path ) );
-        final String drl = getSource(path,model);
-        final boolean hasDSL = model.hasDSLSentences();
-
-        //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
-        String destinationPath = stripProjectPrefix( path );
-        destinationPath = correctFileName( destinationPath,
-                                           ( hasDSL ? ".dslr" : ".drl" ) );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         destinationPath );
-        return context;
-    }
-
-    @Override
-    public String getSource(Path path, RuleModel model) {
+    public String getSource( final Path path,
+                             final RuleModel model ) {
         return new StringBuilder()
-                .append(returnPackageDeclaration(path)).append("\n")
-                .append(model.getImports().toString()).append("\n")
-                .append( BRDRLPersistence.getInstance().marshal(model)).toString();
+                .append( returnPackageDeclaration( path ) ).append( "\n" )
+                .append( model.getImports().toString() ).append( "\n" )
+                .append( BRDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

@@ -16,33 +16,15 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class DRLSourceService
         extends DRLBaseSourceService {
 
     private static final String PATTERN = ".drl";
 
-
-    private IOService ioService;
-
     public DRLSourceService() {
         // Empty one for Weld
-
-    }
-
-    @Inject
-    public DRLSourceService(@Named("ioStrategy") IOService ioService) {
-        this.ioService = ioService;
-    }
-
-    @Override
-    protected IOService getIOService() {
-        return ioService;
     }
 
     @Override

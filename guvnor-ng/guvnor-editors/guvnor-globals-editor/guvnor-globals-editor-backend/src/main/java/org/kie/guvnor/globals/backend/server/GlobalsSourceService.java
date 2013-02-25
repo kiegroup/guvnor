@@ -16,25 +16,12 @@
 
 package org.kie.guvnor.globals.backend.server;
 
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class GlobalsSourceService
         extends DRLBaseSourceService {
 
     private static final String PATTERN = ".global.drl";
-
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Override
-    protected IOService getIOService() {
-        return ioService;
-    }
 
     @Override
     public String getPattern() {

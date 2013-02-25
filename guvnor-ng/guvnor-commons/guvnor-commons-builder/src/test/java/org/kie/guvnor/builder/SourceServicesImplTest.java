@@ -16,23 +16,21 @@
 
 package org.kie.guvnor.builder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.inject.Instance;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.SourceContext;
 import org.kie.guvnor.commons.service.source.SourceService;
 
-import javax.enterprise.inject.Instance;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class SourceServicesImplTest {
 
@@ -111,11 +109,6 @@ public class SourceServicesImplTest {
             public boolean accepts(final Path path) {
                 final String uri = path.toUri().toString();
                 return uri.substring(uri.length() - extension.length()).equals(extension);
-            }
-
-            @Override
-            public SourceContext getSource(final Path path) {
-                return null;
             }
 
             @Override

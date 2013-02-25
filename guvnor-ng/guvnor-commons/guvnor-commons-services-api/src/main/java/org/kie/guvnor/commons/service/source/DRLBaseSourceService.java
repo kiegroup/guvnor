@@ -16,11 +16,7 @@
 
 package org.kie.guvnor.commons.service.source;
 
-import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 
 public abstract class DRLBaseSourceService
         extends BaseSourceService<String> {
@@ -30,32 +26,21 @@ public abstract class DRLBaseSourceService
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
+    public String getSource( final Path path,
+                             final String drl ) {
+        String packageDeclaration = returnPackageDeclaration( path );
 
-        String drl = getSource(path, getIOService().readAllString( path ));
-
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         stripProjectPrefix( path ) );
-        return context;
-    }
-
-    @Override
-    public String getSource(Path path, String drl) {
-        String packageDeclaration = returnPackageDeclaration(path);
-
-        if ( !drl.contains( packageDeclaration ) ) {
-            drl = packageDeclaration + "\n" + drl;
+        String source = drl;
+        if ( !source.contains( packageDeclaration ) ) {
+            source = packageDeclaration + "\n" + source;
         }
 
         //Hack for empty byte streams not handled by the underlying KieBuilder
-        if ( drl.isEmpty() ) {
-            drl = " ";
+        if ( source.isEmpty() ) {
+            source = " ";
         }
 
-        return drl;
+        return source;
     }
 
-    abstract protected IOService getIOService();
 }

@@ -16,25 +16,12 @@
 
 package org.kie.guvnor.factmodel.backend.server;
 
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class FactModelSourceService
         extends DRLBaseSourceService {
 
     private static final String PATTERN = ".model.drl";
-
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Override
-    protected IOService getIOService() {
-        return ioService;
-    }
 
     @Override
     public String getPattern() {

@@ -16,32 +16,15 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
-import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class DSLSourceService
         extends DRLBaseSourceService {
 
     private static final String PATTERN = ".dsl";
 
-
-    private IOService ioService;
-
     public DSLSourceService() {
         // For Weld
-    }
-
-    @Inject
-    public DSLSourceService(@Named("ioStrategy") IOService ioService) {
-        this.ioService = ioService;
-    }
-
-    @Override
-    protected IOService getIOService() {
-        return ioService;
     }
 
     @Override

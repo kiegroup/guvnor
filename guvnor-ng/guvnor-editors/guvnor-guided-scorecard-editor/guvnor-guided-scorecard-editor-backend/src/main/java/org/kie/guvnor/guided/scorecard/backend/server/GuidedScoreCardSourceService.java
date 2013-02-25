@@ -16,28 +16,15 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import javax.inject.Inject;
-
 import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.uberfire.backend.server.util.Paths;
 
 public class GuidedScoreCardSourceService
         extends BaseSourceService<ScoreCardModel> {
 
     private static final String PATTERN = ".scgd";
-
-    @Inject
-    private Paths paths;
-
-    @Inject
-    private GuidedScoreCardEditorService guidedScoreCardEditorService;
 
     protected GuidedScoreCardSourceService() {
         super( "/src/main/resources" );
@@ -49,25 +36,8 @@ public class GuidedScoreCardSourceService
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
-        //Load model and convert to DRL
-        final ScoreCardModel model = guidedScoreCardEditorService.loadModel( paths.convert( path ) );
-        final String drl = getSource( path, model );
-
-        //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
-        String destinationPath = stripProjectPrefix( path );
-        destinationPath = correctFileName( destinationPath,
-                                           ".drl" );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         destinationPath );
-        return context;
-    }
-
-    @Override
-    public String getSource( Path path,
-                             ScoreCardModel model ) {
+    public String getSource( final Path path,
+                             final ScoreCardModel model ) {
         return new StringBuilder()
                 .append( returnPackageDeclaration( path ) ).append( "\n" )
                 .append( model.getImports().toString() ).append( "\n" )

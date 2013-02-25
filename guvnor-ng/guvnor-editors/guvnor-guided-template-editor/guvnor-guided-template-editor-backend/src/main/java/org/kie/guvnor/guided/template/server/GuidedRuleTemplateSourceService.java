@@ -16,28 +16,15 @@
 
 package org.kie.guvnor.guided.template.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import javax.inject.Inject;
-
+import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
-import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
-import org.uberfire.backend.server.util.Paths;
 
 public class GuidedRuleTemplateSourceService
         extends BaseSourceService<TemplateModel> {
 
     private static final String PATTERN = ".template";
-
-    @Inject
-    private Paths paths;
-
-    @Inject
-    private GuidedRuleTemplateEditorService guidedRuleTemplateEditorService;
 
     protected GuidedRuleTemplateSourceService() {
         super( "/src/main/resources" );
@@ -49,26 +36,8 @@ public class GuidedRuleTemplateSourceService
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
-        //Load model and convert to DRL
-        final TemplateModel model = guidedRuleTemplateEditorService.loadTemplateModel( paths.convert( path ) );
-        final String drl = getSource( path, model );
-        final boolean hasDSL = model.hasDSLSentences();
-
-        //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
-        String destinationPath = stripProjectPrefix( path );
-        destinationPath = correctFileName( destinationPath,
-                                           ( hasDSL ? ".dslr" : ".drl" ) );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         destinationPath );
-        return context;
-    }
-
-    @Override
-    public String getSource( Path path,
-                             TemplateModel model ) {
+    public String getSource( final Path path,
+                             final TemplateModel model ) {
         return new StringBuilder()
                 .append( returnPackageDeclaration( path ) ).append( "\n" )
                 .append( model.getImports().toString() ).append( "\n" )

@@ -16,73 +16,48 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.commons.java.nio.file.Path;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DSLSourceServiceTest {
 
     private DSLSourceService dslSourceService;
-    private IOService ioService;
 
     @Before
     public void setUp() throws Exception {
-        ioService = mock(IOService.class);
-        dslSourceService = new DSLSourceService(ioService);
+        dslSourceService = new DSLSourceService();
     }
-
 
     @Test
     public void testAlreadyHasPackage() throws Exception {
-        Path path = mock(Path.class);
+        Path path = mock( Path.class );
         when(
                 path.toUri()
-        ).thenReturn(
-                new URI("/src/main/resources/org/test/myfile.drl")
-        );
+            ).thenReturn(
+                new URI( "/src/main/resources/org/test/myfile.drl" )
+                        );
 
-
-        when(
-                ioService.readAllString(path)
-        ).thenReturn(
-                "package org.test"
-        );
-
-        assertEquals("package org.test", toString(dslSourceService.getSource(path).getInputSteam()));
+        assertEquals( "package org.test\n", dslSourceService.getSource( path,
+                                                                      "" ) );
     }
 
     @Test
     public void testAddPackage() throws Exception {
-        Path path = mock(Path.class);
+        Path path = mock( Path.class );
         when(
                 path.toUri()
-        ).thenReturn(
-                new URI("/src/main/resources/org/test/myfile.drl")
-        );
+            ).thenReturn(
+                new URI( "/src/main/resources/org/test/myfile.drl" )
+                        );
 
-
-        when(
-                ioService.readAllString(path)
-        ).thenReturn(
-                "something"
-        );
-
-        assertEquals("package org.test\nsomething", toString(dslSourceService.getSource(path).getInputSteam()));
+        assertEquals( "package org.test\nsomething", dslSourceService.getSource( path,
+                                                                                 "something" ) );
     }
 
-    private String toString(InputStream inputSteam) throws IOException {
-        return CharStreams.toString(new InputStreamReader(inputSteam, Charsets.UTF_8));
-    }
 }

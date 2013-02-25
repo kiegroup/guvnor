@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -28,9 +31,6 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.uberfire.backend.server.util.Paths;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Builder {
 
@@ -102,21 +102,6 @@ public class Builder {
                 visitPaths( Files.newDirectoryStream( path ) );
 
             } else if ( filter.accept( path ) ) {
-/*
-                if ( sourceServices.hasServiceFor( path ) ) {
-
-                    final SourceService service = sourceServices.getServiceFor( path );
-                    final SourceContext context = service.getSource( path );
-                    final InputStream is = context.getInputSteam();
-                    final String destinationPath = context.getDestination();
-                    final InputStreamResource isr = new InputStreamResource( is );
-
-                    handles.put( destinationPath, path );
-                    kieFileSystem.write( destinationPath,
-                                         isr );
-
-                }
-*/
                 String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
                 String content = ioService.readAllString( path );
                 kieFileSystem.write( destinationPath, content );

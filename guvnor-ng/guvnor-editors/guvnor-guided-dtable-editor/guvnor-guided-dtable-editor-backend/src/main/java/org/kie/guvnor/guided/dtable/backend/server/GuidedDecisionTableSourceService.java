@@ -20,26 +20,11 @@ import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.uberfire.backend.server.util.Paths;
-
-import javax.inject.Inject;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-
-import static org.drools.guvnor.models.guided.dtable.backend.GuidedDecisionTableConverter.hasDSLSentences;
 
 public class GuidedDecisionTableSourceService
         extends BaseSourceService<GuidedDecisionTable52> {
 
     private static final String PATTERN = ".gdst";
-
-    @Inject
-    private Paths paths;
-
-    @Inject
-    private GuidedDecisionTableEditorService guidedDecisionTableEditorService;
 
     protected GuidedDecisionTableSourceService() {
         super( "/src/main/resources" );
@@ -51,26 +36,6 @@ public class GuidedDecisionTableSourceService
     }
 
     @Override
-    public SourceContext getSource( final Path path ) {
-        //Load model and convert to DRL
-        final GuidedDecisionTable52 model = guidedDecisionTableEditorService.loadRuleModel( paths.convert( path ) );
-
-        final String drl = getSource( path, model );
-
-        final boolean hasDSL = hasDSLSentences( model );
-
-        //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
-        String destinationPath = stripProjectPrefix( path );
-        destinationPath = correctFileName( destinationPath,
-                                           ( hasDSL ? ".dslr" : ".drl" ) );
-        final ByteArrayInputStream is = new ByteArrayInputStream( drl.getBytes() );
-        final BufferedInputStream bis = new BufferedInputStream( is );
-        final SourceContext context = new SourceContext( bis,
-                                                         destinationPath );
-        return context;
-    }
-
-    @Override
     public String getSource( final Path path,
                              final GuidedDecisionTable52 model ) {
         return new StringBuilder()
@@ -78,6 +43,5 @@ public class GuidedDecisionTableSourceService
                 .append( model.getImports().toString() ).append( "\n" )
                 .append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
     }
-
 
 }
