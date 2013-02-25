@@ -18,7 +18,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-commons</artifactId>
+      <artifactId>drools-guvnor-models-guided-scorecard</artifactId>
     </dependency>
 
     <dependency>

@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.scorecard.model;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+package org.drools.guvnor.models.guided.scorecard.shared;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Portable
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+
 public class ScoreCardModel {
 
     private String name;

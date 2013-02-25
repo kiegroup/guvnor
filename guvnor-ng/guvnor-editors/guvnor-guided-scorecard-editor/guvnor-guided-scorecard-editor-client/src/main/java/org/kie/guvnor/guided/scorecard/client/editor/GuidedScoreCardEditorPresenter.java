@@ -16,7 +16,14 @@
 
 package org.kie.guvnor.guided.scorecard.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
@@ -33,7 +40,6 @@ import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -61,12 +67,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = { GuidedScoreCardResourceType.class })
@@ -110,13 +110,13 @@ public class GuidedScoreCardEditorPresenter {
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
-    private Menus           menus;
+    private Menus menus;
 
-    private Path         path;
+    private Path path;
     private PlaceRequest place;
-    private boolean      isReadOnly;
+    private boolean isReadOnly;
 
-    private ScoreCardModel  model;
+    private ScoreCardModel model;
     private DataModelOracle oracle;
 
     @Inject

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.scorecard.model;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
+package org.drools.guvnor.models.guided.scorecard.shared;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Portable
 public class Characteristic {
 
     private String fact;

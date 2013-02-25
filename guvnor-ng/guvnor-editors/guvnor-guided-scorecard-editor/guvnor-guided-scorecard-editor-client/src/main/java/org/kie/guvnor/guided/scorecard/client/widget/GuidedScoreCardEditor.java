@@ -15,6 +15,12 @@
  */
 package org.kie.guvnor.guided.scorecard.client.widget;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -41,22 +47,16 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.guided.scorecard.shared.Attribute;
+import org.drools.guvnor.models.guided.scorecard.shared.Characteristic;
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.scorecard.model.Attribute;
-import org.kie.guvnor.guided.scorecard.model.Characteristic;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class GuidedScoreCardEditor extends Composite {
 

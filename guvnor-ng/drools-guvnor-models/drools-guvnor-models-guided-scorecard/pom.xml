@@ -10,22 +10,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.drools</groupId>
-  <artifactId>drools-guvnor-models-guided-template</artifactId>
+  <artifactId>drools-guvnor-models-guided-scorecard</artifactId>
 
-  <name>Drools Guvnor - Guided Rule Templates Model</name>
-  <description>Drools Guvnor - Guided Rule Templates Model</description>
+  <name>Drools Guvnor - Guided Score Cards Model</name>
+  <description>Drools Guvnor - Guided Score Cards Model</description>
 
   <dependencies>
 
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-guvnor-models-commons</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-commons</artifactId>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
     </dependency>
 
     <dependency>
@@ -35,7 +35,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-templates</artifactId>
+      <artifactId>drools-scorecards</artifactId>
     </dependency>
 
   </dependencies>

@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.scorecard.model;
+package org.drools.guvnor.models.guided.scorecard.shared;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class Attribute {
 
     private String value;

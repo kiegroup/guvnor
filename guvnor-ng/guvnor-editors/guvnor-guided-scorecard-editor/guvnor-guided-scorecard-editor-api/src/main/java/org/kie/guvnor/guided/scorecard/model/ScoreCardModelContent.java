@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.guided.scorecard.model;
 
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 

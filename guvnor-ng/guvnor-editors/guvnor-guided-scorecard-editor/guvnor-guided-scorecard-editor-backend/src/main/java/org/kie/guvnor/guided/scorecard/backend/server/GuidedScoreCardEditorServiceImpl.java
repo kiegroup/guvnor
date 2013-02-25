@@ -16,7 +16,17 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.codehaus.plexus.util.StringUtils;
+import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
+import org.drools.guvnor.models.guided.scorecard.shared.Attribute;
+import org.drools.guvnor.models.guided.scorecard.shared.Characteristic;
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -29,8 +39,6 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.scorecard.backend.server.util.ScoreCardsXMLPersistence;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -38,12 +46,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -71,10 +73,10 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-    
+
     @Inject
     private Event<AssetOpenedEvent> assetOpenedEvent;
-    
+
     private static final String RESOURCE_EXTENSION = "scgd";
 
     @Override
@@ -84,14 +86,14 @@ public class GuidedScoreCardEditorServiceImpl
 
         final DataModelOracle oracle = dataModelService.getDataModel( path );
 
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
         return new ScoreCardModelContent( model,
                                           oracle );
     }
 
     @Override
     public ScoreCardModel loadModel( final Path path ) {
-        return ScoreCardsXMLPersistence.getInstance().unmarshall( ioService.readAllString( paths.convert( path ) ) );
+        return GuidedScoreCardXMLPersistence.getInstance().unmarshall( ioService.readAllString( paths.convert( path ) ) );
     }
 
     @Override
@@ -99,10 +101,10 @@ public class GuidedScoreCardEditorServiceImpl
                       final ScoreCardModel model,
                       final String comment ) {
         ioService.write( paths.convert( path ),
-                         ScoreCardsXMLPersistence.getInstance().marshal( model ),
+                         GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -124,11 +126,11 @@ public class GuidedScoreCardEditorServiceImpl
                       final String comment ) {
 
         ioService.write( paths.convert( resource ),
-                         ScoreCardsXMLPersistence.getInstance().marshal( model ),
+                         GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
     }
 
     @Override
@@ -137,8 +139,8 @@ public class GuidedScoreCardEditorServiceImpl
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -150,8 +152,8 @@ public class GuidedScoreCardEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -164,8 +166,8 @@ public class GuidedScoreCardEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -230,7 +232,7 @@ public class GuidedScoreCardEditorServiceImpl
                                                             "Characteristics" ) );
         }
         int ctr = 1;
-        for ( final org.kie.guvnor.guided.scorecard.model.Characteristic c : model.getCharacteristics() ) {
+        for ( final Characteristic c : model.getCharacteristics() ) {
             String characteristicName = "Characteristic ('#" + ctr + "')";
             if ( StringUtils.isBlank( c.getName() ) ) {
                 builderResult.addLine( createBuilderResultLine( "Name is empty.",
@@ -264,7 +266,7 @@ public class GuidedScoreCardEditorServiceImpl
                 }
             }
             int attrCtr = 1;
-            for ( final org.kie.guvnor.guided.scorecard.model.Attribute attribute : c.getAttributes() ) {
+            for ( final Attribute attribute : c.getAttributes() ) {
                 final String attributeName = "Attribute ('#" + attrCtr + "')";
                 if ( StringUtils.isBlank( attribute.getOperator() ) ) {
                     builderResult.addLine( createBuilderResultLine( "Attribute Operator is empty.",

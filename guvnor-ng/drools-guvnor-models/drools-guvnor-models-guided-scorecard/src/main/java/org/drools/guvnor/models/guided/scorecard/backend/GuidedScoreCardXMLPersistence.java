@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.scorecard.backend.server.util;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;
+package org.drools.guvnor.models.guided.scorecard.backend;
 
 import java.math.BigDecimal;
 
-public class ScoreCardsXMLPersistence {
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+
+public class GuidedScoreCardXMLPersistence {
 
     private XStream xt;
-    private static final ScoreCardsXMLPersistence INSTANCE = new ScoreCardsXMLPersistence();
+    private static final GuidedScoreCardXMLPersistence INSTANCE = new GuidedScoreCardXMLPersistence();
 
-    private ScoreCardsXMLPersistence() {
+    private GuidedScoreCardXMLPersistence() {
         xt = new XStream( new DomDriver() );
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric", Number.class,
                   BigDecimal.class );
     }
 
-    public static ScoreCardsXMLPersistence getInstance() {
+    public static GuidedScoreCardXMLPersistence getInstance() {
         return INSTANCE;
     }
 
