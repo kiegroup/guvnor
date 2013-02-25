@@ -22,7 +22,9 @@ import org.apache.commons.fileupload.FileItem;
 public class FormData {
     private FileItem file;
     private String path;
-
+    private String fileName;
+    private String fullPath;
+    
     public FileItem getFile() {
         return file;
     }
@@ -40,6 +42,22 @@ public class FormData {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFullPath() {
+        return fullPath;
+    }
+
+    public void setFullPath(String fullPath) {
+        this.fullPath = fullPath;
     }
 
 

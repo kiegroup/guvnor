@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -43,7 +42,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystemNotFoundException;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
-import org.kie.guvnor.project.model.GAV;
 import org.uberfire.backend.server.util.Paths;
 
 /**
@@ -116,7 +114,13 @@ public class FileServlet extends HttpServlet {
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_PATH ) ) {
                     System.out.println("path:" + item.getString());
                     data.setPath(item.getString());
-                } 
+                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_NAME ) ) {
+                    System.out.println("name:" + item.getString());
+                    data.setFileName(item.getString());
+                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_FULL_PATH ) ) {
+                    System.out.println("name:" + item.getString());
+                    data.setFullPath(item.getString());
+                }
             }
 
             return data;
@@ -130,12 +134,21 @@ public class FileServlet extends HttpServlet {
     
     public String uploadFile(FormData uploadItem) throws IOException {
         InputStream fileData = uploadItem.getFile().getInputStream();
-        String fileName = uploadItem.getFile().getName();
         OutputStream os = null;
+        
         try {            
-            org.kie.commons.java.nio.file.Path path = ioService.get( new URI(uploadItem.getPath()));
-            os = decisionTableXLSService.save(paths.convert(path.resolve( fileName ), false));
+            org.uberfire.backend.vfs.Path targetPath = null;
+            if(uploadItem.getFullPath() != null) {
+                org.kie.commons.java.nio.file.Path path = ioService.get( new URI(uploadItem.getFullPath()));
+                targetPath = paths.convert(path, false);
+            } else {
+                String fileName = uploadItem.getFileName();                
+                org.kie.commons.java.nio.file.Path path = ioService.get( new URI(uploadItem.getPath()));
+                targetPath = paths.convert(path.resolve( fileName ), false);
+            }
+            os = decisionTableXLSService.save(targetPath);
             IOUtils.copy(fileData, os);
+            
             return "OK";
         } catch (IOException ioe) {
         } catch (Exception e) {
@@ -171,17 +184,24 @@ public class FileServlet extends HttpServlet {
     protected void processAttachmentDownload(String path,
                                              HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        IOUtils.copy(decisionTableXLSService.load(null), output);
-        
-        //String fileName = m2RepoService.getJarName(path);
-        String fileName = "";
-        
-        response.setContentType( "application/x-download" );
-        response.setHeader( "Content-Disposition",
-                            "attachment; filename=" + fileName + ";" );
-        response.setContentLength( output.size() );
-        response.getOutputStream().write( output.toByteArray() );
-        response.getOutputStream().flush();
+
+        try {
+            org.kie.commons.java.nio.file.Path targetPathNio = ioService.get(new URI(path));
+            org.uberfire.backend.vfs.Path  targetPath = paths.convert(targetPathNio, false);
+            IOUtils.copy(decisionTableXLSService.load(targetPath), output);
+            // String fileName = m2RepoService.getJarName(path);
+            String fileName = targetPath.getFileName();
+
+            response.setContentType("application/x-download");
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ";");
+            response.setContentLength(output.size());
+            response.getOutputStream().write(output.toByteArray());
+            response.getOutputStream().flush();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }        
+
     }
 
 }

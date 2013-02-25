@@ -24,6 +24,7 @@ public class HTMLFileManagerFields {
 
     public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
     public static final String FORM_FIELD_PATH = "attachmentPath";
-
+    public static final String FORM_FIELD_NAME = "fileName";
+    public static final String FORM_FIELD_FULL_PATH = "attachmentFullPath";
    
 }

@@ -50,15 +50,14 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
-        NewDecisionTableXLSPopup popup = null;
-        popup = new NewDecisionTableXLSPopup(contextPath, buildFileName( resourceType, baseFileName ), new Command() {
+        NewDecisionTableXLSPopup popup = new NewDecisionTableXLSPopup(contextPath, buildFileName( resourceType, baseFileName ), new Command() {
 
             @Override
             public void execute() {
                 notifySuccess();
-                PathFactory.newPath(contextPath.getFileSystem(), baseFileName, contextPath.toURI());
-                notifyResourceAdded( contextPath );
-                final PlaceRequest place = new PathPlaceRequest( contextPath,
+                Path newPath = PathFactory.newPath(contextPath.getFileSystem(), buildFileName( resourceType, baseFileName ), contextPath.toURI());
+                notifyResourceAdded( newPath );
+                final PlaceRequest place = new PathPlaceRequest( newPath,
                                                                  "DecisionTableXLSEditor" );
                 placeManager.goTo( place );                
             }

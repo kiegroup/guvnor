@@ -40,10 +40,19 @@ public class AttachmentFileWidget extends Composite {
     private Path contextPath;
     private String fileName;
     private Command createdCallback;
-    
+    private Path fullPath = null;
+   
     public AttachmentFileWidget(Path contextPath, String fileName, Command createdCallback) {
         this.contextPath = contextPath;
         this.fileName = fileName;
+        this.createdCallback = createdCallback;
+        
+        initWidgets();
+        initSubmitCompleteHandler();
+    }
+    
+    public AttachmentFileWidget(Path fullPath, Command createdCallback) {
+        this.fullPath = fullPath;
         this.createdCallback = createdCallback;
         
         initWidgets();
@@ -59,9 +68,15 @@ public class AttachmentFileWidget extends Composite {
         FileUpload up = new FileUpload();
         up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         HorizontalPanel fields = new HorizontalPanel();
+        if(fullPath == null) {
         fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
                                     contextPath.toURI() ) );
-
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_NAME,
+                                    fileName ) );
+        } else {
+            fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_FULL_PATH,
+                                        fullPath.toURI() ) );           
+        }
         Button ok = new Button( "upload");
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -73,17 +88,8 @@ public class AttachmentFileWidget extends Composite {
         fields.add( up );
         fields.add( ok );
         
-/*        Button dl = new Button( "Download" );
-        //dl.setEnabled( this.asset.getVersionNumber() > 0 );
-        dl.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + "uuid",
-                             "downloading",
-                             "resizable=no,scrollbars=yes,status=no" );
-            }
-        } );
-*/
-        form.add( fields );
+
+        form.add( fields );       
         
         initWidget( form );
     }
@@ -92,15 +98,13 @@ public class AttachmentFileWidget extends Composite {
         form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {
-                //LoadingPopup.close();
+                LoadingPopup.close();
 
                 if("OK".equalsIgnoreCase(event.getResults())) {
-                    LoadingPopup.close();
                     Window.alert("Uploaded successfully");
                     
                     createdCallback.execute();                           
                 } else {
-                    LoadingPopup.close();
                     Window.alert("Upload failed:" + event.getResults()); 
                 }
             }
