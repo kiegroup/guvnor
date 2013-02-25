@@ -19,8 +19,8 @@ import com.google.gwt.event.shared.GwtEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 import java.util.List;
 

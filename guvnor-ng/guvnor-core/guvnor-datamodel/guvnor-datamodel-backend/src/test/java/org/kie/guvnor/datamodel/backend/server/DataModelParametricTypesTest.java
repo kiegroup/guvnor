@@ -8,7 +8,7 @@ import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitio
 import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
 import org.kie.guvnor.datamodel.backend.server.testclasses.Purchase;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 import java.lang.reflect.ParameterizedType;

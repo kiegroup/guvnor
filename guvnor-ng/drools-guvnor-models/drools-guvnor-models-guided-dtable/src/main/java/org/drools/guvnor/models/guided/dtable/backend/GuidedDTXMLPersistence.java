@@ -18,21 +18,21 @@ package org.drools.guvnor.models.guided.dtable.backend;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionRetractFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
-import org.drools.guvnor.models.guided.dtable.model.legacy.ActionInsertFactCol;
-import org.drools.guvnor.models.guided.dtable.model.legacy.ActionRetractFactCol;
-import org.drools.guvnor.models.guided.dtable.model.legacy.ActionSetFieldCol;
-import org.drools.guvnor.models.guided.dtable.model.legacy.AttributeCol;
-import org.drools.guvnor.models.guided.dtable.model.legacy.ConditionCol;
-import org.drools.guvnor.models.guided.dtable.model.legacy.GuidedDecisionTable;
-import org.drools.guvnor.models.guided.dtable.model.legacy.MetadataCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.ActionInsertFactCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.ActionRetractFactCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.ActionSetFieldCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.AttributeCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.ConditionCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.GuidedDecisionTable;
+import org.drools.guvnor.models.guided.dtable.shared.model.legacy.MetadataCol;
 
 import java.math.BigDecimal;
 

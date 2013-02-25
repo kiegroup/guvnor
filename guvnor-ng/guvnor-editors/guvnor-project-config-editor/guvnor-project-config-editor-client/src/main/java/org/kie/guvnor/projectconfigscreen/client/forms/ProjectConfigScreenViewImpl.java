@@ -1,6 +1,6 @@
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
 import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;

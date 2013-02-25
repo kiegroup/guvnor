@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.rule.service;
 
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;

@@ -15,12 +15,12 @@
  */
 package org.kie.guvnor.datamodel.model.workitems;
 
-import org.drools.guvnor.models.commons.workitems.PortableBooleanParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableEnumParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableFloatParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableObjectParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableStringParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableEnumParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableObjectParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

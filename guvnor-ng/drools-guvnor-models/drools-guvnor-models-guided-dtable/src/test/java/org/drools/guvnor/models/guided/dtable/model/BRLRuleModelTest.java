@@ -15,17 +15,24 @@
  */
 package org.drools.guvnor.models.guided.dtable.model;
 
-import org.drools.guvnor.models.guided.dtable.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
-import org.drools.guvnor.models.guided.dtable.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
-import org.drools.guvnor.models.guided.dtable.model.adaptors.Pattern52FactPatternAdaptor;
+import org.drools.guvnor.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
+import org.drools.guvnor.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Test;
-import org.drools.guvnor.models.commons.oracle.DataType;
-import org.drools.guvnor.models.commons.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.rule.ActionInsertFact;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.FactPattern;
-import org.drools.guvnor.models.commons.rule.FieldConstraint;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 
 import static org.junit.Assert.*;
 

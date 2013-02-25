@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
-import org.drools.guvnor.models.commons.imports.Import;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.rule.TypeMetaInfo;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;

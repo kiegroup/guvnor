@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.guided.rule.backend.server;
 
-import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
@@ -71,7 +71,7 @@ public class GuidedRuleSourceService
         return new StringBuilder()
                 .append(returnPackageDeclaration(path)).append("\n")
                 .append(model.getImports().toString()).append("\n")
-                .append(BRDRLPersistence.getInstance().marshal(model)).toString();
+                .append( BRDRLPersistence.getInstance().marshal(model)).toString();
     }
 
 }

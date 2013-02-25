@@ -23,8 +23,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 /**
  * A cell to display Conditions

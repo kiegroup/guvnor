@@ -19,8 +19,8 @@ import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

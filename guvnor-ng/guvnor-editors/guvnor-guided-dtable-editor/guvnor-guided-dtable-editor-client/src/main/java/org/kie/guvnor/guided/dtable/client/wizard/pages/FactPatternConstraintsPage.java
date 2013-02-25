@@ -17,16 +17,16 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

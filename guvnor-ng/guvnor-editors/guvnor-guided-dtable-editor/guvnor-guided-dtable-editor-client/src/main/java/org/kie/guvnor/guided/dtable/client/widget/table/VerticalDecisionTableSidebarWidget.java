@@ -22,8 +22,8 @@ import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * A "sidebar" for a vertical Decision Table

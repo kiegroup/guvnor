@@ -12,19 +12,10 @@
   <groupId>org.drools</groupId>
   <artifactId>drools-guvnor-models-commons</artifactId>
 
-  <name>Drools Guvnor - Common model</name>
-  <description>Drools Guvnor - Common model</description>
+  <name>Drools Guvnor - Common Model</name>
+  <description>Drools Guvnor - Common Model</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
 
     <!-- Internal dependencies -->
     <dependency>

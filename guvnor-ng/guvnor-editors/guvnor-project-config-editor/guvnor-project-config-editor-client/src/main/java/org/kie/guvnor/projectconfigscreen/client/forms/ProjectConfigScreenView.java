@@ -1,7 +1,7 @@
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 

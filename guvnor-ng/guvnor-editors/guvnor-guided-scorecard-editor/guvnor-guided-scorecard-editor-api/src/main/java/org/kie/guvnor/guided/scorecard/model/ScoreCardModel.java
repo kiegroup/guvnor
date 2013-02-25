@@ -17,7 +17,7 @@
 package org.kie.guvnor.guided.scorecard.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 
 import java.util.ArrayList;
 import java.util.List;

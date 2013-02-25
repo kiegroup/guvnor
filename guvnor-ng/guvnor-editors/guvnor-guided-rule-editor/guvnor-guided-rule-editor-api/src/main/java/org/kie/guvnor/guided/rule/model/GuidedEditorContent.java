@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.rule.model;
 
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 

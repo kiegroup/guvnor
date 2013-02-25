@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.guided.dtable.backend.server;
 
-import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;

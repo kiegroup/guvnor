@@ -15,16 +15,16 @@
  */
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.model.BRLVariableColumn;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.DTColumnConfig52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
-import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLVariableColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 
 /**
  * Helper class to upgrade Default Values to DTCellValue52 objects instead of

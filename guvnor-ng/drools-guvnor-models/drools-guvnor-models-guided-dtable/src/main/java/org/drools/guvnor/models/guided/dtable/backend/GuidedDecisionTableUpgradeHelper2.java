@@ -15,10 +15,10 @@
  */
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 import java.util.List;
 

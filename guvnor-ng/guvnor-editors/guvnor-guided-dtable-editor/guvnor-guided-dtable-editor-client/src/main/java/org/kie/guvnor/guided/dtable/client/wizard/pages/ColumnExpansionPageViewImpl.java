@@ -36,7 +36,7 @@ import org.kie.guvnor.commons.ui.client.resources.WizardCellListResources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ConditionCell;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

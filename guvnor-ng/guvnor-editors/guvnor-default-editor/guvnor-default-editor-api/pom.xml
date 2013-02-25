@@ -12,8 +12,8 @@
   <artifactId>guvnor-default-editor-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Domain Specific Language Editor API</name>
-  <description>Domain Specific Language Editor API</description>
+  <name>Default Editor - API</name>
+  <description>Default Editor - API</description>
 
   <dependencies>
 

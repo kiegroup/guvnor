@@ -18,8 +18,8 @@ package org.kie.guvnor.factmodel.backend.server;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.models.commons.imports.Imports;
-import org.drools.guvnor.models.commons.imports.ImportsParser;
+import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -106,7 +106,7 @@ public class FactModelServiceImpl
             factModels.getModels().addAll( models );
 
             //De-serialize imports
-            final Imports imports = ImportsParser.parseImports(drl);
+            final Imports imports = ImportsParser.parseImports( drl );
             factModels.setImports( imports );
 
             final DataModelOracle oracle = dataModelService.getDataModel( path );

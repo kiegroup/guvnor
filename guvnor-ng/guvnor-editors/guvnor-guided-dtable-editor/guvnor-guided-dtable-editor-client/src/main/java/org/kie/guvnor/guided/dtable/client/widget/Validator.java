@@ -15,17 +15,17 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
-import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 import java.util.ArrayList;
 import java.util.HashMap;

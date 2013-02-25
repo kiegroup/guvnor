@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.guided.dtable.service;
 
-import org.drools.guvnor.models.commons.workitems.PortableWorkDefinition;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;

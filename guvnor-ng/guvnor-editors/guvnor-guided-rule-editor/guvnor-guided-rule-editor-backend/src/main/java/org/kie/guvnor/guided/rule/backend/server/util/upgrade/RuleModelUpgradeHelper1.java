@@ -15,10 +15,10 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util.upgrade;
 
-import org.drools.guvnor.models.commons.rule.ActionCallMethod;
-import org.drools.guvnor.models.commons.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.rule.RuleMetadata;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.ActionCallMethod;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 
 /**
  * Utility class to support upgrades of the RuleModel model. Release pre-5.2

@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.template.server.util;
 
-import org.drools.guvnor.models.commons.backend.BRLPersistence;
-import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;

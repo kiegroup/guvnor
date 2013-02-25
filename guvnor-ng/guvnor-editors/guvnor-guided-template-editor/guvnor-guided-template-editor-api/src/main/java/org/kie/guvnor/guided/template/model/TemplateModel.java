@@ -15,11 +15,11 @@
  */
 package org.kie.guvnor.guided.template.model;
 
-import org.drools.guvnor.models.commons.imports.Imports;
-import org.drools.guvnor.models.commons.oracle.DataType;
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
-import org.drools.guvnor.models.commons.rule.RuleModel;
-import org.drools.guvnor.models.commons.rule.RuleModelVisitor;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.RuleModelVisitor;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;

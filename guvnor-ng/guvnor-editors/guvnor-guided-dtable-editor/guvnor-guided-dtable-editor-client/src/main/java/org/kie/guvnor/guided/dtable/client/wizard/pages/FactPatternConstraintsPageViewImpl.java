@@ -50,13 +50,13 @@ import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ConditionCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

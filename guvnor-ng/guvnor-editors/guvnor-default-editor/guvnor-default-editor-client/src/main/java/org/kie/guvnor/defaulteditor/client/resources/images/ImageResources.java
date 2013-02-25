@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.dsltext.client.resources.images;
+package org.kie.guvnor.defaulteditor.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;

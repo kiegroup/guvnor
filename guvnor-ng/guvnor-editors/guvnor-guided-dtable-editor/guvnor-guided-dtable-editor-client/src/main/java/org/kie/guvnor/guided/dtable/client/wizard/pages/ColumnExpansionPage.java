@@ -17,9 +17,9 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
-import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;

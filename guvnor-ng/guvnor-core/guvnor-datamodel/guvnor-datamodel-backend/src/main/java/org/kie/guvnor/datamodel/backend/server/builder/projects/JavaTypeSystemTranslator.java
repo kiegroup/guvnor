@@ -1,6 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
 
 import java.math.BigDecimal;

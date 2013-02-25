@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.commons.ui.client.workitems;
 
-import org.drools.guvnor.models.commons.workitems.PortableBooleanParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableEnumParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableFloatParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableListParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableObjectParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableParameterDefinition;
-import org.drools.guvnor.models.commons.workitems.PortableStringParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableEnumParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableListParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableObjectParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 
 /**
  * A Factory to create Widgets to edit Work Item parameters

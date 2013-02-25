@@ -18,14 +18,13 @@ package org.drools.guvnor.models.guided.dtable.backend;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.guvnor.models.guided.dtable.backend.DataUtilities;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

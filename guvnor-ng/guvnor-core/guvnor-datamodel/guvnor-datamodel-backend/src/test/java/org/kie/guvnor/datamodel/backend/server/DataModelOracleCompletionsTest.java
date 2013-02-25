@@ -6,7 +6,7 @@ import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitio
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 import static org.junit.Assert.assertEquals;

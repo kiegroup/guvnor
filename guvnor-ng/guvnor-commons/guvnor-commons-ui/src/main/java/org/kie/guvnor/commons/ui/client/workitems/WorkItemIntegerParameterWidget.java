@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.workitems.PortableIntegerParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableIntegerParameterDefinition;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.NumericIntegerTextBox;
 

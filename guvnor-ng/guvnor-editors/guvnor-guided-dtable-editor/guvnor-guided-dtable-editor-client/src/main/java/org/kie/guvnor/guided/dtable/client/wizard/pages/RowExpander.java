@@ -19,14 +19,14 @@ import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHel
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
-import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
 import java.util.ArrayList;

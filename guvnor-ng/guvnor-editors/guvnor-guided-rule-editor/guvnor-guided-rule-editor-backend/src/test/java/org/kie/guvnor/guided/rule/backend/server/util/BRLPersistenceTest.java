@@ -16,26 +16,26 @@
 
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import org.drools.guvnor.models.commons.backend.BRLPersistence;
+import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
 import org.junit.Test;
-import org.drools.guvnor.models.commons.rule.DSLSentence;
-import org.drools.guvnor.models.commons.rule.IAction;
-import org.drools.guvnor.models.commons.rule.IPattern;
-import org.drools.guvnor.models.commons.oracle.DataType;
-import org.drools.guvnor.models.commons.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.rule.ActionGlobalCollectionAdd;
-import org.drools.guvnor.models.commons.rule.ActionInsertFact;
-import org.drools.guvnor.models.commons.rule.ActionRetractFact;
-import org.drools.guvnor.models.commons.rule.ActionUpdateField;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
-import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
-import org.drools.guvnor.models.commons.rule.FactPattern;
-import org.drools.guvnor.models.commons.rule.FreeFormLine;
-import org.drools.guvnor.models.commons.rule.RuleAttribute;
-import org.drools.guvnor.models.commons.rule.RuleModel;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.guvnor.models.commons.shared.rule.IAction;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.ActionGlobalCollectionAdd;
+import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.shared.rule.ActionUpdateField;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.shared.rule.RuleAttribute;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

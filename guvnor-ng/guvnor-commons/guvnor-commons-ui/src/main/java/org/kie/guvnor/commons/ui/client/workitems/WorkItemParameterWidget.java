@@ -17,7 +17,7 @@ package org.kie.guvnor.commons.ui.client.workitems;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.workitems.PortableParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableParameterDefinition;
 
 /**
  * A Widget to display a Work Item parameter

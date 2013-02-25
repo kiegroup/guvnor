@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.action;
 
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 
 import java.util.HashSet;
 import java.util.Set;

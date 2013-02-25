@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.cell.client.Cell.Context;
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;

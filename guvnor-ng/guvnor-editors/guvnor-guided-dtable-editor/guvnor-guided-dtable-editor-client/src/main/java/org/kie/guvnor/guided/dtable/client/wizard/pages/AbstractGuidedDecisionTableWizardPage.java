@@ -23,7 +23,7 @@ import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.kie.guvnor.guided.dtable.client.wizard.NewAssetWizardContext;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
 /**

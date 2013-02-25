@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.client.mvp.UberView;
 
 import java.util.List;

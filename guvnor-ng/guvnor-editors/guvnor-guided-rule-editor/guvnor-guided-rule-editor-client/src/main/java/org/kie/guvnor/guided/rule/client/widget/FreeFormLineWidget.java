@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.shared.rule.FreeFormLine;
 import org.kie.guvnor.guided.rule.client.editor.DynamicTextArea;
 import org.kie.guvnor.guided.rule.client.editor.FreeFormLinePopup;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;

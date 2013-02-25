@@ -41,7 +41,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.drools.guvnor.models.commons.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
+import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
 import org.kie.guvnor.commons.security.AppRoles;
 import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
@@ -63,7 +64,7 @@ public class AuditLogViewImpl extends Popup
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
-    private final org.drools.guvnor.models.commons.auditlog.AuditLog auditLog;
+    private final org.drools.guvnor.models.commons.shared.auditlog.AuditLog auditLog;
 
     private final Widget popupContent;
 
@@ -85,7 +86,7 @@ public class AuditLogViewImpl extends Popup
 
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
-    public AuditLogViewImpl( final org.drools.guvnor.models.commons.auditlog.AuditLog auditLog,
+    public AuditLogViewImpl( final AuditLog auditLog,
                              final Identity identity ) {
         setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
         this.auditLog = auditLog;

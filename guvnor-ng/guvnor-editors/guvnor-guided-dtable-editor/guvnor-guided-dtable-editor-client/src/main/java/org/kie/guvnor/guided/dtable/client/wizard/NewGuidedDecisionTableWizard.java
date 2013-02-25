@@ -30,11 +30,11 @@ import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternConstraintsPa
 import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternsPage;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpander;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.SummaryPage;
-import org.drools.guvnor.models.guided.dtable.model.Analysis;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 

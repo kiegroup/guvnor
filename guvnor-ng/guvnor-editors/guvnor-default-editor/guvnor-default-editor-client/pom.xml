@@ -12,8 +12,8 @@
   <artifactId>guvnor-default-editor-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Domain Specific Language Editor - Client</name>
-  <description>Domain Specific Language Editor - Client</description>
+  <name>Default Editor - Client</name>
+  <description>Default Editor - Client</description>
 
   <dependencies>
 

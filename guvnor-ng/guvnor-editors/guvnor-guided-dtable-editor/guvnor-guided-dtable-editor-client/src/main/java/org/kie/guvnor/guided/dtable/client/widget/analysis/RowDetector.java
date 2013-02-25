@@ -20,7 +20,7 @@ import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetector
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.ConditionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.ConditionDetectorKey;
-import org.drools.guvnor.models.guided.dtable.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
 
 import java.util.LinkedHashMap;
 import java.util.List;

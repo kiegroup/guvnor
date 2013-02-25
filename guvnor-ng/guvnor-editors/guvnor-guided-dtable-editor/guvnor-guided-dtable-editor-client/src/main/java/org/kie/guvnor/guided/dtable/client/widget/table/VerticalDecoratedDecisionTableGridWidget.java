@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.drools.guvnor.models.guided.dtable.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
 
 /**
  * Vertical implementation of DecoratedGridWidget for the Guided Decision Table

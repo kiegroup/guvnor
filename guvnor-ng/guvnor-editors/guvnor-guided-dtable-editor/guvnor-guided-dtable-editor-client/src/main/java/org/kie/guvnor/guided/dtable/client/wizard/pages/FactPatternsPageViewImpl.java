@@ -43,7 +43,7 @@ import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.PatternCell;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;

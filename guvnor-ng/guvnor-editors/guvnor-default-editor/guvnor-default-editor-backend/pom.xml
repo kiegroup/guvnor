@@ -12,8 +12,8 @@
   <artifactId>guvnor-default-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Domain Specific Language Editor Backend</name>
-  <description>Domain Specific Language Editor Backend</description>
+  <name>Default Editor - Backend</name>
+  <description>Default Editor - Backend</description>
 
   <dependencies>
 

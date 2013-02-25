@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util.upgrade;
 
-import org.drools.guvnor.models.commons.rule.IPattern;
-import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
-import org.drools.guvnor.models.commons.rule.ConnectiveConstraint;
-import org.drools.guvnor.models.commons.rule.FactPattern;
-import org.drools.guvnor.models.commons.rule.FieldConstraint;
-import org.drools.guvnor.models.commons.rule.RuleModel;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.ConnectiveConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 
 /**
  * Utility class to support upgrades of the RuleModel model. This implementation

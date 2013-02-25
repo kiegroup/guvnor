@@ -9,7 +9,7 @@ import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 import java.io.IOException;

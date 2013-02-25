@@ -16,8 +16,8 @@
 
 package org.kie.guvnor.guided.rule.backend.server;
 
-import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;

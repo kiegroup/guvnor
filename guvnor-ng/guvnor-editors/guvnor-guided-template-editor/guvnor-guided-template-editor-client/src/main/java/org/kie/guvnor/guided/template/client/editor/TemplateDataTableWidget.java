@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;

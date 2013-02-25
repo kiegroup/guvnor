@@ -16,9 +16,9 @@
 package org.kie.guvnor.guided.rule.backend.server.util;
 
 import org.junit.Test;
-import org.drools.guvnor.models.commons.rule.DSLSentence;
-import org.drools.guvnor.models.commons.rule.DSLVariableValue;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.guvnor.models.commons.shared.rule.DSLVariableValue;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -108,12 +108,12 @@ public class BRXMLPersistenceTest {
                 + "<dslSentence>"
                 + "<definition>MyLog {myout}</definition>"
                 + "<values>"
-                + "<org.drools.guvnor.models.commons.rule.DSLVariableValue>"
+                + "<org.drools.guvnor.models.commons.shared.rule.DSLVariableValue>"
                 + "<value>5-4 sample out</value>"
-                + "</org.drools.guvnor.models.commons.rule.DSLVariableValue>"
-                + "<org.drools.guvnor.models.commons.rule.DSLVariableValue>"
+                + "</org.drools.guvnor.models.commons.shared.rule.DSLVariableValue>"
+                + "<org.drools.guvnor.models.commons.shared.rule.DSLVariableValue>"
                 + "<value>myout</value>"
-                + "</org.drools.guvnor.models.commons.rule.DSLVariableValue>"
+                + "</org.drools.guvnor.models.commons.shared.rule.DSLVariableValue>"
                 + "</values>"
                 + "</dslSentence>"
                 + "</rhs>"

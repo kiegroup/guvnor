@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
 import org.uberfire.client.mvp.UberView;
 
 import java.util.List;

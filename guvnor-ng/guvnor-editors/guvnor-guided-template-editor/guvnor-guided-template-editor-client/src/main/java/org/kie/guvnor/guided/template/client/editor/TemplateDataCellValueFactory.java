@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
-import org.drools.guvnor.models.commons.oracle.DataType;
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.kie.guvnor.datamodel.model.DateConverter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;

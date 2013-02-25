@@ -15,22 +15,22 @@
  */
 package org.kie.guvnor.guided.template.model;
 
-import org.drools.guvnor.models.commons.rule.FieldNatureType;
-import org.drools.guvnor.models.commons.rule.IAction;
-import org.drools.guvnor.models.commons.rule.IPattern;
-import org.drools.guvnor.models.commons.rule.ActionFieldList;
-import org.drools.guvnor.models.commons.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.CompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.CompositeFieldConstraint;
-import org.drools.guvnor.models.commons.rule.FactPattern;
-import org.drools.guvnor.models.commons.rule.FieldConstraint;
-import org.drools.guvnor.models.commons.rule.FromAccumulateCompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.FromCollectCompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.FromCompositeFactPattern;
-import org.drools.guvnor.models.commons.rule.RuleModel;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.guvnor.models.commons.shared.rule.FieldNatureType;
+import org.drools.guvnor.models.commons.shared.rule.IAction;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldList;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.CompositeFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FromCollectCompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 
 import java.util.ArrayList;
 import java.util.List;

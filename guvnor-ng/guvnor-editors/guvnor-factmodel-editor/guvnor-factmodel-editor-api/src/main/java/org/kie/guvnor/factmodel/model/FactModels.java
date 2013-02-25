@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.factmodel.model;
 
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;

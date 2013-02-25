@@ -1,7 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import org.drools.guvnor.models.commons.imports.Import;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;

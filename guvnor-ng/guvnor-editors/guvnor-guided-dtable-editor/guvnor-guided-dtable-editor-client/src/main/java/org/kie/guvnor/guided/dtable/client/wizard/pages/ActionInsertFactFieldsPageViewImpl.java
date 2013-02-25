@@ -48,10 +48,10 @@ import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldPatternCell;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 
 import javax.annotation.PostConstruct;

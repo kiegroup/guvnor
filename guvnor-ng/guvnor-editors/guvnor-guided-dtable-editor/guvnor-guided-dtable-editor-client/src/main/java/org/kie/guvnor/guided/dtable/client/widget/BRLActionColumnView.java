@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
 
 /**
  * Presenter and View interfaces for an editor of BRLActionColumn objects

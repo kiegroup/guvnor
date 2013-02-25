@@ -17,7 +17,7 @@
 package org.kie.guvnor.guided.dtable.backend.server;
 
 import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
-import static org.drools.guvnor.models.guided.dtable.GuidedDecisionTableConverter.hasDSLSentences;
+import static org.drools.guvnor.models.guided.dtable.backend.GuidedDecisionTableConverter.hasDSLSentences;
 
 public class GuidedDecisionTableSourceService
         extends BaseSourceService<GuidedDecisionTable52> {

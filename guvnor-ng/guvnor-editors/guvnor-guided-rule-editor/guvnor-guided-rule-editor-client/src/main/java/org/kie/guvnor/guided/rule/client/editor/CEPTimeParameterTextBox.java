@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.regexp.shared.RegExp;
-import org.drools.guvnor.models.commons.rule.HasParameterizedOperator;
+import org.drools.guvnor.models.commons.shared.rule.HasParameterizedOperator;
 
 /**
  * A TextBox to handle CEP 'time' parameters

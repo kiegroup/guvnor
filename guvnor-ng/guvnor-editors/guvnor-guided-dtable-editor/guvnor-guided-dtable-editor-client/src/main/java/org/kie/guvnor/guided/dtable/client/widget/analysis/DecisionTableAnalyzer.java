@@ -17,7 +17,7 @@
 package org.kie.guvnor.guided.dtable.client.widget.analysis;
 
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.InsertFactActionDetectorKey;
@@ -38,16 +38,16 @@ import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.NumericLong
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.NumericShortConditionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.StringConditionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.condition.UnrecognizedConditionDetector;
-import org.drools.guvnor.models.guided.dtable.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.Analysis;
-import org.drools.guvnor.models.guided.dtable.model.BRLActionColumn;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryCol;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 
 import java.math.BigDecimal;

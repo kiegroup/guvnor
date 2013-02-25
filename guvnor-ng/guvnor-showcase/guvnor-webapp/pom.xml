@@ -49,6 +49,18 @@
       <artifactId>guvnor-commons-data</artifactId>
     </dependency>
 
+    <!-- Models held within Drools -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor-models-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor-models-guided-dtable</artifactId>
+    </dependency>
+
+    <!-- Guvnor editors -->
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>

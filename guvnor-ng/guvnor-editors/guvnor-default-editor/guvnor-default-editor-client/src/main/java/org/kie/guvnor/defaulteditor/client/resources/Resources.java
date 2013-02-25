@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.guvnor.dsltext.client.resources;
+package org.kie.guvnor.defaulteditor.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.kie.guvnor.dsltext.client.resources.css.StylesCss;
+import org.kie.guvnor.defaulteditor.client.resources.css.StylesCss;
 
 public interface Resources
         extends

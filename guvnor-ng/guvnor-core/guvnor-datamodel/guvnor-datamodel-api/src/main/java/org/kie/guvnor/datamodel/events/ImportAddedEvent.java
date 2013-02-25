@@ -1,6 +1,6 @@
 package org.kie.guvnor.datamodel.events;
 
-import org.drools.guvnor.models.commons.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 

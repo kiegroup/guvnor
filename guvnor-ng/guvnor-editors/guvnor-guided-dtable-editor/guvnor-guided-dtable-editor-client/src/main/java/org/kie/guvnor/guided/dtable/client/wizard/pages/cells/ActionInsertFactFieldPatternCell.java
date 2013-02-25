@@ -23,8 +23,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RequiresValidator;
-import org.kie.guvnor.guided.dtable.model.ActionInsertFactFieldsPattern;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 /**
  * A cell to display a Fact Pattern on the Action Insert Fact Field page.

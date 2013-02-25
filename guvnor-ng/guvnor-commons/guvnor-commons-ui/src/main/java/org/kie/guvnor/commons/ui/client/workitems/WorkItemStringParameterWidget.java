@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.workitems.PortableStringParameterDefinition;
+import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 import java.util.Set;

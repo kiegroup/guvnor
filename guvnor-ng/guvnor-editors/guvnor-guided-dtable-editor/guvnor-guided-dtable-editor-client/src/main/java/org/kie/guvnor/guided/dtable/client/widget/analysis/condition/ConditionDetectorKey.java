@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis.condition;
 
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 public class ConditionDetectorKey {
 

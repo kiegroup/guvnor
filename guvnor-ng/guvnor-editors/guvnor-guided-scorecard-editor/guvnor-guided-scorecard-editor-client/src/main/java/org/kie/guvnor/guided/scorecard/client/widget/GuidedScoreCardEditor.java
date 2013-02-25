@@ -44,7 +44,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.scorecard.model.Attribute;
 import org.kie.guvnor.guided.scorecard.model.Characteristic;

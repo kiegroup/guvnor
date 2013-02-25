@@ -1,7 +1,7 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.imports.Import;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
 

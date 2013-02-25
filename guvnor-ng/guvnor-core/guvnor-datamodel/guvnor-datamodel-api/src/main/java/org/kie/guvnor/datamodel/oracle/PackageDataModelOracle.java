@@ -1,9 +1,9 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.rule.DSLSentence;
-import org.drools.guvnor.models.commons.imports.Imports;
-import org.drools.guvnor.models.commons.oracle.DataType;
-import org.drools.guvnor.models.commons.oracle.OperatorsOracle;
+import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;

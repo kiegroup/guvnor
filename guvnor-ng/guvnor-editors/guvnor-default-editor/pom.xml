@@ -12,7 +12,7 @@
   <artifactId>guvnor-default-editor</artifactId>
   <packaging>pom</packaging>
 
-  <name>DSL Text Editor</name>
+  <name>Default Editor</name>
 
   <modules>
     <module>guvnor-default-editor-backend</module>

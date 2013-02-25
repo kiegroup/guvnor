@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.template.server.util.upgrade;
 
-import org.drools.guvnor.models.commons.rule.InterpolationVariable;
+import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.kie.guvnor.guided.rule.backend.server.util.upgrade.IUpgradeHelper;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 

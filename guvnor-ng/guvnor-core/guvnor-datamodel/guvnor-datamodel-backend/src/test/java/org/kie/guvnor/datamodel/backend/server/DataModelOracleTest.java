@@ -8,7 +8,7 @@ import org.kie.guvnor.datamodel.backend.server.testclasses.TestDelegatedClass;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestSubClass;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestSuperClass;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 
 import java.io.IOException;

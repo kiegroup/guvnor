@@ -16,7 +16,7 @@
 package org.drools.guvnor.models.guided.dtable.backend.util;
 
 import org.drools.core.util.DateUtils;
-import org.drools.guvnor.models.guided.dtable.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

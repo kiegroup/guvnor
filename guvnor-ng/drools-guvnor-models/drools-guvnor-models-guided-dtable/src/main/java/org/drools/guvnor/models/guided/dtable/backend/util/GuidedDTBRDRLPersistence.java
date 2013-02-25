@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.models.guided.dtable.backend.util;
 
-import org.drools.guvnor.models.commons.backend.DRLConstraintValueBuilder;
-import org.drools.guvnor.models.commons.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.rule.BRDRLPersistence;
-import org.drools.guvnor.models.commons.rule.FieldConstraint;
-import org.drools.guvnor.models.commons.rule.FreeFormLine;
-import org.drools.guvnor.models.commons.rule.IFactPattern;
+import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.backend.rule.DRLConstraintValueBuilder;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FreeFormLine;
+import org.drools.guvnor.models.commons.shared.rule.IFactPattern;
 
 import java.util.Map;
 import java.util.regex.Matcher;

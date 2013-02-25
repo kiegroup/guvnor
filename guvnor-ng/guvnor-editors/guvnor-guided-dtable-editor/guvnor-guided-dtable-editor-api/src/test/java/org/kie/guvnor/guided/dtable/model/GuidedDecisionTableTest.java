@@ -16,25 +16,25 @@
 
 package org.kie.guvnor.guided.dtable.model;
 
-import org.drools.guvnor.models.guided.dtable.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.model.DescriptionCol52;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.MetadataCol52;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
-import org.drools.guvnor.models.guided.dtable.model.RowNumberCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DescriptionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 import java.util.Date;
 import java.util.HashMap;

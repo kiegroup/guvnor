@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.wizard.pages.cells;
 
 import org.kie.guvnor.commons.ui.client.resources.WizardResources;
-import org.drools.guvnor.models.guided.dtable.model.Pattern52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
 /**
  * A cell to display a Fact Pattern on the Action Set Field page. Additional

@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.rule.backend.server.util;
 
-import org.drools.guvnor.models.commons.backend.OperatorParameterDRLBuilder;
+import org.drools.guvnor.models.commons.backend.rule.OperatorParameterDRLBuilder;
 
 import java.util.Map;
 import java.util.TreeMap;

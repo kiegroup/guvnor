@@ -16,17 +16,17 @@
 package org.kie.guvnor.guided.dtable.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.drools.guvnor.models.guided.dtable.model.BRLColumn;
-import org.drools.guvnor.models.guided.dtable.model.BRLConditionVariableColumn;
-import org.drools.guvnor.models.guided.dtable.model.BRLRuleModel;
-import org.drools.guvnor.models.guided.dtable.model.CompositeColumn;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLConditionVariableColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.guvnor.models.guided.dtable.shared.model.CompositeColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
 import org.uberfire.backend.vfs.Path;
 

@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.guided.dtable.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 
 /**
  * Presenter and View interfaces for an editor of

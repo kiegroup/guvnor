@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.rule.client.editor.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.guvnor.models.commons.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 
 /**
  * An event representing a change in Template variables

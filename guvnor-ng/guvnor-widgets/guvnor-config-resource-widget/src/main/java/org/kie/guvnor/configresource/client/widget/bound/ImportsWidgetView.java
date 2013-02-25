@@ -1,7 +1,7 @@
 package org.kie.guvnor.configresource.client.widget.bound;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.commons.imports.Imports;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
 public interface ImportsWidgetView

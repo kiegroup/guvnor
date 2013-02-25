@@ -16,7 +16,7 @@ import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
-import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
