@@ -15,9 +15,14 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
@@ -29,13 +34,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
-import org.kie.guvnor.guided.template.model.RuleModelCloneVisitor;
 import org.uberfire.backend.vfs.Path;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An editor for a BRL Action Columns

@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.models.guided.dtable.backend;
 
+import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
 import org.junit.Test;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;

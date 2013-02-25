@@ -16,9 +16,15 @@
 
 package org.kie.guvnor.guided.template.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
@@ -36,7 +42,6 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -63,11 +68,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })
@@ -145,17 +145,17 @@ public class GuidedRuleTemplateEditorPresenter {
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
-    private Menus           menus;
+    private Menus menus;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private EventBus eventBus = new SimpleEventBus();
 
-    private Path         path;
+    private Path path;
     private PlaceRequest place;
     private boolean isReadOnly = false;
 
-    private TemplateModel   model;
+    private TemplateModel model;
     private DataModelOracle oracle;
 
     @OnStart
@@ -236,10 +236,10 @@ public class GuidedRuleTemplateEditorPresenter {
                                  oracle,
                                  eventBus,
                                  isReadOnly );
-                dataView.setContent( model,
-                                     oracle,
-                                     eventBus,
-                                     isReadOnly );
+//                dataView.setContent( model,
+//                                     oracle,
+//                                     eventBus,
+//                                     isReadOnly );
                 importsWidget.setContent( oracle,
                                           response.getRuleModel().getImports(),
                                           isReadOnly );

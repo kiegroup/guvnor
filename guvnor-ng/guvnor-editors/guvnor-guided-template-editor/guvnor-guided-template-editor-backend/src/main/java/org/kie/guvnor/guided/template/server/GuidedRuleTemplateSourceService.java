@@ -16,17 +16,17 @@
 
 package org.kie.guvnor.guided.template.server;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import javax.inject.Inject;
+
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
 import org.kie.guvnor.commons.service.source.SourceContext;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-import org.kie.guvnor.guided.template.server.util.BRDRTPersistence;
+import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.server.util.Paths;
-
-import javax.inject.Inject;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 
 public class GuidedRuleTemplateSourceService
         extends BaseSourceService<TemplateModel> {
@@ -52,7 +52,7 @@ public class GuidedRuleTemplateSourceService
     public SourceContext getSource( final Path path ) {
         //Load model and convert to DRL
         final TemplateModel model = guidedRuleTemplateEditorService.loadTemplateModel( paths.convert( path ) );
-        final String drl = getSource(path,model);
+        final String drl = getSource( path, model );
         final boolean hasDSL = model.hasDSLSentences();
 
         //Construct Source context. If the resource has DSL Sentences it needs to be a .dslr file
@@ -67,11 +67,12 @@ public class GuidedRuleTemplateSourceService
     }
 
     @Override
-    public String getSource(Path path, TemplateModel model) {
+    public String getSource( Path path,
+                             TemplateModel model ) {
         return new StringBuilder()
-                .append(returnPackageDeclaration(path)).append("\n")
-                .append(model.getImports().toString()).append("\n")
-                .append(BRDRTPersistence.getInstance().marshal(model)).toString();
+                .append( returnPackageDeclaration( path ) ).append( "\n" )
+                .append( model.getImports().toString() ).append( "\n" )
+                .append( BRDRTPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

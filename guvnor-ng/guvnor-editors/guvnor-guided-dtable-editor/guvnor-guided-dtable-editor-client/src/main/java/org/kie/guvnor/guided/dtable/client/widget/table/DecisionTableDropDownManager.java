@@ -36,8 +36,8 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
-import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor;
-import org.kie.guvnor.guided.template.model.RuleModelPeerVariableVisitor.ValueHolder;
+import org.kie.guvnor.guided.template.client.editor.RuleModelPeerVariableVisitor;
+import org.kie.guvnor.guided.template.client.editor.RuleModelPeerVariableVisitor.ValueHolder;
 
 import java.util.HashMap;
 import java.util.HashSet;

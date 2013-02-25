@@ -18,6 +18,9 @@ package org.drools.guvnor.models.guided.dtable.backend;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
+import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper2;
+import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper3;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;

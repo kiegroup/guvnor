@@ -15,14 +15,14 @@
  */
 package org.kie.guvnor.guided.template.client.editor.events;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.GwtEvent;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.guided.template.client.editor.TemplateDataColumn;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-
-import java.util.List;
 
 /**
  * An event to set the internal model for the Template Data grid

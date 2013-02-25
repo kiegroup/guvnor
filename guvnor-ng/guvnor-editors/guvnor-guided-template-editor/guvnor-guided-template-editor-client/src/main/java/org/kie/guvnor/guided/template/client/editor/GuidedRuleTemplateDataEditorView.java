@@ -24,9 +24,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 
 public class GuidedRuleTemplateDataEditorView
         extends Composite
@@ -51,6 +51,7 @@ public class GuidedRuleTemplateDataEditorView
 
             @Override
             public void execute() {
+                widgetContainer.clear();
                 final TemplateDataTableWidget dataTable = new TemplateDataTableWidget( model,
                                                                                        dataModel,
                                                                                        isReadOnly,

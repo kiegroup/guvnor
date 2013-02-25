@@ -45,7 +45,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 
 /**

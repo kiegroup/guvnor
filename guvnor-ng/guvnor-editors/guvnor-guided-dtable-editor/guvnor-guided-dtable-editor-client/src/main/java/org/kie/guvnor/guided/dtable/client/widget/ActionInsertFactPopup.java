@@ -45,7 +45,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;

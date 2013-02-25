@@ -17,6 +17,7 @@
 package org.drools.guvnor.models.guided.dtable.backend;
 
 import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.guided.dtable.backend.util.DataUtilities;
 import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDTTemplateDataProvider;
 import org.drools.guvnor.models.guided.dtable.backend.util.TemplateDataProvider;
 import org.junit.Test;
@@ -146,10 +147,10 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( DataType.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2"},
-                new String[]{"2", "desc", "66", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", "whee"}
-        }) );
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2" },
+                new String[]{ "2", "desc", "66", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", "whee" }
+        } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );

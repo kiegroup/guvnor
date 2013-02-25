@@ -73,7 +73,7 @@ import org.kie.guvnor.guided.dtable.client.widget.table.VerticalDecisionTableWid
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.AddButton;

@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.guided.template.model;
 
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 

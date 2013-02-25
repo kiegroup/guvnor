@@ -15,10 +15,15 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
@@ -32,11 +37,6 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.PasteRowsEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.UpdateModelEvent;
 import org.kie.guvnor.guided.rule.client.util.GWTDateConverter;
 import org.kie.guvnor.guided.template.client.editor.events.SetTemplateDataEvent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A table in which Template data can be edited

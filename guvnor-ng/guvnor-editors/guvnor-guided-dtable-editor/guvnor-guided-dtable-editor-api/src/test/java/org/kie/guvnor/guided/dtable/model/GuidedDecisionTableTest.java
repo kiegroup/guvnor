@@ -33,7 +33,6 @@ import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
 import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 
 import java.util.Date;

@@ -16,13 +16,13 @@
 package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.CopyPasteContextMenu;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 
 /**
  * A "sidebar" for a vertical Template Data editor

@@ -74,7 +74,7 @@ import org.drools.guvnor.models.guided.dtable.shared.auditlog.DeleteRowAuditLogE
 import org.drools.guvnor.models.guided.dtable.shared.auditlog.InsertColumnAuditLogEntry;
 import org.drools.guvnor.models.guided.dtable.shared.auditlog.InsertRowAuditLogEntry;
 import org.drools.guvnor.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.guvnor.guided.rule.client.util.GWTDateConverter;
 import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;

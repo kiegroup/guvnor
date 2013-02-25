@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.models.guided.dtable.backend;
 
+import org.drools.guvnor.models.guided.dtable.backend.util.DataUtilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;

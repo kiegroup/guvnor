@@ -15,9 +15,13 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Panel;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
@@ -29,10 +33,6 @@ import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetModelEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetTemplateDataEvent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A Decorated Grid for Template Data

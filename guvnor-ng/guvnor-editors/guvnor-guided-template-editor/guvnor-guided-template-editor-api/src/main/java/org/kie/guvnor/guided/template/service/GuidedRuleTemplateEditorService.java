@@ -16,13 +16,13 @@
 
 package org.kie.guvnor.guided.template.service;
 
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

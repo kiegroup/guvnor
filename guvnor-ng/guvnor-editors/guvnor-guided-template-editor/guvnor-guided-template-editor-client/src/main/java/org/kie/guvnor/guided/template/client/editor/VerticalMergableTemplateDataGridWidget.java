@@ -16,10 +16,10 @@
 package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalMergableGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
 
 /**
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,

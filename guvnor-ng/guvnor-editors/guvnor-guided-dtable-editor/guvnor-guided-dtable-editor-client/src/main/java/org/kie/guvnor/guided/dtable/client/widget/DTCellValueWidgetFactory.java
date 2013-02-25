@@ -44,7 +44,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-import org.kie.guvnor.guided.dtable.model.util.GuidedDecisionTableUtils;
+import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
 import org.uberfire.client.common.NumericBigIntegerTextBox;

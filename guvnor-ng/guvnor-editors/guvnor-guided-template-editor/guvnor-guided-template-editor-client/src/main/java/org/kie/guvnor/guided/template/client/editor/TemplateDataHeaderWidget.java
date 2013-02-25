@@ -15,6 +15,9 @@
  */
 package org.kie.guvnor.guided.template.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
@@ -39,6 +42,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
@@ -48,10 +52,6 @@ import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.guvnor.guided.template.model.TemplateModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Header for a Vertical Decision Table

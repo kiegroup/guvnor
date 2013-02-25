@@ -18,6 +18,7 @@
   <modules>
     <module>drools-guvnor-models-commons</module>
     <module>drools-guvnor-models-guided-dtable</module>
+    <module>drools-guvnor-models-guided-template</module>
   </modules>
 
 
