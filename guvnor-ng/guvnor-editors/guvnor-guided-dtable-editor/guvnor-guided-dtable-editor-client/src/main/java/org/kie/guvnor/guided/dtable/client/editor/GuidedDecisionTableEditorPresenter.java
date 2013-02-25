@@ -32,7 +32,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
+import org.kie.guvnor.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.guvnor.models.guided.dtable.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;

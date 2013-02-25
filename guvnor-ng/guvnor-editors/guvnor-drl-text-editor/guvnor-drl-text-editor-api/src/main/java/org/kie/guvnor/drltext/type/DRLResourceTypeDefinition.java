@@ -1,26 +1,21 @@
-package org.kie.guvnor.dsltext.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.drltext.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class DSLResourceType implements ResourceType {
+public class DRLResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "dsl";
+        return "drl";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,7 +26,7 @@ public class DSLResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "dsl";
+        return "drl";
     }
 
     @Override

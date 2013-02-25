@@ -1,26 +1,21 @@
-package org.kie.guvnor.guided.template.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.dtablexls.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class GuidedRuleTemplateResourceType implements ResourceType {
+public class DecisionTableXLSResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "guided template";
+        return "dtable.xls";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,7 +26,7 @@ public class GuidedRuleTemplateResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "template";
+        return "dtable.xls";
     }
 
     @Override

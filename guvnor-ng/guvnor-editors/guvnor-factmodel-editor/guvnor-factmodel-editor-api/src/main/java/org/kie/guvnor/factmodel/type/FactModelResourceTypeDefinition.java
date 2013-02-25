@@ -1,26 +1,20 @@
-package org.kie.guvnor.guided.scorecard.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.factmodel.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class GuidedScoreCardResourceType implements ResourceType {
+public class FactModelResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "guided score card";
+        return "fact model";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,12 +25,12 @@ public class GuidedScoreCardResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "scgd";
+        return "model.drl";
     }
 
     @Override
     public int getPriority() {
-        return 0;
+        return 100;
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.dtable.client.GuidedDTableResourceType;
+import org.kie.guvnor.guided.dtable.client.type.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;

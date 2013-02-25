@@ -43,8 +43,8 @@ import org.kie.guvnor.query.model.QueryMetadataPageRequest;
 import org.kie.guvnor.query.model.SearchPageRow;
 import org.kie.guvnor.query.model.SearchTermPageRequest;
 import org.kie.guvnor.query.service.SearchService;
-import org.uberfire.client.workbench.file.ResourceType;
-import org.uberfire.client.workbench.file.ResourceTypeManager;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.jboss.errai.bus.client.api.base.MessageBuilder.*;
 
@@ -55,7 +55,7 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
     private static final int PAGE_SIZE = 10;
 
-    private ResourceTypeManager resourceTypeManager = null;
+    private ClientTypeRegistry clientTypeRegistry = null;
 
     public SearchResultTable() {
         super( PAGE_SIZE );
@@ -108,7 +108,7 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
         final Column<SearchPageRow, ComparableImageResource> formatColumn = new Column<SearchPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
             public ComparableImageResource getValue( SearchPageRow row ) {
-                final ResourceType associatedType = getResourceTypeManager().resolve( row.getPath() );
+                final ClientResourceType associatedType = getClientTypeRegistry().resolve( row.getPath() );
 
                 final Image icon;
                 if ( associatedType.getIcon() == null || !( associatedType.getIcon() instanceof Image ) ) {
@@ -181,10 +181,10 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
     }
 
-    private ResourceTypeManager getResourceTypeManager() {
-        if ( resourceTypeManager == null ) {
-            resourceTypeManager = IOC.getBeanManager().lookupBean( ResourceTypeManager.class ).getInstance();
+    private ClientTypeRegistry getClientTypeRegistry() {
+        if ( clientTypeRegistry == null ) {
+            clientTypeRegistry = IOC.getBeanManager().lookupBean( ClientTypeRegistry.class ).getInstance();
         }
-        return resourceTypeManager;
+        return clientTypeRegistry;
     }
 }

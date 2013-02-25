@@ -1,26 +1,21 @@
-package org.kie.guvnor.dtablexls.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.dsltext.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class DecisionTableXLSResourceType implements ResourceType {
+public class DSLResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "dtable.xls";
+        return "dsl";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,7 +26,7 @@ public class DecisionTableXLSResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "dtable.xls";
+        return "dsl";
     }
 
     @Override

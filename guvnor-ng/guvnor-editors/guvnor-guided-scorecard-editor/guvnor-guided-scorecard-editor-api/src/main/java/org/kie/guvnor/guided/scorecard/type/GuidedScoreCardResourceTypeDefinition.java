@@ -1,26 +1,21 @@
-package org.kie.guvnor.guided.dtable.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.guided.scorecard.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class GuidedDTableResourceType implements ResourceType {
+public class GuidedScoreCardResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "guided dtable";
+        return "guided score card";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,7 +26,7 @@ public class GuidedDTableResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "gdst";
+        return "scgd";
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.dsltext.client.DSLResourceType;
+import org.kie.guvnor.dsltext.client.type.DSLResourceType;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.resources.images.ImageResources;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;

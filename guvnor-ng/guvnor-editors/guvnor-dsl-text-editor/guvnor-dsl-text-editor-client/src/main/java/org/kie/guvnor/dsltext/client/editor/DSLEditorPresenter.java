@@ -29,7 +29,7 @@ import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.dsltext.client.DSLResourceType;
+import org.kie.guvnor.dsltext.client.type.DSLResourceType;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;

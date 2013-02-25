@@ -1,13 +1,13 @@
-package org.kie.guvnor.projectconfigscreen.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.projectconfigscreen.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class ProjectConfigResourceType implements ResourceType {
+public class ProjectConfigResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
@@ -16,11 +16,6 @@ public class ProjectConfigResourceType implements ResourceType {
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 

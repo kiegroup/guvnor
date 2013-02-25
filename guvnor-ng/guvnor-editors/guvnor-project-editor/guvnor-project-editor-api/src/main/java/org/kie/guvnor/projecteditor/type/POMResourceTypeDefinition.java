@@ -1,17 +1,17 @@
-package org.kie.guvnor.drltext.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.projecteditor.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class DRLResourceType implements ResourceType {
+public class POMResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "drl";
+        return "pom xml";
     }
 
     @Override
@@ -20,18 +20,13 @@ public class DRLResourceType implements ResourceType {
     }
 
     @Override
-    public IsWidget getIcon() {
-        return null;
-    }
-
-    @Override
     public String getPrefix() {
-        return "";
+        return "pom";
     }
 
     @Override
     public String getSuffix() {
-        return "drl";
+        return "xml";
     }
 
     @Override
@@ -41,6 +36,6 @@ public class DRLResourceType implements ResourceType {
 
     @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+        return path.getFileName().equals( getPrefix() + "." + getSuffix() );
     }
 }

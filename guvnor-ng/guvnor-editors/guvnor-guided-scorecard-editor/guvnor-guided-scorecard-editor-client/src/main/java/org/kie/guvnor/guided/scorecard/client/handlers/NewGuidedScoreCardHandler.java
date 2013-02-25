@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.guided.scorecard.client.GuidedScoreCardResourceType;
+import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModel;

@@ -34,7 +34,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.template.client.GuidedRuleTemplateResourceType;
+import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.model.TemplateModel;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;

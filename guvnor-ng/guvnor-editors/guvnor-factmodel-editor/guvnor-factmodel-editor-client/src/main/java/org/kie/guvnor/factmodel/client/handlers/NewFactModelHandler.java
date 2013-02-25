@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.factmodel.client.FactModelResourceType;
+import org.kie.guvnor.factmodel.client.type.FactModelResourceType;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.client.resources.images.ImageResources;
 import org.kie.guvnor.factmodel.model.FactModels;

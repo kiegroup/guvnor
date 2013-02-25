@@ -11,7 +11,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.dtablexls.client.DecisionTableXLSResourceType;
+import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.client.editor.NewDecisionTableXLSPopup;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;

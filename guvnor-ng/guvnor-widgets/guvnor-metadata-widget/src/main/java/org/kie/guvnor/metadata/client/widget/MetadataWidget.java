@@ -38,7 +38,7 @@ import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.workbench.file.ResourceTypeManager;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
@@ -49,7 +49,7 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 public class MetadataWidget
         extends DirtyableComposite {
 
-    private ResourceTypeManager resourceTypeManager = null;
+    private ClientTypeRegistry clientTypeRegistry = null;
 
     private Metadata metadata = null;
     private boolean readOnly;
@@ -115,7 +115,7 @@ public class MetadataWidget
                       }, MetadataConstants.INSTANCE.DisableTip() ) );
 
         addAttribute( MetadataConstants.INSTANCE.FormatMetaData(),
-                      readOnlyText( getResourceTypeManager().resolve( metadata.getPath() ).getShortName() ) );
+                      readOnlyText( getClientTypeRegistry().resolve( metadata.getPath() ).getShortName() ) );
         addAttribute( "URI:",
                       readOnlyText( metadata.getPath().toURI() ) );
 
@@ -338,11 +338,11 @@ public class MetadataWidget
         return metadata;
     }
 
-    public ResourceTypeManager getResourceTypeManager() {
-        if ( this.resourceTypeManager == null ) {
-            resourceTypeManager = IOC.getBeanManager().lookupBean( ResourceTypeManager.class ).getInstance();
+    public ClientTypeRegistry getClientTypeRegistry() {
+        if ( this.clientTypeRegistry == null ) {
+            clientTypeRegistry = IOC.getBeanManager().lookupBean( ClientTypeRegistry.class ).getInstance();
         }
-        return resourceTypeManager;
+        return clientTypeRegistry;
     }
 
 }

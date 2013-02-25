@@ -1,26 +1,21 @@
-package org.kie.guvnor.factmodel.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.enums.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class FactModelResourceType implements ResourceType {
+public class EnumResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "fact model";
+        return "enum";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,12 +26,12 @@ public class FactModelResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "model.drl";
+        return "enumeration";
     }
 
     @Override
     public int getPriority() {
-        return 100;
+        return 0;
     }
 
     @Override

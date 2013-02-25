@@ -1,26 +1,22 @@
-package org.kie.guvnor.guided.rule.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.guided.template.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class GuidedRuleResourceType implements ResourceType {
+public class GuidedRuleTemplateResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "guided rule";
+        return "guided template";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,12 +27,12 @@ public class GuidedRuleResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "gre.drl";
+        return "template";
     }
 
     @Override
     public int getPriority() {
-        return 102;
+        return 0;
     }
 
     @Override

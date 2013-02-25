@@ -46,8 +46,8 @@ import org.kie.guvnor.query.client.widgets.SearchResultTable;
 import org.kie.guvnor.query.model.QueryMetadataPageRequest;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.file.ResourceType;
-import org.uberfire.client.workbench.file.ResourceTypeManager;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 @Dependent
 @WorkbenchScreen(identifier = "FindForm")
@@ -63,7 +63,7 @@ public class FindForm
     private static FindFormBinder uiBinder = GWT.create( FindFormBinder.class );
 
     @Inject
-    private ResourceTypeManager resourceTypeManager;
+    private ClientTypeRegistry clientTypeRegistry;
 
     @UiField
     SimplePanel errorPanel;
@@ -153,7 +153,7 @@ public class FindForm
 
         final MultiWordSuggestOracle oracle = (MultiWordSuggestOracle) formatTypeahead.getSuggestOracle();
 
-        for ( final ResourceType resourceType : resourceTypeManager.getRegisteredTypes() ) {
+        for ( final ClientResourceType resourceType : clientTypeRegistry.getRegisteredTypes() ) {
             oracle.add( resourceType.getShortName() );
         }
     }

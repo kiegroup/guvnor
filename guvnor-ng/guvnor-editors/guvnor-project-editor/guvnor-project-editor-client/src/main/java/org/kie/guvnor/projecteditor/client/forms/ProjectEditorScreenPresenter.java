@@ -26,7 +26,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.project.service.KModuleService;
-import org.kie.guvnor.projecteditor.client.POMResourceType;
+import org.kie.guvnor.projecteditor.client.type.POMResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;

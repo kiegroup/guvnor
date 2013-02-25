@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.guided.template.client.GuidedRuleTemplateResourceType;
+import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.kie.guvnor.guided.template.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.template.model.TemplateModel;

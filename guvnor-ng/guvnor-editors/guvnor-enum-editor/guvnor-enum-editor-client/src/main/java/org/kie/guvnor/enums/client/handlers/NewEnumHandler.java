@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.enums.client.EnumResourceType;
+import org.kie.guvnor.enums.client.type.EnumResourceType;
 import org.kie.guvnor.enums.client.resources.i18n.Constants;
 import org.kie.guvnor.enums.client.resources.images.ImageResources;
 import org.kie.guvnor.enums.service.EnumService;

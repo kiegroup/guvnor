@@ -29,7 +29,7 @@ import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.enums.client.EnumResourceType;
+import org.kie.guvnor.enums.client.type.EnumResourceType;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;

@@ -35,7 +35,7 @@ import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.guided.rule.client.GuidedRuleResourceType;
+import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;

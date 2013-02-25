@@ -1,26 +1,20 @@
-package org.kie.guvnor.enums.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.guided.dtable.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class EnumResourceType implements ResourceType {
+public class GuidedDTableResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "enum";
+        return "guided dtable";
     }
 
     @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getIcon() {
         return null;
     }
 
@@ -31,7 +25,7 @@ public class EnumResourceType implements ResourceType {
 
     @Override
     public String getSuffix() {
-        return "enumeration";
+        return "gdst";
     }
 
     @Override

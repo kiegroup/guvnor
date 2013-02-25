@@ -15,7 +15,7 @@ import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.globals.client.GlobalResourceType;
+import org.kie.guvnor.globals.client.type.GlobalResourceType;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;

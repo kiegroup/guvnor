@@ -31,7 +31,7 @@ import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.drltext.client.DRLResourceType;
+import org.kie.guvnor.drltext.client.type.DRLResourceType;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;

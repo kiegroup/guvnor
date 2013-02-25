@@ -24,7 +24,7 @@ import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.projectconfigscreen.client.ProjectConfigResourceType;
+import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnSave;

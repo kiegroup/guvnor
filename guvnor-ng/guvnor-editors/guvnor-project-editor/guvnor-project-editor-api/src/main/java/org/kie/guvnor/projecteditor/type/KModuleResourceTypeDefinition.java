@@ -1,17 +1,17 @@
-package org.kie.guvnor.projecteditor.client;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+package org.kie.guvnor.projecteditor.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+
 @ApplicationScoped
-public class POMResourceType implements ResourceType {
+public class KModuleResourceTypeDefinition
+        implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "pom xml";
+        return "kmodule xml config";
     }
 
     @Override
@@ -20,13 +20,8 @@ public class POMResourceType implements ResourceType {
     }
 
     @Override
-    public IsWidget getIcon() {
-        return null;
-    }
-
-    @Override
     public String getPrefix() {
-        return "pom";
+        return "kmodule";
     }
 
     @Override

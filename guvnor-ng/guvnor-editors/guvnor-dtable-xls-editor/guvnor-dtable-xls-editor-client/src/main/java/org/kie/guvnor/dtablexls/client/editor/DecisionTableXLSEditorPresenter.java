@@ -16,6 +16,11 @@
 
 package org.kie.guvnor.dtablexls.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -27,9 +32,8 @@ import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.dtablexls.client.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
+import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -38,7 +42,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -54,11 +57,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
@@ -111,7 +109,7 @@ public class DecisionTableXLSEditorPresenter {
         makeMenuBar();
 
         multiPage.addWidget( view, DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
-        view.setPath(path);
+        view.setPath( path );
 
         multiPage.addPage( new Page( metadataWidget,
                                      MetadataConstants.INSTANCE.Metadata() ) {

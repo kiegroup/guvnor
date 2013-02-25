@@ -24,5 +24,6 @@
   <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
 
   <source path="service"/>
+  <source path="type"/>
 
 </module>
