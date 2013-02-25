@@ -11,8 +11,8 @@
   <artifactId>guvnor-test-scenario-editor-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Technical Rule Editor - Client</name>
-  <description>Technical Rule Editor - Client</description>
+  <name>Test Scenario Editor - Client</name>
+  <description>Test Scenario Editor - Client</description>
 
   <dependencies>
 
@@ -39,6 +39,11 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-error-messages-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-metadata-widget</artifactId>
     </dependency>
 
     <dependency>

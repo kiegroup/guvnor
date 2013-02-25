@@ -11,8 +11,8 @@
   <artifactId>guvnor-test-scenario-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Technical Rule Editor Backend</name>
-  <description>Technical Rule Editor Backend</description>
+  <name>Test Scenario Editor Backend</name>
+  <description>Test Scenario Editor Backend</description>
 
   <dependencies>
     <dependency>

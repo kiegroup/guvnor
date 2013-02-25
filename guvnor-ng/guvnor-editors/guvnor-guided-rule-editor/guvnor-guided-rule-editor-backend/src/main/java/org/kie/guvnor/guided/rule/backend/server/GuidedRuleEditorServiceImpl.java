@@ -243,40 +243,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     }
 
     @Override
-    public String[] loadDropDownExpression( final String[] valuePairs,
-                                            String expression ) {
-        final Map<String, String> context = new HashMap<String, String>();
-
-        for ( final String valuePair : valuePairs ) {
-            if ( valuePair == null ) {
-                return new String[ 0 ];
-            }
-            final String[] pair = valuePair.split( "=" );
-            context.put( pair[ 0 ],
-                         pair[ 1 ] );
-        }
-        // first interpolate the pairs
-        expression = (String) TemplateRuntime.eval( expression,
-                                                    context );
-
-        // now we can eval it for real...
-        Object result = MVEL.eval( expression );
-        if ( result instanceof String[] ) {
-            return (String[]) result;
-        } else if ( result instanceof List ) {
-            List l = (List) result;
-            String[] xs = new String[ l.size() ];
-            for ( int i = 0; i < xs.length; i++ ) {
-                Object el = l.get( i );
-                xs[ i ] = el.toString();
-            }
-            return xs;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public String toSource( Path path,
                             final RuleModel model ) {
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );

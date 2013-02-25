@@ -138,4 +138,9 @@ public interface CommonConstants
 
     String DecimalNumber();
 
+    String DeleteItem();
+
+    String NewItem();
+
+    String RuleAsset();
 }

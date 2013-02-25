@@ -56,7 +56,7 @@ import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.Connectives;
 import org.kie.guvnor.guided.rule.client.editor.factPattern.PopupCreator;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.ClickableLabel;

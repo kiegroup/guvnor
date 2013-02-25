@@ -39,7 +39,7 @@ import org.drools.guvnor.models.commons.shared.rule.FromEntryPointFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.InfoPopup;
 

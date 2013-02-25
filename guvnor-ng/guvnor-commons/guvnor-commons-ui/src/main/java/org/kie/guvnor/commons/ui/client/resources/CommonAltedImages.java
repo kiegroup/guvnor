@@ -36,4 +36,10 @@ public final class CommonAltedImages {
         return image;
     }
 
+    public Image DeleteItemSmall() {
+        Image image = new Image( CommonImages.INSTANCE.DeleteItemSmall() );
+        image.setAltText( CommonConstants.INSTANCE.DeleteItem() );
+        return image;
+    }
+
 }

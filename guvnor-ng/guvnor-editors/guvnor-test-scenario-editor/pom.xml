@@ -26,7 +26,7 @@
   <artifactId>guvnor-test-scenario-editor</artifactId>
   <packaging>pom</packaging>
 
-  <name>DRL Text Editor</name>
+  <name>Test Scenario Editor</name>
 
   <modules>
     <module>guvnor-test-scenario-editor-api</module>

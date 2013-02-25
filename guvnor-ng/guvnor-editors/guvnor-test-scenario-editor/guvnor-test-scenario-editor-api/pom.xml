@@ -11,8 +11,8 @@
   <artifactId>guvnor-test-scenario-editor-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Technical Rule Editor API</name>
-  <description>Technical Rule Editor API</description>
+  <name>Test Scenario Editor API</name>
+  <description>Test Scenario Editor API</description>
 
   <dependencies>
 
@@ -29,6 +29,11 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-core-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-api</artifactId>
     </dependency>
 
     <dependency>
