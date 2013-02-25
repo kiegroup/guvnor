@@ -52,7 +52,7 @@ public class VersionServiceImpl implements VersionService {
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
 
-        final List<VersionRecord> records = ioService.getFileAttributeView( paths.convert( path ), VersionAttributeView.class ).readAttributes().history();
+        final List<VersionRecord> records = ioService.getFileAttributeView( paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
 
         final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
 

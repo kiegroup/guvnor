@@ -76,9 +76,9 @@ public class MetadataServiceImpl implements MetadataService {
 
         return newMetadata()
                 .withPath( paths.convert( path.toRealPath() ) )
-                .withCheckinComment( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( versionAttributeView.readAttributes().history().size() - 1 ).comment() : null )
-                .withLastContributor( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( versionAttributeView.readAttributes().history().size() - 1 ).author() : null )
-                .withCreator( versionAttributeView.readAttributes().history().size() > 0 ? versionAttributeView.readAttributes().history().get( 0 ).author() : null )
+                .withCheckinComment( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).comment() : null )
+                .withLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : null )
+                .withCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : null )
                 .withLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) )
                 .withDateCreated( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) )
                 .withSubject( dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get( 0 ) : null )
@@ -89,8 +89,8 @@ public class MetadataServiceImpl implements MetadataService {
                 .withDisabledOption( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false )
                 .withCategories( otherMetaView.readAttributes().categories() )
                 .withDiscussion( discussView.readAttributes().discussion() )
-                .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().size() ) {{
-                    for ( final VersionRecord record : versionAttributeView.readAttributes().history() ) {
+                .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
+                    for ( final VersionRecord record : versionAttributeView.readAttributes().history().records() ) {
                         add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
                     }
                 }} )
