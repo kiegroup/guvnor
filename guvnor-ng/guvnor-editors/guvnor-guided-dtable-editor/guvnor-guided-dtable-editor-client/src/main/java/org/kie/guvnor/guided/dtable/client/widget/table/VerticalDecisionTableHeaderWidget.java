@@ -15,6 +15,11 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -41,18 +46,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
-import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -76,12 +71,17 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
+import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
+import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 
 /**
  * Header for a Vertical Decision Table
@@ -806,8 +806,6 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
                                   widget.getOffsetWidth(),
                                   widget.getOffsetHeight() );
-                                  //getBody().getOffsetWidth(),
-                                  //getBody().getOffsetHeight() );
             }
         } );
 
