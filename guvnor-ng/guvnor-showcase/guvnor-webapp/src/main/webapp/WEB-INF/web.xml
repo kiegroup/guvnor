@@ -66,21 +66,30 @@ profile in pom.xml to use that. -->
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>FileServlet</servlet-name>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
     <servlet-class>org.kie.guvnor.dtablexls.backend.server.FileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>FileServlet</servlet-name>
-    <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/dtablexls/file</url-pattern>
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.scorecardxls.backend.server.FileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/scorecardxls/file</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>M2RepoFileServlet</servlet-name>
     <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>FileUploadServlet</servlet-name>
-    <url-pattern>/org.kie.guvnor.GuvnorShowcase/fileupload</url-pattern>
+    <servlet-name>M2RepoFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/m2repo/file</url-pattern>
   </servlet-mapping>
     
   <servlet>

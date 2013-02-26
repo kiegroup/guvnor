@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.dtablexls.client.editor;
+package org.kie.guvnor.scorecardxls.client.editor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,17 +26,17 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
-import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
-import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
+import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
+import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
+import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStyleLayout;
 
 import javax.annotation.PostConstruct;
 
-public class DecisionTableXLSEditorViewImpl
+public class ScoreCardXLSEditorViewImpl
         extends Composite
-        implements DecisionTableXLSEditorView {
+        implements ScoreCardXLSEditorView {
 
     private boolean isDirty;
     
@@ -50,7 +50,7 @@ public class DecisionTableXLSEditorViewImpl
         layout = new VerticalPanel();
         layout.setWidth( "100%" );     
         
-        ts = new FormStyleLayout(getIcon(), DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
+        ts = new FormStyleLayout(getIcon(), ScoreCardXLSEditorConstants.INSTANCE.ScoreCard());
         layout.add(ts);
         
         initWidget( layout );
@@ -60,7 +60,7 @@ public class DecisionTableXLSEditorViewImpl
     public void setPath(Path path) {
         this.fullPath = path;
         //ts.clear();
-        ts.addAttribute( DecisionTableXLSEditorConstants.INSTANCE.UploadNewVersion() + ":", new AttachmentFileWidget(fullPath, new Command() {
+        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":", new AttachmentFileWidget(fullPath, new Command() {
             @Override
             public void execute() {
             }
@@ -77,7 +77,7 @@ public class DecisionTableXLSEditorViewImpl
                         "resizable=no,scrollbars=yes,status=no");
             }
         });
-        ts.addAttribute(DecisionTableXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":", dl);
+        ts.addAttribute(ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":", dl);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DecisionTableXLSEditorViewImpl
     
     public Image getIcon() {
         Image image = new Image(ImageResources.INSTANCE.decisionTable());
-        image.setAltText(DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
+        image.setAltText(ScoreCardXLSEditorConstants.INSTANCE.ScoreCard());
         return image;
     }
 }

@@ -256,6 +256,17 @@
       <artifactId>guvnor-dtable-xls-editor-backend</artifactId>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-scorecard-xls-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-scorecard-xls-editor-backend</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-search-screen-client</artifactId>
@@ -497,7 +508,10 @@
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-client</compileSourcesArtifact>
-                        
+            
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-scorecard-xls-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-scorecard-xls-editor-client</compileSourcesArtifact>
+            
             <compileSourcesArtifact>org.kie.guvnor:guvnor-search-screen-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-search-screen-client</compileSourcesArtifact>
 

@@ -61,7 +61,7 @@ public class AttachmentFileWidget extends Composite {
 
     protected void initWidgets() {
         form = new FormPanel();
-        form.setAction( GWT.getModuleBaseURL() + "file" );
+        form.setAction( GWT.getModuleBaseURL() + "dtablexls/file" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.m2repo.client.editor;
+package org.kie.guvnor.scorecardxls.client.editor;
+
+import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 
 
 /**
@@ -37,24 +37,46 @@ import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 public class AttachmentFileWidget extends Composite {
 
     private FormPanel                form;
-
-    public AttachmentFileWidget() {
+    private Path contextPath;
+    private String fileName;
+    private Command createdCallback;
+    private Path fullPath = null;
+   
+    public AttachmentFileWidget(Path contextPath, String fileName, Command createdCallback) {
+        this.contextPath = contextPath;
+        this.fileName = fileName;
+        this.createdCallback = createdCallback;
+        
+        initWidgets();
+        initSubmitCompleteHandler();
+    }
+    
+    public AttachmentFileWidget(Path fullPath, Command createdCallback) {
+        this.fullPath = fullPath;
+        this.createdCallback = createdCallback;
+        
         initWidgets();
         initSubmitCompleteHandler();
     }
 
     protected void initWidgets() {
         form = new FormPanel();
-        form.setAction( GWT.getModuleBaseURL() + "file" );
+        form.setAction( GWT.getModuleBaseURL() + "scorecardxls/file" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
         FileUpload up = new FileUpload();
         up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         HorizontalPanel fields = new HorizontalPanel();
+        if(fullPath == null) {
         fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
-                                    "uuid" ) );
-
+                                    contextPath.toURI() ) );
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_NAME,
+                                    fileName ) );
+        } else {
+            fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_FULL_PATH,
+                                        fullPath.toURI() ) );           
+        }
         Button ok = new Button( "upload");
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -66,17 +88,8 @@ public class AttachmentFileWidget extends Composite {
         fields.add( up );
         fields.add( ok );
         
-/*        Button dl = new Button( "Download" );
-        //dl.setEnabled( this.asset.getVersionNumber() > 0 );
-        dl.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                Window.open( GWT.getModuleBaseURL() + "file?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + "uuid",
-                             "downloading",
-                             "resizable=no,scrollbars=yes,status=no" );
-            }
-        } );
-*/
-        form.add( fields );
+
+        form.add( fields );       
         
         initWidget( form );
     }
@@ -85,24 +98,15 @@ public class AttachmentFileWidget extends Composite {
         form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {
-                //LoadingPopup.close();
-/*
-                if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
-                    eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getUuid() ) );
-                }
+                LoadingPopup.close();
 
-                if ( event.getResults().indexOf( "OK" ) > -1 ) {
-                    //Raise an Event to show an information message
-                    eventBus.fireEvent( new ShowMessageEvent( ConstantsCore.INSTANCE.FileWasUploadedSuccessfully(),
-                                                              MessageType.INFO ) );
-
-                    //Reload asset as the upload operation commits the asset's content. If we don't 
-                    //reload the asset we receive a optimistic lock error appearing as "Unable to save 
-                    //this asset, as it has been recently updated" message to users
-                    eventBus.fireEvent( new RefreshAssetEditorEvent(asset.getMetaData().getModuleName(),  asset.getUuid() ) );
+                if("OK".equalsIgnoreCase(event.getResults())) {
+                    Window.alert("Uploaded successfully");
+                    
+                    createdCallback.execute();                           
                 } else {
-                    ErrorPopup.showMessage( ConstantsCore.INSTANCE.UnableToUploadTheFile() );
-                }*/
+                    Window.alert("Upload failed:" + event.getResults()); 
+                }
             }
 
         } );
@@ -113,7 +117,7 @@ public class AttachmentFileWidget extends Composite {
     }
 
     protected void showUploadingBusy() {
-        //LoadingPopup.showMessage( "Uploading..." );
+        LoadingPopup.showMessage( "Uploading..." );
     }
 
     private TextBox getHiddenField(String name,
@@ -128,5 +132,9 @@ public class AttachmentFileWidget extends Composite {
     public void addSupplementaryWidget(Widget d) {
         this.layout.addRow( d );
     }*/
+    
+    public void hide() {
+        this.hide();
+    }
 
 }

@@ -37,7 +37,8 @@
   <inherits name="org.kie.guvnor.inbox.GuvnorInboxClient"/>
 
   <inherits name="org.kie.guvnor.dtablexls.GuvnorDecisionTableXLSEditorClient"/>
-    
+  <inherits name="org.kie.guvnor.scorecardxls.GuvnorScoreCardXLSEditorClient"/>
+  
   <inherits name="org.kie.guvnor.query.GuvnorSearchScreenClient"/>
 
   <inherits name="org.kie.guvnor.explorer.GuvnorExplorerClient"/>
