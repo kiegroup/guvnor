@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
