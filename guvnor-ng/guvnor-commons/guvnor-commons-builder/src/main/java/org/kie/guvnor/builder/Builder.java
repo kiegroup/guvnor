@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,9 +104,11 @@ public class Builder {
                 visitPaths( Files.newDirectoryStream( path ) );
 
             } else if ( filter.accept( path ) ) {
-                String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
-                String content = ioService.readAllString( path );
-                kieFileSystem.write( destinationPath, content );
+                final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
+                final InputStream is = ioService.newInputStream( path );
+                final BufferedInputStream bis = new BufferedInputStream( is );
+                kieFileSystem.write( destinationPath,
+                                     KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
             }
         }
     }
