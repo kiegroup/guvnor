@@ -17,12 +17,10 @@
 package org.kie.guvnor.testscenario.model;
 
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * All test fixtures implement this.
  */
-@Portable
 public interface Fixture {
 
 }

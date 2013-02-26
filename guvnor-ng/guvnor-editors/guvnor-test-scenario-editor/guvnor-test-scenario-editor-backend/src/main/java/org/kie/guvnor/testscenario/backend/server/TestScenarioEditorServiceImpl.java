@@ -17,6 +17,8 @@
 package org.kie.guvnor.testscenario.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.guvnor.testscenario.model.Scenario;
+import org.kie.guvnor.testscenario.model.SingleScenarioResult;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,4 +28,8 @@ import javax.enterprise.context.ApplicationScoped;
 public class TestScenarioEditorServiceImpl
         implements TestScenarioEditorService {
 
+    @Override
+    public SingleScenarioResult runScenario(String packageName, Scenario scenario) {
+        return null;  //TODO -Rikkola-
+    }
 }

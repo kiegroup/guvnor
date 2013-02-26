@@ -96,7 +96,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel(metadata.getModuleName(), currentExecutionTrace, getScenario(), this.scenarioWidget);
+        return new ExpectPanel(packageName, currentExecutionTrace, getScenario(), this.scenarioWidget);
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {

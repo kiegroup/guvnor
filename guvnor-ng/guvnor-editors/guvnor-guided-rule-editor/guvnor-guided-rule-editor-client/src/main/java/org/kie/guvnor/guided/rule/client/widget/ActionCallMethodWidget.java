@@ -30,6 +30,7 @@ import org.drools.guvnor.models.commons.shared.rule.ActionCallMethod;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldFunction;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;

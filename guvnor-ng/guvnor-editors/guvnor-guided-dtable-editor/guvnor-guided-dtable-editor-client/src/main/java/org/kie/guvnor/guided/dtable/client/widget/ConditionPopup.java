@@ -34,6 +34,8 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.HasCEPWindow;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -55,14 +57,6 @@ import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
-<<<<<<< HEAD
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.HasCEPWindow;
-=======
-import org.drools.guvnor.models.commons.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.rule.HasCEPWindow;
->>>>>>> adding test scenarios, this version is still broken
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;

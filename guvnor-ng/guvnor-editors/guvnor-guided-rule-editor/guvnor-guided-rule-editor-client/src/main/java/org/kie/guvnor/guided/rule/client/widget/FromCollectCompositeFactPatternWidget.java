@@ -34,6 +34,7 @@ import org.drools.guvnor.models.commons.shared.rule.FromAccumulateCompositeFactP
 import org.drools.guvnor.models.commons.shared.rule.FromCollectCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromEntryPointFactPattern;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;

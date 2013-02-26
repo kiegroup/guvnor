@@ -23,6 +23,9 @@ public class FieldPlaceHolder implements Field {
 
     private String name;
 
+    public FieldPlaceHolder() {
+    }
+
     public FieldPlaceHolder(String name) {
         this.name = name;
     }

@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.errors.client.resources.i18n.Constants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
@@ -116,11 +117,11 @@ public class VerifyRulesFiredWidget extends Composite {
                     HasVerticalAlignment.ALIGN_MIDDLE );
 
             final ListBox b = new ListBox();
-            b.addItem( Constants.INSTANCE.firedAtLeastOnce(),
+            b.addItem( TestScenarioConstants.INSTANCE.firedAtLeastOnce(),
                     "y" );
-            b.addItem( Constants.INSTANCE.didNotFire(),
+            b.addItem( TestScenarioConstants.INSTANCE.didNotFire(),
                     "n" );
-            b.addItem( Constants.INSTANCE.firedThisManyTimes(),
+            b.addItem( TestScenarioConstants.INSTANCE.firedThisManyTimes(),
                     "e" );
             final TextBox num = new TextBox();
             num.setVisibleLength( 5 );
@@ -150,7 +151,7 @@ public class VerifyRulesFiredWidget extends Composite {
                 }
             } );
 
-            b.addItem( Constants.INSTANCE.ChooseDotDotDot() );
+            b.addItem( TestScenarioConstants.INSTANCE.ChooseDotDotDot() );
 
             num.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
@@ -165,12 +166,12 @@ public class VerifyRulesFiredWidget extends Composite {
                     2,
                     h );
 
-            Image del = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
-            del.setAltText(Constants.INSTANCE.RemoveThisRuleExpectation());
-            del.setTitle(Constants.INSTANCE.RemoveThisRuleExpectation());
+            Image del = CommonAltedImages.INSTANCE.DeleteItemSmall();
+            del.setAltText(TestScenarioConstants.INSTANCE.RemoveThisRuleExpectation());
+            del.setTitle(TestScenarioConstants.INSTANCE.RemoveThisRuleExpectation());
             del.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
+                    if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
                         rfl.remove( v );
                         sc.removeFixture( v );
                         outer.setWidget( 1,

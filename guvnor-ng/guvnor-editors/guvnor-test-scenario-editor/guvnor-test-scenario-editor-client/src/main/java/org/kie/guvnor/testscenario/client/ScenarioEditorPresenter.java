@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -42,6 +43,8 @@ import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.model.VerifyFact;
 import org.kie.guvnor.testscenario.model.VerifyRuleFired;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 
@@ -59,7 +62,15 @@ public class ScenarioEditorPresenter
     private HandlerRegistration availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
 
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "Test Scenario";
+    }
 
+    @WorkbenchPartView
+    public Widget getWidget() {
+      return new Label("test");
+    }
 
 
 

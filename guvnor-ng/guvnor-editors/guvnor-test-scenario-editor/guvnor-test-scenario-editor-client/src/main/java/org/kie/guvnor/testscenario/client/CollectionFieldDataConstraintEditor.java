@@ -18,12 +18,6 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fact;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.model.CollectionFieldData;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;

@@ -34,6 +34,8 @@ import org.drools.guvnor.models.commons.shared.rule.FromAccumulateCompositeFactP
 import org.drools.guvnor.models.commons.shared.rule.FromCollectCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.IFactPattern;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -204,7 +206,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
                 showFactTypeSelector( w );
             }
         };
-        String lbl = HumanReadable.getCEDisplayName( pattern.getType() );
+        String lbl = HumanReadable.getCEDisplayName(pattern.getType());
 
         if ( pattern.getPatterns() == null || pattern.getPatterns().length == 0 ) {
             lbl += " <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>";

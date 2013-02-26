@@ -4,25 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.DropDownData;
-import org.drools.ide.common.client.modeldriven.MethodInfo;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,12 +17,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.commons.shared.rule.ActionCallMethod;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.guided.rule.model.ActionCallMethod;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.guvnor.testscenario.model.CallFieldValue;
@@ -130,7 +111,7 @@ public class CallMethodWidget extends DirtyableComposite {
                           getSetterLabel() );
         DirtyableFlexTable inner = new DirtyableFlexTable();
         int i = 0;
-        for ( CallFieldValue val : mCall.getCallFieldValues()) {
+        for ( CallFieldValue val : mCall.getCallFieldValuesMap()) {
 
             inner.setWidget( i,
                              0,

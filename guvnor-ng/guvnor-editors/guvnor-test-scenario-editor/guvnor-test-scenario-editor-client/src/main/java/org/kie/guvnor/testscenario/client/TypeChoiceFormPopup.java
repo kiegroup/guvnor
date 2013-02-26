@@ -23,13 +23,13 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.guvnor.testscenario.model.FieldData;
+import org.uberfire.client.common.FormStylePopup;
+import org.uberfire.client.common.InfoPopup;
+import org.uberfire.client.common.SmallLabel;
 
 public class TypeChoiceFormPopup
         extends FormStylePopup
@@ -37,14 +37,14 @@ public class TypeChoiceFormPopup
 
 
     public TypeChoiceFormPopup(FieldConstraintHelper helper) {
-        super(DroolsGuvnorImages.INSTANCE.Wizard(),
-                Constants.INSTANCE.FieldValue());
+        super(TestScenarioAltedImages.INSTANCE.Wizard(),
+                TestScenarioConstants.INSTANCE.FieldValue());
 
 
         addLiteralValueSelection();
 
         addRow(new HTML("<hr/>"));
-        addRow(new SmallLabel(Constants.INSTANCE.AdvancedOptions()));
+        addRow(new SmallLabel(TestScenarioConstants.INSTANCE.AdvancedOptions()));
 
         // If we are here, then there must be a bound variable compatible with
         // me
@@ -61,7 +61,7 @@ public class TypeChoiceFormPopup
     }
 
     private void addCreateNewObject() {
-        Button button = new Button(Constants.INSTANCE.CreateNewFact());
+        Button button = new Button(TestScenarioConstants.INSTANCE.CreateNewFact());
         button.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
                 fireSelection(FieldData.TYPE_FACT);
@@ -69,36 +69,36 @@ public class TypeChoiceFormPopup
 
 
         });
-        addAttribute(Constants.INSTANCE.Fact(),
+        addAttribute(TestScenarioConstants.INSTANCE.Fact(),
                 widgets(button,
-                        new InfoPopup(Constants.INSTANCE.Fact(),
-                                Constants.INSTANCE.Fact())));
+                        new InfoPopup(TestScenarioConstants.INSTANCE.Fact(),
+                                TestScenarioConstants.INSTANCE.Fact())));
     }
 
     private void addLiteralValueSelection() {
-        Button lit = new Button(Constants.INSTANCE.LiteralValue());
+        Button lit = new Button(TestScenarioConstants.INSTANCE.LiteralValue());
         lit.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
                 fireSelection(FieldData.TYPE_LITERAL);
             }
         });
-        addAttribute(Constants.INSTANCE.LiteralValue() + ":",
+        addAttribute(TestScenarioConstants.INSTANCE.LiteralValue() + ":",
                 widgets(lit,
-                        new InfoPopup(Constants.INSTANCE.LiteralValue(),
-                                Constants.INSTANCE.LiteralValTip())));
+                        new InfoPopup(TestScenarioConstants.INSTANCE.LiteralValue(),
+                                TestScenarioConstants.INSTANCE.LiteralValTip())));
     }
 
     private void addListSelection() {
-        Button variable = new Button(Constants.INSTANCE.GuidedList());
+        Button variable = new Button(TestScenarioConstants.INSTANCE.GuidedList());
         variable.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
                 fireSelection(FieldData.TYPE_COLLECTION);
             }
         });
-        addAttribute(Constants.INSTANCE.AVariable(),
+        addAttribute(TestScenarioConstants.INSTANCE.AVariable(),
                 widgets(variable,
-                        new InfoPopup(Constants.INSTANCE.AGuidedList(),
-                                Constants.INSTANCE.AGuidedListTip())));
+                        new InfoPopup(TestScenarioConstants.INSTANCE.AGuidedList(),
+                                TestScenarioConstants.INSTANCE.AGuidedListTip())));
     }
 
     private void addBoundVariableSelection() {

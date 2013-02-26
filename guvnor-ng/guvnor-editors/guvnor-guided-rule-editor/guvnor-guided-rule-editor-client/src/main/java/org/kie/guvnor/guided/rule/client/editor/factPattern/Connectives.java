@@ -31,6 +31,7 @@ import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.ConnectiveConstraint;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
@@ -132,7 +133,7 @@ public class Connectives {
             return w;
 
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName(cc.getOperator()) ) + "</b>" );
             return sl;
         }
     }

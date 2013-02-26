@@ -16,19 +16,6 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,9 +32,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
+import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;
 import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.model.VerifyFact;
@@ -98,7 +89,7 @@ public class VerifyFactWidget extends Composite {
         add.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
 
-                String[] fields = dmo.getModelFields(type);
+                String[] fields = dmo.getFieldCompletions(type);
                 final FormStylePopup pop = new FormStylePopup(TestScenarioAltedImages.INSTANCE.RuleAsset(),
                         TestScenarioConstants.INSTANCE.ChooseAFieldToAdd());
                 final ListBox b = new ListBox();
@@ -185,12 +176,12 @@ public class VerifyFactWidget extends Composite {
                     3,
                     cellEditor );
 
-            Image del = DroolsGuvnorImages.INSTANCE.DeleteItemSmall();
-            del.setAltText(Constants.INSTANCE.RemoveThisFieldExpectation());
-            del.setTitle(Constants.INSTANCE.RemoveThisFieldExpectation());
+            Image del = CommonAltedImages.INSTANCE.DeleteItemSmall();
+            del.setAltText(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
+            del.setTitle(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
             del.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    if (Window.confirm(Constants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
+                    if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
                             fld.getFieldName()))) {
                         vf.getFieldValues().remove(fld);
                         FlexTable data = render(vf);
@@ -208,10 +199,10 @@ public class VerifyFactWidget extends Composite {
                 if ( !fld.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                             0,
-                            new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
+                            new Image( CommonImages.INSTANCE.warning() ) );
                     data.setWidget( i,
                             5,
-                            new HTML( Constants.INSTANCE.ActualResult( fld.getActualResult() ) ) );
+                            new HTML( TestScenarioConstants.INSTANCE.ActualResult( fld.getActualResult() ) ) );
 
                     data.getCellFormatter().addStyleName( i,
                             5,
@@ -220,7 +211,7 @@ public class VerifyFactWidget extends Composite {
                 } else {
                     data.setWidget( i,
                             0,
-                            new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
+                            new Image( TestScenarioImages.INSTANCE.testPassed() ) );
                 }
             }
 

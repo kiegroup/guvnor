@@ -33,6 +33,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertLogicalFact;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;

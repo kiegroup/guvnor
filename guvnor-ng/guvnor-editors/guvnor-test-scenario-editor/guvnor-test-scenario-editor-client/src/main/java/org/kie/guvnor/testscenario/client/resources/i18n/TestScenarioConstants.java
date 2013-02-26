@@ -216,4 +216,27 @@ public interface TestScenarioConstants
 
     String currentDateAndTime();
 
+    String CreateNewFact();
+
+    String Fact();
+
+    String GuidedList();
+
+    String AGuidedList();
+
+    String AGuidedListTip();
+
+    String RemoveThisFieldExpectation();
+
+    String AreYouSureYouWantToRemoveThisFieldExpectation(String fieldName);
+
+    String firedAtLeastOnce();
+
+    String didNotFire();
+
+    String firedThisManyTimes();
+
+    String RemoveThisRuleExpectation();
+
+    String AreYouSureYouWantToRemoveThisRuleExpectation();
 }

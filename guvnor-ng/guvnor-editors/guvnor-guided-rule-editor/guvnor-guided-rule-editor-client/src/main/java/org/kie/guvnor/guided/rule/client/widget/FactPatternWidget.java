@@ -46,6 +46,7 @@ import org.drools.guvnor.models.commons.shared.rule.HasCEPWindow;
 import org.drools.guvnor.models.commons.shared.rule.HasConstraints;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;

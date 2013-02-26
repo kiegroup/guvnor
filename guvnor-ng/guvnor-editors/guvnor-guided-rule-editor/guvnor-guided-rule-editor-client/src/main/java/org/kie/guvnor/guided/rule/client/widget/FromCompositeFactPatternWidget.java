@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -151,7 +152,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             }
         };
-        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from") + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 

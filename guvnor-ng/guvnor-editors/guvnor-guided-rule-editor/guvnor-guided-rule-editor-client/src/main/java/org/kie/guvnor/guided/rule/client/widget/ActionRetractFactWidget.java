@@ -19,6 +19,7 @@ package org.kie.guvnor.guided.rule.client.widget;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.uberfire.client.common.SmallLabel;
 

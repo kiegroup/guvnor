@@ -17,7 +17,7 @@
 package org.kie.guvnor.testscenario.model;
 
 
-import org.drools.guvnor.models.commons.rule.FieldNature;
+import org.drools.guvnor.models.commons.shared.rule.FieldNature;
 
 /**
  * Holds field and value for "action" parts of the rule.

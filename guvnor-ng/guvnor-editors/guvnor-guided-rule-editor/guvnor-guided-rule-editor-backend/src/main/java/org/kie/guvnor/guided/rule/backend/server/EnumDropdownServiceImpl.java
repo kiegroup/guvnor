@@ -17,7 +17,7 @@
 package org.kie.guvnor.guided.rule.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.guided.rule.service.EnumDropDownService;
+import org.kie.guvnor.guided.rule.service.EnumDropdownService;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -28,8 +28,8 @@ import java.util.Map;
 
 @Service
 @ApplicationScoped
-public class EnumDropDownServiceImpl
-        implements EnumDropDownService {
+public class EnumDropdownServiceImpl
+        implements EnumDropdownService {
 
     @Override
     public String[] loadDropDownExpression(final String[] valuePairs,

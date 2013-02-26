@@ -4,7 +4,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-public class TestScenarioResourceType implements ClientResourceType {
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class TestScenarioResourceType
+        implements ClientResourceType {
 
     @Override
     public String getShortName() {

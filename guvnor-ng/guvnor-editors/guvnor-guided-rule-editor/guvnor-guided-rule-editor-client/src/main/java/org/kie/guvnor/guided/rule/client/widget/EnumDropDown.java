@@ -27,7 +27,7 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.guided.rule.service.EnumDropDownService;
+import org.kie.guvnor.guided.rule.service.EnumDropdownService;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
 import org.uberfire.client.common.LoadingPopup;
@@ -120,7 +120,7 @@ public class EnumDropDown
 
                             fillDropDown( currentValue, response );
                         }
-                    }, EnumDropDownService.class ).loadDropDownExpression( dropData.getValuePairs(),
+                    }, EnumDropdownService.class ).loadDropDownExpression( dropData.getValuePairs(),
                                                                                dropData.getQueryExpression() );
                 }
             } );

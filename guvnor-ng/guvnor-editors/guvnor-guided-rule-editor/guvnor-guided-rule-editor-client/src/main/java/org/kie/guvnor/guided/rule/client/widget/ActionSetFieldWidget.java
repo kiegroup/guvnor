@@ -31,6 +31,7 @@ import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
 import org.drools.guvnor.models.commons.shared.rule.ActionSetField;
 import org.drools.guvnor.models.commons.shared.rule.ActionUpdateField;
+import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
@@ -198,7 +199,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = ( type != null ) ? type + " <b>[" + model.getVariable() + "]</b>" : model.getVariable();
 
-        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
+        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName(modifyType),
                                                     descFact );
         return new ClickableLabel( sl,
                                    clk,

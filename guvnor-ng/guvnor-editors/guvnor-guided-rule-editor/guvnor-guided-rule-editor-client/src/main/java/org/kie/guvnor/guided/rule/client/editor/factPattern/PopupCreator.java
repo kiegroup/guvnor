@@ -34,6 +34,7 @@ import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.HasConstraints;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;

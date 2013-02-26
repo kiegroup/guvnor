@@ -16,9 +16,7 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import org.drools.ide.common.client.modeldriven.testing.*;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.model.CollectionFieldData;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;
@@ -72,16 +70,16 @@ public class FieldConstraintHelper {
     }
 
     String resolveFieldType() {
-        ModelField modelField = dmo.getField(factType, field.getName());
+        String className = dmo.getFieldClassName(factType, field.getName());
 
-        if (modelField == null) {
+        if (className == null) {
             return null;
-        } else if (modelField.getType().equals("Collection")) {
+        } else if (className.equals("Collection")) {
             return dmo.getParametricFieldType(
                     factType,
                     field.getName());
         } else {
-            return modelField.getType();
+            return className;
         }
     }
 
@@ -103,11 +101,6 @@ public class FieldConstraintHelper {
         return this.scenario.getFactTypes().get(var);
     }
 
-
-    String getFullFieldName() {
-        return factType + "." + field.getName();
-    }
-
     DropDownData getEnums() {
         Map<String, String> currentValueMap = new HashMap<String, String>();
         for (Field f : fact.getFieldData()) {
@@ -124,7 +117,7 @@ public class FieldConstraintHelper {
     }
 
     String getFieldType() {
-        return dmo.getFieldType(getFullFieldName());
+        return dmo.getFieldType(factType, field.getName());
     }
 
     public FieldDataConstraintEditor createFieldDataConstraintEditor(final FieldData fieldData) {

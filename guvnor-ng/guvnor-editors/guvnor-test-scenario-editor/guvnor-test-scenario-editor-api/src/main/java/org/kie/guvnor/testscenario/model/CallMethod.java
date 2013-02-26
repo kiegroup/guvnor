@@ -99,6 +99,10 @@ public class CallMethod
         this.callFieldValues = callFieldValues;
     }
 
+    public CallFieldValue[] getCallFieldValuesMap() {
+        return callFieldValues;
+
+    }
     public Map<String, String> getCallFieldValues() {
         Map<String, String> result = new HashMap<String, String>();
 

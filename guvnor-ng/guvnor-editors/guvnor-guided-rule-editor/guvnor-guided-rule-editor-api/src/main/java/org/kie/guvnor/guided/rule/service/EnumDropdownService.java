@@ -1,6 +1,6 @@
 package org.kie.guvnor.guided.rule.service;
 
-public interface EnumDropDownService {
+public interface EnumDropdownService {
 
     /**
      * @param valuePairs key=value pairs to be interpolated into the expression.

@@ -16,8 +16,6 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.*;
 import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
 import org.kie.guvnor.testscenario.model.CallFixtureMap;
 import org.kie.guvnor.testscenario.model.CallMethod;

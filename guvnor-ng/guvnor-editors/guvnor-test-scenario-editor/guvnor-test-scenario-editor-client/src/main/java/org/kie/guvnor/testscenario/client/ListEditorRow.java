@@ -10,9 +10,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
-import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.kie.guvnor.testscenario.model.CollectionFieldData;
 import org.kie.guvnor.testscenario.model.FieldData;
 

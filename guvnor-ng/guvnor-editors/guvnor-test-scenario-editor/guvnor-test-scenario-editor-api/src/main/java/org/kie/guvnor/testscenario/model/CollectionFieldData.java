@@ -1,6 +1,5 @@
 package org.kie.guvnor.testscenario.model;
 
-import sun.tools.javap.FieldData;
 
 import java.util.ArrayList;
 import java.util.List;

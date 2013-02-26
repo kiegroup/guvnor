@@ -18,7 +18,6 @@ package org.kie.guvnor.testscenario.client;
 
 import java.util.List;
 
-import org.drools.guvnor.models.commons.oracle.DataType;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -35,7 +34,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.rule.FieldNature;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.FieldNature;
+import org.drools.guvnor.models.commons.shared.rule.FieldNatureType;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
@@ -89,7 +90,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
     private void refresh() {
         root.clear();
-        if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
+        if ( enums != null && (enums.getFixedList() != null || enums.getQueryExpression() != null) ) {
             root.add( new EnumDropDown( methodParameter.value,
                                         new DropDownValueChanged() {
                                             public void valueChanged(String newText,
@@ -104,12 +105,12 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                         enums ) );
         } else {
 
-            if ( methodParameter.nature == FieldNature.TYPE_UNDEFINED ) {
+            if ( methodParameter.nature == FieldNatureType.TYPE_UNDEFINED ) {
                 // we have a blank slate..
                 // have to give them a choice
                 root.add( choice() );
             } else {
-                if ( methodParameter.nature == FieldNature.TYPE_VARIABLE ) {
+                if ( methodParameter.nature == FieldNatureType.TYPE_VARIABLE ) {
                     ListBox list = boundVariable( methodParameter );
                     root.add( list );
                 } else {
