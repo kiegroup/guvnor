@@ -38,6 +38,8 @@ public class GuidedRuleTemplateEditorView
         initWidget( panel );
     }
 
+
+
     @Override
     public void setContent( final Path path,
                             final TemplateModel model,
@@ -60,7 +62,9 @@ public class GuidedRuleTemplateEditorView
 
     @Override
     public boolean isDirty() {
-        return modeller.getRuleModeller().isDirty();
+        //The Modeller widget isn't set until after the content has been loaded from an asynchronous call to
+        //the server. It is therefore possible that the User attempts to close the tab before Modeller is set
+        return ( modeller == null ) ? false : modeller.getRuleModeller().isDirty();
     }
 
     @Override

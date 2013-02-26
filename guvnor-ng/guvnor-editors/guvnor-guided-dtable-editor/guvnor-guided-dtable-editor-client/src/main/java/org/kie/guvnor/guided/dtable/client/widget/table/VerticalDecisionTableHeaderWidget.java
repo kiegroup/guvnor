@@ -804,8 +804,10 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
             public void execute() {
                 ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
-                                  getBody().getOffsetWidth(),
-                                  getBody().getOffsetHeight() );
+                                  widget.getOffsetWidth(),
+                                  widget.getOffsetHeight() );
+                                  //getBody().getOffsetWidth(),
+                                  //getBody().getOffsetHeight() );
             }
         } );
 

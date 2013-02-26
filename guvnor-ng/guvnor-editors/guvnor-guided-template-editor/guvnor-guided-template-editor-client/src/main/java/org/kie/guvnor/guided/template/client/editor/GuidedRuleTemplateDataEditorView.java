@@ -44,6 +44,8 @@ public class GuidedRuleTemplateDataEditorView
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
 
+        widgetContainer.clear();
+
         //Initialise table to edit data. The widget needs to be added after the containing panel has
         //been added to the DOM and rendered by the browser as the Merged Grid widget needs the
         //parent panel sizes.
@@ -51,7 +53,6 @@ public class GuidedRuleTemplateDataEditorView
 
             @Override
             public void execute() {
-                widgetContainer.clear();
                 final TemplateDataTableWidget dataTable = new TemplateDataTableWidget( model,
                                                                                        dataModel,
                                                                                        isReadOnly,
@@ -71,8 +72,4 @@ public class GuidedRuleTemplateDataEditorView
         } );
     }
 
-    @Override
-    public void clear() {
-        widgetContainer.clear();
-    }
 }

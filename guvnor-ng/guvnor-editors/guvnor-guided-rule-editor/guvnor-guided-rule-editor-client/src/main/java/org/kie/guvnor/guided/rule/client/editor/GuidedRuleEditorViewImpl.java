@@ -60,7 +60,9 @@ public class GuidedRuleEditorViewImpl
 
     @Override
     public boolean isDirty() {
-        return modeller.isDirty();
+        //The Modeller widget isn't set until after the content has been loaded from an asynchronous call to
+        //the server. It is therefore possible that the User attempts to close the tab before Modeller is set
+        return ( modeller == null ) ? false : modeller.getRuleModeller().isDirty();
     }
 
     @Override

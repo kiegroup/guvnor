@@ -102,8 +102,6 @@ public class GuidedRuleTemplateEditorPresenter {
                          final EventBus eventBus,
                          final boolean isReadOnly );
 
-        void clear();
-
     }
 
     @Inject
@@ -199,7 +197,7 @@ public class GuidedRuleTemplateEditorPresenter {
 
             @Override
             public void onLostFocus() {
-                dataView.clear();
+                // Nothing to do here
             }
         } );
 
@@ -236,10 +234,6 @@ public class GuidedRuleTemplateEditorPresenter {
                                  oracle,
                                  eventBus,
                                  isReadOnly );
-//                dataView.setContent( model,
-//                                     oracle,
-//                                     eventBus,
-//                                     isReadOnly );
                 importsWidget.setContent( oracle,
                                           response.getRuleModel().getImports(),
                                           isReadOnly );
