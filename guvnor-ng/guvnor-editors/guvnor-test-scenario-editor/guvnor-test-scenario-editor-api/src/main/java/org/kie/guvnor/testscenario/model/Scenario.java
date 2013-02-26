@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.testscenario.model;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -24,15 +25,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * This represents a test scenario. It also encapsulates the result of a
  * scenario run.
  */
-@Portable
 public class Scenario {
+
+    private static final long serialVersionUID = 510l;
 
     /**
      * The maximum number of rules to fire so we don't recurse for ever.
@@ -96,7 +96,7 @@ public class Scenario {
         for ( int j = start; j < fixtures.size(); j++ ) {
             if ( fixtures.get( j ) instanceof ExecutionTrace) {
                 getFixtures().add( j,
-                                   newFixture );
+                        newFixture );
                 return;
             }
         }
@@ -167,7 +167,7 @@ public class Scenario {
     }
 
     /**
-     * 
+     *
      * @return A mapping of variable names to their fact data.
      */
     public Map<String, FactData> getFactTypes() {
@@ -176,18 +176,18 @@ public class Scenario {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
                 factTypesByName.put( factData.getName(),
-                                     factData );
+                        factData );
             }
         }
         for ( FactData factData : globals ) {
             factTypesByName.put( factData.getName(),
-                                 factData );
+                    factData );
         }
         return factTypesByName;
     }
 
     /**
-     * 
+     *
      * @return A mapping of variable names to their fact type.
      */
     public Map<String, String> getVariableTypes() {
@@ -196,18 +196,18 @@ public class Scenario {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
                 map.put( factData.getName(),
-                         factData.getType() );
+                        factData.getType() );
             }
         }
         for ( FactData factData : globals ) {
             map.put( factData.getName(),
-                     factData.getType() );
+                    factData.getType() );
         }
         return map;
     }
 
     /**
-     * 
+     *
      * @return A mapping of Fact types to their Fact definitions.
      */
     public Map<String, List<FactData>> getFactTypesToFactData() {
@@ -219,7 +219,7 @@ public class Scenario {
                 if ( fd == null ) {
                     fd = new ArrayList<FactData>();
                     map.put( factData.getType(),
-                             fd );
+                            fd );
                 }
                 fd.add( factData );
             }
@@ -229,7 +229,7 @@ public class Scenario {
             if ( fd == null ) {
                 fd = new ArrayList<FactData>();
                 map.put( factData.getType(),
-                         fd );
+                        fd );
             }
             fd.add( factData );
         }
@@ -239,7 +239,7 @@ public class Scenario {
     /**
      * This will return a list of fact names that are in scope (including
      * globals).
-     * 
+     *
      * @return List<String>
      */
     public List<String> getFactNamesInScope(ExecutionTrace executionTrace,
@@ -313,9 +313,9 @@ public class Scenario {
         String factName = factData.getName();
 
         for ( Fixture fixture : fixtures.subList( start,
-                                                  fixtures.size() ) ) {
+                fixtures.size() ) ) {
             if ( isFactNameUsedInThisFixture( fixture,
-                                              factName ) ) {
+                    factName ) ) {
                 return true;
             }
         }
@@ -337,7 +337,7 @@ public class Scenario {
     }
 
     /**
-     * 
+     *
      * @return int[0] = failures, int[1] = total;
      */
     public int[] countFailuresTotal() {

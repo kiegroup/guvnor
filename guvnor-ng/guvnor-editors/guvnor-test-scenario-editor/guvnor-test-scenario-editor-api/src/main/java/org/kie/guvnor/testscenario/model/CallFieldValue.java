@@ -16,13 +16,12 @@
 
 package org.kie.guvnor.testscenario.model;
 
-import org.drools.guvnor.models.commons.shared.rule.FieldNature;
-import org.jboss.errai.common.client.api.annotations.Portable;
+
+import org.drools.guvnor.models.commons.rule.FieldNature;
 
 /**
  * Holds field and value for "action" parts of the rule.
  */
-@Portable
 public class CallFieldValue
         implements
         FieldNature {
@@ -38,7 +37,7 @@ public class CallFieldValue
 
 
     public CallFieldValue(final String field, final String value,
-            final String type) {
+                          final String type) {
         this.field = field;
         this.value = value;
         this.type = type;

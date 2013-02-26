@@ -2,9 +2,9 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
-public class TestScenarioResourceType implements ResourceType {
+public class TestScenarioResourceType implements ClientResourceType {
 
     @Override
     public String getShortName() {

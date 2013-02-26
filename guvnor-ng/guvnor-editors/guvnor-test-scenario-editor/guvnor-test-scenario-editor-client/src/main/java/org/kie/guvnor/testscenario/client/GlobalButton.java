@@ -28,8 +28,8 @@ import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.guvnor.testscenario.service.model.FactData;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.FactData;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 

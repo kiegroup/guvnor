@@ -16,18 +16,18 @@
 
 package org.kie.guvnor.testscenario.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * This is for making assertions over a specific facts value/state AFTER execution.
  */
-@Portable
 public class VerifyFact
         implements
         Expectation {
+
+    private static final long serialVersionUID = 510l;
 
     private List<VerifyField> fieldValues = new ArrayList<VerifyField>();
     private String name;

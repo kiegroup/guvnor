@@ -1,8 +1,13 @@
 package org.kie.guvnor.testscenario.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CallMethod
-    implements
-    Fixture {
+        implements
+        Fixture {
+
+    private static final long serialVersionUID = 510l;
 
     /*
      * the function name was not yet choose
@@ -94,7 +99,14 @@ public class CallMethod
         this.callFieldValues = callFieldValues;
     }
 
-    public CallFieldValue[] getCallFieldValues() {
-        return callFieldValues;
+    public Map<String, String> getCallFieldValues() {
+        Map<String, String> result = new HashMap<String, String>();
+
+        for (CallFieldValue callFieldValue : callFieldValues) {
+            result.put(callFieldValue.getField(), callFieldValue.getValue());
+        }
+
+        return result;
     }
+
 }

@@ -16,14 +16,12 @@
 
 package org.kie.guvnor.testscenario.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * All assertions on results.
  */
-@Portable
-public interface Expectation extends Fixture {
+public interface Expectation
+        extends Fixture {
 
     /**
      * Return false if the assertion

@@ -27,8 +27,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+<<<<<<< HEAD
 import org.drools.guvnor.models.commons.backend.rule.SharedConstants;
 import org.drools.guvnor.models.commons.shared.rule.HasCEPWindow;
+=======
+import org.drools.guvnor.models.commons.backend.SharedConstants;
+import org.drools.guvnor.models.commons.rule.HasCEPWindow;
+import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
+>>>>>>> adding test scenarios, this version is still broken
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
@@ -149,7 +155,7 @@ public class CEPWindowOperatorsDropdown extends Composite
 
         box = new ListBox();
         box.setEnabled( !isReadOnly );
-        box.addItem( Constants.INSTANCE.noCEPWindow(),
+        box.addItem( HumanReadableConstants.INSTANCE.noCEPWindow(),
                      "" );
 
         for ( int i = 0; i < operators.size(); i++ ) {

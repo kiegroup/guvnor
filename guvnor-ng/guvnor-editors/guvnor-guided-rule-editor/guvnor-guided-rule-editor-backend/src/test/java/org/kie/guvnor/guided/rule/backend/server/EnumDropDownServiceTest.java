@@ -1,18 +1,19 @@
 package org.kie.guvnor.guided.rule.backend.server;
 
 import org.junit.Test;
+import org.kie.guvnor.guided.rule.service.EnumDropDownService;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for GuidedRuleEditorService.loadDropDownExpression
  */
-public class LoadDropDownDataTest {
+public class EnumDropDownServiceTest {
 
     @Test
     public void testLoadDropDown() throws Exception {
 
-        final GuidedRuleEditorServiceImpl service = new GuidedRuleEditorServiceImpl();
+        final EnumDropDownService service = new EnumDropDownServiceImpl();
 
         final String[] pairs = new String[]{ "f1=x", "f2=2" };
         final String expression = "['@{f1}', '@{f2}']";
@@ -31,7 +32,7 @@ public class LoadDropDownDataTest {
     @Test
     public void testLoadDropDownNoValuePairs() throws Exception {
 
-        final GuidedRuleEditorServiceImpl service = new GuidedRuleEditorServiceImpl();
+        final EnumDropDownService service = new EnumDropDownServiceImpl();
 
         final String[] pairs = new String[]{ null };
         final String expression = "['@{f1}', '@{f2}']";

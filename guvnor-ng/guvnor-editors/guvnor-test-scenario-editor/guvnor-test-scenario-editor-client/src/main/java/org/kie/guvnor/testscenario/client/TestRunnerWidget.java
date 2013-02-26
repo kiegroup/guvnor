@@ -19,21 +19,7 @@ package org.kie.guvnor.testscenario.client;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.AuditEventsImages;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.util.PercentageBar;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -48,10 +34,29 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+import org.kie.guvnor.commons.ui.client.widget.PercentageBar;
+import org.kie.guvnor.errors.client.resources.ImageResources;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.guvnor.testscenario.client.resources.images.AuditEventsImages;
+import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
+import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.kie.guvnor.testscenario.model.BuilderResultLine;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.ScenarioRunResult;
+import org.kie.guvnor.testscenario.model.SingleScenarioResult;
+import org.kie.guvnor.testscenario.model.VerifyFact;
+import org.kie.guvnor.testscenario.model.VerifyField;
+import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.uberfire.client.common.LoadingPopup;
+import org.uberfire.client.common.SmallLabel;
 
 public class TestRunnerWidget extends Composite {
 
-    private static AuditEventsImages auditEventsImages = (AuditEventsImages) GWT.create( AuditEventsImages.class );
+
 
     FlexTable             results   = new FlexTable();
     VerticalPanel         layout    = new VerticalPanel();
@@ -59,33 +64,36 @@ public class TestRunnerWidget extends Composite {
     private SimplePanel   actions   = new SimplePanel();
 
     public TestRunnerWidget(final ScenarioEditorPresenter parent,
+                            final Caller<TestScenarioEditorService> testScenarioEditorService,
                             final String packageName) {
 
-        final Button run = new Button( Constants.INSTANCE.RunScenario() );
-        run.setTitle( Constants.INSTANCE.RunScenarioTip() );
+        final Button run = new Button( TestScenarioConstants.INSTANCE.RunScenario() );
+        run.setTitle( TestScenarioConstants.INSTANCE.RunScenarioTip() );
         run.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                LoadingPopup.showMessage( Constants.INSTANCE.BuildingAndRunningScenario() );
-                TestScenarioServiceAsync testScenarioService= GWT.create(TestScenarioService.class);
-                testScenarioService.runScenario( parent.getMetaData().getModuleName(),
-                                                                   parent.getScenario(),
-                                                                   new GenericCallback<SingleScenarioResult>() {
-                                                                       public void onSuccess(SingleScenarioResult data) {
-                                                                           LoadingPopup.close();
-                                                                           layout.clear();
-                                                                           layout.add( actions );
-                                                                           layout.add( results );
-                                                                           actions.setVisible( true );
-                                                                           ScenarioRunResult result = data.getResult();
-                                                                           if ( result.hasErrors() ) {
-                                                                               showErrors( result.getErrors() );
-                                                                           } else {
-                                                                               showResults( parent,
-                                                                                            data );
-                                                                           }
-                                                                       }
-                                                                   } );
+                LoadingPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+
+                testScenarioEditorService.call(new RemoteCallback<SingleScenarioResult>() {
+                    @Override
+                    public void callback(SingleScenarioResult singleScenarioResult) {
+                        LoadingPopup.close();
+                        layout.clear();
+                        layout.add(actions);
+                        layout.add(results);
+                        actions.setVisible(true);
+                        ScenarioRunResult result = singleScenarioResult.getResult();
+                        if (result.hasErrors()) {
+                            showErrors(result.getErrors());
+                        } else {
+                            showResults(parent,
+                                    singleScenarioResult);
+                        }
+                    }
+                }
+
+                ).runScenario(packageName,
+                        parent.getScenario());
             }
         } );
 
@@ -105,11 +113,11 @@ public class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs.get(i);
             errTable.setWidget( row,
                                 0,
-                                new Image( DroolsGuvnorImageResources.INSTANCE.error() ) );
+                                new Image( ImageResources.INSTANCE.error() ) );
             if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
-                                  Constants.INSTANCE.packageConfigurationProblem1() + res.getMessage() );
+                                  TestScenarioConstants.INSTANCE.packageConfigurationProblem1() + res.getMessage() );
             } else {
                 errTable.setText( row,
                                   1,
@@ -142,40 +150,40 @@ public class TestRunnerWidget extends Composite {
 
         for ( Iterator<Fixture> fixturesIterator = data.getResult().getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
             Fixture fixture = fixturesIterator.next();
-            if ( fixture instanceof VerifyRuleFired ) {
+            if ( fixture instanceof VerifyRuleFired) {
 
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
                 if ( !verifyRuleFired.getSuccessResult().booleanValue() ) {
-                    panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
+                    panel.add( new Image( CommonImages.INSTANCE.warning() ) );
                     failures++;
                 } else {
-                    panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
+                    panel.add( new Image( TestScenarioImages.INSTANCE.testPassed() ) );
                 }
                 panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
                 total++;
-            } else if ( fixture instanceof VerifyFact ) {
+            } else if ( fixture instanceof VerifyFact) {
                 VerifyFact verifyFact = (VerifyFact) fixture;
                 for ( Iterator<VerifyField> fieldIterator = verifyFact.getFieldValues().iterator(); fieldIterator.hasNext(); ) {
                     total++;
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
                     if ( !verifyField.getSuccessResult().booleanValue() ) {
-                        panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.warning() ) );
+                        panel.add( new Image( CommonImages.INSTANCE.warning() ) );
                         failures++;
                     } else {
-                        panel.add( new Image( DroolsGuvnorImageResources.INSTANCE.testPassed() ) );
+                        panel.add( new Image( TestScenarioImages.INSTANCE.testPassed() ) );
                     }
                     panel.add( new SmallLabel( verifyField.getExplanation() ) );
                     resultsDetail.add( panel );
                 }
 
-            } else if ( fixture instanceof ExecutionTrace ) {
+            } else if ( fixture instanceof ExecutionTrace) {
                 ExecutionTrace ex = (ExecutionTrace) fixture;
                 if ( ex.getNumberOfRulesFired() == data.getResult().getScenario().getMaxRuleFirings() ) {
-                    Window.alert( Constants.INSTANCE.MaxRuleFiringsReachedWarning(
-                            data.getResult().getScenario().getMaxRuleFirings() ) );
+                    Window.alert(TestScenarioConstants.INSTANCE.MaxRuleFiringsReachedWarning(
+                            data.getResult().getScenario().getMaxRuleFirings()));
                 }
             }
 
@@ -183,7 +191,7 @@ public class TestRunnerWidget extends Composite {
 
         results.setWidget( 0,
                            0,
-                           new SmallLabel( Constants.INSTANCE.Results() ) );
+                           new SmallLabel( TestScenarioConstants.INSTANCE.Results() ) );
         results.getFlexCellFormatter().setHorizontalAlignment( 0,
                                                                0,
                                                                HasHorizontalAlignment.ALIGN_RIGHT );
@@ -205,7 +213,7 @@ public class TestRunnerWidget extends Composite {
 
         results.setWidget( 1,
                            0,
-                           new SmallLabel( Constants.INSTANCE.SummaryColon() ) );
+                           new SmallLabel( TestScenarioConstants.INSTANCE.SummaryColon() ) );
         results.getFlexCellFormatter().setHorizontalAlignment( 1,
                                                                0,
                                                                HasHorizontalAlignment.ALIGN_RIGHT );
@@ -214,9 +222,9 @@ public class TestRunnerWidget extends Composite {
                            resultsDetail );
         results.setWidget( 2,
                            0,
-                           new SmallLabel( Constants.INSTANCE.AuditLogColon() ) );
+                           new SmallLabel( TestScenarioConstants.INSTANCE.AuditLogColon() ) );
 
-        final Button showExp = new Button( Constants.INSTANCE.ShowEventsButton() );
+        final Button showExp = new Button( TestScenarioConstants.INSTANCE.ShowEventsButton() );
         results.setWidget( 2,
                            1,
                            showExp );
@@ -281,7 +289,7 @@ public class TestRunnerWidget extends Composite {
             } else {
                 g.setWidget( row,
                              0,
-                             new Image(auditEventsImages.miscEvent()));
+                             new Image(AuditEventsImages.INSTANCE.miscEvent()));
                 g.setWidget( row,
                              1,
                              new SmallLabel( "<font color='grey'>" + lg[1] + "</font>" ) );
@@ -307,26 +315,26 @@ public class TestRunnerWidget extends Composite {
     	try {
     	    type = Integer.parseInt(eventType);
     	} catch (NumberFormatException e) {
-    		return new Image(auditEventsImages.miscEvent()); 	
+    		return new Image(AuditEventsImages.INSTANCE.miscEvent());
     	}
     	
     	switch(type) {
     	case 1: 
-    		return new Image(auditEventsImages.image1());
+    		return new Image(AuditEventsImages.INSTANCE.image1());
    	    case 2: 
-		    return new Image(auditEventsImages.image2());
+		    return new Image(AuditEventsImages.INSTANCE.image2());
    	    case 3: 
-		    return new Image(auditEventsImages.image3());
+		    return new Image(AuditEventsImages.INSTANCE.image3());
    	    case 4: 
-		    return new Image(auditEventsImages.image4());
+		    return new Image(AuditEventsImages.INSTANCE.image4());
    	    case 5: 
-		    return new Image(auditEventsImages.image5());
+		    return new Image(AuditEventsImages.INSTANCE.image5());
    	    case 6: 
-		    return new Image(auditEventsImages.image6());
+		    return new Image(AuditEventsImages.INSTANCE.image6());
    	    case 7: 
-		    return new Image(auditEventsImages.image7());
+		    return new Image(AuditEventsImages.INSTANCE.image7());
 		default:
-			return new Image(auditEventsImages.miscEvent()); 	
+			return new Image(AuditEventsImages.INSTANCE.miscEvent());
     	}
     }
 }

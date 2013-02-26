@@ -122,7 +122,7 @@ public class PopupCreator {
         if ( con.getFieldBinding() != null ) {
             varName.setText( con.getFieldBinding() );
         }
-        final Button ok = new Button( Constants.INSTANCE.Set() );
+        final Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
         vn.add( varName );
         vn.add( ok );
 
@@ -404,7 +404,7 @@ public class PopupCreator {
             varTxt.setVisibleLength( 6 );
             varName.add( varTxt );
 
-            Button bindVar = new Button( Constants.INSTANCE.Set() );
+            Button bindVar = new Button( HumanReadableConstants.INSTANCE.Set() );
             bindVar.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     String var = varTxt.getText();

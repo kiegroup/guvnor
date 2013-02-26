@@ -41,13 +41,14 @@ import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.model.ActionCallMethod;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.guvnor.testscenario.service.model.CallFieldValue;
-import org.kie.guvnor.testscenario.service.model.CallMethod;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FactData;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.CallFieldValue;
+import org.kie.guvnor.testscenario.model.CallMethod;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FactData;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -128,8 +129,8 @@ public class CallMethodWidget extends DirtyableComposite {
                           0,
                           getSetterLabel() );
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        for ( int i = 0; i < mCall.getCallFieldValues().length; i++ ) {
-            CallFieldValue val = mCall.getCallFieldValues()[i];
+        int i = 0;
+        for ( CallFieldValue val : mCall.getCallFieldValues()) {
 
             inner.setWidget( i,
                              0,
@@ -137,7 +138,7 @@ public class CallMethodWidget extends DirtyableComposite {
             inner.setWidget( i,
                              1,
                              valueEditor( val ) );
-
+            i++;
         }
         layout.setWidget( 0,
                           1,
@@ -233,8 +234,10 @@ public class CallMethodWidget extends DirtyableComposite {
             type = mFactTypes.get( this.mCall.getVariable() );
         }
 
-        DropDownData enums = dmo.getEnums( type,
-                val.field, this.mCall.getCallFieldValues()
+        DropDownData enums = dmo.getEnums(
+                type,
+                val.field,
+                this.mCall.getCallFieldValues()
         );
         return new MethodParameterCallValueEditor( val,
                                                    enums,

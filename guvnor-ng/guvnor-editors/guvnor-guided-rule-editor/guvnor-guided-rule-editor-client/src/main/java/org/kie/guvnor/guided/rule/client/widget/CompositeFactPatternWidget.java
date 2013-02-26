@@ -36,7 +36,6 @@ import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.IFactPattern;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.ClickableLabel;
@@ -244,9 +243,9 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
             }
         } );
 
-        final Button fromBtn = new Button( Constants.INSTANCE.From() );
-        final Button fromAccumulateBtn = new Button( Constants.INSTANCE.FromAccumulate() );
-        final Button fromCollectBtn = new Button( Constants.INSTANCE.FromCollect() );
+        final Button fromBtn = new Button( HumanReadableConstants.INSTANCE.From() );
+        final Button fromAccumulateBtn = new Button( HumanReadableConstants.INSTANCE.FromAccumulate() );
+        final Button fromCollectBtn = new Button( HumanReadableConstants.INSTANCE.FromCollect() );
         ClickHandler btnsClickHandler = new ClickHandler() {
 
             public void onClick( ClickEvent event ) {

@@ -18,9 +18,9 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
 
 import java.util.Map;
 

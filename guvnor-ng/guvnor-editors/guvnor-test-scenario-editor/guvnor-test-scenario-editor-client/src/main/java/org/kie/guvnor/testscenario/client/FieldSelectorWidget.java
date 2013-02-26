@@ -24,10 +24,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
-import org.kie.guvnor.testscenario.service.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.service.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.service.model.Field;
-import org.kie.guvnor.testscenario.service.model.FieldData;
+import org.kie.guvnor.testscenario.model.CollectionFieldData;
+import org.kie.guvnor.testscenario.model.FactAssignmentField;
+import org.kie.guvnor.testscenario.model.Field;
+import org.kie.guvnor.testscenario.model.FieldData;
 
 public class FieldSelectorWidget
         implements IsWidget, ClickHandler {

@@ -19,11 +19,11 @@ package org.kie.guvnor.testscenario.client;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FactData;
-import org.kie.guvnor.testscenario.service.model.Fixture;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FactData;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
 
 
 public class InsertFactWidget extends FactWidget {

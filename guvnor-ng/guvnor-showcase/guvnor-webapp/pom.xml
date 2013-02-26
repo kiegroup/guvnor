@@ -307,6 +307,16 @@
       <artifactId>guvnor-globals-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-test-scenario-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-test-scenario-editor-backend</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -505,6 +515,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-test-scenario-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-test-scenario-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>

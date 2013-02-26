@@ -28,7 +28,6 @@ import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHel
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.guided.rule.service.EnumDropDownService;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
 import org.uberfire.client.common.LoadingPopup;

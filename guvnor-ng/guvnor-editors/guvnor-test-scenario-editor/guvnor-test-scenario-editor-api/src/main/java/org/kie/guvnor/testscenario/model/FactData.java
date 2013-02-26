@@ -18,12 +18,11 @@ package org.kie.guvnor.testscenario.model;
 
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class FactData
         extends Fact
         implements Fixture {
+    private static final long serialVersionUID = 510l;
+
 
     /**
      * The name of the "variable"

@@ -16,12 +16,11 @@
 
 package org.kie.guvnor.testscenario.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class VerifyRuleFired
-    implements
-    Expectation {
+        implements
+        Expectation {
+
+    private static final long serialVersionUID = 510l;
 
     private String            ruleName;
     private Integer           expectedCount;

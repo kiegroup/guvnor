@@ -38,9 +38,9 @@ import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.errors.client.resources.i18n.Constants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
-import org.kie.guvnor.testscenario.service.model.VerifyRuleFired;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
+import org.kie.guvnor.testscenario.model.VerifyRuleFired;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 

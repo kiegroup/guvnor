@@ -253,10 +253,10 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         } );
 
         final Button freeFormDRLBtn = new Button( Constants.INSTANCE.FreeFormDrl() );
-        final Button fromBtn = new Button( Constants.INSTANCE.From() );
-        final Button fromAccumulateBtn = new Button( Constants.INSTANCE.FromAccumulate() );
-        final Button fromCollectBtn = new Button( Constants.INSTANCE.FromCollect() );
-        final Button fromEntryPointBtn = new Button( Constants.INSTANCE.FromEntryPoint() );
+        final Button fromBtn = new Button( HumanReadableConstants.INSTANCE.From() );
+        final Button fromAccumulateBtn = new Button( HumanReadableConstants.INSTANCE.FromAccumulate() );
+        final Button fromCollectBtn = new Button( HumanReadableConstants.INSTANCE.FromCollect() );
+        final Button fromEntryPointBtn = new Button( HumanReadableConstants.INSTANCE.FromEntryPoint() );
 
         ClickHandler btnsClickHandler = new ClickHandler() {
 

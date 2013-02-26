@@ -16,14 +16,12 @@
 
 package org.kie.guvnor.testscenario.model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class Fact {
+
+    private static final long serialVersionUID = 510l;
 
     /**
      * The type (class)

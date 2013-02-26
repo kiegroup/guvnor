@@ -18,9 +18,6 @@ package org.kie.guvnor.testscenario.model;
 
 import java.util.ArrayList;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class FixtureList extends ArrayList<Fixture>
         implements
         Fixture {

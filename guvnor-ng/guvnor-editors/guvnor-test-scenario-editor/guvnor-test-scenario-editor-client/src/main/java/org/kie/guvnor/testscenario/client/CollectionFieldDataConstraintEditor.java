@@ -25,10 +25,10 @@ import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fact;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.service.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.Fact;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.CollectionFieldData;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.Fact;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.DirtyableComposite;
 
 /**

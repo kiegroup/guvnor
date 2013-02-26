@@ -18,12 +18,6 @@ package org.kie.guvnor.testscenario.client;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -35,9 +29,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.uberfire.client.common.SmallLabel;
 
 public class ExecutionWidget extends Composite {
 
@@ -120,7 +116,7 @@ public class ExecutionWidget extends Composite {
 
             public void onChange(ChangeEvent event) {
                 if ( textBox.getText().trim().equals( "" ) ) {
-                    textBox.setText( Constants.INSTANCE.currentDateAndTime() );
+                    textBox.setText( TestScenarioConstants.INSTANCE.currentDateAndTime() );
                 } else {
                     try {
                         //Date d1 = new Date();
@@ -129,7 +125,7 @@ public class ExecutionWidget extends Composite {
                         textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
-                        ErrorPopup.showMessage( Constants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );
+                        ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0(format));
                     }
                 }
             }

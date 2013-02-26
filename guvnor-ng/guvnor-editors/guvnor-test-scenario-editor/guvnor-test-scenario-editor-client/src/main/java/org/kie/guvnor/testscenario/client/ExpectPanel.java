@@ -16,24 +16,16 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImageResources;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
-import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
 

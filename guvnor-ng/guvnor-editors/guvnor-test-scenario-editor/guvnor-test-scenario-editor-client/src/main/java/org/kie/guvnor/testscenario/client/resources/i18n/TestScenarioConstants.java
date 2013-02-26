@@ -171,4 +171,49 @@ public interface TestScenarioConstants
     String ExpectRules();
 
     String ActualResult(String s);
+
+    String DeleteTheExpectationForThisFact();
+
+    String AreYouSureYouWantToRemoveThisExpectation();
+
+    String scenarioFactTypeHasValues(String type, String name);
+
+    String AFactOfType0HasValues(String name);
+
+    String AddAFieldToThisExpectation();
+
+    String equalsScenario();
+
+    String doesNotEqualScenario();
+
+    String AdvancedOptions();
+
+    String AVariable();
+
+    String ABoundVariable();
+
+    String BoundVariableTip();
+
+    String RunScenario();
+
+    String RunScenarioTip();
+
+    String BuildingAndRunningScenario();
+
+    String Results();
+
+    String SummaryColon();
+
+    String AuditLogColon();
+
+    String ShowEventsButton();
+
+    String MaxRuleFiringsReachedWarning(int number);
+
+    String packageConfigurationProblem1();
+
+    String BadDateFormatPleaseTryAgainTryTheFormatOf0(String format);
+
+    String currentDateAndTime();
+
 }

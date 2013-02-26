@@ -39,7 +39,6 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
@@ -189,7 +188,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             assertType = "assertLogical"; //NON-NLS
         }
 
-        String lbl = ( model.isBound() == false ) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
+        String lbl = ( model.isBound() == false ) ? HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
                 + model.getBoundName() + "]</b>";
         if ( this.model.getFieldValues() != null && model.getFieldValues().length > 0 ) {
             lbl = lbl + ":";
@@ -237,7 +236,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         if ( this.model.getBoundName() != null ) {
             varName.setText( this.model.getBoundName() );
         }
-        final Button ok = new Button( Constants.INSTANCE.Set() );
+        final Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
         vn.add( varName );
         vn.add( ok );
         ok.addClickHandler( new ClickHandler() {

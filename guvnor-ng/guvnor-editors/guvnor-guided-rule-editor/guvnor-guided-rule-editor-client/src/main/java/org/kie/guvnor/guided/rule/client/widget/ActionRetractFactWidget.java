@@ -20,7 +20,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.uberfire.client.common.SmallLabel;
 
 /**
@@ -55,7 +54,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         }
 
         String desc = modeller.getModel().getLHSBindingType( model.getVariableName() ) + " [" + model.getVariableName() + "]";
-        layout.add( new SmallLabel( HumanReadable.getActionDisplayName( "retract" ) + "&nbsp;<b>" + desc + "</b>" ) );
+        layout.add( new SmallLabel( HumanReadable.getActionDisplayName("retract") + "&nbsp;<b>" + desc + "</b>" ) );
 
         //This widget couldn't be modified.
         this.setModified( false );

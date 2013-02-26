@@ -18,18 +18,18 @@ package org.kie.guvnor.testscenario.client;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.*;
-import org.kie.guvnor.testscenario.service.model.ActivateRuleFlowGroup;
-import org.kie.guvnor.testscenario.service.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.service.model.CallMethod;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FactData;
-import org.kie.guvnor.testscenario.service.model.Field;
-import org.kie.guvnor.testscenario.service.model.Fixture;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.FixturesMap;
-import org.kie.guvnor.testscenario.service.model.RetractFact;
-import org.kie.guvnor.testscenario.service.model.VerifyFact;
-import org.kie.guvnor.testscenario.service.model.VerifyRuleFired;
+import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
+import org.kie.guvnor.testscenario.model.CallFixtureMap;
+import org.kie.guvnor.testscenario.model.CallMethod;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FactData;
+import org.kie.guvnor.testscenario.model.Field;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.FixturesMap;
+import org.kie.guvnor.testscenario.model.RetractFact;
+import org.kie.guvnor.testscenario.model.VerifyFact;
+import org.kie.guvnor.testscenario.model.VerifyRuleFired;
 
 import java.util.*;
 

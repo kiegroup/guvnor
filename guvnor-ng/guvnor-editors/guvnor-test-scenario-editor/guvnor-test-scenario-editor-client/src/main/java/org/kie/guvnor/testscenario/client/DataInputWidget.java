@@ -18,18 +18,13 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.*;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FactData;
-import org.kie.guvnor.testscenario.service.model.Fixture;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FactData;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 

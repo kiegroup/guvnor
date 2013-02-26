@@ -28,10 +28,10 @@ import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.guvnor.testscenario.service.model.CallMethod;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.Fixture;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.CallMethod;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.Scenario;
 
 /**
  * 

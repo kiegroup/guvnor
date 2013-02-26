@@ -17,10 +17,10 @@
 package org.kie.guvnor.testscenario.model;
 
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Portable
 public class VerifyField {
+
+    private static final long serialVersionUID = 510l;
 
     private String            fieldName;
     private String            expected;

@@ -479,7 +479,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.setWidth( 500 + "px" );
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
-        Button ok = new Button( Constants.INSTANCE.Set() );
+        Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
         vn.add( new Label( Constants.INSTANCE.BindTheExpressionToAVariable() ) );
         vn.add( varName );
         vn.add( ok );

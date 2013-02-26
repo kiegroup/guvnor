@@ -521,7 +521,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                           final HasCEPWindow c ) {
         if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
             HorizontalPanel hp = new HorizontalPanel();
-            Label lbl = new Label( Constants.INSTANCE.OverCEPWindow() );
+            Label lbl = new Label( HumanReadableConstants.INSTANCE.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
             hp.add( lbl );
             CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
@@ -738,7 +738,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
                     }
-                    if ( selectedText.equals( Constants.INSTANCE.isEqualToNull() ) || selectedText.equals( Constants.INSTANCE.isNotEqualToNull() ) ) {
+                    if ( selectedText.equals( HumanReadableConstants.INSTANCE.isEqualToNull() ) || selectedText.equals( HumanReadableConstants.INSTANCE.isNotEqualToNull() ) ) {
                         if ( inner != null ) {
                             inner.getWidget( row,
                                              col ).setVisible( false );

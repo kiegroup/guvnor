@@ -18,16 +18,14 @@ package org.kie.guvnor.testscenario.model;
 
 import java.util.Date;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * This contains lists of rules to include in the scenario (or exclude, as the case may be !).
  * This will be used to filter the rule engines behaviour under test.
  */
-@Portable
 public class ExecutionTrace
-    implements
-    Fixture {
+        implements Fixture {
+
+    private static final long serialVersionUID      = 510l;
 
     /**
      * This is the simulated date - leaving it as null means it will use

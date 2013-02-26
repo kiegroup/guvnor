@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.ActivateRuleFlowGroup;
-import org.kie.guvnor.testscenario.service.model.Fixture;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
 

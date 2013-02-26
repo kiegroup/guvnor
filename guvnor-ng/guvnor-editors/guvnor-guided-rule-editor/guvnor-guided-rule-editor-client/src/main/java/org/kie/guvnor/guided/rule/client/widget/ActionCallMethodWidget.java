@@ -35,7 +35,6 @@ import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.MethodParameterValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
-import org.kie.guvnor.guided.rule.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.util.FieldNatureUtil;
@@ -188,7 +187,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
                 }
             } );
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.getVariable() + "]" ) ); // NON-NLS
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName("call") + " [" + model.getVariable() + "]" ) ); // NON-NLS
             if ( !this.readOnly ) {
                 horiz.add( edit );
             }

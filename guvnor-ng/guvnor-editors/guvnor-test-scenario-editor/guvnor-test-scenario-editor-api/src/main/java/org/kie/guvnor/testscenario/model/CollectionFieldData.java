@@ -1,11 +1,10 @@
 package org.kie.guvnor.testscenario.model;
 
+import sun.tools.javap.FieldData;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class CollectionFieldData implements Field {
 
     private String name;

@@ -18,12 +18,8 @@ package org.kie.guvnor.testscenario.model;
 
 import java.util.HashMap;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class FixturesMap extends HashMap<String, FixtureList>
-    implements
-    Fixture {
+        implements Fixture {
 
     private static final long serialVersionUID = 510l;
 

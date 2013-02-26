@@ -20,20 +20,13 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.navigation.qa.VerifyRulesFiredWidget;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.ide.common.client.modeldriven.testing.*;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.FixturesMap;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.CallFixtureMap;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.FixturesMap;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 
@@ -45,11 +38,13 @@ public class ScenarioWidgetComponentCreator {
 
     private boolean showResults;
     private final Metadata metadata;
+    private Scenario scenario;
+    private String packageName;
 
-    protected ScenarioWidgetComponentCreator(Asset asset, Metadata metadata, ScenarioEditorPresenter scenarioWidget) {
-        this.asset = asset;
+    protected ScenarioWidgetComponentCreator(Metadata metadata, String packageName, ScenarioEditorPresenter scenarioWidget) {
         this.metadata = metadata;
         this.scenarioWidget = scenarioWidget;
+        this.packageName = packageName;
     }
 
     protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper, ExecutionTrace previousExecutionTrace) {
@@ -73,7 +68,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget(getScenario(), this.metadata.getModuleName(), this.scenarioWidget);
+        return new ConfigWidget(getScenario(), packageName, this.scenarioWidget);
     }
 
     protected AddExecuteButton createAddExecuteButton() {
@@ -101,7 +96,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel(this.asset.getMetaData().getModuleName(), currentExecutionTrace, getScenario(), this.scenarioWidget);
+        return new ExpectPanel(metadata.getModuleName(), currentExecutionTrace, getScenario(), this.scenarioWidget);
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {
@@ -173,8 +168,8 @@ public class ScenarioWidgetComponentCreator {
         return availableRulesBox;
     }
 
-    public MetaData getMetaData() {
-        return this.asset.getMetaData();
+    public Metadata getMetaData() {
+        return metadata;
     }
 
     public void setShowResults(boolean showResults) {
@@ -186,11 +181,11 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public Scenario getScenario() {
-        return (Scenario) this.asset.getContent();
+        return scenario;
     }
 
     public void setScenario(Scenario scenario) {
-        this.asset.setContent(scenario);
+        this.scenario = scenario;
     }
 
 }

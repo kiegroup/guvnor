@@ -33,10 +33,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.Fixture;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
+import org.kie.guvnor.testscenario.model.VerifyFact;
+import org.uberfire.client.common.ImageButton;
 
 public class VerifyFactsPanel extends VerticalPanel {
 
-    private final Scenario       scenario;
+    private final Scenario scenario;
 
     private final ScenarioEditorPresenter parent;
 
@@ -49,7 +58,7 @@ public class VerifyFactsPanel extends VerticalPanel {
         this.scenario = scenario;
         this.parent = scenarioWidget;
 
-        SuggestionCompletionEngine suggestionCompletionEngine = scenarioWidget.suggestionCompletionEngine;
+        DataModelOracle dmo = scenarioWidget.dmo;
 
         for ( Fixture fixture : verifyFacts ) {
             if ( fixture instanceof VerifyFact ) {
@@ -58,7 +67,7 @@ public class VerifyFactsPanel extends VerticalPanel {
                 HorizontalPanel column = new HorizontalPanel();
                 column.add( new VerifyFactWidget( verifyFact,
                                                   scenario,
-                                                  suggestionCompletionEngine,
+                                                  dmo,
                                                   executionTrace,
                                                   showResults ) );
 
@@ -71,13 +80,13 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final VerifyFact verifyFact) {
-            super(DroolsGuvnorImages.INSTANCE.DeleteItemSmall(),
-                   Constants.INSTANCE.DeleteTheExpectationForThisFact() );
+            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
+                   TestScenarioConstants.INSTANCE.DeleteTheExpectationForThisFact() );
 
             addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisExpectation() ) ) {
+                    if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisExpectation() ) ) {
                         scenario.removeFixture( verifyFact );
                         parent.renderEditor();
                     }

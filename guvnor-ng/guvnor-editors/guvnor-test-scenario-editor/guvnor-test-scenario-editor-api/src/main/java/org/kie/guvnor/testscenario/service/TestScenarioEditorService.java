@@ -17,8 +17,12 @@
 package org.kie.guvnor.testscenario.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.testscenario.model.Scenario;
+import org.kie.guvnor.testscenario.model.SingleScenarioResult;
 
 @Remote
 public interface TestScenarioEditorService {
+
+    SingleScenarioResult runScenario(String packageName, Scenario scenario);
 
 }

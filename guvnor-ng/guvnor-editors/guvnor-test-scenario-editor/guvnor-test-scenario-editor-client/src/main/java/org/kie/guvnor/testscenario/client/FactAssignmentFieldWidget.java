@@ -18,21 +18,12 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.resources.DroolsGuvnorResources;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactAssignmentField;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.kie.guvnor.commons.ui.client.resources.CommonsCss;
 import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.service.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.service.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.service.model.FixtureList;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.ExecutionTrace;
+import org.kie.guvnor.testscenario.model.FactAssignmentField;
+import org.kie.guvnor.testscenario.model.FixtureList;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.DirtyableFlexTable;
 
 

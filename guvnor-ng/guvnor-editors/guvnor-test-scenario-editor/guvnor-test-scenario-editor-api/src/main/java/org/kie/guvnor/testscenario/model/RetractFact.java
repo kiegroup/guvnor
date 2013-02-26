@@ -16,15 +16,13 @@
 
 package org.kie.guvnor.testscenario.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Retract a named fact.
  */
-@Portable
 public class RetractFact
-    implements
-    Fixture {
+        implements Fixture {
+
+    private static final long serialVersionUID = 510l;
 
     private String name;
 

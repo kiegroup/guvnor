@@ -12,8 +12,8 @@ import org.drools.ide.common.client.modeldriven.testing.CollectionFieldData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.service.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.service.model.FieldData;
+import org.kie.guvnor.testscenario.model.CollectionFieldData;
+import org.kie.guvnor.testscenario.model.FieldData;
 
 public class ListEditor extends VerticalPanel {
 

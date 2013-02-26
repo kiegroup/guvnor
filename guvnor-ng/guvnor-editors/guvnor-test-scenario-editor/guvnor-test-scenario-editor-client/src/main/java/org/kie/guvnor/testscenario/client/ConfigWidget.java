@@ -22,15 +22,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DroolsGuvnorImages;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.guvnor.testscenario.service.model.Scenario;
+import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.FormStylePopup;
 
 import java.util.List;

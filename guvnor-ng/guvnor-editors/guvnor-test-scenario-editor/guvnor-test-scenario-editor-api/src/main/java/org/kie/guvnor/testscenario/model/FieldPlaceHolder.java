@@ -16,12 +16,9 @@
 
 package org.kie.guvnor.testscenario.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * This is just a place holder for empty field cells.
  */
-@Portable
 public class FieldPlaceHolder implements Field {
 
     private String name;

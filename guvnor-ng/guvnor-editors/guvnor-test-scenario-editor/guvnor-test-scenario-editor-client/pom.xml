@@ -26,6 +26,16 @@
       <artifactId>guvnor-datamodel-api</artifactId>
     </dependency>
 
+    <!-- TODO: Do not depend on other -screen level jars -Rikkola- -->
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-rule-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-rule-editor-client</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-metadata-widget</artifactId>
