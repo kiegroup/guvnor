@@ -7,8 +7,6 @@ public class CallMethod
         implements
         Fixture {
 
-    private static final long serialVersionUID = 510l;
-
     /*
      * the function name was not yet choose
      */
@@ -99,11 +97,11 @@ public class CallMethod
         this.callFieldValues = callFieldValues;
     }
 
-    public CallFieldValue[] getCallFieldValuesMap() {
+    public CallFieldValue[] getCallFieldValues() {
         return callFieldValues;
 
     }
-    public Map<String, String> getCallFieldValues() {
+    public Map<String, String> getCallFieldValuesMap() {
         Map<String, String> result = new HashMap<String, String>();
 
         for (CallFieldValue callFieldValue : callFieldValues) {
