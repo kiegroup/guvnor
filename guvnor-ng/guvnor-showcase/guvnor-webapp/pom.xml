@@ -515,7 +515,7 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dsl-text-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-globals-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-test-scenario-api</compileSourcesArtifact>
+            <!--<compileSourcesArtifact>org.kie.guvnor:guvnor-test-scenario-api</compileSourcesArtifact>-->
             <compileSourcesArtifact>org.kie.guvnor:guvnor-test-scenario-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>

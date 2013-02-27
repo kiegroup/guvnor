@@ -30,6 +30,8 @@
   <inherits name="org.kie.guvnor.globals.GuvnorGlobalsEditorClient"/>
   <inherits name="org.kie.guvnor.defaulteditor.DefaultEditorClient"/>
 
+  <inherits name="org.kie.guvnor.testscenario.GuvnorTestScenarioEditorClient"/>
+
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
