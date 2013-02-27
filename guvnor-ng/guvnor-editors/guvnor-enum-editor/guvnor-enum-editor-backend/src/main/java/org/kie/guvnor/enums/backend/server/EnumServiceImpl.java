@@ -16,6 +16,14 @@
 
 package org.kie.guvnor.enums.backend.server;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -38,20 +46,13 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  *
  */
 @Service
 @ApplicationScoped
 public class EnumServiceImpl implements EnumService {
+
     private static final Logger log = LoggerFactory.getLogger( EnumServiceImpl.class );
 
     private static final String FORMAT = "enumeration";
@@ -59,7 +60,7 @@ public class EnumServiceImpl implements EnumService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-    
+
     @Inject
     private MetadataService metadataService;
 
@@ -68,30 +69,35 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
-    
+
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-    
+
     @Inject
     private Event<AssetOpenedEvent> assetOpenedEvent;
-    
+
     @Inject
     private Identity identity;
 
     @Override
     public EnumModelContent load( Path path ) {
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );        
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
         return new EnumModelContent( new EnumModel( ioService.readAllString( paths.convert( path ) ) ) );
-     }
+    }
 
     @Override
-    public void save( final Path path,
-                      final String content,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final String content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        ioService.write( paths.convert( newPath ),
                          content,
                          makeCommentedOption( comment ) );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );        
+
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -101,34 +107,29 @@ public class EnumServiceImpl implements EnumService {
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, content, comment );
-        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        ioService.write( paths.convert( newPath ),
+                         content,
+                         makeCommentedOption( comment ) );
 
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path resource,
+    public Path save( final Path resource,
                       final String content,
                       final Metadata metadata,
-                      final String commitMessage ) {
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+                      final String comment ) {
 
-        if ( metadata == null ) {
-            ioService.write(
-                    path,
-                    content,
-                    makeCommentedOption( commitMessage ) );
-        } else {
-            ioService.write(
-                    path,
-                    content,
-                    metadataService.setUpAttributes( resource, metadata ),
-                    makeCommentedOption( commitMessage ) );
-        }
+        ioService.write( paths.convert( resource ),
+                         content,
+                         metadataService.setUpAttributes( resource, metadata ),
+                         makeCommentedOption( comment ) );
 
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+
         assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override
@@ -172,7 +173,7 @@ public class EnumServiceImpl implements EnumService {
         log.info( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -180,13 +181,13 @@ public class EnumServiceImpl implements EnumService {
                         final String newName,
                         final String comment ) {
         log.info( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        
+
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -195,13 +196,13 @@ public class EnumServiceImpl implements EnumService {
                       final String newName,
                       final String comment ) {
         log.info( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        
+
         String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );     
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 

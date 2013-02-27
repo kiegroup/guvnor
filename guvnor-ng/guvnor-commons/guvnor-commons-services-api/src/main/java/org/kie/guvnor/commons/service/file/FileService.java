@@ -8,13 +8,14 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface FileService<T> {
 
-    void save( final Path path,
+    Path create( final Path context,
+                 final String fileName,
+                 final T content,
+                 final String comment );
+
+    Path save( final Path path,
                final T content,
                final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final T content,
                final String comment );
 
     Path save( final Path context,

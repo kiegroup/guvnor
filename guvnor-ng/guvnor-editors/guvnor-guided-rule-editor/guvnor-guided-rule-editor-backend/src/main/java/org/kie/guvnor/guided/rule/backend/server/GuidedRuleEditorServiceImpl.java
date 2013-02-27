@@ -147,15 +147,19 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final RuleModel model,
-                      final String comment ) {
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+    public Path create( final Path context,
+                        final String fileName,
+                        final RuleModel content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        ioService.write( paths.convert( path ),
-                         toSource( path,
-                                   model ),
+        ioService.write( paths.convert( newPath ),
+                         toSource( newPath,
+                                   content ),
                          makeCommentedOption( comment ) );
+
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -165,25 +169,29 @@ public class GuidedRuleEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, model, comment );
+        ioService.write( paths.convert( newPath ),
+                         toSource( newPath,
+                                   model ),
+                         makeCommentedOption( comment ) );
 
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path path,
+    public Path save( final Path resource,
                       final RuleModel model,
                       final Metadata metadata,
                       final String comment ) {
-
-        ioService.write( paths.convert( path ),
-                         toSource( path,
+        ioService.write( paths.convert( resource ),
+                         toSource( resource,
                                    model ),
-                         metadataService.setUpAttributes( path,
+                         metadataService.setUpAttributes( resource,
                                                           metadata ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override

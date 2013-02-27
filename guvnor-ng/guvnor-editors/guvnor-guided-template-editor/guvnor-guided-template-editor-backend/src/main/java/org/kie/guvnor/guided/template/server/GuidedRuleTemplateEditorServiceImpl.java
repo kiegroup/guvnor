@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -37,7 +38,6 @@ import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
-import org.drools.guvnor.models.guided.template.backend.BRDRTXMLPersistence;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
@@ -94,14 +94,18 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final TemplateModel model,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
-                         BRDRTXMLPersistence.getInstance().marshal( model ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final TemplateModel content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        ioService.write( paths.convert( newPath ),
+                         BRDRTXMLPersistence.getInstance().marshal( content ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -111,24 +115,26 @@ public class GuidedRuleTemplateEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, model, comment );
+        ioService.write( paths.convert( newPath ),
+                         BRDRTXMLPersistence.getInstance().marshal( model ),
+                         makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( context ) );
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path resource,
+    public Path save( final Path resource,
                       final TemplateModel model,
                       final Metadata metadata,
                       final String comment ) {
-
         ioService.write( paths.convert( resource ),
                          BRDRTXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
 
         assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override

@@ -97,14 +97,19 @@ public class GuidedScoreCardEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final ScoreCardModel model,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
-                         GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final ScoreCardModel content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        ioService.write( paths.convert( newPath ),
+                         toSource( newPath,
+                                   content ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -114,23 +119,26 @@ public class GuidedScoreCardEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, model, comment );
+        ioService.write( paths.convert( newPath ),
+                         GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
+                         makeCommentedOption( comment ) );
 
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path resource,
+    public Path save( final Path resource,
                       final ScoreCardModel model,
                       final Metadata metadata,
                       final String comment ) {
-
         ioService.write( paths.convert( resource ),
                          GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
 
         assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override

@@ -16,6 +16,12 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -24,19 +30,13 @@ import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -51,14 +51,14 @@ public class DRLTextEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
-    
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-    
+
     @Inject
     private Event<AssetOpenedEvent> assetOpenedEvent;
-    
+
     @Inject
     private Paths paths;
 
@@ -87,18 +87,21 @@ public class DRLTextEditorServiceImpl
 
     @Override
     public String load( Path path ) {
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
         return ioService.readAllString( paths.convert( path ) );
     }
 
     @Override
-    public void save( final Path path,
-                      final String content,
-                      final String comment ) {
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-        ioService.write( paths.convert( path ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final String content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+        ioService.write( paths.convert( newPath ),
                          content,
                          makeCommentedOption( comment ) );
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -108,34 +111,30 @@ public class DRLTextEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, content, comment );
+        ioService.write( paths.convert( newPath ),
+                         content,
+                         makeCommentedOption( comment ) );
 
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path path,
-                      final String content ) {
-        ioService.write( paths.convert( path ),
-                         content );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-    }
-
-    @Override
-    public void save( final Path resource,
+    public Path save( final Path resource,
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-
         ioService.write(
                 paths.convert( resource ),
                 content,
                 metadataService.setUpAttributes( resource, metadata ),
                 makeCommentedOption( comment ) );
 
-        //Invalidate Package-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
+        //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override
@@ -143,8 +142,8 @@ public class DRLTextEditorServiceImpl
                         final String comment ) {
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
         ioService.delete( paths.convert( path ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -157,8 +156,8 @@ public class DRLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -171,8 +170,8 @@ public class DRLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 

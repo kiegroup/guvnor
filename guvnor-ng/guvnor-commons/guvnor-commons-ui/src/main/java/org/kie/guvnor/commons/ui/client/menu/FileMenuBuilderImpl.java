@@ -29,6 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
@@ -65,6 +66,9 @@ public class FileMenuBuilderImpl
 
     @Inject
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
     private PlaceManager placeManager;
@@ -183,8 +187,8 @@ public class FileMenuBuilderImpl
                                     @Override
                                     public void callback( Path result ) {
                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                                             result ) );
+                                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                                                           result ) );
 
                                         callback.onSuccess( result );
                                     }

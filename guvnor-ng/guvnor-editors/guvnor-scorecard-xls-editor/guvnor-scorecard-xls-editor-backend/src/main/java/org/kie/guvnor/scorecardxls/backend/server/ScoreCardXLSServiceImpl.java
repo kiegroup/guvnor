@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.scorecardxls.backend.server;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -46,21 +45,22 @@ import org.uberfire.security.Identity;
 @ApplicationScoped
 public class ScoreCardXLSServiceImpl
         implements ScoreCardXLSService {
+
     private static final Logger log = LoggerFactory.getLogger( ScoreCardXLSServiceImpl.class );
-    
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
     private MetadataService metadataService;
-    
+
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-    
+
     @Inject
     private Event<AssetOpenedEvent> assetOpenedEvent;
-    
+
     @Inject
     private Paths paths;
 
@@ -89,25 +89,25 @@ public class ScoreCardXLSServiceImpl
 
     @Override
     public InputStream load( Path path ) {
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
-        return ioService.newInputStream(paths.convert( path ), null );
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
+        return ioService.newInputStream( paths.convert( path ), null );
     }
 
     @Override
-    public OutputStream save(final Path path) {
-        log.info("USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]");
+    public OutputStream save( final Path path ) {
+        log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
 
-        System.out.println("USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]");
-        
-        assetEditedEvent.fire(new AssetEditedEvent(path));
-        return ioService.newOutputStream(paths.convert(path), makeCommentedOption("uploaded"));
+        System.out.println( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        return ioService.newOutputStream( paths.convert( path ), makeCommentedOption( "uploaded" ) );
     }
-    
+
     public OutputStream save( final Path path,
                               final String comment ) {
         log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
 
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return ioService.newOutputStream( paths.convert( path ),
                                           makeCommentedOption( comment ) );
     }
@@ -117,8 +117,8 @@ public class ScoreCardXLSServiceImpl
                         final String comment ) {
         log.info( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
         ioService.delete( paths.convert( path ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -131,8 +131,8 @@ public class ScoreCardXLSServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -145,8 +145,8 @@ public class ScoreCardXLSServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -161,22 +161,30 @@ public class ScoreCardXLSServiceImpl
     }
 
     @Override
-    public void save(Path path, String content, Metadata metadata,
-            String comment) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void save(Path path, String content, String comment) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Path save(Path context, String fileName, String content,
-            String comment) {
+    public Path create( final Path context,
+                        final String fileName,
+                        final String content,
+                        final String comment ) {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public Path save( final Path path,
+                      final String content,
+                      final Metadata metadata,
+                      String comment ) {
+        // TODO Auto-generated method stub
+        return path;
+    }
+
+    @Override
+    public Path save( final Path context,
+                      final String fileName,
+                      final String content,
+                      final String comment ) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

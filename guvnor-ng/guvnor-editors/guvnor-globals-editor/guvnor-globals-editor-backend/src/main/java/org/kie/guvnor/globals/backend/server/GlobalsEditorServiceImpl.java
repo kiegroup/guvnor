@@ -16,9 +16,17 @@
 
 package org.kie.guvnor.globals.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.commons.data.events.AssetEditedEvent;
+import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
@@ -35,12 +43,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -69,12 +71,19 @@ public class GlobalsEditorServiceImpl
     @Inject
     private Event<InvalidateDMOPackageCacheEvent> invalidatePackageDMOEvent;
 
+    @Inject
+    private Event<AssetEditedEvent> assetEditedEvent;
+
+    @Inject
+    private Event<AssetOpenedEvent> assetOpenedEvent;
+
     @Override
     public GlobalsEditorContent loadContent( final Path path ) {
         //De-serialize model
         final GlobalsModel model = loadGlobalsModel( path );
-
         final DataModelOracle oracle = dataModelService.getDataModel( path );
+
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
 
         return new GlobalsEditorContent( model,
                                          oracle );
@@ -86,15 +95,18 @@ public class GlobalsEditorServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final GlobalsModel model,
-                      final String comment ) {
-        ioService.write( paths.convert( path ),
-                         GlobalsPersistence.getInstance().marshal( model ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final GlobalsModel content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+
+        ioService.write( paths.convert( newPath ),
+                         GlobalsPersistence.getInstance().marshal( content ),
                          makeCommentedOption( comment ) );
 
-        //A change in Globals invalidates the Package-level DMO
-        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( path ) );
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -104,24 +116,33 @@ public class GlobalsEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, content, comment );
+        ioService.write( paths.convert( newPath ),
+                         GlobalsPersistence.getInstance().marshal( content ),
+                         makeCommentedOption( comment ) );
 
+        //A change in Globals invalidates the Package-level DMO
+        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( newPath ) );
+
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path path,
+    public Path save( final Path resource,
                       final GlobalsModel model,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( path ),
+        ioService.write( paths.convert( resource ),
                          GlobalsPersistence.getInstance().marshal( model ),
-                         metadataService.setUpAttributes( path,
+                         metadataService.setUpAttributes( resource,
                                                           metadata ),
                          makeCommentedOption( comment ) );
 
         //A change in Globals invalidates the Package-level DMO
-        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( path ) );
+        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override

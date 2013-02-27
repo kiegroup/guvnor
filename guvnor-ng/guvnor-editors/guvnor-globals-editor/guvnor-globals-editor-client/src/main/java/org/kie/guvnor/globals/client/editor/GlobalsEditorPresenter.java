@@ -1,22 +1,22 @@
 package org.kie.guvnor.globals.client.editor;
 
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
-import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
-import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
-import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
-import org.kie.guvnor.globals.client.type.GlobalResourceType;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
+import org.kie.guvnor.globals.client.type.GlobalResourceType;
 import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
@@ -36,24 +36,14 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Editor for Global variables
@@ -85,15 +75,6 @@ public class GlobalsEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ResourceDeletedEvent> resourceDeletedEvent;
-
-    @Inject
-    private Event<ResourceRenamedEvent> resourceRenamedEvent;
-
-    @Inject
-    private Event<ResourceCopiedEvent> resourceCopiedEvent;
-
-    @Inject
     private Event<RestoreEvent> restoreEvent;
 
     @Inject
@@ -120,13 +101,13 @@ public class GlobalsEditorPresenter {
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
-    private Menus           menus;
+    private Menus menus;
 
-    private Path         path;
+    private Path path;
     private PlaceRequest place;
-    private boolean      isReadOnly;
+    private boolean isReadOnly;
 
-    private GlobalsModel    model;
+    private GlobalsModel model;
     private DataModelOracle oracle;
 
     @OnStart
@@ -165,48 +146,21 @@ public class GlobalsEditorPresenter {
     }
 
     private void makeMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                globalsEditorService.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              model );
-            }
-        } );
-
         if ( isReadOnly ) {
-            fileMenuBuilder.addRestoreVersion( path );
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
-            fileMenuBuilder.addSave( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } ).addDelete( new Command() {
-                @Override
-                public void execute() {
-                    onDelete();
-                }
-            } ).addRename( new Command() {
-                @Override
-                public void execute() {
-                    onRename();
-                }
-            } ).addCopy( new Command() {
-                @Override
-                public void execute() {
-                    onCopy();
-                }
-            } );
+            menus = menuBuilder
+                    .addSave( new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
+                    .build();
         }
-        menus = fileMenuBuilder.build();
     }
 
     private void loadContent() {
@@ -255,73 +209,6 @@ public class GlobalsEditorPresenter {
                           comment );
             }
         } );
-    }
-
-    public void onDelete() {
-        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                globalsEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
-                        placeManager.closePlace( place );
-                    }
-                } ).delete( path,
-                            comment );
-            }
-        } );
-
-        popup.show();
-    }
-
-    public void onRename() {
-        RenamePopup popup = new RenamePopup( new RenameCommand() {
-            @Override
-            public void execute( final String newName,
-                                 final String comment ) {
-                globalsEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                             response ) );
-                    }
-                } ).rename( path,
-                            newName,
-                            comment );
-            }
-        } );
-
-        popup.show();
-    }
-
-    public void onCopy() {
-        CopyPopup popup = new CopyPopup( new RenameCommand() {
-            @Override
-            public void execute( final String newName,
-                                 final String comment ) {
-                globalsEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                                           response ) );
-                    }
-                } ).copy( path,
-                          newName,
-                          comment );
-            }
-        } );
-
-        popup.show();
     }
 
     @WorkbenchPartView

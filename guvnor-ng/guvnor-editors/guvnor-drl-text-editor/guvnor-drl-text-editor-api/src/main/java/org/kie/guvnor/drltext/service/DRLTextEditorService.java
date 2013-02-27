@@ -30,6 +30,4 @@ public interface DRLTextEditorService
 
     String load( final Path path );
 
-    void save( Path path,
-               String content );
 }

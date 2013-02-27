@@ -28,18 +28,12 @@ import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
-import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
-import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
-import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.errors.client.widget.ShowBuilderErrorsWidget;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
@@ -57,15 +51,11 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -124,15 +114,6 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
-
-    @Inject
-    private Event<ResourceDeletedEvent> resourceDeletedEvent;
-
-    @Inject
-    private Event<ResourceRenamedEvent> resourceRenamedEvent;
-
-    @Inject
-    private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Inject
     private PlaceManager placeManager;
@@ -242,48 +223,21 @@ public class GuidedRuleTemplateEditorPresenter {
     }
 
     private void makeMenuBar() {
-        FileMenuBuilder fileMenuBuilder = menuBuilder.addValidation( new Command() {
-            @Override
-            public void execute() {
-                LoadingPopup.showMessage( CommonConstants.INSTANCE.WaitWhileValidating() );
-                service.call( new RemoteCallback<BuilderResult>() {
-                    @Override
-                    public void callback( BuilderResult response ) {
-                        final ShowBuilderErrorsWidget pop = new ShowBuilderErrorsWidget( response );
-                        LoadingPopup.close();
-                        pop.show();
-                    }
-                } ).validate( path,
-                              view.getContent() );
-            }
-        } );
-
         if ( isReadOnly ) {
-            fileMenuBuilder.addRestoreVersion( path );
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
-            fileMenuBuilder.addSave( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } ).addDelete( new Command() {
-                @Override
-                public void execute() {
-                    onDelete();
-                }
-            } ).addRename( new Command() {
-                @Override
-                public void execute() {
-                    onRename();
-                }
-            } ).addCopy( new Command() {
-                @Override
-                public void execute() {
-                    onCopy();
-                }
-            } );
+            menus = menuBuilder
+                    .addSave( new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
+                    .build();
         }
-        menus = fileMenuBuilder.build();
     }
 
     @OnSave
@@ -304,73 +258,6 @@ public class GuidedRuleTemplateEditorPresenter {
                           commitMessage );
             }
         } );
-    }
-
-    public void onDelete() {
-        DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
-                        placeManager.closePlace( place );
-                    }
-                } ).delete( path,
-                            comment );
-            }
-        } );
-
-        popup.show();
-    }
-
-    public void onRename() {
-        RenamePopup popup = new RenamePopup( new RenameCommand() {
-            @Override
-            public void execute( final String newName,
-                                 final String comment ) {
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                             response ) );
-                    }
-                } ).rename( path,
-                            newName,
-                            comment );
-            }
-        } );
-
-        popup.show();
-    }
-
-    public void onCopy() {
-        CopyPopup popup = new CopyPopup( new RenameCommand() {
-            @Override
-            public void execute( final String newName,
-                                 final String comment ) {
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path response ) {
-                        view.setNotDirty();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                                           response ) );
-                    }
-                } ).copy( path,
-                          newName,
-                          comment );
-            }
-        } );
-
-        popup.show();
     }
 
     @IsDirty

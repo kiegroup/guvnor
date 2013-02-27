@@ -91,8 +91,7 @@ public class GuvnorDefaultEditorPresenter
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addSave(
-                            new Command() {
+                    .addSave( new Command() {
                                 @Override
                                 public void execute() {
                                     onSave();

@@ -16,10 +16,15 @@
 
 package org.kie.guvnor.dsltext.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.events.AssetEditedEvent;
 import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
 import org.kie.guvnor.commons.service.metadata.model.Metadata;
@@ -32,14 +37,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @ApplicationScoped
@@ -61,13 +58,13 @@ public class DSLTextEditorServiceImpl
 
     @Inject
     private Identity identity;
-    
+
     @Inject
     private Event<AssetEditedEvent> assetEditedEvent;
-    
+
     @Inject
     private Event<AssetOpenedEvent> assetOpenedEvent;
-    
+
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
@@ -90,19 +87,22 @@ public class DSLTextEditorServiceImpl
     }
 
     @Override
-    public String load( Path path ) {
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );  
+    public String load( final Path path ) {
+        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
         return ioService.readAllString( paths.convert( path ) );
     }
 
     @Override
-    public void save( final Path path,
-                      final String content,
-                      final String comment ) {
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
-        ioService.write( paths.convert( path ),
+    public Path create( final Path context,
+                        final String fileName,
+                        final String content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+        ioService.write( paths.convert( newPath ),
                          content,
                          makeCommentedOption( comment ) );
+        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
@@ -112,39 +112,29 @@ public class DSLTextEditorServiceImpl
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        save( newPath, content, comment );
+        ioService.write( paths.convert( newPath ),
+                         content,
+                         makeCommentedOption( comment ) );
 
+        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
     @Override
-    public void save( final Path resource,
+    public Path save( final Path resource,
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
-
-        Map<String, Object> attrs;
-
-        try {
-            attrs = ioService.readAttributes( path );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-
-        if ( metadata != null ) {
-            attrs = metadataService.configAttrs( attrs,
-                                                 metadata );
-        }
-
-        ioService.write( path,
+        ioService.write( paths.convert( resource ),
                          content,
-                         attrs,
+                         metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
 
+        //Invalidate Package-level DMO cache as DSLs have changed.
         invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        return resource;
     }
 
     @Override
@@ -153,8 +143,8 @@ public class DSLTextEditorServiceImpl
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
         ioService.delete( paths.convert( path ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
     }
 
     @Override
@@ -166,8 +156,8 @@ public class DSLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
@@ -180,8 +170,8 @@ public class DSLTextEditorServiceImpl
         String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
         Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
         ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-        
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );   
+
+        assetEditedEvent.fire( new AssetEditedEvent( path ) );
         return targetPath;
     }
 
