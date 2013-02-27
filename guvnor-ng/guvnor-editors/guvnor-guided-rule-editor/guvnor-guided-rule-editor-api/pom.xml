@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie.guvnor</groupId>
     <artifactId>guvnor-guided-rule-editor</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0.Alpha8</version>
   </parent>
 
   <artifactId>guvnor-guided-rule-editor-api</artifactId>
