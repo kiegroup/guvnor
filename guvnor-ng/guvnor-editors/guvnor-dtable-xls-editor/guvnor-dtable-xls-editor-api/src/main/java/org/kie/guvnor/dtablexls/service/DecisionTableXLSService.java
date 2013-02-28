@@ -39,4 +39,7 @@ public interface DecisionTableXLSService
 
     OutputStream save( Path path );
 
+    OutputStream save( final Path path,
+                       final String comment );
+
 }

@@ -53,6 +53,8 @@ import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -79,7 +81,13 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -112,7 +120,9 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                    content ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -121,7 +131,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         final String drl = ioService.readAllString( paths.convert( path ) );
         final String[] dsls = loadDslsForPackage( path );
         final List<String> globals = loadGlobalsForPackage( path );
-        //TODO {manstis} assetOpenedEvent.fire( new AssetOpenedEvent( newPath ) );
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+
         return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
                                                                  globals,
                                                                  dsls );
@@ -176,7 +189,9 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                    model ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -192,7 +207,9 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                                           metadata ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
         return resource;
     }
 

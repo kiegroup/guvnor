@@ -47,6 +47,8 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -73,7 +75,13 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -101,14 +109,20 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                                    content ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+
         return newPath;
     }
 
     @Override
     public ScoreCardModel load( final Path path ) {
-        //TODO {manstis} getResourceOpenedEvent().fire( new ResourceOpenedEvent( path ) );
-        return GuidedScoreCardXMLPersistence.getInstance().unmarshall( ioService.readAllString( paths.convert( path ) ) );
+        final String content = ioService.readAllString( paths.convert( path ) );
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+
+        return GuidedScoreCardXMLPersistence.getInstance().unmarshall( content );
     }
 
     @Override
@@ -130,7 +144,9 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                          GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -144,7 +160,9 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
 
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
         return resource;
     }
 

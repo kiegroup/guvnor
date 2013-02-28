@@ -18,6 +18,7 @@ package org.kie.guvnor.defaulteditor.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -46,6 +48,9 @@ public class DefaultEditorServiceImpl
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -64,7 +69,9 @@ public class DefaultEditorServiceImpl
                          content,
                          makeCommentedOption( comment ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -79,7 +86,9 @@ public class DefaultEditorServiceImpl
                                                           metadata ),
                          makeCommentedOption( comment ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
         return resource;
     }
 

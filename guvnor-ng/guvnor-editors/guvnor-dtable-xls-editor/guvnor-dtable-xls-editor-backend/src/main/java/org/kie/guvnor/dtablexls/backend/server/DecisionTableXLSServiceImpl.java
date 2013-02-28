@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -62,6 +65,12 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
     private RenameService renameService;
 
     @Inject
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+
+    @Inject
     private Paths paths;
 
     @Inject
@@ -69,29 +78,31 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
 
     @Override
     public InputStream load( final Path path ) {
-        //TODO {manstis} assetOpenedEvent.fire( new AssetOpenedEvent( newPath ) );
-        return ioService.newInputStream( paths.convert( path ),
-                                         null );
+        final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                  null );
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+
+        return inputStream;
     }
 
     @Override
     public OutputStream save( final Path path ) {
-        log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
-
-        System.out.println( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
-
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
-        return ioService.newOutputStream( paths.convert( path ),
-                                          makeCommentedOption( "uploaded" ) );
+        return save( path,
+                     "Uploaded" );
     }
 
+    @Override
     public OutputStream save( final Path path,
                               final String comment ) {
         log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
+        final OutputStream outputStream = ioService.newOutputStream( paths.convert( path ),
+                                                                     makeCommentedOption( comment ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
 
-        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
-        return ioService.newOutputStream( paths.convert( path ),
-                                          makeCommentedOption( comment ) );
+        return outputStream;
     }
 
     @Override

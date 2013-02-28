@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
 import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
 import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
@@ -123,10 +124,10 @@ public class FileMenuBuilderImpl
     @Override
     public FileMenuBuilder addRename( final Path path,
                                       final Callback<Path, Void> callback ) {
-        this.copyCommand = new Command() {
+        this.renameCommand = new Command() {
             @Override
             public void execute() {
-                RenamePopup popup = new RenamePopup( new RenameCommand() {
+                final RenamePopup popup = new RenamePopup( new RenameCommand() {
                     @Override
                     public void execute( final String newName,
                                          final String comment ) {
@@ -172,7 +173,7 @@ public class FileMenuBuilderImpl
         this.copyCommand = new Command() {
             @Override
             public void execute() {
-                RenamePopup popup = new RenamePopup( new RenameCommand() {
+                final CopyPopup popup = new CopyPopup( new RenameCommand() {
                     @Override
                     public void execute( final String newName,
                                          final String comment ) {
@@ -180,11 +181,13 @@ public class FileMenuBuilderImpl
                                 new RemoteCallback<Path>() {
                                     @Override
                                     public void callback( Path result ) {
-                                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
                                         callback.onSuccess( result );
                                     }
                                 }
-                                        ).copy( path, newName, comment );
+                                        ).copy( path,
+                                                newName,
+                                                comment );
                     }
                 } );
                 popup.show();
@@ -227,7 +230,7 @@ public class FileMenuBuilderImpl
         this.deleteCommand = new Command() {
             @Override
             public void execute() {
-                DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
+                final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String comment ) {
                         deleteService.call( new RemoteCallback<Path>() {
@@ -237,7 +240,8 @@ public class FileMenuBuilderImpl
                                 placeManager.closePlace( new PathPlaceRequest( path ) );
                                 callback.onSuccess( null );
                             }
-                        } ).delete( path, comment );
+                        } ).delete( path,
+                                    comment );
                     }
                 } );
 

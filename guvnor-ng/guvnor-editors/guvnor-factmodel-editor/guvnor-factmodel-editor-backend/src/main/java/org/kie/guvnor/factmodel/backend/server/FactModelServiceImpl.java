@@ -56,6 +56,8 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 import static java.util.Collections.*;
@@ -87,7 +89,13 @@ public class FactModelServiceImpl implements FactModelService {
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -113,15 +121,20 @@ public class FactModelServiceImpl implements FactModelService {
                          marshal( content ),
                          makeCommentedOption( comment ) );
 
+        //Signal creation to interested parties
         resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+
         return newPath;
     }
 
     @Override
     public FactModels load( final Path path ) {
-        final String drl = ioService.readAllString( paths.convert( path ) );
-        //TODO {manstis} getResourceOpenedEvent().fire( new ResourceOpenedEvent( path ) );
-        return unmarshal( drl );
+        final String content = ioService.readAllString( paths.convert( path ) );
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+
+        return unmarshal( content );
     }
 
     @Override
@@ -153,7 +166,9 @@ public class FactModelServiceImpl implements FactModelService {
         //Invalidate Project-level DMO cache as Model has changed.
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -171,7 +186,9 @@ public class FactModelServiceImpl implements FactModelService {
         //Invalidate Project-level DMO cache as Model has changed.
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
         return resource;
     }
 

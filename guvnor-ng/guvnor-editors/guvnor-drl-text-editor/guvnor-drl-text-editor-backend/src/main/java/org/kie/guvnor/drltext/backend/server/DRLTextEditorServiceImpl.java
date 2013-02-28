@@ -37,6 +37,8 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -63,7 +65,13 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -83,14 +91,20 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                          content,
                          makeCommentedOption( comment ) );
 
+        //Signal creation to interested parties
         resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+
         return newPath;
     }
 
     @Override
-    public String load( Path path ) {
-        //TODO assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
-        return ioService.readAllString( paths.convert( path ) );
+    public String load( final Path path ) {
+        final String content = ioService.readAllString( paths.convert( path ) );
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+
+        return content;
     }
 
     @Override
@@ -107,7 +121,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+
         return newPath;
     }
 
@@ -125,7 +141,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
         return resource;
     }
 

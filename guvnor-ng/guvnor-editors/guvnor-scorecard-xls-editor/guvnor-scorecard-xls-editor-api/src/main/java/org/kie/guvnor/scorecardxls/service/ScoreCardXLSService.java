@@ -37,6 +37,9 @@ public interface ScoreCardXLSService
 
     InputStream load( final Path path );
 
-    OutputStream save( Path path );
+    OutputStream save( final Path path );
+
+    OutputStream save( final Path path,
+                       final String comment );
 
 }
