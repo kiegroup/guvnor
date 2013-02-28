@@ -35,9 +35,6 @@ public interface CommonImages
     @Source("images/validation_error.gif")
     ImageResource validationError();
 
-    @Source("images/tick.png")
-    ImageResource tick();
-
     @Source("images/mandatory.png")
     ImageResource mandatory();
 

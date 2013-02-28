@@ -15,29 +15,29 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
-import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.widget.DTCellValueWidgetFactory;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
+import org.kie.guvnor.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
+import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define new Facts and fields.

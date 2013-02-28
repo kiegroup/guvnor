@@ -15,10 +15,18 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.wizards.Wizard;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPage;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
+import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
+import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.handlers.NewGuidedDecisionTableHandler;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
@@ -30,19 +38,11 @@ import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternConstraintsPa
 import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternsPage;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpander;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.SummaryPage;
-import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
-import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import org.uberfire.client.wizards.Wizard;
+import org.uberfire.client.wizards.WizardPage;
+import org.uberfire.client.wizards.WizardPresenter;
 
 /**
  * Wizard for creating a Guided Decision Table

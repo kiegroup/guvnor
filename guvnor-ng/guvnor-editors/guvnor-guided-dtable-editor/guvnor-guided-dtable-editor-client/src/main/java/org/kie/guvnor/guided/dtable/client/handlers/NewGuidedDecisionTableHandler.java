@@ -13,7 +13,6 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
@@ -25,6 +24,7 @@ import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 

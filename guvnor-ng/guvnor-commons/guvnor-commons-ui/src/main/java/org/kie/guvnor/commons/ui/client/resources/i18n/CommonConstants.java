@@ -128,12 +128,6 @@ public interface CommonConstants
 
     String Name();
 
-    String Previous();
-
-    String Next();
-
-    String Finish();
-
     String WholeNumberInteger();
 
     String TrueOrFalse();

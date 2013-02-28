@@ -15,8 +15,8 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard;
 
-import org.kie.guvnor.commons.ui.client.wizards.WizardContext;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.wizards.WizardContext;
 
 /**
  * A container for the details required to create a new Asset on the repository

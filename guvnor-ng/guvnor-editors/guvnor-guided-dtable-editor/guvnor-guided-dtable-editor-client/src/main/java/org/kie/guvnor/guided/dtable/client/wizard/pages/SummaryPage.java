@@ -15,13 +15,13 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import org.kie.guvnor.commons.ui.client.wizards.WizardPageStatusChangeEvent;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
+import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A summary page for the guided Decision Table Wizard
