@@ -16,6 +16,15 @@
 
 package org.kie.guvnor.services.backend.metadata;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreAttributes;
@@ -25,8 +34,6 @@ import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.attribute.FileTime;
-import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributes;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributesUtil;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionView;
@@ -35,23 +42,16 @@ import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaView;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.DiscussionRecord;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.model.PortableVersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.emptyList;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
-import static org.kie.guvnor.services.backend.metadata.MetadataBuilder.newMetadata;
-import static org.kie.guvnor.services.backend.metadata.attribute.Mode.DISABLED;
+import static java.util.Collections.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.guvnor.services.backend.metadata.MetadataBuilder.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.Mode.*;
 
 @Service
 @ApplicationScoped

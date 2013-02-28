@@ -16,6 +16,13 @@
 
 package org.kie.guvnor.services.backend.metadata.attribute;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.commons.data.Pair;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.AbstractBasicFileAttributeView;
@@ -25,19 +32,11 @@ import org.kie.commons.java.nio.base.NotImplementedException;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
-import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
+import org.kie.guvnor.services.metadata.model.DiscussionRecord;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.kie.commons.data.Pair.newPair;
-import static org.kie.commons.validation.Preconditions.checkCondition;
-import static org.kie.commons.validation.Preconditions.checkNotEmpty;
-import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributesUtil.toMap;
+import static org.kie.commons.data.Pair.*;
+import static org.kie.commons.validation.Preconditions.*;
+import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributesUtil.*;
 
 /**
  *
@@ -46,10 +45,10 @@ public class DiscussionView
         extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
-    public static final String DISCUSS   = "discuss";
+    public static final String DISCUSS = "discuss";
     public static final String TIMESTAMP = DISCUSS + ".ts";
-    public static final String AUTHOR    = DISCUSS + ".author";
-    public static final String NOTE      = DISCUSS + ".note";
+    public static final String AUTHOR = DISCUSS + ".author";
+    public static final String NOTE = DISCUSS + ".note";
 
     private final DiscussionAttributes attrs;
 

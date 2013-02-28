@@ -16,16 +16,18 @@
 
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
+import javax.enterprise.inject.New;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
@@ -36,17 +38,15 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 
-import javax.enterprise.inject.New;
-
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectConfigResourceType.class })
 public class ProjectConfigScreenPresenter
         implements ProjectConfigScreenView.Presenter {
 
     private ProjectConfigScreenView view;
-    private Caller<ProjectService>  projectEditorServiceCaller;
+    private Caller<ProjectService> projectEditorServiceCaller;
     private Caller<MetadataService> metadataService;
-    private Path                    path;
-    private PackageConfiguration    packageConfiguration;
+    private Path path;
+    private PackageConfiguration packageConfiguration;
 
     private FileMenuBuilder menuBuilder;
 

@@ -20,18 +20,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
+import org.kie.guvnor.services.file.SupportsCopy;
+import org.kie.guvnor.services.file.SupportsDelete;
+import org.kie.guvnor.services.file.SupportsRename;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface ScoreCardXLSService
-        extends FileService<String>,
-                ValidationService<String>,
-                SimpleVerificationService<String> {
+        extends ValidationService<String>,
+                SimpleVerificationService<String>,
+                SupportsDelete,
+                SupportsCopy,
+                SupportsRename {
 
     InputStream load( final Path path );
 
     OutputStream save( Path path );
+
 }

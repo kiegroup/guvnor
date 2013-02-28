@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -30,10 +32,10 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.commons.java.nio.base.version.VersionRecord;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.readonly.ReadOnlyPathPlaceRequest;
 import org.kie.guvnor.services.version.VersionService;
 import org.uberfire.backend.vfs.Path;
@@ -41,19 +43,17 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
 
-import java.util.List;
-
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * This widget shows a list of versions for packages or assets
  */
 public class VersionBrowser extends Composite {
 
-    private final Metadata  metadata;
-    private       Image     refresh;
-    private       FlexTable layout;
+    private final Metadata metadata;
+    private Image refresh;
+    private FlexTable layout;
 
     private PlaceManager placeManager = null;
 
@@ -118,9 +118,9 @@ public class VersionBrowser extends Composite {
             final VersionRecord version = versions.get( i );
 
             final String s = MetadataConstants.INSTANCE.property0ModifiedOn1By23( String.valueOf( i + 1 ),
-                                                                          version.date().toString(),
-                                                                          version.author(),
-                                                                          version.comment() );
+                                                                                  version.date().toString(),
+                                                                                  version.author(),
+                                                                                  version.comment() );
             history.addItem( s, version.uri() );
         }
 
@@ -135,7 +135,7 @@ public class VersionBrowser extends Composite {
 
             public void onClick( ClickEvent event ) {
                 final Path path = PathFactory.newPath( metadata.getPath().getFileSystem(), metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
-                placeManager().goTo( new ReadOnlyPathPlaceRequest(path) );
+                placeManager().goTo( new ReadOnlyPathPlaceRequest( path ) );
             }
 
         } );

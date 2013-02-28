@@ -20,15 +20,17 @@ import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @Ignore

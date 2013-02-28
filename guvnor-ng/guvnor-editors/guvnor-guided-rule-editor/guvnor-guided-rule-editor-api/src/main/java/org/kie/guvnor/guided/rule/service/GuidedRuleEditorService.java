@@ -18,23 +18,32 @@ package org.kie.guvnor.guided.rule.service;
 
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
+import org.kie.guvnor.services.file.SupportsCopy;
+import org.kie.guvnor.services.file.SupportsCreate;
+import org.kie.guvnor.services.file.SupportsDelete;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsRename;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedRuleEditorService
-        extends FileService<RuleModel>,
-                ViewSourceService<RuleModel>,
-                ValidationService<RuleModel>,
-                ScopedVerificationService<RuleModel> {
+        extends
+        ViewSourceService<RuleModel>,
+        ValidationService<RuleModel>,
+        ScopedVerificationService<RuleModel>,
+        SupportsCreate<RuleModel>,
+        SupportsRead<RuleModel>,
+        SupportsUpdate<RuleModel>,
+        SupportsDelete,
+        SupportsCopy,
+        SupportsRename {
 
     GuidedEditorContent loadContent( final Path path );
-
-    RuleModel loadRuleModel( final Path path );
 
     /**
      * @param valuePairs key=value pairs to be interpolated into the expression.

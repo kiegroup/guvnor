@@ -16,18 +16,18 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-
-import javax.inject.Inject;
 
 public class POMEditorPanel
         implements IsWidget {
@@ -38,60 +38,63 @@ public class POMEditorPanel
     private final Caller<POMService> pomServiceCaller;
 
     @Inject
-    public POMEditorPanel(Caller<POMService> pomServiceCaller,
-                          POMEditorPanelView view) {
+    public POMEditorPanel( Caller<POMService> pomServiceCaller,
+                           POMEditorPanelView view ) {
         this.pomServiceCaller = pomServiceCaller;
         this.view = view;
 
     }
 
-    public void init(Path path, boolean isReadOnly) {
+    public void init( Path path,
+                      boolean isReadOnly ) {
         this.path = path;
-        if (isReadOnly) {
+        if ( isReadOnly ) {
             view.setReadOnly();
         }
         pomServiceCaller.call(
                 new RemoteCallback<POM>() {
                     @Override
-                    public void callback(final POM model) {
+                    public void callback( final POM model ) {
                         POMEditorPanel.this.model = model;
 
-                        view.setGAV(model.getGav());
+                        view.setGAV( model.getGav() );
 
-                        view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
+                        view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
                             @Override
-                            public void onChange(String newArtifactId) {
-                                setTitle(newArtifactId);
+                            public void onChange( String newArtifactId ) {
+                                setTitle( newArtifactId );
                             }
-                        });
+                        } );
 
-                        setTitle(model.getGav().getArtifactId());
+                        setTitle( model.getGav().getArtifactId() );
 
-                        view.setDependencies(POMEditorPanel.this.model.getDependencies());
+                        view.setDependencies( POMEditorPanel.this.model.getDependencies() );
                     }
                 }
-        ).loadPOM(path);
+                             ).loadPOM( path );
     }
 
-    private void setTitle(String titleText) {
-        if (titleText == null || titleText.isEmpty()) {
-            view.setTitleText(ProjectEditorConstants.INSTANCE.ProjectModel());
+    private void setTitle( String titleText ) {
+        if ( titleText == null || titleText.isEmpty() ) {
+            view.setTitleText( ProjectEditorConstants.INSTANCE.ProjectModel() );
         } else {
-            view.setTitleText(titleText);
+            view.setTitleText( titleText );
         }
     }
 
-    public void save(final String commitMessage, final Command callback, final Metadata metadata) {
+    public void save( final String commitMessage,
+                      final Command callback,
+                      final Metadata metadata ) {
 
         pomServiceCaller.call(
                 new RemoteCallback<Path>() {
                     @Override
-                    public void callback(Path path) {
+                    public void callback( Path path ) {
                         callback.execute();
-                        view.showSaveSuccessful("pom.xml");
+                        view.showSaveSuccessful( "pom.xml" );
                     }
                 }
-        ).savePOM(commitMessage,path, model, metadata);
+                             ).savePOM( commitMessage, path, model, metadata );
     }
 
     @Override

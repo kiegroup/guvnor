@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -35,6 +34,7 @@ import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -116,8 +116,10 @@ public class EnumEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
-        multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
-        multiPage.addPage( new Page( viewSource, CommonConstants.INSTANCE.SourceTabTitle() ) {
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addPage( new Page( viewSource,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 viewSource.setContent( view.getContent() );
@@ -129,13 +131,14 @@ public class EnumEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( metadataWidget, MetadataConstants.INSTANCE.Metadata() ) {
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 metadataService.call(
                         new RemoteCallback<Metadata>() {
                             @Override
-                            public void callback( Metadata metadata ) {
+                            public void callback( final Metadata metadata ) {
                                 metadataWidget.setContent( metadata,
                                                            isReadOnly );
                             }
@@ -150,10 +153,10 @@ public class EnumEditorPresenter {
 
         enumService.call( new RemoteCallback<EnumModelContent>() {
             @Override
-            public void callback( EnumModelContent response ) {
+            public void callback( final EnumModelContent response ) {
                 view.setContent( response.getModel().getDRL() );
             }
-        } ).load( path );
+        } ).loadContent( path );
     }
 
     private void makeMenuBar() {
@@ -179,9 +182,9 @@ public class EnumEditorPresenter {
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
-                enumService.call( new RemoteCallback<Void>() {
+                enumService.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Void response ) {
+                    public void callback( final Path response ) {
                         view.setNotDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }

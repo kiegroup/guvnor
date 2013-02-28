@@ -22,18 +22,16 @@ public class EnumRow {
     private String factName = "";
     private String context = "";
 
-    public EnumRow( String line ) {
+    public EnumRow( final String line ) {
 
-        String text = line;
-        if ( text == "" ) {
+        if ( line == null || line.isEmpty() ) {
             factName = "";
             fieldName = "";
             context = "";
         } else {
-            factName = text.substring( 1, text.indexOf( "." ) );
-
-            fieldName = text.substring( text.indexOf( "." ) + 1, text.indexOf( "':" ) );
-            context = text.substring( text.indexOf( ":" ) + 1 ).trim();
+            factName = line.substring( 1, line.indexOf( "." ) );
+            fieldName = line.substring( line.indexOf( "." ) + 1, line.indexOf( "':" ) );
+            context = line.substring( line.indexOf( ":" ) + 1 ).trim();
         }
     }
 
@@ -57,7 +55,7 @@ public class EnumRow {
         return context;
     }
 
-    public void setFactName( String factName ) {
+    public void setFactName( final String factName ) {
         this.factName = factName;
 
     }
@@ -66,7 +64,7 @@ public class EnumRow {
         this.fieldName = fieldName;
     }
 
-    public void setContext( String context ) {
+    public void setContext( final String context ) {
         this.context = context;
     }
 }

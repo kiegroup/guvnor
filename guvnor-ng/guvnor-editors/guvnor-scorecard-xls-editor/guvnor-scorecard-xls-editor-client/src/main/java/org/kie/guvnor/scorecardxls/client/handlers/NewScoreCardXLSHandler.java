@@ -47,19 +47,24 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
-        NewScoreCardXLSPopup popup = new NewScoreCardXLSPopup(contextPath, buildFileName( resourceType, baseFileName ), new Command() {
+        NewScoreCardXLSPopup popup = new NewScoreCardXLSPopup( contextPath,
+                                                               buildFileName( resourceType,
+                                                                              baseFileName ),
+                                                               new Command() {
 
-            @Override
-            public void execute() {
-                notifySuccess();
-                Path newPath = PathFactory.newPath(contextPath.getFileSystem(), buildFileName( resourceType, baseFileName ), contextPath.toURI());
-                notifyResourceAdded( newPath );
-                final PlaceRequest place = new PathPlaceRequest( newPath,
-                                                                 "ScoreCardXLSEditor" );
-                placeManager.goTo( place );                
-            }
-            
-        });
+                                                                   @Override
+                                                                   public void execute() {
+                                                                       notifySuccess();
+                                                                       final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                                                                                 buildFileName( resourceType,
+                                                                                                                                baseFileName ),
+                                                                                                                 contextPath.toURI() );
+                                                                       final PlaceRequest place = new PathPlaceRequest( newPath,
+                                                                                                                        "ScoreCardXLSEditor" );
+                                                                       placeManager.goTo( place );
+                                                                   }
+
+                                                               } );
         popup.show();
     }
 

@@ -16,6 +16,12 @@
 
 package org.kie.guvnor.commons.ui.client.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -24,26 +30,19 @@ import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
 import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
-import org.kie.guvnor.services.file.GenericFileService;
+import org.kie.guvnor.services.file.CopyService;
+import org.kie.guvnor.services.file.DeleteService;
+import org.kie.guvnor.services.file.RenameService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
+import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
 
 /**
  *
@@ -56,29 +55,26 @@ public class FileMenuBuilderImpl
     private RestoreVersionCommandProvider restoreVersionCommandProvider;
 
     @Inject
-    private Caller<GenericFileService> fileService;
+    private Caller<DeleteService> deleteService;
+
+    @Inject
+    private Caller<RenameService> renameService;
+
+    @Inject
+    private Caller<CopyService> copyService;
 
     @Inject
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ResourceDeletedEvent> resourceDeletedEvent;
-
-    @Inject
-    private Event<ResourceRenamedEvent> resourceRenamedEvent;
-
-    @Inject
-    private Event<ResourceCopiedEvent> resourceCopiedEvent;
-
-    @Inject
     private PlaceManager placeManager;
 
-    private Command saveCommand     = null;
-    private Command restoreCommand  = null;
+    private Command saveCommand = null;
+    private Command restoreCommand = null;
     private Command validateCommand = null;
-    private Command copyCommand     = null;
-    private Command deleteCommand   = null;
-    private Command renameCommand   = null;
+    private Command copyCommand = null;
+    private Command deleteCommand = null;
+    private Command renameCommand = null;
 
     private Command moveCommand = null;
 
@@ -134,12 +130,10 @@ public class FileMenuBuilderImpl
                     @Override
                     public void execute( final String newName,
                                          final String comment ) {
-                        fileService.call( new RemoteCallback<Path>() {
+                        renameService.call( new RemoteCallback<Path>() {
                             @Override
                             public void callback( Path response ) {
                                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                                     response ) );
                                 callback.onSuccess( response );
                             }
                         } ).rename( path,
@@ -182,14 +176,11 @@ public class FileMenuBuilderImpl
                     @Override
                     public void execute( final String newName,
                                          final String comment ) {
-                        fileService.call(
+                        copyService.call(
                                 new RemoteCallback<Path>() {
                                     @Override
                                     public void callback( Path result ) {
                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                                                           result ) );
-
                                         callback.onSuccess( result );
                                     }
                                 }
@@ -239,11 +230,10 @@ public class FileMenuBuilderImpl
                 DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String comment ) {
-                        fileService.call( new RemoteCallback<Path>() {
+                        deleteService.call( new RemoteCallback<Path>() {
                             @Override
                             public void callback( Path response ) {
                                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                                resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
                                 placeManager.closePlace( new PathPlaceRequest( path ) );
                                 callback.onSuccess( null );
                             }

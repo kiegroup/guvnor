@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -38,6 +37,7 @@ import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -155,7 +155,7 @@ public class GuidedDecisionTableEditorPresenter {
             public void onFocus() {
                 metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
-                    public void callback( Metadata metadata ) {
+                    public void callback( final Metadata metadata ) {
                         metadataWidget.setContent( metadata,
                                                    isReadOnly );
                     }
@@ -211,7 +211,7 @@ public class GuidedDecisionTableEditorPresenter {
             public void execute( final String commitMessage ) {
                 service.call( new RemoteCallback<Path>() {
                     @Override
-                    public void callback( Path response ) {
+                    public void callback( final Path response ) {
                         view.setNotDirty();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );

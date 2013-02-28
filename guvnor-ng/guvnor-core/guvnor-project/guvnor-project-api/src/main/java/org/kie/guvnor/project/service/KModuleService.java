@@ -17,23 +17,22 @@
 package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-
 
 @Remote
 public interface KModuleService {
 
-    public Path setUpKModuleStructure(Path pathToPom);
+    public Path setUpKModuleStructure( Path pathToPom );
 
-    public void saveKModule(String commitMessage,
-                            Path path,
-                            KModuleModel model,
-                            Metadata metadata);
+    public void saveKModule( String commitMessage,
+                             Path path,
+                             KModuleModel model,
+                             Metadata metadata );
 
-    public KModuleModel loadKModule(Path path);
+    public KModuleModel loadKModule( Path path );
 
-    public Path pathToRelatedKModuleFileIfAny(Path pathToPomXML);
+    public Path pathToRelatedKModuleFileIfAny( Path pathToPomXML );
 
 }

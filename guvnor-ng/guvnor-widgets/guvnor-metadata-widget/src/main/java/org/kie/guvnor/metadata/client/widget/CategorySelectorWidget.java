@@ -22,9 +22,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -43,7 +43,7 @@ public class CategorySelectorWidget
     private Metadata data;
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private FlexTable list;
-    private boolean   readOnly;
+    private boolean readOnly;
 
     /**
      * @param d The meta data.
@@ -142,7 +142,7 @@ public class CategorySelectorWidget
 
         public Button ok = new Button( MetadataConstants.INSTANCE.OK() );
         private CategoryExplorerWidget selector;
-        public  String                 selectedPath;
+        public String selectedPath;
 
         public CategorySelector() {
             setTitle( MetadataConstants.INSTANCE.SelectCategoryToAdd() );

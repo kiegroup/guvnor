@@ -30,77 +30,70 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.commons.data.events.AssetEditedEvent;
-import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
 import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.services.file.CopyService;
+import org.kie.guvnor.services.file.DeleteService;
+import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
-public class GuidedDecisionTableEditorServiceImpl
-        implements GuidedDecisionTableEditorService {
+public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTableEditorService {
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
-    private DataModelService dataModelService;
-
-    @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private CopyService copyService;
+
+    @Inject
+    private DeleteService deleteService;
+
+    @Inject
+    private RenameService renameService;
+
+    @Inject
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+
+    @Inject
+    private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private Identity identity;
 
     @Inject
+    private DataModelService dataModelService;
+
+    @Inject
     private SourceServices sourceServices;
-
-    @Inject
-    private Event<AssetEditedEvent> assetEditedEvent;
-
-    @Inject
-    private Event<AssetOpenedEvent> assetOpenedEvent;
-
-    @Override
-    public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        //De-serialize model
-        final GuidedDecisionTable52 model = loadRuleModel( path );
-
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
-
-        assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
-
-        return new GuidedDecisionTableEditorContent( oracle,
-                                                     model );
-    }
-
-    @Override
-    public GuidedDecisionTable52 loadRuleModel( Path path ) {
-        return GuidedDTXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
-    }
 
     @Override
     public Path create( final Path context,
                         final String fileName,
                         final GuidedDecisionTable52 content,
                         final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
+                                            false );
 
         ioService.write( paths.convert( newPath ),
                          GuidedDTXMLPersistence.getInstance().marshal( content ),
@@ -111,17 +104,32 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
+    public GuidedDecisionTable52 load( final Path path ) {
+        //TODO {manstis} getResourceOpenedEvent().fire( new ResourceOpenedEvent( path ) );
+        return GuidedDTXMLPersistence.getInstance().unmarshal( ioService.readAllString( paths.convert( path ) ) );
+    }
+
+    @Override
+    public GuidedDecisionTableEditorContent loadContent( final Path path ) {
+        final GuidedDecisionTable52 model = load( path );
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        return new GuidedDecisionTableEditorContent( oracle,
+                                                     model );
+    }
+
+    @Override
     public Path save( final Path context,
                       final String fileName,
                       final GuidedDecisionTable52 model,
                       final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
+                                            false );
 
         ioService.write( paths.convert( newPath ),
                          GuidedDTXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
         return newPath;
     }
 
@@ -135,46 +143,38 @@ public class GuidedDecisionTableEditorServiceImpl
                          metadataService.setUpAttributes( resource, metadata ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        //TODO {manstis} assetUpdatedEvent.fire( new AssetUpdatedEvent( newPath ) );
         return resource;
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
-
-        ioService.delete( paths.convert( path ) );
-
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        deleteService.delete( path,
+                              comment );
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
+        return renameService.rename( path,
+                                     newName,
+                                     comment );
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
+        return copyService.copy( path,
+                                 newName,
+                                 comment );
+    }
 
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
+    @Override
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions( Path path ) {
+        return null;
     }
 
     @Override
@@ -182,11 +182,6 @@ public class GuidedDecisionTableEditorServiceImpl
                             final GuidedDecisionTable52 model ) {
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ),
                                                                                 model );
-    }
-
-    @Override
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions( Path path ) {
-        return null;
     }
 
     @Override
@@ -220,4 +215,5 @@ public class GuidedDecisionTableEditorServiceImpl
                                                         when );
         return co;
     }
+
 }

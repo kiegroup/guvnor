@@ -16,29 +16,29 @@
 
 package org.kie.guvnor.defaulteditor.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.defaulteditor.service.DefaultEditorService;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-
 @Service
 @ApplicationScoped
 public class DefaultEditorServiceImpl
         implements DefaultEditorService {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultEditorServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger( DefaultEditorServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
@@ -54,29 +54,42 @@ public class DefaultEditorServiceImpl
     private Identity identity;
 
     @Override
-    public void save(Path path, String content, Metadata metadata, String comment) {
+    public Path save( final Path context,
+                      final String fileName,
+                      final String content,
+                      final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
-        ioService.write(
-                paths.convert(path),
-                content,
-                metadataService.setUpAttributes(path, metadata),
-                makeCommentedOption(comment));
+        ioService.write( paths.convert( newPath ),
+                         content,
+                         makeCommentedOption( comment ) );
+
+        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        return newPath;
     }
 
     @Override
-    public void save(Path path, String content, String comment) {
-        ioService.write(paths.convert(path),
-                content,
-                makeCommentedOption(comment));
+    public Path save( final Path resource,
+                      final String content,
+                      final Metadata metadata,
+                      final String comment ) {
+        ioService.write( paths.convert( resource ),
+                         content,
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
+
+        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        return resource;
     }
 
-    private CommentedOption makeCommentedOption(final String commitMessage) {
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption(name,
-                null,
-                commitMessage,
-                when);
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
         return co;
     }
 }

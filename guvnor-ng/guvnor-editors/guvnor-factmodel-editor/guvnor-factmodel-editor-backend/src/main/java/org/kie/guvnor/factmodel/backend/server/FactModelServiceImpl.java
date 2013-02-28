@@ -36,9 +36,6 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.commons.data.events.AssetEditedEvent;
-import org.kie.guvnor.commons.data.events.AssetOpenedEvent;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
@@ -51,10 +48,14 @@ import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.services.file.CopyService;
+import org.kie.guvnor.services.file.DeleteService;
+import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.security.Identity;
 
 import static java.util.Collections.*;
@@ -64,67 +65,72 @@ import static java.util.Collections.*;
  */
 @Service
 @ApplicationScoped
-public class FactModelServiceImpl
-        implements FactModelService {
+public class FactModelServiceImpl implements FactModelService {
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private MetadataService metadataService;
 
     @Inject
-    private DataModelService dataModelService;
+    private CopyService copyService;
+
+    @Inject
+    private DeleteService deleteService;
+
+    @Inject
+    private RenameService renameService;
 
     @Inject
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
+    private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Paths paths;
+
+    @Inject
     private Identity identity;
+
+    @Inject
+    private DataModelService dataModelService;
 
     @Inject
     private SourceServices sourceServices;
 
-    @Inject
-    private Event<AssetEditedEvent> assetEditedEvent;
+    @Override
+    public Path create( final Path context,
+                        final String fileName,
+                        final FactModels content,
+                        final String comment ) {
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
+                                            false );
 
-    @Inject
-    private Event<AssetOpenedEvent> assetOpenedEvent;
+        ioService.write( paths.convert( newPath ),
+                         marshal( content ),
+                         makeCommentedOption( comment ) );
+
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+        return newPath;
+    }
+
+    @Override
+    public FactModels load( final Path path ) {
+        final String drl = ioService.readAllString( paths.convert( path ) );
+        //TODO {manstis} getResourceOpenedEvent().fire( new ResourceOpenedEvent( path ) );
+        return unmarshal( drl );
+    }
 
     @Override
     public FactModelContent loadContent( final Path path ) {
-        try {
-            String drl = ioService.readAllString( paths.convert( path ) );
-
-            //De-serialize model
-            final List<FactMetaModel> models = toModel( drl );
-            final FactModels factModels = new FactModels();
-            factModels.getModels().addAll( models );
-
-            //De-serialize imports
-            final Imports imports = ImportsParser.parseImports( drl );
-            factModels.setImports( imports );
-
-            final DataModelOracle oracle = dataModelService.getDataModel( path );
-
-            assetOpenedEvent.fire( new AssetOpenedEvent( path ) );
-
-            return new FactModelContent( factModels,
-                                         loadAllAvailableTypes( path ),
-                                         oracle );
-        } catch ( final DroolsParserException e ) {
-            throw new RuntimeException( e );
-        }
-        //TODO {porcelli} needs define error handling strategy
-////            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")" );
-////            RuleContentText text = new RuleContentText();
-////            text.content = item.getContent();
-////            asset.setContent( text );
-//        }
+        final FactModels factModels = load( path );
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        return new FactModelContent( factModels,
+                                     loadAllAvailableTypes( path ),
+                                     oracle );
     }
 
     private List<FactMetaModel> loadAllAvailableTypes( final Path path ) {
@@ -133,32 +139,21 @@ public class FactModelServiceImpl
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final FactModels content,
-                        final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-
-        ioService.write( paths.convert( newPath ),
-                         toDRL( content ),
-                         makeCommentedOption( comment ) );
-
-        //TODO {manstis} assetCreatedEvent.fire( new AssetCreatedEvent( newPath ) );
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path context,
                       final String fileName,
-                      final FactModels factModel,
+                      final FactModels content,
                       final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
+        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
+                                            false );
 
         ioService.write( paths.convert( newPath ),
-                         toDRL( factModel ),
+                         marshal( content ),
                          makeCommentedOption( comment ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
+        //Invalidate Project-level DMO cache as Model has changed.
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
+
+        //TODO assetEditedEvent.fire( new AssetEditedEvent( newPath ) );
         return newPath;
     }
 
@@ -167,59 +162,109 @@ public class FactModelServiceImpl
                       final FactModels content,
                       final Metadata metadata,
                       final String comment ) {
-
         ioService.write( paths.convert( resource ),
-                         toDRL( content ),
-                         metadataService.setUpAttributes( resource, metadata ),
+                         marshal( content ),
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
                          makeCommentedOption( comment ) );
 
+        //Invalidate Project-level DMO cache as Model has changed.
         invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-        assetEditedEvent.fire( new AssetEditedEvent( resource ) );
+        //TODO assetEditedEvent.fire( new AssetEditedEvent( resource ) );
         return resource;
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
-
-        ioService.delete( paths.convert( path ) );
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
+        deleteService.delete( path,
+                              comment );
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.move( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
+        return renameService.rename( path,
+                                     newName,
+                                     comment );
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
-        String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
-        Path targetPath = PathFactory.newPath( path.getFileSystem(), targetName, targetURI );
-        ioService.copy( paths.convert( path ), paths.convert( targetPath ), new CommentedOption( identity.getName(), comment ) );
-
-        assetEditedEvent.fire( new AssetEditedEvent( path ) );
-        return targetPath;
+        return copyService.copy( path,
+                                 newName,
+                                 comment );
     }
 
     @Override
-    public String toSource( Path path,
+    public String toSource( final Path path,
                             final FactModels model ) {
-        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), toDRL( model ) );
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), marshal( model ) );
+    }
+
+    @Override
+    public BuilderResult validate( final Path path,
+                                   final FactModels content ) {
+        //TODO {porcelli} validate
+        return new BuilderResult();
+    }
+
+    @Override
+    public boolean isValid( Path path,
+                            FactModels content ) {
+        return !validate( path, content ).hasLines();
+    }
+
+    @Override
+    public AnalysisReport verify( Path path,
+                                  FactModels content ) {
+        //TODO {porcelli} verify
+        return new AnalysisReport();
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
+    }
+
+    private String marshal( final FactModels content ) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append( content.getImports().toString() );
+        sb.append( "\n" );
+        for ( final FactMetaModel factMetaModel : content.getModels() ) {
+            sb.append( toDRL( factMetaModel ) ).append( "\n\n" );
+        }
+        return sb.toString().trim();
+    }
+
+    private FactModels unmarshal( final String content ) {
+        try {
+            final List<FactMetaModel> models = toModel( content );
+            final FactModels factModels = new FactModels();
+            factModels.getModels().addAll( models );
+
+            //De-serialize imports
+            final Imports imports = ImportsParser.parseImports( content );
+            factModels.setImports( imports );
+            return factModels;
+
+        } catch ( final DroolsParserException e ) {
+            throw new RuntimeException( e );
+        }
+        //TODO {porcelli} needs define error handling strategy
+//            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")" );
+//            RuleContentText text = new RuleContentText();
+//            text.content = item.getContent();
+//            asset.setContent( text );
     }
 
     private List<FactMetaModel> toModel( String drl )
@@ -270,18 +315,6 @@ public class FactModelServiceImpl
         return list;
     }
 
-    private String toDRL( final FactModels model ) {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append( model.getImports().toString() );
-        sb.append( "\n" );
-
-        for ( final FactMetaModel factMetaModel : model.getModels() ) {
-            sb.append( toDRL( factMetaModel ) ).append( "\n\n" );
-        }
-        return sb.toString().trim();
-    }
-
     private String toDRL( FactMetaModel mm ) {
         final StringBuilder sb = new StringBuilder();
         sb.append( "declare " ).append( mm.getName() );
@@ -324,33 +357,4 @@ public class FactModelServiceImpl
         return sb;
     }
 
-    @Override
-    public BuilderResult validate( final Path path,
-                                   final FactModels content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
-    }
-
-    @Override
-    public boolean isValid( Path path,
-                            FactModels content ) {
-        return !validate( path, content ).hasLines();
-    }
-
-    @Override
-    public AnalysisReport verify( Path path,
-                                  FactModels content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
-    }
 }

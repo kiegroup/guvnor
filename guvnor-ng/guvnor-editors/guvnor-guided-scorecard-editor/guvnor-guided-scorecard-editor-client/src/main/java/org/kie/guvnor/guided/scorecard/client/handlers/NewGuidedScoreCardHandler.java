@@ -59,12 +59,15 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         notifyResourceAdded( path );
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedScoreCardEditor" );
                                                          placeManager.goTo( place );
                                                      }
-                                                 } ).save( contextPath, buildFileName( resourceType, baseFileName ), model, comment );
+                                                 } ).create( contextPath,
+                                                             buildFileName( resourceType,
+                                                                            baseFileName ),
+                                                             model,
+                                                             comment );
                                              }
                                          } );
     }

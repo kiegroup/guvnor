@@ -2,7 +2,7 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public interface ProjectConfigScreenView
@@ -14,9 +14,10 @@ public interface ProjectConfigScreenView
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
 
-    void setMetadata(Metadata metadata);
+    void setMetadata( Metadata metadata );
 
-    void setImports(Path path, Imports imports);
+    void setImports( Path path,
+                     Imports imports );
 }

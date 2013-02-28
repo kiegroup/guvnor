@@ -16,11 +16,11 @@
 
 package org.kie.guvnor.services.metadata;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
-
 import java.util.Map;
+
+import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.vfs.Path;
 
 /**
  *
@@ -33,6 +33,7 @@ public interface MetadataService {
     Map<String, Object> configAttrs( final Map<String, Object> attrs,
                                      final Metadata metadata );
 
-    Map<String, Object> setUpAttributes(Path path, Metadata metadata);
+    Map<String, Object> setUpAttributes( Path path,
+                                         Metadata metadata );
 
 }

@@ -16,9 +16,9 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
 
@@ -26,19 +26,18 @@ public class ProjectEditorScreenViewImpl
         extends MultiPageEditorView
         implements ProjectEditorScreenView {
 
-
     private Presenter presenter;
     private MetadataWidget pomMetaDataPanel = new MetadataWidget();
     private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setPOMEditorPanel(POMEditorPanel gavPanel) {
-        addPage(new Page(gavPanel, ProjectEditorConstants.INSTANCE.PomDotXml()) {
+    public void setPOMEditorPanel( POMEditorPanel gavPanel ) {
+        addPage( new Page( gavPanel, ProjectEditorConstants.INSTANCE.PomDotXml() ) {
             @Override
             public void onFocus() {
             }
@@ -46,8 +45,8 @@ public class ProjectEditorScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
-        addPage(new Page(this.pomMetaDataPanel, ProjectEditorConstants.INSTANCE.PomDotXmlMetadata()) {
+        } );
+        addPage( new Page( this.pomMetaDataPanel, ProjectEditorConstants.INSTANCE.PomDotXmlMetadata() ) {
             @Override
             public void onFocus() {
                 presenter.onPOMMetadataTabSelected();
@@ -56,12 +55,12 @@ public class ProjectEditorScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
+        } );
     }
 
     @Override
-    public void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel) {
-        addPage(new Page(kModuleEditorPanel, ProjectEditorConstants.INSTANCE.KModuleDotXml()) {
+    public void setKModuleEditorPanel( KModuleEditorPanel kModuleEditorPanel ) {
+        addPage( new Page( kModuleEditorPanel, ProjectEditorConstants.INSTANCE.KModuleDotXml() ) {
             @Override
             public void onFocus() {
                 presenter.onKModuleTabSelected();
@@ -70,8 +69,8 @@ public class ProjectEditorScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
-        addPage(new Page(this.kModuleMetaDataPanel, ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata()) {
+        } );
+        addPage( new Page( this.kModuleMetaDataPanel, ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata() ) {
             @Override
             public void onFocus() {
                 presenter.onKModuleMetadataTabSelected();
@@ -80,7 +79,7 @@ public class ProjectEditorScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
+        } );
     }
 
     @Override
@@ -99,12 +98,12 @@ public class ProjectEditorScreenViewImpl
     }
 
     @Override
-    public void setPOMMetadata(Metadata metadata) {
-        pomMetaDataPanel.setContent(metadata, false);
+    public void setPOMMetadata( Metadata metadata ) {
+        pomMetaDataPanel.setContent( metadata, false );
     }
 
     @Override
-    public void setKModuleMetadata(Metadata metadata) {
-        kModuleMetaDataPanel.setContent(metadata, false);
+    public void setKModuleMetadata( Metadata metadata ) {
+        kModuleMetaDataPanel.setContent( metadata, false );
     }
 }

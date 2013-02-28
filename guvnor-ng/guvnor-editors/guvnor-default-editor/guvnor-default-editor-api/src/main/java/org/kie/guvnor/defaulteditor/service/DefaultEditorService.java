@@ -17,19 +17,9 @@
 package org.kie.guvnor.defaulteditor.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
+import org.kie.guvnor.services.file.SupportsUpdate;
 
 @Remote
-public interface DefaultEditorService {
-
-    void save( final Path path,
-               final String content,
-               final Metadata metadata,
-               final String comment );
-
-    void save( final Path path,
-               final String content,
-               final String comment );
+public interface DefaultEditorService extends SupportsUpdate<String> {
 
 }

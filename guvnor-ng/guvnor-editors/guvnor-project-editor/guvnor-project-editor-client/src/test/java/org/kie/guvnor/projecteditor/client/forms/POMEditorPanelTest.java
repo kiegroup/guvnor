@@ -19,16 +19,14 @@ package org.kie.guvnor.projecteditor.client.forms;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static junit.framework.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class POMEditorPanelTest {
 

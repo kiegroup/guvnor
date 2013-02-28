@@ -1,7 +1,12 @@
 package org.kie.guvnor.guided.dtable.client.handlers;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
@@ -11,22 +16,17 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.wizards.WizardPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.guided.dtable.client.type.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.dtable.client.type.GuidedDTableResourceType;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Handler for the creation of new Guided Decision Tables
@@ -130,7 +130,6 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         notifyResourceAdded( path );
                                                          executePostSaveCommand();
                                                          final PlaceRequest place = new PathPlaceRequest( path,
                                                                                                           "GuidedDecisionTableEditor" );
@@ -142,11 +141,11 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                              postSaveCommand.execute();
                                                          }
                                                      }
-                                                 } ).save( contextPath,
-                                                           buildFileName( resourceType,
-                                                                          baseFileName ),
-                                                           model,
-                                                           comment );
+                                                 } ).create( contextPath,
+                                                             buildFileName( resourceType,
+                                                                            baseFileName ),
+                                                             model,
+                                                             comment );
                                              }
                                          } );
     }

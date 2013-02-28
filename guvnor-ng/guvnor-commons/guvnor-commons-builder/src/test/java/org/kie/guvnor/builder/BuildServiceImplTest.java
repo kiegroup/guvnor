@@ -46,6 +46,7 @@ public class BuildServiceImplTest {
         
         setUpGuvnorM2Repo();
     }
+
     @Test
     public void testBuilderSimpleKProject() throws Exception {
         SourceServices sourceServices = getReference(SourceServices.class);

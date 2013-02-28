@@ -17,12 +17,17 @@
 package org.kie.guvnor.globals.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
+import org.kie.guvnor.services.file.SupportsCopy;
+import org.kie.guvnor.services.file.SupportsCreate;
+import org.kie.guvnor.services.file.SupportsDelete;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsRename;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -30,10 +35,16 @@ import org.uberfire.backend.vfs.Path;
  */
 @Remote
 public interface GlobalsEditorService
-        extends FileService<GlobalsModel>,
-                ViewSourceService<GlobalsModel>,
-                ValidationService<GlobalsModel>,
-                SimpleVerificationService<GlobalsModel> {
+        extends
+        ViewSourceService<GlobalsModel>,
+        ValidationService<GlobalsModel>,
+        SimpleVerificationService<GlobalsModel>,
+        SupportsCreate<GlobalsModel>,
+        SupportsRead<GlobalsModel>,
+        SupportsUpdate<GlobalsModel>,
+        SupportsDelete,
+        SupportsCopy,
+        SupportsRename {
 
     GlobalsEditorContent loadContent( final Path path );
 

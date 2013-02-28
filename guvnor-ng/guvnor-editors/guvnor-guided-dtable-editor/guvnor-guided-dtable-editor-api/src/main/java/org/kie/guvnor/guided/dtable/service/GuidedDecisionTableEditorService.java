@@ -16,28 +16,37 @@
 
 package org.kie.guvnor.guided.dtable.service;
 
+import java.util.Set;
+
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.kie.guvnor.services.file.SupportsCopy;
+import org.kie.guvnor.services.file.SupportsCreate;
+import org.kie.guvnor.services.file.SupportsDelete;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsRename;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
-
-import java.util.Set;
 
 @Remote
 public interface GuidedDecisionTableEditorService
-        extends FileService<GuidedDecisionTable52>,
-                ViewSourceService<GuidedDecisionTable52>,
-                ValidationService<GuidedDecisionTable52>,
-                ScopedVerificationService<GuidedDecisionTable52> {
+        extends
+        ViewSourceService<GuidedDecisionTable52>,
+        ValidationService<GuidedDecisionTable52>,
+        ScopedVerificationService<GuidedDecisionTable52>,
+        SupportsCreate<GuidedDecisionTable52>,
+        SupportsRead<GuidedDecisionTable52>,
+        SupportsUpdate<GuidedDecisionTable52>,
+        SupportsDelete,
+        SupportsCopy,
+        SupportsRename {
 
     GuidedDecisionTableEditorContent loadContent( final Path path );
-
-    GuidedDecisionTable52 loadRuleModel( final Path path );
 
     Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 }

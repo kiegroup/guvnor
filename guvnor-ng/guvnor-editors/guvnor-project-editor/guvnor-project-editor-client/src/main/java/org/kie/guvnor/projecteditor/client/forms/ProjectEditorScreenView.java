@@ -17,7 +17,7 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.services.metadata.model.Metadata;
 
 public interface ProjectEditorScreenView
         extends IsWidget {
@@ -32,18 +32,19 @@ public interface ProjectEditorScreenView
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
+
     String getEnableKieProjectMenuItemText();
 
-    void setPOMEditorPanel(POMEditorPanel gavPanel);
+    void setPOMEditorPanel( POMEditorPanel gavPanel );
 
-    void setKModuleEditorPanel(KModuleEditorPanel kModuleEditorPanel);
+    void setKModuleEditorPanel( KModuleEditorPanel kModuleEditorPanel );
 
     String getSaveMenuItemText();
 
     String getBuildMenuItemText();
 
-    void setPOMMetadata(Metadata metadata);
+    void setPOMMetadata( Metadata metadata );
 
-    void setKModuleMetadata(Metadata metadata);
+    void setKModuleMetadata( Metadata metadata );
 }

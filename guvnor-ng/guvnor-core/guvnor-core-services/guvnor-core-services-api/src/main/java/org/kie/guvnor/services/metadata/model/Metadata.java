@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.service.metadata.model;
+package org.kie.guvnor.services.metadata.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.java.nio.base.version.VersionRecord;

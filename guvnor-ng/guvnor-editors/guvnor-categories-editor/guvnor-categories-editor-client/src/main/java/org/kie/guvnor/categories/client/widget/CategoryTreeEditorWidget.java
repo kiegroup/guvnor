@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.categories.client.resources.ImageResources;
-import org.kie.guvnor.commons.service.metadata.model.Categories;
-import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
+import org.kie.guvnor.services.metadata.model.Categories;
+import org.kie.guvnor.services.metadata.model.CategoryItem;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to
@@ -34,8 +34,8 @@ import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 public class CategoryTreeEditorWidget
         extends Composite {
 
-    protected Tree       navTreeWidget = new Tree();
-    private   Categories categories    = null;
+    protected Tree navTreeWidget = new Tree();
+    private Categories categories = null;
 
     /**
      * Create a new cat tree editor.

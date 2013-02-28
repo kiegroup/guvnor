@@ -1,5 +1,8 @@
 package org.kie.guvnor.guided.rule.client.handlers;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
@@ -8,17 +11,14 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
-import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
+import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Handler for the creation of new Guided Rules
@@ -51,21 +51,25 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
         final RuleModel ruleModel = new RuleModel();
         ruleModel.name = baseFileName;
 
-        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path path ) {
-                        notifySuccess();
-                        notifyResourceAdded( path );
-                        final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "GuidedRuleEditor" );
-                        placeManager.goTo( place );
-                    }
-                } ).save( contextPath, buildFileName( resourceType, baseFileName ), ruleModel, comment );
-            }
-        } );
+        new SaveOperationService().save( contextPath,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path path ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedRuleEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).create( contextPath,
+                                                             buildFileName( resourceType,
+                                                                            baseFileName ),
+                                                             ruleModel,
+                                                             comment );
+                                             }
+                                         } );
     }
 
 }

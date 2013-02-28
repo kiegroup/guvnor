@@ -16,12 +16,12 @@
 
 package org.kie.guvnor.services.backend.metadata.attribute;
 
-import org.kie.guvnor.commons.service.metadata.model.DiscussionRecord;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.kie.commons.validation.Preconditions.checkNotEmpty;
+import org.kie.guvnor.services.metadata.model.DiscussionRecord;
+
+import static org.kie.commons.validation.Preconditions.*;
 import static org.kie.guvnor.services.backend.metadata.attribute.DiscussionView.*;
 
 /**

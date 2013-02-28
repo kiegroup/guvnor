@@ -18,21 +18,31 @@ package org.kie.guvnor.guided.template.service;
 
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.file.FileService;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
+import org.kie.guvnor.services.file.SupportsCopy;
+import org.kie.guvnor.services.file.SupportsCreate;
+import org.kie.guvnor.services.file.SupportsDelete;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsRename;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface GuidedRuleTemplateEditorService
-        extends FileService<TemplateModel>,
-                ViewSourceService<TemplateModel>,
-                ValidationService<TemplateModel>,
-                ScopedVerificationService<TemplateModel> {
+        extends
+        ViewSourceService<TemplateModel>,
+        ValidationService<TemplateModel>,
+        ScopedVerificationService<TemplateModel>,
+        SupportsCreate<TemplateModel>,
+        SupportsRead<TemplateModel>,
+        SupportsUpdate<TemplateModel>,
+        SupportsDelete,
+        SupportsCopy,
+        SupportsRename {
 
     GuidedTemplateEditorContent loadContent( final Path path );
 
-    TemplateModel loadTemplateModel( final Path path );
 }

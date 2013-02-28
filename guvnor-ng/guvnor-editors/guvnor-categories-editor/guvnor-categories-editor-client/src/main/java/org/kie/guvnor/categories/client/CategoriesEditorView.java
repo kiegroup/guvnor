@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.categories.client;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -29,15 +32,12 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.categories.client.resources.Images;
 import org.kie.guvnor.categories.client.resources.i18n.Constants;
 import org.kie.guvnor.categories.client.widget.CategoryTreeEditorWidget;
-import org.kie.guvnor.commons.service.metadata.model.Categories;
-import org.kie.guvnor.commons.service.metadata.model.CategoryItem;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.services.metadata.model.Categories;
+import org.kie.guvnor.services.metadata.model.CategoryItem;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.PrettyFormLayout;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 
 /**
  *
@@ -48,7 +48,7 @@ public class CategoriesEditorView
         implements CategoriesEditorPresenter.View {
 
     private CategoryTreeEditorWidget explorer;
-    private PrettyFormLayout         form;
+    private PrettyFormLayout form;
 
     boolean isDirty = false;
 
@@ -153,7 +153,7 @@ public class CategoriesEditorView
     public class CategoryEditor extends FormStylePopup {
 
         private final CategoryItem parent;
-        private final TextBox  name        = new TextBox();
+        private final TextBox name = new TextBox();
         private final TextArea description = new TextArea();
 
         /**

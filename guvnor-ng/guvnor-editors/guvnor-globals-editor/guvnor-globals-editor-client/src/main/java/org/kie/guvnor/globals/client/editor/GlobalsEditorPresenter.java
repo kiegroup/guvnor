@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -23,6 +22,8 @@ import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;

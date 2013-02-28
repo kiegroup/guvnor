@@ -1,9 +1,13 @@
 package org.kie.guvnor.defaulteditor.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
@@ -11,6 +15,7 @@ import org.kie.guvnor.commons.ui.client.save.SaveOperationService;
 import org.kie.guvnor.defaulteditor.service.DefaultEditorService;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -26,12 +31,9 @@ import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class }, priority = -1)
@@ -45,17 +47,19 @@ public class GuvnorTextEditorPresenter
     private Caller<DefaultEditorService> defaultEditorService;
 
     @Inject
-    @New
-    private FileMenuBuilder menuBuilder;
-
-    @Inject
     private Caller<MetadataService> metadataService;
 
+    @Inject
+    private Event<NotificationEvent> notification;
+
+    @Inject
+    @New
+    private FileMenuBuilder menuBuilder;
     private Menus menus;
 
     private final MetadataWidget metadataWidget = new MetadataWidget();
     private boolean isReadOnly;
-    private Path    path;
+    private Path path;
 
     @OnStart
     public void onStart( final Path path,
@@ -92,27 +96,17 @@ public class GuvnorTextEditorPresenter
     public void onSave() {
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
-            public void execute( final String comment ) {
-                if ( metadataWidget.isDirty() ) {
-                    defaultEditorService.call(
-                            new RemoteCallback<Void>() {
-                                @Override
-                                public void callback( Void o ) {
-                                    metadataWidget.resetDirty();
-                                    view.setDirty( false );
-                                }
-                            }
-                                             ).save( path, view.getContent(), metadataWidget.getContent(), comment );
-                } else {
-                    defaultEditorService.call(
-                            new RemoteCallback<Void>() {
-                                @Override
-                                public void callback( Void o ) {
-                                    view.setDirty( false );
-                                }
-                            }
-                                             ).save( path, view.getContent(), comment );
-                }
+            public void execute( final String commitMessage ) {
+                defaultEditorService.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void response ) {
+                        view.setDirty( false );
+                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                    }
+                } ).save( path,
+                          view.getContent(),
+                          metadataWidget.getContent(),
+                          commitMessage );
             }
         } );
     }

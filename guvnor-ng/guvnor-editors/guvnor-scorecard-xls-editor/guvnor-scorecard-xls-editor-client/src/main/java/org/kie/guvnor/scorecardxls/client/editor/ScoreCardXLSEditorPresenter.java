@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -32,6 +31,7 @@ import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConst
 import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -98,7 +98,7 @@ public class ScoreCardXLSEditorPresenter {
             public void onFocus() {
                 metadataService.call( new RemoteCallback<Metadata>() {
                     @Override
-                    public void callback( Metadata metadata ) {
+                    public void callback( final Metadata metadata ) {
                         metadataWidget.setContent( metadata,
                                                    isReadOnly );
                     }

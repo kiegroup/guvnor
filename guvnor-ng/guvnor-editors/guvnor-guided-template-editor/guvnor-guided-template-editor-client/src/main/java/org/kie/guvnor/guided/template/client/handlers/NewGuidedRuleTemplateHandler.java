@@ -51,21 +51,25 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
         final TemplateModel templateModel = new TemplateModel();
         templateModel.name = baseFileName;
 
-        new SaveOperationService().save( contextPath, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path path ) {
-                        notifySuccess();
-                        notifyResourceAdded( path );
-                        final PlaceRequest place = new PathPlaceRequest( path,
-                                                                         "GuidedRuleTemplateEditor" );
-                        placeManager.goTo( place );
-                    }
-                } ).save( contextPath, buildFileName( resourceType, baseFileName ), templateModel, comment );
-            }
-        } );
+        new SaveOperationService().save( contextPath,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 service.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path path ) {
+                                                         notifySuccess();
+                                                         final PlaceRequest place = new PathPlaceRequest( path,
+                                                                                                          "GuidedRuleTemplateEditor" );
+                                                         placeManager.goTo( place );
+                                                     }
+                                                 } ).create( contextPath,
+                                                             buildFileName( resourceType,
+                                                                            baseFileName ),
+                                                             templateModel,
+                                                             comment );
+                                             }
+                                         } );
     }
 
 }
