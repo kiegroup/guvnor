@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.save;
+package org.kie.guvnor.commons.ui.client.popups.file;
 
-import org.uberfire.backend.vfs.Path;
-
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
-
-public class SaveOperationService {
-
-    public void save(final Path path,
-                     final CommandWithCommitMessage saveCommand) {
-        checkNotNull("command", saveCommand);
-
-        if (path.getFileSystem().supportedFileAttributeViews().contains("version")) {
-            new SavePopup(saveCommand).show();
-        } else {
-            saveCommand.execute("");
-        }
-    }
+/**
+ * A command that has a file name and commit message
+ */
+public interface CommandWithFileNameAndCommitMessage extends CommandWithPayload<FileNameAndCommitMessage> {
 
 }

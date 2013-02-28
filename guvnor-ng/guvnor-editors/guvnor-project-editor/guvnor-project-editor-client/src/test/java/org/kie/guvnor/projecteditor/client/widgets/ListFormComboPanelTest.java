@@ -18,7 +18,7 @@ package org.kie.guvnor.projecteditor.client.widgets;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
+import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
 
 import java.util.HashMap;

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.popup.list;
+package org.kie.guvnor.commons.ui.client.popups.text;
 
-import org.kie.commons.data.Pair;
+public interface PopupSetFieldCommand {
 
-public interface PopupItemSelectedCommand {
-
-    void setSelectedItem( Pair<String, String> item );
+    void setName( String name );
 
 }

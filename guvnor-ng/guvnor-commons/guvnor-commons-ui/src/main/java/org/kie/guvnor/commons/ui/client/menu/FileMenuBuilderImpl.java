@@ -25,12 +25,13 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.handlers.CopyPopup;
-import org.kie.guvnor.commons.ui.client.handlers.DeletePopup;
-import org.kie.guvnor.commons.ui.client.handlers.RenameCommand;
-import org.kie.guvnor.commons.ui.client.handlers.RenamePopup;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithFileNameAndCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.CopyPopup;
+import org.kie.guvnor.commons.ui.client.popups.file.DeletePopup;
+import org.kie.guvnor.commons.ui.client.popups.file.FileNameAndCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -127,10 +128,9 @@ public class FileMenuBuilderImpl
         this.renameCommand = new Command() {
             @Override
             public void execute() {
-                final RenamePopup popup = new RenamePopup( new RenameCommand() {
+                final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
-                    public void execute( final String newName,
-                                         final String comment ) {
+                    public void execute( final FileNameAndCommitMessage details ) {
                         renameService.call( new RemoteCallback<Path>() {
                             @Override
                             public void callback( Path response ) {
@@ -138,8 +138,8 @@ public class FileMenuBuilderImpl
                                 callback.onSuccess( response );
                             }
                         } ).rename( path,
-                                    newName,
-                                    comment );
+                                    details.getNewFileName(),
+                                    details.getCommitMessage() );
                     }
                 } );
 
@@ -173,10 +173,9 @@ public class FileMenuBuilderImpl
         this.copyCommand = new Command() {
             @Override
             public void execute() {
-                final CopyPopup popup = new CopyPopup( new RenameCommand() {
+                final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
-                    public void execute( final String newName,
-                                         final String comment ) {
+                    public void execute( final FileNameAndCommitMessage details ) {
                         copyService.call(
                                 new RemoteCallback<Path>() {
                                     @Override
@@ -186,8 +185,8 @@ public class FileMenuBuilderImpl
                                     }
                                 }
                                         ).copy( path,
-                                                newName,
-                                                comment );
+                                                details.getNewFileName(),
+                                                details.getCommitMessage() );
                     }
                 } );
                 popup.show();

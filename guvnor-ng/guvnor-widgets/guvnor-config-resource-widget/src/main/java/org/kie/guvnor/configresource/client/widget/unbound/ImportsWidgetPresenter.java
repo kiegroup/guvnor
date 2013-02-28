@@ -21,8 +21,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.kie.guvnor.commons.ui.client.popup.text.FormPopup;
-import org.kie.guvnor.commons.ui.client.popup.text.PopupSetFieldCommand;
+import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
+import org.kie.guvnor.commons.ui.client.popups.text.PopupSetFieldCommand;
 
 import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.popup.text;
+package org.kie.guvnor.commons.ui.client.popups.text;
 
 import javax.inject.Inject;
 

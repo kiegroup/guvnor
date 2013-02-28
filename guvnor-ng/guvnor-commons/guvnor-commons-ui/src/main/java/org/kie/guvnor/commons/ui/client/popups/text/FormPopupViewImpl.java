@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.popup.list;
+package org.kie.guvnor.commons.ui.client.popups.text;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,32 +22,29 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
 
-import java.util.List;
-
-public class FormListPopupViewImpl
+public class FormPopupViewImpl
         extends Popup
-        implements FormListPopupView {
+        implements FormPopupView {
 
     private final Widget widget;
     private Presenter presenter;
 
     interface AddNewKBasePopupViewImplBinder
             extends
-            UiBinder<Widget, FormListPopupViewImpl> {
+            UiBinder<Widget, FormPopupViewImpl> {
 
     }
 
     private static AddNewKBasePopupViewImplBinder uiBinder = GWT.create( AddNewKBasePopupViewImplBinder.class );
 
     @UiField
-    ListBox listItems;
+    TextBox nameTextBox;
 
     @UiField
     Button okButton;
@@ -55,7 +52,7 @@ public class FormListPopupViewImpl
     @UiField
     Button cancelButton;
 
-    public FormListPopupViewImpl() {
+    public FormPopupViewImpl() {
         widget = uiBinder.createAndBindUi( this );
         setTitle( NewItemPopupConstants.INSTANCE.New() );
     }
@@ -70,37 +67,25 @@ public class FormListPopupViewImpl
         return widget;
     }
 
-    @Override
-    public void setItems( final List<Pair<String, String>> items ) {
-        listItems.clear();
-        for ( Pair<String, String> item : items ) {
-            listItems.addItem( item.getK1(),
-                               item.getK2() );
-        }
+    @UiHandler("okButton")
+    public void ok( ClickEvent clickEvent ) {
+        presenter.onOk();
+        hide();
     }
 
     @Override
-    public Pair<String, String> getSelectedItem() {
-        final int selectedIndex = listItems.getSelectedIndex();
-        if ( selectedIndex == -1 ) {
-            return new Pair( "",
-                             "" );
-        }
-        final String text = listItems.getItemText( selectedIndex );
-        final String value = listItems.getValue( selectedIndex );
-        return new Pair( text,
-                         value );
+    public String getName() {
+        return nameTextBox.getText();
+    }
+
+    @Override
+    public void setName( String name ) {
+        nameTextBox.setText( name );
     }
 
     @Override
     public void showFieldEmptyWarning() {
         ErrorPopup.showMessage( NewItemPopupConstants.INSTANCE.PleaseSetAName() );
-    }
-
-    @UiHandler("okButton")
-    public void ok( ClickEvent clickEvent ) {
-        presenter.onOk();
-        hide();
     }
 
     @UiHandler("cancelButton")

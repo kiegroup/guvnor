@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.handlers;
+package org.kie.guvnor.commons.ui.client.popups.file;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,14 +24,14 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
-import org.kie.guvnor.commons.ui.client.save.CommandWithCommitMessage;
 import org.uberfire.client.common.FormStylePopup;
 
 public class DeletePopup extends FormStylePopup {
-    final private TextBox         checkInCommentTextBox     = new TextBox();
-   
-    public DeletePopup(final CommandWithCommitMessage command) {
-        super(CommonImages.INSTANCE.edit(), "Delete this item" );
+
+    final private TextBox checkInCommentTextBox = new TextBox();
+
+    public DeletePopup( final CommandWithCommitMessage command ) {
+        super( CommonImages.INSTANCE.edit(), "Delete this item" );
 
         checkInCommentTextBox.setTitle( "Check in comment" );
         checkInCommentTextBox.setWidth( "200px" );
@@ -41,13 +41,13 @@ public class DeletePopup extends FormStylePopup {
         final Button create = new Button( "Delete item" );
         create.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent arg0 ) {
-                
-                if(!Window.confirm( "Are you sure you want to delete this asset?")) {
+
+                if ( !Window.confirm( "Are you sure you want to delete this asset?" ) ) {
                     return;
                 }
-                
+
                 hide();
-                command.execute(checkInCommentTextBox.getText());
+                command.execute( checkInCommentTextBox.getText() );
             }
         } );
         hp.add( create );
@@ -64,4 +64,4 @@ public class DeletePopup extends FormStylePopup {
 
     }
 
- }
+}

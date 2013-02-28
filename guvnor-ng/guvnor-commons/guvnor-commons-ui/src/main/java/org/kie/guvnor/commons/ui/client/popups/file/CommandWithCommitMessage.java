@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.save;
+package org.kie.guvnor.commons.ui.client.popups.file;
 
 /**
- *
+ * A command that has a commit message
  */
-public interface CommandWithCommitMessage {
+public interface CommandWithCommitMessage extends CommandWithPayload<String> {
 
-    void execute( final String comment );
 }

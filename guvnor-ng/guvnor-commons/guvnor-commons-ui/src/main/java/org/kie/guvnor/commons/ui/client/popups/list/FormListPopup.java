@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.popup.list;
+package org.kie.guvnor.commons.ui.client.popups.list;
 
 import org.kie.commons.data.Pair;
 

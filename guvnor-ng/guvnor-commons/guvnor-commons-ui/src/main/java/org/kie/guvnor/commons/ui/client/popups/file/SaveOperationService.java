@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.handlers;
+package org.kie.guvnor.commons.ui.client.popups.file;
 
-/**
- *
- */
-public interface RenameCommand {
+import org.uberfire.backend.vfs.Path;
 
-    void execute( final String newName, final String comment );
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
+public class SaveOperationService {
+
+    public void save(final Path path,
+                     final CommandWithCommitMessage saveCommand) {
+        checkNotNull("command", saveCommand);
+
+        if (path.getFileSystem().supportedFileAttributeViews().contains("version")) {
+            new SavePopup(saveCommand).show();
+        } else {
+            saveCommand.execute("");
+        }
+    }
+
 }
