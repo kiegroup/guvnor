@@ -35,6 +35,11 @@ public class ProjectConfigResourceTypeDefinition
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return getPrefix() + "." + getSuffix();
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return path.getFileName().endsWith( getPrefix() + "." + getSuffix() );
     }

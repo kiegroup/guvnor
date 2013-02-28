@@ -70,10 +70,19 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
     public SearchResultTable( final QueryMetadataPageRequest queryRequest ) {
         super( PAGE_SIZE );
+
+        if ( queryRequest.getPageSize() == null ) {
+            queryRequest.setPageSize( PAGE_SIZE );
+        }
+
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
+                queryRequest.setStartRowIndex( pager.getPageStart() );
+                queryRequest.setPageSize( pageSize );
+
                 createCall( new RemoteCallback<PageResponse<SearchPageRow>>() {
                     public void callback( final PageResponse<SearchPageRow> response ) {
+
                         updateRowCount( response.getTotalRowSize(),
                                         response.isTotalRowSizeExact() );
                         updateRowData( response.getStartRowIndex(),
@@ -87,8 +96,15 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
     public SearchResultTable( final SearchTermPageRequest searchRequest ) {
         super( PAGE_SIZE );
 
+        if ( searchRequest.getPageSize() == null ) {
+            searchRequest.setPageSize( PAGE_SIZE );
+        }
+
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
+                searchRequest.setStartRowIndex( pager.getPageStart() );
+                searchRequest.setPageSize( pageSize );
+
                 createCall( new RemoteCallback<PageResponse<SearchPageRow>>() {
                     public void callback( final PageResponse<SearchPageRow> response ) {
                         updateRowCount( response.getTotalRowSize(),

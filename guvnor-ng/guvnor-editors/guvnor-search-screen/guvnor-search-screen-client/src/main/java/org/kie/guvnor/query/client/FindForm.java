@@ -40,7 +40,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
 import org.kie.guvnor.query.client.resources.i18n.Constants;
 import org.kie.guvnor.query.client.widgets.SearchResultTable;
 import org.kie.guvnor.query.model.QueryMetadataPageRequest;
@@ -144,12 +143,16 @@ public class FindForm
         lastModifiedBefore.setValue( null );
         lastModifiedBefore.setAutoClose( true );
 
-        createdAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
-        createdBefore.setFormat( ApplicationPreferences.getDroolsDateFormat() );
-        lastModifiedAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
-        lastModifiedBefore.setFormat( ApplicationPreferences.getDroolsDateFormat() );
+        //TODO {porcelli} due a bug on bootstrap we can't use custom date formats
+//        createdAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
+//        createdBefore.setFormat( ApplicationPreferences.getDroolsDateFormat() );
+//        lastModifiedAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
+//        lastModifiedBefore.setFormat( ApplicationPreferences.getDroolsDateFormat() );
 
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        statusEnabled.setFormValue( "enabled" );
+        statusDisabled.setFormValue( "disabled" );
 
         final MultiWordSuggestOracle oracle = (MultiWordSuggestOracle) formatTypeahead.getSuggestOracle();
 
@@ -164,7 +167,7 @@ public class FindForm
         form.setType( ControlGroupType.NONE );
         final Map<String, Object> metadata = new HashMap<String, Object>();
         if ( !sourceTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "source", sourceTextBox.getText().trim() );
+            metadata.put( "dcore.source[0]", sourceTextBox.getText().trim() );
         }
 
         if ( !createdByTextBox.getText().trim().isEmpty() ) {
@@ -172,19 +175,20 @@ public class FindForm
         }
 
         if ( !descriptionByTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "descriptionBy", descriptionByTextBox.getText().trim() );
+            metadata.put( "dcore.description[0]", descriptionByTextBox.getText().trim() );
         }
 
         if ( !formatTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "format", formatTextBox.getText().trim() );
+            final String pattern = clientTypeRegistry.resolveWildcardPattern( formatTextBox.getText().trim() );
+            metadata.put( "filename", pattern );
         }
 
         if ( !subjectTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "subject", subjectTextBox.getText().trim() );
+            metadata.put( "dcore.subject[0]", subjectTextBox.getText().trim() );
         }
 
         if ( !typeTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "type", typeTextBox.getText().trim() );
+            metadata.put( "dcore.type[0]", typeTextBox.getText().trim() );
         }
 
         if ( !lastModifiedByTextBox.getText().trim().isEmpty() ) {
@@ -192,20 +196,24 @@ public class FindForm
         }
 
         if ( !externalLinkTextBox.getText().trim().isEmpty() ) {
-            metadata.put( "externalLink", externalLinkTextBox.getText().trim() );
+            metadata.put( "dcore.relation[0]", externalLinkTextBox.getText().trim() );
         }
 
         if ( !checkinCommentTextBox.getText().trim().isEmpty() ) {
             metadata.put( "checkinComment", checkinCommentTextBox.getText().trim() );
         }
 
-        if ( statusDisabled.getValue() || statusEnabled.getValue() ) {
-            metadata.put( "disabled", statusDisabled.getValue() );
+        if ( statusDisabled.getValue() ) {
+            metadata.put( "othermeta.mode", statusDisabled.getFormValue() );
+        }
+
+        if ( statusEnabled.getValue() ) {
+            metadata.put( "othermeta.mode", statusEnabled.getFormValue() );
         }
 
         boolean hasSomeDateValue = false;
 
-        if ( createdBefore.getValue() != null ) {
+        if ( createdAfter.getValue() != null ) {
             hasSomeDateValue = true;
         }
 

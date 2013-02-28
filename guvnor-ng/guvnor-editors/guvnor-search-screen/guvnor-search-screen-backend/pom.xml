@@ -16,8 +16,23 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kieora-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-core-services-backend</artifactId>
     </dependency>
 
     <dependency>

@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:guvnor="urn:import:org.kie.guvnor.commons.ui.client.tables">
 
   <ui:with field="i18n" type="org.kie.guvnor.commons.ui.client.resources.i18n.TableConstants"/>
 
@@ -28,7 +29,8 @@
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
     <b:CellTable ui:field="cellTable"/>
-    <b:SimplePager location="CENTER" ui:field="pager"/>
+    <!--<b:SimplePager location="CENTER" ui:field="pager"/>-->
+    <guvnor:GuvnorSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

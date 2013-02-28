@@ -230,7 +230,7 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-backend</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-inbox-api</artifactId>
@@ -276,7 +276,7 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-search-screen-backend</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-explorer-api</artifactId>
@@ -361,6 +361,18 @@
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-fs</artifactId>
+    </dependency>
+
+    <!-- Metadata -->
+
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kieora-commons-io</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kieora-backend-lucene</artifactId>
     </dependency>
 
     <!-- Errai Core -->
@@ -502,7 +514,7 @@
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
-            
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-client</compileSourcesArtifact>
 
@@ -511,7 +523,7 @@
             
             <compileSourcesArtifact>org.kie.guvnor:guvnor-scorecard-xls-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-scorecard-xls-editor-client</compileSourcesArtifact>
-            
+
             <compileSourcesArtifact>org.kie.guvnor:guvnor-search-screen-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-search-screen-client</compileSourcesArtifact>
 

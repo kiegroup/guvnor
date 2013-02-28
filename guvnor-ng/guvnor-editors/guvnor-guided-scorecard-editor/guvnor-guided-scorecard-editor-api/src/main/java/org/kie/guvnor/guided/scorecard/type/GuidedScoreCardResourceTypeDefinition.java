@@ -35,6 +35,11 @@ public class GuidedScoreCardResourceTypeDefinition
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "*." + getSuffix();
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return path.getFileName().endsWith( "." + getSuffix() );
     }
