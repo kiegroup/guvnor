@@ -16,7 +16,7 @@
 package org.kie.guvnor.commons.ui.client.widget;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 import java.util.Date;

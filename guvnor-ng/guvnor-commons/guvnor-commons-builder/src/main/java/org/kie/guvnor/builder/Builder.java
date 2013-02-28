@@ -32,6 +32,8 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.Results;
 import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.services.backend.file.DotFileFilter;
+import org.kie.guvnor.services.file.Filter;
 import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
@@ -45,7 +47,7 @@ public class Builder {
     private final String artifactId;
     private final SourceServices sourceServices;
     private final IOService ioService;
-    private final BuilderFilter filter;
+    private final Filter filter;
 
     private final String projectPrefix;
 
@@ -61,7 +63,7 @@ public class Builder {
               paths,
               sourceServices,
               ioService,
-              new DefaultBuilderFilter() );
+              new DotFileFilter() );
     }
 
     public Builder( final Path moduleDirectory,
@@ -69,7 +71,7 @@ public class Builder {
                     final Paths paths,
                     final SourceServices sourceServices,
                     final IOService ioService,
-                    final BuilderFilter filter ) {
+                    final Filter filter ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;

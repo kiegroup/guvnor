@@ -17,7 +17,7 @@ package org.kie.guvnor.decoratedgrid.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.tables.CheckboxCellImpl;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;

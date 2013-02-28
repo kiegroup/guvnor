@@ -1,12 +1,9 @@
 package org.kie.guvnor.services.file;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface DeleteService {
+public interface DeleteService extends SupportsDelete {
 
-    void delete( final Path path,
-                 final String comment );
 
 }

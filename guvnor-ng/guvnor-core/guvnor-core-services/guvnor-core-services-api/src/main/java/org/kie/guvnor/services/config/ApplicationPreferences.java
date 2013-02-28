@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.ui.client.configurations;
+package org.kie.guvnor.services.config;
 
 import java.util.Map;
 

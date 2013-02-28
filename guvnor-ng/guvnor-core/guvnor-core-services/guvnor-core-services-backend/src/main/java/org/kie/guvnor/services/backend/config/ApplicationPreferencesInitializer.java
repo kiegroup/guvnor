@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import org.drools.core.util.KeyStoreHelper;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-
 import java.util.Map;
+
+import org.drools.core.util.KeyStoreHelper;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 
 public class ApplicationPreferencesInitializer {
 

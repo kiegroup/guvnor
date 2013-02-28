@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;

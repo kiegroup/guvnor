@@ -1,12 +1,12 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.builder.DefaultBuilderFilter;
+import org.kie.guvnor.services.backend.file.DotFileFilter;
 
 /**
  * A filter to ensure only Model related resources are included
  */
-public class ModelBuilderFilter extends DefaultBuilderFilter {
+public class ModelFilter extends DotFileFilter {
 
     private static final String[] PATTERNS = new String[]{ "pom.xml", ".model.drl" };
 

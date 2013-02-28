@@ -71,7 +71,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;

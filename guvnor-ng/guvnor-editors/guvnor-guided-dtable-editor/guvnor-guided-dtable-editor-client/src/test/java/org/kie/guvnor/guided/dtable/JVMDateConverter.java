@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable;
 
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.datamodel.model.DateConverter;
 
 import java.text.ParseException;

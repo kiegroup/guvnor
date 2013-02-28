@@ -16,6 +16,14 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.rule.TypeMetaInfo;
@@ -35,27 +43,27 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileExtensionFilter;
+import org.kie.guvnor.services.file.FileDiscoveryService;
+import org.kie.guvnor.services.file.Filter;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
 @Service
 @ApplicationScoped
 public class DataModelServiceImpl
         implements DataModelService {
+
+    private static final Filter FILTER_ENUMERATIONS = new FileExtensionFilter( ".enumeration" );
+
+    private static final Filter FILTER_DSLS = new FileExtensionFilter( ".dsl" );
+
+    private static final Filter FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
 
     @Inject
     @Named("PackageDataModelOracleCache")
@@ -158,7 +166,7 @@ public class DataModelServiceImpl
                                              paths,
                                              sourceServices,
                                              ioService,
-                                             new ModelBuilderFilter() );
+                                             new ModelFilter() );
 
         //If the Project had errors report them to the user and return an empty ProjectDefinition
         final Results results = builder.build();
@@ -264,7 +272,7 @@ public class DataModelServiceImpl
                                       final Path packagePath ) {
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                             ".enumeration" );
+                                                                                                             FILTER_ENUMERATIONS );
         for ( final org.kie.commons.java.nio.file.Path path : enumFiles ) {
             final String enumDefinition = ioService.readAllString( path );
             dmoBuilder.addEnum( enumDefinition );
@@ -275,7 +283,7 @@ public class DataModelServiceImpl
                                      final Path packagePath ) {
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            ".dsl" );
+                                                                                                            FILTER_DSLS );
         for ( final org.kie.commons.java.nio.file.Path path : dslFiles ) {
             final String dslDefinition = ioService.readAllString( path );
             dmoBuilder.addDsl( dslDefinition );
@@ -286,7 +294,7 @@ public class DataModelServiceImpl
                                         final Path packagePath ) {
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                               ".global.drl" );
+                                                                                                               FILTER_GLOBALS );
         for ( final org.kie.commons.java.nio.file.Path path : globalFiles ) {
             final String definition = ioService.readAllString( path );
             dmoBuilder.addGlobals( definition );

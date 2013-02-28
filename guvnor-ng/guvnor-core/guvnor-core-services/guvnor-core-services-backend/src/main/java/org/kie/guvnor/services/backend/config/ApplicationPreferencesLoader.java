@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import org.kie.guvnor.commons.ui.client.configurations.ApplicationPreferences;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ApplicationPreferencesLoader {
 

@@ -37,12 +37,14 @@ import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
-import org.kie.guvnor.datamodel.service.FileDiscoveryService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
+import org.kie.guvnor.services.file.FileDiscoveryService;
+import org.kie.guvnor.services.file.Filter;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -58,6 +60,10 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
+
+    private static final Filter FILTER_DSLS = new FileExtensionFilter( ".dsl" );
+
+    private static final Filter FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
 
     @Inject
     @Named("ioStrategy")
@@ -151,7 +157,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         final Path packagePath = projectService.resolvePackage( path );
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            ".dsl" );
+                                                                                                            FILTER_DSLS );
         for ( final org.kie.commons.java.nio.file.Path dslPath : dslPaths ) {
             final String dslDefinition = ioService.readAllString( dslPath );
             dsls.add( dslDefinition );
@@ -165,7 +171,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         final Path packagePath = projectService.resolvePackage( path );
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                               ".global.drl" );
+                                                                                                               FILTER_GLOBALS );
         for ( final org.kie.commons.java.nio.file.Path globalPath : globalPaths ) {
             final String globalDefinition = ioService.readAllString( globalPath );
             globals.add( globalDefinition );
