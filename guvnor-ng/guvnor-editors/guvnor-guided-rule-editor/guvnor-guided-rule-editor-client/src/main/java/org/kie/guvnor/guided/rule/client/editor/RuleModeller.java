@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -30,20 +33,13 @@ import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReportLine;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.guvnor.guided.rule.client.widget.RuleModellerWidget;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.workingset.client.WorkingSetManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ClickableLabel;
@@ -51,13 +47,7 @@ import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.DirtyableHorizontalPane;
 import org.uberfire.client.common.DirtyableVerticalPane;
-import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.SmallLabel;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -88,7 +78,6 @@ public class RuleModeller extends DirtyableComposite
 
         public void execute() {
             hasModifiedWidgets = true;
-            verifyRule( null );
         }
     };
 
@@ -238,8 +227,6 @@ public class RuleModeller extends DirtyableComposite
         layout.getCellFormatter().setHeight( currentLayoutRow + 1,
                                              3,
                                              "100%" );
-
-        this.verifyRule( null );
     }
 
     private void renderOptions( final int optionsRowIndex ) {
@@ -308,7 +295,6 @@ public class RuleModeller extends DirtyableComposite
 
     public void refreshWidget() {
         initWidget();
-        showWarningsAndErrors();
         makeDirty();
     }
 
@@ -749,102 +735,8 @@ public class RuleModeller extends DirtyableComposite
         return dataModel;
     }
 
-    private List<AnalysisReportLine> errors;
-    private List<AnalysisReportLine> warnings;
-
-    public void verifyRule( final Command cmd ) {
-        this.verifyRule( cmd,
-                         false );
-    }
-
-    public void verifyRule( final Command cmd,
-                            boolean forceVerification ) {
-        errors = new ArrayList<AnalysisReportLine>();
-        warnings = new ArrayList<AnalysisReportLine>();
-
-        //if AutoVerifierEnabled is off or there are not modified widgets,
-        //just execute cmd and return.
-        if ( !forceVerification && ( !getWorkingSetManager().isAutoVerifierEnabled() || !this.hasModifiedWidgets ) ) {
-            if ( cmd != null ) {
-                cmd.execute();
-            }
-            return;
-        }
-
-        LoadingPopup.showMessage( Constants.INSTANCE.VerifyingItemPleaseWait() );
-        Collection<WorkingSetConfigData> activeWorkingSets = getWorkingSetManager().getActiveWorkingSets( path );
-
-        MessageBuilder.createCall( new RemoteCallback<AnalysisReport>() {
-            public void callback( AnalysisReport report ) {
-                LoadingPopup.close();
-
-                errors = Arrays.asList( report.getErrors() );
-                warnings = Arrays.asList( report.getWarnings() );
-
-                processWarningsAndErrors();
-
-                hasModifiedWidgets = false;
-                if ( cmd != null ) {
-                    cmd.execute();
-                }
-            }
-        }, GuidedRuleEditorService.class ).verify( this.path, this.model, activeWorkingSets );
-    }
-
-    private void processWarningsAndErrors() {
-
-        if ( this.warnings.isEmpty() && this.errors.isEmpty() ) {
-            for ( final RuleModellerWidget ruleModellerWidget : this.lhsWidgets ) {
-                ruleModellerWidget.setModified( false );
-            }
-            for ( final RuleModellerWidget ruleModellerWidget : this.rhsWidgets ) {
-                ruleModellerWidget.setModified( false );
-            }
-        }
-        showWarningsAndErrors();
-    }
-
-    private void showWarningsAndErrors() {
-        this.clearLinesIcons( 1 );
-        if ( this.warnings != null ) {
-            for ( AnalysisReportLine warning : this.warnings ) {
-                if ( warning.getPatternOrderNumber() != null ) {
-                    Image image = GuidedRuleEditorImages508.INSTANCE.WarningSmall();
-                    image.setTitle( warning.getDescription() );
-
-                    this.addLineIcon( warning.getPatternOrderNumber() + 1,
-                                      1,
-                                      image );
-                }
-            }
-        }
-        if ( this.errors != null ) {
-            for ( AnalysisReportLine error : this.errors ) {
-                if ( error.getPatternOrderNumber() != null ) {
-                    Image image = GuidedRuleEditorImages508.INSTANCE.Error();
-                    image.setTitle( error.getDescription() );
-                    this.addLineIcon( error.getPatternOrderNumber() + 1,
-                                      1,
-                                      image );
-                }
-            }
-        }
-    }
-
-    public boolean hasVerifierErrors() {
-        return this.errors != null && this.errors.size() > 0;
-    }
-
-    public boolean hasVerifierWarnings() {
-        return this.warnings != null && this.warnings.size() > 0;
-    }
-
     public ModellerWidgetFactory getWidgetFactory() {
         return widgetFactory;
-    }
-
-    public void setWidgetFactory( ModellerWidgetFactory widgetFactory ) {
-        this.widgetFactory = widgetFactory;
     }
 
     public RuleModeller getRuleModeller() {
@@ -861,13 +753,6 @@ public class RuleModeller extends DirtyableComposite
 
     public boolean isReadOnly() {
         return isReadOnly;
-    }
-
-    private WorkingSetManager getWorkingSetManager() {
-        if ( workingSetManager == null ) {
-            workingSetManager = IOC.getBeanManager().lookupBean( WorkingSetManager.class ).getInstance();
-        }
-        return workingSetManager;
     }
 
 }

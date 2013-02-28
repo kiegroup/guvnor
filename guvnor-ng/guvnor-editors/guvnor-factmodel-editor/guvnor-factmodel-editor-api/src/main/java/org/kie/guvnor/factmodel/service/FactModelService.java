@@ -19,7 +19,6 @@ package org.kie.guvnor.factmodel.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.services.file.SupportsCopy;
@@ -35,7 +34,6 @@ public interface FactModelService
         extends
         ViewSourceService<FactModels>,
         ValidationService<FactModels>,
-        SimpleVerificationService<FactModels>,
         SupportsCreate<FactModels>,
         SupportsRead<FactModels>,
         SupportsUpdate<FactModels>,

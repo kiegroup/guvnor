@@ -29,7 +29,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.model.EnumModel;
@@ -215,13 +214,6 @@ public class EnumServiceImpl implements EnumService {
     public boolean isValid( final Path path,
                             final String content ) {
         return !validate( path, content ).hasLines();
-    }
-
-    @Override
-    public AnalysisReport verify( final Path path,
-                                  final String content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

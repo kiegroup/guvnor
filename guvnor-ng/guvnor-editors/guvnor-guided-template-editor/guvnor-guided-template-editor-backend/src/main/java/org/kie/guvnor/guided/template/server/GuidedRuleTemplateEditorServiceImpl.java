@@ -16,7 +16,6 @@
 
 package org.kie.guvnor.guided.template.server;
 
-import java.util.Collection;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -28,10 +27,8 @@ import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -190,14 +187,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     public String toSource( Path path,
                             final TemplateModel model ) {
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
-    }
-
-    @Override
-    public AnalysisReport verify( final Path path,
-                                  final TemplateModel content,
-                                  final Collection<WorkingSetConfigData> activeWorkingSets ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     @Override

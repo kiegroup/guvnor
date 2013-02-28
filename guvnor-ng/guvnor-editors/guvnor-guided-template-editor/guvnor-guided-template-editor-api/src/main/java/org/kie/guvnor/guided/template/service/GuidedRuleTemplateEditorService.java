@@ -20,7 +20,6 @@ import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.services.file.SupportsCopy;
 import org.kie.guvnor.services.file.SupportsCreate;
@@ -35,7 +34,6 @@ public interface GuidedRuleTemplateEditorService
         extends
         ViewSourceService<TemplateModel>,
         ValidationService<TemplateModel>,
-        ScopedVerificationService<TemplateModel>,
         SupportsCreate<TemplateModel>,
         SupportsRead<TemplateModel>,
         SupportsUpdate<TemplateModel>,

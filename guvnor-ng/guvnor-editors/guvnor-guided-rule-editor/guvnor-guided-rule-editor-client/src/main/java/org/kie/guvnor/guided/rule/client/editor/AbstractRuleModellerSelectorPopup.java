@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
@@ -26,9 +29,6 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.Popup;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Base class for Pop-ups used by RuleModeller
  */
@@ -36,20 +36,20 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected static final String SECTION_SEPARATOR = "..................";
 
-    protected int MIN_WIDTH  = 500;
+    protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
     protected boolean bOnlyShowDSLConditions = ApplicationPreferences.getBooleanPref( "rule-modeller-onlyShowDSLStatements" );
 
-    protected RuleModel    model;
+    protected RuleModel model;
     protected RuleModeller ruleModeller;
     protected DataModelOracle completions;
     protected Map<String, Command> cmds = new HashMap<String, Command>();
     protected Integer position;
 
-    protected SimplePanel     choicesPanel = new SimplePanel();
-    protected FormStyleLayout layoutPanel  = new FormStyleLayout();
-    protected ListBox         positionCbo  = new ListBox();
+    protected SimplePanel choicesPanel = new SimplePanel();
+    protected FormStyleLayout layoutPanel = new FormStyleLayout();
+    protected ListBox positionCbo = new ListBox();
     protected ListBox choices;
 
     public AbstractRuleModellerSelectorPopup( RuleModel model,
@@ -80,10 +80,6 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
             if ( cmd != null ) {
                 cmd.execute();
                 ruleModeller.refreshWidget();
-
-                //new Pattern was added, we need to re-verify the rule
-                ruleModeller.verifyRule( null,
-                                         true );
             }
         }
     }

@@ -33,7 +33,6 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -213,13 +212,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                             final ScoreCardModel model ) {
         return !validate( path,
                           model ).hasLines();
-    }
-
-    @Override
-    public AnalysisReport verify( final Path path,
-                                  final ScoreCardModel content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     private String toDRL( Path path,

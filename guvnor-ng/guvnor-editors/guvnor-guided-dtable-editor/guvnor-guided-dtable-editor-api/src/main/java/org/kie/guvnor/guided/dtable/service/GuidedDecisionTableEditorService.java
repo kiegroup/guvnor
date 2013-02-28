@@ -23,7 +23,6 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.ScopedVerificationService;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.services.file.SupportsCopy;
 import org.kie.guvnor.services.file.SupportsCreate;
@@ -38,7 +37,6 @@ public interface GuidedDecisionTableEditorService
         extends
         ViewSourceService<GuidedDecisionTable52>,
         ValidationService<GuidedDecisionTable52>,
-        ScopedVerificationService<GuidedDecisionTable52>,
         SupportsCreate<GuidedDecisionTable52>,
         SupportsRead<GuidedDecisionTable52>,
         SupportsUpdate<GuidedDecisionTable52>,

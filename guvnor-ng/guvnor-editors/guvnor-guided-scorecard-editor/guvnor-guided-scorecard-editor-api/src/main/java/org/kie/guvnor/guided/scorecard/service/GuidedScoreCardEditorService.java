@@ -20,7 +20,6 @@ import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.services.file.SupportsCopy;
 import org.kie.guvnor.services.file.SupportsCreate;
@@ -35,7 +34,6 @@ public interface GuidedScoreCardEditorService
         extends
         ViewSourceService<ScoreCardModel>,
         ValidationService<ScoreCardModel>,
-        SimpleVerificationService<ScoreCardModel>,
         SupportsCreate<ScoreCardModel>,
         SupportsRead<ScoreCardModel>,
         SupportsUpdate<ScoreCardModel>,

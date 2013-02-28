@@ -18,7 +18,6 @@ package org.kie.guvnor.dsltext.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.services.file.SupportsCopy;
 import org.kie.guvnor.services.file.SupportsCreate;
 import org.kie.guvnor.services.file.SupportsDelete;
@@ -30,7 +29,6 @@ import org.kie.guvnor.services.file.SupportsUpdate;
 public interface DSLTextEditorService
         extends
         ValidationService<String>,
-        SimpleVerificationService<String>,
         SupportsCreate<String>,
         SupportsRead<String>,
         SupportsUpdate<String>,

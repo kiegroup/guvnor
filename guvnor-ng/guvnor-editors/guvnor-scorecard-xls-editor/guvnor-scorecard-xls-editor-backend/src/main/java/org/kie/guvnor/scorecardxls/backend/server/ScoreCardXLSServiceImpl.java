@@ -28,7 +28,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -141,13 +140,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     public boolean isValid( final Path path,
                             final String content ) {
         return !validate( path, content ).hasLines();
-    }
-
-    @Override
-    public AnalysisReport verify( Path path,
-                                  String content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

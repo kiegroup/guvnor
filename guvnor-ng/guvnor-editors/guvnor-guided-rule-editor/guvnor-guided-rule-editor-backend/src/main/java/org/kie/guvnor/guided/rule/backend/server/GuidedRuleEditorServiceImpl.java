@@ -32,10 +32,8 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -276,14 +274,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public String toSource( Path path,
                             final RuleModel model ) {
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
-    }
-
-    @Override
-    public AnalysisReport verify( final Path path,
-                                  final RuleModel content,
-                                  final Collection<WorkingSetConfigData> activeWorkingSets ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     @Override

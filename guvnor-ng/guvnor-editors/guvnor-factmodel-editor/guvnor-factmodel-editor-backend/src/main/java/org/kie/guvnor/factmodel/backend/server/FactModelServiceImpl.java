@@ -28,7 +28,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.verification.model.AnalysisReport;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
@@ -224,13 +223,6 @@ public class FactModelServiceImpl implements FactModelService {
     public boolean isValid( Path path,
                             FactModels content ) {
         return !validate( path, content ).hasLines();
-    }
-
-    @Override
-    public AnalysisReport verify( Path path,
-                                  FactModels content ) {
-        //TODO {porcelli} verify
-        return new AnalysisReport();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

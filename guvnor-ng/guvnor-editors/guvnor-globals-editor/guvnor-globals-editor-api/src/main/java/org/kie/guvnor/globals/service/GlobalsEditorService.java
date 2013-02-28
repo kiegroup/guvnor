@@ -19,7 +19,6 @@ package org.kie.guvnor.globals.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.commons.service.verification.SimpleVerificationService;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.services.file.SupportsCopy;
@@ -38,7 +37,6 @@ public interface GlobalsEditorService
         extends
         ViewSourceService<GlobalsModel>,
         ValidationService<GlobalsModel>,
-        SimpleVerificationService<GlobalsModel>,
         SupportsCreate<GlobalsModel>,
         SupportsRead<GlobalsModel>,
         SupportsUpdate<GlobalsModel>,
