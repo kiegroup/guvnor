@@ -35,6 +35,7 @@
       <modules>
         <module>guvnor-docs</module>
         <!--todo: needs update those projects before enable than again-->
+        <module>guvnor-distribution-wars</module>        
         <module>guvnor-distribution</module>
       </modules>
     </profile>

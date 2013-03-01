@@ -60,7 +60,15 @@
 
   <dependencySets>
     <!-- Binaries -->
-
+    <dependencySet>
+      <includes>
+        <include>org.kie.guvnor:guvnor-distribution-wars:war</include>
+      </includes>
+      <outputDirectory>binaries</outputDirectory>
+      <outputFileNameMapping>guvnor-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    
     <!--<dependencySet>-->
       <!--<includes>-->
         <!--<include>org.drools:knowledge-api:jar</include>-->

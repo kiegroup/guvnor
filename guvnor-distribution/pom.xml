@@ -42,7 +42,24 @@
 
   <dependencies>
     <!-- Internal dependencies -->
-
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-webapp</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-distribution-wars</artifactId>
+      <type>war</type>
+      <classifier>tomcat7.0</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-distribution-wars</artifactId>
+      <type>war</type>
+      <classifier>jboss-as7.0</classifier>
+    </dependency>
+    
     <!-- Migration -->
     <!--
     <dependency>
