@@ -94,6 +94,27 @@ public class BuildServiceImplTest {
         assertTrue(results.isEmpty());
     }
 
+    @Test
+    public void testKProjectContainsXLS() throws Exception {
+        SourceServices sourceServices = getReference(SourceServices.class);
+        Paths paths = getReference(Paths.class);
+        IOService ioService = getReference(IOService.class);
+
+        URL url = this.getClass().getResource("/ExampleWithExcel");
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath(url.toURI());
+        
+        final Builder builder = new Builder(path,
+                "example-with-excel",
+                paths,
+                sourceServices,
+                ioService );
+        
+        final Results results = builder.build();
+        
+        assertTrue(results.isEmpty());
+    }
+    
     private <T> T getReference(Class<T> clazz) {
         Bean bean = (Bean)beanManager.getBeans(clazz).iterator().next();
         CreationalContext cc = beanManager.createCreationalContext(bean);
