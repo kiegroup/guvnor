@@ -59,8 +59,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                                                                                                          buildFileName( resourceType,
                                                                                                                                         baseFileName ),
                                                                                                                          contextPath.toURI() );
-                                                                               final PlaceRequest place = new PathPlaceRequest( newPath,
-                                                                                                                                "DecisionTableXLSEditor" );
+                                                                               final PlaceRequest place = new PathPlaceRequest( newPath );
                                                                                placeManager.goTo( place );
                                                                            }
 

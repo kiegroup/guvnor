@@ -16,13 +16,40 @@
 
 package org.kie.guvnor.commons.service.builder;
 
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface BuildService {
 
-    void build(Path pathToPom);
+    /**
+     * Full build
+     * @param pathToPom
+     */
+    void build( final Path pathToPom );
+
+    /**
+     * Add a resource to the build.
+     * @param pathToPom
+     * @param resource
+     */
+    void addResource( final Path pathToPom,
+                      final Path resource );
+
+    /**
+     * Remove a resource from the build.
+     * @param pathToPom
+     * @param resource
+     */
+    void deleteResource( final Path pathToPom,
+                         final Path resource );
+
+    /**
+     * Update an existing resource in the build.
+     * @param pathToPom
+     * @param resource
+     */
+    void updateResource( final Path pathToPom,
+                         final Path resource );
 
 }

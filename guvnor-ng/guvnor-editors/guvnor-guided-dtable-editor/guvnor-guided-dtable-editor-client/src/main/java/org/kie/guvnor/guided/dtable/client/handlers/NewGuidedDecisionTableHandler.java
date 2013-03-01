@@ -131,8 +131,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
                                                          executePostSaveCommand();
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "GuidedDecisionTableEditor" );
+                                                         final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );
                                                      }
 

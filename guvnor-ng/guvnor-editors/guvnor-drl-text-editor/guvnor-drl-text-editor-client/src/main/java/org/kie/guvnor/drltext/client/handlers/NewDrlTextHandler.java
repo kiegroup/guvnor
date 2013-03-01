@@ -55,8 +55,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "DRLEditor" );
+                                                         final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );
                                                      }
                                                  } ).create( contextPath,

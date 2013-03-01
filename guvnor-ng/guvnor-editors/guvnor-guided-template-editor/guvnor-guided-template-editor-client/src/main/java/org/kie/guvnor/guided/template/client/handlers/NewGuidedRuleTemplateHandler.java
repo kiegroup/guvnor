@@ -59,8 +59,7 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "GuidedRuleTemplateEditor" );
+                                                         final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );
                                                      }
                                                  } ).create( contextPath,

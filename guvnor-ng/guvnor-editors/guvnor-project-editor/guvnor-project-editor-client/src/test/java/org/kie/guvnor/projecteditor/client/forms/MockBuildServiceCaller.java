@@ -25,7 +25,6 @@ import org.uberfire.backend.vfs.Path;
 public class MockBuildServiceCaller
         implements Caller<BuildService> {
 
-
     private final BuildService service;
     private RemoteCallback callback;
     private boolean buildWasCalled = false;
@@ -34,21 +33,37 @@ public class MockBuildServiceCaller
         service = new BuildService() {
 
             @Override
-            public void build(Path pathToPom) {
-                callback.callback(null);
+            public void build( Path pathToPom ) {
+                callback.callback( null );
                 buildWasCalled = true;
+            }
+
+            @Override
+            public void addResource( Path pathToPom,
+                                     Path resource ) {
+            }
+
+            @Override
+            public void deleteResource( Path pathToPom,
+                                        Path resource ) {
+            }
+
+            @Override
+            public void updateResource( Path pathToPom,
+                                        Path resource ) {
             }
         };
     }
 
     @Override
-    public BuildService call(RemoteCallback<?> remoteCallback) {
+    public BuildService call( RemoteCallback<?> remoteCallback ) {
         callback = remoteCallback;
         return service;
     }
 
     @Override
-    public BuildService call(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
+    public BuildService call( RemoteCallback<?> remoteCallback,
+                              ErrorCallback errorCallback ) {
         callback = remoteCallback;
         return service;
     }

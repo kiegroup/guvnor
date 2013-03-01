@@ -58,8 +58,7 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "org.kie.guvnor.globals" );
+                                                         final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );
                                                      }
                                                  } ).create( contextPath,

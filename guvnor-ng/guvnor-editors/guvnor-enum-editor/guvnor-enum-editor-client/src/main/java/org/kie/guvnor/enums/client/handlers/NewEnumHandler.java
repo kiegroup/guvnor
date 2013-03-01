@@ -55,8 +55,7 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path,
-                                                                                                          "EnumEditor" );
+                                                         final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );
                                                      }
                                                  } ).create( contextPath,

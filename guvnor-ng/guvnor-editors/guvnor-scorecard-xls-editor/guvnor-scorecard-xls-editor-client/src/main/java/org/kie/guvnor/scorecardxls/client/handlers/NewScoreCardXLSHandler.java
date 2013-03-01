@@ -59,8 +59,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                                                                                                  buildFileName( resourceType,
                                                                                                                                 baseFileName ),
                                                                                                                  contextPath.toURI() );
-                                                                       final PlaceRequest place = new PathPlaceRequest( newPath,
-                                                                                                                        "ScoreCardXLSEditor" );
+                                                                       final PlaceRequest place = new PathPlaceRequest( newPath );
                                                                        placeManager.goTo( place );
                                                                    }
 

@@ -85,4 +85,22 @@ public class BuildServiceImpl
         }
         messagesEvent.fire(results);
     }
+
+    @Override
+    public void addResource( final Path pathToPom,
+                             final Path resource ) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void deleteResource( final Path pathToPom,
+                                final Path resource ) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void updateResource( final Path pathToPom,
+                                final Path resource ) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
