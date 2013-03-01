@@ -62,6 +62,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-commons-builder</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
