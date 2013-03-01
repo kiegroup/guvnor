@@ -16,6 +16,11 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -31,32 +36,31 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 
 @Service
 @ApplicationScoped
 public class ProjectServiceImpl
         implements ProjectService {
 
-    private static final String SOURCE_FILENAME  = "src";
-    private static final String POM_FILENAME     = "pom.xml";
+    private static final String SOURCE_FILENAME = "src";
+    private static final String POM_FILENAME = "pom.xml";
     private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
 
-    private static final String SOURCE_JAVA_PATH      = "src/main/java";
+    private static final String SOURCE_JAVA_PATH = "src/main/java";
     private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_JAVA_PATH        = "src/test/java";
-    private static final String TEST_RESOURCES_PATH   = "src/test/resources";
+    private static final String TEST_JAVA_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private IOService ioService;
-    private Paths     paths;
+    private Paths paths;
 
-    private POMService                         pomService;
-    private M2RepoService                      m2RepoService;
-    private KModuleService                     kModuleService;
+    private POMService pomService;
+    private M2RepoService m2RepoService;
+    private KModuleService kModuleService;
     private PackageConfigurationContentHandler packageConfigurationContentHandler;
+
+    private Event<ResourceAddedEvent> resourceAddedEvent;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -68,13 +72,15 @@ public class ProjectServiceImpl
                                final Paths paths,
                                final KModuleService kModuleService,
                                final POMService pomService,
-                               final PackageConfigurationContentHandler packageConfigurationContentHandler ) {
+                               final PackageConfigurationContentHandler packageConfigurationContentHandler,
+                               final Event<ResourceAddedEvent> resourceAddedEvent ) {
         this.m2RepoService = m2RepoService;
         this.ioService = ioService;
         this.paths = paths;
         this.kModuleService = kModuleService;
         this.pomService = pomService;
         this.packageConfigurationContentHandler = packageConfigurationContentHandler;
+        this.resourceAddedEvent = resourceAddedEvent;
     }
 
     @Override
@@ -210,19 +216,26 @@ public class ProjectServiceImpl
     @Override
     public Path newProject( final Path activePath,
                             final String name ) {
-        POM pomModel = new POM();
-        Repository repository = new Repository();
+        final POM pomModel = new POM();
+        final Repository repository = new Repository();
         repository.setId( "guvnor-m2-repo" );
         repository.setName( "Guvnor M2 Repo" );
         repository.setUrl( m2RepoService.getRepositoryURL() );
         pomModel.addRepository( repository );
 
-        Path pathToPom = createPOMFile( activePath, name );
+        final Path pathToPom = createPOMFile( activePath,
+                                              name );
         kModuleService.setUpKModuleStructure( pathToPom );
 
         saveImportSuggestions( paths.convert( pathToPom ).getParent() );
 
-        return pomService.savePOM( pathToPom, pomModel );
+        final Path projectPath = pomService.savePOM( pathToPom,
+                                                     pomModel );
+
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( projectPath ) );
+
+        return projectPath;
     }
 
     @Override
@@ -234,7 +247,12 @@ public class ProjectServiceImpl
     @Override
     public Path newDirectory( final Path contextPath,
                               final String dirName ) {
-        return paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
+        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
+
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+
+        return directoryPath;
     }
 
     private void saveImportSuggestions( final org.kie.commons.java.nio.file.Path folderPath ) {
