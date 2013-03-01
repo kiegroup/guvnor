@@ -132,7 +132,7 @@ public class InboxServiceImpl
 
     public List<InboxEntry> readEntries( String userName,
                                          String boxName ) {
-        Path path = userServices.buildPath( INBOX, boxName );
+        Path path = userServices.buildPath( userName, INBOX, boxName );
 
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
