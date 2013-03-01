@@ -17,11 +17,9 @@
 package org.kie.guvnor.inbox.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.inbox.model.InboxPageRequest;
 import org.kie.guvnor.inbox.model.InboxPageRow;
-import java.io.InputStream;
 
 
 @Remote
