@@ -3,20 +3,29 @@ package org.kie.guvnor.testscenario.backend.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 
-import org.drools.event.AfterActivationFiredEvent;
 import org.junit.Test;
+import org.kie.definition.rule.Rule;
 import org.kie.event.rule.AfterMatchFiredEvent;
-import org.kie.runtime.KieRuntime;
 import org.kie.runtime.rule.Match;
+
 
 public class RuleCoverageListenerTest {
 
     @Test
     public void testCoverage() throws Exception {
+        // configuring mock event
+        AfterMatchFiredEvent amfe = mock( AfterMatchFiredEvent.class );
+        Match match = mock( Match.class );
+        Rule rule = mock( Rule.class );
+        when( amfe.getMatch() ).thenReturn( match );
+        when( match.getRule() ).thenReturn( rule );
+        when( rule.getName() ).thenReturn( "rule1" ).thenReturn( "rule2" ).thenReturn( "rule3" );
+
         HashSet<String> rules = new HashSet<String>();
         rules.add( "rule1" );
         rules.add( "rule2" );
@@ -28,10 +37,8 @@ public class RuleCoverageListenerTest {
         assertEquals( 0,
                       ls.getPercentCovered() );
 
-        AfterMatchFiredEvent amfe = mock( AfterMatchFiredEvent.class );
         
-        ls.afterActivationFired( new MockActivation( "rule1" ),
-                                 null );
+        ls.afterMatchFired( amfe );
         assertEquals( 2,
                       ls.rules.size() );
         assertTrue( ls.rules.contains( "rule2" ) );
@@ -40,8 +47,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 33,
                       ls.getPercentCovered() );
 
-        ls.afterActivationFired( new AfterActivationFiredEvent( new MockActivation( "rule2" ) ),
-                                 null );
+        ls.afterMatchFired( amfe );
         assertEquals( 1,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
@@ -51,8 +57,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 66,
                       ls.getPercentCovered() );
 
-        ls.afterActivationFired( new AfterActivationFiredEvent( new MockActivation( "rule3" ) ),
-                                 null );
+        ls.afterMatchFired( amfe );
         assertEquals( 0,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );

@@ -16,18 +16,23 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import org.drools.ClockType;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-
-import static org.junit.Assert.*;
+import org.kie.KieServices;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieFileSystem;
+import org.kie.builder.Message.Level;
+import org.kie.builder.model.KieBaseModel;
+import org.kie.builder.model.KieModuleModel;
+import org.kie.builder.model.KieSessionModel.KieSessionType;
+import org.kie.conf.EqualityBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.conf.ClockTypeOption;
 
 /**
  * A class with some utilities for testing rules.
@@ -37,20 +42,34 @@ public abstract class RuleUnit {
     /**
      * Return a wm ready to go based on the rules in a drl at the specified uri (in the classpath).
      */
-    public StatefulSession getWorkingMemory(String uri)
+    public KieSession getKieSession(String uri)
             throws DroolsParserException, IOException, Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader(this.getClass()
-                .getResourceAsStream(uri)));
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage(builder.getPackage());
-
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = rb.newStatefulSession( conf, null );
-
         
-        return wm;
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write(org.kie.io.ResourceFactory.newClassPathResource( uri, getClass() ) )
+                              .writeKModuleXML( createKieProjectWithPackages(ks, "org.pkg1.*").toXML() );
+        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        
+        assertFalse( builder.getResults().getMessages( Level.ERROR ).isEmpty() );
+        
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+   
+        return ksession;
     }
+    
+    private KieModuleModel createKieProjectWithPackages(KieServices ks, String pkg) {
+        KieModuleModel kproj = ks.newKieModuleModel();
+
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .addPackage(pkg);
+
+        kieBaseModel1.newKieSessionModel("KSession1")
+                .setType( KieSessionType.STATEFUL )
+                .setClockType(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.name()));
+
+        return kproj;
+    }    
 }

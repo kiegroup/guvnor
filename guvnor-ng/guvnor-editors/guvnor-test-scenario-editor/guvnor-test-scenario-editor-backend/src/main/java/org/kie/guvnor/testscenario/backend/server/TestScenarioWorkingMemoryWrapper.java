@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.base.TypeResolver;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.runtime.rule.impl.InternalAgenda;
+import org.drools.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.kie.guvnor.testscenario.backend.server.executors.MethodExecutor;
 import org.kie.guvnor.testscenario.backend.server.verifiers.FactVerifier;
@@ -70,8 +71,10 @@ public class TestScenarioWorkingMemoryWrapper {
     }
 
     public void activateRuleFlowGroup(String activateRuleFlowGroupName) {
-        ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName ).setAutoDeactivate( false );
-        ksession.getAgenda().activateRuleFlowGroup( activateRuleFlowGroupName );
+        // mark does not want to make the following methods public, so for now we have to downcast
+        ((RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName )).setAutoDeactivate( false );
+        // same for the following method
+        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup( activateRuleFlowGroupName );
     }
 
     public void verifyExpectation(Expectation expectation) throws InvocationTargetException,

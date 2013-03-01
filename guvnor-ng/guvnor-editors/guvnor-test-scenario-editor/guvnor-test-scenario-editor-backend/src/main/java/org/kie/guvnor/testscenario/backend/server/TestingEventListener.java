@@ -1,29 +1,22 @@
 package org.kie.guvnor.testscenario.backend.server;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.WorkingMemory;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
+import org.kie.definition.rule.Rule;
+import org.kie.event.rule.AfterMatchFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.AgendaGroupPoppedEvent;
+import org.kie.event.rule.AgendaGroupPushedEvent;
+import org.kie.event.rule.BeforeMatchFiredEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.rule.Match;
 
 /**
  * This tracks what is happening in the engine with rule activations and firings.
@@ -32,124 +25,60 @@ import org.drools.spi.KnowledgeHelper;
  * If a rule is not allowed to fire, it will still be counted as an activation.
  * If it is allowed to fire, then it will only be counted after the activation is fired.
  */
-public class TestingEventListener implements AgendaEventListener {
+public class TestingEventListener
+        implements
+        AgendaEventListener {
 
-    final Map<String, Integer> firingCounts = new HashMap<String, Integer>(100);
+    final Map<String, Integer> firingCounts = new HashMap<String, Integer>( 100 );
 
-    long totalFires;
-
+    long                       totalFires;
 
     public TestingEventListener() {
     }
 
-    public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
+    public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames,
+                                        final boolean inclusive) {
         return new AgendaFilter() {
-            public boolean accept(Activation activation) {
-                if (ruleNames.size() ==0) return true;
+            public boolean accept(Match activation) {
+                if ( ruleNames.isEmpty() ) return true;
                 String ruleName = activation.getRule().getName();
 
-                //jdelong: please don't want to see records of cancelled activations
-
-                if (inclusive) {
-                    if (ruleNames.contains(ruleName)) {
-                        return true;
-                    } else {
-                        //record(activation.getRule(), firingCounts);
-                        return false;
-                    }
-
+                if ( inclusive ) {
+                    return ruleNames.contains( ruleName );
                 } else {
-                    if (!ruleNames.contains(ruleName)) {
-                        return true;
-                    } else {
-                        //record(activation.getRule(), firingCounts);
-                        return false;
-                    }
+                    return !ruleNames.contains( ruleName );
                 }
             }
         };
     }
 
-
-
-//    /**
-//     * Exclusive means DO NOT fire the rules mentioned.
-//     * For those rules, they will still be counted, just not allowed to activate.
-//     * Inclusive means only the rules on the given set are allowed to fire.
-//     * The other rules will have their activation counted but not be allowed to fire.
-//     */
-//    static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
-//            boolean inclusive) {
-//        if (ruleNames.size() > 0) {
-//            if (inclusive) {
-//                Package[] pkgs = ruleBase.getPackages();
-//                for (int i = 0; i < pkgs.length; i++) {
-//                    Rule[] rules = pkgs[i].getRules();
-//                    for (int j = 0; j < rules.length; j++) {
-//                        Rule rule = rules[j];
-//                        if (!ruleNames.contains(rule.getName())) {
-//                            rule.setConsequence(new NilConsequence());
-//                        }
-//                    }
-//                }
-//            } else {
-//                Package[] pkgs = ruleBase.getPackages();
-//                for (int i = 0; i < pkgs.length; i++) {
-//                    Package pkg = pkgs[i];
-//                    for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
-//                        String name = (String) iter.next();
-//                        Rule rule = pkg.getRule(name);
-//                        rule.setConsequence(new NilConsequence());
-//                    }
-//
-//                }
-//            }
-//        }
-//    }
-
-
-
-
-
-    public void activationCancelled(ActivationCancelledEvent event,
-            WorkingMemory workingMemory) {
-    }
-
-    public void activationCreated(ActivationCreatedEvent event,
-            WorkingMemory workingMemory) {
-    }
-
-    public void afterActivationFired(AfterActivationFiredEvent event,
-            WorkingMemory workingMemory) {
-        recordFiring(event.getActivation().getRule());
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        recordFiring( event.getMatch().getRule() );
     }
 
     private void recordFiring(Rule rule) {
-        record(rule, this.firingCounts);
+        record( rule, this.firingCounts );
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
     }
 
-    private void record(Rule rule, Map<String, Integer> counts) {
+    private void record(Rule rule,
+                        Map<String, Integer> counts) {
         this.totalFires++;
         String name = rule.getName();
-        if (!counts.containsKey(name)) {
-            counts.put(name, 1);
+        if ( !counts.containsKey( name ) ) {
+            counts.put( name, 1 );
         } else {
-            counts.put(name, counts.get(name) + 1);
+            counts.put( name, counts.get( name ) + 1 );
         }
     }
-
-
 
     /**
      * @return A map of the number of times a given rule "fired".
@@ -165,57 +94,36 @@ public class TestingEventListener implements AgendaEventListener {
     public String[] getRulesFiredSummary() {
         String[] r = new String[firingCounts.size()];
         int i = 0;
-        for (Iterator iterator = firingCounts.entrySet().iterator(); iterator.hasNext();) {
-            Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
+        for ( Entry<String, Integer> e : firingCounts.entrySet() ) {
             r[i] = e.getKey() + " [" + e.getValue() + "]";
             i++;
         }
-
         return r;
     }
 
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-
+    @Override
+    public void matchCreated(MatchCreatedEvent event) {
     }
 
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-
+    @Override
+    public void matchCancelled(MatchCancelledEvent event) {
     }
 
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-
+    @Override
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
     }
 
-    public void beforeRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-
+    @Override
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
     }
 
-
-
-}
-
-class NilConsequence implements Consequence {
-
-    public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
-    }
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
+    @Override
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    @Override
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    }
 
-    }
-    
-    public String getName() {
-        return "default";
-    }
 }
 

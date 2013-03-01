@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.StatefulSession;
 import org.junit.Test;
+import org.kie.runtime.KieSession;
 
 public class TestingEventListenerTest extends RuleUnit {
 
@@ -35,7 +35,7 @@ public class TestingEventListenerTest extends RuleUnit {
         set.add("rule1");
         set.add("rule2");
 
-        StatefulSession session  = getWorkingMemory("test_rules.drl");
+        KieSession session  = getKieSession("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), true);
@@ -67,8 +67,7 @@ public class TestingEventListenerTest extends RuleUnit {
         HashSet<String> set = new HashSet<String>();
         set.add("rule3");
 
-
-        StatefulSession session  = getWorkingMemory("test_rules.drl");
+        KieSession session  = getKieSession("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
@@ -94,7 +93,7 @@ public class TestingEventListenerTest extends RuleUnit {
         HashSet<String> set = new HashSet<String>();
 
 
-        StatefulSession session  = getWorkingMemory("test_rules.drl");
+        KieSession session  = getKieSession("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.common.InternalWorkingMemory;
 import org.kie.guvnor.testscenario.backend.server.populators.FactPopulator;
 import org.kie.guvnor.testscenario.backend.server.populators.FactPopulatorFactory;
 import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
@@ -35,6 +34,7 @@ import org.kie.guvnor.testscenario.model.FactData;
 import org.kie.guvnor.testscenario.model.Fixture;
 import org.kie.guvnor.testscenario.model.RetractFact;
 import org.kie.guvnor.testscenario.model.Scenario;
+import org.kie.runtime.KieSession;
 import org.mvel2.MVEL;
 
 /**
@@ -65,12 +65,12 @@ public class ScenarioRunner {
      */
     public ScenarioRunner(final TypeResolver typeResolver,
                           final ClassLoader classLoader,
-                          final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
+                          final KieSession ksession) throws ClassNotFoundException {
 
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
 
-        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(workingMemory,
+        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(ksession,
                 typeResolver,
                 classLoader,
                 populatedData,
@@ -79,7 +79,7 @@ public class ScenarioRunner {
                 globalData,
                 typeResolver,
                 classLoader);
-        this.factPopulator = new FactPopulator(workingMemory,
+        this.factPopulator = new FactPopulator(ksession,
                 populatedData);
     }
 
