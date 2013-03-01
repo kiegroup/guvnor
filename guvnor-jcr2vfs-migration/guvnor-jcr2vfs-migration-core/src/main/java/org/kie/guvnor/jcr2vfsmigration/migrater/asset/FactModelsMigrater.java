@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -16,6 +17,7 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FieldMetaModel;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -42,7 +44,9 @@ public class FactModelsMigrater {
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
         FactModels vfsFactModels = convertFactModels(
                 (org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels) jcrAsset.getContent());
-        vfsFactModelService.save(path, vfsFactModels, checkinComment); //, lastModified, lastContributor); TODO: Some sort of migration service
+        
+        Metadata m = null;       
+        vfsFactModelService.save(path, vfsFactModels, m, checkinComment); //, lastModified, lastContributor); TODO: Some sort of migration service
     }
 
     private FactModels convertFactModels(

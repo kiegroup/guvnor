@@ -5,11 +5,13 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
+import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -35,7 +37,8 @@ public class DRLEditorMigrater {
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
 
-        drlTextEditorService.save(path, ((RuleContentText)jcrAsset.getContent()).content);
+        Metadata m = null;
+        drlTextEditorService.save(path, ((RuleContentText)jcrAsset.getContent()).content, m, "migrated from jcr");
     }
 
  }

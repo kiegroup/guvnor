@@ -11,6 +11,7 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -37,7 +38,8 @@ public class DSLEditorMigrater {
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
 
-        enumService.save(path, ((RuleContentText)jcrAsset.getContent()).content, null, "");
+        Metadata m = null;
+        enumService.save(path, ((RuleContentText)jcrAsset.getContent()).content, m, "migrated from jcr");
     }
 
  }

@@ -30,7 +30,7 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -169,7 +169,7 @@ public class AssetMigrater {
          //final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
         Metadata metadata = new Metadata();
         for(DiscussionRecord discussion: discussions) {
-            metadata.addDiscussion( new org.kie.guvnor.commons.service.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );
+            metadata.addDiscussion( new org.kie.guvnor.services.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );
         }
 
         Path path = migrationPathManager.generatePathForAsset(jcrModule, assetJCR);
