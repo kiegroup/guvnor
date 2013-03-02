@@ -16,20 +16,19 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
-import org.drools.ClockType;
 import org.drools.compiler.DroolsParserException;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.Message.Level;
+import org.kie.builder.Message;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel.KieSessionType;
-import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -48,27 +47,29 @@ public abstract class RuleUnit {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem()
                               .write(org.kie.io.ResourceFactory.newClassPathResource( uri, getClass() ) )
-                              .writeKModuleXML( createKieProjectWithPackages(ks, "org.pkg1.*").toXML() );
+                              .writeKModuleXML( createKieProjectWithPackages(ks).toXML() );
         KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
         
-        assertFalse( builder.getResults().getMessages( Level.ERROR ).isEmpty() );
+        List<Message> results = builder.getResults().getMessages();
+        assertTrue( results.toString(), results.isEmpty() );
         
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
    
         return ksession;
     }
     
-    private KieModuleModel createKieProjectWithPackages(KieServices ks, String pkg) {
+    private KieModuleModel createKieProjectWithPackages(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage(pkg);
+                .addPackage("*")
+                .setDefault( true );
 
         kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.name()));
+                .setClockType(ClockTypeOption.get("pseudo"))
+                .setDefault( true );
 
         return kproj;
     }    
