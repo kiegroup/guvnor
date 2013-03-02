@@ -16,22 +16,22 @@
 
 package org.kie.guvnor.builder;
 
+import java.io.ByteArrayInputStream;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
 
 @Service
 @ApplicationScoped
@@ -40,22 +40,24 @@ public class BuildServiceImpl
 
     private Paths paths;
     private SourceServices sourceServices;
-    private Event<Results> messagesEvent;
+    private Event<BuildResults> messagesEvent;
     private POMService pomService;
     private M2RepoService m2RepoService;
     private IOService ioService;
+
+    private LRUBuilderCache cache = new LRUBuilderCache();
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
     }
 
     @Inject
-    public BuildServiceImpl(final Paths paths,
-                            final SourceServices sourceServices,
-                            final POMService pomService,
-                            final M2RepoService m2RepoService,
-                            final Event<Results> messagesEvent,
-                            final IOService ioService) {
+    public BuildServiceImpl( final Paths paths,
+                             final SourceServices sourceServices,
+                             final POMService pomService,
+                             final M2RepoService m2RepoService,
+                             final Event<BuildResults> messagesEvent,
+                             final IOService ioService ) {
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.messagesEvent = messagesEvent;
@@ -65,42 +67,66 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void build(final Path pathToPom) {
-        final POM gav = pomService.loadPOM(pathToPom);
+    public void build( final Path pathToPom ) {
+        assertBuilderCache( pathToPom );
+        final Builder builder = cache.getEntry( pathToPom );
+        final BuildResults results = builder.build();
 
-        final Builder builder = new Builder(paths.convert(pathToPom).getParent(),
-                                            gav.getGav().getArtifactId(),
-                                            paths,
-                                            sourceServices,
-                                            ioService);
-
-        final Results results = builder.build();
-        if (results.isEmpty()) {
-
-            final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
-            final ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
-
-            m2RepoService.deployJar(input,
-                    gav.getGav());
+        if ( results.isEmpty() ) {
+            deploy( pathToPom );
         }
-        messagesEvent.fire(results);
+        messagesEvent.fire( results );
+    }
+
+    private void assertBuilderCache( final Path pathToPom ) {
+        if ( cache.getKeys().contains( pathToPom ) ) {
+            return;
+        }
+        final POM gav = pomService.loadPOM( pathToPom );
+        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
+                                             gav.getGav().getArtifactId(),
+                                             paths,
+                                             sourceServices,
+                                             ioService );
+        cache.setEntry( pathToPom,
+                        builder );
+    }
+
+    private void deploy( final Path pathToPom ) {
+        assertBuilderCache( pathToPom );
+        final POM gav = pomService.loadPOM( pathToPom );
+        final Builder builder = cache.getEntry( pathToPom );
+        final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+        final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
+        m2RepoService.deployJar( input,
+                                 gav.getGav() );
     }
 
     @Override
     public void addResource( final Path pathToPom,
                              final Path resource ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        assertBuilderCache( pathToPom );
+        final Builder builder = cache.getEntry( pathToPom );
+        final BuildResults results = builder.addResource( paths.convert( resource ) );
+        messagesEvent.fire( results );
     }
 
     @Override
     public void deleteResource( final Path pathToPom,
                                 final Path resource ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        assertBuilderCache( pathToPom );
+        final Builder builder = cache.getEntry( pathToPom );
+        final BuildResults results = builder.deleteResource( paths.convert( resource ) );
+        messagesEvent.fire( results );
     }
 
     @Override
     public void updateResource( final Path pathToPom,
                                 final Path resource ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        assertBuilderCache( pathToPom );
+        final Builder builder = cache.getEntry( pathToPom );
+        final BuildResults results = builder.updateResource( paths.convert( resource ) );
+        messagesEvent.fire( results );
     }
+
 }

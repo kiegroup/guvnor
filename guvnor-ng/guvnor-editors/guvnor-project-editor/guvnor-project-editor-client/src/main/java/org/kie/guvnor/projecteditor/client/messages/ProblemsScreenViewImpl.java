@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.kie.guvnor.commons.service.builder.model.Message;
+import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.mvp.PlaceManager;
@@ -54,14 +54,14 @@ public class ProblemsScreenViewImpl
     }
 
     @UiField(provided = true)
-    DataGrid<Message> dataGrid;
+    DataGrid<BuildMessage> dataGrid;
 
     @UiField
     HorizontalPanel panel;
 
-    public static final ProvidesKey<Message> KEY_PROVIDER = new ProvidesKey<Message>() {
+    public static final ProvidesKey<BuildMessage> KEY_PROVIDER = new ProvidesKey<BuildMessage>() {
         @Override
-        public Object getKey(Message item) {
+        public Object getKey(BuildMessage item) {
             return item == null ? null : item.getId();
         }
     };
@@ -69,7 +69,7 @@ public class ProblemsScreenViewImpl
     @Inject
     public ProblemsScreenViewImpl(ProblemsService problemsService, PlaceManager placeManager) {
         this.placeManager = placeManager;
-        dataGrid = new DataGrid<Message>(KEY_PROVIDER);
+        dataGrid = new DataGrid<BuildMessage>(KEY_PROVIDER);
         dataGrid.setWidth("100%");
 
         dataGrid.setAutoHeaderRefreshDisabled(true);
@@ -100,9 +100,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addLineColumn() {
-        Column<Message, String> lineColumn = new Column<Message, String>(new TextCell()) {
+        Column<BuildMessage, String> lineColumn = new Column<BuildMessage, String>(new TextCell()) {
             @Override
-            public String getValue(Message message) {
+            public String getValue(BuildMessage message) {
                 return Integer.toString(message.getLine());
             }
         };
@@ -111,9 +111,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addColumnColumn() {
-        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
             @Override
-            public String getValue(Message message) {
+            public String getValue(BuildMessage message) {
                 return Integer.toString(message.getColumn());
             }
         };
@@ -122,9 +122,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addTextColumn() {
-        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
             @Override
-            public String getValue(Message message) {
+            public String getValue(BuildMessage message) {
                 return message.getText();
             }
         };
@@ -133,9 +133,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addFileNameColumn() {
-        Column<Message, String> column = new Column<Message, String>(new ClickableTextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new ClickableTextCell()) {
             @Override
-            public String getValue(Message message) {
+            public String getValue(BuildMessage message) {
                 if (message.getPath() != null) {
                     return message.getPath().getFileName();
                 } else {
@@ -143,11 +143,11 @@ public class ProblemsScreenViewImpl
                 }
             }
         };
-        column.setFieldUpdater(new FieldUpdater<Message, String>() {
+        column.setFieldUpdater(new FieldUpdater<BuildMessage, String>() {
             @Override
-            public void update(int index, Message message, String value) {
-                if (message.getPath() != null) {
-                    placeManager.goTo(message.getPath());
+            public void update(int index, BuildMessage buildMessage, String value) {
+                if ( buildMessage.getPath() != null) {
+                    placeManager.goTo( buildMessage.getPath());
                 }
             }
         });
@@ -156,9 +156,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addArtifactIDColumn() {
-        Column<Message, String> column = new Column<Message, String>(new TextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
             @Override
-            public String getValue(Message message) {
+            public String getValue(BuildMessage message) {
                 return message.getArtifactID();
             }
         };
@@ -167,9 +167,9 @@ public class ProblemsScreenViewImpl
     }
 
     private void addLevelColumn() {
-        Column<Message, ImageResource> column = new Column<Message, ImageResource>(new ImageResourceCell()) {
+        Column<BuildMessage, ImageResource> column = new Column<BuildMessage, ImageResource>(new ImageResourceCell()) {
             @Override
-            public ImageResource getValue(Message message) {
+            public ImageResource getValue(BuildMessage message) {
                 switch (message.getLevel()) {
                     case ERROR:
                         return ProjectEditorResources.INSTANCE.Error();

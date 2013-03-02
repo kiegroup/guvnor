@@ -1,4 +1,4 @@
-package org.kie.guvnor.datamodel.backend.server.cache;
+package org.kie.guvnor.services.cache;
 
 /**
  * Define operations of a cache

@@ -18,10 +18,14 @@ package org.kie.guvnor.builder;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.KieServices;
+import org.kie.builder.IncrementalResults;
+import org.kie.builder.InternalKieBuilder;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
@@ -30,7 +34,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.builder.model.BuildMessage;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.services.backend.file.DotFileFilter;
 import org.kie.guvnor.services.file.Filter;
@@ -91,9 +96,66 @@ public class Builder {
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
     }
 
-    public Results build() {
+    public BuildResults build() {
+        final List<BuildMessage> buildMessages = convertMessages( kieBuilder.buildAll().getResults().getMessages(),
+                                                                  BuildMessage.Type.BUILD_FULL );
+        final BuildResults results = new BuildResults();
+        results.getBuildMessages().addAll( buildMessages );
+        results.setArtifactID( artifactId );
+        return results;
+    }
+
+    public BuildResults addResource( final Path resource ) {
+        //If the Module has already been built the below call does nothing
         kieBuilder.buildAll();
-        return getResults();
+
+        //Add new resource
+        final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+        final InputStream is = ioService.newInputStream( resource );
+        final BufferedInputStream bis = new BufferedInputStream( is );
+        kieFileSystem.write( destinationPath,
+                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+
+        //Incremental build
+        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+
+        //Messages from incremental build
+        final List<BuildMessage> addedBuildMessages = convertMessages( incrementalResults.getAddedMessages(),
+                                                                       BuildMessage.Type.BUILD_INCREMENTAL_ADD );
+        final List<BuildMessage> removedBuildMessages = convertMessages( incrementalResults.getRemovedMessages(),
+                                                                         BuildMessage.Type.BUILD_INCREMENTAL_REMOVE );
+        final BuildResults results = new BuildResults();
+        results.getBuildMessages().addAll( addedBuildMessages );
+        results.getBuildMessages().addAll( removedBuildMessages );
+        results.setArtifactID( artifactId );
+        return results;
+    }
+
+    public BuildResults deleteResource( final Path resource ) {
+        //If the Module has already been built the below call does nothing
+        kieBuilder.buildAll();
+
+        //Delete resource
+        final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+        kieFileSystem.delete( destinationPath );
+
+        //Incremental build
+        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+
+        //Messages from incremental build
+        final List<BuildMessage> addedBuildMessages = convertMessages( incrementalResults.getAddedMessages(),
+                                                                       BuildMessage.Type.BUILD_INCREMENTAL_ADD );
+        final List<BuildMessage> removedBuildMessages = convertMessages( incrementalResults.getRemovedMessages(),
+                                                                         BuildMessage.Type.BUILD_INCREMENTAL_REMOVE );
+        final BuildResults results = new BuildResults();
+        results.getBuildMessages().addAll( addedBuildMessages );
+        results.getBuildMessages().addAll( removedBuildMessages );
+        results.setArtifactID( artifactId );
+        return results;
+    }
+
+    public BuildResults updateResource( final Path resource ) {
+        return addResource( resource );
     }
 
     public KieModule getKieModule() {
@@ -115,21 +177,20 @@ public class Builder {
         }
     }
 
-    private Results getResults() {
-        final Results results = new Results();
-        results.setArtifactID( artifactId );
-
-        for ( final Message message : kieBuilder.getResults().getMessages() ) {
-            final org.kie.guvnor.commons.service.builder.model.Message m = new org.kie.guvnor.commons.service.builder.model.Message();
+    private List<BuildMessage> convertMessages( final List<Message> messages,
+                                                final BuildMessage.Type type ) {
+        final List<BuildMessage> result = new ArrayList<BuildMessage>();
+        for ( final Message message : messages ) {
+            final BuildMessage m = new BuildMessage();
             switch ( message.getLevel() ) {
                 case ERROR:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.ERROR );
+                    m.setLevel( BuildMessage.Level.ERROR );
                     break;
                 case WARNING:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.WARNING );
+                    m.setLevel( BuildMessage.Level.WARNING );
                     break;
                 case INFO:
-                    m.setLevel( org.kie.guvnor.commons.service.builder.model.Message.Level.INFO );
+                    m.setLevel( BuildMessage.Level.INFO );
                     break;
             }
 
@@ -142,10 +203,11 @@ public class Builder {
             }
             m.setColumn( message.getColumn() );
             m.setText( message.getText() );
-
-            results.getMessages().add( m );
+            m.setType( type );
+            result.add( m );
         }
 
-        return results;
+        return result;
     }
+
 }

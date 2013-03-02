@@ -20,9 +20,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class Message {
+public class BuildMessage {
 
     private long id;
+    private Type type;
     private Level level;
     private Path path;
     private int line;
@@ -30,32 +31,44 @@ public class Message {
     private String text;
     private String artifactID;
 
-    public void setId(long id) {
+    public void setId( long id ) {
         this.id = id;
     }
 
-    public void setLevel(Level level) {
+    public void setType( final Type type ) {
+        this.type = type;
+    }
+
+    public void setLevel( final Level level ) {
         this.level = level;
     }
 
-    public void setPath(Path path) {
+    public void setPath( final Path path ) {
         this.path = path;
     }
 
-    public void setLine(int line) {
+    public void setLine( final int line ) {
         this.line = line;
     }
 
-    public void setColumn(int column) {
+    public void setColumn( final int column ) {
         this.column = column;
     }
 
-    public void setText(String text) {
+    public void setText( final String text ) {
         this.text = text;
+    }
+
+    public void setArtifactID( final String artifactId ) {
+        this.artifactID = artifactId;
     }
 
     public long getId() {
         return id;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public Level getLevel() {
@@ -78,10 +91,6 @@ public class Message {
         return text;
     }
 
-    public void setArtifactID(String artifactId) {
-        this.artifactID = artifactId;
-    }
-
     public String getArtifactID() {
         return artifactID;
     }
@@ -89,5 +98,10 @@ public class Message {
     @Portable
     public static enum Level {
         ERROR, WARNING, INFO;
+    }
+
+    @Portable
+    public static enum Type {
+        BUILD_FULL, BUILD_INCREMENTAL_ADD, BUILD_INCREMENTAL_REMOVE;
     }
 }

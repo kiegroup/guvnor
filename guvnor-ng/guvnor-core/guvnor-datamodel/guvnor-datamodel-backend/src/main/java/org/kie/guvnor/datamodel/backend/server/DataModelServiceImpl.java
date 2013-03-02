@@ -32,8 +32,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
-import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.builder.model.BuildMessage;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
@@ -86,7 +86,7 @@ public class DataModelServiceImpl
     private SourceServices sourceServices;
 
     @Inject
-    private Event<Results> messagesEvent;
+    private Event<BuildResults> messagesEvent;
 
     @Inject
     private FileDiscoveryService fileDiscoveryService;
@@ -169,7 +169,7 @@ public class DataModelServiceImpl
                                              new ModelFilter() );
 
         //If the Project had errors report them to the user and return an empty ProjectDefinition
-        final Results results = builder.build();
+        final BuildResults results = builder.build();
         if ( !results.isEmpty() ) {
             messagesEvent.fire( results );
             return makeEmptyProjectDefinition();
@@ -189,7 +189,7 @@ public class DataModelServiceImpl
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent() );
                 } catch ( IOException ioe ) {
-                    results.getMessages().add( makeMessage( ioe ) );
+                    results.getBuildMessages().add( makeMessage( ioe ) );
                 }
             }
         }
@@ -205,9 +205,9 @@ public class DataModelServiceImpl
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
-                    results.getMessages().add( makeMessage( cnfe ) );
+                    results.getBuildMessages().add( makeMessage( cnfe ) );
                 } catch ( IOException ioe ) {
-                    results.getMessages().add( makeMessage( ioe ) );
+                    results.getBuildMessages().add( makeMessage( ioe ) );
                 }
             }
         }
@@ -241,10 +241,10 @@ public class DataModelServiceImpl
                                packagePath );
 
         //Report any errors
-        final Results results = new Results();
+        final BuildResults results = new BuildResults();
         final List<String> errors = dmoBuilder.getErrors();
         for ( final String error : errors ) {
-            results.getMessages().add( makeMessage( error ) );
+            results.getBuildMessages().add( makeMessage( error ) );
         }
         if ( !results.isEmpty() ) {
             messagesEvent.fire( results );
@@ -254,18 +254,18 @@ public class DataModelServiceImpl
         return dmoBuilder.build();
     }
 
-    private Message makeMessage( final Exception e ) {
-        final Message message = new Message();
-        message.setLevel( Message.Level.ERROR );
-        message.setText( e.getMessage() );
-        return message;
+    private BuildMessage makeMessage( final Exception e ) {
+        final BuildMessage buildMessage = new BuildMessage();
+        buildMessage.setLevel( BuildMessage.Level.ERROR );
+        buildMessage.setText( e.getMessage() );
+        return buildMessage;
     }
 
-    private Message makeMessage( final String msg ) {
-        final Message message = new Message();
-        message.setLevel( Message.Level.ERROR );
-        message.setText( msg );
-        return message;
+    private BuildMessage makeMessage( final String msg ) {
+        final BuildMessage buildMessage = new BuildMessage();
+        buildMessage.setLevel( BuildMessage.Level.ERROR );
+        buildMessage.setText( msg );
+        return buildMessage;
     }
 
     private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,

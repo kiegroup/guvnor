@@ -20,13 +20,14 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
 public class POMServiceImpl
         implements POMService,
-        ViewSourceService<POM>{
+                   ViewSourceService<POM> {
 
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
     private IOService ioService;
@@ -34,6 +35,7 @@ public class POMServiceImpl
     private POMContentHandler pomContentHandler;
     private MetadataService metadataService;
     private SourceServices sourceServices;
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Identity identity;
@@ -43,18 +45,20 @@ public class POMServiceImpl
     }
 
     @Inject
-    public POMServiceImpl( Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
-                           @Named("ioStrategy") IOService ioService,
-                           MetadataService metadataService,
-                           SourceServices sourceServices,
-                           Paths paths,
-                           POMContentHandler pomContentHandler ) {
+    public POMServiceImpl( final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
+                           final @Named("ioStrategy") IOService ioService,
+                           final MetadataService metadataService,
+                           final SourceServices sourceServices,
+                           final Paths paths,
+                           final POMContentHandler pomContentHandler,
+                           final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.ioService = ioService;
         this.metadataService = metadataService;
         this.sourceServices = sourceServices;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
+        this.resourceUpdatedEvent = resourceUpdatedEvent;
     }
 
     @Override
@@ -76,25 +80,25 @@ public class POMServiceImpl
     public Path savePOM( final String commitMessage,
                          final Path pathToPOM,
                          final POM pomModel,
-                         Metadata metadata ) {
+                         final Metadata metadata ) {
         try {
             Path result;
             if ( metadata == null ) {
-                result = paths.convert(
-                        ioService.write(
-                                paths.convert( pathToPOM ),
-                                pomContentHandler.toString( pomModel ),
-                                makeCommentedOption( commitMessage ) ) );
+                result = paths.convert( ioService.write( paths.convert( pathToPOM ),
+                                                         pomContentHandler.toString( pomModel ),
+                                                         makeCommentedOption( commitMessage ) ) );
             } else {
-                result = paths.convert(
-                        ioService.write(
-                                paths.convert( pathToPOM ),
-                                pomContentHandler.toString( pomModel ),
-                                metadataService.setUpAttributes( pathToPOM, metadata ),
-                                makeCommentedOption( commitMessage ) ) );
+                result = paths.convert( ioService.write( paths.convert( pathToPOM ),
+                                                         pomContentHandler.toString( pomModel ),
+                                                         metadataService.setUpAttributes( pathToPOM, metadata ),
+                                                         makeCommentedOption( commitMessage ) ) );
             }
 
+            //Invalidate Project-level DMO cache as POM has changed.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( result ) );
+
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( result ) );
 
             return result;
 
@@ -109,12 +113,14 @@ public class POMServiceImpl
                          final POM pomModel ) {
         try {
 
-            Path result = paths.convert(
-                    ioService.write(
-                            paths.convert( pathToPOM ),
-                            pomContentHandler.toString( pomModel ) ) );
+            Path result = paths.convert( ioService.write( paths.convert( pathToPOM ),
+                                                          pomContentHandler.toString( pomModel ) ) );
 
+            //Invalidate Project-level DMO cache as POM has changed.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( result ) );
+
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( result ) );
 
             return result;
 
@@ -135,8 +141,8 @@ public class POMServiceImpl
     }
 
     @Override
-    public String toSource(Path path, POM model) {
-
-        return sourceServices.getServiceFor(paths.convert(path)).getSource(paths.convert(path),model);
+    public String toSource( final Path path,
+                            final POM model ) {
+        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 }

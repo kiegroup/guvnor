@@ -231,10 +231,6 @@ public class ProjectServiceImpl
 
         final Path projectPath = pomService.savePOM( pathToPom,
                                                      pomModel );
-
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( projectPath ) );
-
         return projectPath;
     }
 
@@ -263,7 +259,12 @@ public class ProjectServiceImpl
 
     private Path createPOMFile( final Path activePath,
                                 final String name ) {
-        return paths.convert( ioService.createFile( paths.convert( createPOMPath( activePath, name ) ) ) );
+        final Path pomPath = paths.convert( ioService.createFile( paths.convert( createPOMPath( activePath, name ) ) ) );
+
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( pomPath ) );
+
+        return pomPath;
     }
 
     private Path createPOMPath( final Path activePath,

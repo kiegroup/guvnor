@@ -1,5 +1,10 @@
 package org.kie.guvnor.builder;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -28,50 +33,113 @@ public class BuildChangeListener {
     @Inject
     private BuildService buildService;
 
-    public void addResource( @Observes final ResourceAddedEvent resourceAddedEvent ) {
-        PortablePreconditions.checkNotNull( "resourceAddedEvent",
-                                            resourceAddedEvent );
-        final Path resource = resourceAddedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
+    private ExecutorService executor;
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
-            return;
+    @PostConstruct
+    private void setupExecutorService() {
+        executor = Executors.newFixedThreadPool( 2 );
+    }
+
+    @PreDestroy
+    private void destroyExecutorService() {
+        try {
+            executor.shutdown();
+            if ( !executor.awaitTermination( 10,
+                                             TimeUnit.SECONDS ) ) {
+                executor.shutdownNow();
+                if ( !executor.awaitTermination( 10,
+                                                 TimeUnit.SECONDS ) ) {
+                    System.err.println( "executor did not terminate" );
+                }
+            }
+        } catch ( InterruptedException e ) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
         }
+    }
 
-        buildService.addResource( pathToPom,
-                                  resource );
+    public void addResource( @Observes final ResourceAddedEvent resourceAddedEvent ) {
+        try {
+            PortablePreconditions.checkNotNull( "resourceAddedEvent",
+                                                resourceAddedEvent );
+            final Path resource = resourceAddedEvent.getPath();
+            final Path pathToPom = getPathToPom( resource );
+
+            //If resource is not within a Project or the Project lacks a pom.xml file exit
+            if ( pathToPom == null ) {
+                return;
+            }
+
+            //Schedule an incremental build
+            executor.submit( new Runnable() {
+
+                @Override
+                public void run() {
+                    buildService.addResource( pathToPom,
+                                              resource );
+                }
+            } );
+
+        } catch ( Exception e ) {
+            //Swallow for now...
+            System.out.println( e.fillInStackTrace() );
+        }
     }
 
     public void deleteResource( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
-        PortablePreconditions.checkNotNull( "resourceDeletedEvent",
-                                            resourceDeletedEvent );
-        final Path resource = resourceDeletedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
+        try {
+            PortablePreconditions.checkNotNull( "resourceDeletedEvent",
+                                                resourceDeletedEvent );
+            final Path resource = resourceDeletedEvent.getPath();
+            final Path pathToPom = getPathToPom( resource );
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
-            return;
+            //If resource is not within a Project or the Project lacks a pom.xml file exit
+            if ( pathToPom == null ) {
+                return;
+            }
+
+            //Schedule an incremental build
+            executor.submit( new Runnable() {
+
+                @Override
+                public void run() {
+                    buildService.deleteResource( pathToPom,
+                                                 resource );
+                }
+            } );
+
+        } catch ( Exception e ) {
+            //Swallow for now...
+            System.out.println( e.fillInStackTrace() );
         }
-
-        buildService.deleteResource( pathToPom,
-                                     resource );
-
     }
 
     public void updateResource( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
-        PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
-                                            resourceUpdatedEvent );
-        final Path resource = resourceUpdatedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
+        try {
+            PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
+                                                resourceUpdatedEvent );
+            final Path resource = resourceUpdatedEvent.getPath();
+            final Path pathToPom = getPathToPom( resource );
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
-            return;
+            //If resource is not within a Project or the Project lacks a pom.xml file exit
+            if ( pathToPom == null ) {
+                return;
+            }
+
+            //Schedule an incremental build
+            executor.submit( new Runnable() {
+
+                @Override
+                public void run() {
+                    buildService.updateResource( pathToPom,
+                                                 resource );
+                }
+            } );
+
+        } catch ( Exception e ) {
+            //Swallow for now...
+            System.out.println( e.fillInStackTrace() );
         }
-
-        buildService.addResource( pathToPom,
-                                  resource );
     }
 
     private Path getPathToPom( final Path resource ) {

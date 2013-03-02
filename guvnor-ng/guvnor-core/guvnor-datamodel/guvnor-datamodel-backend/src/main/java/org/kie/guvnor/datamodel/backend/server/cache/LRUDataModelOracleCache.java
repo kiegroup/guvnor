@@ -1,18 +1,19 @@
 package org.kie.guvnor.datamodel.backend.server.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.cache.LRUCache;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple LRU cache for Package DataModelOracles

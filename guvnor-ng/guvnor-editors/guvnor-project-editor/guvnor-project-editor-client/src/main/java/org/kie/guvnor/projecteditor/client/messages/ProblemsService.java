@@ -18,8 +18,8 @@ package org.kie.guvnor.projecteditor.client.messages;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.commons.service.builder.model.Message;
-import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.builder.model.BuildMessage;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
@@ -38,34 +38,40 @@ public class ProblemsService {
 
     private final PlaceManager placeManager;
 
-    private ListDataProvider<Message> dataProvider = new ListDataProvider<Message>();
+    private final ListDataProvider<BuildMessage> dataProvider = new ListDataProvider<BuildMessage>();
     private final Event<NotificationEvent> notificationEvent;
     private final ProblemsServiceView view;
 
     @Inject
-    public ProblemsService(ProblemsServiceView view,
-                           PlaceManager placeManager,
-                           Event<NotificationEvent> notificationEvent) {
+    public ProblemsService( ProblemsServiceView view,
+                            PlaceManager placeManager,
+                            Event<NotificationEvent> notificationEvent ) {
         this.view = view;
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
     }
 
-    public void addMessages(@Observes Results results) {
-        if (results.isEmpty()) {
-            notificationEvent.fire(new NotificationEvent(view.showBuildSuccessful()));
+    public void addMessages( @Observes BuildResults results ) {
+        if ( results.isEmpty() ) {
+            notificationEvent.fire( new NotificationEvent( view.showBuildSuccessful() ) );
         }
 
-        List<Message> list = dataProvider.getList();
+        List<BuildMessage> list = dataProvider.getList();
         list.clear();
-        for (Message message : results) {
-            list.add(message);
+        for ( BuildMessage buildMessage : results ) {
+            switch ( buildMessage.getType() ) {
+                case BUILD_FULL:
+                case BUILD_INCREMENTAL_ADD:
+                    list.add( buildMessage );
+                    break;
+                case BUILD_INCREMENTAL_REMOVE:
+            }
         }
 
-        placeManager.goTo("org.kie.guvnor.Problems");
+        placeManager.goTo( "org.kie.guvnor.Problems" );
     }
 
-    public void addDataDisplay( HasData<Message> display ) {
+    public void addDataDisplay( HasData<BuildMessage> display ) {
         dataProvider.addDataDisplay( display );
     }
 }

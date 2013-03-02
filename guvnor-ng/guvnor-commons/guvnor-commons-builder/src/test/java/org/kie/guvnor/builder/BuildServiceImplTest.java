@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.guvnor.commons.service.builder.model.Results;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
@@ -63,7 +63,7 @@ public class BuildServiceImplTest {
                 sourceServices,
                 ioService );
         
-        final Results results = builder.build();
+        final BuildResults results = builder.build();
         
         assertTrue(results.isEmpty());
     }
@@ -89,7 +89,7 @@ public class BuildServiceImplTest {
                 sourceServices,
                 ioService );
         
-        final Results results = builder.build();
+        final BuildResults results = builder.build();
         
         assertTrue(results.isEmpty());
     }
@@ -110,7 +110,7 @@ public class BuildServiceImplTest {
                 sourceServices,
                 ioService );
         
-        final Results results = builder.build();
+        final BuildResults results = builder.build();
         
         assertTrue(results.isEmpty());
     }

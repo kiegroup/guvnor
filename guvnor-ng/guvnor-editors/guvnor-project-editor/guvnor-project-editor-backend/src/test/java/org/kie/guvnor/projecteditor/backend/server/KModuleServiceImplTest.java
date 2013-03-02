@@ -25,8 +25,11 @@ import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.security.Identity;
 
 import javax.enterprise.event.Event;
+
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -43,84 +46,92 @@ public class KModuleServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        ioService = mock(IOService.class);
-        paths = mock(Paths.class);
-        kProjectContentHandler = mock(KModuleContentHandler.class);
-        POMContentHandler = mock(POMContentHandler.class);
-        invalidateDMOProjectCache = mock(Event.class);
+        ioService = mock( IOService.class );
+        paths = mock( Paths.class );
+        kProjectContentHandler = mock( KModuleContentHandler.class );
+        POMContentHandler = mock( POMContentHandler.class );
+        invalidateDMOProjectCache = mock( Event.class );
 
         setUpWrite();
-        SourceServices sourceServices = mock(SourceServices.class);
-        serviceImpl = new KModuleServiceImpl(ioService, mock(MetadataService.class), sourceServices, paths, kProjectContentHandler);
+        SourceServices sourceServices = mock( SourceServices.class );
+        serviceImpl = new KModuleServiceImpl( ioService,
+                                              mock( MetadataService.class ),
+                                              sourceServices,
+                                              paths,
+                                              kProjectContentHandler,
+                                              mock( Identity.class ),
+                                              mock( Event.class ),
+                                              mock( Event.class ) );
     }
 
     private void setUpWrite() {
-        org.kie.commons.java.nio.file.Path writtenPath = mock(org.kie.commons.java.nio.file.Path.class);
+        org.kie.commons.java.nio.file.Path writtenPath = mock( org.kie.commons.java.nio.file.Path.class );
         when(
-                ioService.write(any(org.kie.commons.java.nio.file.Path.class), anyString())
-        ).thenReturn(
+                ioService.write( any( org.kie.commons.java.nio.file.Path.class ), anyString() )
+            ).thenReturn(
                 writtenPath
-        );
-        Path path = mock(Path.class);
+                        );
+        Path path = mock( Path.class );
         when(
-                paths.convert(writtenPath)
-        ).thenReturn(
+                paths.convert( writtenPath )
+            ).thenReturn(
                 path
-        );
+                        );
     }
 
     @Test
     public void testSetUpProjectStructure() throws Exception {
 
-        Path pathToPom = mock(Path.class);
-        org.kie.commons.java.nio.file.Path directory = setUpPathToPomDirectory(pathToPom);
+        Path pathToPom = mock( Path.class );
+        org.kie.commons.java.nio.file.Path directory = setUpPathToPomDirectory( pathToPom );
 
-        org.kie.commons.java.nio.file.Path mainJava = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/main/java", mainJava);
-        org.kie.commons.java.nio.file.Path mainResources = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/main/resources", mainResources);
-        org.kie.commons.java.nio.file.Path testJava = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/test/java", testJava);
-        org.kie.commons.java.nio.file.Path testResources = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/test/resources", testResources);
+        org.kie.commons.java.nio.file.Path mainJava = mock( org.kie.commons.java.nio.file.Path.class );
+        setUpDirectory( directory, "src/main/java", mainJava );
+        org.kie.commons.java.nio.file.Path mainResources = mock( org.kie.commons.java.nio.file.Path.class );
+        setUpDirectory( directory, "src/main/resources", mainResources );
+        org.kie.commons.java.nio.file.Path testJava = mock( org.kie.commons.java.nio.file.Path.class );
+        setUpDirectory( directory, "src/test/java", testJava );
+        org.kie.commons.java.nio.file.Path testResources = mock( org.kie.commons.java.nio.file.Path.class );
+        setUpDirectory( directory, "src/test/resources", testResources );
 
-        org.kie.commons.java.nio.file.Path kmodule = mock(org.kie.commons.java.nio.file.Path.class);
-        setUpDirectory(directory, "src/main/resources/META-INF/kmodule.xml", kmodule);
+        org.kie.commons.java.nio.file.Path kmodule = mock( org.kie.commons.java.nio.file.Path.class );
+        setUpDirectory( directory, "src/main/resources/META-INF/kmodule.xml", kmodule );
 
-        serviceImpl.setUpKModuleStructure(pathToPom);
+        serviceImpl.setUpKModuleStructure( pathToPom );
 
-        verify(ioService).createDirectory(mainJava);
-        verify(ioService).createDirectory(mainResources);
-        verify(ioService).createDirectory(testJava);
-        verify(ioService).createDirectory(testResources);
+        verify( ioService ).createDirectory( mainJava );
+        verify( ioService ).createDirectory( mainResources );
+        verify( ioService ).createDirectory( testJava );
+        verify( ioService ).createDirectory( testResources );
 
-        verify(ioService).write(eq(kmodule), anyString());
+        verify( ioService ).write( eq( kmodule ), anyString() );
     }
 
-    private org.kie.commons.java.nio.file.Path setUpPathToPomDirectory(Path pathToPom) {
-        org.kie.commons.java.nio.file.Path child = mock(org.kie.commons.java.nio.file.Path.class);
+    private org.kie.commons.java.nio.file.Path setUpPathToPomDirectory( Path pathToPom ) {
+        org.kie.commons.java.nio.file.Path child = mock( org.kie.commons.java.nio.file.Path.class );
         when(
-                paths.convert(pathToPom)
-        ).thenReturn(
+                paths.convert( pathToPom )
+            ).thenReturn(
                 child
-        );
-        org.kie.commons.java.nio.file.Path directory = mock(org.kie.commons.java.nio.file.Path.class);
+                        );
+        org.kie.commons.java.nio.file.Path directory = mock( org.kie.commons.java.nio.file.Path.class );
         when(
                 child.getParent()
-        ).thenReturn(
+            ).thenReturn(
                 directory
-        );
+                        );
         return directory;
     }
 
-    private void setUpDirectory(org.kie.commons.java.nio.file.Path directory, String pathAsText, org.kie.commons.java.nio.file.Path path) {
+    private void setUpDirectory( org.kie.commons.java.nio.file.Path directory,
+                                 String pathAsText,
+                                 org.kie.commons.java.nio.file.Path path ) {
         when(
-                directory.resolve(pathAsText)
-        ).thenReturn(
+                directory.resolve( pathAsText )
+            ).thenReturn(
                 path
-        );
+                        );
     }
-
 
     //
 //    @Test
@@ -232,17 +243,17 @@ public class KModuleServiceImplTest {
 //        assertNull( service.pathToRelatedKProjectFileIfAny( path ) );
 //    }
 //
-    private void assertContains(String uri,
-                                List<org.kie.commons.java.nio.file.Path> allValues) {
+    private void assertContains( String uri,
+                                 List<org.kie.commons.java.nio.file.Path> allValues ) {
         boolean contains = false;
-        for (org.kie.commons.java.nio.file.Path path : allValues) {
-            if (uri.equals(path.toUri())) {
+        for ( org.kie.commons.java.nio.file.Path path : allValues ) {
+            if ( uri.equals( path.toUri() ) ) {
                 contains = true;
                 break;
             }
         }
 
-        assertTrue("Values should contain " + uri, contains);
+        assertTrue( "Values should contain " + uri, contains );
     }
 //
 //    class PathMatcher extends ArgumentMatcher<Path> {

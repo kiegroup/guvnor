@@ -18,6 +18,7 @@ package org.kie.guvnor.projecteditor.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -33,6 +34,8 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -42,13 +45,13 @@ public class KModuleServiceImpl
                    ViewSourceService<KModuleModel> {
 
     private IOService ioService;
+    private MetadataService metadataService;
+    private SourceServices sourceServices;
     private Paths paths;
     private KModuleContentHandler moduleContentHandler;
-    private MetadataService metadataService;
-
-    @Inject
     private Identity identity;
-    private SourceServices sourceServices;
+    private Event<ResourceAddedEvent> resourceAddedEvent;
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
@@ -56,15 +59,21 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               MetadataService metadataService,
-                               SourceServices sourceServices,
+                               final MetadataService metadataService,
+                               final SourceServices sourceServices,
                                final Paths paths,
-                               final KModuleContentHandler moduleContentHandler ) {
+                               final KModuleContentHandler moduleContentHandler,
+                               final Identity identity,
+                               final Event<ResourceAddedEvent> resourceAddedEvent,
+                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
         this.ioService = ioService;
         this.metadataService = metadataService;
         this.sourceServices = sourceServices;
         this.paths = paths;
         this.moduleContentHandler = moduleContentHandler;
+        this.identity = identity;
+        this.resourceAddedEvent = resourceAddedEvent;
+        this.resourceUpdatedEvent = resourceUpdatedEvent;
     }
 
     @Override
@@ -81,7 +90,12 @@ public class KModuleServiceImpl
             ioService.createDirectory( directory.resolve( "src/test/java" ) );
             ioService.createDirectory( directory.resolve( "src/test/resources" ) );
 
-            return paths.convert( pathToKModuleXML );
+            final Path kmodulePath = paths.convert( pathToKModuleXML );
+
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( kmodulePath ) );
+
+            return kmodulePath;
         } catch ( Exception e ) {
             return null;
         }
@@ -104,6 +118,8 @@ public class KModuleServiceImpl
                     metadataService.setUpAttributes( path, metadata ),
                     makeCommentedOption( commitMessage ) );
         }
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
     }
 
     @Override

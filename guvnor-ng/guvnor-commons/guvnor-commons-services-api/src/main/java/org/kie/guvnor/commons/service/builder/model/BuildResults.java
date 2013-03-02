@@ -23,23 +23,23 @@ import java.util.Iterator;
 import java.util.List;
 
 @Portable
-public class Results
-        implements Iterable<Message> {
+public class BuildResults
+        implements Iterable<BuildMessage> {
 
-    private ArrayList<Message> messages = new ArrayList<Message>();
+    private ArrayList<BuildMessage> buildMessages = new ArrayList<BuildMessage>();
     private String artifactID;
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<BuildMessage> getBuildMessages() {
+        return buildMessages;
     }
 
     public boolean isEmpty() {
-        return messages.isEmpty();
+        return buildMessages.isEmpty();
     }
 
     @Override
-    public Iterator<Message> iterator() {
-        return messages.iterator();
+    public Iterator<BuildMessage> iterator() {
+        return buildMessages.iterator();
     }
 
     public String getArtifactID() {
