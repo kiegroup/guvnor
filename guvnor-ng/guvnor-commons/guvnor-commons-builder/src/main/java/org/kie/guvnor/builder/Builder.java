@@ -18,9 +18,8 @@ package org.kie.guvnor.builder;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.StringReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.kie.KieServices;
@@ -30,12 +29,14 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.Message;
+import org.kie.builder.Results;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
+import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.services.backend.file.DotFileFilter;
 import org.kie.guvnor.services.file.Filter;
@@ -97,18 +98,11 @@ public class Builder {
     }
 
     public BuildResults build() {
-        final List<BuildMessage> buildMessages = convertMessages( kieBuilder.buildAll().getResults().getMessages(),
-                                                                  BuildMessage.Type.BUILD_FULL );
-        final BuildResults results = new BuildResults();
-        results.getBuildMessages().addAll( buildMessages );
-        results.setArtifactID( artifactId );
+        final BuildResults results = convertMessages( kieBuilder.buildAll().getResults() );
         return results;
     }
 
-    public BuildResults addResource( final Path resource ) {
-        //If the Module has already been built the below call does nothing
-        kieBuilder.buildAll();
-
+    public IncrementalBuildResults addResource( final Path resource ) {
         //Add new resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         final InputStream is = ioService.newInputStream( resource );
@@ -120,21 +114,11 @@ public class Builder {
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
 
         //Messages from incremental build
-        final List<BuildMessage> addedBuildMessages = convertMessages( incrementalResults.getAddedMessages(),
-                                                                       BuildMessage.Type.BUILD_INCREMENTAL_ADD );
-        final List<BuildMessage> removedBuildMessages = convertMessages( incrementalResults.getRemovedMessages(),
-                                                                         BuildMessage.Type.BUILD_INCREMENTAL_REMOVE );
-        final BuildResults results = new BuildResults();
-        results.getBuildMessages().addAll( addedBuildMessages );
-        results.getBuildMessages().addAll( removedBuildMessages );
-        results.setArtifactID( artifactId );
+        final IncrementalBuildResults results = convertMessages( incrementalResults );
         return results;
     }
 
-    public BuildResults deleteResource( final Path resource ) {
-        //If the Module has already been built the below call does nothing
-        kieBuilder.buildAll();
-
+    public IncrementalBuildResults deleteResource( final Path resource ) {
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         kieFileSystem.delete( destinationPath );
@@ -143,18 +127,11 @@ public class Builder {
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
 
         //Messages from incremental build
-        final List<BuildMessage> addedBuildMessages = convertMessages( incrementalResults.getAddedMessages(),
-                                                                       BuildMessage.Type.BUILD_INCREMENTAL_ADD );
-        final List<BuildMessage> removedBuildMessages = convertMessages( incrementalResults.getRemovedMessages(),
-                                                                         BuildMessage.Type.BUILD_INCREMENTAL_REMOVE );
-        final BuildResults results = new BuildResults();
-        results.getBuildMessages().addAll( addedBuildMessages );
-        results.getBuildMessages().addAll( removedBuildMessages );
-        results.setArtifactID( artifactId );
+        final IncrementalBuildResults results = convertMessages( incrementalResults );
         return results;
     }
 
-    public BuildResults updateResource( final Path resource ) {
+    public IncrementalBuildResults updateResource( final Path resource ) {
         return addResource( resource );
     }
 
@@ -177,37 +154,55 @@ public class Builder {
         }
     }
 
-    private List<BuildMessage> convertMessages( final List<Message> messages,
-                                                final BuildMessage.Type type ) {
-        final List<BuildMessage> result = new ArrayList<BuildMessage>();
-        for ( final Message message : messages ) {
-            final BuildMessage m = new BuildMessage();
-            switch ( message.getLevel() ) {
-                case ERROR:
-                    m.setLevel( BuildMessage.Level.ERROR );
-                    break;
-                case WARNING:
-                    m.setLevel( BuildMessage.Level.WARNING );
-                    break;
-                case INFO:
-                    m.setLevel( BuildMessage.Level.INFO );
-                    break;
-            }
+    private BuildResults convertMessages( final Results kieBuildResults ) {
+        final BuildResults results = new BuildResults();
+        results.setArtifactID( artifactId );
 
-            m.setId( message.getId() );
-            m.setArtifactID( artifactId );
-            m.setLine( message.getLine() );
-            if ( message.getPath() != null && !message.getPath().isEmpty() ) {
-                m.setPath( paths.convert( handles.get( RESOURCE_PATH + "/" + message.getPath() ) ) );
-
-            }
-            m.setColumn( message.getColumn() );
-            m.setText( message.getText() );
-            m.setType( type );
-            result.add( m );
+        for ( final Message message : kieBuildResults.getMessages() ) {
+            results.addBuildMessage( convertMessage( message ) );
         }
 
-        return result;
+        return results;
+    }
+
+    private IncrementalBuildResults convertMessages( final IncrementalResults kieIncrementalResults ) {
+        final IncrementalBuildResults results = new IncrementalBuildResults();
+        results.setArtifactID( artifactId );
+
+        for ( final Message message : kieIncrementalResults.getAddedMessages() ) {
+            results.addAddedMessage( convertMessage( message ) );
+        }
+        for ( final Message message : kieIncrementalResults.getRemovedMessages() ) {
+            results.addRemovedMessage( convertMessage( message ) );
+        }
+
+        return results;
+    }
+
+    private BuildMessage convertMessage( final Message message ) {
+        final BuildMessage m = new BuildMessage();
+        switch ( message.getLevel() ) {
+            case ERROR:
+                m.setLevel( BuildMessage.Level.ERROR );
+                break;
+            case WARNING:
+                m.setLevel( BuildMessage.Level.WARNING );
+                break;
+            case INFO:
+                m.setLevel( BuildMessage.Level.INFO );
+                break;
+        }
+
+        m.setId( message.getId() );
+        m.setArtifactID( artifactId );
+        m.setLine( message.getLine() );
+        if ( message.getPath() != null && !message.getPath().isEmpty() ) {
+            m.setPath( paths.convert( handles.get( RESOURCE_PATH + "/" + message.getPath() ) ) );
+
+        }
+        m.setColumn( message.getColumn() );
+        m.setText( message.getText() );
+        return m;
     }
 
 }

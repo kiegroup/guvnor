@@ -16,18 +16,19 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.commons.service.builder.model.BuildMessage;
-import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.List;
+
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
+import org.kie.guvnor.commons.service.builder.model.BuildMessage;
+import org.kie.guvnor.commons.service.builder.model.BuildResults;
+import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -51,21 +52,31 @@ public class ProblemsService {
         this.notificationEvent = notificationEvent;
     }
 
-    public void addMessages( @Observes BuildResults results ) {
-        if ( results.isEmpty() ) {
+    public void addBuildMessages( final @Observes BuildResults results ) {
+        final List<BuildMessage> messages = results.getMessages();
+        if ( messages.isEmpty() ) {
             notificationEvent.fire( new NotificationEvent( view.showBuildSuccessful() ) );
         }
 
         List<BuildMessage> list = dataProvider.getList();
         list.clear();
-        for ( BuildMessage buildMessage : results ) {
-            switch ( buildMessage.getType() ) {
-                case BUILD_FULL:
-                case BUILD_INCREMENTAL_ADD:
-                    list.add( buildMessage );
-                    break;
-                case BUILD_INCREMENTAL_REMOVE:
-            }
+        for ( BuildMessage buildMessage : messages ) {
+            list.add( buildMessage );
+        }
+
+        placeManager.goTo( "org.kie.guvnor.Problems" );
+    }
+
+    public void addIncrementalBuildMessages( final @Observes IncrementalBuildResults results ) {
+        final List<BuildMessage> addedMessages = results.getAddedMessages();
+        final List<BuildMessage> removedMessages = results.getRemovedMessages();
+
+        List<BuildMessage> list = dataProvider.getList();
+        for ( BuildMessage buildMessage : addedMessages ) {
+            list.add( buildMessage );
+        }
+        for ( BuildMessage buildMessage : removedMessages ) {
+            list.remove( buildMessage );
         }
 
         placeManager.goTo( "org.kie.guvnor.Problems" );

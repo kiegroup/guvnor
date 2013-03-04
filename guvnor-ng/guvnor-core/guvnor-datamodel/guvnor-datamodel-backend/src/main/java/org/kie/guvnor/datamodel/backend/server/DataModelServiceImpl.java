@@ -170,7 +170,7 @@ public class DataModelServiceImpl
 
         //If the Project had errors report them to the user and return an empty ProjectDefinition
         final BuildResults results = builder.build();
-        if ( !results.isEmpty() ) {
+        if ( !results.getMessages().isEmpty() ) {
             messagesEvent.fire( results );
             return makeEmptyProjectDefinition();
         }
@@ -189,7 +189,7 @@ public class DataModelServiceImpl
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent() );
                 } catch ( IOException ioe ) {
-                    results.getBuildMessages().add( makeMessage( ioe ) );
+                    results.getMessages().add( makeMessage( ioe ) );
                 }
             }
         }
@@ -205,15 +205,15 @@ public class DataModelServiceImpl
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
-                    results.getBuildMessages().add( makeMessage( cnfe ) );
+                    results.getMessages().add( makeMessage( cnfe ) );
                 } catch ( IOException ioe ) {
-                    results.getBuildMessages().add( makeMessage( ioe ) );
+                    results.getMessages().add( makeMessage( ioe ) );
                 }
             }
         }
 
         //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
-        if ( !results.isEmpty() ) {
+        if ( !results.getMessages().isEmpty() ) {
             messagesEvent.fire( results );
             return makeEmptyProjectDefinition();
         }
@@ -244,9 +244,9 @@ public class DataModelServiceImpl
         final BuildResults results = new BuildResults();
         final List<String> errors = dmoBuilder.getErrors();
         for ( final String error : errors ) {
-            results.getBuildMessages().add( makeMessage( error ) );
+            results.getMessages().add( makeMessage( error ) );
         }
-        if ( !results.isEmpty() ) {
+        if ( !results.getMessages().isEmpty() ) {
             messagesEvent.fire( results );
             return makeEmptyDataModelOracle();
         }

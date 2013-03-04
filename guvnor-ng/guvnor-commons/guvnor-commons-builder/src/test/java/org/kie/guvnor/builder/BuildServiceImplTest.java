@@ -65,7 +65,7 @@ public class BuildServiceImplTest {
         
         final BuildResults results = builder.build();
         
-        assertTrue(results.isEmpty());
+        assertTrue(results.getMessages().isEmpty());
     }
     
     @Test
@@ -91,7 +91,7 @@ public class BuildServiceImplTest {
         
         final BuildResults results = builder.build();
         
-        assertTrue(results.isEmpty());
+        assertTrue(results.getMessages().isEmpty());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class BuildServiceImplTest {
         
         final BuildResults results = builder.build();
         
-        assertTrue(results.isEmpty());
+        assertTrue(results.getMessages().isEmpty());
     }
     
     private <T> T getReference(Class<T> clazz) {

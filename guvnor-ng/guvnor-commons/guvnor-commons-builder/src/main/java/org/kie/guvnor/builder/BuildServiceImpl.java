@@ -26,6 +26,7 @@ import org.kie.builder.impl.InternalKieModule;
 import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
+import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
@@ -40,7 +41,8 @@ public class BuildServiceImpl
 
     private Paths paths;
     private SourceServices sourceServices;
-    private Event<BuildResults> messagesEvent;
+    private Event<BuildResults> buildResultsEvent;
+    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
     private POMService pomService;
     private M2RepoService m2RepoService;
     private IOService ioService;
@@ -56,13 +58,15 @@ public class BuildServiceImpl
                              final SourceServices sourceServices,
                              final POMService pomService,
                              final M2RepoService m2RepoService,
-                             final Event<BuildResults> messagesEvent,
+                             final Event<BuildResults> buildResultsEvent,
+                             final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final IOService ioService ) {
         this.paths = paths;
         this.sourceServices = sourceServices;
-        this.messagesEvent = messagesEvent;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
+        this.buildResultsEvent = buildResultsEvent;
+        this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
         this.ioService = ioService;
     }
 
@@ -72,10 +76,10 @@ public class BuildServiceImpl
         final Builder builder = cache.getEntry( pathToPom );
         final BuildResults results = builder.build();
 
-        if ( results.isEmpty() ) {
+        if ( results.getMessages().isEmpty() ) {
             deploy( pathToPom );
         }
-        messagesEvent.fire( results );
+        buildResultsEvent.fire( results );
     }
 
     private void assertBuilderCache( final Path pathToPom ) {
@@ -88,6 +92,7 @@ public class BuildServiceImpl
                                              paths,
                                              sourceServices,
                                              ioService );
+        builder.build();
         cache.setEntry( pathToPom,
                         builder );
     }
@@ -107,8 +112,8 @@ public class BuildServiceImpl
                              final Path resource ) {
         assertBuilderCache( pathToPom );
         final Builder builder = cache.getEntry( pathToPom );
-        final BuildResults results = builder.addResource( paths.convert( resource ) );
-        messagesEvent.fire( results );
+        final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
+        incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
@@ -116,8 +121,8 @@ public class BuildServiceImpl
                                 final Path resource ) {
         assertBuilderCache( pathToPom );
         final Builder builder = cache.getEntry( pathToPom );
-        final BuildResults results = builder.deleteResource( paths.convert( resource ) );
-        messagesEvent.fire( results );
+        final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
+        incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
@@ -125,8 +130,8 @@ public class BuildServiceImpl
                                 final Path resource ) {
         assertBuilderCache( pathToPom );
         final Builder builder = cache.getEntry( pathToPom );
-        final BuildResults results = builder.updateResource( paths.convert( resource ) );
-        messagesEvent.fire( results );
+        final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
+        incrementalBuildResultsEvent.fire( results );
     }
 
 }

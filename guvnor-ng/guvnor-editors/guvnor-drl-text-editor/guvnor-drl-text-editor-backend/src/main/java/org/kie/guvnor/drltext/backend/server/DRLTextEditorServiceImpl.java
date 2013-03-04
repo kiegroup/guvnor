@@ -112,16 +112,15 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                       final String content,
                       final String comment ) {
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-
-        ioService.write( paths.convert( newPath ),
-                         content,
-                         makeCommentedOption( comment ) );
+        final Path savedPath = paths.convert( ioService.write( paths.convert( newPath ),
+                                                               content,
+                                                               makeCommentedOption( comment ) ) );
 
         //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( savedPath ) );
 
         //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( savedPath ) );
 
         return newPath;
     }
@@ -131,17 +130,17 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         content,
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        final Path savedPath = paths.convert( ioService.write( paths.convert( resource ),
+                                                               content,
+                                                               metadataService.setUpAttributes( resource,
+                                                                                                metadata ),
+                                                               makeCommentedOption( comment ) ) );
 
         //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( savedPath ) );
 
         //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( savedPath ) );
 
         return resource;
     }

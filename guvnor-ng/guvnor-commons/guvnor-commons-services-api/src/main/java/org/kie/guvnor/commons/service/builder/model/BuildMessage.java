@@ -23,7 +23,6 @@ import org.uberfire.backend.vfs.Path;
 public class BuildMessage {
 
     private long id;
-    private Type type;
     private Level level;
     private Path path;
     private int line;
@@ -33,10 +32,6 @@ public class BuildMessage {
 
     public void setId( long id ) {
         this.id = id;
-    }
-
-    public void setType( final Type type ) {
-        this.type = type;
     }
 
     public void setLevel( final Level level ) {
@@ -67,10 +62,6 @@ public class BuildMessage {
         return id;
     }
 
-    public Type getType() {
-        return type;
-    }
-
     public Level getLevel() {
         return level;
     }
@@ -95,13 +86,57 @@ public class BuildMessage {
         return artifactID;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof BuildMessage ) ) {
+            return false;
+        }
+
+        BuildMessage that = (BuildMessage) o;
+
+        if ( column != that.column ) {
+            return false;
+        }
+        if ( id != that.id ) {
+            return false;
+        }
+        if ( line != that.line ) {
+            return false;
+        }
+        if ( artifactID != null ? !artifactID.equals( that.artifactID ) : that.artifactID != null ) {
+            return false;
+        }
+        if ( level != that.level ) {
+            return false;
+        }
+        if ( path != null ? !path.equals( that.path ) : that.path != null ) {
+            return false;
+        }
+        if ( text != null ? !text.equals( that.text ) : that.text != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) ( id ^ ( id >>> 32 ) );
+        result = 31 * result + ( level != null ? level.hashCode() : 0 );
+        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = 31 * result + line;
+        result = 31 * result + column;
+        result = 31 * result + ( text != null ? text.hashCode() : 0 );
+        result = 31 * result + ( artifactID != null ? artifactID.hashCode() : 0 );
+        return result;
+    }
+
     @Portable
     public static enum Level {
         ERROR, WARNING, INFO;
     }
 
-    @Portable
-    public static enum Type {
-        BUILD_FULL, BUILD_INCREMENTAL_ADD, BUILD_INCREMENTAL_REMOVE;
-    }
 }
