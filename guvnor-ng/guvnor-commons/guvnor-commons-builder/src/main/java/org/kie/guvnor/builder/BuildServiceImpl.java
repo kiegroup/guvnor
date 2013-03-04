@@ -47,7 +47,8 @@ public class BuildServiceImpl
     private M2RepoService m2RepoService;
     private IOService ioService;
 
-    private LRUBuilderCache cache = new LRUBuilderCache();
+    @Inject
+    private LRUBuilderCache cache;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -72,8 +73,7 @@ public class BuildServiceImpl
 
     @Override
     public void build( final Path pathToPom ) {
-        assertBuilderCache( pathToPom );
-        final Builder builder = cache.getEntry( pathToPom );
+        final Builder builder = cache.assertBuilder( pathToPom );
         final BuildResults results = builder.build();
 
         if ( results.getMessages().isEmpty() ) {
@@ -82,25 +82,9 @@ public class BuildServiceImpl
         buildResultsEvent.fire( results );
     }
 
-    private void assertBuilderCache( final Path pathToPom ) {
-        if ( cache.getKeys().contains( pathToPom ) ) {
-            return;
-        }
-        final POM gav = pomService.loadPOM( pathToPom );
-        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
-                                             gav.getGav().getArtifactId(),
-                                             paths,
-                                             sourceServices,
-                                             ioService );
-        builder.build();
-        cache.setEntry( pathToPom,
-                        builder );
-    }
-
     private void deploy( final Path pathToPom ) {
-        assertBuilderCache( pathToPom );
+        final Builder builder = cache.assertBuilder( pathToPom );
         final POM gav = pomService.loadPOM( pathToPom );
-        final Builder builder = cache.getEntry( pathToPom );
         final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
         final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
         m2RepoService.deployJar( input,
@@ -110,8 +94,7 @@ public class BuildServiceImpl
     @Override
     public void addResource( final Path pathToPom,
                              final Path resource ) {
-        assertBuilderCache( pathToPom );
-        final Builder builder = cache.getEntry( pathToPom );
+        final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
@@ -119,8 +102,7 @@ public class BuildServiceImpl
     @Override
     public void deleteResource( final Path pathToPom,
                                 final Path resource ) {
-        assertBuilderCache( pathToPom );
-        final Builder builder = cache.getEntry( pathToPom );
+        final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
@@ -128,8 +110,7 @@ public class BuildServiceImpl
     @Override
     public void updateResource( final Path pathToPom,
                                 final Path resource ) {
-        assertBuilderCache( pathToPom );
-        final Builder builder = cache.getEntry( pathToPom );
+        final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }

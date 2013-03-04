@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -20,6 +21,7 @@ import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 /**
  * Listener for changes to project resources to handle incremental builds
  */
+@ApplicationScoped
 public class BuildChangeListener {
 
     private static final String POM_FILE = "pom.xml";
@@ -37,7 +39,8 @@ public class BuildChangeListener {
 
     @PostConstruct
     private void setupExecutorService() {
-        executor = Executors.newFixedThreadPool( 2 );
+        final int cores = Runtime.getRuntime().availableProcessors();
+        executor = Executors.newFixedThreadPool( cores );
     }
 
     @PreDestroy
@@ -71,7 +74,7 @@ public class BuildChangeListener {
             }
 
             //Schedule an incremental build
-            executor.submit( new Runnable() {
+            executor.execute( new Runnable() {
 
                 @Override
                 public void run() {
@@ -99,7 +102,7 @@ public class BuildChangeListener {
             }
 
             //Schedule an incremental build
-            executor.submit( new Runnable() {
+            executor.execute( new Runnable() {
 
                 @Override
                 public void run() {
@@ -127,7 +130,7 @@ public class BuildChangeListener {
             }
 
             //Schedule an incremental build
-            executor.submit( new Runnable() {
+            executor.execute( new Runnable() {
 
                 @Override
                 public void run() {
