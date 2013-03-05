@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;

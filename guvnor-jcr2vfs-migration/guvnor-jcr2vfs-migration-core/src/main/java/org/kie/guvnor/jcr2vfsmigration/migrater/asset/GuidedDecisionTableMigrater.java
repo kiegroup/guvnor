@@ -12,6 +12,9 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
+import org.drools.guvnor.server.repository.Preferred;
+import org.drools.repository.RulesRepository;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -23,13 +26,16 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class GuidedEditorMigrater {
+public class GuidedDecisionTableMigrater {
 
-    protected static final Logger logger = LoggerFactory.getLogger(GuidedEditorMigrater.class);
+    protected static final Logger logger = LoggerFactory.getLogger(GuidedDecisionTableMigrater.class);
 
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
-
+    
+    @Inject @Preferred
+    private RulesRepository rulesRepository;
+    
     @Inject
     protected GuidedRuleEditorService guidedRuleEditorService;
 
@@ -44,20 +50,18 @@ public class GuidedEditorMigrater {
     private IOService ioService;
 
     public void migrate(Module jcrModule, Asset jcrAsset, final String checkinComment, final Date lastModified, String lastContributor) {
-        if (!AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
+        if (!AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAsset.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAsset
                     + ") has the wrong format (" + jcrAsset.getFormat() + ").");
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
-        String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
-/*        RuleModel vfsRuleModel = convertRuleModel(
-                (org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());*/
-        //guidedRuleEditorService.save(path, vfsRuleModel, checkinComment);
+        
+        GuidedDTContentHandler h = new GuidedDTContentHandler();
+        String sourceDRL = h.getRawDRL(rulesRepository.loadAssetByUUID(jcrAsset.getUuid()));
         
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
-
         try {
             attrs = ioService.readAttributes( nioPath );
         } catch ( final NoSuchFileException ex ) {
@@ -65,20 +69,5 @@ public class GuidedEditorMigrater {
         }
 
         ioService.write( nioPath, sourceDRL, attrs, new CommentedOption(lastContributor, null, checkinComment, lastModified ));
-
     }
-
-    private String getSourceDRL(org.drools.ide.common.client.modeldriven.brl.RuleModel model/*, BRMSPackageBuilder builder*/) {
-
-        String drl = getBrlDrlPersistence().marshal( model );
-/*        if ( builder.hasDSL() && model.hasDSLSentences() ) {
-            drl = builder.getDSLExpander().expand( drl );
-        }*/
-        return drl;
-    }
-
-    protected org.drools.ide.common.server.util.BRLPersistence getBrlDrlPersistence() {
-        return org.drools.ide.common.server.util.BRDRLPersistence.getInstance();
-    }
-
 }

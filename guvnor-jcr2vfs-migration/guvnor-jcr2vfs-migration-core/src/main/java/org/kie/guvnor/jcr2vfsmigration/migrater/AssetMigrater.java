@@ -22,6 +22,7 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -50,7 +51,9 @@ public class AssetMigrater {
     protected GuidedEditorMigrater guidedEditorMigrater;
     @Inject
     protected PlainTextAssetMigrater plainTextAssetMigrater;        
-
+    @Inject
+    protected GuidedDecisionTableMigrater guidedDecisionTableMigrater;
+    
     @Inject
     protected MetadataService metadataService;        
     @Inject
@@ -105,6 +108,8 @@ public class AssetMigrater {
             factModelsMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
             guidedEditorMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
+        } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAsset.getFormat())) {
+            guidedDecisionTableMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
         } else if (AssetFormats.DRL.equals(jcrAsset.getFormat()) 
                 || AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())
                 || AssetFormats.DSL.equals(jcrAsset.getFormat())
