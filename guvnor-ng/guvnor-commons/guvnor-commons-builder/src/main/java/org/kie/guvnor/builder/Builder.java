@@ -88,8 +88,7 @@ public class Builder {
         kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
-        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory,
-                                                                                                        filter );
+        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
         visitPaths( directoryStream );
     }
 
@@ -149,10 +148,9 @@ public class Builder {
     private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
         for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
-                visitPaths( Files.newDirectoryStream( path,
-                                                      filter ) );
+                visitPaths( Files.newDirectoryStream( path ) );
 
-            } else {
+            } else if ( filter.accept( path ) ) {
                 final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
                 final InputStream is = ioService.newInputStream( path );
                 final BufferedInputStream bis = new BufferedInputStream( is );

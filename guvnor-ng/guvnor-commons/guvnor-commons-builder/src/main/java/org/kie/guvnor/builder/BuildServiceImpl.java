@@ -31,6 +31,7 @@ import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -39,6 +40,8 @@ import org.uberfire.backend.vfs.Path;
 public class BuildServiceImpl
         implements BuildService {
 
+    private static final String POM_FILE = "pom.xml";
+
     private Paths paths;
     private SourceServices sourceServices;
     private Event<BuildResults> buildResultsEvent;
@@ -46,6 +49,7 @@ public class BuildServiceImpl
     private POMService pomService;
     private M2RepoService m2RepoService;
     private IOService ioService;
+    private ProjectService projectService;
 
     @Inject
     private LRUBuilderCache cache;
@@ -61,7 +65,8 @@ public class BuildServiceImpl
                              final M2RepoService m2RepoService,
                              final Event<BuildResults> buildResultsEvent,
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
-                             final IOService ioService ) {
+                             final IOService ioService,
+                             final ProjectService projectService ) {
         this.paths = paths;
         this.sourceServices = sourceServices;
         this.pomService = pomService;
@@ -69,6 +74,7 @@ public class BuildServiceImpl
         this.buildResultsEvent = buildResultsEvent;
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
         this.ioService = ioService;
+        this.projectService = projectService;
     }
 
     @Override
@@ -101,27 +107,48 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void addResource( final Path pathToPom,
-                             final Path resource ) {
+    public void addResource( final Path resource ) {
+        final Path pathToPom = getPathToPom( resource );
+        if ( pathToPom == null ) {
+            return;
+        }
         final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
-    public void deleteResource( final Path pathToPom,
-                                final Path resource ) {
+    public void deleteResource( final Path resource ) {
+        final Path pathToPom = getPathToPom( resource );
+        if ( pathToPom == null ) {
+            return;
+        }
         final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
-    public void updateResource( final Path pathToPom,
-                                final Path resource ) {
+    public void updateResource( final Path resource ) {
+        final Path pathToPom = getPathToPom( resource );
+        if ( pathToPom == null ) {
+            return;
+        }
         final Builder builder = cache.assertBuilder( pathToPom );
         final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
+    }
+
+    private Path getPathToPom( final Path resource ) {
+        final Path projectPath = projectService.resolveProject( resource );
+        if ( projectPath == null ) {
+            return null;
+        }
+        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_FILE );
+        if ( pom == null ) {
+            return null;
+        }
+        return paths.convert( pom );
     }
 
 }

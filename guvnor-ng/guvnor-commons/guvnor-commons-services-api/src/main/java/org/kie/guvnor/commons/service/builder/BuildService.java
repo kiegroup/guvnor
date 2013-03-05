@@ -36,26 +36,20 @@ public interface BuildService {
 
     /**
      * Add a resource to the build.
-     * @param pathToPom
      * @param resource
      */
-    void addResource( final Path pathToPom,
-                      final Path resource );
+    void addResource( final Path resource );
 
     /**
      * Remove a resource from the build.
-     * @param pathToPom
      * @param resource
      */
-    void deleteResource( final Path pathToPom,
-                         final Path resource );
+    void deleteResource( final Path resource );
 
     /**
      * Update an existing resource in the build.
-     * @param pathToPom
      * @param resource
      */
-    void updateResource( final Path pathToPom,
-                         final Path resource );
+    void updateResource( final Path resource );
 
 }

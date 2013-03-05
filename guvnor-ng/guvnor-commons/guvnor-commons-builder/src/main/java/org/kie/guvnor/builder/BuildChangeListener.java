@@ -85,10 +85,10 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceAddedEvent",
                                             resourceAddedEvent );
         final Path resource = resourceAddedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
+        //If resource is not within a Package it cannot be used for an incremental build
+        final Path packagePath = projectService.resolvePackage( resource );
+        if ( packagePath == null ) {
             return;
         }
 
@@ -98,8 +98,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    buildService.addResource( pathToPom,
-                                              resource );
+                    buildService.addResource( resource );
                 } catch ( Exception e ) {
                     //Swallow for now...
                     System.out.println( e.fillInStackTrace() );
@@ -118,10 +117,10 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceDeletedEvent",
                                             resourceDeletedEvent );
         final Path resource = resourceDeletedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
+        //If resource is not within a Package it cannot be used for an incremental build
+        final Path packagePath = projectService.resolvePackage( resource );
+        if ( packagePath == null ) {
             return;
         }
 
@@ -131,8 +130,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    buildService.deleteResource( pathToPom,
-                                                 resource );
+                    buildService.deleteResource( resource );
                 } catch ( Exception e ) {
                     //Swallow for now...
                     System.out.println( e.fillInStackTrace() );
@@ -151,10 +149,10 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
                                             resourceUpdatedEvent );
         final Path resource = resourceUpdatedEvent.getPath();
-        final Path pathToPom = getPathToPom( resource );
 
-        //If resource is not within a Project or the Project lacks a pom.xml file exit
-        if ( pathToPom == null ) {
+        //If resource is not within a Package it cannot be used for an incremental build
+        final Path packagePath = projectService.resolvePackage( resource );
+        if ( packagePath == null ) {
             return;
         }
 
@@ -164,36 +162,13 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    buildService.updateResource( pathToPom,
-                                                 resource );
+                    buildService.updateResource( resource );
                 } catch ( Exception e ) {
                     //Swallow for now...
                     System.out.println( e.fillInStackTrace() );
                 }
             }
         } );
-    }
-
-    private Path getPathToPom( final Path resource ) {
-        final Path projectPath = projectService.resolveProject( resource );
-        //Check resource is within a Project
-        if ( projectPath == null ) {
-            return null;
-        }
-        final Path pathToPom = makePathToPom( projectPath );
-        //Don't assume there's a pom file
-        if ( pathToPom == null ) {
-            return null;
-        }
-        return pathToPom;
-    }
-
-    private Path makePathToPom( final Path projectPath ) {
-        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_FILE );
-        if ( pom == null ) {
-            return null;
-        }
-        return paths.convert( pom );
     }
 
 }

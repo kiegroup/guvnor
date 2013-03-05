@@ -45,18 +45,15 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public void addResource( Path pathToPom,
-                                     Path resource ) {
+            public void addResource( Path resource ) {
             }
 
             @Override
-            public void deleteResource( Path pathToPom,
-                                        Path resource ) {
+            public void deleteResource( Path resource ) {
             }
 
             @Override
-            public void updateResource( Path pathToPom,
-                                        Path resource ) {
+            public void updateResource( Path resource ) {
             }
         };
     }
