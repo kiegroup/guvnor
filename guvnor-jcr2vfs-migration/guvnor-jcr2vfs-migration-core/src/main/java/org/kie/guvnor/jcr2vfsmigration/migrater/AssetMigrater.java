@@ -21,11 +21,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
-import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DRLEditorMigrater;
-import org.kie.guvnor.jcr2vfsmigration.migrater.asset.DSLEditorMigrater;
-import org.kie.guvnor.jcr2vfsmigration.migrater.asset.EnumEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
-import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FormDefEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -52,14 +48,6 @@ public class AssetMigrater {
     protected FactModelsMigrater factModelsMigrater;    
     @Inject
     protected GuidedEditorMigrater guidedEditorMigrater;
-    @Inject
-    protected DRLEditorMigrater drlEditorMigrater;
-    @Inject
-    protected EnumEditorMigrater enumEditorMigrater;
-    @Inject
-    protected DSLEditorMigrater dslEditorMigrater;    
-    @Inject
-    protected FormDefEditorMigrater formDefEditorMigrater;        
     @Inject
     protected PlainTextAssetMigrater plainTextAssetMigrater;        
 
