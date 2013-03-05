@@ -18,14 +18,12 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * A Factory to provide the Cells.
@@ -71,8 +69,7 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
-        CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
-        return new DecoratedGridCellValueAdaptor<Boolean>( cbc );
+        return new DecoratedGridCellValueAdaptor<Boolean>( new CheckboxCellImpl() );
     }
 
     // Make a new Cell for Date columns

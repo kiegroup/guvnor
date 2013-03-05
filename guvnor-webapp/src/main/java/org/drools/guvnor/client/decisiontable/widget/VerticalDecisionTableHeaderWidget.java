@@ -608,8 +608,8 @@ public class VerticalDecisionTableHeaderWidget extends
         Scheduler.get().scheduleFinally( new ScheduledCommand() {
             public void execute() {
                 ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
-                                  getBody().getOffsetWidth(),
-                                  getBody().getOffsetHeight() );
+                                  widget.getOffsetWidth(),
+                                  widget.getOffsetHeight() );
             }
         } );
 

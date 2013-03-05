@@ -47,7 +47,7 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
      * 
      */
     public CheckboxCellImpl() {
-        super( "change",
+        super( "click",
                "keydown" );
     }
 
@@ -73,7 +73,7 @@ public class CheckboxCellImpl extends AbstractEditableCell<Boolean, Boolean> {
         String type = event.getType();
 
         boolean enterPressed = "keydown".equals( type ) && event.getKeyCode() == KeyCodes.KEY_ENTER;
-        if ( "change".equals( type ) || enterPressed ) {
+        if ( "click".equals( type ) || enterPressed ) {
             InputElement input = parent.getFirstChild().cast();
             Boolean isChecked = input.isChecked();
 
