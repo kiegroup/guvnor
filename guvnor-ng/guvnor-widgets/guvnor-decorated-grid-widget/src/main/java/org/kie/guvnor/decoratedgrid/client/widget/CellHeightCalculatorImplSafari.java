@@ -15,16 +15,15 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.INSTANCE;
+import static org.kie.guvnor.decoratedgrid.client.resources.GridResources.*;
 
 /**
  * Class to calculate the height of a cell in a VerticalMergedGrid for Safari.
  */
-public class CellHeightCalculatorImplSafari
-        extends CellHeightCalculatorImpl {
+public class CellHeightCalculatorImplSafari extends CellHeightCalculatorImpl {
 
     public int calculateHeight( int rowSpan ) {
-        int divHeight = INSTANCE.style().rowHeight() * rowSpan;
+        int divHeight = INSTANCE.style().rowHeight() * rowSpan + ( ( rowSpan - 1 ) * INSTANCE.style().borderWidth() );
         return divHeight;
     }
 
