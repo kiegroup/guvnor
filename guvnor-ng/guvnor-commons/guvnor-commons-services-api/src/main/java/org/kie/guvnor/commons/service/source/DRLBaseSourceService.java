@@ -35,11 +35,6 @@ public abstract class DRLBaseSourceService
             source = packageDeclaration + "\n" + source;
         }
 
-        //Hack for empty byte streams not handled by the underlying KieBuilder
-        if ( source.isEmpty() ) {
-            source = " ";
-        }
-
         return source;
     }
 

@@ -1,13 +1,14 @@
-package org.kie.guvnor.explorer.backend.server.util;
+package org.kie.guvnor.services.backend.file;
 
 import org.kie.commons.java.nio.file.Path;
+import org.kie.guvnor.services.file.LinkedFilter;
 
 /**
  * A Filter to exclude "dot Files" that can be hidden from users
  */
-public class DotFileFilter implements Filter {
+public class LinkedDotFileFilter implements LinkedFilter {
 
-    private Filter next = null;
+    private LinkedFilter next = null;
 
     @Override
     public boolean accept( final Path path ) {
@@ -21,7 +22,7 @@ public class DotFileFilter implements Filter {
     }
 
     @Override
-    public void setNextFilter( final Filter filter ) {
+    public void setNextFilter( final LinkedFilter filter ) {
         this.next = filter;
     }
 

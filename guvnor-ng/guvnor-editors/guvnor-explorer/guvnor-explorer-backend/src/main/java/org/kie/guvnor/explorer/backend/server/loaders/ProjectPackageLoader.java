@@ -1,23 +1,23 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
-import org.kie.guvnor.explorer.backend.server.util.Filter;
-import org.kie.guvnor.explorer.backend.server.util.MetaInfFolderFilter;
 import org.kie.guvnor.explorer.model.FileItem;
 import org.kie.guvnor.explorer.model.Item;
 import org.kie.guvnor.explorer.model.PackageItem;
 import org.kie.guvnor.explorer.model.ParentPackageItem;
+import org.kie.guvnor.services.backend.file.LinkedDotFileFilter;
+import org.kie.guvnor.services.backend.file.LinkedMetaInfFolderFilter;
+import org.kie.guvnor.services.file.LinkedFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Loader to add Projects, Folders and Files
@@ -26,9 +26,7 @@ import java.util.List;
 @Named("projectPackageList")
 public class ProjectPackageLoader implements ItemsLoader {
 
-    private static final String RESOURCES_PATH = "src/main/resources";
-
-    private final Filter filter;
+    private final LinkedFilter filter;
 
     @Inject
     @Named("ioStrategy")
@@ -38,8 +36,8 @@ public class ProjectPackageLoader implements ItemsLoader {
     private Paths paths;
 
     public ProjectPackageLoader() {
-        filter = new DotFileFilter();
-        filter.setNextFilter( new MetaInfFolderFilter() );
+        filter = new LinkedDotFileFilter();
+        filter.setNextFilter( new LinkedMetaInfFolderFilter() );
     }
 
     @Override

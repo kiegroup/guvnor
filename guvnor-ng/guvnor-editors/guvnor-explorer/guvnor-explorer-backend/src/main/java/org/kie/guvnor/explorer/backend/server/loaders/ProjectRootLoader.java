@@ -1,23 +1,23 @@
 package org.kie.guvnor.explorer.backend.server.loaders;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.guvnor.explorer.backend.server.util.DotFileFilter;
-import org.kie.guvnor.explorer.backend.server.util.Filter;
-import org.kie.guvnor.explorer.backend.server.util.MetaInfFolderFilter;
 import org.kie.guvnor.explorer.model.FileItem;
 import org.kie.guvnor.explorer.model.FolderItem;
 import org.kie.guvnor.explorer.model.Item;
 import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.model.ParentFolderItem;
+import org.kie.guvnor.services.backend.file.LinkedDotFileFilter;
+import org.kie.guvnor.services.backend.file.LinkedMetaInfFolderFilter;
+import org.kie.guvnor.services.file.LinkedFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Loader to add Projects structure being pom.xml and immediate packages under src/main/resources
@@ -33,7 +33,7 @@ public class ProjectRootLoader implements ItemsLoader {
     private static final String TEST_JAVA_RESOURCES_PATH = "src/test/java";
     private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
-    private final Filter filter;
+    private final LinkedFilter filter;
 
     @Inject
     @Named("ioStrategy")
@@ -43,8 +43,8 @@ public class ProjectRootLoader implements ItemsLoader {
     private Paths paths;
 
     public ProjectRootLoader() {
-        filter = new DotFileFilter();
-        filter.setNextFilter( new MetaInfFolderFilter() );
+        filter = new LinkedDotFileFilter();
+        filter.setNextFilter( new LinkedMetaInfFolderFilter() );
     }
 
     @Override

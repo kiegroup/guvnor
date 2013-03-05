@@ -38,7 +38,6 @@ import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.services.backend.file.DotFileFilter;
-import org.kie.guvnor.services.file.Filter;
 import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
@@ -53,7 +52,7 @@ public class Builder {
     private final String artifactId;
     private final SourceServices sourceServices;
     private final IOService ioService;
-    private final Filter filter;
+    private final DirectoryStream.Filter<Path> filter;
 
     private final String projectPrefix;
 
@@ -77,7 +76,7 @@ public class Builder {
                     final Paths paths,
                     final SourceServices sourceServices,
                     final IOService ioService,
-                    final Filter filter ) {
+                    final DirectoryStream.Filter<Path> filter ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;
@@ -89,7 +88,8 @@ public class Builder {
         kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
-        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
+        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory,
+                                                                                                        filter );
         visitPaths( directoryStream );
     }
 
@@ -149,9 +149,10 @@ public class Builder {
     private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
         for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
-                visitPaths( Files.newDirectoryStream( path ) );
+                visitPaths( Files.newDirectoryStream( path,
+                                                      filter ) );
 
-            } else if ( filter.accept( path ) ) {
+            } else {
                 final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
                 final InputStream is = ioService.newInputStream( path );
                 final BufferedInputStream bis = new BufferedInputStream( is );

@@ -1,12 +1,12 @@
 package org.kie.guvnor.services.backend.file;
 
+import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.services.file.Filter;
 
 /**
  * Default filter that excludes only Meta Data resources
  */
-public class DotFileFilter implements Filter {
+public class DotFileFilter implements DirectoryStream.Filter<Path> {
 
     @Override
     //Don't process MetaData files

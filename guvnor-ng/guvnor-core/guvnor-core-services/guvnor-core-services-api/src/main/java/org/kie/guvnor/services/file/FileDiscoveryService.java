@@ -2,6 +2,7 @@ package org.kie.guvnor.services.file;
 
 import java.util.Collection;
 
+import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;
 
 /**
@@ -16,6 +17,6 @@ public interface FileDiscoveryService {
      * @return
      */
     Collection<Path> discoverFiles( final Path pathToSearch,
-                                    final Filter filter );
+                                    final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter );
 
 }

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
@@ -21,7 +22,6 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.cache.LRUCache;
 import org.kie.guvnor.services.file.FileDiscoveryService;
-import org.kie.guvnor.services.file.Filter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -32,11 +32,11 @@ import org.uberfire.backend.vfs.Path;
 @Named("PackageDataModelOracleCache")
 public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
 
-    private static final Filter FILTER_ENUMERATIONS = new FileExtensionFilter( ".enumeration" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_ENUMERATIONS = new FileExtensionFilter( ".enumeration" );
 
-    private static final Filter FILTER_DSLS = new FileExtensionFilter( ".dsl" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_DSLS = new FileExtensionFilter( ".dsl" );
 
-    private static final Filter FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
 
     @Inject
     private Paths paths;
@@ -93,7 +93,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
     public synchronized DataModelOracle assertPackageDataModelOracle( final Path projectPath,
-                                                         final Path packagePath ) throws BuildException {
+                                                                      final Path packagePath ) throws BuildException {
         DataModelOracle oracle = getEntry( packagePath );
         if ( oracle == null ) {
             oracle = makePackageDataModelOracle( projectPath,

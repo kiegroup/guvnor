@@ -19,9 +19,7 @@ package org.kie.guvnor.guided.rule.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -32,6 +30,7 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -44,12 +43,9 @@ import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.FileDiscoveryService;
-import org.kie.guvnor.services.file.Filter;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.mvel2.MVEL;
-import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
@@ -61,9 +57,9 @@ import org.uberfire.security.Identity;
 @ApplicationScoped
 public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
-    private static final Filter FILTER_DSLS = new FileExtensionFilter( ".dsl" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_DSLS = new FileExtensionFilter( ".dsl" );
 
-    private static final Filter FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
 
     @Inject
     @Named("ioStrategy")

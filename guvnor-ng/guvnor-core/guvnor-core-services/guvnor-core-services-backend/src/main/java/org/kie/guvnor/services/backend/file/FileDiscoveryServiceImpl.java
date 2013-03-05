@@ -5,12 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.services.file.Filter;
 import org.kie.guvnor.services.file.FileDiscoveryService;
 
 /**
@@ -21,7 +19,7 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
 
     @Override
     public Collection<Path> discoverFiles( final Path pathToSearch,
-                                           final Filter filter ) {
+                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter ) {
         PortablePreconditions.checkNotNull( "pathToSearch",
                                             pathToSearch );
         PortablePreconditions.checkNotNull( "filter",
@@ -43,12 +41,8 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
         }
 
         //Path represents a Folder, so check its content
-        final DirectoryStream<Path> files = Files.newDirectoryStream( pathToSearch, new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept( final Path entry ) throws IOException {
-                return filter.accept( entry );
-            }
-        } );
+        final DirectoryStream<Path> files = Files.newDirectoryStream( pathToSearch,
+                                                                      filter );
         for ( final Path file : files ) {
             discoveredFiles.add( file );
         }
