@@ -187,8 +187,8 @@ public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<
             Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     ResizeEvent.fire( TemplateDataHeaderWidget.this,
-                                      getBody().getOffsetWidth(),
-                                      getBody().getOffsetHeight() );
+                                      widget.getOffsetWidth(),
+                                      widget.getOffsetHeight() );
                 }
             } );
 

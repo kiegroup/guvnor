@@ -18,11 +18,10 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 /**
  * Class to calculate the height of a cell in a VerticalMergedGrid for Safari.
  */
-public class CellHeightCalculatorImplSafari
-        extends CellHeightCalculatorImpl {
+public class CellHeightCalculatorImplSafari extends CellHeightCalculatorImpl {
 
-    public int calculateHeight(int rowSpan) {
-        int divHeight = style.rowHeight() * rowSpan;
+    public int calculateHeight( int rowSpan ) {
+        int divHeight = style.rowHeight() * rowSpan + ( ( rowSpan - 1 ) * style.borderWidth() );
         return divHeight;
     }
 

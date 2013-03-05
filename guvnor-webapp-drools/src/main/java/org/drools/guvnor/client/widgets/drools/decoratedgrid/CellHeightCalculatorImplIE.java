@@ -20,8 +20,8 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
  */
 public class CellHeightCalculatorImplIE extends CellHeightCalculatorImpl {
 
-    public int calculateHeight(int rowSpan) {
-        int divHeight = style.rowHeight() * rowSpan + ((rowSpan - 1) * style.borderWidth());
+    public int calculateHeight( int rowSpan ) {
+        int divHeight = style.rowHeight() * rowSpan + ( ( rowSpan - 1 ) * style.borderWidth() );
         return divHeight;
     }
 
