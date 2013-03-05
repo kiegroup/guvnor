@@ -20,6 +20,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.model.SingleScenarioResult;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -30,6 +31,11 @@ public class TestScenarioEditorServiceImpl
 
     @Override
     public SingleScenarioResult runScenario(String packageName, Scenario scenario) {
+        return null;  //TODO -Rikkola-
+    }
+
+    @Override
+    public Scenario loadScenario(Path path) {
         return null;  //TODO -Rikkola-
     }
 }

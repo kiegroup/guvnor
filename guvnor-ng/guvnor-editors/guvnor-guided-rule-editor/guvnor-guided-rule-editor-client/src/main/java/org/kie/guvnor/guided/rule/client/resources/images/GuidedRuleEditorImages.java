@@ -30,15 +30,6 @@ public interface GuidedRuleEditorImages extends
     @ClientBundle.Source("add_connective.gif")
     ImageResource addConnective();
 
-    @ClientBundle.Source("new_item_below.png")
-    ImageResource newItemBelow();
-
-    @ClientBundle.Source("shuffle_down.gif")
-    ImageResource shuffleDown();
-
-    @ClientBundle.Source("shuffle_up.gif")
-    ImageResource shuffleUp();
-
     @ClientBundle.Source("warning.gif")
     ImageResource warning();
 

@@ -46,25 +46,6 @@ public class GuidedRuleEditorImages508 {
         return image;
     }
 
-    public Image NewItemBelow() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().newItemBelow() );
-        image.setAltText( Constants.INSTANCE.NewItemBelow() );
-        return image;
-    }
-
-    public Image MoveDown() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().shuffleDown() );
-        image.setAltText( Constants.INSTANCE.MoveDown() );
-
-        return image;
-    }
-
-    public Image MoveUp() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().shuffleUp() );
-        image.setAltText( Constants.INSTANCE.MoveUp() );
-        return image;
-    }
-
     public Image WarningSmall() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().warning() );
         image.setAltText( Constants.INSTANCE.Warning() );

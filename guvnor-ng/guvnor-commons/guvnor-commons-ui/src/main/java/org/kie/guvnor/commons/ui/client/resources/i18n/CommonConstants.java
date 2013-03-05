@@ -143,4 +143,18 @@ public interface CommonConstants
     String NewItem();
 
     String RuleAsset();
+
+    String AElementToDelInCollectionList();
+
+    String AddElementBelow();
+
+    String MoveDownListMove();
+
+    String MoveUpList();
+
+    String NewItemBelow();
+
+    String MoveDown();
+
+    String MoveUp();
 }

@@ -43,4 +43,14 @@ public interface CommonImages
 
     @Source("images/warning.gif")
     ImageResource warning();
+
+    @Source("images/new_item_below.png")
+    ImageResource newItemBelow();
+
+    @Source("images/shuffle_down.gif")
+    ImageResource shuffleDown();
+
+    @Source("images/shuffle_up.gif")
+    ImageResource shuffleUp();
+
 }

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.Image;
 public interface TestScenarioConstants
         extends Messages {
 
-    TestScenarioConstants INSTANCE = GWT.create(TestScenarioConstants.class);
+    public static final TestScenarioConstants INSTANCE = GWT.create(TestScenarioConstants.class);
 
     String ActivateRuleFlowGroup();
 
@@ -43,8 +43,6 @@ public interface TestScenarioConstants
     String OK();
 
     String pleaseChoose1();
-
-    String AddFieldToFact();
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
 
@@ -239,4 +237,7 @@ public interface TestScenarioConstants
     String RemoveThisRuleExpectation();
 
     String AreYouSureYouWantToRemoveThisRuleExpectation();
+
+    String AddFieldToFact();
+
 }

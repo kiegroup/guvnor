@@ -9,18 +9,18 @@ public interface TestScenarioImages
 
     public static TestScenarioImages INSTANCE = GWT.create(TestScenarioImages.class);
 
-    @Source("images/rule_asset.gif")
+    @Source("rule_asset.gif")
     public ImageResource RuleAsset();
 
-    @Source("images/add_field_to_fact.gif")
+    @Source("add_field_to_fact.gif")
     ImageResource addFieldToFact();
 
-    @Source("images/new_wiz.gif")
+    @Source("new_wiz.gif")
     ImageResource newWiz();
 
-    @Source("images/execution_trace.gif")
+    @Source("execution_trace.gif")
     ImageResource executionTrace();
 
-    @Source("images/test_passed.png")
+    @Source("test_passed.png")
     ImageResource testPassed();
 }

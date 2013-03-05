@@ -25,28 +25,28 @@ public interface AuditEventsImages
 
     public static AuditEventsImages INSTANCE = GWT.create(AuditEventsImages.class);
 
-    @Source("images/audit_events/misc_event.gif")
+    @Source("audit_events/misc_event.gif")
     ImageResource miscEvent();
 
-    @Source("images/audit_events/1.gif")
+    @Source("audit_events/1.gif")
     ImageResource image1();
 
-    @Source("images/audit_events/2.gif")
+    @Source("audit_events/2.gif")
     ImageResource image2();
 
-    @Source("images/audit_events/3.gif")
+    @Source("audit_events/3.gif")
     ImageResource image3();
 
-    @Source("images/audit_events/4.gif")
+    @Source("audit_events/4.gif")
     ImageResource image4();
 
-    @Source("images/audit_events/5.gif")
+    @Source("audit_events/5.gif")
     ImageResource image5();
 
-    @Source("images/audit_events/6.gif")
+    @Source("audit_events/6.gif")
     ImageResource image6();
 
-    @Source("images/audit_events/7.gif")
+    @Source("audit_events/7.gif")
     ImageResource image7();
 
 }

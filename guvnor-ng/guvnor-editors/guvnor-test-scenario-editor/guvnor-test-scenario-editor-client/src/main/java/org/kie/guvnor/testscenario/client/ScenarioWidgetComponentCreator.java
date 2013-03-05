@@ -37,12 +37,10 @@ public class ScenarioWidgetComponentCreator {
     private final ScenarioEditorPresenter scenarioWidget;
 
     private boolean showResults;
-    private final Metadata metadata;
     private Scenario scenario;
     private String packageName;
 
-    protected ScenarioWidgetComponentCreator(Metadata metadata, String packageName, ScenarioEditorPresenter scenarioWidget) {
-        this.metadata = metadata;
+    protected ScenarioWidgetComponentCreator(String packageName, ScenarioEditorPresenter scenarioWidget) {
         this.scenarioWidget = scenarioWidget;
         this.packageName = packageName;
     }
@@ -166,10 +164,6 @@ public class ScenarioWidgetComponentCreator {
             availableRulesBox.addItem(list[i]);
         }
         return availableRulesBox;
-    }
-
-    public Metadata getMetaData() {
-        return metadata;
     }
 
     public void setShowResults(boolean showResults) {

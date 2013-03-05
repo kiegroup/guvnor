@@ -17,17 +17,16 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:guvnor='urn:import:org.kie.guvnor.testscenario.client'
-             xmlns:guvnorCommon='urn:import:org.drools.guvnor.client.common'>
+             xmlns:guvnor='urn:import:org.kie.guvnor.testscenario.client'>
 
-  <ui:with field="i18n" type="org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants"/>
+  <ui:with field="i18n" type="org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants"/>
 
-  <ui:with field='images' type='org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages'/>
+  <ui:with field='images' type='org.kie.guvnor.commons.ui.client.resources.CommonImages'/>
 
   <gwt:HorizontalPanel>
     <guvnor:FieldDataConstraintEditor ui:field="fieldDataConstraintEditor"/>
     <gwt:Image ui:field="deleteItem"
-               resource="{images.itemImages.deleteItemSmall}"
+               resource="{images.DeleteItemSmall}"
                altText="{i18n.AElementToDelInCollectionList}"
         />
     <gwt:Image ui:field="newItemBelow"

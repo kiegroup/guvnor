@@ -42,4 +42,22 @@ public final class CommonAltedImages {
         return image;
     }
 
+    public Image NewItemBelow() {
+        Image image = new Image( CommonImages.INSTANCE.newItemBelow() );
+        image.setAltText( CommonConstants.INSTANCE.NewItemBelow() );
+        return image;
+    }
+
+    public Image MoveDown() {
+        Image image = new Image( CommonImages.INSTANCE.shuffleDown() );
+        image.setAltText( CommonConstants.INSTANCE.MoveDown() );
+
+        return image;
+    }
+
+    public Image MoveUp() {
+        Image image = new Image( CommonImages.INSTANCE.shuffleUp() );
+        image.setAltText( CommonConstants.INSTANCE.MoveUp() );
+        return image;
+    }
 }

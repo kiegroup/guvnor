@@ -34,6 +34,7 @@ import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
+import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
@@ -687,15 +688,15 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = GuidedRuleEditorImages508.INSTANCE.NewItemBelow();
+        Image addPattern = CommonAltedImages.INSTANCE.NewItemBelow();
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = GuidedRuleEditorImages508.INSTANCE.MoveDown();
+        Image moveDown = CommonAltedImages.INSTANCE.MoveDown();
         moveDown.setTitle( Constants.INSTANCE.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = GuidedRuleEditorImages508.INSTANCE.MoveUp();
+        Image moveUp = CommonAltedImages.INSTANCE.MoveUp();
         moveUp.setTitle( Constants.INSTANCE.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 

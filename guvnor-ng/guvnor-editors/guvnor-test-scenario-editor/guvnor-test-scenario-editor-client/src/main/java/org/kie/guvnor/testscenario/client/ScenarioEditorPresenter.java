@@ -25,14 +25,18 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.model.CallFixtureMap;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;
@@ -42,15 +46,19 @@ import org.kie.guvnor.testscenario.model.FixturesMap;
 import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.model.VerifyFact;
 import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import java.util.List;
 
-@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
+@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
 public class ScenarioEditorPresenter
         extends Composite
         implements ScenarioParentWidget {
@@ -61,6 +69,20 @@ public class ScenarioEditorPresenter
 
     private HandlerRegistration availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
+    private final Caller<TestScenarioEditorService> service;
+    private final DataModelService dataModelService;
+    private boolean isReadOnly;
+    private final Caller<ProjectService> projectService;
+
+
+    @Inject
+    public ScenarioEditorPresenter(Caller<TestScenarioEditorService> service,
+                                   DataModelService dataModelService,
+                                   Caller<ProjectService> projectService) {
+        this.service = service;
+        this.projectService = projectService;
+        this.dataModelService = dataModelService;
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -69,10 +91,42 @@ public class ScenarioEditorPresenter
 
     @WorkbenchPartView
     public Widget getWidget() {
-      return new Label("test");
+        return this;
     }
 
+    @OnStart
+    public void onStart(final Path path,
+                        final PlaceRequest place) {
 
+        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
+        dmo = dataModelService.getDataModel(path);
+        projectService.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(final String packageName) {
+                service.call(new RemoteCallback<Scenario>() {
+                    @Override
+                    public void callback(Scenario scenario) {
+                        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(packageName, ScenarioEditorPresenter.this);
+                        setShowResults(false);
+
+                        ifFixturesSizeZeroThenAddExecutionTrace();
+
+                        if (!isReadOnly) {
+                            layout.add(new TestRunnerWidget(ScenarioEditorPresenter.this, service, packageName));
+                        }
+
+                        renderEditor();
+
+                        initWidget(layout);
+
+                        setStyleName("scenario-Viewer");
+
+                        layout.setWidth("100%");
+                    }
+                }).loadScenario(path);
+            }
+        }).resolvePackageName(path);
+    }
 
 
 //    public ScenarioEditorPresenter(Asset asset) {
