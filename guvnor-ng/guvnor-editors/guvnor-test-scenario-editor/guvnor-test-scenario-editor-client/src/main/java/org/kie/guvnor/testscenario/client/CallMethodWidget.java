@@ -111,7 +111,7 @@ public class CallMethodWidget extends DirtyableComposite {
                           getSetterLabel() );
         DirtyableFlexTable inner = new DirtyableFlexTable();
         int i = 0;
-        for ( CallFieldValue val : mCall.getCallFieldValuesMap()) {
+        for ( CallFieldValue val : mCall.getCallFieldValues()) {
 
             inner.setWidget( i,
                              0,
@@ -218,7 +218,7 @@ public class CallMethodWidget extends DirtyableComposite {
         DropDownData enums = dmo.getEnums(
                 type,
                 val.field,
-                this.mCall.getCallFieldValues()
+                this.mCall.getCallFieldValuesMap()
         );
         return new MethodParameterCallValueEditor( val,
                                                    enums,

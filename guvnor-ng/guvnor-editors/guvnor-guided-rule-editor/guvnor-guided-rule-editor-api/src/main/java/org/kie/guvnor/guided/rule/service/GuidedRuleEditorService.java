@@ -43,14 +43,4 @@ public interface GuidedRuleEditorService
 
     GuidedEditorContent loadContent( final Path path );
 
-    RuleModel loadRuleModel( final Path path );
-
-    /**
-     * @param valuePairs key=value pairs to be interpolated into the expression.
-     * @param expression The expression, which will then be eval'ed to generate a
-     * String[]
-     */
-    String[] loadDropDownExpression( final String[] valuePairs,
-                                     final String expression );
-
 }

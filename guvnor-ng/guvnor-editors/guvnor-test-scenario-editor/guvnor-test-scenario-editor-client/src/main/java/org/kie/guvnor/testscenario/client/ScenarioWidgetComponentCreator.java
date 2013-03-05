@@ -20,7 +20,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import org.kie.guvnor.commons.service.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.model.CallFixtureMap;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;

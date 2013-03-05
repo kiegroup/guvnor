@@ -41,6 +41,11 @@ public class TestScenarioResourceType
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "*."+getSuffix();
+    }
+
+    @Override
     public boolean accept(Path path) {
         return path.getFileName().endsWith("." + getSuffix());
     }
