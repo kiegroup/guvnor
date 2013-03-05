@@ -55,7 +55,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
     @Inject
     private ProjectService projectService;
 
-    public void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
+    public synchronized void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
@@ -67,7 +67,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
         }
     }
 
-    public void invalidateProjectPackagesCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
+    public synchronized void invalidateProjectPackagesCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
@@ -92,7 +92,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    public DataModelOracle assertPackageDataModelOracle( final Path projectPath,
+    public synchronized DataModelOracle assertPackageDataModelOracle( final Path projectPath,
                                                          final Path packagePath ) throws BuildException {
         DataModelOracle oracle = getEntry( packagePath );
         if ( oracle == null ) {

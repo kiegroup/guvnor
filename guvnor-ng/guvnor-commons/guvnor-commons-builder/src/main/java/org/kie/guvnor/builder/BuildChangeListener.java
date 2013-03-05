@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.config.AppConfigService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
@@ -26,6 +27,8 @@ public class BuildChangeListener {
 
     private static final String POM_FILE = "pom.xml";
 
+    private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
+
     @Inject
     private Paths paths;
 
@@ -35,12 +38,23 @@ public class BuildChangeListener {
     @Inject
     private BuildService buildService;
 
+    @Inject
+    private AppConfigService appConfigService;
+
     private ExecutorService executor;
+
+    private boolean isIncrementalEnabled = false;
 
     @PostConstruct
     private void setupExecutorService() {
         final int cores = Runtime.getRuntime().availableProcessors();
         executor = Executors.newFixedThreadPool( cores );
+        isIncrementalEnabled = isIncrementalBuildEnabled();
+    }
+
+    private boolean isIncrementalBuildEnabled() {
+        final String value = appConfigService.loadPreferences().get( INCREMENTAL_BUILD_PROPERTY_NAME );
+        return Boolean.parseBoolean( value );
     }
 
     @PreDestroy
@@ -62,87 +76,102 @@ public class BuildChangeListener {
     }
 
     public void addResource( @Observes final ResourceAddedEvent resourceAddedEvent ) {
-        try {
-            PortablePreconditions.checkNotNull( "resourceAddedEvent",
-                                                resourceAddedEvent );
-            final Path resource = resourceAddedEvent.getPath();
-            final Path pathToPom = getPathToPom( resource );
+        //Do nothing if incremental builds are disabled
+        if ( !isIncrementalEnabled ) {
+            return;
+        }
 
-            //If resource is not within a Project or the Project lacks a pom.xml file exit
-            if ( pathToPom == null ) {
-                return;
-            }
+        //Perform incremental build
+        PortablePreconditions.checkNotNull( "resourceAddedEvent",
+                                            resourceAddedEvent );
+        final Path resource = resourceAddedEvent.getPath();
+        final Path pathToPom = getPathToPom( resource );
 
-            //Schedule an incremental build
-            executor.execute( new Runnable() {
+        //If resource is not within a Project or the Project lacks a pom.xml file exit
+        if ( pathToPom == null ) {
+            return;
+        }
 
-                @Override
-                public void run() {
+        //Schedule an incremental build
+        executor.execute( new Runnable() {
+
+            @Override
+            public void run() {
+                try {
                     buildService.addResource( pathToPom,
                                               resource );
+                } catch ( Exception e ) {
+                    //Swallow for now...
+                    System.out.println( e.fillInStackTrace() );
                 }
-            } );
-
-        } catch ( Exception e ) {
-            //Swallow for now...
-            System.out.println( e.fillInStackTrace() );
-        }
+            }
+        } );
     }
 
     public void deleteResource( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
-        try {
-            PortablePreconditions.checkNotNull( "resourceDeletedEvent",
-                                                resourceDeletedEvent );
-            final Path resource = resourceDeletedEvent.getPath();
-            final Path pathToPom = getPathToPom( resource );
+        //Do nothing if incremental builds are disabled
+        if ( !isIncrementalEnabled ) {
+            return;
+        }
 
-            //If resource is not within a Project or the Project lacks a pom.xml file exit
-            if ( pathToPom == null ) {
-                return;
-            }
+        //Perform incremental build
+        PortablePreconditions.checkNotNull( "resourceDeletedEvent",
+                                            resourceDeletedEvent );
+        final Path resource = resourceDeletedEvent.getPath();
+        final Path pathToPom = getPathToPom( resource );
 
-            //Schedule an incremental build
-            executor.execute( new Runnable() {
+        //If resource is not within a Project or the Project lacks a pom.xml file exit
+        if ( pathToPom == null ) {
+            return;
+        }
 
-                @Override
-                public void run() {
+        //Schedule an incremental build
+        executor.execute( new Runnable() {
+
+            @Override
+            public void run() {
+                try {
                     buildService.deleteResource( pathToPom,
                                                  resource );
+                } catch ( Exception e ) {
+                    //Swallow for now...
+                    System.out.println( e.fillInStackTrace() );
                 }
-            } );
-
-        } catch ( Exception e ) {
-            //Swallow for now...
-            System.out.println( e.fillInStackTrace() );
-        }
+            }
+        } );
     }
 
     public void updateResource( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
-        try {
-            PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
-                                                resourceUpdatedEvent );
-            final Path resource = resourceUpdatedEvent.getPath();
-            final Path pathToPom = getPathToPom( resource );
+        //Do nothing if incremental builds are disabled
+        if ( !isIncrementalEnabled ) {
+            return;
+        }
 
-            //If resource is not within a Project or the Project lacks a pom.xml file exit
-            if ( pathToPom == null ) {
-                return;
-            }
+        //Perform incremental build
+        PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
+                                            resourceUpdatedEvent );
+        final Path resource = resourceUpdatedEvent.getPath();
+        final Path pathToPom = getPathToPom( resource );
 
-            //Schedule an incremental build
-            executor.execute( new Runnable() {
+        //If resource is not within a Project or the Project lacks a pom.xml file exit
+        if ( pathToPom == null ) {
+            return;
+        }
 
-                @Override
-                public void run() {
+        //Schedule an incremental build
+        executor.execute( new Runnable() {
+
+            @Override
+            public void run() {
+                try {
                     buildService.updateResource( pathToPom,
                                                  resource );
+                } catch ( Exception e ) {
+                    //Swallow for now...
+                    System.out.println( e.fillInStackTrace() );
                 }
-            } );
-
-        } catch ( Exception e ) {
-            //Swallow for now...
-            System.out.println( e.fillInStackTrace() );
-        }
+            }
+        } );
     }
 
     private Path getPathToPom( final Path resource ) {

@@ -29,7 +29,7 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
     @Inject
     private IOService ioService;
 
-    public Builder assertBuilder( final Path pathToPom ) {
+    public synchronized Builder assertBuilder( final Path pathToPom ) {
         Builder builder = getEntry( pathToPom );
         if ( builder == null ) {
             final POM gav = pomService.loadPOM( pathToPom );
@@ -38,7 +38,6 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
                                    paths,
                                    sourceServices,
                                    ioService );
-            builder.build();
             setEntry( pathToPom,
                       builder );
         }

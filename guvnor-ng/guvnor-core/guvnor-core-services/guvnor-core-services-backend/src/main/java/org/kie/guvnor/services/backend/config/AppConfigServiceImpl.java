@@ -16,21 +16,25 @@
 
 package org.kie.guvnor.services.backend.config;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.services.config.AppConfigService;
-
-import javax.enterprise.context.ApplicationScoped;
 import java.util.Date;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.guvnor.services.config.AppConfigService;
 
 @Service
 @ApplicationScoped
 public class AppConfigServiceImpl implements AppConfigService {
 
+    private Map<String, String> preferences;
+
     @Override
     public Map<String, String> loadPreferences() {
-        Map<String, String> preferences = ApplicationPreferencesLoader.load();
-        ApplicationPreferencesInitializer.setSystemProperties( preferences );
+        if ( preferences == null ) {
+            preferences = ApplicationPreferencesLoader.load();
+            ApplicationPreferencesInitializer.setSystemProperties( preferences );
+        }
         return preferences;
 
     }

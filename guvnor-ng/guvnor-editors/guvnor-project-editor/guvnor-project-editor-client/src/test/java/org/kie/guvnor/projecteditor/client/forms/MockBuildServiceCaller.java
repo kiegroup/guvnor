@@ -39,6 +39,12 @@ public class MockBuildServiceCaller
             }
 
             @Override
+            public void buildAndDeploy( Path pathToPom ) {
+                callback.callback( null );
+                buildWasCalled = true;
+            }
+
+            @Override
             public void addResource( Path pathToPom,
                                      Path resource ) {
             }

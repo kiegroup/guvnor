@@ -86,6 +86,11 @@ public class BuildMessage {
         return artifactID;
     }
 
+    /**
+     * Check whether two Messages are equivalent. Property "id" is not used in the comparison as
+     * it is inconsistent for identical error messages generated in a different sequence during
+     * validation by the underlying KieBuilder.
+     */
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
@@ -98,9 +103,6 @@ public class BuildMessage {
         BuildMessage that = (BuildMessage) o;
 
         if ( column != that.column ) {
-            return false;
-        }
-        if ( id != that.id ) {
             return false;
         }
         if ( line != that.line ) {
@@ -122,10 +124,14 @@ public class BuildMessage {
         return true;
     }
 
+    /**
+     * HashCode implementation fo Messages. Property "id" is not used in the generation as
+     * it is inconsistent for identical error messages generated in a different sequence during
+     * validation by the underlying KieBuilder.
+     */
     @Override
     public int hashCode() {
-        int result = (int) ( id ^ ( id >>> 32 ) );
-        result = 31 * result + ( level != null ? level.hashCode() : 0 );
+        int result = level != null ? level.hashCode() : 0;
         result = 31 * result + ( path != null ? path.hashCode() : 0 );
         result = 31 * result + line;
         result = 31 * result + column;

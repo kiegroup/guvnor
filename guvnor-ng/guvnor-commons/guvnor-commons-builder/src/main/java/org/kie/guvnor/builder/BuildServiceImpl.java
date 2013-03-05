@@ -73,22 +73,31 @@ public class BuildServiceImpl
 
     @Override
     public void build( final Path pathToPom ) {
-        final Builder builder = cache.assertBuilder( pathToPom );
-        final BuildResults results = builder.build();
-
-        if ( results.getMessages().isEmpty() ) {
-            deploy( pathToPom );
-        }
+        final BuildResults results = doBuild( pathToPom );
         buildResultsEvent.fire( results );
     }
 
-    private void deploy( final Path pathToPom ) {
+    @Override
+    public void buildAndDeploy( final Path pathToPom ) {
+        //Build
+        final BuildResults results = doBuild( pathToPom );
+        buildResultsEvent.fire( results );
+
+        //Deploy, if no errors
+        if ( results.getMessages().isEmpty() ) {
+            final POM gav = pomService.loadPOM( pathToPom );
+            final Builder builder = cache.assertBuilder( pathToPom );
+            final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+            final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
+            m2RepoService.deployJar( input,
+                                     gav.getGav() );
+        }
+    }
+
+    private BuildResults doBuild( final Path pathToPom ) {
         final Builder builder = cache.assertBuilder( pathToPom );
-        final POM gav = pomService.loadPOM( pathToPom );
-        final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
-        final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
-        m2RepoService.deployJar( input,
-                                 gav.getGav() );
+        final BuildResults results = builder.build();
+        return results;
     }
 
     @Override

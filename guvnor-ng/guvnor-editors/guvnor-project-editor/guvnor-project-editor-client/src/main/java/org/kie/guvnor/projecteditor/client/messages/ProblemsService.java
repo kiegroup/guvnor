@@ -72,11 +72,11 @@ public class ProblemsService {
         final List<BuildMessage> removedMessages = results.getRemovedMessages();
 
         List<BuildMessage> list = dataProvider.getList();
-        for ( BuildMessage buildMessage : addedMessages ) {
-            list.add( buildMessage );
-        }
         for ( BuildMessage buildMessage : removedMessages ) {
             list.remove( buildMessage );
+        }
+        for ( BuildMessage buildMessage : addedMessages ) {
+            list.add( buildMessage );
         }
 
         placeManager.goTo( "org.kie.guvnor.Problems" );

@@ -51,9 +51,9 @@ public class FactEditorPopup {
     // A valid Fact, Field or Annotation name
     private static final RegExp VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );
 
-    private final FactMetaModel       factModel;
+    private final FactMetaModel factModel;
     private final List<FactMetaModel> superTypeFactModels;
-    private final ModelNameHelper     modelNameHelper;
+    private final ModelNameHelper modelNameHelper;
     private final ListBox lstSuperTypes = new ListBox();
 
     private Command okCommand;
@@ -93,20 +93,22 @@ public class FactEditorPopup {
         int selectedIndex = 0;
         lstSuperTypes.addItem( Constants.INSTANCE.DoesNotExtend() );
 
-        //Sort Super Types by name
-        Collections.sort( superTypeFactModels,
-                          byNameAscendingComparator );
-
-        //Populate listbox
-        for ( FactMetaModel fmm : superTypeFactModels ) {
-            if ( !fmm.getName().equals( factModel.getName() ) ) {
-                lstSuperTypes.addItem( fmm.getName() );
-                if ( factModel.getSuperType() != null && factModel.getSuperType().equals( fmm.getName() ) ) {
-                    selectedIndex = lstSuperTypes.getItemCount() - 1;
+        //Populate super-types
+        if ( superTypeFactModels != null ) {
+            Collections.sort( superTypeFactModels,
+                              byNameAscendingComparator );
+            for ( FactMetaModel fmm : superTypeFactModels ) {
+                if ( !fmm.getName().equals( factModel.getName() ) ) {
+                    lstSuperTypes.addItem( fmm.getName() );
+                    if ( factModel.getSuperType() != null && factModel.getSuperType().equals( fmm.getName() ) ) {
+                        selectedIndex = lstSuperTypes.getItemCount() - 1;
+                    }
                 }
             }
+            lstSuperTypes.setSelectedIndex( selectedIndex );
         }
-        lstSuperTypes.setSelectedIndex( selectedIndex );
+
+        //If no super-types available disable drop-down
         if ( lstSuperTypes.getItemCount() == 1 ) {
             lstSuperTypes.setEnabled( false );
         }

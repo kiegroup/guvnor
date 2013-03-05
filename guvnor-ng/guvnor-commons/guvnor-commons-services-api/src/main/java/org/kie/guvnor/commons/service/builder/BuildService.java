@@ -23,10 +23,16 @@ import org.uberfire.backend.vfs.Path;
 public interface BuildService {
 
     /**
-     * Full build
+     * Full build without deployment
      * @param pathToPom
      */
     void build( final Path pathToPom );
+
+    /**
+     * Full build with deployment
+     * @param pathToPom
+     */
+    void buildAndDeploy( final Path pathToPom );
 
     /**
      * Add a resource to the build.

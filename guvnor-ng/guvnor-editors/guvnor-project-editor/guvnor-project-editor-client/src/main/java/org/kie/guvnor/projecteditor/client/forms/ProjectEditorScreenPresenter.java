@@ -138,7 +138,7 @@ public class
                                     @Override
                                     public void callback( final Void v ) {
                                     }
-                                } ).build( pathToPomXML );
+                                } ).buildAndDeploy( pathToPomXML );
                     }
                 } )
                 .endMenu().build();

@@ -104,8 +104,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
 
         ioService.write( paths.convert( newPath ),
-                         toSource( newPath,
-                                   content ),
+                         GuidedScoreCardXMLPersistence.getInstance().marshal( content ),
                          makeCommentedOption( comment ) );
 
         //Signal creation to interested parties

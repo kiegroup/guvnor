@@ -18,7 +18,6 @@ package org.kie.guvnor.builder;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +45,8 @@ public class Builder {
 
     private final static String RESOURCE_PATH = "/src/main/resources";
 
-    private final KieBuilder kieBuilder;
+    private KieBuilder kieBuilder;
+    private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
     private final Path moduleDirectory;
     private final Paths paths;
@@ -86,23 +86,26 @@ public class Builder {
         this.filter = filter;
 
         projectPrefix = moduleDirectory.toUri().toString();
-
-        KieServices kieServices = KieServices.Factory.get();
+        kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
         DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
-
         visitPaths( directoryStream );
-
-        kieBuilder = kieServices.newKieBuilder( kieFileSystem );
     }
 
     public BuildResults build() {
-        final BuildResults results = convertMessages( kieBuilder.buildAll().getResults() );
+        //KieBuilder is not re-usable for successive "full" builds
+        kieBuilder = kieServices.newKieBuilder( kieFileSystem );
+        final Results kieResults = kieBuilder.buildAll().getResults();
+        final BuildResults results = convertMessages( kieResults );
         return results;
     }
 
     public IncrementalBuildResults addResource( final Path resource ) {
+        //Check a full build has been performed
+        if ( kieBuilder == null ) {
+            throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
+        }
         //Add new resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         final InputStream is = ioService.newInputStream( resource );
@@ -119,6 +122,10 @@ public class Builder {
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
+        //Check a full build has been performed
+        if ( kieBuilder == null ) {
+            throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
+        }
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         kieFileSystem.delete( destinationPath );
