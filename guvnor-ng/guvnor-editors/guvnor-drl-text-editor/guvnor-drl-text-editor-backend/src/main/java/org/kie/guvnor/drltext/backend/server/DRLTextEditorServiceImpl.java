@@ -107,25 +107,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final String content,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-        ioService.write( paths.convert( newPath ),
-                         content,
-                         makeCommentedOption( comment ) );
-
-        //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final String content,
                       final Metadata metadata,

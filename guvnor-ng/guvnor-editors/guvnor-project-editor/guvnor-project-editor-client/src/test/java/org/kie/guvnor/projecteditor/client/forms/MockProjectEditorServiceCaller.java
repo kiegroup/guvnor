@@ -39,28 +39,31 @@ public class MockProjectEditorServiceCaller
 
         service = new KModuleService() {
 
-
             @Override
-            public Path setUpKModuleStructure(Path pathToPom) {
-                callback.callback(pathToRelatedKModuleFileIfAny);
+            public Path setUpKModuleStructure( Path pathToPom ) {
+                callback.callback( pathToRelatedKModuleFileIfAny );
                 return pathToRelatedKModuleFileIfAny;
             }
 
             @Override
-            public void saveKModule(String commitMessage, Path path, KModuleModel model, Metadata metadata) {
-                callback.callback(null);
+            public Path save( Path path,
+                              KModuleModel model,
+                              Metadata metadata,
+                              String commitMessage ) {
+                callback.callback( null );
                 savedModel = model;
+                return path;
             }
 
             @Override
-            public KModuleModel loadKModule(Path path) {
-                callback.callback(modelForLoading);
+            public KModuleModel load( Path path ) {
+                callback.callback( modelForLoading );
                 return modelForLoading;
             }
 
             @Override
-            public Path pathToRelatedKModuleFileIfAny(Path pathToPomXML) {
-                callback.callback(pathToRelatedKModuleFileIfAny);
+            public Path pathToRelatedKModuleFileIfAny( Path pathToPomXML ) {
+                callback.callback( pathToRelatedKModuleFileIfAny );
                 return pathToRelatedKModuleFileIfAny;
             }
 
@@ -72,22 +75,23 @@ public class MockProjectEditorServiceCaller
     }
 
     @Override
-    public KModuleService call(RemoteCallback<?> callback) {
+    public KModuleService call( RemoteCallback<?> callback ) {
         this.callback = callback;
         return service;
     }
 
     @Override
-    public KModuleService call(RemoteCallback<?> callback, ErrorCallback errorCallback) {
+    public KModuleService call( RemoteCallback<?> callback,
+                                ErrorCallback errorCallback ) {
         this.callback = callback;
         return service;
     }
 
-    public void setUpModelForLoading(KModuleModel upModelForLoading) {
+    public void setUpModelForLoading( KModuleModel upModelForLoading ) {
         this.modelForLoading = upModelForLoading;
     }
 
-    public void setPathToRelatedKModuleFileIfAny(Path pathToRelatedKModuleFileIfAny) {
+    public void setPathToRelatedKModuleFileIfAny( Path pathToRelatedKModuleFileIfAny ) {
         this.pathToRelatedKModuleFileIfAny = pathToRelatedKModuleFileIfAny;
     }
 

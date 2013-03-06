@@ -62,72 +62,66 @@ public class POMServiceImpl
     }
 
     @Override
-    public POM loadPOM( final Path path ) {
+    public Path create( final Path projectRoot ) {
+        try {
+            final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+            final org.kie.commons.java.nio.file.Path pathToPOMXML = nioRoot.resolve( "pom.xml" );
+            ioService.write( pathToPOMXML,
+                             pomContentHandler.toString( new POM() ) );
+
+            //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
+
+            return paths.convert( pathToPOMXML );
+
+        } catch ( IOException e ) {
+            e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
+        }
+        return null;
+    }
+
+    @Override
+    public POM load( final Path path ) {
         try {
             org.kie.commons.java.nio.file.Path convert = paths.convert( path );
             String propertiesString = ioService.readAllString( convert );
             return pomContentHandler.toModel( propertiesString );
+
         } catch ( IOException e ) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
         } catch ( XmlPullParserException e ) {
             e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
         }
         return null;
-
     }
 
     @Override
-    public Path savePOM( final String commitMessage,
-                         final Path pathToPOM,
-                         final POM pomModel,
-                         final Metadata metadata ) {
+    public Path save( final Path path,
+                      final POM content,
+                      final Metadata metadata,
+                      final String comment ) {
         try {
-            Path result;
             if ( metadata == null ) {
-                result = paths.convert( ioService.write( paths.convert( pathToPOM ),
-                                                         pomContentHandler.toString( pomModel ),
-                                                         makeCommentedOption( commitMessage ) ) );
+                ioService.write( paths.convert( path ),
+                                 pomContentHandler.toString( content ),
+                                 makeCommentedOption( comment ) );
             } else {
-                result = paths.convert( ioService.write( paths.convert( pathToPOM ),
-                                                         pomContentHandler.toString( pomModel ),
-                                                         metadataService.setUpAttributes( pathToPOM, metadata ),
-                                                         makeCommentedOption( commitMessage ) ) );
+                ioService.write( paths.convert( path ),
+                                 pomContentHandler.toString( content ),
+                                 metadataService.setUpAttributes( path,
+                                                                  metadata ),
+                                 makeCommentedOption( comment ) );
             }
 
             //Invalidate Project-level DMO cache as POM has changed.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( result ) );
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( result ) );
-
-            return result;
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
 
         } catch ( IOException e ) {
             e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
         }
-        return null;
-    }
-
-    @Override
-    public Path savePOM( final Path pathToPOM,
-                         final POM pomModel ) {
-        try {
-
-            Path result = paths.convert( ioService.write( paths.convert( pathToPOM ),
-                                                          pomContentHandler.toString( pomModel ) ) );
-
-            //Invalidate Project-level DMO cache as POM has changed.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( result ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( result ) );
-
-            return result;
-
-        } catch ( IOException e ) {
-            e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
-        }
-        return null;
+        return path;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

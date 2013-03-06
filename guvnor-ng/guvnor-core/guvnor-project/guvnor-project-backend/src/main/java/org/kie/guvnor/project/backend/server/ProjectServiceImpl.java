@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
@@ -37,6 +36,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -61,6 +61,7 @@ public class ProjectServiceImpl
     private PackageConfigurationContentHandler packageConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -73,7 +74,8 @@ public class ProjectServiceImpl
                                final KModuleService kModuleService,
                                final POMService pomService,
                                final PackageConfigurationContentHandler packageConfigurationContentHandler,
-                               final Event<ResourceAddedEvent> resourceAddedEvent ) {
+                               final Event<ResourceAddedEvent> resourceAddedEvent,
+                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
         this.m2RepoService = m2RepoService;
         this.ioService = ioService;
         this.paths = paths;
@@ -81,6 +83,7 @@ public class ProjectServiceImpl
         this.pomService = pomService;
         this.packageConfigurationContentHandler = packageConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
+        this.resourceUpdatedEvent = resourceUpdatedEvent;
     }
 
     @Override
@@ -215,7 +218,7 @@ public class ProjectServiceImpl
 
     @Override
     public Path newProject( final Path activePath,
-                            final String name ) {
+                            final String projectName ) {
         final POM pomModel = new POM();
         final Repository repository = new Repository();
         repository.setId( "guvnor-m2-repo" );
@@ -223,21 +226,46 @@ public class ProjectServiceImpl
         repository.setUrl( m2RepoService.getRepositoryURL() );
         pomModel.addRepository( repository );
 
-        final Path pathToPom = createPOMFile( activePath,
-                                              name );
-        kModuleService.setUpKModuleStructure( pathToPom );
+        //Projects are always created in the FS root
+        final Path fsRoot = getFileSystemRoot( activePath );
+        final Path projectRootPath = getProjectRootPath( fsRoot,
+                                                         projectName );
 
-        saveImportSuggestions( paths.convert( pathToPom ).getParent() );
+        //Set-up project structure and KModule.xml
+        kModuleService.setUpKModuleStructure( projectRootPath );
 
-        final Path projectPath = pomService.savePOM( pathToPom,
-                                                     pomModel );
-        return projectPath;
+        //Create POM.xml
+        pomService.create( projectRootPath );
+
+        //Create Project configuration
+        final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
+                                                      false );
+        ioService.write( paths.convert( projectConfigPath ),
+                         packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
+
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
+
+        return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
+    }
+
+    private Path getFileSystemRoot( final Path activePath ) {
+        return PathFactory.newPath( activePath.getFileSystem(),
+                                    "/",
+                                    activePath.toURI() );
+    }
+
+    private Path getProjectRootPath( final Path fsRoot,
+                                     final String projectName ) {
+        return paths.convert( paths.convert( fsRoot ).resolve( projectName ),
+                              false );
     }
 
     @Override
     public Path newPackage( final Path contextPath,
                             final String packageName ) {
-        return newDirectory( contextPath, packageName );
+        return newDirectory( contextPath,
+                             packageName );
     }
 
     @Override
@@ -249,27 +277,6 @@ public class ProjectServiceImpl
         resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
 
         return directoryPath;
-    }
-
-    private void saveImportSuggestions( final org.kie.commons.java.nio.file.Path folderPath ) {
-        Path path = paths.convert( folderPath );
-        org.kie.commons.java.nio.file.Path pathToFile = ioService.createFile( paths.convert( PathFactory.newPath( path.getFileSystem(), "project.imports", path.toURI() + "/project.imports" ) ) );
-        ioService.write( pathToFile, packageConfigurationContentHandler.toString( new PackageConfiguration( new Imports() ) ) );
-    }
-
-    private Path createPOMFile( final Path activePath,
-                                final String name ) {
-        final Path pomPath = paths.convert( ioService.createFile( paths.convert( createPOMPath( activePath, name ) ) ) );
-
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( pomPath ) );
-
-        return pomPath;
-    }
-
-    private Path createPOMPath( final Path activePath,
-                                final String name ) {
-        return PathFactory.newPath( activePath.getFileSystem(), "pom.xml", activePath.toURI() + "/" + name + "/pom.xml" );
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
@@ -291,5 +298,8 @@ public class ProjectServiceImpl
     public void save( final Path path,
                       final PackageConfiguration packageConfiguration ) {
         ioService.write( paths.convert( path ), packageConfigurationContentHandler.toString( packageConfiguration ) );
+
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
     }
 }

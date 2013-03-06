@@ -132,23 +132,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final ScoreCardModel model,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-
-        ioService.write( paths.convert( newPath ),
-                         GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
-                         makeCommentedOption( comment ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final ScoreCardModel model,
                       final Metadata metadata,

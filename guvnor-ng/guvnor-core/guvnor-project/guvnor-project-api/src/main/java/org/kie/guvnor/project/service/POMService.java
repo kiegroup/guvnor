@@ -2,19 +2,14 @@ package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface POMService {
+public interface POMService extends SupportsRead<POM>,
+                                    SupportsUpdate<POM> {
 
-    POM loadPOM( final Path path );
+    Path create( final Path projectRoot );
 
-    public Path savePOM( final String commitMessage,
-                         final Path pathToPOM,
-                         final POM pomModel,
-                         final Metadata metadata );
-
-    Path savePOM( Path pathToPom,
-                  POM pomModel );
 }

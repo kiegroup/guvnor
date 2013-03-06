@@ -177,25 +177,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final RuleModel model,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
-                                            false );
-
-        ioService.write( paths.convert( newPath ),
-                         toSource( newPath,
-                                   model ),
-                         makeCommentedOption( comment ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final RuleModel model,
                       final Metadata metadata,

@@ -126,23 +126,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final TemplateModel model,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ), false );
-
-        ioService.write( paths.convert( newPath ),
-                         BRDRTXMLPersistence.getInstance().marshal( model ),
-                         makeCommentedOption( comment ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final TemplateModel model,
                       final Metadata metadata,

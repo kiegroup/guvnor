@@ -81,7 +81,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
     private ProjectDefinition makeProjectDefinition( final Path projectPath ) throws BuildException {
         //Build the Project to get all available classes
         final Path pathToPom = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
-        final POM gav = pomService.loadPOM( pathToPom );
+        final POM gav = pomService.load( pathToPom );
 
         //If we need a Project DMO chances are we're editing an asset. Therefore perform a full build to get
         //the validation errors for the project. This could be moved to ProjectExplorer when opening a Project

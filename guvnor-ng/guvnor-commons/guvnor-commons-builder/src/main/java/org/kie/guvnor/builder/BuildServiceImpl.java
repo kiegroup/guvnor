@@ -91,7 +91,7 @@ public class BuildServiceImpl
 
         //Deploy, if no errors
         if ( results.getMessages().isEmpty() ) {
-            final POM gav = pomService.loadPOM( pathToPom );
+            final POM gav = pomService.load( pathToPom );
             final Builder builder = cache.assertBuilder( pathToPom );
             final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
             final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );

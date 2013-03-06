@@ -140,27 +140,6 @@ public class FactModelServiceImpl implements FactModelService {
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final FactModels content,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
-                                            false );
-
-        ioService.write( paths.convert( newPath ),
-                         FactModelPersistence.marshal( content ),
-                         makeCommentedOption( comment ) );
-
-        //Invalidate Project-level DMO cache as Model has changed.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( newPath ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final FactModels content,
                       final Metadata metadata,

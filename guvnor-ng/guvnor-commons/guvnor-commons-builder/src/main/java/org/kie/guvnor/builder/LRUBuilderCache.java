@@ -32,7 +32,7 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
     public synchronized Builder assertBuilder( final Path pathToPom ) {
         Builder builder = getEntry( pathToPom );
         if ( builder == null ) {
-            final POM gav = pomService.loadPOM( pathToPom );
+            final POM gav = pomService.load( pathToPom );
             builder = new Builder( paths.convert( pathToPom ).getParent(),
                                    gav.getGav().getArtifactId(),
                                    paths,

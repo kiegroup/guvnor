@@ -60,7 +60,6 @@ public class NewProjectHandler
                 @Override
                 public void callback( Path pathToPom ) {
                     notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                    resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
                     placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
                 }
             } ).newProject( path, projectName );

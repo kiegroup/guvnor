@@ -6,15 +6,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class PackageConfiguration {
 
-    private Imports imports;
-
-    public PackageConfiguration() {
-
-    }
-
-    public PackageConfiguration(Imports imports) {
-        this.imports = imports;
-    }
+    private Imports imports = new Imports();
 
     public Imports getImports() {
         return imports;

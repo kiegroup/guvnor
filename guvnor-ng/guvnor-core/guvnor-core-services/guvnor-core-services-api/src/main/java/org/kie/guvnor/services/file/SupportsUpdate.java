@@ -10,9 +10,4 @@ public interface SupportsUpdate<T> {
                final Metadata metadata,
                final String comment );
 
-    Path save( final Path context,
-               final String fileName,
-               final T content,
-               final String comment );
-
 }

@@ -52,7 +52,7 @@ public class KModuleEditorPanel
 
                 hasBeenInitialized = true;
             }
-        } ).loadKModule( path );
+        } ).load( path );
     }
 
     @Override
@@ -69,7 +69,7 @@ public class KModuleEditorPanel
             public void callback( Void v ) {
                 view.showSaveSuccessful( "kmodule.xml" );
             }
-        } ).saveKModule( commitMessage, path, model, metadata );
+        } ).save( path, model, metadata, commitMessage );
     }
 
     public boolean hasBeenInitialized() {

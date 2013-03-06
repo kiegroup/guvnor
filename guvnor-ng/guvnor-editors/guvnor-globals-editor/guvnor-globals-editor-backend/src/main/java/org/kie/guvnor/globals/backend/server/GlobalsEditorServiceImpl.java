@@ -129,27 +129,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     }
 
     @Override
-    public Path save( final Path context,
-                      final String fileName,
-                      final GlobalsModel content,
-                      final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
-                                            false );
-
-        ioService.write( paths.convert( newPath ),
-                         GlobalsPersistence.getInstance().marshal( content ),
-                         makeCommentedOption( comment ) );
-
-        //Invalidate Package-level DMO cache as Globals have changed.
-        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( newPath ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath ) );
-
-        return newPath;
-    }
-
-    @Override
     public Path save( final Path resource,
                       final GlobalsModel content,
                       final Metadata metadata,

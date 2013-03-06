@@ -35,44 +35,44 @@ public class MockPomServiceCaller
     public MockPomServiceCaller() {
         service = new POMService() {
 
+            @Override
+            public Path create( Path context ) {
+                return null;
+            }
 
             @Override
-            public POM loadPOM(Path path) {
-                callback.callback(gavModel);
+            public POM load( Path path ) {
+                callback.callback( gavModel );
                 return gavModel;
             }
 
             @Override
-            public Path savePOM(String commitMessage, Path pathToPOM, POM pomModel, Metadata metadata) {
-                MockPomServiceCaller.this.pomModel=pomModel;
-                callback.callback(pathToPOM);
-                return pathToPOM;
-            }
-
-            @Override
-            public Path savePOM(Path pathToPOM, POM pomModel) {
-                MockPomServiceCaller.this.pomModel = pomModel;
-                callback.callback(pathToPOM);
-                return pathToPOM;
+            public Path save( Path path,
+                              POM content,
+                              Metadata metadata,
+                              String comment ) {
+                MockPomServiceCaller.this.pomModel = content;
+                callback.callback( path );
+                return path;
             }
 
         };
     }
 
     @Override
-    public POMService call(RemoteCallback<?> remoteCallback) {
+    public POMService call( RemoteCallback<?> remoteCallback ) {
         callback = remoteCallback;
         return service;
     }
 
     @Override
-    public POMService call(RemoteCallback<?> remoteCallback,
-                           ErrorCallback errorCallback) {
+    public POMService call( RemoteCallback<?> remoteCallback,
+                            ErrorCallback errorCallback ) {
         callback = remoteCallback;
         return service;
     }
 
-    public void setGav(POM gavModel) {
+    public void setGav( POM gavModel ) {
         this.gavModel = gavModel;
     }
 
