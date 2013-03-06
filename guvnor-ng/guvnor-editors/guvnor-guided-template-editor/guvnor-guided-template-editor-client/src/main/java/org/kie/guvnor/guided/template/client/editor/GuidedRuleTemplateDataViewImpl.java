@@ -28,13 +28,14 @@ import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 
-public class GuidedRuleTemplateDataEditorView
-        extends Composite
-        implements GuidedRuleTemplateEditorPresenter.DataView {
+/**
+ * Guided Rule Template Data View implementation
+ */
+public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedRuleTemplateDataView {
 
     private final VerticalPanel widgetContainer = new VerticalPanel();
 
-    public GuidedRuleTemplateDataEditorView() {
+    public GuidedRuleTemplateDataViewImpl() {
         initWidget( widgetContainer );
     }
 

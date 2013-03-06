@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.client.type.EnumResourceType;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
@@ -55,29 +55,14 @@ import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * This is the default rule editor widget (just text editor based) - more to come later.
+ * Enum Editor Presenter
  */
 @Dependent
 @WorkbenchEditor(identifier = "EnumEditor", supportedTypes = { EnumResourceType.class })
 public class EnumEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( String content );
-
-        String getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-    }
-
     @Inject
-    private View view;
+    private EnumEditorView view;
 
     @Inject
     private ViewSourceView viewSource;
@@ -115,6 +100,8 @@ public class EnumEditorPresenter {
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -155,6 +142,7 @@ public class EnumEditorPresenter {
             @Override
             public void callback( final EnumModelContent response ) {
                 view.setContent( response.getModel().getDRL() );
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
     }

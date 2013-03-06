@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.type.DSLResourceType;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
@@ -46,6 +46,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -97,25 +98,42 @@ public class DSLEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
+        multiPageEditor.addWidget( view,
+                                   DSLTextEditorConstants.INSTANCE.Edit() );
+
         dslTextEditorService.call( new RemoteCallback<String>() {
             @Override
-            public void callback( String response ) {
+            public void callback( final String response ) {
                 if ( response == null || response.isEmpty() ) {
                     view.setContent( null );
                 } else {
                     view.setContent( response );
-
                 }
+                view.hideBusyIndicator();
             }
         } ).load( path );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
+        multiPageEditor.addPage( new Page( metadataWidget,
+                                           MetadataConstants.INSTANCE.Metadata() ) {
             @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
             }
-        } ).getMetadata( path );
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        } );
+
     }
 
     private void makeMenuBar() {
@@ -180,8 +198,6 @@ public class DSLEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        multiPageEditor.addWidget( view, DSLTextEditorConstants.INSTANCE.Edit() );
-        multiPageEditor.addWidget( metadataWidget, MetadataConstants.INSTANCE.Metadata() );
         return multiPageEditor;
     }
 

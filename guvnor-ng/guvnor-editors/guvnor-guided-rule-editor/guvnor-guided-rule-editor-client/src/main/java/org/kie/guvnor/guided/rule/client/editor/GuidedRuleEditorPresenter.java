@@ -110,6 +110,8 @@ public class GuidedRuleEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
 
         multiPage.addPage( new Page( viewSource,
@@ -165,6 +167,8 @@ public class GuidedRuleEditorPresenter {
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
     }

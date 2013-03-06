@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.drltext.client.widget.FactTypeBrowserWidget;
 import org.kie.guvnor.drltext.client.widget.RuleContentWidget;
@@ -32,8 +33,8 @@ public class DRLEditorViewImpl
         extends Composite
         implements DRLEditorView {
 
-    private RuleContentWidget     ruleContentWidget = null;
-    private FactTypeBrowserWidget browser           = null;
+    private RuleContentWidget ruleContentWidget = null;
+    private FactTypeBrowserWidget browser = null;
 
     @PostConstruct
     public void init() {
@@ -100,4 +101,15 @@ public class DRLEditorViewImpl
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        LoadingView.show( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        LoadingView.hide();
+    }
+
 }

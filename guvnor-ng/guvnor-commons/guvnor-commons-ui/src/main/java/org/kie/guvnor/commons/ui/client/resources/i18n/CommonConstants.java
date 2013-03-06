@@ -162,4 +162,8 @@ public interface CommonConstants
 
     String PleaseSetAName();
 
+    String Loading();
+
+    String Saving();
+
 }

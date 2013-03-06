@@ -28,9 +28,9 @@ import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
@@ -63,48 +63,17 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })
 public class GuidedRuleTemplateEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final Path path,
-                         final TemplateModel model,
-                         final DataModelOracle dataModel,
-                         final EventBus eventBus,
-                         final boolean isReadOnly );
-
-        TemplateModel getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-    }
-
-    public interface DataView
-            extends
-            IsWidget {
-
-        void setContent( final TemplateModel model,
-                         final DataModelOracle dataModel,
-                         final EventBus eventBus,
-                         final boolean isReadOnly );
-
-    }
+    @Inject
+    private GuidedRuleTemplateEditorView view;
 
     @Inject
-    private View view;
+    private GuidedRuleTemplateDataView dataView;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
 
     @Inject
     private ViewSourceView viewSource;
-
-    @Inject
-    private DataView dataView;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -144,6 +113,8 @@ public class GuidedRuleTemplateEditorPresenter {
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -218,6 +189,8 @@ public class GuidedRuleTemplateEditorPresenter {
                 importsWidget.setContent( oracle,
                                           response.getRuleModel().getImports(),
                                           isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
     }

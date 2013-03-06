@@ -102,14 +102,17 @@ public class DRLEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
-        multiPage.addWidget( view, DRLTextEditorConstants.INSTANCE.DRL() );
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
+        multiPage.addWidget( view,
+                             DRLTextEditorConstants.INSTANCE.DRL() );
 
         dataModelService.call( new RemoteCallback<DataModelOracle>() {
             @Override
             public void callback( final DataModelOracle model ) {
                 drlTextEditorService.call( new RemoteCallback<String>() {
                     @Override
-                    public void callback( String response ) {
+                    public void callback( final String response ) {
                         if ( response == null || response.isEmpty() ) {
                             view.setContent( null,
                                              model );
@@ -117,6 +120,7 @@ public class DRLEditorPresenter {
                             view.setContent( response,
                                              model );
                         }
+                        view.hideBusyIndicator();
                     }
                 } ).load( path );
             }

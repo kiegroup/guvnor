@@ -6,8 +6,8 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 public interface DRLEditorView
         extends IsWidget {
 
-    void setContent(final String content,
-                    final DataModelOracle dataModel);
+    void setContent( final String content,
+                     final DataModelOracle dataModel );
 
     String getContent();
 
@@ -16,5 +16,9 @@ public interface DRLEditorView
     void setNotDirty();
 
     boolean confirmClose();
+
+    void showBusyIndicator( final String message );
+
+    void hideBusyIndicator();
 
 }

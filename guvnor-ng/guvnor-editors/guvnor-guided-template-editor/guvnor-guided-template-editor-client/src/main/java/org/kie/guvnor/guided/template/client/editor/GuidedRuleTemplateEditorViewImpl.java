@@ -14,49 +14,50 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.client.editor;
+package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.uberfire.backend.vfs.Path;
 
-public class GuidedRuleEditorViewImpl
-        extends Composite
-        implements GuidedRuleEditorView {
+/**
+ * Guided Rule Template Editor View implementation
+ */
+public class GuidedRuleTemplateEditorViewImpl extends Composite implements GuidedRuleTemplateEditorView {
 
-    private final EventBus localBus = new SimpleEventBus();
-    private final VerticalPanel panel = new VerticalPanel();
+    private final SimplePanel panel = new SimplePanel();
     private RuleModeller modeller = null;
 
-    public GuidedRuleEditorViewImpl() {
+    public GuidedRuleTemplateEditorViewImpl() {
         panel.setWidth( "100%" );
         initWidget( panel );
     }
 
     @Override
     public void setContent( final Path path,
-                            final RuleModel model,
+                            final TemplateModel model,
                             final DataModelOracle dataModel,
+                            final EventBus eventBus,
                             final boolean isReadOnly ) {
-        modeller = new RuleModeller( path,
-                                     model,
-                                     dataModel,
-                                     new RuleModellerWidgetFactory(),
-                                     localBus,
-                                     isReadOnly );
+        this.modeller = new RuleModeller( path,
+                                          model,
+                                          dataModel,
+                                          new TemplateModellerWidgetFactory(),
+                                          eventBus,
+                                          isReadOnly );
         panel.add( this.modeller );
     }
 
     @Override
-    public RuleModel getContent() {
-        return modeller.getModel();
+    public TemplateModel getContent() {
+        return (TemplateModel) modeller.getRuleModeller().getModel();
     }
 
     @Override
@@ -68,17 +69,11 @@ public class GuidedRuleEditorViewImpl
 
     @Override
     public void setNotDirty() {
-
     }
 
     @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void refresh() {
-        modeller.refreshWidget();
     }
 
     @Override

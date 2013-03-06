@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.dsltext.client.resources.Resources;
 import org.uberfire.client.common.ResizableTextArea;
 
@@ -120,6 +121,16 @@ public class DSLEditorViewImpl
         setPixelSize( width,
                       height );
         dslText.onResize();
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        LoadingView.show( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        LoadingView.hide();
     }
 
 }

@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface DSLEditorView
         extends IsWidget {
 
-    void setContent(final String content);
+    void setContent( final String content );
 
     String getContent();
 
@@ -16,4 +16,9 @@ public interface DSLEditorView
     boolean confirmClose();
 
     void makeReadOnly();
+
+    void showBusyIndicator( final String message );
+
+    void hideBusyIndicator();
+
 }

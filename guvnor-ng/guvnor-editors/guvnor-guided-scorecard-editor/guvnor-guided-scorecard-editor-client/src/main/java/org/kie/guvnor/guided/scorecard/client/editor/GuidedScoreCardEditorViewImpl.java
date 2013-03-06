@@ -19,6 +19,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.widget.GuidedScoreCardEditor;
 
@@ -63,6 +64,16 @@ public class GuidedScoreCardEditorViewImpl
     @Override
     public void alertReadOnly() {
         Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        LoadingView.show( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        LoadingView.hide();
     }
 
 }

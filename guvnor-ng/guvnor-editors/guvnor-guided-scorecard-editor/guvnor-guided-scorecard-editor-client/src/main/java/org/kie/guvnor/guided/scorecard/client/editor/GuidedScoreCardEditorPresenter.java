@@ -27,14 +27,15 @@ import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -111,6 +112,8 @@ public class GuidedScoreCardEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
 
@@ -135,13 +138,21 @@ public class GuidedScoreCardEditorPresenter {
         multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
 
         multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                                     MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
+                // Nothing to do here
             }
         } );
 
@@ -179,16 +190,10 @@ public class GuidedScoreCardEditorPresenter {
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
     }
 
     @OnSave

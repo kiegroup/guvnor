@@ -14,71 +14,74 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.rule.client.editor;
+package org.kie.guvnor.guided.dtable.client.editor;
+
+import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.dtable.client.widget.GuidedDecisionTableWidget;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
-public class GuidedRuleEditorViewImpl
-        extends Composite
-        implements GuidedRuleEditorView {
+/**
+ * Guided Decision Table Editor View implementation
+ */
+public class GuidedDecisionTableEditorViewImpl extends Composite implements GuidedDecisionTableEditorView {
 
     private final EventBus localBus = new SimpleEventBus();
-    private final VerticalPanel panel = new VerticalPanel();
-    private RuleModeller modeller = null;
 
-    public GuidedRuleEditorViewImpl() {
+    private final VerticalPanel panel = new VerticalPanel();
+    private GuidedDecisionTable52 model;
+    private GuidedDecisionTableWidget editor;
+
+    @Inject
+    private Identity identity;
+
+    public GuidedDecisionTableEditorViewImpl() {
         panel.setWidth( "100%" );
         initWidget( panel );
     }
 
     @Override
     public void setContent( final Path path,
-                            final RuleModel model,
                             final DataModelOracle dataModel,
+                            final GuidedDecisionTable52 model,
                             final boolean isReadOnly ) {
-        modeller = new RuleModeller( path,
-                                     model,
-                                     dataModel,
-                                     new RuleModellerWidgetFactory(),
-                                     localBus,
-                                     isReadOnly );
-        panel.add( this.modeller );
+        this.model = model;
+        this.editor = new GuidedDecisionTableWidget( path,
+                                                     dataModel,
+                                                     model,
+                                                     localBus,
+                                                     identity,
+                                                     isReadOnly );
+        panel.add( this.editor );
     }
 
     @Override
-    public RuleModel getContent() {
-        return modeller.getModel();
+    public GuidedDecisionTable52 getContent() {
+        return this.model;
     }
 
     @Override
     public boolean isDirty() {
-        //The Modeller widget isn't set until after the content has been loaded from an asynchronous call to
-        //the server. It is therefore possible that the User attempts to close the tab before Modeller is set
-        return ( modeller == null ) ? false : modeller.getRuleModeller().isDirty();
+        return false;
     }
 
     @Override
     public void setNotDirty() {
-
     }
 
     @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void refresh() {
-        modeller.refreshWidget();
     }
 
     @Override

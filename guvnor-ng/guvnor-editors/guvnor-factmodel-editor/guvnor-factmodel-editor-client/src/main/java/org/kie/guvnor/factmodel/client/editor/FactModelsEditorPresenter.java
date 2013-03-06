@@ -27,9 +27,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.factmodel.client.type.FactModelResourceType;
@@ -37,6 +37,7 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -111,6 +112,8 @@ public class FactModelsEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
 
@@ -135,8 +138,24 @@ public class FactModelsEditorPresenter {
         multiPage.addWidget( importsWidget,
                              CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addWidget( metadataWidget,
-                             CommonConstants.INSTANCE.MetadataTabTitle() );
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        } );
 
         loadContent();
     }
@@ -182,16 +201,10 @@ public class FactModelsEditorPresenter {
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
     }
 
     @OnSave

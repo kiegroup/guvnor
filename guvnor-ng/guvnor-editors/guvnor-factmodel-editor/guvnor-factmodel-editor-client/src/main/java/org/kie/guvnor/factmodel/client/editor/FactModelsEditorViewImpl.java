@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -210,6 +211,16 @@ public class FactModelsEditorViewImpl
             }
         } );
         popup.show();
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        LoadingView.show( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        LoadingView.hide();
     }
 
 }

@@ -1,6 +1,5 @@
 package org.kie.guvnor.globals.client.editor;
 
-import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
@@ -10,19 +9,18 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.client.type.GlobalResourceType;
-import org.kie.guvnor.globals.model.Global;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
+import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -41,13 +39,12 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * Editor for Global variables
+ * Globals Editor Presenter
  */
 @WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = { GlobalResourceType.class }, priority = 101)
 public class GlobalsEditorPresenter {
@@ -81,24 +78,6 @@ public class GlobalsEditorPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    public interface View
-            extends
-            UberView<GlobalsEditorPresenter> {
-
-        void setContent( final DataModelOracle oracle,
-                         final List<Global> globals,
-                         final boolean isReadOnly );
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-        void alertReadOnly();
-
-    }
-
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
@@ -118,6 +97,8 @@ public class GlobalsEditorPresenter {
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -140,8 +121,24 @@ public class GlobalsEditorPresenter {
             }
         } );
 
-        multiPage.addWidget( metadataWidget,
-                             CommonConstants.INSTANCE.MetadataTabTitle() );
+        multiPage.addPage( new Page( metadataWidget,
+                                     MetadataConstants.INSTANCE.Metadata() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                // Nothing to do here
+            }
+        } );
 
         loadContent();
     }
@@ -175,16 +172,10 @@ public class GlobalsEditorPresenter {
                 view.setContent( content.getDataModel(),
                                  content.getModel().getGlobals(),
                                  isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
     }
 
     @OnSave

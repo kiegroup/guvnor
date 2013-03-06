@@ -26,9 +26,9 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.type.GuidedDTableResourceType;
@@ -57,31 +57,15 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
+/**
+ * Guided Decision Table Editor Presenter
+ */
 @Dependent
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = { GuidedDTableResourceType.class })
 public class GuidedDecisionTableEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final Path path,
-                         final DataModelOracle dataModel,
-                         final GuidedDecisionTable52 content,
-                         final boolean isReadOnly );
-
-        GuidedDecisionTable52 getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-
-    }
-
     @Inject
-    private View view;
+    private GuidedDecisionTableEditorView view;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
@@ -126,6 +110,8 @@ public class GuidedDecisionTableEditorPresenter {
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
@@ -182,6 +168,8 @@ public class GuidedDecisionTableEditorPresenter {
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
+
+                view.hideBusyIndicator();
             }
         } ).loadContent( path );
     }

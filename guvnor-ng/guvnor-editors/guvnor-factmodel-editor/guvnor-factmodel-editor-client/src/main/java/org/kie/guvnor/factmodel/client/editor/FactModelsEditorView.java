@@ -23,4 +23,8 @@ public interface FactModelsEditorView
 
     void alertReadOnly();
 
+    void showBusyIndicator( final String message );
+
+    void hideBusyIndicator();
+
 }

@@ -39,4 +39,8 @@ public interface GuidedRuleEditorView
 
     void refresh();
 
+    void showBusyIndicator( final String message );
+
+    void hideBusyIndicator();
+
 }
