@@ -32,11 +32,6 @@ public interface NewItemPopupConstants
 
     String itemNameSubheading();
 
-    String OK();
+    String fileNameIsMandatory();
 
-    String MissingName();
-
-    String New();
-
-    String PleaseSetAName();
 }

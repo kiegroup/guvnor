@@ -28,6 +28,4 @@ public interface CommonsCss
 
     String greyBorderWithRoundCorners();
 
-    String newHandlerOption();
-
 }

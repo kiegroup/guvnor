@@ -16,6 +16,14 @@
 
 package org.kie.guvnor.commons.ui.client.handlers;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -25,14 +33,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -47,11 +47,9 @@ public class NewResourcePresenter {
 
         void setActiveHandler( final NewResourceHandler activeHandler );
 
-        void addHandler( final NewResourceHandler handler );
+        void setHandlers( final List<NewResourceHandler> handlers );
 
         String getFileName();
-
-        void showMissingNameError();
 
         void enableHandler( final NewResourceHandler handler,
                             final boolean enable );
@@ -81,8 +79,8 @@ public class NewResourcePresenter {
         for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
             final NewResourceHandler handler = handlerBean.getInstance();
             handlers.add( handler );
-            view.addHandler( handler );
         }
+        view.setHandlers( handlers );
     }
 
     public void selectedPathChanged( @Observes final PathChangeEvent event ) {
@@ -130,22 +128,11 @@ public class NewResourcePresenter {
 
     public void makeItem() {
         if ( activeHandler != null ) {
-            if ( validate() ) {
-                if ( activeHandler.validate() ) {
-                    activeHandler.create( context.getActivePath(), view.getFileName() );
-                    view.hide();
-                }
+            if ( activeHandler.validate() ) {
+                activeHandler.create( context.getActivePath(), view.getFileName() );
+                view.hide();
             }
         }
-    }
-
-    private boolean validate() {
-        boolean isValid = true;
-        if ( view.getFileName().isEmpty() ) {
-            view.showMissingNameError();
-            isValid = false;
-        }
-        return isValid;
     }
 
 }

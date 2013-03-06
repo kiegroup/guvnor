@@ -24,7 +24,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
 
@@ -54,7 +54,7 @@ public class FormPopupViewImpl
 
     public FormPopupViewImpl() {
         widget = uiBinder.createAndBindUi( this );
-        setTitle( NewItemPopupConstants.INSTANCE.New() );
+        setTitle( CommonConstants.INSTANCE.New() );
     }
 
     @Override
@@ -85,7 +85,7 @@ public class FormPopupViewImpl
 
     @Override
     public void showFieldEmptyWarning() {
-        ErrorPopup.showMessage( NewItemPopupConstants.INSTANCE.PleaseSetAName() );
+        ErrorPopup.showMessage( CommonConstants.INSTANCE.PleaseSetAName() );
     }
 
     @UiHandler("cancelButton")

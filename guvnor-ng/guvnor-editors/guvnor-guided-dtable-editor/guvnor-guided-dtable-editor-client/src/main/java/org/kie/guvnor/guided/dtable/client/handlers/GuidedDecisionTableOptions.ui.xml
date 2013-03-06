@@ -15,17 +15,18 @@
   ~   limitations under the License.
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="resources" type="org.kie.guvnor.commons.ui.client.resources.CommonsResources" />
 
   <gwt:VerticalPanel>
-    <gwt:CheckBox styleName="{resources.css.newHandlerOption}" text="{i18n.UseWizardToBuildAsset}" ui:field="chkUseWizard"></gwt:CheckBox>
+    <b:CheckBox text="{i18n.UseWizardToBuildAsset}" ui:field="chkUseWizard"></b:CheckBox>
     <gwt:VerticalPanel>
-      <gwt:RadioButton styleName="{resources.css.newHandlerOption}" name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true"/>
-      <gwt:RadioButton styleName="{resources.css.newHandlerOption}" name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry" />
+      <b:RadioButton name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true"/>
+      <b:RadioButton name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry" />
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 

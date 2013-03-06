@@ -142,6 +142,8 @@ public interface CommonConstants
 
     String NewItem();
 
+    String New();
+
     String RuleAsset();
 
     String AElementToDelInCollectionList();
@@ -157,4 +159,7 @@ public interface CommonConstants
     String MoveDown();
 
     String MoveUp();
+
+    String PleaseSetAName();
+
 }

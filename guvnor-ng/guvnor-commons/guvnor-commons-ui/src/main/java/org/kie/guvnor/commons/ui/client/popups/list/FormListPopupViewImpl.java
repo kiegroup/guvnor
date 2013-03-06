@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.commons.ui.client.popups.list;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -25,11 +27,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
-
-import java.util.List;
 
 public class FormListPopupViewImpl
         extends Popup
@@ -57,7 +57,7 @@ public class FormListPopupViewImpl
 
     public FormListPopupViewImpl() {
         widget = uiBinder.createAndBindUi( this );
-        setTitle( NewItemPopupConstants.INSTANCE.New() );
+        setTitle( CommonConstants.INSTANCE.New() );
     }
 
     @Override
@@ -94,7 +94,7 @@ public class FormListPopupViewImpl
 
     @Override
     public void showFieldEmptyWarning() {
-        ErrorPopup.showMessage( NewItemPopupConstants.INSTANCE.PleaseSetAName() );
+        ErrorPopup.showMessage( CommonConstants.INSTANCE.PleaseSetAName() );
     }
 
     @UiHandler("okButton")
