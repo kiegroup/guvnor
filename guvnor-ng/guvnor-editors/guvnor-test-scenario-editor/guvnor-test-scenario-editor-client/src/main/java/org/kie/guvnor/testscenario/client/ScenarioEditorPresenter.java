@@ -70,18 +70,20 @@ public class ScenarioEditorPresenter
     private HandlerRegistration availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
     private final Caller<TestScenarioEditorService> service;
-    private final DataModelService dataModelService;
+    private final Caller<DataModelService> dataModelService;
     private boolean isReadOnly;
     private final Caller<ProjectService> projectService;
 
 
     @Inject
     public ScenarioEditorPresenter(Caller<TestScenarioEditorService> service,
-                                   DataModelService dataModelService,
+                                   Caller<DataModelService> dataModelService,
                                    Caller<ProjectService> projectService) {
         this.service = service;
         this.projectService = projectService;
         this.dataModelService = dataModelService;
+
+        initWidget(layout);
     }
 
     @WorkbenchPartTitle
@@ -99,59 +101,43 @@ public class ScenarioEditorPresenter
                         final PlaceRequest place) {
 
         this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
-        dmo = dataModelService.getDataModel(path);
-        projectService.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(final String packageName) {
-                service.call(new RemoteCallback<Scenario>() {
+        dataModelService.call(
+                new RemoteCallback<DataModelOracle>() {
                     @Override
-                    public void callback(Scenario scenario) {
-                        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(packageName, ScenarioEditorPresenter.this);
-                        setShowResults(false);
+                    public void callback(DataModelOracle dataModelOracle) {
+                        dmo = dataModelOracle;
+                        projectService.call(new RemoteCallback<String>() {
+                            @Override
+                            public void callback(final String packageName) {
+                                service.call(new RemoteCallback<Scenario>() {
+                                    @Override
+                                    public void callback(Scenario scenario) {
+                                        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(packageName, ScenarioEditorPresenter.this);
 
-                        ifFixturesSizeZeroThenAddExecutionTrace();
+                                        setScenario(scenario);
 
-                        if (!isReadOnly) {
-                            layout.add(new TestRunnerWidget(ScenarioEditorPresenter.this, service, packageName));
-                        }
+                                        setShowResults(false);
 
-                        renderEditor();
+                                        ifFixturesSizeZeroThenAddExecutionTrace();
 
-                        initWidget(layout);
+                                        if (!isReadOnly) {
+                                            layout.add(new TestRunnerWidget(ScenarioEditorPresenter.this, service, packageName));
+                                        }
 
-                        setStyleName("scenario-Viewer");
+                                        renderEditor();
 
-                        layout.setWidth("100%");
+                                        setStyleName("scenario-Viewer");
+
+                                        layout.setWidth("100%");
+                                    }
+                                }).loadScenario(path);
+                            }
+                        }).resolvePackageName(path);
                     }
-                }).loadScenario(path);
-            }
-        }).resolvePackageName(path);
+                }
+        ).getDataModel(path);
+
     }
-
-
-//    public ScenarioEditorPresenter(Asset asset) {
-//        this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(asset,
-//                this);
-//        this.setShowResults(false);
-//
-//        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache(asset.getMetaData().getModuleName());
-//
-//        ifFixturesSizeZeroThenAddExecutionTrace();
-//
-//        if (!asset.isReadonly()) {
-//            layout.add(new TestRunnerWidget(this,
-//                    asset.getMetaData().getModuleName()));
-//        }
-//
-//        renderEditor();
-//
-//        initWidget(layout);
-//
-//        setStyleName("scenario-Viewer");
-//
-//        layout.setWidth("100%");
-//
-//    }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {
         if (getScenario().getFixtures().size() == 0) {
@@ -374,10 +360,6 @@ public class ScenarioEditorPresenter
     boolean isShowResults() {
         return scenarioWidgetComponentCreator.isShowResults();
     }
-
-//    public MetaData getMetaData() {
-//        return scenarioWidgetComponentCreator.getMetaData();
-//    }
 
     public void setScenario(Scenario scenario) {
         scenarioWidgetComponentCreator.setScenario(scenario);

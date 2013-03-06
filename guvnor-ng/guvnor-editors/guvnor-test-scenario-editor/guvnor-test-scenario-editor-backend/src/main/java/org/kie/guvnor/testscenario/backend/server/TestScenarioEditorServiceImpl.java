@@ -17,17 +17,37 @@
 package org.kie.guvnor.testscenario.backend.server;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
 import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.model.SingleScenarioResult;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Service
 @ApplicationScoped
 public class TestScenarioEditorServiceImpl
         implements TestScenarioEditorService {
+
+
+    private final IOService ioService;
+    private final Paths paths;
+    private final Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    @Inject
+    public TestScenarioEditorServiceImpl(@Named("ioStrategy") IOService ioService,
+                                         Paths paths,
+                                         Event<ResourceOpenedEvent> resourceOpenedEvent) {
+        this.ioService = ioService;
+        this.paths = paths;
+        this.resourceOpenedEvent = resourceOpenedEvent;
+    }
 
     @Override
     public SingleScenarioResult runScenario(String packageName, Scenario scenario) {
@@ -36,6 +56,11 @@ public class TestScenarioEditorServiceImpl
 
     @Override
     public Scenario loadScenario(Path path) {
-        return null;  //TODO -Rikkola-
+        final String xml = ioService.readAllString(paths.convert(path));
+
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path));
+
+        return new TestScenarioContentHandler().unmarshal(xml);
     }
 }
