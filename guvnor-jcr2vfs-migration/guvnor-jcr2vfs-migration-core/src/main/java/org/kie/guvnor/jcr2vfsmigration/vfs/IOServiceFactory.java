@@ -47,8 +47,12 @@ public class IOServiceFactory {
 
     @PostConstruct
     public void onStartup() {
-        String name = "guvnor-jcr2vfs-migration";
-        this.fs = ioService.newFileSystem( URI.create( "git://" + name ), new HashMap<String, Object>(), MIGRATION_INSTANCE );
+        URI uri = URI.create( "git://guvnor-jcr2vfs-migration");
+        if(ioService.getFileSystem(uri) != null) {
+            this.fs = ioService.getFileSystem(uri);
+        } else {
+            this.fs = ioService.newFileSystem( uri, new HashMap<String, Object>(), MIGRATION_INSTANCE );
+        }
     }
 
     @Produces

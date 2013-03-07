@@ -3,6 +3,7 @@ package org.kie.guvnor.jcr2vfsmigration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,18 +11,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
-
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-
 import static org.junit.Assert.assertNotNull;
 
-public class Jcr2VfsMigrationAppTest {
+public class MigrationAppTest {
 
     @Test
-    public void migrateMortgageExample() throws IOException {
-        migrate("mortgageExample");
+    public void migrateExample() throws IOException {
+        migrate("migrationExample");
     }
 
     private void verifyResult() {
@@ -69,4 +68,5 @@ public class Jcr2VfsMigrationAppTest {
         IOUtils.closeQuietly(in);
         IOUtils.closeQuietly(out);
     }
+
 }
