@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithFileNameAndCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CopyPopup;
@@ -72,135 +73,19 @@ public class FileMenuBuilderImpl
     private PlaceManager placeManager;
 
     private Command saveCommand = null;
-    private Command restoreCommand = null;
-    private Command validateCommand = null;
-    private Command copyCommand = null;
     private Command deleteCommand = null;
     private Command renameCommand = null;
+    private Command copyCommand = null;
+    private Command restoreCommand = null;
+    private List<Pair<String, Command>> otherCommands = new ArrayList<Pair<String, Command>>();
 
-    private Command moveCommand = null;
-
-    public FileMenuBuilder addValidation( final Command command ) {
-        this.validateCommand = command;
-        return this;
-    }
-
+    @Override
     public FileMenuBuilder addSave( final Command command ) {
         this.saveCommand = command;
         return this;
     }
 
-    public FileMenuBuilder addRestoreVersion( final Path path ) {
-        this.restoreCommand = restoreVersionCommandProvider.getCommand( path );
-        return this;
-    }
-
-    public FileMenuBuilder addRestoreVersion( final Command command ) {
-        this.restoreCommand = command;
-        return this;
-    }
-
-    public FileMenuBuilder addCopy( final Command command ) {
-        this.copyCommand = command;
-        return this;
-    }
-
     @Override
-    public FileMenuBuilder addRename( final Path path ) {
-        addRename( path, new Callback<Path, Void>() {
-            @Override
-            public void onFailure( Void reason ) {
-
-            }
-
-            @Override
-            public void onSuccess( Path result ) {
-
-            }
-        } );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addRename( final Path path,
-                                      final Callback<Path, Void> callback ) {
-        this.renameCommand = new Command() {
-            @Override
-            public void execute() {
-                final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        renameService.call( new RemoteCallback<Path>() {
-                            @Override
-                            public void callback( Path response ) {
-                                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                callback.onSuccess( response );
-                            }
-                        } ).rename( path,
-                                    details.getNewFileName(),
-                                    details.getCommitMessage() );
-                    }
-                } );
-
-                popup.show();
-            }
-        };
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addCopy( final Path path ) {
-        addCopy( path, new Callback<Path, Void>() {
-            @Override
-            public void onFailure( Void reason ) {
-
-            }
-
-            @Override
-            public void onSuccess( Path result ) {
-
-            }
-        } );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addCopy( final Path path,
-                                    final Callback<Path, Void> callback ) {
-        this.copyCommand = new Command() {
-            @Override
-            public void execute() {
-                final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        copyService.call(
-                                new RemoteCallback<Path>() {
-                                    @Override
-                                    public void callback( Path result ) {
-                                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                        callback.onSuccess( result );
-                                    }
-                                }
-                                        ).copy( path,
-                                                details.getNewFileName(),
-                                                details.getCommitMessage() );
-                    }
-                } );
-                popup.show();
-            }
-        };
-
-        return this;
-    }
-
-    public FileMenuBuilder addRename( final Command command ) {
-        this.renameCommand = command;
-        return this;
-    }
-
     public FileMenuBuilder addDelete( final Command command ) {
         this.deleteCommand = command;
         return this;
@@ -250,11 +135,124 @@ public class FileMenuBuilderImpl
         return this;
     }
 
-    public FileMenuBuilder addMove( final Command command ) {
-        this.moveCommand = command;
+    @Override
+    public FileMenuBuilder addRename( final Command command ) {
+        this.renameCommand = command;
         return this;
     }
 
+    @Override
+    public FileMenuBuilder addRename( final Path path ) {
+        addRename( path, new Callback<Path, Void>() {
+            @Override
+            public void onFailure( Void reason ) {
+
+            }
+
+            @Override
+            public void onSuccess( Path result ) {
+
+            }
+        } );
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addRename( final Path path,
+                                      final Callback<Path, Void> callback ) {
+        this.renameCommand = new Command() {
+            @Override
+            public void execute() {
+                final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
+                    @Override
+                    public void execute( final FileNameAndCommitMessage details ) {
+                        renameService.call( new RemoteCallback<Path>() {
+                            @Override
+                            public void callback( Path response ) {
+                                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                                callback.onSuccess( response );
+                            }
+                        } ).rename( path,
+                                    details.getNewFileName(),
+                                    details.getCommitMessage() );
+                    }
+                } );
+
+                popup.show();
+            }
+        };
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy( final Command command ) {
+        this.copyCommand = command;
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy( final Path path ) {
+        addCopy( path, new Callback<Path, Void>() {
+            @Override
+            public void onFailure( Void reason ) {
+
+            }
+
+            @Override
+            public void onSuccess( Path result ) {
+
+            }
+        } );
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy( final Path path,
+                                    final Callback<Path, Void> callback ) {
+        this.copyCommand = new Command() {
+            @Override
+            public void execute() {
+                final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
+                    @Override
+                    public void execute( final FileNameAndCommitMessage details ) {
+                        copyService.call(
+                                new RemoteCallback<Path>() {
+                                    @Override
+                                    public void callback( Path result ) {
+                                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                                        callback.onSuccess( result );
+                                    }
+                                }
+                                        ).copy( path,
+                                                details.getNewFileName(),
+                                                details.getCommitMessage() );
+                    }
+                } );
+                popup.show();
+            }
+        };
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addRestoreVersion( final Path path ) {
+        this.restoreCommand = restoreVersionCommandProvider.getCommand( path );
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCommand( final String caption,
+                                       final Command command ) {
+        this.otherCommands.add( new Pair<String, Command>( caption,
+                                                           command ) );
+        return this;
+    }
+
+    @Override
     public Menus build() {
         return MenuFactory
                 .newTopLevelMenu( CommonConstants.INSTANCE.File() )
@@ -264,27 +262,9 @@ public class FileMenuBuilderImpl
 
     private List<MenuItem> getItems() {
         final List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        if ( validateCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Validate() )
-                                   .respondsWith( validateCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
-        }
-
         if ( saveCommand != null ) {
             menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Save() )
                                    .respondsWith( saveCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
-        }
-
-        if ( restoreCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Restore() )
-                                   .respondsWith( restoreCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
-        }
-
-        if ( copyCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Copy() )
-                                   .respondsWith( copyCommand )
                                    .endMenu().build().getItems().get( 0 ) );
         }
 
@@ -300,9 +280,21 @@ public class FileMenuBuilderImpl
                                    .endMenu().build().getItems().get( 0 ) );
         }
 
-        if ( moveCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Move() )
-                                   .respondsWith( moveCommand )
+        if ( copyCommand != null ) {
+            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Copy() )
+                                   .respondsWith( copyCommand )
+                                   .endMenu().build().getItems().get( 0 ) );
+        }
+
+        if ( restoreCommand != null ) {
+            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Restore() )
+                                   .respondsWith( restoreCommand )
+                                   .endMenu().build().getItems().get( 0 ) );
+        }
+
+        for ( Pair<String, Command> other : otherCommands ) {
+            menuItems.add( newSimpleItem( other.getK1() )
+                                   .respondsWith( other.getK2() )
                                    .endMenu().build().getItems().get( 0 ) );
         }
 

@@ -11,8 +11,6 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addSave( final Command command );
 
-    FileMenuBuilder addValidation( final Command command );
-
     FileMenuBuilder addDelete( final Command command );
 
     FileMenuBuilder addDelete( final Path path );
@@ -22,12 +20,12 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addRename( final Command command );
 
-    FileMenuBuilder addCopy( final Command command );
-
     FileMenuBuilder addRename( final Path path );
 
     FileMenuBuilder addRename( final Path path,
                                final Callback<Path, Void> callback );
+
+    FileMenuBuilder addCopy( final Command command );
 
     FileMenuBuilder addCopy( final Path path );
 
@@ -35,4 +33,8 @@ public interface FileMenuBuilder {
                              final Callback<Path, Void> callback );
 
     FileMenuBuilder addRestoreVersion( final Path path );
+
+    FileMenuBuilder addCommand( final String caption,
+                                final Command command );
+
 }

@@ -16,27 +16,30 @@
 
 package org.kie.guvnor.scorecardxls.client.editor;
 
+import com.google.gwt.user.client.Command;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
 
-import com.google.gwt.user.client.Command;
-
 public class NewScoreCardXLSPopup extends FormStylePopup {
 
-    public NewScoreCardXLSPopup(final Path contextPath, final String fileName, final Command createdCallback) {
-        super(ImageResources.INSTANCE.decisionTable(),
-                ScoreCardXLSEditorConstants.INSTANCE.NewScoreCardDescription() );
+    public NewScoreCardXLSPopup( final Path contextPath,
+                                 final String fileName,
+                                 final Command createdCallback ) {
+        super( ImageResources.INSTANCE.decisionTable(),
+               ScoreCardXLSEditorConstants.INSTANCE.NewScoreCardDescription() );
 
-        addAttribute( "", new AttachmentFileWidget(contextPath, fileName, new Command() {
-            @Override
-            public void execute() {
-                hide();
-                createdCallback.execute();
-            }
-            
-        }));
+        addAttribute( "",
+                      new AttachmentFileWidget( contextPath,
+                                                fileName, new Command() {
+                          @Override
+                          public void execute() {
+                              hide();
+                              createdCallback.execute();
+                          }
+
+                      } ) );
     }
 
- }
+}

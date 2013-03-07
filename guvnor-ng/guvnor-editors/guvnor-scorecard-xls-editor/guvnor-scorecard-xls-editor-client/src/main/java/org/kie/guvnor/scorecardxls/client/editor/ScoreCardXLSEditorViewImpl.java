@@ -38,46 +38,51 @@ public class ScoreCardXLSEditorViewImpl
         extends Composite
         implements ScoreCardXLSEditorView {
 
-    private boolean isDirty;
-    
-    private VerticalPanel       layout;
     private Path fullPath;
-    
-    FormStyleLayout ts;
-    
+
+    private boolean isDirty;
+
+    private FormStyleLayout ts;
+    private VerticalPanel layout;
+
     @PostConstruct
     public void init() {
         layout = new VerticalPanel();
-        layout.setWidth( "100%" );     
-        
-        ts = new FormStyleLayout(getIcon(), ScoreCardXLSEditorConstants.INSTANCE.ScoreCard());
-        layout.add(ts);
-        
+        layout.setWidth( "100%" );
+
+        ts = new FormStyleLayout( getIcon(),
+                                  ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
+        layout.add( ts );
+
         initWidget( layout );
         setWidth( "100%" );
     }
-    
-    public void setPath(Path path) {
+
+    public void setPath( final Path path ) {
         this.fullPath = path;
         //ts.clear();
-        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":", new AttachmentFileWidget(fullPath, new Command() {
+        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":",
+                         new AttachmentFileWidget( fullPath,
+                                                   new Command() {
+                                                       @Override
+                                                       public void execute() {
+                                                       }
+
+                                                   } ) );
+
+        final Button dl = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
+        dl.addClickHandler( new ClickHandler() {
             @Override
-            public void execute() {
+            public void onClick( final ClickEvent event ) {
+                Window.open( GWT.getModuleBaseURL() + "scorecardxls/file?"
+                                     + HTMLFileManagerFields.FORM_FIELD_PATH + "="
+                                     + fullPath.toURI(),
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
-            
-        }));       
-        
-        Button dl = new Button("Download");
-        // dl.setEnabled( this.asset.getVersionNumber() > 0 );
-        dl.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                Window.open(GWT.getModuleBaseURL() + "scorecardxls/file?"
-                        + HTMLFileManagerFields.FORM_FIELD_PATH + "="
-                        + fullPath.toURI(), "downloading",
-                        "resizable=no,scrollbars=yes,status=no");
-            }
-        });
-        ts.addAttribute(ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":", dl);
+        } );
+        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":",
+                         dl );
     }
 
     @Override
@@ -98,10 +103,10 @@ public class ScoreCardXLSEditorViewImpl
     @Override
     public void makeReadOnly() {
     }
-    
+
     public Image getIcon() {
-        Image image = new Image(ImageResources.INSTANCE.decisionTable());
-        image.setAltText(ScoreCardXLSEditorConstants.INSTANCE.ScoreCard());
+        Image image = new Image( ImageResources.INSTANCE.decisionTable() );
+        image.setAltText( ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
         return image;
     }
 }

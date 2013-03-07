@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.dtablexls.client.editor;
 
+import javax.annotation.PostConstruct;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,52 +34,55 @@ import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStyleLayout;
 
-import javax.annotation.PostConstruct;
-
 public class DecisionTableXLSEditorViewImpl
         extends Composite
         implements DecisionTableXLSEditorView {
 
-    private boolean isDirty;
-    
-    private VerticalPanel       layout;
     private Path fullPath;
-    
-    FormStyleLayout ts;
-    
+
+    private boolean isDirty;
+
+    private FormStyleLayout ts;
+    private VerticalPanel layout;
+
     @PostConstruct
     public void init() {
         layout = new VerticalPanel();
-        layout.setWidth( "100%" );     
-        
-        ts = new FormStyleLayout(getIcon(), DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
-        layout.add(ts);
-        
+        layout.setWidth( "100%" );
+
+        ts = new FormStyleLayout( getIcon(),
+                                  DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
+        layout.add( ts );
+
         initWidget( layout );
         setWidth( "100%" );
     }
-    
-    public void setPath(Path path) {
+
+    public void setPath( final Path path ) {
         this.fullPath = path;
         //ts.clear();
-        ts.addAttribute( DecisionTableXLSEditorConstants.INSTANCE.UploadNewVersion() + ":", new AttachmentFileWidget(fullPath, new Command() {
+        ts.addAttribute( DecisionTableXLSEditorConstants.INSTANCE.UploadNewVersion() + ":",
+                         new AttachmentFileWidget( fullPath,
+                                                   new Command() {
+                                                       @Override
+                                                       public void execute() {
+                                                       }
+
+                                                   } ) );
+
+        final Button dl = new Button( DecisionTableXLSEditorConstants.INSTANCE.Download() );
+        dl.addClickHandler( new ClickHandler() {
             @Override
-            public void execute() {
+            public void onClick( final ClickEvent event ) {
+                Window.open( GWT.getModuleBaseURL() + "scorecardxls/file?"
+                                     + HTMLFileManagerFields.FORM_FIELD_PATH + "="
+                                     + fullPath.toURI(),
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
-            
-        }));       
-        
-        Button dl = new Button("Download");
-        // dl.setEnabled( this.asset.getVersionNumber() > 0 );
-        dl.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                Window.open(GWT.getModuleBaseURL() + "scorecardxls/file?"
-                        + HTMLFileManagerFields.FORM_FIELD_PATH + "="
-                        + fullPath.toURI(), "downloading",
-                        "resizable=no,scrollbars=yes,status=no");
-            }
-        });
-        ts.addAttribute(DecisionTableXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":", dl);
+        } );
+        ts.addAttribute( DecisionTableXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":",
+                         dl );
     }
 
     @Override
@@ -98,10 +103,10 @@ public class DecisionTableXLSEditorViewImpl
     @Override
     public void makeReadOnly() {
     }
-    
+
     public Image getIcon() {
-        Image image = new Image(ImageResources.INSTANCE.decisionTable());
-        image.setAltText(DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
+        Image image = new Image( ImageResources.INSTANCE.decisionTable() );
+        image.setAltText( DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
         return image;
     }
 }

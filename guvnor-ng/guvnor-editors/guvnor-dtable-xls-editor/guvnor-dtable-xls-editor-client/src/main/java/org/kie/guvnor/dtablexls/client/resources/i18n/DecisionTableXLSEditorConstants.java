@@ -29,7 +29,23 @@ public interface DecisionTableXLSEditorConstants
     public static final DecisionTableXLSEditorConstants INSTANCE = GWT.create( DecisionTableXLSEditorConstants.class );
 
     String DecisionTable();
+
     String NewDecisionTableDescription();
+
     String UploadNewVersion();
+
     String DownloadCurrentVersion();
+
+    String Convert();
+
+    String Upload();
+
+    String Uploading();
+
+    String UploadSuccess();
+
+    String UploadFailure0(String p0);
+
+    String Download();
+
 }

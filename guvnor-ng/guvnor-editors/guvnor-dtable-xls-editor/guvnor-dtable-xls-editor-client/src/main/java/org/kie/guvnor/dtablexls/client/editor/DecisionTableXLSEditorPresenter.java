@@ -42,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
@@ -113,6 +114,14 @@ public class DecisionTableXLSEditorPresenter {
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
+                    .addCommand( DecisionTableXLSEditorConstants.INSTANCE.Convert(),
+                                 new Command() {
+
+                                     @Override
+                                     public void execute() {
+                                         convert();
+                                     }
+                                 } )
                     .build();
         }
     }
@@ -148,6 +157,10 @@ public class DecisionTableXLSEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    private void convert() {
+
     }
 
 }

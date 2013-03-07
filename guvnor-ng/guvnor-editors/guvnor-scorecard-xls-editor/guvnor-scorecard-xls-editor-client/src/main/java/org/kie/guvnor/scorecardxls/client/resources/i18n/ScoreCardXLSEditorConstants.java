@@ -29,7 +29,20 @@ public interface ScoreCardXLSEditorConstants
     public static final ScoreCardXLSEditorConstants INSTANCE = GWT.create( ScoreCardXLSEditorConstants.class );
 
     String ScoreCard();
+
     String NewScoreCardDescription();
+
     String UploadNewVersion();
+
     String DownloadCurrentVersion();
+
+    String Upload();
+
+    String Uploading();
+
+    String UploadSuccess();
+
+    String UploadFailure0(String p0);
+
+    String Download();
 }
