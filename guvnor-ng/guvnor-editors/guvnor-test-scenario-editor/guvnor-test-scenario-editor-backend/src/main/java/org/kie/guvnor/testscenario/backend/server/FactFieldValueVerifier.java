@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.guvnor.models.testscenarios.shared.VerifyField;
+import org.kie.guvnor.testscenario.model.VerifyField;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;

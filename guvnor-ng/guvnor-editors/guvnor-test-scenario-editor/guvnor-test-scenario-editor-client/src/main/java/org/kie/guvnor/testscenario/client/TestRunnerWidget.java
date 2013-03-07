@@ -63,7 +63,7 @@ public class TestRunnerWidget extends Composite {
     private SimplePanel   actions   = new SimplePanel();
 
     public TestRunnerWidget(final ScenarioEditorPresenter parent,
-                            final Caller<TestScenarioEditorService> testScenarioEditorService,
+                            final Caller<TestService> testScenarioEditorService,
                             final String packageName) {
 
         final Button run = new Button( TestScenarioConstants.INSTANCE.RunScenario() );

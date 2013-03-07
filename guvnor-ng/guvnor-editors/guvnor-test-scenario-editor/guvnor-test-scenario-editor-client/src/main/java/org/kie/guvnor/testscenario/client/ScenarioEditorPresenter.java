@@ -72,6 +72,8 @@ public class ScenarioEditorPresenter
 
     private HandlerRegistration availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
+    private final Caller<TestService> service;
+    private final DataModelService dataModelService;
     private final Caller<TestScenarioEditorService> service;
     private final Caller<DataModelService> dataModelService;
     private boolean isReadOnly;
@@ -84,6 +86,9 @@ public class ScenarioEditorPresenter
     private Path path;
 
     @Inject
+    public ScenarioEditorPresenter(Caller<TestService> service,
+                                   DataModelService dataModelService,
+                                   Caller<ProjectService> projectService) {
     public ScenarioEditorPresenter(Caller<TestScenarioEditorService> service,
                                    Caller<DataModelService> dataModelService,
                                    Caller<ProjectService> projectService,

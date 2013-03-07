@@ -35,7 +35,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
 import org.kie.runtime.KieSession;
 
-public class TestScenarioWorkingMemoryWrapper {
+public class TestScenarioKSessionWrapper {
 
     private final KieSession          ksession;
     private final FactVerifier        factVerifier;
@@ -47,7 +47,7 @@ public class TestScenarioWorkingMemoryWrapper {
 
     private final ClassLoader         classLoader;
 
-    public TestScenarioWorkingMemoryWrapper(KieSession ksession,
+    public TestScenarioKSessionWrapper(KieSession ksession,
                                             final TypeResolver resolver,
                                             final ClassLoader classLoader,
                                             Map<String, Object> populatedData,

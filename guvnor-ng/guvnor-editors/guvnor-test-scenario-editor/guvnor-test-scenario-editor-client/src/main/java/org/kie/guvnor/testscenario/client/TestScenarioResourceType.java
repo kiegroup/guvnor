@@ -1,52 +1,19 @@
 package org.kie.guvnor.testscenario.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.guvnor.testscenario.type.TestScenarioResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-import javax.enterprise.context.ApplicationScoped;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 public class TestScenarioResourceType
+        extends TestScenarioResourceTypeDefinition
         implements ClientResourceType {
-
-    @Override
-    public String getShortName() {
-        return "test scenario";
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
 
     @Override
     public IsWidget getIcon() {
         return null;
-    }
-
-    @Override
-    public String getPrefix() {
-        return "";
-    }
-
-    @Override
-    public String getSuffix() {
-        return "scenario";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public String getSimpleWildcardPattern() {
-        return "*."+getSuffix();
-    }
-
-    @Override
-    public boolean accept(Path path) {
-        return path.getFileName().endsWith("." + getSuffix());
     }
 }

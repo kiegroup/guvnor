@@ -30,7 +30,10 @@ import java.util.Map;
  */
 public class Scenario {
 
-    private static final long serialVersionUID = 510l;
+    /**
+     * An arbitrary name to identify this test, used in reports 
+     */
+    private String            name             = "Unnamed";
 
     /**
      * The maximum number of rules to fire so we don't recurse for ever.
@@ -63,7 +66,13 @@ public class Scenario {
      * true if only the rules in the list should be allowed to fire. Otherwise
      * it is exclusive (ie all rules can fire BUT the ones in the list).
      */
-    private boolean inclusive = false;
+    private boolean           inclusive        = false;
+    
+    public Scenario() { }
+    
+    public Scenario( String name ) {
+        this.name = name;
+    }
 
     /**
      * Returns true if this was a totally successful scenario, based on the
@@ -76,7 +85,6 @@ public class Scenario {
                     return false;
                 }
             }
-
         }
         return true;
     }
@@ -331,6 +339,30 @@ public class Scenario {
     }
 
     /**
+    * @return the list of failure messages
+    */
+    public List<String> getFailureMessages() {
+       List<String> messages = new ArrayList<String>();
+       for ( Fixture fixture : fixtures ) {
+           if ( fixture instanceof VerifyRuleFired ) {
+               VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
+               if ( ruleFailedToFire( verifyRuleFired ) ) {
+                   messages.add( verifyRuleFired.getExplanation() );
+               }
+           } else if ( fixture instanceof VerifyFact ) {
+               VerifyFact verifyFact = (VerifyFact) fixture;
+               for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
+                   if ( fieldExpectationFailed( verifyField ) ) {
+                       messages.add( verifyField.getExplanation() );
+                   }
+               }
+           }
+       }
+       return messages;
+   }
+
+    /**
+     *
      * @return int[0] = failures, int[1] = total;
      */
     public int[] countFailuresTotal() {
@@ -394,6 +426,10 @@ public class Scenario {
 
     public boolean isInclusive() {
         return inclusive;
+    }
+    
+    public String getName() {
+        return this.name;
     }
 
 }

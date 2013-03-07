@@ -42,7 +42,7 @@ import org.mvel2.MVEL;
  */
 public class ScenarioRunner {
 
-    private final TestScenarioWorkingMemoryWrapper workingMemoryWrapper;
+    private final TestScenarioKSessionWrapper workingMemoryWrapper;
     private final FactPopulatorFactory factPopulatorFactory;
     private final FactPopulator factPopulator;
 
@@ -70,7 +70,7 @@ public class ScenarioRunner {
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
 
-        this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(ksession,
+        this.workingMemoryWrapper = new TestScenarioKSessionWrapper(ksession,
                 typeResolver,
                 classLoader,
                 populatedData,
@@ -83,7 +83,7 @@ public class ScenarioRunner {
                 populatedData);
     }
 
-    public void run(Scenario scenario)
+    public void run( Scenario scenario )
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.setLastRunResult(new Date());
