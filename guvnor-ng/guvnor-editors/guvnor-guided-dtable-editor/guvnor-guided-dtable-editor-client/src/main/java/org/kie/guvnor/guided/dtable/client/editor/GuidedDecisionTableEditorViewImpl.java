@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.GuidedDecisionTableWidget;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.security.Identity;
 
 /**
@@ -85,13 +85,18 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
     }
 
     @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

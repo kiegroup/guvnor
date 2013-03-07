@@ -16,18 +16,22 @@
 
 package org.kie.guvnor.scorecardxls.client.editor;
 
-import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.LoadingPopup;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 
 
 /**
@@ -98,7 +102,7 @@ public class AttachmentFileWidget extends Composite {
         form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {
-                LoadingPopup.close();
+                BusyPopup.close();
 
                 if("OK".equalsIgnoreCase(event.getResults())) {
                     Window.alert("Uploaded successfully");
@@ -117,7 +121,7 @@ public class AttachmentFileWidget extends Composite {
     }
 
     protected void showUploadingBusy() {
-        LoadingPopup.showMessage( "Uploading..." );
+        BusyPopup.showMessage( "Uploading..." );
     }
 
     private TextBox getHiddenField(String name,

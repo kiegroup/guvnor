@@ -9,6 +9,7 @@ import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
 
@@ -24,7 +25,8 @@ public class ProjectConfigScreenViewImpl
     @Inject
     public ProjectConfigScreenViewImpl( final ImportsWidgetPresenter importsWidget ) {
         this.importsWidget = importsWidget;
-        addPage( new Page( importsWidget, ImportConstants.INSTANCE.Imports() ) {
+        addPage( new Page( importsWidget,
+                           ImportConstants.INSTANCE.Imports() ) {
             @Override
             public void onFocus() {
             }
@@ -34,7 +36,8 @@ public class ProjectConfigScreenViewImpl
             }
         } );
 
-        addPage( new Page( metadataWidget, MetadataConstants.INSTANCE.Metadata() ) {
+        addPage( new Page( metadataWidget,
+                           MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 presenter.onShowMetadata();
@@ -63,4 +66,15 @@ public class ProjectConfigScreenViewImpl
         metadataWidget.setContent( metadata,
                                    false );
     }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
 }

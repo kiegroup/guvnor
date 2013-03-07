@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.guided.rule.client.widget;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -28,12 +31,9 @@ import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHel
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.guided.rule.service.EnumDropdownService;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
-import org.uberfire.client.common.LoadingPopup;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * A drop down for enumerated values
@@ -108,11 +108,11 @@ public class EnumDropDown
         if ( dropData != null && dropData.getFixedList() == null && dropData.getQueryExpression() != null ) {
             Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
-                    LoadingPopup.showMessage( CommonConstants.INSTANCE.RefreshingList() );
+                    BusyPopup.showMessage( CommonConstants.INSTANCE.RefreshingList() );
 
                     MessageBuilder.createCall( new RemoteCallback<String[]>() {
                         public void callback( String[] response ) {
-                            LoadingPopup.close();
+                            BusyPopup.close();
 
                             if ( response.length == 0 ) {
                                 response = new String[]{ CommonConstants.INSTANCE.UnableToLoadList() };

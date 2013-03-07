@@ -23,6 +23,8 @@ public interface GuidedDecisionTableEditorView extends IsWidget {
 
     boolean confirmClose();
 
+    void alertReadOnly();
+
     void showBusyIndicator( final String message );
 
     void hideBusyIndicator();

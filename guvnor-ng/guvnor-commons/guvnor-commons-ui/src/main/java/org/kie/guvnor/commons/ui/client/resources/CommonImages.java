@@ -53,7 +53,4 @@ public interface CommonImages
     @Source("images/shuffle_up.gif")
     ImageResource shuffleUp();
 
-    @Source("images/spinner.gif")
-    ImageResource spinner();
-
 }

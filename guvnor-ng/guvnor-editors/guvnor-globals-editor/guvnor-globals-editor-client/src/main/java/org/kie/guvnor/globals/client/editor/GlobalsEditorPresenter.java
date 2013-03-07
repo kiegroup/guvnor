@@ -121,24 +121,8 @@ public class GlobalsEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here
-            }
-        } );
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
         loadContent();
     }
@@ -176,6 +160,14 @@ public class GlobalsEditorPresenter {
                 view.hideBusyIndicator();
             }
         } ).loadContent( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
+            }
+        } ).getMetadata( path );
     }
 
     @OnSave
@@ -188,10 +180,12 @@ public class GlobalsEditorPresenter {
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String comment ) {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                 globalsEditorService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( final Path response ) {
                         view.setNotDirty();
+                        view.hideBusyIndicator();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }

@@ -15,6 +15,8 @@
  */
 package org.kie.guvnor.m2repo.client;
 
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,10 +38,8 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.m2repo.client.editor.JarListEditor;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.LoadingPopup;
-
-import javax.inject.Inject;
 
 
 public class M2RepoEditorView
@@ -150,7 +150,7 @@ public class M2RepoEditorView
         form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 if("OK".equalsIgnoreCase(event.getResults())) {
-                    LoadingPopup.close();
+                    BusyPopup.close();
                     Window.alert("Uploaded successfully");
                     hiddenFieldsPanel.setVisible(false);
                     hiddenArtifactIdField.setText(null);
@@ -162,11 +162,11 @@ public class M2RepoEditorView
                     resultsP.add( table );                  
                         
                 } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {
-                    LoadingPopup.close();
+                    BusyPopup.close();
                     Window.alert("The Jar does not contain a valid POM file. Please specify GAV info manually.");
                     hiddenFieldsPanel.setVisible(true);
                 } else {
-                    LoadingPopup.close();
+                    BusyPopup.close();
                     Window.alert("Upload failed:" + event.getResults()); 
                     
                     hiddenFieldsPanel.setVisible(false);

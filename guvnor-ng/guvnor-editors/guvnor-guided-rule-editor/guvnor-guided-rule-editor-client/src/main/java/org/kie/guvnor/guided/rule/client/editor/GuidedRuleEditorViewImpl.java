@@ -23,9 +23,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 
 public class GuidedRuleEditorViewImpl
         extends Composite
@@ -68,7 +68,7 @@ public class GuidedRuleEditorViewImpl
 
     @Override
     public void setNotDirty() {
-
+        modeller.resetDirty();
     }
 
     @Override
@@ -82,13 +82,18 @@ public class GuidedRuleEditorViewImpl
     }
 
     @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

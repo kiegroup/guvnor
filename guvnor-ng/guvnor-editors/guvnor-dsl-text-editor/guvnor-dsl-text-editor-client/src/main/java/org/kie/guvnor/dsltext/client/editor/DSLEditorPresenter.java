@@ -45,8 +45,8 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -77,7 +77,7 @@ public class DSLEditorPresenter {
 
     @Inject
     @New
-    private MultiPageEditor multiPageEditor;
+    private MultiPageEditor multiPage;
 
     @Inject
     @New
@@ -100,8 +100,11 @@ public class DSLEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        multiPageEditor.addWidget( view,
-                                   DSLTextEditorConstants.INSTANCE.Edit() );
+        multiPage.addWidget( view,
+                             DSLTextEditorConstants.INSTANCE.Edit() );
+
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
         dslTextEditorService.call( new RemoteCallback<String>() {
             @Override
@@ -115,24 +118,13 @@ public class DSLEditorPresenter {
             }
         } ).load( path );
 
-        multiPageEditor.addPage( new Page( metadataWidget,
-                                           MetadataConstants.INSTANCE.Metadata() ) {
+        metadataService.call( new RemoteCallback<Metadata>() {
             @Override
-            public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
             }
-
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here
-            }
-        } );
+        } ).getMetadata( path );
 
     }
 
@@ -156,13 +148,20 @@ public class DSLEditorPresenter {
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                 dslTextEditorService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( final Path response ) {
                         view.setNotDirty();
+                        view.hideBusyIndicator();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
                 } ).save( path,
@@ -198,7 +197,7 @@ public class DSLEditorPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPageEditor;
+        return multiPage;
     }
 
     @WorkbenchMenu

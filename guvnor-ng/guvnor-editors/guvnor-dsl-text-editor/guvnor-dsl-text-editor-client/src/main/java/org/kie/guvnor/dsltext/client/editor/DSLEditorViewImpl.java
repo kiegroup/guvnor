@@ -25,8 +25,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.dsltext.client.resources.Resources;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ResizableTextArea;
 
 /**
@@ -111,7 +111,7 @@ public class DSLEditorViewImpl
 
     @Override
     public void makeReadOnly() {
-        dslText.setEnabled(false);
+        dslText.setEnabled( false );
     }
 
     @Override
@@ -124,13 +124,18 @@ public class DSLEditorViewImpl
     }
 
     @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

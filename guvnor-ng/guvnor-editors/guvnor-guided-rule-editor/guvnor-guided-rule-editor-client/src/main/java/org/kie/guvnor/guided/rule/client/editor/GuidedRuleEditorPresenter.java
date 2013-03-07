@@ -27,9 +27,9 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
@@ -112,7 +112,8 @@ public class GuidedRuleEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        multiPage.addWidget( view, CommonConstants.INSTANCE.EditTabTitle() );
+        multiPage.addWidget( view,
+                             CommonConstants.INSTANCE.EditTabTitle() );
 
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
@@ -132,26 +133,11 @@ public class GuidedRuleEditorPresenter {
             }
         } );
 
-        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
+        multiPage.addWidget( importsWidget,
+                             CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here
-            }
-        } );
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
         service.call( new RemoteCallback<GuidedEditorContent>() {
             @Override
@@ -171,6 +157,14 @@ public class GuidedRuleEditorPresenter {
                 view.hideBusyIndicator();
             }
         } ).loadContent( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
+            }
+        } ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -207,13 +201,20 @@ public class GuidedRuleEditorPresenter {
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                 service.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( final Path response ) {
                         view.setNotDirty();
+                        view.hideBusyIndicator();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }

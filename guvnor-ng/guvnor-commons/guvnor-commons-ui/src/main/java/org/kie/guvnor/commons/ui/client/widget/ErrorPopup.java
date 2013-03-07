@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.LoadingPopup;
 import org.uberfire.client.common.Popup;
 
 /**
@@ -106,7 +105,5 @@ public class ErrorPopup extends Popup {
         ErrorPopup instance = new ErrorPopup();
         instance.addMessage( message,
                              null );
-
-        LoadingPopup.close();
     }
 }

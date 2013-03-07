@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.Command;
 
 /**
@@ -190,12 +190,12 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
 
     @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

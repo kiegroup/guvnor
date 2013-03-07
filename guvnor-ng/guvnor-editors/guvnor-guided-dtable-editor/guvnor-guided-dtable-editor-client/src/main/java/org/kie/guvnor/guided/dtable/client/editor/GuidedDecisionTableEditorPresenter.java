@@ -115,6 +115,7 @@ public class GuidedDecisionTableEditorPresenter {
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
+
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
@@ -133,26 +134,11 @@ public class GuidedDecisionTableEditorPresenter {
             }
         } );
 
-        multiPage.addWidget( importsWidget, CommonConstants.INSTANCE.ConfigTabTitle() );
+        multiPage.addWidget( importsWidget,
+                             CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here
-            }
-        } );
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
         service.call( new RemoteCallback<GuidedDecisionTableEditorContent>() {
             @Override
@@ -172,6 +158,14 @@ public class GuidedDecisionTableEditorPresenter {
                 view.hideBusyIndicator();
             }
         } ).loadContent( path );
+
+        metadataService.call( new RemoteCallback<Metadata>() {
+            @Override
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
+            }
+        } ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -194,13 +188,20 @@ public class GuidedDecisionTableEditorPresenter {
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                 service.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( final Path response ) {
                         view.setNotDirty();
+                        view.hideBusyIndicator();
                         metadataWidget.resetDirty();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }

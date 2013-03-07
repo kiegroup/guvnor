@@ -16,18 +16,18 @@
 
 package org.kie.guvnor.drltext.client.editor;
 
+import javax.annotation.PostConstruct;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.drltext.client.widget.FactTypeBrowserWidget;
 import org.kie.guvnor.drltext.client.widget.RuleContentWidget;
-
-import javax.annotation.PostConstruct;
+import org.uberfire.client.common.BusyPopup;
 
 public class DRLEditorViewImpl
         extends Composite
@@ -103,13 +103,18 @@ public class DRLEditorViewImpl
     }
 
     @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

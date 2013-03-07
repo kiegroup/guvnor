@@ -17,6 +17,8 @@ public interface DRLEditorView
 
     boolean confirmClose();
 
+    void alertReadOnly();
+
     void showBusyIndicator( final String message );
 
     void hideBusyIndicator();

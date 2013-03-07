@@ -15,6 +15,10 @@
  */
 package org.kie.guvnor.factmodel.client.editor;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -25,18 +29,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.LoadingView;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.uberfire.client.common.AbstractLazyStackPanelHeader;
 import org.uberfire.client.common.AddButton;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.LazyStackPanel;
 import org.uberfire.client.common.LoadContentCommand;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public class FactModelsEditorViewImpl
         extends Composite
@@ -215,12 +215,12 @@ public class FactModelsEditorViewImpl
 
     @Override
     public void showBusyIndicator( final String message ) {
-        LoadingView.show( message );
+        BusyPopup.showMessage( message );
     }
 
     @Override
     public void hideBusyIndicator() {
-        LoadingView.hide();
+        BusyPopup.close();
     }
 
 }

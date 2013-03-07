@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -23,6 +24,7 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
@@ -36,6 +38,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectConfigResourceType.class })
@@ -50,6 +53,8 @@ public class ProjectConfigScreenPresenter
 
     private FileMenuBuilder menuBuilder;
 
+    private Event<NotificationEvent> notification;
+
     private Menus menus;
 
     public ProjectConfigScreenPresenter() {
@@ -59,11 +64,13 @@ public class ProjectConfigScreenPresenter
     public ProjectConfigScreenPresenter( @New ProjectConfigScreenView view,
                                          @New FileMenuBuilder menuBuilder,
                                          Caller<ProjectService> projectEditorServiceCaller,
-                                         Caller<MetadataService> metadataService ) {
+                                         Caller<MetadataService> metadataService,
+                                         Event<NotificationEvent> notification ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.metadataService = metadataService;
+        this.notification = notification;
         view.setPresenter( this );
     }
 
@@ -73,12 +80,17 @@ public class ProjectConfigScreenPresenter
         this.path = path;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         projectEditorServiceCaller.call( new RemoteCallback<PackageConfiguration>() {
 
             @Override
             public void callback( PackageConfiguration packageConfiguration ) {
                 ProjectConfigScreenPresenter.this.packageConfiguration = packageConfiguration;
-                view.setImports( path, packageConfiguration.getImports() );
+                view.setImports( path,
+                                 packageConfiguration.getImports() );
+
+                view.hideBusyIndicator();
             }
         } ).loadPackageConfiguration( path );
     }
@@ -114,10 +126,12 @@ public class ProjectConfigScreenPresenter
 
     @OnSave
     public void onSave() {
+        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectEditorServiceCaller.call( new RemoteCallback<Void>() {
             @Override
             public void callback( Void v ) {
-
+                view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         } ).save( path, packageConfiguration );
     }

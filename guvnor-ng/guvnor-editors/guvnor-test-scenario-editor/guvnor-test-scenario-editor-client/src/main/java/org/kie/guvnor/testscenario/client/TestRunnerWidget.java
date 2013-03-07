@@ -19,7 +19,6 @@ package org.kie.guvnor.testscenario.client;
 import java.util.Iterator;
 import java.util.List;
 
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -42,7 +41,6 @@ import org.kie.guvnor.errors.client.resources.ImageResources;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.AuditEventsImages;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 import org.kie.guvnor.testscenario.model.BuilderResultLine;
 import org.kie.guvnor.testscenario.model.ExecutionTrace;
 import org.kie.guvnor.testscenario.model.Fixture;
@@ -51,7 +49,8 @@ import org.kie.guvnor.testscenario.model.SingleScenarioResult;
 import org.kie.guvnor.testscenario.model.VerifyFact;
 import org.kie.guvnor.testscenario.model.VerifyField;
 import org.kie.guvnor.testscenario.model.VerifyRuleFired;
-import org.uberfire.client.common.LoadingPopup;
+import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.SmallLabel;
 
 public class TestRunnerWidget extends Composite {
@@ -72,12 +71,12 @@ public class TestRunnerWidget extends Composite {
         run.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                LoadingPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+                BusyPopup.showMessage( TestScenarioConstants.INSTANCE.BuildingAndRunningScenario() );
 
                 testScenarioEditorService.call(new RemoteCallback<SingleScenarioResult>() {
                     @Override
                     public void callback(SingleScenarioResult singleScenarioResult) {
-                        LoadingPopup.close();
+                        BusyPopup.close();
                         layout.clear();
                         layout.add(actions);
                         layout.add(results);

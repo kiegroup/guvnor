@@ -17,6 +17,8 @@ public interface DSLEditorView
 
     void makeReadOnly();
 
+    void alertReadOnly();
+
     void showBusyIndicator( final String message );
 
     void hideBusyIndicator();

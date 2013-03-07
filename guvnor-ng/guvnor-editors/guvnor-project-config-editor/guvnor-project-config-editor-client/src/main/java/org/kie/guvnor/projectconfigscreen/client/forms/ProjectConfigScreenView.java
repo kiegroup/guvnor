@@ -14,10 +14,15 @@ public interface ProjectConfigScreenView
 
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
-    void setMetadata( Metadata metadata );
+    void setMetadata( final Metadata metadata );
 
-    void setImports( Path path,
-                     Imports imports );
+    void setImports( final Path path,
+                     final Imports imports );
+
+    void showBusyIndicator( final String message );
+
+    void hideBusyIndicator();
+
 }

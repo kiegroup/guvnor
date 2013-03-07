@@ -105,6 +105,7 @@ public class EnumEditorPresenter {
 
         multiPage.addWidget( view,
                              CommonConstants.INSTANCE.EditTabTitle() );
+
         multiPage.addPage( new Page( viewSource,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
@@ -118,25 +119,8 @@ public class EnumEditorPresenter {
             }
         } );
 
-        multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call(
-                        new RemoteCallback<Metadata>() {
-                            @Override
-                            public void callback( final Metadata metadata ) {
-                                metadataWidget.setContent( metadata,
-                                                           isReadOnly );
-                            }
-                        } ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here
-            }
-        } );
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
         enumService.call( new RemoteCallback<EnumModelContent>() {
             @Override
@@ -145,6 +129,15 @@ public class EnumEditorPresenter {
                 view.hideBusyIndicator();
             }
         } ).loadContent( path );
+
+        metadataService.call(
+                new RemoteCallback<Metadata>() {
+                    @Override
+                    public void callback( final Metadata metadata ) {
+                        metadataWidget.setContent( metadata,
+                                                   isReadOnly );
+                    }
+                } ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -167,13 +160,20 @@ public class EnumEditorPresenter {
 
     @OnSave
     public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
         new SaveOperationService().save( path, new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                 enumService.call( new RemoteCallback<Path>() {
                     @Override
                     public void callback( final Path response ) {
                         view.setNotDirty();
+                        view.hideBusyIndicator();
                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     }
                 } ).save( path,

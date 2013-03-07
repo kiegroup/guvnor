@@ -42,7 +42,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
@@ -89,27 +88,20 @@ public class ScoreCardXLSEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
-        multiPage.addWidget( view, ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
+        multiPage.addWidget( view,
+                             ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
         view.setPath( path );
 
-        multiPage.addPage( new Page( metadataWidget,
-                                     MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
-            }
+        multiPage.addWidget( metadataWidget,
+                             MetadataConstants.INSTANCE.Metadata() );
 
+        metadataService.call( new RemoteCallback<Metadata>() {
             @Override
-            public void onLostFocus() {
-                // Nothing to do here
+            public void callback( final Metadata metadata ) {
+                metadataWidget.setContent( metadata,
+                                           isReadOnly );
             }
-        } );
+        } ).getMetadata( path );
     }
 
     private void makeMenuBar() {
