@@ -15,9 +15,11 @@
  */
 package org.kie.guvnor.m2repo.client.perspectives;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -33,22 +35,9 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.IconType;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
 
 /**
  * A Perspective to show Guvnor's M2_REPO related screens
@@ -70,14 +59,13 @@ public class GuvnorM2RepoPerspective {
     private NewResourcePresenter newResourcePresenter;
 
     private PerspectiveDefinition perspective;
-    private Menus                 menus;
-    private ToolBar               toolBar;
+    private Menus menus;
+    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
         buildPerspective();
         buildMenuBar();
-        buildToolBar();
     }
 
     @Perspective
@@ -129,48 +117,7 @@ public class GuvnorM2RepoPerspective {
                 } )
                 .endMenu()
                 .endMenus()
-                .endMenu()
-                .newTopLevelMenu( "New" )
-                .withItems( getNewMenuItems() )
                 .endMenu().build();
-    }
-
-    private List<MenuItem> getNewMenuItems() {
-        final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
-        final List<MenuItem> newItems = new ArrayList<MenuItem>( handlerBeans.size() );
-        if ( handlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
-                final NewResourceHandler handler = handlerBean.getInstance();
-                final String description = handler.getDescription();
-                newItems.add( newSimpleItem( description ).respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        // TODO Need to get the currently selected path.
-                        // This will entail adding a new ApplicationContext class to UberFire
-                        // that observes PathChangeEvents raised by the FileExplorer (and others)
-                        // that sets the currently selected Path.
-                        handler.create( context.getActivePath(), null );
-                    }
-                } ).endMenu().build().getItems().get( 0 ) );
-            }
-        }
-
-        return newItems;
-    }
-
-    private void buildToolBar() {
-        this.toolBar = new DefaultToolBar( "guvnor.new.item" );
-        final String tooltip = "Constants.INSTANCE.newItem()";
-        final Command command = new Command() {
-            @Override
-            public void execute() {
-                newResourcePresenter.show();
-            }
-        };
-        toolBar.addItem( new DefaultToolBarItem( IconType.FILE,
-                                                 tooltip,
-                                                 command ) );
-
     }
 
 }

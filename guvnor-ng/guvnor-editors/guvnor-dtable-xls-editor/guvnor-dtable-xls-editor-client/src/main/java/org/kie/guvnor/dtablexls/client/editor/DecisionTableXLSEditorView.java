@@ -6,13 +6,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface DecisionTableXLSEditorView
         extends IsWidget {
-    void setPath(Path path);
-    
-    boolean isDirty();
 
-    void setNotDirty();
+    void setPath( final Path path );
 
-    boolean confirmClose();
-
-    void makeReadOnly();
+    void setReadOnly( final boolean isReadOnly );
 }

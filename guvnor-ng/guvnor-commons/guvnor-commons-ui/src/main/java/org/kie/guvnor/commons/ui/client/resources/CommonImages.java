@@ -41,6 +41,12 @@ public interface CommonImages
     @Source("images/delete_item_small.gif")
     ImageResource DeleteItemSmall();
 
+    @Source("images/error.gif")
+    ImageResource error();
+
+    @Source("images/information.gif")
+    ImageResource information();
+
     @Source("images/warning.gif")
     ImageResource warning();
 

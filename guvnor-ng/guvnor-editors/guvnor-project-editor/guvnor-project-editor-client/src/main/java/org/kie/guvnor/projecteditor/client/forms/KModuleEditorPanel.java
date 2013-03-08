@@ -64,12 +64,15 @@ public class KModuleEditorPanel
 
     public void save( String commitMessage,
                       Metadata metadata ) {
-        projectEditorServiceCaller.call( new RemoteCallback<Void>() {
+        projectEditorServiceCaller.call( new RemoteCallback<Path>() {
             @Override
-            public void callback( Void v ) {
+            public void callback( final Path path ) {
                 view.showSaveSuccessful( "kmodule.xml" );
             }
-        } ).save( path, model, metadata, commitMessage );
+        } ).save( path,
+                  model,
+                  metadata,
+                  commitMessage );
     }
 
     public boolean hasBeenInitialized() {

@@ -24,10 +24,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.OpenOption;
+import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -70,6 +74,9 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
+    private DecisionTableXLSConversionService conversionService;
+
+    @Inject
     private Paths paths;
 
     @Inject
@@ -78,7 +85,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
     @Override
     public InputStream load( final Path path ) {
         final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                  null );
+                                                                  StandardOpenOption.READ );
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
@@ -127,6 +134,11 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
         return copyService.copy( path,
                                  newName,
                                  comment );
+    }
+
+    @Override
+    public ConversionResult convert( final Path path ) {
+        return conversionService.convert( path );
     }
 
     @Override

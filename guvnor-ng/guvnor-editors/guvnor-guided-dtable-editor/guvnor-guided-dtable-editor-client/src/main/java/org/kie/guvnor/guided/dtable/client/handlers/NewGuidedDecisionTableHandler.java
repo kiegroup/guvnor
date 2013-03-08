@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -22,7 +23,6 @@ import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWiz
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;

@@ -36,7 +36,6 @@ public class NewPackageHandler
     @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
-
         projectService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {

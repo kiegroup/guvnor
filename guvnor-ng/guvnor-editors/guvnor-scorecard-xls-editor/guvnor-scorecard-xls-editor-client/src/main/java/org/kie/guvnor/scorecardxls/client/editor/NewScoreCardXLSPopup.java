@@ -30,6 +30,9 @@ public class NewScoreCardXLSPopup extends FormStylePopup {
         super( ImageResources.INSTANCE.decisionTable(),
                ScoreCardXLSEditorConstants.INSTANCE.NewScoreCardDescription() );
 
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+
         addAttribute( "",
                       new AttachmentFileWidget( contextPath,
                                                 fileName, new Command() {

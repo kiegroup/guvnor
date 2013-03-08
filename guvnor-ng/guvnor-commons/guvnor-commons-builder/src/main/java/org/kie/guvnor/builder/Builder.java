@@ -102,7 +102,7 @@ public class Builder {
 
     public IncrementalBuildResults addResource( final Path resource ) {
         //Check a full build has been performed
-        if ( kieBuilder == null ) {
+        if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
         }
         //Add new resource
@@ -122,7 +122,7 @@ public class Builder {
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
         //Check a full build has been performed
-        if ( kieBuilder == null ) {
+        if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
         }
         //Delete resource
@@ -143,6 +143,10 @@ public class Builder {
 
     public KieModule getKieModule() {
         return kieBuilder.getKieModule();
+    }
+
+    public boolean isBuilt() {
+        return kieBuilder != null;
     }
 
     private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {

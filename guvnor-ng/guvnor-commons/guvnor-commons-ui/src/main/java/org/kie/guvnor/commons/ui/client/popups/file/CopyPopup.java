@@ -26,26 +26,37 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.uberfire.client.common.FormStylePopup;
 
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
 public class CopyPopup extends FormStylePopup {
 
     final private TextBox nameTextBox = new TextBox();
     final private TextBox checkInCommentTextBox = new TextBox();
 
     public CopyPopup( final CommandWithFileNameAndCommitMessage command ) {
-        super( CommonImages.INSTANCE.edit(), "Copy this item" );
+        super( CommonImages.INSTANCE.edit(),
+               "Copy this item" );
+
+        checkNotNull( "command",
+                      command );
+
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         nameTextBox.setTitle( "New name" );
         nameTextBox.setWidth( "200px" );
-        addAttribute( "New name:", nameTextBox );
+        addAttribute( "New name:",
+                      nameTextBox );
 
         checkInCommentTextBox.setTitle( "Check in comment" );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:", checkInCommentTextBox );
+        addAttribute( "Check in comment:",
+                      checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
         final Button create = new Button( "Create copy" );
         create.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick( final ClickEvent arg0 ) {
 
                 if ( nameTextBox.getText() == null || "".equals( nameTextBox.getText() ) ) {
                     Window.alert( "Please enter the name you would like to copy this asset to" );
@@ -63,15 +74,16 @@ public class CopyPopup extends FormStylePopup {
         } );
         hp.add( create );
 
-        Button cancel = new Button( "Cancel" );
+        final Button cancel = new Button( "Cancel" );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick( final ClickEvent arg0 ) {
                 hide();
             }
         } );
         hp.add( new HTML( "&nbsp" ) );
         hp.add( cancel );
-        addAttribute( "", hp );
+        addAttribute( "",
+                      hp );
 
     }
 

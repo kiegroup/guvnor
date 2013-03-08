@@ -26,16 +26,26 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.uberfire.client.common.FormStylePopup;
 
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
 public class DeletePopup extends FormStylePopup {
 
     final private TextBox checkInCommentTextBox = new TextBox();
 
     public DeletePopup( final CommandWithCommitMessage command ) {
-        super( CommonImages.INSTANCE.edit(), "Delete this item" );
+        super( CommonImages.INSTANCE.edit(),
+               "Delete this item" );
+
+        checkNotNull( "command",
+                      command );
+
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         checkInCommentTextBox.setTitle( "Check in comment" );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:", checkInCommentTextBox );
+        addAttribute( "Check in comment:",
+                      checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
         final Button create = new Button( "Delete item" );
@@ -52,15 +62,16 @@ public class DeletePopup extends FormStylePopup {
         } );
         hp.add( create );
 
-        Button cancel = new Button( "Cancel" );
+        final Button cancel = new Button( "Cancel" );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick( final ClickEvent arg0 ) {
                 hide();
             }
         } );
         hp.add( new HTML( "&nbsp" ) );
         hp.add( cancel );
-        addAttribute( "", hp );
+        addAttribute( "",
+                      hp );
 
     }
 

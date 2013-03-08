@@ -22,25 +22,28 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
+import org.kie.guvnor.dtablexls.client.widgets.ConversionMessageWidget;
+import org.kie.guvnor.dtablexls.client.widgets.PopupListWidget;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
@@ -96,6 +99,7 @@ public class DecisionTableXLSEditorPresenter {
                              MetadataConstants.INSTANCE.Metadata() );
 
         view.setPath( path );
+        view.setReadOnly(isReadOnly);
 
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
@@ -126,22 +130,9 @@ public class DecisionTableXLSEditorPresenter {
         }
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     @OnClose
     public void onClose() {
         this.path = null;
-    }
-
-    @OnMayClose
-    public boolean checkIfDirty() {
-        if ( isDirty() ) {
-            return view.confirmClose();
-        }
-        return true;
     }
 
     @WorkbenchPartTitle
@@ -160,7 +151,20 @@ public class DecisionTableXLSEditorPresenter {
     }
 
     private void convert() {
-
+        BusyPopup.showMessage( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
+        decisionTableXLSService.call( new RemoteCallback<ConversionResult>() {
+            @Override
+            public void callback( final ConversionResult response ) {
+                BusyPopup.close();
+                if ( response.getMessages().size() > 0 ) {
+                    final PopupListWidget popup = new PopupListWidget();
+                    for ( ConversionMessage message : response.getMessages() ) {
+                        popup.addListItem( new ConversionMessageWidget( message ) );
+                    }
+                    popup.show();
+                }
+            }
+        } ).convert( path );
     }
 
 }

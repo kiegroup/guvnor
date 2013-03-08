@@ -129,7 +129,8 @@ public class NewResourcePresenter {
     public void makeItem() {
         if ( activeHandler != null ) {
             if ( activeHandler.validate() ) {
-                activeHandler.create( context.getActivePath(), view.getFileName() );
+                activeHandler.create( context.getActivePath(),
+                                      view.getFileName() );
                 view.hide();
             }
         }

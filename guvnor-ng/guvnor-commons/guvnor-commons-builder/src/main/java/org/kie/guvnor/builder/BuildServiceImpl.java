@@ -113,6 +113,9 @@ public class BuildServiceImpl
             return;
         }
         final Builder builder = cache.assertBuilder( pathToPom );
+        if ( !builder.isBuilt() ) {
+            build( pathToPom );
+        }
         final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
@@ -124,6 +127,9 @@ public class BuildServiceImpl
             return;
         }
         final Builder builder = cache.assertBuilder( pathToPom );
+        if ( !builder.isBuilt() ) {
+            build( pathToPom );
+        }
         final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }
@@ -135,6 +141,9 @@ public class BuildServiceImpl
             return;
         }
         final Builder builder = cache.assertBuilder( pathToPom );
+        if ( !builder.isBuilt() ) {
+            build( pathToPom );
+        }
         final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
     }

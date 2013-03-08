@@ -21,6 +21,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
 import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
@@ -39,7 +40,7 @@ import org.kie.guvnor.guided.dtable.client.wizard.pages.FactPatternsPage;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpander;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.SummaryPage;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;

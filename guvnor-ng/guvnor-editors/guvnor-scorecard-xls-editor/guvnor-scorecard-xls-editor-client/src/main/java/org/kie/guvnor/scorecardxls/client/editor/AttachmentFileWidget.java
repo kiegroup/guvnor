@@ -107,7 +107,6 @@ public class AttachmentFileWidget extends Composite {
 
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadSuccess() );
-
                     createdCallback.execute();
                 } else {
                     Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadFailure0( event.getResults() ) );

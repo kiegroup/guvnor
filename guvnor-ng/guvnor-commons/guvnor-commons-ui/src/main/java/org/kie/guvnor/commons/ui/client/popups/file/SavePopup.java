@@ -35,42 +35,47 @@ import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
  */
 public class SavePopup extends FormStylePopup {
 
-    final private TextBox         checkInCommentTextBox     = new TextBox();
+    final private TextBox checkInCommentTextBox = new TextBox();
 
     public SavePopup( final CommandWithCommitMessage command ) {
-        super(CommonImages.INSTANCE.edit(), "Save this item" );
-        
-        checkNotNull( "command", command );
+        super( CommonImages.INSTANCE.edit(),
+               "Save this item" );
 
+        checkNotNull( "command",
+                      command );
+
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.AddAnOptionalCheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );
         addAttribute( "Check in comment:", checkInCommentTextBox );
-        
+
         final HorizontalPanel hp = new HorizontalPanel();
         final Button create = new Button( "Save" );
         create.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
-                
-                if(!Window.confirm( "Are you sure you want to save this asset?")) {
+            public void onClick( final ClickEvent arg0 ) {
+
+                if ( !Window.confirm( "Are you sure you want to save this asset?" ) ) {
                     return;
                 }
-                
+
                 hide();
-                command.execute(checkInCommentTextBox.getText());
+                command.execute( checkInCommentTextBox.getText() );
             }
         } );
         hp.add( create );
 
-        Button cancel = new Button( "Cancel" );
+        final Button cancel = new Button( "Cancel" );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick( final ClickEvent arg0 ) {
                 hide();
             }
         } );
         hp.add( new HTML( "&nbsp" ) );
         hp.add( cancel );
-        addAttribute( "", hp );
+        addAttribute( "",
+                      hp );
     }
 
     public void show() {

@@ -27,6 +27,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.kie.guvnor.services.file.CopyService;
@@ -78,7 +79,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     @Override
     public InputStream load( final Path path ) {
         final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                  null );
+                                                                  StandardOpenOption.READ );
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );

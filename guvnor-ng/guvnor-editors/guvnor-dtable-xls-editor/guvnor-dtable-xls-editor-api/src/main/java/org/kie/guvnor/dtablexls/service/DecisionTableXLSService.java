@@ -19,6 +19,7 @@ package org.kie.guvnor.dtablexls.service;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.services.file.SupportsCopy;
@@ -39,5 +40,7 @@ public interface DecisionTableXLSService
 
     OutputStream save( final Path path,
                        final String comment );
+
+    ConversionResult convert( final Path path );
 
 }
