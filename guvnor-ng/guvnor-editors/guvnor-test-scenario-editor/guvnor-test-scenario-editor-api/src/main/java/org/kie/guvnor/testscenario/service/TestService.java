@@ -21,14 +21,13 @@ import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.junit.runner.notification.RunListener;
-import org.uberfire.backend.vfs.Path;
+import org.kie.runtime.KieSession;
 
-@Remote
-public interface TestService {
+public interface TestService<T> {
     
-    void run( Path resource, RunListener listener );
+    void run( T target, 
+              KieSession ksession,
+              TypeResolver resolver, 
+              RunListener listener );
 
-    SingleScenarioResult runScenario(String packageName, Scenario scenario);
-
-    Scenario loadScenario(Path path);
 }

@@ -16,53 +16,36 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.errai.bus.server.annotations.Service;
+import org.drools.base.TypeResolver;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.kie.guvnor.testscenario.model.Scenario;
-import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.kie.guvnor.testscenario.service.TestService;
-import org.kie.guvnor.testscenario.type.TestScenarioResourceTypeDefinition;
-import org.uberfire.backend.vfs.Path;
+import org.kie.runtime.KieSession;
 
-@Service
-@ApplicationScoped
 public class TestServiceImpl
         implements
-        TestService {
-
-    @Inject
-    private TestScenarioResourceTypeDefinition tsType;
-
-    @Inject
-    private ScenarioTestEditorService          editorService;
+        TestService<Scenario> {
 
     @Override
-    public void run(Path resource,
+    public void run(Scenario scenario,
+                    KieSession ksession,
+                    TypeResolver resolver, 
                     RunListener listener) {
-        // in the future we need to add support to run java unit tests as well
-        if ( tsType.accept( resource ) ) {
-            try {
-                // execute the test scenario
-                Scenario scenario = editorService.load( resource );
-                ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario );
-                JUnitCore junit = new JUnitCore();
-                junit.addListener( listener );
-                junit.run( runner );
-            } catch ( Exception e ) {
-                reportUnrecoverableError( "Error running scenario " + resource.getFileName(),
-                                          listener,
-                                          e );
-            }
-        } else {
-            reportUnrecoverableError( "Unknown resource type. Unable to execute as a test: " + resource.getFileName(),
+        try {
+            // execute the test scenario
+            ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
+                                                                    ksession,
+                                                                    resolver );
+            JUnitCore junit = new JUnitCore();
+            junit.addListener( listener );
+            junit.run( runner );
+        } catch ( Exception e ) {
+            reportUnrecoverableError( "Error running scenario " + scenario.getName(),
                                       listener,
-                                      new IllegalArgumentException( "Unknown resource type" ) );
+                                      e );
         }
     }
 

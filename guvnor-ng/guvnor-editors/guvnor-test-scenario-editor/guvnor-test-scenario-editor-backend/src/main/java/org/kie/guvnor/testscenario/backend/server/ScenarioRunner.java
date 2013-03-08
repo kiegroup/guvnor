@@ -42,9 +42,9 @@ import org.mvel2.MVEL;
  */
 public class ScenarioRunner {
 
-    private final TestScenarioKSessionWrapper workingMemoryWrapper;
-    private final FactPopulatorFactory factPopulatorFactory;
-    private final FactPopulator factPopulator;
+    private TestScenarioKSessionWrapper workingMemoryWrapper;
+    private FactPopulatorFactory factPopulatorFactory;
+    private FactPopulator factPopulator;
 
     /**
      * This constructor is normally used by Guvnor for running tests on a users
@@ -63,22 +63,23 @@ public class ScenarioRunner {
      *                     particular enum field values. See EnumFieldPopulator and
      *                     FactFieldValueVerifier
      */
-    public ScenarioRunner(final TypeResolver typeResolver,
-                          final ClassLoader classLoader,
-                          final KieSession ksession) throws ClassNotFoundException {
+    public ScenarioRunner( final KieSession ksession,
+                           final TypeResolver resolver ) throws ClassNotFoundException {
 
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
+        
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
         this.workingMemoryWrapper = new TestScenarioKSessionWrapper(ksession,
-                typeResolver,
-                classLoader,
+                resolver,
+                classloader,
                 populatedData,
                 globalData);
         this.factPopulatorFactory = new FactPopulatorFactory(populatedData,
                 globalData,
-                typeResolver,
-                classLoader);
+                resolver,
+                classloader);
         this.factPopulator = new FactPopulator(ksession,
                 populatedData);
     }

@@ -73,10 +73,8 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                        getClassLoader() );
         resolver.addImport( "java.util.List" );
 
-        ScenarioRunner runner = new ScenarioRunner(
-                                                    resolver,
-                                                    getClassLoader(),
-                                                    mock( KieSession.class ) );
+        ScenarioRunner runner = new ScenarioRunner( mock( KieSession.class ),
+                                                    resolver );
         runner.run( sc );
 
     }
@@ -92,10 +90,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         Scenario scenario = new Scenario();
 
-        ScenarioRunner runner = new ScenarioRunner(
-                                                    resolver,
-                                                    getClassLoader(),
-                                                    mock( KieSession.class ) );
+        ScenarioRunner runner = new ScenarioRunner( mock( KieSession.class ),
+                                                    resolver );
 
         scenario.getFixtures().add(
                                     new FactData(
@@ -247,10 +243,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().add( cheeseFactData );
         scenario.getFixtures().add( f1 );
 
-        ScenarioRunner runner = new ScenarioRunner(
-                                                    resolver,
-                                                    getClassLoader(),
-                                                    mock( KieSession.class ) );
+        ScenarioRunner runner = new ScenarioRunner( mock( KieSession.class ),
+                                                    resolver );
 
         VerifyFact vf = new VerifyFact();
         vf.setName( "f1" );
@@ -284,9 +278,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         clock.setStartupTime( time );
         when( ksession.getSessionClock() ).thenReturn( clock );
 
-        ScenarioRunner run = new ScenarioRunner( null,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 null );
         run.run( sc );
 
         verify( ksession ).addEventListener( any( TestingEventListener.class ) );
@@ -327,9 +320,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         KieSession ksession = mock( KieSession.class );
 
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
         run.run( sc );
 
         verify( ksession ).setGlobal( "testList", testList );
@@ -345,9 +337,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         KieSession ksession = mock(KieSession.class);
         when( ksession.getSessionClock() ).thenReturn( clock );
         
-        ScenarioRunner run = new ScenarioRunner( null,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 null );
         run.run( sc );
 
         assertEquals( time,
@@ -356,9 +347,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         ExecutionTrace ext = new ExecutionTrace();
         ext.setScenarioSimulatedDate( new Date( "10-Jul-1974" ) );
         sc.getFixtures().add( ext );
-        run = new ScenarioRunner( null,
-                                  getClassLoader(),
-                                  ksession );
+        run = new ScenarioRunner( ksession,
+                                  null );
         run.run( sc );
 
         long expected = ext.getScenarioSimulatedDate().getTime();
@@ -433,9 +423,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
         run.run( sc );
 
         assertEquals( 2,
@@ -515,9 +504,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         KieSession ksession = getKieSession( "test_rules_infinite_loop.drl" );
 
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
         run.run( sc );
 
         assertEquals( sc.getMaxRuleFirings(),
@@ -573,11 +561,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
-        ScenarioRunner run = new ScenarioRunner( new ClassTypeResolver(
-                                                                        imports,
-                                                                        cl ),
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 new ClassTypeResolver( imports,
+                                                                        cl ) );
         run.run( scenario );
 
         assertEquals( 1,
@@ -638,9 +624,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
         //including whatever CL has the generated beans...
-        ScenarioRunner scenarioRunner = new ScenarioRunner( resolver,
-                                                            getClassLoader(),
-                                                            ksession );
+        ScenarioRunner scenarioRunner = new ScenarioRunner( ksession,
+                                                            resolver );
 
         scenarioRunner.run( scenario );
 
@@ -662,9 +647,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().addAll( Arrays.asList( given ) );
         scenario.getFixtures().add( executionTrace );
         ((RuleFlowGroupImpl)ksession.getAgenda().getRuleFlowGroup( "asdf" )).setAutoDeactivate( false );
-        scenarioRunner = new ScenarioRunner( resolver,
-                                             getClassLoader(),
-                                             ksession );
+        scenarioRunner = new ScenarioRunner( ksession,
+                                             resolver );
 
         scenarioRunner.run( scenario );
 
@@ -707,9 +691,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
         run.run( sc );
 
         assertTrue( sc.wasSuccessful() );
@@ -749,9 +732,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
 
         run.run( sc );
 
@@ -793,9 +775,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
         run.run( sc );
 
         assertTrue( sc.wasSuccessful() );
@@ -814,9 +795,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
 
         run.run( sc );
 
@@ -849,9 +829,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 
-        ScenarioRunner run = new ScenarioRunner( resolver,
-                                                 getClassLoader(),
-                                                 ksession );
+        ScenarioRunner run = new ScenarioRunner( ksession,
+                                                 resolver );
 
         Scenario scenario = new Scenario();
 

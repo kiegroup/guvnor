@@ -16,9 +16,15 @@ public class ScenarioRunner4JUnit extends Runner {
     private Description descr;
     // the actual scenario test to be executed
     private Scenario    scenario;
+    private KieSession  ksession;
+    private TypeResolver resolver;    
 
-    public ScenarioRunner4JUnit( Scenario scenario ) throws InitializationError {
+    public ScenarioRunner4JUnit( Scenario scenario,
+                                 KieSession ksession,
+                                 TypeResolver resolver ) throws InitializationError {
         this.scenario = scenario;
+        this.ksession = ksession;
+        this.resolver = resolver;
         this.descr = Description.createSuiteDescription( "Scenario test case" );
         this.descr.addChild( Description.createTestDescription( getClass(),
                                                                 scenario.getName() ) );
@@ -31,17 +37,12 @@ public class ScenarioRunner4JUnit extends Runner {
 
     @Override
     public void run( RunNotifier notifier ) {
-        TypeResolver typeResolver = null;
-        ClassLoader classLoader = null;
-        KieSession ksession = null;
-        
         Description description = descr.getChildren().get( 0 );
         EachTestNotifier eachNotifier= new EachTestNotifier(notifier, description);
         try {
             eachNotifier.fireTestStarted();
-            ScenarioRunner runner = new ScenarioRunner( typeResolver, 
-                                                        classLoader, 
-                                                        ksession );
+            ScenarioRunner runner = new ScenarioRunner( ksession,
+                                                        resolver );
             runner.run( scenario );
             if( ! scenario.wasSuccessful() ) {
                 StringBuilder builder = new StringBuilder();
