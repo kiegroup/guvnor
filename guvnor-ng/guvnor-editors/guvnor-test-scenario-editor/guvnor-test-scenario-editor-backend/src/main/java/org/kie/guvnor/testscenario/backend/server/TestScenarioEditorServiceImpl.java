@@ -36,9 +36,12 @@ public class TestScenarioEditorServiceImpl
         implements TestScenarioEditorService {
 
 
-    private final IOService ioService;
-    private final Paths paths;
-    private final Event<ResourceOpenedEvent> resourceOpenedEvent;
+    private IOService ioService;
+    private Paths paths;
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    public TestScenarioEditorServiceImpl() {
+    }
 
     @Inject
     public TestScenarioEditorServiceImpl(@Named("ioStrategy") IOService ioService,
