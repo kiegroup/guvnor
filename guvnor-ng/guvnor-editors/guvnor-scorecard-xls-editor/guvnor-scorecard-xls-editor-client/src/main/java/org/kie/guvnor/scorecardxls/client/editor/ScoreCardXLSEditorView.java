@@ -1,18 +1,11 @@
 package org.kie.guvnor.scorecardxls.client.editor;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 
-import com.google.gwt.user.client.ui.IsWidget;
+public interface ScoreCardXLSEditorView extends IsWidget {
 
-public interface ScoreCardXLSEditorView
-        extends IsWidget {
-    void setPath(Path path);
-    
-    boolean isDirty();
+    void setPath( final Path path );
 
-    void setNotDirty();
-
-    boolean confirmClose();
-
-    void makeReadOnly();
+    void setReadOnly( final boolean isReadOnly );
 }

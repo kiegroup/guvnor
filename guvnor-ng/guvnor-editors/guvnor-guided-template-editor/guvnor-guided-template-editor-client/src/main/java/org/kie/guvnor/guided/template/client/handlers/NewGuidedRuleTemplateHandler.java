@@ -11,11 +11,13 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.kie.guvnor.guided.template.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -55,9 +57,11 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
+                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
                                                  service.call( new RemoteCallback<Path>() {
                                                      @Override
                                                      public void callback( final Path path ) {
+                                                         BusyPopup.close();
                                                          notifySuccess();
                                                          final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );

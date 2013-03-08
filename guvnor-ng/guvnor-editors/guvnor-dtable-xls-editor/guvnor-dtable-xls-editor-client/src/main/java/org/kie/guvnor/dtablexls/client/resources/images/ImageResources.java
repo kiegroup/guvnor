@@ -26,12 +26,9 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    @Source("class.gif")
-    ImageResource classImage();
+    @Source("decision_table_small.gif")
+    ImageResource decisionTableSmall();
 
-    @Source("field.gif")
-    ImageResource field();
-    
     @Source("decision_table.png")
     ImageResource decisionTable();
 }

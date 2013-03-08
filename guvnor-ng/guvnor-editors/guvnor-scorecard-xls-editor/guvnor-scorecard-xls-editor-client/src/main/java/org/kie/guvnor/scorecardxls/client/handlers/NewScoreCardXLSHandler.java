@@ -1,5 +1,6 @@
 package org.kie.guvnor.scorecardxls.client.handlers;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -7,14 +8,16 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.scorecardxls.client.editor.NewScoreCardXLSPopup;
+import org.kie.guvnor.scorecardxls.client.editor.AttachmentFileWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
 import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -26,13 +29,22 @@ import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Inject
-    private Caller<ScoreCardXLSService> scoreCardXLSService;
+    private Caller<ScoreCardXLSService> decisionTableXLSService;
 
     @Inject
     private PlaceManager placeManager;
 
     @Inject
     private ScoreCardXLSResourceType resourceType;
+
+    @Inject
+    private AttachmentFileWidget uploadWidget;
+
+    @PostConstruct
+    private void setupExtensions() {
+        extensions.add( new Pair<String, AttachmentFileWidget>( ScoreCardXLSEditorConstants.INSTANCE.Upload(),
+                                                                uploadWidget ) );
+    }
 
     @Override
     public String getDescription() {
@@ -41,30 +53,31 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.classImage() );
+        return new Image( ImageResources.INSTANCE.scoreCardSmall() );
     }
 
     @Override
     public void create( final Path contextPath,
                         final String baseFileName ) {
-        NewScoreCardXLSPopup popup = new NewScoreCardXLSPopup( contextPath,
-                                                               buildFileName( resourceType,
-                                                                              baseFileName ),
-                                                               new Command() {
+        BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+        uploadWidget.submit( contextPath,
+                             buildFileName( resourceType,
+                                            baseFileName ),
+                             new Command() {
 
-                                                                   @Override
-                                                                   public void execute() {
-                                                                       notifySuccess();
-                                                                       final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
-                                                                                                                 buildFileName( resourceType,
-                                                                                                                                baseFileName ),
-                                                                                                                 contextPath.toURI() );
-                                                                       final PlaceRequest place = new PathPlaceRequest( newPath );
-                                                                       placeManager.goTo( place );
-                                                                   }
+                                 @Override
+                                 public void execute() {
+                                     BusyPopup.close();
+                                     notifySuccess();
+                                     final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                                               buildFileName( resourceType,
+                                                                                              baseFileName ),
+                                                                               contextPath.toURI() );
+                                     final PlaceRequest place = new PathPlaceRequest( newPath );
+                                     placeManager.goTo( place );
+                                 }
 
-                                                               } );
-        popup.show();
+                             } );
     }
 
 }

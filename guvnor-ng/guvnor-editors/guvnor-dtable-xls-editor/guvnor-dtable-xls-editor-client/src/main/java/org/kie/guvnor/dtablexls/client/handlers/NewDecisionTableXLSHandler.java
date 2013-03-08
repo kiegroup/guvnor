@@ -23,7 +23,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
- * Handler for the creation of new DRL Text Rules
+ * Handler for the creation of new XLS Decision Tables
  */
 @ApplicationScoped
 public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
@@ -53,7 +53,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.classImage() );
+        return new Image( ImageResources.INSTANCE.decisionTableSmall() );
     }
 
     @Override

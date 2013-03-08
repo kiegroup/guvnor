@@ -99,7 +99,7 @@ public class DecisionTableXLSEditorPresenter {
                              MetadataConstants.INSTANCE.Metadata() );
 
         view.setPath( path );
-        view.setReadOnly(isReadOnly);
+        view.setReadOnly( isReadOnly );
 
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
@@ -137,7 +137,7 @@ public class DecisionTableXLSEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS DecisionTable Editor [" + path.getFileName() + "]";
+        return "XLS Decision Table Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

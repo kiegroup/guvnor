@@ -41,7 +41,9 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
@@ -90,10 +92,12 @@ public class ScoreCardXLSEditorPresenter {
 
         multiPage.addWidget( view,
                              ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
-        view.setPath( path );
 
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
+
+        view.setPath( path );
+        view.setReadOnly(isReadOnly);
 
         metadataService.call( new RemoteCallback<Metadata>() {
             @Override
@@ -116,27 +120,14 @@ public class ScoreCardXLSEditorPresenter {
         }
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     @OnClose
     public void onClose() {
         this.path = null;
     }
 
-    @OnMayClose
-    public boolean checkIfDirty() {
-        if ( isDirty() ) {
-            return view.confirmClose();
-        }
-        return true;
-    }
-
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS ScoreCard Editor [" + path.getFileName() + "]";
+        return "XLS Score Card Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

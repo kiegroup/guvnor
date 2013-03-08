@@ -26,12 +26,9 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    @Source("class.gif")
-    ImageResource classImage();
-
-    @Source("field.gif")
-    ImageResource field();
+    @Source("score_card_small.gif")
+    ImageResource scoreCardSmall();
     
-    @Source("decision_table.png")
-    ImageResource decisionTable();
+    @Source("score_card.png")
+    ImageResource scoreCard();
 }

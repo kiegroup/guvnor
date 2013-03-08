@@ -17,11 +17,8 @@
 package org.kie.guvnor.scorecardxls.client.editor;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -32,96 +29,69 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 
 /**
  * This wraps a file uploader utility
  */
 public class AttachmentFileWidget extends Composite {
 
-    private FormPanel form;
-    private Path contextPath;
-    private String fileName;
-    private Command createdCallback;
-    private Path fullPath = null;
+    private final FormPanel form = new FormPanel();
+    private final HorizontalPanel fields = new HorizontalPanel();
 
-    public AttachmentFileWidget( final Path contextPath,
-                                 final String fileName,
-                                 final Command createdCallback ) {
-        this.contextPath = contextPath;
-        this.fileName = fileName;
-        this.createdCallback = createdCallback;
+    private Command successCallback;
 
-        initWidgets();
-        initSubmitCompleteHandler();
-    }
-
-    public AttachmentFileWidget( final Path fullPath,
-                                 final Command createdCallback ) {
-        this.fullPath = fullPath;
-        this.createdCallback = createdCallback;
-
-        initWidgets();
-        initSubmitCompleteHandler();
-    }
-
-    protected void initWidgets() {
-        form = new FormPanel();
+    public AttachmentFileWidget() {
         form.setAction( GWT.getModuleBaseURL() + "scorecardxls/file" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        final FileUpload up = new FileUpload();
-        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
-        final HorizontalPanel fields = new HorizontalPanel();
-        if ( fullPath == null ) {
-            fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
-                                        contextPath.toURI() ) );
-            fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_NAME,
-                                        fileName ) );
-        } else {
-            fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_FULL_PATH,
-                                        fullPath.toURI() ) );
-        }
-        final Button ok = new Button( ScoreCardXLSEditorConstants.INSTANCE.Upload() );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                showUploadingBusy();
-                submitUpload();
-            }
-        } );
-
-        fields.add( up );
-        fields.add( ok );
-
-        form.add( fields );
-
-        initWidget( form );
-    }
-
-    void initSubmitCompleteHandler() {
         form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
-            public void onSubmitComplete( SubmitCompleteEvent event ) {
-                BusyPopup.close();
-
+            @Override
+            public void onSubmitComplete( final SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadSuccess() );
-                    createdCallback.execute();
+                    onSuccessCallback();
                 } else {
                     Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadFailure0( event.getResults() ) );
                 }
             }
 
         } );
+
+        final FileUpload up = new FileUpload();
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+
+        fields.add( up );
+        form.add( fields );
+
+        initWidget( form );
     }
 
-    protected void submitUpload() {
+    private void onSuccessCallback() {
+        if ( this.successCallback == null ) {
+            return;
+        }
+        this.successCallback.execute();
+    }
+
+    public void submit( final Path context,
+                        final String fileName,
+                        final Command successCallback ) {
+        this.successCallback = successCallback;
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
+                                    context.toURI() ) );
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_NAME,
+                                    fileName ) );
         form.submit();
     }
 
-    protected void showUploadingBusy() {
-        BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+    public void submit( final Path path,
+                        final Command successCallback ) {
+        this.successCallback = successCallback;
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_FULL_PATH,
+                                    path.toURI() ) );
+        form.submit();
     }
 
     private TextBox getHiddenField( final String name,
@@ -131,10 +101,6 @@ public class AttachmentFileWidget extends Composite {
         t.setText( value );
         t.setVisible( false );
         return t;
-    }
-
-    public void hide() {
-        this.hide();
     }
 
 }

@@ -16,6 +16,10 @@
 
 package org.kie.guvnor.scorecardxls.client.editor;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,83 +34,83 @@ import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConst
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
 import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
-
-import javax.annotation.PostConstruct;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 public class ScoreCardXLSEditorViewImpl
         extends Composite
         implements ScoreCardXLSEditorView {
 
-    private Path fullPath;
+    private final Button uploadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Upload() );
+    private final Button downloadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
 
-    private boolean isDirty;
+    private final VerticalPanel layout = new VerticalPanel();
+    private final FormStyleLayout ts = new FormStyleLayout( getIcon(),
+                                                            ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
 
-    private FormStyleLayout ts;
-    private VerticalPanel layout;
+    @Inject
+    private AttachmentFileWidget uploadWidget;
+
+    @Inject
+    private Event<NotificationEvent> notificationEvent;
 
     @PostConstruct
     public void init() {
-        layout = new VerticalPanel();
         layout.setWidth( "100%" );
-
-        ts = new FormStyleLayout( getIcon(),
-                                  ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
         layout.add( ts );
-
         initWidget( layout );
         setWidth( "100%" );
     }
 
     public void setPath( final Path path ) {
-        this.fullPath = path;
-        //ts.clear();
         ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":",
-                         new AttachmentFileWidget( fullPath,
-                                                   new Command() {
-                                                       @Override
-                                                       public void execute() {
-                                                       }
+                         uploadWidget );
+        uploadButton.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+                uploadWidget.submit( path,
+                                     new Command() {
 
-                                                   } ) );
+                                         @Override
+                                         public void execute() {
+                                             BusyPopup.close();
+                                             notifySuccess();
+                                         }
 
-        final Button dl = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
-        dl.addClickHandler( new ClickHandler() {
+                                     } );
+            }
+        } );
+        ts.addRow( uploadButton );
+
+        downloadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
                 Window.open( GWT.getModuleBaseURL() + "scorecardxls/file?"
                                      + HTMLFileManagerFields.FORM_FIELD_PATH + "="
-                                     + fullPath.toURI(),
+                                     + path.toURI(),
                              "downloading",
                              "resizable=no,scrollbars=yes,status=no" );
             }
         } );
         ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":",
-                         dl );
+                         downloadButton );
     }
 
     @Override
-    public boolean isDirty() {
-        return isDirty;
+    public void setReadOnly( final boolean isReadOnly ) {
+        uploadButton.setEnabled( !isReadOnly );
     }
 
-    @Override
-    public void setNotDirty() {
-        this.isDirty = false;
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void makeReadOnly() {
-    }
-
-    public Image getIcon() {
-        Image image = new Image( ImageResources.INSTANCE.decisionTable() );
+    private Image getIcon() {
+        Image image = new Image( ImageResources.INSTANCE.scoreCard() );
         image.setAltText( ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
         return image;
     }
+
+    private void notifySuccess() {
+        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+    }
+
 }
