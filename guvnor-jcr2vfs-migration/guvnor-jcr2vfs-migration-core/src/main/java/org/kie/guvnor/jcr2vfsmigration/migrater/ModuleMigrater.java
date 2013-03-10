@@ -41,10 +41,6 @@ public class ModuleMigrater {
         logger.debug("--------------------modulePath:({}) ", modulePath);
         logger.debug("--------------------jcrModule.getName():({}) ", jcrModule.getName());
         projectService.newProject(modulePath, jcrModule.getName());
-
-
-        // TODO REPLACE ME WITH ACTUAL CODE
-        logger.debug("      TODO migrate module ({}).", jcrModule.getName());
     }
 
 }

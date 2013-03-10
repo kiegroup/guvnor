@@ -35,6 +35,8 @@ public class IOServiceFactory {
 
     private final IOService ioService = new IOServiceDotFileImpl();
     private FileSystem fs;
+    
+    public static String  DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
     public static enum Migration implements FileSystemType {
 
@@ -47,12 +49,8 @@ public class IOServiceFactory {
 
     @PostConstruct
     public void onStartup() {
-        URI uri = URI.create( "git://guvnor-jcr2vfs-migration");
-        if(ioService.getFileSystem(uri) != null) {
-            this.fs = ioService.getFileSystem(uri);
-        } else {
-            this.fs = ioService.newFileSystem( uri, new HashMap<String, Object>(), MIGRATION_INSTANCE );
-        }
+        URI uri = URI.create( "git://" + DEFAULT_MIGRATION_FILE_SYSTEM);
+        this.fs = ioService.newFileSystem( uri, new HashMap<String, Object>(), MIGRATION_INSTANCE );
     }
 
     @Produces

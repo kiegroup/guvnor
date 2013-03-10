@@ -9,7 +9,6 @@ import javax.inject.Named;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
-import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -21,11 +20,6 @@ import org.uberfire.backend.vfs.PathFactory;
  */
 @ApplicationScoped
 public class MigrationPathManager {
-
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
     @Inject
     private Paths paths;
 
@@ -48,10 +42,9 @@ public class MigrationPathManager {
     }
     
     public Path generatePathForModule( Module jcrModule ) {
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( "projects" ) + "/" + escapePathEntry( jcrModule.getName() ) );
 
-        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
-
-        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+        final Path path = PathFactory.newPath( paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
 
         register( jcrModule.getUuid(), path );
         return path;
