@@ -21,6 +21,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.AttachementAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
@@ -53,6 +54,8 @@ public class AssetMigrater {
     protected PlainTextAssetMigrater plainTextAssetMigrater;        
     @Inject
     protected GuidedDecisionTableMigrater guidedDecisionTableMigrater;
+    @Inject
+    protected AttachementAssetMigrater attachementAssetMigrater;
     
     @Inject
     protected MetadataService metadataService;        
@@ -114,8 +117,26 @@ public class AssetMigrater {
                 || AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())
                 || AssetFormats.DSL.equals(jcrAsset.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())
-                || AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())) {
+                || AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAsset.getFormat())
+                || AssetFormats.SPRING_CONTEXT.equals(jcrAsset.getFormat())
+                /*|| AssetFormats.SERVICE_CONFIG.equals(jcrAsset.getFormat())*/
+                || AssetFormats.WORKITEM_DEFINITION.equals(jcrAsset.getFormat())
+                || AssetFormats.CHANGE_SET.equals(jcrAsset.getFormat())) {
             plainTextAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
+        } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAsset.getFormat())
+                 ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAsset.getFormat())) {
+            attachementAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
+        } else if (AssetFormats.RULE_FLOW_RF.equals(jcrAsset.getFormat())
+                || AssetFormats.BPMN_PROCESS.equals(jcrAsset.getFormat())
+                || AssetFormats.BPMN2_PROCESS.equals(jcrAsset.getFormat())) {
+            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
+        } else if (AssetFormats.MODEL.equals(jcrAsset.getFormat())) {
+            // TODO return error message
+            logger.info("      POJO Model jar [" + jcrAsset.getName() + "] is not supported by migration tool. Please upload your POJO model jar to Guvnor manually.");
+        } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAsset.getFormat())) {
+            // TODO
+            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
