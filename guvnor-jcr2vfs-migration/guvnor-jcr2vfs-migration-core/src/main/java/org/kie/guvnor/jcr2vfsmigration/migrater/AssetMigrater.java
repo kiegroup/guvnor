@@ -80,15 +80,10 @@ public class AssetMigrater {
                 PageResponse<AssetPageRow> response;
                 try {
                     response = jcrRepositoryAssetService.findAssetPage(request);
-                    for (AssetPageRow row : response.getPageRowList()) {                       
-                        //Migrate historical versions first
+                    for (AssetPageRow row : response.getPageRowList()) {              
+                        //TODO: weird, the VFS is always missing the third commit. 
+                        //Migrate historical versions first, this includes the head version(i.e., the latest version)
                         migrateAssetHistory(jcrModule, row.getUuid());
-                        
-                        //Migrate the head version
-                        Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
-                        migrate(jcrModule, jcrAsset, jcrAsset.getCheckinComment(), jcrAsset.getLastModified(), jcrAsset.getLastContributor());
-                        logger.debug("    Asset ({}) with format ({}) migrated.",
-                                jcrAsset.getName(), jcrAsset.getFormat());
                         
                         //Migrate asset discussions
                         migrateAssetDiscussions(jcrModule, row.getUuid());
@@ -155,20 +150,17 @@ public class AssetMigrater {
                         Integer v2 = Integer.valueOf( r2.values[0] );
                         Integer v1 = Integer.valueOf( r1.values[0] );
 
-                        return v2.compareTo( v1 );
+                        return v1.compareTo( v2 );
                     }
                 } );
 
         for (TableDataRow row : rows) {
-/*            String versionNumber = row.values[0];
-            String checkinComment = row.values[1];
-            String lastModified = row.values[2];
-            String stateDescription = row.values[3];
-            String lastContributor = row.values[4];*/
             String versionSnapshotUUID = row.id;
 
             Asset historicalAssetJCR = jcrRepositoryAssetService.loadRuleAsset(versionSnapshotUUID);
             migrate(jcrModule, historicalAssetJCR, historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified(), historicalAssetJCR.getLastContributor());
+            logger.debug("    Asset ({}) with format ({}) migrated: version [{}], comment[{}], lastModified[{}]",
+                    historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified());
         }
     }
 
