@@ -81,7 +81,8 @@ public class AssetMigrater {
                 try {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {              
-                        //TODO: weird, the VFS is always missing the third commit. 
+                        //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
+                        
                         //Migrate historical versions first, this includes the head version(i.e., the latest version)
                         migrateAssetHistory(jcrModule, row.getUuid());
                         
