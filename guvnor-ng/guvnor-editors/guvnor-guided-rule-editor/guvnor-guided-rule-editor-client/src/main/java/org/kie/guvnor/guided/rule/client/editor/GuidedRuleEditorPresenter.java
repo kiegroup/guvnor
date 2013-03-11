@@ -206,24 +206,25 @@ public class GuidedRuleEditorPresenter {
             return;
         }
 
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String commitMessage ) {
-                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                service.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path response ) {
-                        view.setNotDirty();
-                        view.hideBusyIndicator();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getContent(),
-                          metadataWidget.getContent(),
-                          commitMessage );
-            }
-        } );
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 service.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path response ) {
+                                                         view.setNotDirty();
+                                                         view.hideBusyIndicator();
+                                                         metadataWidget.resetDirty();
+                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                                                     }
+                                                 } ).save( path,
+                                                           view.getContent(),
+                                                           metadataWidget.getContent(),
+                                                           commitMessage );
+                                             }
+                                         } );
     }
 
     @IsDirty

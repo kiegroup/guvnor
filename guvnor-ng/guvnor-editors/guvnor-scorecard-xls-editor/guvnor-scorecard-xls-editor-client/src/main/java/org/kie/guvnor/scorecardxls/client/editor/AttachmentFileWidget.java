@@ -22,8 +22,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
@@ -45,10 +43,10 @@ public class AttachmentFileWidget extends Composite {
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
+        form.addSubmitCompleteHandler( new FormPanel.SubmitCompleteHandler() {
 
             @Override
-            public void onSubmitComplete( final SubmitCompleteEvent event ) {
+            public void onSubmitComplete( final FormPanel.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadSuccess() );
                     onSuccessCallback();

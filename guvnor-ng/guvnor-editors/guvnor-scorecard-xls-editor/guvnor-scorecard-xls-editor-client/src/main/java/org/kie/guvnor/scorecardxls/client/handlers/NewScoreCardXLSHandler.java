@@ -10,6 +10,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.scorecardxls.client.editor.AttachmentFileWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
@@ -58,26 +61,35 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final Path contextPath,
-                        final String baseFileName ) {
-        BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
-        uploadWidget.submit( contextPath,
-                             buildFileName( resourceType,
-                                            baseFileName ),
-                             new Command() {
+                        final String baseFileName,
+                        final NewResourcePresenter presenter ) {
+        new SaveOperationService().save( contextPath,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+                                                 uploadWidget.submit( contextPath,
+                                                                      buildFileName( resourceType,
+                                                                                     baseFileName ),
+                                                                      new Command() {
 
-                                 @Override
-                                 public void execute() {
-                                     BusyPopup.close();
-                                     notifySuccess();
-                                     final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
-                                                                               buildFileName( resourceType,
-                                                                                              baseFileName ),
-                                                                               contextPath.toURI() );
-                                     final PlaceRequest place = new PathPlaceRequest( newPath );
-                                     placeManager.goTo( place );
-                                 }
+                                                                          @Override
+                                                                          public void execute() {
+                                                                              BusyPopup.close();
+                                                                              presenter.complete();
+                                                                              notifySuccess();
+                                                                              final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                                                                                        buildFileName( resourceType,
+                                                                                                                                       baseFileName ),
+                                                                                                                        contextPath.toURI() );
+                                                                              final PlaceRequest place = new PathPlaceRequest( newPath );
+                                                                              placeManager.goTo( place );
+                                                                          }
 
-                             } );
+                                                                      } );
+                                             }
+                                         } );
+
     }
 
 }

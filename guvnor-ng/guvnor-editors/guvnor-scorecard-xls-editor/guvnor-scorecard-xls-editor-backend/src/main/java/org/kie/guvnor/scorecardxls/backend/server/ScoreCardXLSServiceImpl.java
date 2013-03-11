@@ -38,8 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -68,7 +68,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+    private Event<ResourceAddedEvent> resourceAddedEvent;
 
     @Inject
     private Paths paths;
@@ -99,8 +99,9 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
         log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
         final OutputStream outputStream = ioService.newOutputStream( paths.convert( path ),
                                                                      makeCommentedOption( comment ) );
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+
+        //Adds and updates are handled by the same POST of FORM data.. so raise an Added event for both
+        resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
 
         return outputStream;
     }

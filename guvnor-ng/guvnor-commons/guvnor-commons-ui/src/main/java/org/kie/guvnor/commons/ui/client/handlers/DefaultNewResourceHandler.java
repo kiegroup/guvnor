@@ -72,7 +72,11 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     protected String buildFileName( final ClientResourceType resourceType,
                                     final String baseFileName ) {
-        return resourceType.getPrefix() + baseFileName + "." + resourceType.getSuffix();
+        final String extension = "." + resourceType.getSuffix();
+        if ( baseFileName.endsWith( extension ) ) {
+            return resourceType.getPrefix() + baseFileName;
+        }
+        return resourceType.getPrefix() + baseFileName + extension;
     }
 
     protected void notifySuccess() {

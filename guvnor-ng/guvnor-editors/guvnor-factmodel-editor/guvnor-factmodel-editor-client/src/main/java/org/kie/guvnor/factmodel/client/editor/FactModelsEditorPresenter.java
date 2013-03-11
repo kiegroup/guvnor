@@ -206,24 +206,25 @@ public class FactModelsEditorPresenter {
             return;
         }
 
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String comment ) {
-                view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                factModelService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path response ) {
-                        view.setNotDirty();
-                        view.hideBusyIndicator();
-                        metadataWidget.resetDirty();
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getContent(),
-                          metadataWidget.getContent(),
-                          comment );
-            }
-        } );
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 factModelService.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path response ) {
+                                                         view.setNotDirty();
+                                                         view.hideBusyIndicator();
+                                                         metadataWidget.resetDirty();
+                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                                                     }
+                                                 } ).save( path,
+                                                           view.getContent(),
+                                                           metadataWidget.getContent(),
+                                                           comment );
+                                             }
+                                         } );
     }
 
     @WorkbenchPartView

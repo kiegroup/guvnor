@@ -46,6 +46,7 @@ public class SavePopup extends FormStylePopup {
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        setGlassEnabled( true );
 
         checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.AddAnOptionalCheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );

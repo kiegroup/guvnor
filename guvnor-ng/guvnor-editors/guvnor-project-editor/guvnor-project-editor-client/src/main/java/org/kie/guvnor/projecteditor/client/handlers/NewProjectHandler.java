@@ -12,12 +12,16 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -53,16 +57,26 @@ public class NewProjectHandler
     }
 
     @Override
-    public void create( final Path path,
-                        final String projectName ) {
-        if ( path != null ) {
-            projectServiceCaller.call( new RemoteCallback<Path>() {
-                @Override
-                public void callback( Path pathToPom ) {
-                    notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                    placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
-                }
-            } ).newProject( path, projectName );
+    public void create( final Path contextPath,
+                        final String projectName,
+                        final NewResourcePresenter presenter ) {
+        if ( contextPath != null ) {
+            new SaveOperationService().save( contextPath,
+                                             new CommandWithCommitMessage() {
+                                                 @Override
+                                                 public void execute( final String comment ) {
+                                                     BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                     projectServiceCaller.call( new RemoteCallback<Path>() {
+                                                         @Override
+                                                         public void callback( Path pathToPom ) {
+                                                             BusyPopup.close();
+                                                             presenter.complete();
+                                                             notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+                                                             placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
+                                                         }
+                                                     } ).newProject( contextPath, projectName );
+                                                 }
+                                             } );
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }

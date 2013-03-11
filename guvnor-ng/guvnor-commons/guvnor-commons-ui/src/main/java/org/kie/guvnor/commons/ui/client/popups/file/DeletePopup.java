@@ -41,6 +41,7 @@ public class DeletePopup extends FormStylePopup {
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        setGlassEnabled( true );
 
         checkInCommentTextBox.setTitle( "Check in comment" );
         checkInCommentTextBox.setWidth( "200px" );

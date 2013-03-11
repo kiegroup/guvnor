@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Well;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -27,7 +28,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
@@ -64,8 +67,15 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     public void setPath( final Path path ) {
-        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":",
-                         uploadWidget );
+        //Upload widgets
+        final Well uploadWell = new Well();
+        final HorizontalPanel uploadContainer = new HorizontalPanel();
+        uploadContainer.add( new Label( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":" ) );
+        uploadContainer.add( uploadWidget );
+        uploadContainer.add( uploadButton );
+        uploadWell.add( uploadContainer );
+
+        ts.addRow( uploadWell );
         uploadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
@@ -82,7 +92,14 @@ public class ScoreCardXLSEditorViewImpl
                                      } );
             }
         } );
-        ts.addRow( uploadButton );
+
+        //Download widgets
+        final Well downloadWell = new Well();
+        final HorizontalPanel downloadContainer = new HorizontalPanel();
+        downloadContainer.add( new Label( ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":" ) );
+        downloadContainer.add( downloadButton );
+        downloadWell.add( downloadContainer );
+        ts.addRow( downloadWell );
 
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
@@ -94,8 +111,6 @@ public class ScoreCardXLSEditorViewImpl
                              "resizable=no,scrollbars=yes,status=no" );
             }
         } );
-        ts.addAttribute( ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":",
-                         downloadButton );
     }
 
     @Override

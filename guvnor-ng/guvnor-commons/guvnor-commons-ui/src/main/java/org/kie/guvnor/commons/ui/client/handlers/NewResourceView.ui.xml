@@ -23,7 +23,7 @@
 
   <g:HTMLPanel>
     <b:Modal ui:field="popup" title="{i18n.popupTitle}" backdrop="STATIC" keyboard="true" animation="true">
-      <b:WellForm type="HORIZONTAL">
+      <b:Well>
         <b:Fieldset>
           <b:Legend>New resource
             <small>* is required</small>
@@ -47,7 +47,7 @@
             <g:VerticalPanel ui:field="handlerExtensions"/>
           </b:Well>
         </b:Fieldset>
-      </b:WellForm>
+      </b:Well>
       <b:ModalFooter>
         <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18nCommon.OK}"></b:Button>
         <b:Button ui:field="cancelButton" type="DEFAULT" text="{i18nCommon.Cancel}"></b:Button>

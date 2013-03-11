@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -35,10 +36,12 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final Path contextPath,
-                        final String baseFileName ) {
+                        final String baseFileName,
+                        final NewResourcePresenter presenter) {
         projectService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
+                presenter.complete();
                 notifySuccess();
             }
         } ).newDirectory( contextPath, baseFileName );

@@ -9,6 +9,7 @@ import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
@@ -49,7 +50,8 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final Path contextPath,
-                        final String baseFileName ) {
+                        final String baseFileName,
+                        final NewResourcePresenter presenter ) {
         final ScoreCardModel model = new ScoreCardModel();
         model.setName( baseFileName );
 
@@ -62,6 +64,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          BusyPopup.close();
+                                                         presenter.complete();
                                                          notifySuccess();
                                                          final PlaceRequest place = new PathPlaceRequest( path );
                                                          placeManager.goTo( place );

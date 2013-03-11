@@ -160,12 +160,12 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
 
     @Override
     public void enableHandler( final NewResourceHandler handler,
-                               final boolean enable ) {
+                               final boolean enabled ) {
         final RadioButton handlerOption = this.handlerToWidgetMap.get( handler );
         if ( handlerOption == null ) {
             return;
         }
-        handlerOption.setEnabled( enable );
+        handlerOption.setEnabled( enabled );
     }
 
     private RadioButton makeOption( final NewResourceHandler handler ) {

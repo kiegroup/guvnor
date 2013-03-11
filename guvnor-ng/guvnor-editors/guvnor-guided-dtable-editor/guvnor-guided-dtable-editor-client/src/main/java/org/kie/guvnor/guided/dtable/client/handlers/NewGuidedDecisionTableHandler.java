@@ -12,6 +12,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
+import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
@@ -57,6 +58,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Inject
     private NewGuidedDecisionTableWizard wizard;
 
+    private NewResourcePresenter presenter;
+
     @PostConstruct
     private void setupExtensions() {
         extensions.add( new Pair<String, GuidedDecisionTableOptions>( Constants.INSTANCE.Options(),
@@ -75,7 +78,9 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final Path contextPath,
-                        final String baseFileName ) {
+                        final String baseFileName,
+                        final NewResourcePresenter presenter ) {
+        this.presenter = presenter;
         if ( !options.isUsingWizard() ) {
             createEmptyDecisionTable( baseFileName,
                                       contextPath,
@@ -133,6 +138,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                      @Override
                                                      public void callback( final Path path ) {
                                                          BusyPopup.close();
+                                                         presenter.complete();
                                                          notifySuccess();
                                                          executePostSaveCommand();
                                                          final PlaceRequest place = new PathPlaceRequest( path );

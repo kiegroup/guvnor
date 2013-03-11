@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.globals.client.editor;
 
+import javax.enterprise.context.Dependent;
+
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -29,15 +31,13 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.uberfire.client.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-
 @Dependent
-public class AddGlobalPopup extends PopupPanel {
+public class AddGlobalPopup extends Composite {
 
     interface AddGlobalPopupBinder
             extends
@@ -71,7 +71,7 @@ public class AddGlobalPopup extends PopupPanel {
     private Command okCommand;
 
     public AddGlobalPopup() {
-        setWidget( uiBinder.createAndBindUi( this ) );
+        initWidget( uiBinder.createAndBindUi( this ) );
         popup.setDynamicSafe( true );
         aliasTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
@@ -127,7 +127,6 @@ public class AddGlobalPopup extends PopupPanel {
 
     public void hide() {
         popup.hide();
-        super.hide();
     }
 
     public void setContent( final Command okCommand,

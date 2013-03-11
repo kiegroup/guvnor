@@ -1,11 +1,11 @@
 package org.kie.guvnor.commons.ui.client.handlers;
 
+import java.util.List;
+
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
-
-import java.util.List;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -28,9 +28,11 @@ public interface NewResourceHandler {
      * An entry-point for the creation of the new resource
      * @param context the path context where new resource should be created
      * @param baseFileName the base name of the new resource
+     * @param presenter underlying presenter
      */
     public void create( final Path context,
-                        final String baseFileName );
+                        final String baseFileName,
+                        final NewResourcePresenter presenter );
 
     /**
      * Return a List of Widgets that the NewResourceHandler can use to gather additional parameters for the

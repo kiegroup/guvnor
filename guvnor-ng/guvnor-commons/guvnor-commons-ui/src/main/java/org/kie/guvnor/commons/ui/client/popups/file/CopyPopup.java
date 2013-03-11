@@ -42,6 +42,7 @@ public class CopyPopup extends FormStylePopup {
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        setGlassEnabled( true );
 
         nameTextBox.setTitle( "New name" );
         nameTextBox.setWidth( "200px" );

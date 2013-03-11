@@ -26,13 +26,23 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.uberfire.client.common.FormStylePopup;
 
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
 public class RenamePopup extends FormStylePopup {
 
     final private TextBox nameTextBox = new TextBox();
     final private TextBox checkInCommentTextBox = new TextBox();
 
     public RenamePopup( final CommandWithFileNameAndCommitMessage command ) {
-        super( CommonImages.INSTANCE.edit(), "Rename this item" );
+        super( CommonImages.INSTANCE.edit(),
+               "Rename this item" );
+
+        checkNotNull( "command",
+                      command );
+
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        setGlassEnabled( true );
 
         nameTextBox.setTitle( "New name" );
         nameTextBox.setWidth( "200px" );
@@ -40,7 +50,8 @@ public class RenamePopup extends FormStylePopup {
 
         checkInCommentTextBox.setTitle( "Check in comment" );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:", checkInCommentTextBox );
+        addAttribute( "Check in comment:",
+                      checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
         final Button create = new Button( "Rename item" );

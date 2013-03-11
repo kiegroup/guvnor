@@ -22,14 +22,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 
 /**
  * This wraps a file uploader utility
@@ -46,10 +43,13 @@ public class AttachmentFileWidget extends Composite {
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
+        final FileUpload up = new FileUpload();
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+
+        form.addSubmitCompleteHandler( new FormPanel.SubmitCompleteHandler() {
 
             @Override
-            public void onSubmitComplete( final SubmitCompleteEvent event ) {
+            public void onSubmitComplete( final FormPanel.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( DecisionTableXLSEditorConstants.INSTANCE.UploadSuccess() );
                     onSuccessCallback();
@@ -59,9 +59,6 @@ public class AttachmentFileWidget extends Composite {
             }
 
         } );
-
-        final FileUpload up = new FileUpload();
-        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
 
         fields.add( up );
         form.add( fields );

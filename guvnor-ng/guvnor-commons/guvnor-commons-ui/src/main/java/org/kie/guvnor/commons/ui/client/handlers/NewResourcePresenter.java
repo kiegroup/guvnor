@@ -52,7 +52,7 @@ public class NewResourcePresenter {
         String getFileName();
 
         void enableHandler( final NewResourceHandler handler,
-                            final boolean enable );
+                            final boolean enabled );
 
     }
 
@@ -130,10 +130,14 @@ public class NewResourcePresenter {
         if ( activeHandler != null ) {
             if ( activeHandler.validate() ) {
                 activeHandler.create( context.getActivePath(),
-                                      view.getFileName() );
-                view.hide();
+                                      view.getFileName(),
+                                      NewResourcePresenter.this );
             }
         }
+    }
+
+    public void complete() {
+        view.hide();
     }
 
 }

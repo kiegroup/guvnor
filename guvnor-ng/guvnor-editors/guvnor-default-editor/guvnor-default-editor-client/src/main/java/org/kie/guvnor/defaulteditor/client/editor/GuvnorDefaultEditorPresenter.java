@@ -42,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
@@ -116,21 +117,24 @@ public class GuvnorDefaultEditorPresenter
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
-            @Override
-            public void execute( final String commitMessage ) {
-                defaultEditorService.call( new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( final Path response ) {
-                        view.setDirty( false );
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getContent(),
-                          metadataWidget.getContent(),
-                          commitMessage );
-            }
-        } );
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 defaultEditorService.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path response ) {
+                                                         BusyPopup.close();
+                                                         view.setDirty( false );
+                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                                                     }
+                                                 } ).save( path,
+                                                           view.getContent(),
+                                                           metadataWidget.getContent(),
+                                                           commitMessage );
+                                             }
+                                         } );
     }
 
     @IsDirty

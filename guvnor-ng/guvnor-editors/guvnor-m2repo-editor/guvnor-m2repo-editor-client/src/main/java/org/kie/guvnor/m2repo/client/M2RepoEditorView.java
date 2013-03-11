@@ -17,6 +17,7 @@ package org.kie.guvnor.m2repo.client;
 
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,8 +29,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -41,26 +40,25 @@ import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
 
-
 public class M2RepoEditorView
         extends Composite
         implements M2RepoEditorPresenter.View {
 
-    private VerticalPanel       layout;
-    private FormPanel           form;
+    private VerticalPanel layout;
+    private WellForm form;
     //private FormStyleLayout       emptyGAVPanel = new FormStyleLayout();
     private TextBox hiddenGroupIdField = new TextBox();
     private TextBox hiddenArtifactIdField = new TextBox();
     private TextBox hiddenVersionIdField = new TextBox();
-    
+
     FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
     final SimplePanel resultsP = new SimplePanel();
-    
-/*    @Inject*/
+
+    /*    @Inject*/
     private Caller<M2RepoService> m2RepoService;
-    
+
     @Inject
-    public M2RepoEditorView(Caller<M2RepoService> s) {
+    public M2RepoEditorView( Caller<M2RepoService> s ) {
         this.m2RepoService = s;
 
         layout = new VerticalPanel();
@@ -69,15 +67,15 @@ public class M2RepoEditorView
         initWidget( layout );
         setWidth( "100%" );
     }
-    
+
     private void doSearch() {
         VerticalPanel container = new VerticalPanel();
         VerticalPanel criteria = new VerticalPanel();
 
         FormStyleLayout ts = new FormStyleLayout();
-        
-        ts.addAttribute( "Upload new Jar:", doUploadForm() );       
-        
+
+        ts.addAttribute( "Upload new Jar:", doUploadForm() );
+
         final TextBox searchTextBox = new TextBox();
         //tx.setWidth("100px");
         ts.addAttribute( "Find items with a name matching:", searchTextBox );
@@ -87,18 +85,17 @@ public class M2RepoEditorView
         ts.addAttribute( "",
                          go );
 
-        
         ts.setWidth( "100%" );
 
         final ClickHandler cl = new ClickHandler() {
 
-            public void onClick(ClickEvent arg0) {
-                resultsP.clear();             
-                if ( searchTextBox.getText() ==null || searchTextBox.getText().equals( "" ) ) {
-                    JarListEditor table = new JarListEditor(m2RepoService);
-                    resultsP.add( table );                    
+            public void onClick( ClickEvent arg0 ) {
+                resultsP.clear();
+                if ( searchTextBox.getText() == null || searchTextBox.getText().equals( "" ) ) {
+                    JarListEditor table = new JarListEditor( m2RepoService );
+                    resultsP.add( table );
                 } else {
-                    JarListEditor table = new JarListEditor(m2RepoService, searchTextBox.getText());
+                    JarListEditor table = new JarListEditor( m2RepoService, searchTextBox.getText() );
                     resultsP.add( table );
                 }
             }
@@ -107,7 +104,7 @@ public class M2RepoEditorView
 
         go.addClickHandler( cl );
         searchTextBox.addKeyPressHandler( new KeyPressHandler() {
-            public void onKeyPress(KeyPressEvent event) {
+            public void onKeyPress( KeyPressEvent event ) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
                     cl.onClick( null );
                 }
@@ -117,93 +114,91 @@ public class M2RepoEditorView
         criteria.add( ts );
         container.add( criteria );
         container.add( resultsP );
-        
+
         resultsP.clear();
-        JarListEditor table = new JarListEditor(m2RepoService);
+        JarListEditor table = new JarListEditor( m2RepoService );
         resultsP.add( table );
-        
-        layout.add(container);
+
+        layout.add( container );
     }
-    
-    public FormPanel doUploadForm() {
-        form = new FormPanel();
-        form.setAction(GWT.getModuleBaseURL() + "m2repo/file");
-        form.setEncoding(FormPanel.ENCODING_MULTIPART);
-        form.setMethod(FormPanel.METHOD_POST);
+
+    public WellForm doUploadForm() {
+        form = new WellForm();
+        form.setAction( GWT.getModuleBaseURL() + "m2repo/file" );
+        form.setEncoding( FormPanel.ENCODING_MULTIPART );
+        form.setMethod( FormPanel.METHOD_POST );
 
         FileUpload up = new FileUpload();
         //up.setWidth("100px");
-        up.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
-         
-       
-        Button ok = new Button("upload");
-        ok.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+
+        Button ok = new Button( "upload" );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
                 showUploadingBusy();
                 submitUpload();
             }
-        });
+        } );
 
-       
         //form.add(fields);
-        
-        form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-            public void onSubmitComplete(SubmitCompleteEvent event) {
-                if("OK".equalsIgnoreCase(event.getResults())) {
+
+        form.addSubmitCompleteHandler( new WellForm.SubmitCompleteHandler() {
+            public void onSubmitComplete( final WellForm.SubmitCompleteEvent event ) {
+                if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
-                    Window.alert("Uploaded successfully");
-                    hiddenFieldsPanel.setVisible(false);
-                    hiddenArtifactIdField.setText(null);
-                    hiddenGroupIdField.setText(null);
-                    hiddenVersionIdField.setText(null);   
-                    
-                    resultsP.clear();             
-                    JarListEditor table = new JarListEditor(m2RepoService);
-                    resultsP.add( table );                  
-                        
-                } else if("NO VALID POM".equalsIgnoreCase(event.getResults())) {
+                    Window.alert( "Uploaded successfully" );
+                    hiddenFieldsPanel.setVisible( false );
+                    hiddenArtifactIdField.setText( null );
+                    hiddenGroupIdField.setText( null );
+                    hiddenVersionIdField.setText( null );
+
+                    resultsP.clear();
+                    JarListEditor table = new JarListEditor( m2RepoService );
+                    resultsP.add( table );
+
+                } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
-                    Window.alert("The Jar does not contain a valid POM file. Please specify GAV info manually.");
-                    hiddenFieldsPanel.setVisible(true);
+                    Window.alert( "The Jar does not contain a valid POM file. Please specify GAV info manually." );
+                    hiddenFieldsPanel.setVisible( true );
                 } else {
                     BusyPopup.close();
-                    Window.alert("Upload failed:" + event.getResults()); 
-                    
-                    hiddenFieldsPanel.setVisible(false);
-                    hiddenArtifactIdField.setText(null);
-                    hiddenGroupIdField.setText(null);
-                    hiddenVersionIdField.setText(null);  
+                    Window.alert( "Upload failed:" + event.getResults() );
+
+                    hiddenFieldsPanel.setVisible( false );
+                    hiddenArtifactIdField.setText( null );
+                    hiddenGroupIdField.setText( null );
+                    hiddenVersionIdField.setText( null );
                 }
 
             }
-        });
-        
-        HorizontalPanel fields = new HorizontalPanel();
-        fields.add(up);
-        fields.add(ok);
+        } );
 
-        hiddenGroupIdField.setName(HTMLFileManagerFields.GROUP_ID);
-        hiddenGroupIdField.setText(null);
+        HorizontalPanel fields = new HorizontalPanel();
+        fields.add( up );
+        fields.add( ok );
+
+        hiddenGroupIdField.setName( HTMLFileManagerFields.GROUP_ID );
+        hiddenGroupIdField.setText( null );
         //hiddenGroupIdField.setVisible(false);
 
-        hiddenArtifactIdField.setName(HTMLFileManagerFields.ARTIFACT_ID);
-        hiddenArtifactIdField.setText(null);
+        hiddenArtifactIdField.setName( HTMLFileManagerFields.ARTIFACT_ID );
+        hiddenArtifactIdField.setText( null );
         //hiddenArtifactIdField.setVisible(false);
 
-        hiddenVersionIdField.setName(HTMLFileManagerFields.VERSION_ID);
-        hiddenVersionIdField.setText(null);
+        hiddenVersionIdField.setName( HTMLFileManagerFields.VERSION_ID );
+        hiddenVersionIdField.setText( null );
         //hiddenVersionIdField.setVisible(false);
-        
-        hiddenFieldsPanel.setVisible(false);
-        hiddenFieldsPanel.addAttribute("GroupID:", hiddenGroupIdField);
-        hiddenFieldsPanel.addAttribute("ArtifactID:", hiddenArtifactIdField);
-        hiddenFieldsPanel.addAttribute("VersionID:", hiddenVersionIdField);
-        
+
+        hiddenFieldsPanel.setVisible( false );
+        hiddenFieldsPanel.addAttribute( "GroupID:", hiddenGroupIdField );
+        hiddenFieldsPanel.addAttribute( "ArtifactID:", hiddenArtifactIdField );
+        hiddenFieldsPanel.addAttribute( "VersionID:", hiddenVersionIdField );
+
         VerticalPanel allFields = new VerticalPanel();
-        allFields.add(fields);
-        allFields.add(hiddenFieldsPanel);
-        
-        form.add(allFields);
+        allFields.add( fields );
+        allFields.add( hiddenFieldsPanel );
+
+        form.add( allFields );
 
         return form;
     }
