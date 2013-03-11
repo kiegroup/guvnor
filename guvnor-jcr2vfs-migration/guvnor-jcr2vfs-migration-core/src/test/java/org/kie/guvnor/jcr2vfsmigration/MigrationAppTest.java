@@ -17,6 +17,14 @@ public class MigrationAppTest {
     }
 
     private void verifyResult() {
+        //testDTXLS.xls
+        //testSrpingContext.springContext
+        //testFunction.function
+        //testChangeSet.changeset
+        //testWorkItem.wid
+        //? testServiceConfig.serviceConfig
+        //? testRuleTemplate.template: use DRL instead?
+        //? testWorkingSets.workingset
 
     }
 

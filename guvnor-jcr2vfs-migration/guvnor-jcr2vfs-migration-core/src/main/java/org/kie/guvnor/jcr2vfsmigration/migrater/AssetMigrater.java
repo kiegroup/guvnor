@@ -80,15 +80,15 @@ public class AssetMigrater {
                 PageResponse<AssetPageRow> response;
                 try {
                     response = jcrRepositoryAssetService.findAssetPage(request);
-                    for (AssetPageRow row : response.getPageRowList()) {
+                    for (AssetPageRow row : response.getPageRowList()) {                       
+                        //Migrate historical versions first
+                        migrateAssetHistory(jcrModule, row.getUuid());
+                        
                         //Migrate the head version
                         Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
-                        migrate(jcrModule, jcrAsset, null, null, null);
+                        migrate(jcrModule, jcrAsset, jcrAsset.getCheckinComment(), jcrAsset.getLastModified(), jcrAsset.getLastContributor());
                         logger.debug("    Asset ({}) with format ({}) migrated.",
                                 jcrAsset.getName(), jcrAsset.getFormat());
-                        
-                        //Migrate historical versions
-                        migrateAssetHistory(jcrModule, row.getUuid());
                         
                         //Migrate asset discussions
                         migrateAssetDiscussions(jcrModule, row.getUuid());
