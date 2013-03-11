@@ -10,6 +10,8 @@
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
+    <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
+
   <!-- Infrastructure -->
   <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
