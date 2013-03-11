@@ -71,10 +71,10 @@ public class RepositoryServletTest extends GuvnorTestBase {
 
     @Test
     public void testUnpack() {
-        String b42 = "BASIC " + new String(Base64.encodeBase64("user:pass".getBytes()));
+        String b42 = "BASIC " + new String(Base64.encodeBase64("user:t:e&st".getBytes()));
         String[] d = RepositoryServlet.unpack(b42);
         assertEquals("user", d[0]);
-        assertEquals("pass", d[1]);
+        assertEquals("t:e&st", d[1]);
     }
 
     private MockIdentity getMockIdentity() {

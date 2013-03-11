@@ -139,7 +139,7 @@ public class RepositoryServlet extends HttpServlet {
             String userpassEncoded = auth.substring(6);
             String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded.getBytes()));
 
-            String[] a = userpassDecoded.split(":");
+            String[] a = userpassDecoded.split(":", 2);
             for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].trim();
             }
