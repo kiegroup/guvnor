@@ -118,15 +118,21 @@ public class AssetMigrater {
                 || AssetFormats.SPRING_CONTEXT.equals(jcrAsset.getFormat())
                 /*|| AssetFormats.SERVICE_CONFIG.equals(jcrAsset.getFormat())*/
                 || AssetFormats.WORKITEM_DEFINITION.equals(jcrAsset.getFormat())
-                || AssetFormats.CHANGE_SET.equals(jcrAsset.getFormat())) {
+                || AssetFormats.CHANGE_SET.equals(jcrAsset.getFormat())
+                || AssetFormats.RULE_FLOW_RF.equals(jcrAsset.getFormat())
+                || AssetFormats.BPMN_PROCESS.equals(jcrAsset.getFormat())
+                || AssetFormats.BPMN2_PROCESS.equals(jcrAsset.getFormat())
+                || "ftl".equals(jcrAsset.getFormat())
+                || "json".equals(jcrAsset.getFormat())
+                || "fw".equals(jcrAsset.getFormat())) {
             plainTextAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAsset.getFormat())
-                 ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAsset.getFormat())) {
+                 ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAsset.getFormat())
+                 ||"png".equals(jcrAsset.getFormat())
+                 ||"pdf".equals(jcrAsset.getFormat())
+                 ||"doc".equals(jcrAsset.getFormat())
+                 ||"odt".equals(jcrAsset.getFormat())) {
             attachementAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
-        } else if (AssetFormats.RULE_FLOW_RF.equals(jcrAsset.getFormat())
-                || AssetFormats.BPMN_PROCESS.equals(jcrAsset.getFormat())
-                || AssetFormats.BPMN2_PROCESS.equals(jcrAsset.getFormat())) {
-            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
         } else if (AssetFormats.MODEL.equals(jcrAsset.getFormat())) {
             // TODO return error message
             logger.info("      POJO Model jar [" + jcrAsset.getName() + "] is not supported by migration tool. Please upload your POJO model jar to Guvnor manually.");
