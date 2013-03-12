@@ -1,5 +1,8 @@
 package org.kie.guvnor.testscenario.backend.server;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -7,31 +10,30 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 
 public class FieldConverter implements Converter {
 
-
     private final XStream xt;
 
-    public FieldConverter(XStream xt) {
+    public FieldConverter( XStream xt ) {
         this.xt = xt;
     }
 
     @Override
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        context.convertAnother(source, getDefaultConverter());
+    public void marshal( Object source,
+                         HierarchicalStreamWriter writer,
+                         MarshallingContext context ) {
+        context.convertAnother( source, getDefaultConverter() );
     }
 
     @Override
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+    public Object unmarshal( HierarchicalStreamReader reader,
+                             UnmarshallingContext context ) {
 
         reader.moveDown();
         String name = reader.getValue();
@@ -39,62 +41,61 @@ public class FieldConverter implements Converter {
 
         reader.moveDown();
 
-        if (reader.getNodeName().equals("collectionFieldList")) {
+        if ( reader.getNodeName().equals( "collectionFieldList" ) ) {
 
-            CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
+            CollectionFieldData collectionFieldData = createCollectionFieldData( context, name );
             reader.moveUp();
 
             return collectionFieldData;
 
-        } else if (reader.getNodeName().equals("value")) {
+        } else if ( reader.getNodeName().equals( "value" ) ) {
             FieldData fieldData = new FieldData();
 
-            fieldData.setName(name);
+            fieldData.setName( name );
 
-            fieldData.setValue(reader.getValue());
+            fieldData.setValue( reader.getValue() );
             reader.moveUp();
 
             // Nature is optional
-            if (reader.hasMoreChildren()) {
+            if ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String value = reader.getValue();
-                fieldData.setNature(Integer.parseInt(value));
+                fieldData.setNature( Integer.parseInt( value ) );
                 reader.moveUp();
             }
 
             // Could be a legacy CollectionFieldData, let's see
-            if (reader.hasMoreChildren()) {
+            if ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                if (reader.getNodeName().equals("collectionFieldList")) {
-                    CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
+                if ( reader.getNodeName().equals( "collectionFieldList" ) ) {
+                    CollectionFieldData collectionFieldData = createCollectionFieldData( context, name );
                     reader.moveUp();
 
-                    if (!collectionFieldData.getCollectionFieldList().isEmpty()) {
+                    if ( !collectionFieldData.getCollectionFieldList().isEmpty() ) {
                         return collectionFieldData;
                     }
                 }
             }
             // And since we have a big big big pile of legacy test scenarios with a marvelous design
             // we do one more check if this field data is after all a collection field data!
-            if (fieldData.getValue() != null && fieldData.getValue().startsWith("=[")) {
+            if ( fieldData.getValue() != null && fieldData.getValue().startsWith( "=[" ) ) {
                 CollectionFieldData collectionFieldData = new CollectionFieldData();
-                collectionFieldData.setName(name);
+                collectionFieldData.setName( name );
 
-                String list = fieldData.getValue().substring(2, fieldData.getValue().length() - 1);
+                String list = fieldData.getValue().substring( 2, fieldData.getValue().length() - 1 );
 
-
-                if (list.contains(",")) {
-                    for (String value : list.split(",")) {
+                if ( list.contains( "," ) ) {
+                    for ( String value : list.split( "," ) ) {
                         FieldData subFieldData = new FieldData();
-                        subFieldData.setName(name);
-                        subFieldData.setValue(value);
-                        collectionFieldData.getCollectionFieldList().add(subFieldData);
+                        subFieldData.setName( name );
+                        subFieldData.setValue( value );
+                        collectionFieldData.getCollectionFieldList().add( subFieldData );
                     }
                 } else {
                     FieldData subFieldData = new FieldData();
-                    subFieldData.setName(name);
-                    subFieldData.setValue(list);
-                    collectionFieldData.getCollectionFieldList().add(subFieldData);
+                    subFieldData.setName( name );
+                    subFieldData.setValue( list );
+                    collectionFieldData.getCollectionFieldList().add( subFieldData );
                 }
 
                 return collectionFieldData;
@@ -102,36 +103,36 @@ public class FieldConverter implements Converter {
                 return fieldData;
             }
 
-        } else if (reader.getNodeName().equals("fact")) {
+        } else if ( reader.getNodeName().equals( "fact" ) ) {
 
             FactAssignmentField factAssignmentField = new FactAssignmentField();
-            factAssignmentField.setName(name);
+            factAssignmentField.setName( name );
 
-            factAssignmentField.setFact((Fact) context.convertAnother(factAssignmentField, Fact.class));
+            factAssignmentField.setFact( (Fact) context.convertAnother( factAssignmentField, Fact.class ) );
             reader.moveUp();
 
             return factAssignmentField;
         }
 
-        throw new InvalidParameterException("Unknown Field instance.");
+        throw new InvalidParameterException( "Unknown Field instance." );
     }
 
-    private CollectionFieldData createCollectionFieldData(UnmarshallingContext context, String name) {
+    private CollectionFieldData createCollectionFieldData( UnmarshallingContext context,
+                                                           String name ) {
         CollectionFieldData collectionFieldData = new CollectionFieldData();
-        collectionFieldData.setName(name);
+        collectionFieldData.setName( name );
 
-        collectionFieldData.setCollectionFieldList((ArrayList) context.convertAnother(collectionFieldData, ArrayList.class));
+        collectionFieldData.setCollectionFieldList( (ArrayList) context.convertAnother( collectionFieldData, ArrayList.class ) );
         return collectionFieldData;
     }
 
     @Override
-    public boolean canConvert(Class type) {
-        return Field.class.isAssignableFrom(type);
+    public boolean canConvert( Class type ) {
+        return Field.class.isAssignableFrom( type );
     }
 
-
     private ReflectionConverter getDefaultConverter() {
-        return new ReflectionConverter(xt.getMapper(), xt.getReflectionProvider());
+        return new ReflectionConverter( xt.getMapper(), xt.getReflectionProvider() );
     }
 
 }
