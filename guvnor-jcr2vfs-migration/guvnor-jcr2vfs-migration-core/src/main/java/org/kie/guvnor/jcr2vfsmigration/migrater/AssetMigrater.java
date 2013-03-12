@@ -28,6 +28,7 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.AttachementAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedScoreCardMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -60,7 +61,9 @@ public class AssetMigrater {
     protected GuidedDecisionTableMigrater guidedDecisionTableMigrater;
     @Inject
     protected AttachementAssetMigrater attachementAssetMigrater;
-    
+    @Inject
+    protected GuidedScoreCardMigrater guidedScoreCardMigrater;    
+
     @Inject
     protected MetadataService metadataService;        
     @Inject
@@ -148,10 +151,9 @@ public class AssetMigrater {
             attachementAssetMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             // TODO return error message
-            logger.info("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please upload your POJO model jar to Guvnor manually.");
+            logger.info("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
-            // TODO
-            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+            guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
