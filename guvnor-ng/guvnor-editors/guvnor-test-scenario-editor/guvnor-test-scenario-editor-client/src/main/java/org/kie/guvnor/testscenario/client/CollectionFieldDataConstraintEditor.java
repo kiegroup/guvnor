@@ -18,11 +18,11 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.DirtyableComposite;
 
 /**

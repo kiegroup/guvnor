@@ -21,12 +21,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.testscenario.backend.server.Cheese;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.Field;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
 import org.mockito.Matchers;
 
 public class FieldPopulatorFactoryTest {

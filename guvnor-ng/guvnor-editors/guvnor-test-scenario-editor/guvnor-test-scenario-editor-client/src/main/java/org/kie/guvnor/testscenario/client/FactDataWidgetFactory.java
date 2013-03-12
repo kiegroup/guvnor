@@ -23,19 +23,19 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
-import org.kie.guvnor.testscenario.model.FieldPlaceHolder;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.ImageButton;
@@ -74,7 +74,7 @@ public class FactDataWidgetFactory {
     public void build(String headerText,
                       Fact fact) {
 
-        if (fact instanceof FactData) {
+        if (fact instanceof FactData ) {
             FactData factData = (FactData) fact;
             widget.setWidget(0,
                     ++col,
@@ -192,7 +192,7 @@ public class FactDataWidgetFactory {
                 }
             });
             return fieldDataConstraintEditor;
-        } else if (field instanceof CollectionFieldData) {
+        } else if (field instanceof CollectionFieldData ) {
             return new CollectionFieldDataConstraintEditor(
                     factType,
                     (CollectionFieldData)field,
@@ -200,7 +200,7 @@ public class FactDataWidgetFactory {
                     dmo,
                     scenario,
                     executionTrace);
-        } else if (field instanceof FactAssignmentField) {
+        } else if (field instanceof FactAssignmentField ) {
             return new FactAssignmentFieldWidget(
                     (FactAssignmentField) field,
                     definitionList,

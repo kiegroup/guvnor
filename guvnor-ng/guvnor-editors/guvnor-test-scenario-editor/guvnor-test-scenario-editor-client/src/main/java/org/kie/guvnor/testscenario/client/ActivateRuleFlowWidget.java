@@ -23,12 +23,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
+import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
 

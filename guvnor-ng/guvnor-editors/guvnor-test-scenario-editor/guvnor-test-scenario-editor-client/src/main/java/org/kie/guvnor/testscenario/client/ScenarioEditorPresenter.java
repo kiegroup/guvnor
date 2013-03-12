@@ -22,6 +22,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
+import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -33,14 +37,10 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.FixturesMap;
-import org.kie.guvnor.testscenario.model.Scenario;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
@@ -227,7 +227,7 @@ public class ScenarioEditorPresenter
                         scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
                                 executionTraceLine,
                                 (FixturesMap) fixture));
-            } else if (fixture instanceof CallFixtureMap) {
+            } else if (fixture instanceof CallFixtureMap ) {
                 createWidgetForEditorLayout(editorLayout,
                         layoutRow,
                         0,
@@ -245,7 +245,7 @@ public class ScenarioEditorPresenter
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get(0);
 
-                if (first instanceof VerifyFact) {
+                if (first instanceof VerifyFact ) {
                     createWidgetForEditorLayout(editorLayout,
                             layoutRow,
                             1,

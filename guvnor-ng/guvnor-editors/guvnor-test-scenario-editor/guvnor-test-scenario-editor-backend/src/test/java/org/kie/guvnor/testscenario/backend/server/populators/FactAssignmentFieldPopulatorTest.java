@@ -28,8 +28,8 @@ import org.drools.base.TypeResolver;
 import org.junit.Test;
 import org.kie.guvnor.testscenario.backend.server.MatryoshkaDoll;
 import org.kie.guvnor.testscenario.backend.server.Mouse;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 
 public class FactAssignmentFieldPopulatorTest {
 

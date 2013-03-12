@@ -20,12 +20,12 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.FixturesMap;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 

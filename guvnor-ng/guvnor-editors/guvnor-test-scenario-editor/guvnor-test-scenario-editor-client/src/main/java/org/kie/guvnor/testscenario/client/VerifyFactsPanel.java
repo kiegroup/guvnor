@@ -21,14 +21,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.Scenario;
-import org.kie.guvnor.testscenario.model.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.uberfire.client.common.ImageButton;
 
 public class VerifyFactsPanel extends VerticalPanel {

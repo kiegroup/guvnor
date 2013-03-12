@@ -29,10 +29,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
 import org.uberfire.client.common.SmallLabel;
 
 public class ExecutionWidget extends Composite {

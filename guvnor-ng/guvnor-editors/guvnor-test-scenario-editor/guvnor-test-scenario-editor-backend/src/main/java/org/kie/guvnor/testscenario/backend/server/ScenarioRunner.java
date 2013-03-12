@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.RetractFact;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.testscenario.backend.server.populators.FactPopulator;
 import org.kie.guvnor.testscenario.backend.server.populators.FactPopulatorFactory;
-import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
-import org.kie.guvnor.testscenario.model.CallMethod;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Expectation;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.RetractFact;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.Expectation;
 import org.kie.runtime.KieSession;
 import org.mvel2.MVEL;
 
@@ -122,7 +122,7 @@ public class ScenarioRunner {
 
                 factPopulator.add(factPopulatorFactory.createFactPopulator((FactData) fixture));
 
-            } else if (fixture instanceof RetractFact) {
+            } else if (fixture instanceof RetractFact ) {
 
                 factPopulator.retractFact(((RetractFact) fixture).getName());
 

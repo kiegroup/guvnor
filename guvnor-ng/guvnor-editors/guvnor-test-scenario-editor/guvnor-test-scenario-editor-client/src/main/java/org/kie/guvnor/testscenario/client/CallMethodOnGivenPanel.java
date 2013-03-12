@@ -1,12 +1,12 @@
 package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.testscenario.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.model.CallMethod;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 
 import java.util.List;
 import java.util.Map;

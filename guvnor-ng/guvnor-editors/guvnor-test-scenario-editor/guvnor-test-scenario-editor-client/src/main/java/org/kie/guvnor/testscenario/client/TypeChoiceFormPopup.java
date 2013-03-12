@@ -23,10 +23,10 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.guvnor.testscenario.model.FieldData;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
@@ -79,7 +79,7 @@ public class TypeChoiceFormPopup
         Button lit = new Button(TestScenarioConstants.INSTANCE.LiteralValue());
         lit.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
-                fireSelection(FieldData.TYPE_LITERAL);
+                fireSelection( FieldData.TYPE_LITERAL);
             }
         });
         addAttribute(TestScenarioConstants.INSTANCE.LiteralValue() + ":",

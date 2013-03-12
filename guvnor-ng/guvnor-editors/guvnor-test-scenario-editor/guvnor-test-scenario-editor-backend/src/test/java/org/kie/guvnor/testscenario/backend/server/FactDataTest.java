@@ -20,9 +20,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.junit.Test;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
 
 public class FactDataTest {
     @Test

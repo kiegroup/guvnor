@@ -19,8 +19,8 @@ import static org.mvel2.MVEL.eval;
 
 import java.util.Map;
 
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 
 
 public class CollectionFieldPopulator extends FieldPopulator {

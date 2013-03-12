@@ -16,19 +16,19 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.guvnor.testscenario.model.Scenario;
-import org.kie.guvnor.testscenario.model.SingleScenarioResult;
-import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped

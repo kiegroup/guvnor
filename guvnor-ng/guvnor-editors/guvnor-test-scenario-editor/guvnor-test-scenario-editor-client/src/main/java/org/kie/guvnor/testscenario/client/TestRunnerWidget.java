@@ -33,6 +33,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.testscenarios.shared.BuilderResultLine;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
@@ -41,14 +45,10 @@ import org.kie.guvnor.errors.client.resources.ImageResources;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.AuditEventsImages;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.testscenario.model.BuilderResultLine;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.ScenarioRunResult;
-import org.kie.guvnor.testscenario.model.SingleScenarioResult;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyField;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.ScenarioRunResult;
+import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
+import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.SmallLabel;
@@ -162,7 +162,7 @@ public class TestRunnerWidget extends Composite {
                 panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
                 total++;
-            } else if ( fixture instanceof VerifyFact) {
+            } else if ( fixture instanceof VerifyFact ) {
                 VerifyFact verifyFact = (VerifyFact) fixture;
                 for ( Iterator<VerifyField> fieldIterator = verifyFact.getFieldValues().iterator(); fieldIterator.hasNext(); ) {
                     total++;

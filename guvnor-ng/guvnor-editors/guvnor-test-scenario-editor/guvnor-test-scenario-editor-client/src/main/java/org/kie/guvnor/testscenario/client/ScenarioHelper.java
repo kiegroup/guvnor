@@ -16,18 +16,18 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import org.kie.guvnor.testscenario.model.ActivateRuleFlowGroup;
-import org.kie.guvnor.testscenario.model.CallFixtureMap;
-import org.kie.guvnor.testscenario.model.CallMethod;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.FixtureList;
-import org.kie.guvnor.testscenario.model.FixturesMap;
-import org.kie.guvnor.testscenario.model.RetractFact;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
+import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.RetractFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 
 import java.util.*;
 
@@ -121,7 +121,7 @@ public class ScenarioHelper {
         List<ExecutionTrace> listExecutionTrace = new ArrayList<ExecutionTrace>();
         for (int i = 0; i < processedFixtures.size(); i++) {
             final Object fixture = processedFixtures.get(i);
-            if (fixture instanceof ExecutionTrace) {
+            if (fixture instanceof ExecutionTrace ) {
                 listExecutionTrace.add((ExecutionTrace) fixture);
             }
         }

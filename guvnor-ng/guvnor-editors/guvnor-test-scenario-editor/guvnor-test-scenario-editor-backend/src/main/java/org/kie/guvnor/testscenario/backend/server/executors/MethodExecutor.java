@@ -21,8 +21,8 @@ import static org.mvel2.MVEL.eval;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.guvnor.testscenario.model.CallFieldValue;
-import org.kie.guvnor.testscenario.model.CallMethod;
+import org.drools.guvnor.models.testscenarios.shared.CallFieldValue;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 
 public class MethodExecutor {
 

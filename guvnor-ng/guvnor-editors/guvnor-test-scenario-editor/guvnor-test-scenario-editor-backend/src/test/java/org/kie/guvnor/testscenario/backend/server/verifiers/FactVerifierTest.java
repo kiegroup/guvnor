@@ -25,11 +25,11 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.testscenario.backend.server.Cheese;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyField;
 import org.kie.runtime.KieSession;
 
 public class FactVerifierTest {

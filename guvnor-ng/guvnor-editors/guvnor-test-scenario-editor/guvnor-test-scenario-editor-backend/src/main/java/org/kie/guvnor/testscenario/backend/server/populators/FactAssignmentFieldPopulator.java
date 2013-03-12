@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.Field;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.Field;
 
 public class FactAssignmentFieldPopulator
         extends FieldPopulator {

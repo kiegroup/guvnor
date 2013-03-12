@@ -16,15 +16,15 @@
 
 package org.kie.guvnor.testscenario.client;
 
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 
 import java.util.HashMap;
 import java.util.List;

@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import org.drools.base.TypeResolver;
 import org.kie.guvnor.testscenario.backend.server.SqlDateWrapper;
-import org.kie.guvnor.testscenario.model.VerifyField;
+import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 
 public class FactFieldValueVerifierTest extends TestCase {
     public void testSQLDate() throws Exception {

@@ -18,8 +18,8 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FieldPlaceHolder;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
 
 public class AddFieldToFactClickHandler
         extends AddFieldClickHandler {

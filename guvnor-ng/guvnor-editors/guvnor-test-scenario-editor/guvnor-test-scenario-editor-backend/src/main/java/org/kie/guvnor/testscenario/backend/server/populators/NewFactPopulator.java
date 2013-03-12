@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.kie.guvnor.testscenario.model.FactData;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 

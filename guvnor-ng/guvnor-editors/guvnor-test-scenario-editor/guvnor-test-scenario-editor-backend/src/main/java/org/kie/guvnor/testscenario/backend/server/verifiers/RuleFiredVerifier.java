@@ -18,7 +18,7 @@ package org.kie.guvnor.testscenario.backend.server.verifiers;
 
 import java.util.Map;
 
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 
 public class RuleFiredVerifier {
 

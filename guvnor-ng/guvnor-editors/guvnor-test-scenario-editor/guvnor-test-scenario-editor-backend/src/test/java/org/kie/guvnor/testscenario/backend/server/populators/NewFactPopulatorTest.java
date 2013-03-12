@@ -28,11 +28,11 @@ import java.util.List;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 

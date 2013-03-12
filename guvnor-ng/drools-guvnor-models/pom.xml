@@ -20,7 +20,7 @@
     <module>drools-guvnor-models-guided-dtable</module>
     <module>drools-guvnor-models-guided-template</module>
     <module>drools-guvnor-models-guided-scorecard</module>
+    <module>drools-guvnor-models-test-scenarios</module>
   </modules>
-
 
 </project>

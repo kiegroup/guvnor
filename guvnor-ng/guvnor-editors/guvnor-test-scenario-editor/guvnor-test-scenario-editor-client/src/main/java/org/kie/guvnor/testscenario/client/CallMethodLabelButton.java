@@ -17,9 +17,9 @@
 package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.uberfire.client.common.SmallLabel;
 
 public class CallMethodLabelButton extends HorizontalPanel {

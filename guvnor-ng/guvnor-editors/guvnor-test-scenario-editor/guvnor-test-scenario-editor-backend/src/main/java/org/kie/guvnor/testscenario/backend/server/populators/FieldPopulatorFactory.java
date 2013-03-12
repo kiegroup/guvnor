@@ -20,10 +20,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.drools.base.TypeResolver;
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
 
 class FieldPopulatorFactory {
 
@@ -50,7 +50,7 @@ class FieldPopulatorFactory {
                 return getFieldDataPopulator(factObject,
                         fieldData);
             }
-        } else if (field instanceof FactAssignmentField) {
+        } else if (field instanceof FactAssignmentField ) {
             return new FactAssignmentFieldPopulator(factObject,
                     (FactAssignmentField) field,
                     typeResolver,

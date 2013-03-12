@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 
 /*
 * Copyright 2010 JBoss Inc

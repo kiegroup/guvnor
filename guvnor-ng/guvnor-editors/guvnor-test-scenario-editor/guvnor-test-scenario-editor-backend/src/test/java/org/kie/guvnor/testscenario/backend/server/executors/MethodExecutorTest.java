@@ -21,10 +21,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
+import org.drools.guvnor.models.testscenarios.shared.CallFieldValue;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 import org.junit.Test;
 import org.kie.guvnor.testscenario.backend.server.Cheesery;
-import org.kie.guvnor.testscenario.model.CallFieldValue;
-import org.kie.guvnor.testscenario.model.CallMethod;
 
 public class MethodExecutorTest {
 

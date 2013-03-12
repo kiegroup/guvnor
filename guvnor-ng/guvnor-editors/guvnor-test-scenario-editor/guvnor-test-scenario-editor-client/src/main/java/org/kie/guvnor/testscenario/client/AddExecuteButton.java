@@ -19,9 +19,9 @@ package org.kie.guvnor.testscenario.client;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 
 public class AddExecuteButton extends Button {
 

@@ -22,17 +22,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.kie.guvnor.testscenario.backend.server.executors.MethodExecutor;
 import org.kie.guvnor.testscenario.backend.server.verifiers.FactVerifier;
 import org.kie.guvnor.testscenario.backend.server.verifiers.RuleFiredVerifier;
-import org.kie.guvnor.testscenario.model.CallMethod;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Expectation;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.CallMethod;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Expectation;
 import org.kie.runtime.KieSession;
 
 public class TestScenarioWorkingMemoryWrapper {
