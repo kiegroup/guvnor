@@ -14,6 +14,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.repository.Preferred;
+import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -37,29 +38,24 @@ public class AttachementAssetMigrater {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject @Preferred
-    private RulesRepository rulesRepository;
     
     @Inject
     protected MigrationPathManager migrationPathManager;
 
-    public void migrate(Module jcrModule, Asset jcrAsset, final String checkinComment, final Date lastModified, String lastContributor) {
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
+    public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
-        
-        byte[] attachement = rulesRepository.loadAssetByUUID(jcrAsset.getUuid()).getBinaryContentAsBytes();
-        
         Map<String, Object> attrs;
-
         try {
             attrs = ioService.readAttributes( nioPath );
         } catch ( final NoSuchFileException ex ) {
             attrs = new HashMap<String, Object>();
         }
-
-        ioService.write(nioPath, attachement, new CommentedOption(lastContributor, null, checkinComment, lastModified ));
+        
+        byte[] attachement = jcrAssetItem.getBinaryContentAsBytes();
+        
+        ioService.write(nioPath, attachement, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
      }
 
  }

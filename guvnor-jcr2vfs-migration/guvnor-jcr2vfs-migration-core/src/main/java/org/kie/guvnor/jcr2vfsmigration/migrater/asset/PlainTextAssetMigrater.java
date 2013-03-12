@@ -12,6 +12,9 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.repository.Preferred;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -34,23 +37,24 @@ public class PlainTextAssetMigrater {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
+     
     @Inject
     protected MigrationPathManager migrationPathManager;
 
-    public void migrate(Module jcrModule, Asset jcrAsset, final String checkinComment, final Date lastModified, String lastContributor) {
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAsset);
+    public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
-
         try {
             attrs = ioService.readAttributes( nioPath );
         } catch ( final NoSuchFileException ex ) {
             attrs = new HashMap<String, Object>();
         }
+        
+        String content = jcrAssetItem.getContent();
 
-        ioService.write( nioPath, ((RuleContentText)jcrAsset.getContent()).content, attrs, new CommentedOption(lastContributor, null, checkinComment, lastModified ));
+        ioService.write( nioPath, content, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 
  }

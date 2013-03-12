@@ -23,15 +23,14 @@ public class MigrationAppTest {
         //testChangeSet.changeset
         //testWorkItem.wid
         //? testRuleTemplate.template: use DRL instead?
+        //testFile.doc. "others" format
         
         //TODO:  testServiceConfig.serviceConfig: 
         //serviceConfig has references to UUID and URL:
         //<url>http://localhost:8080/guvnor-5.5.1-SNAPSHOT-jboss-as-7.0/rest/packages/testMigrationPackage/assets/testChangeSet/source</url>
         //<uuid>12a5be42-ea3e-43be-9da4-b3bc6f626f84</uuid>
         
-        //TODO: testWorkingSets.workingset
-        //workingset has a reference to org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl
-
+        //NOTE: testWorkingSets.workingset. There is no workingset in 6.0
     }
 
     private void migrate(String datasetName) throws IOException {

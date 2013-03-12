@@ -3,7 +3,6 @@ package org.kie.guvnor.jcr2vfsmigration.migrater;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +20,10 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.drools.guvnor.server.repository.Preferred;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.AttachementAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.FactModelsMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrater;
@@ -42,10 +45,11 @@ public class AssetMigrater {
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
-
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
+    protected RepositoryAssetService jcrRepositoryAssetService;    
+    @Inject @Preferred
+    private RulesRepository rulesRepository;
+    
     @Inject
     protected FactModelsMigrater factModelsMigrater;    
     @Inject
@@ -102,46 +106,46 @@ public class AssetMigrater {
         logger.info("  Asset migration ended");
     }
 
-    private void migrate(Module jcrModule, Asset jcrAsset, String checkinComment, Date lastModified, String lastContributor) {
-        if (AssetFormats.DRL_MODEL.equals(jcrAsset.getFormat())) {
-            factModelsMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
-        } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat())) {
-            guidedEditorMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
-        } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAsset.getFormat())) {
-            guidedDecisionTableMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor );
-        } else if (AssetFormats.DRL.equals(jcrAsset.getFormat()) 
-                || AssetFormats.ENUMERATION.equals(jcrAsset.getFormat())
-                || AssetFormats.DSL.equals(jcrAsset.getFormat())
-                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAsset.getFormat())
-                || AssetFormats.FORM_DEFINITION.equals(jcrAsset.getFormat())
-                || AssetFormats.FUNCTION.equals(jcrAsset.getFormat())
-                || AssetFormats.SPRING_CONTEXT.equals(jcrAsset.getFormat())
-                /*|| AssetFormats.SERVICE_CONFIG.equals(jcrAsset.getFormat())*/
-                || AssetFormats.WORKITEM_DEFINITION.equals(jcrAsset.getFormat())
-                || AssetFormats.CHANGE_SET.equals(jcrAsset.getFormat())
-                || AssetFormats.RULE_FLOW_RF.equals(jcrAsset.getFormat())
-                || AssetFormats.BPMN_PROCESS.equals(jcrAsset.getFormat())
-                || AssetFormats.BPMN2_PROCESS.equals(jcrAsset.getFormat())
-                || "ftl".equals(jcrAsset.getFormat())
-                || "json".equals(jcrAsset.getFormat())
-                || "fw".equals(jcrAsset.getFormat())) {
-            plainTextAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
-        } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAsset.getFormat())
-                 ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAsset.getFormat())
-                 ||"png".equals(jcrAsset.getFormat())
-                 ||"pdf".equals(jcrAsset.getFormat())
-                 ||"doc".equals(jcrAsset.getFormat())
-                 ||"odt".equals(jcrAsset.getFormat())) {
-            attachementAssetMigrater.migrate(jcrModule, jcrAsset, checkinComment, lastModified, lastContributor);
-        } else if (AssetFormats.MODEL.equals(jcrAsset.getFormat())) {
+    private void migrate(Module jcrModule, AssetItem jcrAssetItem) {
+        if (AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
+            factModelsMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
+            guidedEditorMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
+            guidedDecisionTableMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat()) 
+                || AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FORM_DEFINITION.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())
+                || AssetFormats.SPRING_CONTEXT.equals(jcrAssetItem.getFormat())
+                || AssetFormats.SERVICE_CONFIG.equals(jcrAssetItem.getFormat())
+                || AssetFormats.WORKITEM_DEFINITION.equals(jcrAssetItem.getFormat())
+                || AssetFormats.CHANGE_SET.equals(jcrAssetItem.getFormat())
+                || AssetFormats.RULE_FLOW_RF.equals(jcrAssetItem.getFormat())
+                || AssetFormats.BPMN_PROCESS.equals(jcrAssetItem.getFormat())
+                || AssetFormats.BPMN2_PROCESS.equals(jcrAssetItem.getFormat())
+                || "ftl".equals(jcrAssetItem.getFormat())
+                || "json".equals(jcrAssetItem.getFormat())
+                || "fw".equals(jcrAssetItem.getFormat())) {
+            plainTextAssetMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
+                 ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
+                 ||"png".equals(jcrAssetItem.getFormat())
+                 ||"pdf".equals(jcrAssetItem.getFormat())
+                 ||"doc".equals(jcrAssetItem.getFormat())
+                 ||"odt".equals(jcrAssetItem.getFormat())) {
+            attachementAssetMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             // TODO return error message
-            logger.info("      POJO Model jar [" + jcrAsset.getName() + "] is not supported by migration tool. Please upload your POJO model jar to Guvnor manually.");
-        } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAsset.getFormat())) {
+            logger.info("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please upload your POJO model jar to Guvnor manually.");
+        } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
             // TODO
-            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
+            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
-            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAsset.getName(), jcrAsset.getFormat());
+            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }
@@ -164,16 +168,17 @@ public class AssetMigrater {
         for (TableDataRow row : rows) {
             String versionSnapshotUUID = row.id;
 
-            Asset historicalAssetJCR = jcrRepositoryAssetService.loadRuleAsset(versionSnapshotUUID);
-            migrate(jcrModule, historicalAssetJCR, historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified(), historicalAssetJCR.getLastContributor());
+            AssetItem historicalAssetJCR = rulesRepository.loadAssetByUUID(versionSnapshotUUID);
+            migrate(jcrModule, historicalAssetJCR);
             logger.debug("    Asset ({}) with format ({}) migrated: version [{}], comment[{}], lastModified[{}]",
-                    historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified());
+                    historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime());
         }
     }
 
     public void migrateAssetDiscussions(Module jcrModule, String assetUUID)  throws SerializationException {
-        Asset assetJCR = jcrRepositoryAssetService.loadRuleAsset(assetUUID);
-        List<DiscussionRecord> discussions = jcrRepositoryAssetService.loadDiscussionForAsset(assetUUID);
+        //avoid using RepositoryAssetService as it calls assets' content handler
+        AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(assetUUID);
+        List<DiscussionRecord> discussions = new Discussion().fromString( assetItemJCR.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
         
         if(discussions.size() == 0) {
             return;
@@ -185,7 +190,7 @@ public class AssetMigrater {
             metadata.addDiscussion( new org.kie.guvnor.services.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );
         }
 
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, assetJCR);
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, assetItemJCR);
         metadataService.setUpAttributes(path, metadata);
     }
 

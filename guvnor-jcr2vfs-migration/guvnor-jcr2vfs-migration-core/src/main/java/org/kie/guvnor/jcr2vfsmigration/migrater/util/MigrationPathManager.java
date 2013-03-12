@@ -9,6 +9,7 @@ import javax.inject.Named;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.repository.AssetItem;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -70,6 +71,22 @@ public class MigrationPathManager {
         return path;
     }
 
+    public Path generatePathForAsset(Module jcrModule, AssetItem jcrAssetItem) {
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry("projects") + "/"  + escapePathEntry(jcrModule.getName()));
+
+        org.kie.commons.java.nio.file.Path assetPath = null;
+        if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.drl");
+        } else {
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + "." + jcrAssetItem.getFormat());
+        }
+
+        final Path path = PathFactory.newPath(paths.convert(assetPath.getFileSystem()), assetPath.getFileName().toString(), assetPath.toUri().toString());
+
+        register(jcrAssetItem.getUUID(), path);
+        return path;
+    }
+  
     private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
         return paths.convert(pathToPomXML).getParent();
     }
