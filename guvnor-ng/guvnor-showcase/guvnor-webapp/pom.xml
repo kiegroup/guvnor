@@ -271,7 +271,6 @@
       <artifactId>guvnor-dtable-xls-editor-backend</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-scorecard-xls-editor-client</artifactId>
@@ -389,7 +388,6 @@
     </dependency>
 
     <!-- Metadata -->
-
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kieora-commons-io</artifactId>
@@ -510,8 +508,8 @@
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:drools-guvnor-models-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-dtable</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-scorecards</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-templates</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-scorecard</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-template</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-guvnor-models-test-scenarios</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-categories-editor-client</compileSourcesArtifact>
