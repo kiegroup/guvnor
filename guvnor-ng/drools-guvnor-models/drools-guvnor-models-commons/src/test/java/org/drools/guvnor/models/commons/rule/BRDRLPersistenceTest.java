@@ -54,6 +54,7 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.drools.guvnor.models.commons.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableFloatParameterDefinition;
@@ -2967,17 +2968,17 @@ public class BRDRLPersistenceTest {
         String global = "global java.util.ArrayList list";
         String drl =
                 "rule \"r0\"\n" +
-                "dialect \"mvel\"" +
-                "when\n" +
-                "$a : Applicant( )\n" +
-                "then\n" +
-                "list.add( $a );\n" +
-                "end\n";
+                        "dialect \"mvel\"" +
+                        "when\n" +
+                        "$a : Applicant( )\n" +
+                        "then\n" +
+                        "list.add( $a );\n" +
+                        "end\n";
 
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList(global) );
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ) );
 
-        assertNotNull(m);
-        assertEqualsIgnoreWhitespace(drl, BRDRLPersistence.getInstance().marshal(m));
+        assertNotNull( m );
+        assertEqualsIgnoreWhitespace( drl, BRDRLPersistence.getInstance().marshal( m ) );
 
         //LHS
         assertEquals( 1,
@@ -3000,6 +3001,114 @@ public class BRDRLPersistenceTest {
                       a.getGlobalName() );
         assertEquals( "$a",
                       a.getFactName() );
+    }
+
+    @Test
+    @Ignore("This doesn't pass at the moment. Any un-parsable Text should fall through to a FreeFormat DRL segment")
+    public void testFreeFormatDRLCondition() {
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "$a : Applicant( )\n" +
+                "Here's something typed by the user as free-format DRL\n" +
+                "$b : Bananna( )\n" +
+                "then\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        //LHS
+        assertEquals( 3,
+                      m.lhs.length );
+
+        //Condition line 1
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp1 = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "$a",
+                      fp1.getBoundName() );
+        assertEquals( "Applicant",
+                      fp1.getFactType() );
+
+        //Condition line 2
+        assertTrue( m.lhs[ 1 ] instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) m.lhs[ 1 ];
+        assertEquals( "Here's something typed by the user as free-format DRL\n",
+                      ffl.getText() );
+
+        //Condition line 3
+        assertTrue( m.lhs[ 2 ] instanceof FactPattern );
+        final FactPattern fp2 = (FactPattern) m.lhs[ 2 ];
+        assertEquals( "$b",
+                      fp1.getBoundName() );
+        assertEquals( "Bananna",
+                      fp1.getFactType() );
+    }
+
+    @Test
+    @Ignore("This doesn't pass at the moment. Any un-parsable Text should fall through to a FreeFormat DRL segment")
+    public void testFreeFormatDRLAction() {
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"" +
+                "when\n" +
+                "$a : Applicant( )\n" +
+                "then\n" +
+                "$a.setName( \"Michael\" );\n" +
+                "Here's something typed by the user as free-format DRL\n" +
+                "$a.setAge( 40 );\n" +
+                "end\n";
+
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+        assertNotNull( m );
+
+        //LHS
+        assertEquals( 1,
+                      m.lhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp1 = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "$a",
+                      fp1.getBoundName() );
+        assertEquals( "Applicant",
+                      fp1.getFactType() );
+
+        //RHS
+        assertEquals( 3,
+                      m.rhs.length );
+
+        //Action line 1
+        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+        final ActionSetField a1 = (ActionSetField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      a1.getVariable() );
+        assertEquals( 1,
+                      a1.getFieldValues().length );
+
+        final ActionFieldValue fv1a1 = a1.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      fv1a1.getField() );
+        assertEquals( "Michael",
+                      fv1a1.getValue() );
+
+        //Action line 2
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 1 ];
+        assertEquals( "Here's something typed by the user as free-format DRL\n",
+                      ffl.getText() );
+
+        //Action line 3
+        assertTrue( m.rhs[ 2 ] instanceof ActionSetField );
+        final ActionSetField a2 = (ActionSetField) m.rhs[ 2 ];
+        assertEquals( "$a",
+                      a1.getVariable() );
+        assertEquals( 1,
+                      a1.getFieldValues().length );
+
+        final ActionFieldValue fv1a2 = a1.getFieldValues()[ 2 ];
+        assertEquals( "age",
+                      fv1a2.getField() );
+        assertEquals( "40",
+                      fv1a2.getValue() );
     }
 
 }
