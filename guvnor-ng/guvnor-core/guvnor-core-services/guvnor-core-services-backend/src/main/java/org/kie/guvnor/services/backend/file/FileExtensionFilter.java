@@ -13,7 +13,7 @@ public class FileExtensionFilter extends DotFileFilter {
     public FileExtensionFilter( final String extension ) {
         this.extension = PortablePreconditions.checkNotNull( "extension",
                                                              extension );
-        if ( extension.startsWith( "." ) ) {
+        if ( !extension.startsWith( "." ) ) {
             this.extension = "." + extension;
         }
     }
