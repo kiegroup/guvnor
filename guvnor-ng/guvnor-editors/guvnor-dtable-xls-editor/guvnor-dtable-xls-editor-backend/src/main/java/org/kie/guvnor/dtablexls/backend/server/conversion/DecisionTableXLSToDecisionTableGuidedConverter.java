@@ -35,16 +35,21 @@ import org.drools.template.parser.DataListener;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
+import org.kie.guvnor.drltext.type.DRLResourceTypeDefinition;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService;
 import org.kie.guvnor.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.kie.guvnor.factmodel.type.FactModelResourceTypeDefinition;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
+import org.kie.guvnor.globals.type.GlobalResourceTypeDefinition;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
 /**
  * Converter from a XLS Decision Table to a Guided Decision Table
@@ -75,7 +80,24 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private ProjectService projectService;
 
     @Inject
-    private DecisionTableXLSResourceTypeDefinition type;
+    //Type Definition to ensure new files have correct extension
+    private DecisionTableXLSResourceTypeDefinition xlsDTableType;
+
+    @Inject
+    //Type Definition to ensure new files have correct extension
+    private GuidedDTableResourceTypeDefinition guidedDTableType;
+
+    @Inject
+    //Type Definition to ensure new files have correct extension
+    private DRLResourceTypeDefinition drlType;
+
+    @Inject
+    //Type Definition to ensure new files have correct extension
+    private FactModelResourceTypeDefinition modelType;
+
+    @Inject
+    //Type Definition to ensure new files have correct extension
+    private GlobalResourceTypeDefinition globalsType;
 
     @Override
     public ConversionResult convert( final Path path ) {
@@ -83,7 +105,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         ConversionResult result = new ConversionResult();
 
         //Check Asset is of the correct format
-        if ( !type.accept( path ) ) {
+        if ( !xlsDTableType.accept( path ) ) {
             result.addMessage( "Source Asset is not an XLS Decision Table.",
                                ConversionMessageType.ERROR );
             return result;
@@ -118,6 +140,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Add Web Guided Decision Tables
         createNewDecisionTables( context,
+                                 listener.getImports(),
                                  listener.getGuidedDecisionTables(),
                                  result );
 
@@ -158,7 +181,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Create new assets for Functions
         for ( int iCounter = 0; iCounter < functions.size(); iCounter++ ) {
 
-            final String assetName = makeNewAssetName( "Function " + ( iCounter + 1 ) );
+            final String assetName = makeNewAssetName( "Function " + ( iCounter + 1 ),
+                                                       drlType );
             final String drl = makeDRL( imports,
                                         functions.get( iCounter ) );
             drlService.create( context,
@@ -182,7 +206,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Create new assets for Queries
         for ( int iCounter = 0; iCounter < queries.size(); iCounter++ ) {
 
-            final String assetName = makeNewAssetName( "Query " + ( iCounter + 1 ) );
+            final String assetName = makeNewAssetName( "Query " + ( iCounter + 1 ),
+                                                       drlType );
             final String drl = makeDRL( imports,
                                         queries.get( iCounter ) );
             drlService.create( context,
@@ -206,7 +231,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Create new assets for Declarative Types
         for ( int iCounter = 0; iCounter < declaredTypes.size(); iCounter++ ) {
 
-            final String assetName = makeNewAssetName( "Model " + ( iCounter + 1 ) );
+            final String assetName = makeNewAssetName( "Model " + ( iCounter + 1 ),
+                                                       modelType );
             final String drl = makeDRL( imports,
                                         declaredTypes.get( iCounter ) );
             drlService.create( context,
@@ -240,7 +266,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         }
 
         //Create new asset for Globals. All Globals can be in one file.
-        final String assetName = makeNewAssetName( "Global" );
+        final String assetName = makeNewAssetName( "Global",
+                                                   globalsType );
         final GlobalsModel model = makeGlobalsModel( globals );
         globalsService.create( context,
                                assetName,
@@ -295,11 +322,13 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Save update
         if ( isModified ) {
-            projectService.save( externalImportsPath, packageConfiguration );
+            projectService.save( externalImportsPath,
+                                 packageConfiguration );
         }
     }
 
     private void createNewDecisionTables( final Path context,
+                                          final List<Import> imports,
                                           final List<GuidedDecisionTable52> dtables,
                                           final ConversionResult result ) {
         if ( dtables == null || dtables.isEmpty() ) {
@@ -309,10 +338,18 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Create new assets for Guided Decision Tables
         for ( int iCounter = 0; iCounter < dtables.size(); iCounter++ ) {
 
-            final String assetName = dtables.get( iCounter ).getTableName();
+            //Add imports
+            final GuidedDecisionTable52 dtable = dtables.get( iCounter );
+            for ( Import item : imports ) {
+                dtable.getImports().addImport( new org.drools.guvnor.models.commons.shared.imports.Import( item.getClassName() ) );
+            }
+
+            //Make new resource
+            final String assetName = makeNewAssetName( dtable.getTableName(),
+                                                       guidedDTableType );
             guidedDecisionTableService.create( context,
                                                assetName,
-                                               dtables.get( iCounter ),
+                                               dtable,
                                                "Converted from XLS Decision Table" );
 
             result.addMessage( "Created Guided Decision Table '" + assetName + "'",
@@ -320,7 +357,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         }
     }
 
-    private String makeNewAssetName( final String baseName ) {
+    private String makeNewAssetName( final String baseName,
+                                     final ResourceTypeDefinition type ) {
         Calendar now = Calendar.getInstance();
         StringBuilder sb = new StringBuilder( baseName );
         sb.append( " (converted on " );
@@ -332,6 +370,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         sb.append( ":" );
         sb.append( now.get( Calendar.SECOND ) );
         sb.append( ")" );
+        sb.append( "." ).append( type.getSuffix() );
         return sb.toString();
     }
 

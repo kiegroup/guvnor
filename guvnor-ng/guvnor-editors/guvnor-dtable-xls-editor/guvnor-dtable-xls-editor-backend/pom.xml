@@ -22,12 +22,17 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-guided-dtable-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-drl-text-editor-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-dtable-editor-api</artifactId>
+      <artifactId>guvnor-factmodel-editor-api</artifactId>
     </dependency>
 
     <dependency>
