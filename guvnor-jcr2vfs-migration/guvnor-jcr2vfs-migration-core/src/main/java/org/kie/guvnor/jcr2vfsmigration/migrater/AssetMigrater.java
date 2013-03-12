@@ -86,10 +86,19 @@ public class AssetMigrater {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {              
                         //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
+                        //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
                         
                         //Migrate historical versions first, this includes the head version(i.e., the latest version)
                         migrateAssetHistory(jcrModule, row.getUuid());
                         
+                        //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version 
+                        //control, its just the current content on jcr node) is equal to the latest version that had been checked in. 
+                        //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.    
+                        AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+                        migrate(jcrModule, assetItemJCR);
+                        logger.debug("    Asset ({}) with format ({}) migrated.",
+                                assetItemJCR.getName(), assetItemJCR.getFormat());
+
                         //Migrate asset discussions
                         migrateAssetDiscussions(jcrModule, row.getUuid());
                     }
