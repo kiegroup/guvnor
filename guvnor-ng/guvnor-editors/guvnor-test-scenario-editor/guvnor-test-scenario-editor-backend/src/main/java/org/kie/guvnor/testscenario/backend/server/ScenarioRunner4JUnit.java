@@ -1,13 +1,13 @@
 package org.kie.guvnor.testscenario.backend.server;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.runtime.KieSession;
 
 public class ScenarioRunner4JUnit extends Runner {
@@ -15,7 +15,7 @@ public class ScenarioRunner4JUnit extends Runner {
     // The description of the test suite
     private Description descr;
     // the actual scenario test to be executed
-    private Scenario    scenario;
+    private Scenario scenario;
     private KieSession  ksession;
     private TypeResolver resolver;    
 

@@ -23,6 +23,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -33,7 +35,6 @@ import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.backend.server.util.ScenarioXMLPersistence;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -85,8 +86,8 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
                         final String fileName,
                         final Scenario content,
                         final String comment ) {
-        final Path newPath = paths.convert( paths.convert( context ).resolve( fileName ),
-                                            false );
+        final Path newPath = paths.convert(paths.convert(context).resolve(fileName),
+                false);
 
         ioService.write( paths.convert( newPath ),
                          ScenarioXMLPersistence.getInstance().marshal( content ),
@@ -100,7 +101,7 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
 
     @Override
     public Scenario load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        final String content = ioService.readAllString(paths.convert(path));
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
@@ -163,4 +164,8 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
         return co;
     }
 
+    @Override
+    public SingleScenarioResult runScenario(String packageName, Scenario scenario) {
+        return null;  //TODO: -Rikkola-
+    }
 }

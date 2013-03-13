@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.kie.guvnor.testscenario.model.VerifyField;
+import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
@@ -35,7 +35,7 @@ public class FactFieldValueVerifier {
     private final String              factName;
     private final Object              factObject;
 
-    private VerifyField               currentField;
+    private VerifyField currentField;
     final TypeResolver resolver;
     
     public FactFieldValueVerifier(Map<String, Object> populatedData,

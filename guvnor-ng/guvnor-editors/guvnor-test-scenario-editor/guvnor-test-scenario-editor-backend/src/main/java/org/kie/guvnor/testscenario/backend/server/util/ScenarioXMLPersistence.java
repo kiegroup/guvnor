@@ -16,21 +16,21 @@
 
 package org.kie.guvnor.testscenario.backend.server.util;
 
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.ExecutionTrace;
-import org.kie.guvnor.testscenario.model.Expectation;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.FactData;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
-import org.kie.guvnor.testscenario.model.FieldPlaceHolder;
-import org.kie.guvnor.testscenario.model.Fixture;
-import org.kie.guvnor.testscenario.model.RetractFact;
-import org.kie.guvnor.testscenario.model.Scenario;
-import org.kie.guvnor.testscenario.model.VerifyFact;
-import org.kie.guvnor.testscenario.model.VerifyField;
-import org.kie.guvnor.testscenario.model.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.Expectation;
+import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
+import org.drools.guvnor.models.testscenarios.shared.Fact;
+import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.guvnor.models.testscenarios.shared.Field;
+import org.drools.guvnor.models.testscenarios.shared.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
+import org.drools.guvnor.models.testscenarios.shared.Fixture;
+import org.drools.guvnor.models.testscenarios.shared.RetractFact;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyField;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;

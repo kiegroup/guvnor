@@ -3,11 +3,7 @@ package org.kie.guvnor.testscenario.backend.server.util;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-import org.kie.guvnor.testscenario.model.CollectionFieldData;
-import org.kie.guvnor.testscenario.model.Fact;
-import org.kie.guvnor.testscenario.model.FactAssignmentField;
-import org.kie.guvnor.testscenario.model.Field;
-import org.kie.guvnor.testscenario.model.FieldData;
+import org.drools.guvnor.models.testscenarios.shared.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;

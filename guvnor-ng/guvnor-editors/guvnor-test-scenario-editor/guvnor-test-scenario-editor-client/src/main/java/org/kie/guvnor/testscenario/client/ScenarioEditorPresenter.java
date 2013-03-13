@@ -46,7 +46,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
-import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.common.*;
@@ -72,9 +72,7 @@ public class ScenarioEditorPresenter
 
     private HandlerRegistration availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
-    private final Caller<TestService> service;
-    private final DataModelService dataModelService;
-    private final Caller<TestScenarioEditorService> service;
+    private final Caller<ScenarioTestEditorService> service;
     private final Caller<DataModelService> dataModelService;
     private boolean isReadOnly;
     private final Caller<ProjectService> projectService;
@@ -86,10 +84,7 @@ public class ScenarioEditorPresenter
     private Path path;
 
     @Inject
-    public ScenarioEditorPresenter(Caller<TestService> service,
-                                   DataModelService dataModelService,
-                                   Caller<ProjectService> projectService) {
-    public ScenarioEditorPresenter(Caller<TestScenarioEditorService> service,
+    public ScenarioEditorPresenter(Caller<ScenarioTestEditorService> service,
                                    Caller<DataModelService> dataModelService,
                                    Caller<ProjectService> projectService,
                                    final Caller<MetadataService> metadataService,
@@ -222,7 +217,7 @@ public class ScenarioEditorPresenter
 
                                         layout.setWidth("100%");
                                     }
-                                }).loadScenario(path);
+                                }).load(path);
                             }
                         }).resolvePackageName(path);
                     }

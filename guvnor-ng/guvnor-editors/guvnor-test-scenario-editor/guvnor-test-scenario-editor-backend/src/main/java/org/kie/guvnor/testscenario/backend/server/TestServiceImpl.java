@@ -17,11 +17,11 @@
 package org.kie.guvnor.testscenario.backend.server;
 
 import org.drools.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.kie.guvnor.testscenario.model.Scenario;
 import org.kie.guvnor.testscenario.service.TestService;
 import org.kie.runtime.KieSession;
 

@@ -26,7 +26,7 @@ public class TestScenarioResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "ts";
+        return "scenario";
     }
 
     @Override

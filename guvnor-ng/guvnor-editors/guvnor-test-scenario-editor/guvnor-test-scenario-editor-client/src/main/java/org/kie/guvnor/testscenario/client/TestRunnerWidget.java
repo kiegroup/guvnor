@@ -49,7 +49,7 @@ import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.ScenarioRunResult;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
-import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
+import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.SmallLabel;
 
@@ -63,7 +63,7 @@ public class TestRunnerWidget extends Composite {
     private SimplePanel   actions   = new SimplePanel();
 
     public TestRunnerWidget(final ScenarioEditorPresenter parent,
-                            final Caller<TestService> testScenarioEditorService,
+                            final Caller<ScenarioTestEditorService> testScenarioEditorService,
                             final String packageName) {
 
         final Button run = new Button( TestScenarioConstants.INSTANCE.RunScenario() );

@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.testscenario.service;
 
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.services.file.SupportsCopy;
 import org.kie.guvnor.services.file.SupportsCreate;
@@ -23,7 +25,6 @@ import org.kie.guvnor.services.file.SupportsDelete;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsRename;
 import org.kie.guvnor.services.file.SupportsUpdate;
-import org.kie.guvnor.testscenario.model.Scenario;
 
 /**
  * Service definition for Globals editor
@@ -38,5 +39,7 @@ public interface ScenarioTestEditorService
         SupportsCopy,
         SupportsRename {
 
+
+    SingleScenarioResult runScenario(String packageName, Scenario scenario);
 
 }

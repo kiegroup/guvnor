@@ -16,10 +16,7 @@
 
 package org.kie.guvnor.testscenario.service;
 
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.drools.base.TypeResolver;
 import org.junit.runner.notification.RunListener;
 import org.kie.runtime.KieSession;
 
@@ -27,7 +24,7 @@ public interface TestService<T> {
     
     void run( T target, 
               KieSession ksession,
-              TypeResolver resolver, 
+              TypeResolver resolver,
               RunListener listener );
 
 }
