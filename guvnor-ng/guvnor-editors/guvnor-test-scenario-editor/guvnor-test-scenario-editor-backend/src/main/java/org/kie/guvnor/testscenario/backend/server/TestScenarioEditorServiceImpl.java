@@ -25,10 +25,16 @@ import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.security.Identity;
+
+import java.util.Date;
 
 @Service
 @ApplicationScoped

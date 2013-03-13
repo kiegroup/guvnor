@@ -16,9 +16,10 @@
 
 package org.kie.guvnor.testscenario.service;
 
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
