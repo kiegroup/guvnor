@@ -22,12 +22,12 @@
 
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-datamodel-api</artifactId>
+      <artifactId>guvnor-core-services-backend</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-core-services-backend</artifactId>
+      <artifactId>guvnor-datamodel-backend</artifactId>
     </dependency>
     
     <dependency>

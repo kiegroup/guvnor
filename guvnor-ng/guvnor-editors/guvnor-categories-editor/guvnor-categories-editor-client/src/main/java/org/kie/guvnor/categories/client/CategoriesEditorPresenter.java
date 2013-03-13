@@ -23,7 +23,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.categories.client.type.CategoryDefinitionResourceType;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.services.metadata.CategoriesService;
 import org.kie.guvnor.services.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
@@ -46,23 +50,8 @@ import org.uberfire.client.workbench.widgets.menu.Menus;
 @WorkbenchEditor(identifier = "CategoryManager", supportedTypes = { CategoryDefinitionResourceType.class })
 public class CategoriesEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final Categories categories );
-
-        Categories getContent();
-
-        boolean isDirty();
-
-        void setNotDirty();
-
-        boolean confirmClose();
-    }
-
     @Inject
-    private View view;
+    private CategoriesEditorView view;
 
     @Inject
     private Caller<CategoriesService> categoryService;
@@ -79,13 +68,9 @@ public class CategoriesEditorPresenter {
         this.path = path;
         makeMenuBar();
 
-        categoryService.call( new RemoteCallback<Categories>() {
-
-            @Override
-            public void callback( final Categories response ) {
-                view.setContent( response );
-            }
-        } ).getContent( path );
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        categoryService.call( getModelSuccessCallback(),
+                              new DefaultErrorCallback() ).getContent( path );
     }
 
     private void makeMenuBar() {
@@ -97,14 +82,34 @@ public class CategoriesEditorPresenter {
         } ).build();
     }
 
+    private RemoteCallback<Categories> getModelSuccessCallback() {
+        return new RemoteCallback<Categories>() {
+
+            @Override
+            public void callback( final Categories content ) {
+                view.setContent( content );
+                view.hideBusyIndicator();
+            }
+        };
+    }
+
     @OnSave
     public void onSave() {
-        categoryService.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( Path response ) {
-                view.setNotDirty();
-            }
-        } ).save( path, view.getContent() );
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 categoryService.call( new RemoteCallback<Path>() {
+                                                     @Override
+                                                     public void callback( final Path response ) {
+                                                         view.setNotDirty();
+                                                         view.hideBusyIndicator();
+                                                     }
+                                                 } ).save( path,
+                                                           view.getContent() );
+                                             }
+                                         } );
     }
 
     @IsDirty

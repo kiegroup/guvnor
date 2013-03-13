@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -18,10 +19,10 @@ import org.kie.guvnor.globals.client.type.GlobalResourceType;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.VersionService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -146,7 +147,17 @@ public class GlobalsEditorPresenter {
     }
 
     private void loadContent() {
-        globalsEditorService.call( new RemoteCallback<GlobalsEditorContent>() {
+        globalsEditorService.call( getModelSuccessCallback(),
+                                   new DefaultErrorCallback() ).loadContent( path );
+
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
+    }
+
+    private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
+        return new RemoteCallback<GlobalsEditorContent>() {
+
             @Override
             public void callback( final GlobalsEditorContent content ) {
                 model = content.getModel();
@@ -159,15 +170,7 @@ public class GlobalsEditorPresenter {
 
                 view.hideBusyIndicator();
             }
-        } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        };
     }
 
     @OnSave

@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.model.PackageConfiguration;
@@ -76,23 +77,13 @@ public class ProjectConfigScreenPresenter
 
     @OnStart
     public void init( final Path path ) {
-
         this.path = path;
+
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
-        projectEditorServiceCaller.call( new RemoteCallback<PackageConfiguration>() {
-
-            @Override
-            public void callback( PackageConfiguration packageConfiguration ) {
-                ProjectConfigScreenPresenter.this.packageConfiguration = packageConfiguration;
-                view.setImports( path,
-                                 packageConfiguration.getImports() );
-
-                view.hideBusyIndicator();
-            }
-        } ).loadPackageConfiguration( path );
+        projectEditorServiceCaller.call( getModelSuccessCallback(),
+                                         new DefaultErrorCallback() ).loadPackageConfiguration( path );
     }
 
     private void makeMenuBar() {
@@ -116,12 +107,31 @@ public class ProjectConfigScreenPresenter
 
     @Override
     public void onShowMetadata() {
-        metadataService.call( new RemoteCallback<Metadata>() {
+        metadataService.call( getMetadataSuccessCallback(),
+                              new DefaultErrorCallback() ).getMetadata( path );
+    }
+
+    private RemoteCallback<PackageConfiguration> getModelSuccessCallback() {
+        return new RemoteCallback<PackageConfiguration>() {
+
             @Override
-            public void callback( Metadata metadata ) {
+            public void callback( final PackageConfiguration response ) {
+                ProjectConfigScreenPresenter.this.packageConfiguration = response;
+                view.setImports( path,
+                                 packageConfiguration.getImports() );
+                view.hideBusyIndicator();
+            }
+        };
+    }
+
+    private RemoteCallback<Metadata> getMetadataSuccessCallback() {
+        return new RemoteCallback<Metadata>() {
+
+            @Override
+            public void callback( final Metadata metadata ) {
                 view.setMetadata( metadata );
             }
-        } ).getMetadata( path );
+        };
     }
 
     @OnSave

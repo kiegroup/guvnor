@@ -4,7 +4,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.commons.io.IOService;
-import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.services.cache.LRUCache;
@@ -21,9 +20,6 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
     private Paths paths;
 
     @Inject
-    private SourceServices sourceServices;
-
-    @Inject
     private POMService pomService;
 
     @Inject
@@ -36,7 +32,6 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
             builder = new Builder( paths.convert( pathToPom ).getParent(),
                                    gav.getGav().getArtifactId(),
                                    paths,
-                                   sourceServices,
                                    ioService );
             setEntry( pathToPom,
                       builder );

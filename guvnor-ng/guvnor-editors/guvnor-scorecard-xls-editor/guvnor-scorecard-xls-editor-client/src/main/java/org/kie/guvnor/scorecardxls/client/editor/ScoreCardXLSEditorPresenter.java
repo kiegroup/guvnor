@@ -22,28 +22,24 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
@@ -97,15 +93,11 @@ public class ScoreCardXLSEditorPresenter {
                              MetadataConstants.INSTANCE.Metadata() );
 
         view.setPath( path );
-        view.setReadOnly(isReadOnly);
+        view.setReadOnly( isReadOnly );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {

@@ -41,6 +41,7 @@ import org.kie.guvnor.services.backend.metadata.attribute.Mode;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaView;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.DiscussionRecord;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -66,35 +67,39 @@ public class MetadataServiceImpl implements MetadataService {
 
     @Override
     public Metadata getMetadata( final Path resource ) {
+        try {
+            final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
 
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+            final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
+            final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );
+            final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );
+            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
 
-        final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
-        final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );
-        final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
+            return newMetadata()
+                    .withPath( paths.convert( path.toRealPath() ) )
+                    .withCheckinComment( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).comment() : null )
+                    .withLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : null )
+                    .withCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : null )
+                    .withLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) )
+                    .withDateCreated( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) )
+                    .withSubject( dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get( 0 ) : null )
+                    .withType( dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get( 0 ) : null )
+                    .withExternalRelation( dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get( 0 ) : null )
+                    .withExternalSource( dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get( 0 ) : null )
+                    .withDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : null )
+                    .withDisabledOption( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false )
+                    .withCategories( otherMetaView.readAttributes().categories() )
+                    .withDiscussion( discussView.readAttributes().discussion() )
+                    .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
+                        for ( final VersionRecord record : versionAttributeView.readAttributes().history().records() ) {
+                            add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
+                        }
+                    }} )
+                    .build();
 
-        return newMetadata()
-                .withPath( paths.convert( path.toRealPath() ) )
-                .withCheckinComment( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).comment() : null )
-                .withLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : null )
-                .withCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : null )
-                .withLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) )
-                .withDateCreated( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) )
-                .withSubject( dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get( 0 ) : null )
-                .withType( dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get( 0 ) : null )
-                .withExternalRelation( dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get( 0 ) : null )
-                .withExternalSource( dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get( 0 ) : null )
-                .withDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : null )
-                .withDisabledOption( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false )
-                .withCategories( otherMetaView.readAttributes().categories() )
-                .withDiscussion( discussView.readAttributes().discussion() )
-                .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
-                    for ( final VersionRecord record : versionAttributeView.readAttributes().history().records() ) {
-                        add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
-                    }
-                }} )
-                .build();
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+        }
     }
 
     @Override

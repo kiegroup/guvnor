@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -37,10 +38,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -139,32 +140,12 @@ public class GuidedRuleEditorPresenter {
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
 
-        service.call( new RemoteCallback<GuidedEditorContent>() {
-            @Override
-            public void callback( final GuidedEditorContent response ) {
-                model = response.getRuleModel();
-                oracle = response.getDataModel();
-                oracle.filter( model.getImports() );
+        service.call( getModelSuccessCallback(),
+                      new DefaultErrorCallback() ).loadContent( path );
 
-                view.setContent( path,
-                                 model,
-                                 oracle,
-                                 isReadOnly );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
-
-                view.hideBusyIndicator();
-            }
-        } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -183,6 +164,28 @@ public class GuidedRuleEditorPresenter {
                     .addDelete( path )
                     .build();
         }
+    }
+
+    private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
+        return new RemoteCallback<GuidedEditorContent>() {
+
+            @Override
+            public void callback( final GuidedEditorContent response ) {
+                model = response.getRuleModel();
+                oracle = response.getDataModel();
+                oracle.filter( model.getImports() );
+
+                view.setContent( path,
+                                 model,
+                                 oracle,
+                                 isReadOnly );
+                importsWidget.setContent( oracle,
+                                          model.getImports(),
+                                          isReadOnly );
+
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {

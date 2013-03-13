@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -31,10 +32,10 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.enums.client.type.EnumResourceType;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -122,22 +123,12 @@ public class EnumEditorPresenter {
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
 
-        enumService.call( new RemoteCallback<EnumModelContent>() {
-            @Override
-            public void callback( final EnumModelContent response ) {
-                view.setContent( response.getModel().getDRL() );
-                view.hideBusyIndicator();
-            }
-        } ).loadContent( path );
+        enumService.call( getModelSuccessCallback(),
+                          new DefaultErrorCallback() ).loadContent( path );
 
-        metadataService.call(
-                new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback( final Metadata metadata ) {
-                        metadataWidget.setContent( metadata,
-                                                   isReadOnly );
-                    }
-                } ).getMetadata( path );
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -156,6 +147,17 @@ public class EnumEditorPresenter {
                     .addDelete( path )
                     .build();
         }
+    }
+
+    private RemoteCallback<EnumModelContent> getModelSuccessCallback() {
+        return new RemoteCallback<EnumModelContent>() {
+
+            @Override
+            public void callback( final EnumModelContent response ) {
+                view.setContent( response.getModel().getDRL() );
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     @OnSave

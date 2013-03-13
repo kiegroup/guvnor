@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -31,10 +32,10 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.type.DSLResourceType;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -45,7 +46,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
@@ -106,26 +106,12 @@ public class DSLEditorPresenter {
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
 
-        dslTextEditorService.call( new RemoteCallback<String>() {
-            @Override
-            public void callback( final String response ) {
-                if ( response == null || response.isEmpty() ) {
-                    view.setContent( null );
-                } else {
-                    view.setContent( response );
-                }
-                view.hideBusyIndicator();
-            }
-        } ).load( path );
+        dslTextEditorService.call( getModelSuccessCallback(),
+                                   new DefaultErrorCallback() ).load( path );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
-
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -144,6 +130,21 @@ public class DSLEditorPresenter {
                     .addDelete( path )
                     .build();
         }
+    }
+
+    private RemoteCallback<String> getModelSuccessCallback() {
+        return new RemoteCallback<String>() {
+
+            @Override
+            public void callback( final String response ) {
+                if ( response == null || response.isEmpty() ) {
+                    view.setContent( null );
+                } else {
+                    view.setContent( response );
+                }
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     @OnSave

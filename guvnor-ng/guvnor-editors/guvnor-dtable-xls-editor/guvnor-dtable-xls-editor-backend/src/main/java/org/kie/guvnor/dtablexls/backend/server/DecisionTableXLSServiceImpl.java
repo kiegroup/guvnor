@@ -29,11 +29,13 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -86,13 +88,31 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
 
     @Override
     public InputStream load( final Path path ) {
-        final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                  StandardOpenOption.READ );
+        try {
+            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                      StandardOpenOption.READ );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return inputStream;
+            return inputStream;
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( path.toURI() );
+
+        }
     }
 
     @Override

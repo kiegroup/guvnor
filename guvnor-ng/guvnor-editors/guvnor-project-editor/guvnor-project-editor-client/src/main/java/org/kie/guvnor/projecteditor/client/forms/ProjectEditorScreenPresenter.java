@@ -23,9 +23,10 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.projecteditor.client.type.POMResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
@@ -167,21 +168,21 @@ public class
     }
 
     private void addKModuleEditor() {
-        kModuleServiceCaller.call(
-                new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path pathToKModuleXML ) {
-                        ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                        if ( pathToKModuleXML != null ) {
-                            setUpKProject();
-                        }
-                    }
-                }
-                                 ).pathToRelatedKModuleFileIfAny( pathToPomXML );
+        kModuleServiceCaller.call( getResolveKModulePathSuccessCallback(),
+                                   new DefaultErrorCallback() ).pathToRelatedKModuleFileIfAny( pathToPomXML );
     }
 
-    private void setUpKProject() {
-        view.setKModuleEditorPanel( kModuleEditorPanel );
+    private RemoteCallback<Path> getResolveKModulePathSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path pathToKModuleXML ) {
+                ProjectEditorScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
+                if ( pathToKModuleXML != null ) {
+                    view.setKModuleEditorPanel( kModuleEditorPanel );
+                }
+            }
+        };
     }
 
     @WorkbenchPartTitle
@@ -203,13 +204,8 @@ public class
     @Override
     public void onPOMMetadataTabSelected() {
         if ( pomMetadata == null ) {
-            metadataService.call( new RemoteCallback<Metadata>() {
-                @Override
-                public void callback( Metadata metadata ) {
-                    pomMetadata = metadata;
-                    view.setPOMMetadata( metadata );
-                }
-            } ).getMetadata( pathToPomXML );
+            metadataService.call( getPOMMetadataSuccessCallback(),
+                                  new DefaultErrorCallback() ).getMetadata( pathToPomXML );
         }
     }
 
@@ -223,13 +219,31 @@ public class
     @Override
     public void onKModuleMetadataTabSelected() {
         if ( kmoduleMetadata == null ) {
-            metadataService.call( new RemoteCallback<Metadata>() {
-                @Override
-                public void callback( Metadata metadata ) {
-                    kmoduleMetadata = metadata;
-                    view.setKModuleMetadata( metadata );
-                }
-            } ).getMetadata( pathToKModuleXML );
+            metadataService.call( getKModuleMetadataSuccessCallback(),
+                                  new DefaultErrorCallback() ).getMetadata( pathToKModuleXML );
         }
     }
+
+    private RemoteCallback<Metadata> getPOMMetadataSuccessCallback() {
+        return new RemoteCallback<Metadata>() {
+
+            @Override
+            public void callback( final Metadata metadata ) {
+                pomMetadata = metadata;
+                view.setPOMMetadata( metadata );
+            }
+        };
+    }
+
+    private RemoteCallback<Metadata> getKModuleMetadataSuccessCallback() {
+        return new RemoteCallback<Metadata>() {
+
+            @Override
+            public void callback( final Metadata metadata ) {
+                kmoduleMetadata = metadata;
+                view.setKModuleMetadata( metadata );
+            }
+        };
+    }
+
 }

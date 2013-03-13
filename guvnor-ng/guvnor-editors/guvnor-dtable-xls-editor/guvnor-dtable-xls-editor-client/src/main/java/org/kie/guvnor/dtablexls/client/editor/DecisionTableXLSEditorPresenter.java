@@ -26,16 +26,17 @@ import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessag
 import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.client.widgets.ConversionMessageWidget;
 import org.kie.guvnor.dtablexls.client.widgets.PopupListWidget;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnStart;
@@ -101,13 +102,9 @@ public class DecisionTableXLSEditorPresenter {
         view.setPath( path );
         view.setReadOnly( isReadOnly );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {

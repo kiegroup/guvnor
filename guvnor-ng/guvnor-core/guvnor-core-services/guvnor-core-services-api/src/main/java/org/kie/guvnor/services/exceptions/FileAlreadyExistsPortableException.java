@@ -3,7 +3,7 @@ package org.kie.guvnor.services.exceptions;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Portable Exception for when a File already exists
+ * Portable FileAlreadyExistsException
  */
 @Portable
 public class FileAlreadyExistsPortableException extends GenericPortableException {

@@ -3,18 +3,18 @@ package org.kie.guvnor.services.exceptions;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Portable InvalidPathException
+ * Portable NoSuchFileException
  */
 @Portable
-public class InvalidPathPortableException extends GenericPortableException {
+public class NoSuchFilePortableException extends GenericPortableException {
 
     //Cannot use org.uberfire.backend.vfs.Path as it is not Serializable
     private String path;
 
-    public InvalidPathPortableException() {
+    public NoSuchFilePortableException() {
     }
 
-    public InvalidPathPortableException( final String path ) {
+    public NoSuchFilePortableException( final String path ) {
         this.path = path;
     }
 

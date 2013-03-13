@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -36,10 +37,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -160,7 +161,17 @@ public class GuidedRuleTemplateEditorPresenter {
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
 
-        service.call( new RemoteCallback<GuidedTemplateEditorContent>() {
+        service.call( getModelSuccessCallback(),
+                      new DefaultErrorCallback() ).loadContent( path );
+
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
+    }
+
+    private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
+        return new RemoteCallback<GuidedTemplateEditorContent>() {
+
             @Override
             public void callback( final GuidedTemplateEditorContent response ) {
                 model = response.getRuleModel();
@@ -178,15 +189,7 @@ public class GuidedRuleTemplateEditorPresenter {
 
                 view.hideBusyIndicator();
             }
-        } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        };
     }
 
     private void makeMenuBar() {

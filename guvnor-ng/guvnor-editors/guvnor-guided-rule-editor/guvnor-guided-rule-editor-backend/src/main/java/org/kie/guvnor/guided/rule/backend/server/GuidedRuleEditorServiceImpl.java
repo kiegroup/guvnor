@@ -34,6 +34,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -46,6 +47,7 @@ import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -159,16 +161,28 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     @Override
     public RuleModel load( final Path path ) {
-        final String drl = ioService.readAllString( paths.convert( path ) );
-        final String[] dsls = loadDslsForPackage( path );
-        final List<String> globals = loadGlobalsForPackage( path );
+        try {
+            final String drl = ioService.readAllString( paths.convert( path ) );
+            final String[] dsls = loadDslsForPackage( path );
+            final List<String> globals = loadGlobalsForPackage( path );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
-                                                                 globals,
-                                                                 dsls );
+            return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
+                                                                     globals,
+                                                                     dsls );
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override

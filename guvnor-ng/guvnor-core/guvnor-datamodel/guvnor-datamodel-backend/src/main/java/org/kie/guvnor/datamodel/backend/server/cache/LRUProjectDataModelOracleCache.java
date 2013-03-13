@@ -16,7 +16,6 @@ import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.datamodel.backend.server.ModelFilter;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -39,9 +38,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
 
     @Inject
     private Paths paths;
-
-    @Inject
-    private SourceServices sourceServices;
 
     @Inject
     private POMService pomService;
@@ -93,7 +89,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
                                              gav.getGav().getArtifactId(),
                                              paths,
-                                             sourceServices,
                                              ioService,
                                              new ModelFilter() );
 

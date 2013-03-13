@@ -28,12 +28,17 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.guvnor.drltext.model.DrlModelContent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -85,6 +90,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     @Inject
     private Identity identity;
 
+    @Inject
+    private DataModelService dataModelService;
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -129,12 +137,33 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Override
     public String load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return content;
+            return content;
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
+    }
+
+    @Override
+    public DrlModelContent loadContent( final Path path ) {
+        final String drl = load( path );
+        final DataModelOracle oracle = dataModelService.getDataModel( path );
+
+        return new DrlModelContent( drl,
+                                    oracle );
     }
 
     @Override

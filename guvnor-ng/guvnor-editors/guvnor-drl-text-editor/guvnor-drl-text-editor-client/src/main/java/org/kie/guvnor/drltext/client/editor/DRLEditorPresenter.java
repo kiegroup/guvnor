@@ -24,19 +24,20 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.type.DRLResourceType;
+import org.kie.guvnor.drltext.model.DrlModelContent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -63,9 +64,6 @@ public class DRLEditorPresenter {
 
     @Inject
     private Caller<DRLTextEditorService> drlTextEditorService;
-
-    @Inject
-    private Caller<DataModelService> dataModelService;
 
     @Inject
     private Caller<MetadataService> metadataService;
@@ -109,32 +107,12 @@ public class DRLEditorPresenter {
         multiPage.addWidget( metadataWidget,
                              MetadataConstants.INSTANCE.Metadata() );
 
-        dataModelService.call( new RemoteCallback<DataModelOracle>() {
-            @Override
-            public void callback( final DataModelOracle model ) {
-                drlTextEditorService.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String response ) {
-                        if ( response == null || response.isEmpty() ) {
-                            view.setContent( null,
-                                             model );
-                        } else {
-                            view.setContent( response,
-                                             model );
-                        }
-                        view.hideBusyIndicator();
-                    }
-                } ).load( path );
-            }
-        } ).getDataModel( path );
+        drlTextEditorService.call( getModelSuccessCallback(),
+                                   new DefaultErrorCallback() ).loadContent( path );
 
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {
@@ -153,6 +131,25 @@ public class DRLEditorPresenter {
                     .addDelete( path )
                     .build();
         }
+    }
+
+    private RemoteCallback<DrlModelContent> getModelSuccessCallback() {
+        return new RemoteCallback<DrlModelContent>() {
+
+            @Override
+            public void callback( final DrlModelContent content ) {
+                final String drl = content.getDrl();
+                final DataModelOracle oracle = content.getDataModel();
+                if ( drl == null || drl.isEmpty() ) {
+                    view.setContent( null,
+                                     oracle );
+                } else {
+                    view.setContent( drl,
+                                     oracle );
+                }
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     @OnSave

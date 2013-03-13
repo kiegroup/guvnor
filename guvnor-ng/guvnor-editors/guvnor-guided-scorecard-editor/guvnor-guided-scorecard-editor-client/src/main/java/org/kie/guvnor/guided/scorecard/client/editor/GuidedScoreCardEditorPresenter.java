@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -35,10 +36,10 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
@@ -163,7 +164,17 @@ public class GuidedScoreCardEditorPresenter {
     }
 
     private void loadContent() {
-        scoreCardEditorService.call( new RemoteCallback<ScoreCardModelContent>() {
+        scoreCardEditorService.call( getModelSuccessCallback(),
+                                     new DefaultErrorCallback() ).loadContent( path );
+
+        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                           isReadOnly ),
+                              new DefaultErrorCallback() ).getMetadata( path );
+    }
+
+    private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
+        return new RemoteCallback<ScoreCardModelContent>() {
+
             @Override
             public void callback( final ScoreCardModelContent content ) {
                 model = content.getModel();
@@ -178,15 +189,7 @@ public class GuidedScoreCardEditorPresenter {
 
                 view.hideBusyIndicator();
             }
-        } ).loadContent( path );
-
-        metadataService.call( new RemoteCallback<Metadata>() {
-            @Override
-            public void callback( final Metadata metadata ) {
-                metadataWidget.setContent( metadata,
-                                           isReadOnly );
-            }
-        } ).getMetadata( path );
+        };
     }
 
     @OnSave

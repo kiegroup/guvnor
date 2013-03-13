@@ -30,6 +30,7 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
@@ -40,6 +41,7 @@ import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
@@ -140,12 +142,24 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Override
     public TemplateModel load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content );
+            return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content );
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override

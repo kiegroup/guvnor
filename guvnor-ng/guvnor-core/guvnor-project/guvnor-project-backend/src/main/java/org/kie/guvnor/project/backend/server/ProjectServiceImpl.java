@@ -27,6 +27,7 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
@@ -38,6 +39,7 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -346,7 +348,20 @@ public class ProjectServiceImpl
 
     @Override
     public PackageConfiguration loadPackageConfiguration( final Path path ) {
-        return packageConfigurationContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
+            return packageConfigurationContentHandler.toModel( content );
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override
