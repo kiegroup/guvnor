@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
@@ -28,6 +29,10 @@ import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
@@ -43,22 +48,24 @@ import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.kie.guvnor.testscenario.service.TestScenarioEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
-import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.annotations.*;
+import org.uberfire.client.common.*;
+import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
 import java.util.List;
 
 @WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
 public class ScenarioEditorPresenter
         implements ScenarioParentWidget {
 
+    private final FileMenuBuilder menuBuilder;
+    private final Event<NotificationEvent> notification;
+    private Menus menus;
     private String[] availableRules;
     protected DataModelOracle dmo;
     private final VerticalPanel layout = new VerticalPanel();
@@ -74,19 +81,70 @@ public class ScenarioEditorPresenter
     private final MetadataWidget metadataWidget = new MetadataWidget();
 
     private MultiPageEditor multiPage;
+    private Path path;
 
     @Inject
     public ScenarioEditorPresenter(Caller<TestScenarioEditorService> service,
                                    Caller<DataModelService> dataModelService,
                                    Caller<ProjectService> projectService,
                                    final Caller<MetadataService> metadataService,
-                                   MultiPageEditor multiPage) {
+                                   MultiPageEditor multiPage,
+                                   @New FileMenuBuilder menuBuilder,
+                                   Event<NotificationEvent> notification) {
         this.service = service;
         this.projectService = projectService;
         this.dataModelService = dataModelService;
         this.metadataService = metadataService;
         this.multiPage = multiPage;
+        this.menuBuilder = menuBuilder;
+        this.notification = notification;
 
+    }
+
+
+    private void makeMenuBar() {
+        if (isReadOnly) {
+            menus = menuBuilder.addRestoreVersion(path).build();
+        } else {
+            menus = menuBuilder
+                    .addSave(new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    })
+                    .addCopy(path)
+                    .addRename(path)
+                    .addDelete(path)
+                    .build();
+        }
+    }
+
+    private void onSave() {
+        if (isReadOnly) {
+            Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
+            return;
+        }
+
+        new SaveOperationService().save(path,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        BusyPopup.showMessage(CommonConstants.INSTANCE.Saving());
+
+                        service.call(new RemoteCallback<Path>() {
+                            @Override
+                            public void callback(final Path response) {
+                                BusyPopup.close();
+                                metadataWidget.resetDirty();
+                                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                            }
+                        }).save(path,
+                                scenarioWidgetComponentCreator.getScenario(),
+                                metadataWidget.getContent(),
+                                commitMessage);
+                    }
+                });
     }
 
     @WorkbenchPartTitle
@@ -99,30 +157,38 @@ public class ScenarioEditorPresenter
         return multiPage;
     }
 
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return menus;
+    }
+
     @OnStart
     public void onStart(final Path path,
                         final PlaceRequest place) {
 
         this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
+        this.path = path;
 
         multiPage.addWidget(layout, "Test Scenario");
-        multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
-            @Override
-            public void onFocus() {
-                metadataService.call(new RemoteCallback<Metadata>() {
-                    @Override
-                    public void callback(final Metadata metadata) {
-                        metadataWidget.setContent(metadata,
-                                isReadOnly);
-                    }
-                }).getMetadata(path);
-            }
+        if (!isReadOnly) {
+            multiPage.addPage(new Page(metadataWidget, MetadataConstants.INSTANCE.Metadata()) {
+                @Override
+                public void onFocus() {
+                    metadataService.call(new RemoteCallback<Metadata>() {
+                        @Override
+                        public void callback(final Metadata metadata) {
+                            metadataWidget.setContent(metadata,
+                                    isReadOnly);
+                        }
+                    }).getMetadata(path);
+                }
 
-            @Override
-            public void onLostFocus() {
-                // Nothing to do here.
-            }
-        });
+                @Override
+                public void onLostFocus() {
+                    // Nothing to do here.
+                }
+            });
+        }
 
         dataModelService.call(
                 new RemoteCallback<DataModelOracle>() {
@@ -158,6 +224,7 @@ public class ScenarioEditorPresenter
                 }
         ).getDataModel(path);
 
+        makeMenuBar();
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {

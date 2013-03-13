@@ -27,4 +27,6 @@ public interface TestScenarioEditorService {
     SingleScenarioResult runScenario(String packageName, Scenario scenario);
 
     Scenario loadScenario(Path path);
+
+    void save(Path path, Scenario scenario, Metadata content, String commitMessage);
 }

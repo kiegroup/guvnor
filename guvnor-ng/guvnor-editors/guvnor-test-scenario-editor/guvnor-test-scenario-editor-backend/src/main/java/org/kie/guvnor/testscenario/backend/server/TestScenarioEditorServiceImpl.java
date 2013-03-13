@@ -39,6 +39,8 @@ public class TestScenarioEditorServiceImpl
     private IOService ioService;
     private Paths paths;
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
+    private MetadataService metadataService;
+    private Identity identity;
 
     public TestScenarioEditorServiceImpl() {
     }
@@ -46,10 +48,14 @@ public class TestScenarioEditorServiceImpl
     @Inject
     public TestScenarioEditorServiceImpl(@Named("ioStrategy") IOService ioService,
                                          Paths paths,
-                                         Event<ResourceOpenedEvent> resourceOpenedEvent) {
+                                         Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                         MetadataService metadataService,
+                                         Identity identity) {
         this.ioService = ioService;
         this.paths = paths;
         this.resourceOpenedEvent = resourceOpenedEvent;
+        this.metadataService = metadataService;
+        this.identity = identity;
     }
 
     @Override
@@ -65,5 +71,23 @@ public class TestScenarioEditorServiceImpl
         resourceOpenedEvent.fire(new ResourceOpenedEvent(path));
 
         return new TestScenarioContentHandler().unmarshal(xml);
+    }
+
+    @Override
+    public void save(Path resource, Scenario scenario, Metadata metadata, String commitMessage) {
+        ioService.write(paths.convert(resource),
+                new TestScenarioContentHandler().marshal(scenario),
+                metadataService.setUpAttributes(resource, metadata),
+                makeCommentedOption(commitMessage));
+    }
+
+    private CommentedOption makeCommentedOption(final String commitMessage) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption(name,
+                null,
+                commitMessage,
+                when);
+        return co;
     }
 }
