@@ -68,10 +68,27 @@ public class GuvnorTextEditorPresenter
         super.onStart( path );
 
         this.path = path;
-
-        isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
         makeMenuBar();
+
+        multiPage.addWidget( super.getWidget(),
+                             CommonConstants.INSTANCE.EditTabTitle() );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new DefaultErrorCallback() ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                //Nothing to do
+            }
+        } );
     }
 
     private void makeMenuBar() {
@@ -139,24 +156,6 @@ public class GuvnorTextEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        multiPage.addWidget( super.getWidget(),
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new DefaultErrorCallback() ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-
-            }
-        } );
-
         return multiPage;
     }
 

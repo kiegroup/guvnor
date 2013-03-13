@@ -8,11 +8,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -69,7 +68,7 @@ public class NewProjectHandler
                                                  public void execute( final String comment ) {
                                                      BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
                                                      projectServiceCaller.call( getSuccessCallback( presenter ),
-                                                                                getErrorCallback() ).newProject( contextPath, projectName );
+                                                                                new DefaultErrorCallback() ).newProject( contextPath, projectName );
                                                  }
                                              } );
         } else {
@@ -86,18 +85,6 @@ public class NewProjectHandler
                 presenter.complete();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
-            }
-        };
-    }
-
-    private ErrorCallback getErrorCallback() {
-        return new ErrorCallback() {
-
-            @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                //TODO Do something useful with the error!
-                return true;
             }
         };
     }

@@ -33,7 +33,6 @@ import org.kie.guvnor.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.kie.guvnor.dsltext.client.type.DSLResourceType;
 import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
@@ -47,6 +46,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -103,15 +103,23 @@ public class DSLEditorPresenter {
         multiPage.addWidget( view,
                              DSLTextEditorConstants.INSTANCE.Edit() );
 
-        multiPage.addWidget( metadataWidget,
-                             MetadataConstants.INSTANCE.Metadata() );
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new DefaultErrorCallback() ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                //Nothing to do
+            }
+        } );
 
         dslTextEditorService.call( getModelSuccessCallback(),
                                    new DefaultErrorCallback() ).load( path );
-
-        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                           isReadOnly ),
-                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {

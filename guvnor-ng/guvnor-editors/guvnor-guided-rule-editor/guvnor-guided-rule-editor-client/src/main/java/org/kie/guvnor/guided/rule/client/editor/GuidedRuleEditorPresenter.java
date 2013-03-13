@@ -39,7 +39,6 @@ import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
@@ -137,15 +136,23 @@ public class GuidedRuleEditorPresenter {
         multiPage.addWidget( importsWidget,
                              CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addWidget( metadataWidget,
-                             MetadataConstants.INSTANCE.Metadata() );
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new DefaultErrorCallback() ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                //Nothing to do
+            }
+        } );
 
         service.call( getModelSuccessCallback(),
                       new DefaultErrorCallback() ).loadContent( path );
-
-        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                           isReadOnly ),
-                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private void makeMenuBar() {

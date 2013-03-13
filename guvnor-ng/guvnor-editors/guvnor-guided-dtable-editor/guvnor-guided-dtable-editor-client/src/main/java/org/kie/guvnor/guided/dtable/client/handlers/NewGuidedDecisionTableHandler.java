@@ -8,11 +8,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -137,11 +136,11 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                  BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
                                                  service.call( getSuccessCallback( presenter,
                                                                                    postSaveCommand ),
-                                                               getErrorCallback() ).create( contextPath,
-                                                                                            buildFileName( resourceType,
-                                                                                                           baseFileName ),
-                                                                                            model,
-                                                                                            comment );
+                                                               new DefaultErrorCallback() ).create( contextPath,
+                                                                                                    buildFileName( resourceType,
+                                                                                                                   baseFileName ),
+                                                                                                    model,
+                                                                                                    comment );
                                              }
                                          } );
     }
@@ -166,18 +165,6 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                 }
             }
 
-        };
-    }
-
-    private ErrorCallback getErrorCallback() {
-        return new ErrorCallback() {
-
-            @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                //TODO Do something useful with the error!
-                return true;
-            }
         };
     }
 

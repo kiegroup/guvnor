@@ -5,10 +5,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.project.service.ProjectService;
@@ -41,7 +40,7 @@ public class NewPackageHandler
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         projectService.call( getSuccessCallback( presenter ),
-                             getErrorCallback() ).newPackage( contextPath, baseFileName );
+                             new DefaultErrorCallback() ).newPackage( contextPath, baseFileName );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
@@ -51,18 +50,6 @@ public class NewPackageHandler
             public void callback( Path pathToPom ) {
                 presenter.complete();
                 notifySuccess();
-            }
-        };
-    }
-
-    private ErrorCallback getErrorCallback() {
-        return new ErrorCallback() {
-
-            @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                //TODO Do something useful with the error!
-                return true;
             }
         };
     }

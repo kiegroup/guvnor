@@ -33,7 +33,6 @@ import org.kie.guvnor.defaulteditor.service.DefaultEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -89,9 +88,27 @@ public class GuvnorDefaultEditorPresenter
         super.onStart( path );
 
         this.path = path;
-        isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
         makeMenuBar();
+
+        multiPage.addWidget( super.getWidget(),
+                             CommonConstants.INSTANCE.EditTabTitle() );
+
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new DefaultErrorCallback() ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                //Nothing to do
+            }
+        } );
     }
 
     private void makeMenuBar() {
@@ -161,24 +178,6 @@ public class GuvnorDefaultEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        multiPage.addWidget( super.getWidget(),
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new DefaultErrorCallback() ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-
-            }
-        } );
-
         return multiPage;
     }
 

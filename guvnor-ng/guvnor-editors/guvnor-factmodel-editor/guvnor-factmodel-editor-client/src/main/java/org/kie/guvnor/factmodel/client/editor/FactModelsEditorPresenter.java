@@ -39,7 +39,6 @@ import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -139,8 +138,20 @@ public class FactModelsEditorPresenter {
         multiPage.addWidget( importsWidget,
                              CommonConstants.INSTANCE.ConfigTabTitle() );
 
-        multiPage.addWidget( metadataWidget,
-                             MetadataConstants.INSTANCE.Metadata() );
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
+            @Override
+            public void onFocus() {
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new DefaultErrorCallback() ).getMetadata( path );
+            }
+
+            @Override
+            public void onLostFocus() {
+                //Nothing to do
+            }
+        } );
 
         loadContent();
     }
@@ -166,10 +177,6 @@ public class FactModelsEditorPresenter {
     private void loadContent() {
         factModelService.call( getModelSuccessCallback(),
                                new DefaultErrorCallback() ).loadContent( path );
-
-        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                           isReadOnly ),
-                              new DefaultErrorCallback() ).getMetadata( path );
     }
 
     private RemoteCallback<FactModelContent> getModelSuccessCallback() {
