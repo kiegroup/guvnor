@@ -16,22 +16,23 @@
 
 package org.kie.guvnor.builder;
 
-
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.guvnor.project.service.KModuleService;
+import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
+
+import static org.mockito.Mockito.*;
 
 @Singleton
 public class TestAppSetup {
 
-    private final IOService         ioService         = new IOServiceDotFileImpl();
+    private final IOService ioService = new IOServiceDotFileImpl();
     private final ActiveFileSystems activeFileSystems = new ActiveFileSystemsImpl();
 
     @PostConstruct
@@ -40,14 +41,19 @@ public class TestAppSetup {
 
     @Produces
     @Named("ioStrategy")
-    public IOService ioService() {
+    public IOService makeIOService() {
         return ioService;
     }
 
     @Produces
     @Named("fs")
-    public ActiveFileSystems fileSystems() {
+    public ActiveFileSystems makeFileSystems() {
         return activeFileSystems;
+    }
+
+    @Produces
+    public KModuleService makeKModuleService() {
+        return mock( KModuleService.class );
     }
 
 }
