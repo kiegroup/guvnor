@@ -5,6 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
@@ -51,7 +53,7 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
     @Override
     public void create( final Path contextPath,
                         final String baseFileName,
-                        final NewResourcePresenter presenter) {
+                        final NewResourcePresenter presenter ) {
         final FactModels factModel = new FactModels();
 
         new SaveOperationService().save( contextPath,
@@ -59,22 +61,40 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
                                              @Override
                                              public void execute( final String comment ) {
                                                  BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
-                                                 factModelService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path path ) {
-                                                         BusyPopup.close();
-                                                         presenter.complete();
-                                                         notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path );
-                                                         placeManager.goTo( place );
-                                                     }
-                                                 } ).create( contextPath,
-                                                             buildFileName( resourceType,
-                                                                            baseFileName ),
-                                                             factModel,
-                                                             comment );
+                                                 factModelService.call( getSuccessCallback( presenter ),
+                                                                        getErrorCallback() ).create( contextPath,
+                                                                                                     buildFileName( resourceType,
+                                                                                                                    baseFileName ),
+                                                                                                     factModel,
+                                                                                                     comment );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                BusyPopup.close();
+                presenter.complete();
+                notifySuccess();
+                final PlaceRequest place = new PathPlaceRequest( path );
+                placeManager.goTo( place );
+            }
+        };
+    }
+
+    private ErrorCallback getErrorCallback() {
+        return new ErrorCallback() {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                //TODO Do something useful with the error!
+                return true;
+            }
+        };
     }
 
 }

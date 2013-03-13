@@ -6,6 +6,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
@@ -60,22 +62,40 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                              @Override
                                              public void execute( final String comment ) {
                                                  BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
-                                                 scoreCardService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path path ) {
-                                                         BusyPopup.close();
-                                                         presenter.complete();
-                                                         notifySuccess();
-                                                         final PlaceRequest place = new PathPlaceRequest( path );
-                                                         placeManager.goTo( place );
-                                                     }
-                                                 } ).create( contextPath,
-                                                             buildFileName( resourceType,
-                                                                            baseFileName ),
-                                                             model,
-                                                             comment );
+                                                 scoreCardService.call( getSuccessCallback( presenter ),
+                                                                        getErrorCallback() ).create( contextPath,
+                                                                                                     buildFileName( resourceType,
+                                                                                                                    baseFileName ),
+                                                                                                     model,
+                                                                                                     comment );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                BusyPopup.close();
+                presenter.complete();
+                notifySuccess();
+                final PlaceRequest place = new PathPlaceRequest( path );
+                placeManager.goTo( place );
+            }
+        };
+    }
+
+    private ErrorCallback getErrorCallback() {
+        return new ErrorCallback() {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                //TODO Do something useful with the error!
+                return true;
+            }
+        };
     }
 
 }

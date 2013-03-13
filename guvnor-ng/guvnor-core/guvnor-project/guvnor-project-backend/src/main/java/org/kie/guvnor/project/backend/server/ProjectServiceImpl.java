@@ -23,7 +23,10 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.IOException;
+import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
@@ -32,6 +35,10 @@ import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -219,34 +226,59 @@ public class ProjectServiceImpl
     @Override
     public Path newProject( final Path activePath,
                             final String projectName ) {
-        final POM pomModel = new POM();
-        final Repository repository = new Repository();
-        repository.setId( "guvnor-m2-repo" );
-        repository.setName( "Guvnor M2 Repo" );
-        repository.setUrl( m2RepoService.getRepositoryURL() );
-        pomModel.addRepository( repository );
 
-        //Projects are always created in the FS root
-        final Path fsRoot = getFileSystemRoot( activePath );
-        final Path projectRootPath = getProjectRootPath( fsRoot,
-                                                         projectName );
+        Path projectRootPath = null;
+        try {
 
-        //Set-up project structure and KModule.xml
-        kModuleService.setUpKModuleStructure( projectRootPath );
+            final POM pomModel = new POM();
+            final Repository repository = new Repository();
+            repository.setId( "guvnor-m2-repo" );
+            repository.setName( "Guvnor M2 Repo" );
+            repository.setUrl( m2RepoService.getRepositoryURL() );
+            pomModel.addRepository( repository );
 
-        //Create POM.xml
-        pomService.create( projectRootPath );
+            //Projects are always created in the FS root
+            final Path fsRoot = getFileSystemRoot( activePath );
+            projectRootPath = getProjectRootPath( fsRoot,
+                                                  projectName );
 
-        //Create Project configuration
-        final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
-                                                      false );
-        ioService.write( paths.convert( projectConfigPath ),
-                         packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
+            //Set-up project structure and KModule.xml
+            kModuleService.setUpKModuleStructure( projectRootPath );
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
+            //Create POM.xml
+            pomService.create( projectRootPath );
 
-        return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
+            //Create Project configuration
+            final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
+                                                          false );
+            ioService.createFile( paths.convert( projectConfigPath ) );
+            ioService.write( paths.convert( projectConfigPath ),
+                             packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
+
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
+
+            return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( projectRootPath.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( projectRootPath.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( projectRootPath.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     private Path getFileSystemRoot( final Path activePath ) {
@@ -271,12 +303,35 @@ public class ProjectServiceImpl
     @Override
     public Path newDirectory( final Path contextPath,
                               final String dirName ) {
-        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
+        Path directoryPath = null;
+        try {
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+            directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
 
-        return directoryPath;
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+
+            return directoryPath;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( directoryPath.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( directoryPath.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( directoryPath.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {

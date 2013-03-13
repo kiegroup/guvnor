@@ -5,6 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
@@ -37,14 +39,32 @@ public class NewPackageHandler
     @Override
     public void create( final Path contextPath,
                         final String baseFileName,
-                        final NewResourcePresenter presenter) {
-        projectService.call( new RemoteCallback<Path>() {
+                        final NewResourcePresenter presenter ) {
+        projectService.call( getSuccessCallback( presenter ),
+                             getErrorCallback() ).newPackage( contextPath, baseFileName );
+    }
+
+    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Path>() {
+
             @Override
-            public void callback( final Path path ) {
+            public void callback( Path pathToPom ) {
                 presenter.complete();
                 notifySuccess();
             }
-        } ).newPackage( contextPath, baseFileName );
+        };
+    }
+
+    private ErrorCallback getErrorCallback() {
+        return new ErrorCallback() {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                //TODO Do something useful with the error!
+                return true;
+            }
+        };
     }
 
 }

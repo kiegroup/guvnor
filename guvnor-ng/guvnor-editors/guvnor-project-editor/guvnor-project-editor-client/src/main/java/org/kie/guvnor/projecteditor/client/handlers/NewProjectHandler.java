@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
@@ -66,20 +68,38 @@ public class NewProjectHandler
                                                  @Override
                                                  public void execute( final String comment ) {
                                                      BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
-                                                     projectServiceCaller.call( new RemoteCallback<Path>() {
-                                                         @Override
-                                                         public void callback( Path pathToPom ) {
-                                                             BusyPopup.close();
-                                                             presenter.complete();
-                                                             notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                                                             placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
-                                                         }
-                                                     } ).newProject( contextPath, projectName );
+                                                     projectServiceCaller.call( getSuccessCallback( presenter ),
+                                                                                getErrorCallback() ).newProject( contextPath, projectName );
                                                  }
                                              } );
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }
+    }
+
+    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( Path pathToPom ) {
+                BusyPopup.close();
+                presenter.complete();
+                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+                placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
+            }
+        };
+    }
+
+    private ErrorCallback getErrorCallback() {
+        return new ErrorCallback() {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                //TODO Do something useful with the error!
+                return true;
+            }
+        };
     }
 
     @Override

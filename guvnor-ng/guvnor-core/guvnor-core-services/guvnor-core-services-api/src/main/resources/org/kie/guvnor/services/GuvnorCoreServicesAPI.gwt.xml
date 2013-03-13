@@ -26,10 +26,10 @@
   <inherits name="org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI"/>
 
   <source path='config'/>
+  <source path='exceptions'/>
   <source path='file'/>
-  <source path='readonly'/>
   <source path='metadata'/>
+  <source path='readonly'/>
   <source path='version'/>
-  <source path='inbox'/>
-  
+
 </module>

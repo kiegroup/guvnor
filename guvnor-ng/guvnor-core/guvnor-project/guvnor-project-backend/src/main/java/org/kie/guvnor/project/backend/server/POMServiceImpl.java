@@ -11,11 +11,17 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.FileAlreadyExistsException;
+import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -63,9 +69,12 @@ public class POMServiceImpl
 
     @Override
     public Path create( final Path projectRoot ) {
+        org.kie.commons.java.nio.file.Path pathToPOMXML = null;
         try {
             final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
-            final org.kie.commons.java.nio.file.Path pathToPOMXML = nioRoot.resolve( "pom.xml" );
+            pathToPOMXML = nioRoot.resolve( "pom.xml" );
+
+            ioService.createFile( pathToPOMXML );
             ioService.write( pathToPOMXML,
                              pomContentHandler.toString( new POM() ) );
 
@@ -73,10 +82,25 @@ public class POMServiceImpl
 
             return paths.convert( pathToPOMXML );
 
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( pathToPOMXML.toUri().toString() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( pathToPOMXML.toUri().toString() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( pathToPOMXML.toUri().toString() );
+
         } catch ( IOException e ) {
-            e.printStackTrace();  //TODO Notify this in the Problems screen -Rikkola-
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
         }
-        return null;
     }
 
     @Override

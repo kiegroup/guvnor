@@ -26,10 +26,13 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -97,13 +100,30 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     public OutputStream save( final Path path,
                               final String comment ) {
         log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
-        final OutputStream outputStream = ioService.newOutputStream( paths.convert( path ),
-                                                                     makeCommentedOption( comment ) );
 
-        //Adds and updates are handled by the same POST of FORM data.. so raise an Added event for both
-        resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
+        OutputStream outputStream = null;
+        try {
+            outputStream = ioService.newOutputStream( paths.convert( path ),
+                                                      makeCommentedOption( comment ) );
 
-        return outputStream;
+            //Adds and updates are handled by the same POST of FORM data.. so raise an Added event for both
+            resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
+
+            return outputStream;
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( path.toURI() );
+
+        }
     }
 
     @Override

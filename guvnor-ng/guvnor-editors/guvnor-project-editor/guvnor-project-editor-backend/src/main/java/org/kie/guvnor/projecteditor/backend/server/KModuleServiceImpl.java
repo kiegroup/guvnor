@@ -24,12 +24,19 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.FileAlreadyExistsException;
+import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -74,6 +81,7 @@ public class KModuleServiceImpl
 
     @Override
     public Path setUpKModuleStructure( final Path projectRoot ) {
+        org.kie.commons.java.nio.file.Path pathToKModuleXML = null;
         try {
             // Create project structure
             final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
@@ -83,7 +91,8 @@ public class KModuleServiceImpl
             ioService.createDirectory( nioRoot.resolve( "src/test/java" ) );
             ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
 
-            final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            ioService.createFile( pathToKModuleXML );
             ioService.write( pathToKModuleXML,
                              moduleContentHandler.toString( new KModuleModel() ) );
 
@@ -91,10 +100,25 @@ public class KModuleServiceImpl
 
             return paths.convert( pathToKModuleXML );
 
-        } catch ( Exception e ) {
-            e.printStackTrace();  //TODO Need to use the Problems screen for these -Rikkola-
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( pathToKModuleXML.toUri().toString() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( pathToKModuleXML.toUri().toString() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( pathToKModuleXML.toUri().toString() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
         }
-        return null;
     }
 
     @Override
