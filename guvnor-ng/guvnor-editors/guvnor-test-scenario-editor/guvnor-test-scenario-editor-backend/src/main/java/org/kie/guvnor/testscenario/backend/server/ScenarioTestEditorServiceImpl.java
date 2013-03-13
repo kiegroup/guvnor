@@ -41,7 +41,7 @@ import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.testscenario.backend.server.util.ScenarioXMLPersistence;
+import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
