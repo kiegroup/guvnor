@@ -118,7 +118,8 @@ public class FileMenuBuilderImpl
                 final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String comment ) {
-                        deleteService.call( getDeleteSuccessCallback( callback ),
+                        deleteService.call( getDeleteSuccessCallback( path,
+                                                                      callback ),
                                             new DefaultErrorCallback() ).delete( path,
                                                                                  comment );
                     }
@@ -130,11 +131,12 @@ public class FileMenuBuilderImpl
         return this;
     }
 
-    private RemoteCallback<Path> getDeleteSuccessCallback( final Callback<Void, Void> callback ) {
-        return new RemoteCallback<Path>() {
+    private RemoteCallback<Void> getDeleteSuccessCallback( final Path path,
+                                                           final Callback<Void, Void> callback ) {
+        return new RemoteCallback<Void>() {
 
             @Override
-            public void callback( final Path path ) {
+            public void callback( final Void response ) {
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                 placeManager.closePlace( new PathPlaceRequest( path ) );
                 callback.onSuccess( null );

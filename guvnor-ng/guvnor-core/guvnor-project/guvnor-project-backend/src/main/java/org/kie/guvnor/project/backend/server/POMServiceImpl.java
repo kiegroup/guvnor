@@ -14,8 +14,6 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
@@ -36,20 +34,17 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class POMServiceImpl
-        implements POMService,
-                   ViewSourceService<POM> {
+        implements POMService {
 
     private IOService ioService;
     private Paths paths;
     private POMContentHandler pomContentHandler;
     private M2RepoService m2RepoService;
     private MetadataService metadataService;
-    private SourceServices sourceServices;
 
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
-    @Inject
     private Identity identity;
 
     public POMServiceImpl() {
@@ -62,17 +57,17 @@ public class POMServiceImpl
                            final POMContentHandler pomContentHandler,
                            final M2RepoService m2RepoService,
                            final MetadataService metadataService,
-                           final SourceServices sourceServices,
                            final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
-                           final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache ) {
+                           final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
+                           final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
-        this.sourceServices = sourceServices;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
+        this.identity = identity;
     }
 
     @Override
@@ -207,9 +202,4 @@ public class POMServiceImpl
         return co;
     }
 
-    @Override
-    public String toSource( final Path path,
-                            final POM model ) {
-        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
-    }
 }

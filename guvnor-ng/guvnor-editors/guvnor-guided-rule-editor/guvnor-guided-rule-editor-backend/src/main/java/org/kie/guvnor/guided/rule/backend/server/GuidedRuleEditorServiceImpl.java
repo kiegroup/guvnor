@@ -217,7 +217,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final String globalDefinition = ioService.readAllString( globalPath );
             globals.add( globalDefinition );
         }
-        final String[] result = new String[ globals.size() ];
         return globals;
     }
 

@@ -29,8 +29,6 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.commons.service.source.SourceServices;
-import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
@@ -49,16 +47,14 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class KModuleServiceImpl
-        implements KModuleService,
-                   ViewSourceService<KModuleModel> {
+        implements KModuleService {
 
     private IOService ioService;
-    private MetadataService metadataService;
-    private SourceServices sourceServices;
     private Paths paths;
+    private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
-    private Identity identity;
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+    private Identity identity;
 
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
@@ -66,19 +62,17 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final MetadataService metadataService,
-                               final SourceServices sourceServices,
                                final Paths paths,
+                               final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
-                               final Identity identity,
-                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
+                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                               final Identity identity ) {
         this.ioService = ioService;
-        this.metadataService = metadataService;
-        this.sourceServices = sourceServices;
         this.paths = paths;
+        this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
-        this.identity = identity;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
+        this.identity = identity;
     }
 
     @Override
@@ -210,9 +204,4 @@ public class KModuleServiceImpl
         return co;
     }
 
-    @Override
-    public String toSource( Path path,
-                            KModuleModel model ) {
-        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
-    }
 }

@@ -27,7 +27,6 @@ import org.kie.commons.io.IOService;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
-import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
@@ -43,7 +42,6 @@ public class BuildServiceImpl
     private static final String POM_FILE = "pom.xml";
 
     private Paths paths;
-    private SourceServices sourceServices;
     private Event<BuildResults> buildResultsEvent;
     private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
     private POMService pomService;
@@ -60,7 +58,6 @@ public class BuildServiceImpl
 
     @Inject
     public BuildServiceImpl( final Paths paths,
-                             final SourceServices sourceServices,
                              final POMService pomService,
                              final M2RepoService m2RepoService,
                              final Event<BuildResults> buildResultsEvent,
@@ -68,7 +65,6 @@ public class BuildServiceImpl
                              final IOService ioService,
                              final ProjectService projectService ) {
         this.paths = paths;
-        this.sourceServices = sourceServices;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.buildResultsEvent = buildResultsEvent;

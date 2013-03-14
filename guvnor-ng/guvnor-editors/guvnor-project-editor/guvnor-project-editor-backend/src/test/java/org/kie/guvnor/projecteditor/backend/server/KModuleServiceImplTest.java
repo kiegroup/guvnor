@@ -51,14 +51,12 @@ public class KModuleServiceImplTest {
         invalidateDMOProjectCache = mock( Event.class );
 
         setUpWrite();
-        SourceServices sourceServices = mock( SourceServices.class );
         serviceImpl = new KModuleServiceImpl( ioService,
-                                              mock( MetadataService.class ),
-                                              sourceServices,
                                               paths,
+                                              mock( MetadataService.class ),
                                               kProjectContentHandler,
-                                              mock( Identity.class ),
-                                              mock( Event.class ) );
+                                              mock( Event.class ),
+                                              mock( Identity.class ) );
     }
 
     private void setUpWrite() {
