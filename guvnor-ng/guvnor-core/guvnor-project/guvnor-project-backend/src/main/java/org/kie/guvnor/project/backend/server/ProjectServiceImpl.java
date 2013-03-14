@@ -146,7 +146,6 @@ public class ProjectServiceImpl
 
     @Override
     public Path resolvePackage( final Path resource ) {
-
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {
             return null;
@@ -158,39 +157,18 @@ public class ProjectServiceImpl
             return null;
         }
 
-        //The Path must be within a Project's src/main/resources or src/test/resources path
-        boolean resolved = false;
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path srcJavaPath = paths.convert( projectRoot ).resolve( SOURCE_JAVA_PATH );
-        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( SOURCE_RESOURCES_PATH );
-        final org.kie.commons.java.nio.file.Path testJavaPath = paths.convert( projectRoot ).resolve( TEST_JAVA_PATH );
-        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
-        if ( path.startsWith( srcJavaPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( srcResourcesPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( testJavaPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( testResourcesPath ) ) {
-            resolved = true;
+        //Check whether path is a Src package or a Test package
+        Path packagePath = doResolveSrcPackage( resource,
+                                                projectRoot );
+        if ( packagePath == null ) {
+            packagePath = doResolveTestPackage( resource,
+                                                projectRoot );
         }
-        if ( !resolved ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-
-        return paths.convert( path );
+        return packagePath;
     }
 
     @Override
     public Path resolveSrcPackage( final Path resource ) {
-
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {
             return null;
@@ -202,6 +180,12 @@ public class ProjectServiceImpl
             return null;
         }
 
+        return doResolveSrcPackage( resource,
+                                    projectRoot );
+    }
+
+    private Path doResolveSrcPackage( final Path resource,
+                                      final Path projectRoot ) {
         //The Path must be within a Project's src/main/java or src/main/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
@@ -228,7 +212,6 @@ public class ProjectServiceImpl
 
     @Override
     public Path resolveTestPackage( final Path resource ) {
-
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {
             return null;
@@ -240,6 +223,12 @@ public class ProjectServiceImpl
             return null;
         }
 
+        return doResolveTestPackage( resource,
+                                     projectRoot );
+    }
+
+    private Path doResolveTestPackage( final Path resource,
+                                       final Path projectRoot ) {
         //The Path must be within a Project's src/test/java or src/test/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
