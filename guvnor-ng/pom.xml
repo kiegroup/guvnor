@@ -38,7 +38,6 @@
     <module>guvnor-widgets</module>
     <module>guvnor-editors</module>
     <module>guvnor-showcase</module>
-    <module>drools-guvnor-models</module>
   </modules>
 
   <build>

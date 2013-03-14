@@ -1,4 +1,4 @@
-package org.kie.test;
+package org.kie.test.excel;
 
 public class Bean {
     private final int value;

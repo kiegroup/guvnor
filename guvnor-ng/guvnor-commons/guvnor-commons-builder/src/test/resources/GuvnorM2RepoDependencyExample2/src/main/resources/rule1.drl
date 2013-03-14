@@ -1,6 +1,5 @@
-import org.kie.test.Bean;
+import org.kie.test.dependency1.Bean;
 
- 
 rule Test
 
 when

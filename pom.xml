@@ -19,6 +19,7 @@
   <description>Guvnor is the web application and repository to govern Drools and jBPM assets.</description>
 
   <modules>
+    <module>drools-guvnor-models</module>
     <module>guvnor-ng</module>
     <module>guvnor-examples</module>
     <module>guvnor-jcr2vfs-migration</module>
