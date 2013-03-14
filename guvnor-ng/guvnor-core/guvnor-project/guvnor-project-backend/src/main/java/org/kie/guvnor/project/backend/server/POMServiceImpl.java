@@ -17,7 +17,9 @@ import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
@@ -37,13 +39,15 @@ public class POMServiceImpl
         implements POMService,
                    ViewSourceService<POM> {
 
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
     private IOService ioService;
     private Paths paths;
     private POMContentHandler pomContentHandler;
+    private M2RepoService m2RepoService;
     private MetadataService metadataService;
     private SourceServices sourceServices;
+
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
     private Identity identity;
@@ -53,32 +57,41 @@ public class POMServiceImpl
     }
 
     @Inject
-    public POMServiceImpl( final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
-                           final @Named("ioStrategy") IOService ioService,
-                           final MetadataService metadataService,
-                           final SourceServices sourceServices,
+    public POMServiceImpl( final @Named("ioStrategy") IOService ioService,
                            final Paths paths,
                            final POMContentHandler pomContentHandler,
-                           final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
-        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
+                           final M2RepoService m2RepoService,
+                           final MetadataService metadataService,
+                           final SourceServices sourceServices,
+                           final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                           final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache ) {
         this.ioService = ioService;
-        this.metadataService = metadataService;
-        this.sourceServices = sourceServices;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
+        this.m2RepoService = m2RepoService;
+        this.metadataService = metadataService;
+        this.sourceServices = sourceServices;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
+        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
     }
 
     @Override
     public Path create( final Path projectRoot ) {
         org.kie.commons.java.nio.file.Path pathToPOMXML = null;
         try {
+            final POM pomModel = new POM();
+            final Repository repository = new Repository();
+            repository.setId( "guvnor-m2-repo" );
+            repository.setName( "Guvnor M2 Repo" );
+            repository.setUrl( m2RepoService.getRepositoryURL() );
+            pomModel.addRepository( repository );
+
             final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
             pathToPOMXML = nioRoot.resolve( "pom.xml" );
 
             ioService.createFile( pathToPOMXML );
             ioService.write( pathToPOMXML,
-                             pomContentHandler.toString( new POM() ) );
+                             pomContentHandler.toString( pomModel ) );
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 

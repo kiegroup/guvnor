@@ -31,10 +31,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
-import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.PackageConfiguration;
-import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -70,7 +67,6 @@ public class ProjectServiceImpl
     private Paths paths;
 
     private POMService pomService;
-    private M2RepoService m2RepoService;
     private KModuleService kModuleService;
     private MetadataService metadataService;
     private PackageConfigurationContentHandler packageConfigurationContentHandler;
@@ -87,7 +83,6 @@ public class ProjectServiceImpl
     @Inject
     public ProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
                                final Paths paths,
-                               final M2RepoService m2RepoService,
                                final POMService pomService,
                                final KModuleService kModuleService,
                                final MetadataService metadataService,
@@ -97,7 +92,6 @@ public class ProjectServiceImpl
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
-        this.m2RepoService = m2RepoService;
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.metadataService = metadataService;
@@ -243,13 +237,6 @@ public class ProjectServiceImpl
 
         Path projectRootPath = null;
         try {
-
-            final POM pomModel = new POM();
-            final Repository repository = new Repository();
-            repository.setId( "guvnor-m2-repo" );
-            repository.setName( "Guvnor M2 Repo" );
-            repository.setUrl( m2RepoService.getRepositoryURL() );
-            pomModel.addRepository( repository );
 
             //Projects are always created in the FS root
             final Path fsRoot = getFileSystemRoot( activePath );

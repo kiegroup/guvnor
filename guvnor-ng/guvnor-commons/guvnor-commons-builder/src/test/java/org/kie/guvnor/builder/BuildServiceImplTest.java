@@ -22,6 +22,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.drools.rule.TypeMetaInfo;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
+import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
 import static org.junit.Assert.*;
@@ -81,6 +83,47 @@ public class BuildServiceImplTest {
         final BuildResults results = builder.build();
 
         assertTrue( results.getMessages().isEmpty() );
+    }
+
+    @Test
+    public void testBuilderKProjectHasDependencyMetaData() throws Exception {
+        Paths paths = getReference( Paths.class );
+        IOService ioService = getReference( IOService.class );
+
+        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+
+        final Builder builder = new Builder( path,
+                                             "guvnor-m2repo-dependency-example2",
+                                             paths,
+                                             ioService );
+
+        final BuildResults results = builder.build();
+        assertTrue( results.getMessages().isEmpty() );
+
+        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
+
+        //Check packages
+        assertEquals( 1,
+                      metaData.getPackages().size() );
+        final String packageName = metaData.getPackages().iterator().next();
+        assertEquals( "org.kie.test",
+                      packageName );
+
+        //Check classes
+        assertEquals( 1,
+                      metaData.getClasses( packageName ).size() );
+        final String className = metaData.getClasses( packageName ).iterator().next();
+        assertEquals( "Bean",
+                      className );
+
+        //Check metadata
+        final Class clazz = metaData.getClass( packageName,
+                                               className );
+        final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
+        assertNotNull( typeMetaInfo );
+        assertFalse( typeMetaInfo.isEvent() );
     }
 
     @Test

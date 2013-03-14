@@ -131,4 +131,10 @@ public class ImportsWidgetPresenter
     public boolean isDirty() {
         return false; // TODO: -Rikkola-
     }
+
+
+    public void setNotDirty() {
+        // TODO: -Rikkola-
+    }
+
 }
