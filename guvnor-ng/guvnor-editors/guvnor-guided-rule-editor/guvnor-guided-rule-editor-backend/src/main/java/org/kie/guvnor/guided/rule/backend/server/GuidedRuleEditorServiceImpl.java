@@ -226,17 +226,38 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                       final RuleModel model,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         toSource( resource,
-                                   model ),
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             toSource( resource,
+                                       model ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( resource.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( resource.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( resource.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override

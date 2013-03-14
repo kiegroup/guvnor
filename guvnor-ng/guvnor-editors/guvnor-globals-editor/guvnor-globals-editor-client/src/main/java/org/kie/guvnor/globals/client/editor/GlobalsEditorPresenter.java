@@ -192,20 +192,26 @@ public class GlobalsEditorPresenter {
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 globalsEditorService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         view.setNotDirty();
-                                                         view.hideBusyIndicator();
-                                                         metadataWidget.resetDirty();
-                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                                                     }
-                                                 } ).save( path,
-                                                           model,
-                                                           metadataWidget.getContent(),
-                                                           comment );
+                                                 globalsEditorService.call( getSaveSuccessCallback(),
+                                                                            new DefaultErrorCallback() ).save( path,
+                                                                                                               model,
+                                                                                                               metadataWidget.getContent(),
+                                                                                                               comment );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                metadataWidget.resetDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @WorkbenchPartView

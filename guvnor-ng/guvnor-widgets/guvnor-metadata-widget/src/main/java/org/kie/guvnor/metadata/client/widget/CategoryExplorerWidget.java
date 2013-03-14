@@ -140,7 +140,7 @@ public class CategoryExplorerWidget
 
                         root.setState( true );
                     }
-                }, CategoriesService.class ).getCategoriesFromResouce( resource );
+                }, CategoriesService.class ).getCategoriesFromResource( resource );
             }
         } );
 

@@ -17,6 +17,7 @@
 package org.kie.guvnor.categories.client;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -41,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 
 /**
@@ -55,6 +57,9 @@ public class CategoriesEditorPresenter {
 
     @Inject
     private Caller<CategoriesService> categoryService;
+
+    @Inject
+    private Event<NotificationEvent> notification;
 
     @Inject
     private FileMenuBuilder menuBuilder;
@@ -100,16 +105,23 @@ public class CategoriesEditorPresenter {
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 categoryService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         view.setNotDirty();
-                                                         view.hideBusyIndicator();
-                                                     }
-                                                 } ).save( path,
-                                                           view.getContent() );
+                                                 categoryService.call( getSaveSuccessCallback(),
+                                                                       new DefaultErrorCallback() ).save( path,
+                                                                                                          view.getContent() );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @IsDirty

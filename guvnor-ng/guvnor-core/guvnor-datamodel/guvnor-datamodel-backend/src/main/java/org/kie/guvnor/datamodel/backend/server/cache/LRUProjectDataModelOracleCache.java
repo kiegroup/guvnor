@@ -121,7 +121,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( projectPath ).resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
-            final PackageConfiguration packageConfiguration = projectService.loadPackageConfiguration( externalImportsPath );
+            final PackageConfiguration packageConfiguration = projectService.load( externalImportsPath );
             final Imports imports = packageConfiguration.getImports();
             for ( final Import item : imports.getImports() ) {
                 try {

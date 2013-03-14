@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
@@ -42,17 +43,20 @@ public class KModuleEditorPanel
             view.makeReadOnly();
         }
 
-        projectEditorServiceCaller.call( new RemoteCallback<KModuleModel>() {
+        projectEditorServiceCaller.call( getModelSuccessCallback(),
+                                         new DefaultErrorCallback() ).load( path );
+    }
+
+    private RemoteCallback<KModuleModel> getModelSuccessCallback() {
+        return new RemoteCallback<KModuleModel>() {
+
             @Override
-            public void callback( KModuleModel model ) {
-
+            public void callback( final KModuleModel model ) {
                 KModuleEditorPanel.this.model = model;
-
                 setItems( model.getKBases() );
-
                 hasBeenInitialized = true;
             }
-        } ).load( path );
+        };
     }
 
     @Override
@@ -64,15 +68,21 @@ public class KModuleEditorPanel
 
     public void save( String commitMessage,
                       Metadata metadata ) {
-        projectEditorServiceCaller.call( new RemoteCallback<Path>() {
+        projectEditorServiceCaller.call( getSaveSuccessCallback(),
+                                         new DefaultErrorCallback() ).save( path,
+                                                                            model,
+                                                                            metadata,
+                                                                            commitMessage );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
             @Override
             public void callback( final Path path ) {
                 view.showSaveSuccessful( "kmodule.xml" );
             }
-        } ).save( path,
-                  model,
-                  metadata,
-                  commitMessage );
+        };
     }
 
     public boolean hasBeenInitialized() {

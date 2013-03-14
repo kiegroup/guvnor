@@ -17,12 +17,12 @@
 package org.drools.guvnor.models.testscenarios.backend;
 
 import java.util.Date;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -31,17 +31,18 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -132,12 +133,24 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
 
     @Override
     public Scenario load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return ScenarioXMLPersistence.getInstance().unmarshal( content );
+            return ScenarioXMLPersistence.getInstance().unmarshal( content );
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override
@@ -145,19 +158,40 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
                       final Scenario content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         ScenarioXMLPersistence.getInstance().marshal( content ),
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             ScenarioXMLPersistence.getInstance().marshal( content ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Invalidate Package-level DMO cache as Globals have changed.
-        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+            //Invalidate Package-level DMO cache as Globals have changed.
+            invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( resource.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( resource.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( resource.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override

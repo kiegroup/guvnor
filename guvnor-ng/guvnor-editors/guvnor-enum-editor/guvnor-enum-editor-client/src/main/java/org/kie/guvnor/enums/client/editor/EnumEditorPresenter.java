@@ -179,19 +179,26 @@ public class EnumEditorPresenter {
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 enumService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         view.setNotDirty();
-                                                         view.hideBusyIndicator();
-                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                                                     }
-                                                 } ).save( path,
-                                                           view.getContent(),
-                                                           metadataWidget.getContent(),
-                                                           commitMessage );
+                                                 enumService.call( getSaveSuccessCallback(),
+                                                                   new DefaultErrorCallback() ).save( path,
+                                                                                                      view.getContent(),
+                                                                                                      metadataWidget.getContent(),
+                                                                                                      commitMessage );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                metadataWidget.resetDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @IsDirty

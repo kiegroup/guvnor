@@ -46,6 +46,8 @@ import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.guvnor.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -78,6 +80,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private MetadataService metadataService;
 
     @Inject
     //Type Definition to ensure new files have correct extension
@@ -300,7 +305,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
         final Path externalImportsPath = paths.convert( nioExternalImportsPath );
         if ( Files.exists( nioExternalImportsPath ) ) {
-            packageConfiguration = projectService.loadPackageConfiguration( externalImportsPath );
+            packageConfiguration = projectService.load( externalImportsPath );
         }
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
@@ -322,8 +327,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Save update
         if ( isModified ) {
+            final Metadata metadata = metadataService.getMetadata( context );
             projectService.save( externalImportsPath,
-                                 packageConfiguration );
+                                 packageConfiguration,
+                                 metadata,
+                                 "Imports added during XLS conversion" );
         }
     }
 

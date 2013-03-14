@@ -12,5 +12,5 @@ public interface CategoriesService {
 
     Categories getContent( final Path path );
 
-    Categories getCategoriesFromResouce( final Path resource );
+    Categories getCategoriesFromResource( final Path resource );
 }

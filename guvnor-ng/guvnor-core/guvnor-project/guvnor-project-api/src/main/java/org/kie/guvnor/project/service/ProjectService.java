@@ -19,13 +19,16 @@ package org.kie.guvnor.project.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.services.file.SupportsRead;
+import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 /**
  *
  */
 @Remote
-public interface ProjectService {
+public interface ProjectService extends SupportsRead<PackageConfiguration>,
+                                        SupportsUpdate<PackageConfiguration> {
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
@@ -66,8 +69,4 @@ public interface ProjectService {
     Path newDirectory( final Path contextPath,
                        final String dirName );
 
-    PackageConfiguration loadPackageConfiguration( Path path );
-
-    void save( Path path,
-               PackageConfiguration packageConfiguration );
 }

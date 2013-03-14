@@ -24,7 +24,7 @@ import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
 import org.kie.guvnor.commons.ui.client.popups.text.PopupSetFieldCommand;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
@@ -37,7 +37,7 @@ public class ImportsWidgetPresenter
 
     @Inject
     public ImportsWidgetPresenter( final ImportsWidgetView view,
-                                   final FormPopup addImportPopup) {
+                                   final FormPopup addImportPopup ) {
         this.view = view;
         this.addImportPopup = addImportPopup;
         view.setPresenter( this );
@@ -88,4 +88,9 @@ public class ImportsWidgetPresenter
     public boolean isDirty() {
         return false; // TODO: -Rikkola-
     }
+
+    public void setNotDirty() {
+        // TODO: -Rikkola-
+    }
+
 }

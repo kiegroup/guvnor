@@ -27,6 +27,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
@@ -112,21 +113,30 @@ public class GuvnorTextEditorPresenter
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save( path, new CommandWithCommitMessage() {
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 defaultEditorService.call( getSaveSuccessCallback(),
+                                                                            new DefaultErrorCallback() ).save( path,
+                                                                                                               view.getContent(),
+                                                                                                               metadataWidget.getContent(),
+                                                                                                               commitMessage );
+                                             }
+                                         } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
             @Override
-            public void execute( final String commitMessage ) {
-                defaultEditorService.call( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void response ) {
-                        view.setDirty( false );
-                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    }
-                } ).save( path,
-                          view.getContent(),
-                          metadataWidget.getContent(),
-                          commitMessage );
+            public void callback( final Path path ) {
+                BusyPopup.close();
+                view.setDirty( false );
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } );
+        };
     }
 
     @WorkbenchMenu

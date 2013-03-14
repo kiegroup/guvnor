@@ -141,19 +141,25 @@ public class GuvnorDefaultEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
-                                                 defaultEditorService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         BusyPopup.close();
-                                                         view.setDirty( false );
-                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                                                     }
-                                                 } ).save( path,
-                                                           view.getContent(),
-                                                           metadataWidget.getContent(),
-                                                           commitMessage );
+                                                 defaultEditorService.call( getSaveSuccessCallback(),
+                                                                            new DefaultErrorCallback() ).save( path,
+                                                                                                               view.getContent(),
+                                                                                                               metadataWidget.getContent(),
+                                                                                                               commitMessage );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                BusyPopup.close();
+                view.setDirty( false );
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @IsDirty

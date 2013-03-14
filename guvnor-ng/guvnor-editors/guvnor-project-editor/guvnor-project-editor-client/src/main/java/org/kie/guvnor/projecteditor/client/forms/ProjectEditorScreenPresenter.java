@@ -67,14 +67,13 @@ public class
     }
 
     @Inject
-    public ProjectEditorScreenPresenter(
-            @New ProjectEditorScreenView view,
-            @New POMEditorPanel pomPanel,
-            @New KModuleEditorPanel kModuleEditorPanel,
-            Caller<KModuleService> kModuleServiceCaller,
-            Caller<BuildService> buildServiceCaller,
-            Caller<MetadataService> metadataService,
-            SaveOperationService saveOperationService ) {
+    public ProjectEditorScreenPresenter( @New ProjectEditorScreenView view,
+                                         @New POMEditorPanel pomPanel,
+                                         @New KModuleEditorPanel kModuleEditorPanel,
+                                         Caller<KModuleService> kModuleServiceCaller,
+                                         Caller<BuildService> buildServiceCaller,
+                                         Caller<MetadataService> metadataService,
+                                         SaveOperationService saveOperationService ) {
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
@@ -111,20 +110,23 @@ public class
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        saveOperationService.save( pathToPomXML, new CommandWithCommitMessage() {
-                            @Override
-                            public void execute( final String comment ) {
-                                // We need to use callback here or jgit will break when we save two files at the same time.
-                                pomPanel.save( comment, new com.google.gwt.user.client.Command() {
-                                    @Override
-                                    public void execute() {
-                                        if ( kModuleEditorPanel.hasBeenInitialized() ) {
-                                            kModuleEditorPanel.save( comment, kmoduleMetadata );
-                                        }
-                                    }
-                                }, pomMetadata );
-                            }
-                        } );
+                        saveOperationService.save( pathToPomXML,
+                                                   new CommandWithCommitMessage() {
+                                                       @Override
+                                                       public void execute( final String comment ) {
+                                                           // We need to use callback here or jgit will break when we save two files at the same time.
+                                                           pomPanel.save( comment,
+                                                                          new com.google.gwt.user.client.Command() {
+                                                                              @Override
+                                                                              public void execute() {
+                                                                                  if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                                                                                      kModuleEditorPanel.save( comment,
+                                                                                                               kmoduleMetadata );
+                                                                                  }
+                                                                              }
+                                                                          }, pomMetadata );
+                                                       }
+                                                   } );
                     }
                 } )
                 .endMenu()

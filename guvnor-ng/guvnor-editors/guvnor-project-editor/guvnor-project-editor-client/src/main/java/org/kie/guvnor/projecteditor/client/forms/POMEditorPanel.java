@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -38,43 +39,43 @@ public class POMEditorPanel
     private final Caller<POMService> pomServiceCaller;
 
     @Inject
-    public POMEditorPanel( Caller<POMService> pomServiceCaller,
-                           POMEditorPanelView view ) {
+    public POMEditorPanel( final Caller<POMService> pomServiceCaller,
+                           final POMEditorPanelView view ) {
         this.pomServiceCaller = pomServiceCaller;
         this.view = view;
 
     }
 
-    public void init( Path path,
-                      boolean isReadOnly ) {
+    public void init( final Path path,
+                      final boolean isReadOnly ) {
         this.path = path;
         if ( isReadOnly ) {
             view.setReadOnly();
         }
-        pomServiceCaller.call(
-                new RemoteCallback<POM>() {
-                    @Override
-                    public void callback( final POM model ) {
-                        POMEditorPanel.this.model = model;
-
-                        view.setGAV( model.getGav() );
-
-                        view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
-                            @Override
-                            public void onChange( String newArtifactId ) {
-                                setTitle( newArtifactId );
-                            }
-                        } );
-
-                        setTitle( model.getGav().getArtifactId() );
-
-                        view.setDependencies( POMEditorPanel.this.model.getDependencies() );
-                    }
-                }
-                             ).load( path );
+        pomServiceCaller.call( getModelSuccessCallback(),
+                               new DefaultErrorCallback() ).load( path );
     }
 
-    private void setTitle( String titleText ) {
+    private RemoteCallback<POM> getModelSuccessCallback() {
+        return new RemoteCallback<POM>() {
+
+            @Override
+            public void callback( final POM model ) {
+                POMEditorPanel.this.model = model;
+                view.setGAV( model.getGav() );
+                view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
+                    @Override
+                    public void onChange( String newArtifactId ) {
+                        setTitle( newArtifactId );
+                    }
+                } );
+                setTitle( model.getGav().getArtifactId() );
+                view.setDependencies( POMEditorPanel.this.model.getDependencies() );
+            }
+        };
+    }
+
+    private void setTitle( final String titleText ) {
         if ( titleText == null || titleText.isEmpty() ) {
             view.setTitleText( ProjectEditorConstants.INSTANCE.ProjectModel() );
         } else {
@@ -85,16 +86,22 @@ public class POMEditorPanel
     public void save( final String commitMessage,
                       final Command callback,
                       final Metadata metadata ) {
+        pomServiceCaller.call( getSaveSuccessCallback( callback ),
+                               new DefaultErrorCallback() ).save( path,
+                                                                  model,
+                                                                  metadata,
+                                                                  commitMessage );
+    }
 
-        pomServiceCaller.call(
-                new RemoteCallback<Path>() {
-                    @Override
-                    public void callback( Path path ) {
-                        callback.execute();
-                        view.showSaveSuccessful( "pom.xml" );
-                    }
-                }
-                             ).save( path, model, metadata, commitMessage );
+    private RemoteCallback<Path> getSaveSuccessCallback( final Command callback ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                callback.execute();
+                view.showSaveSuccessful( "pom.xml" );
+            }
+        };
     }
 
     @Override

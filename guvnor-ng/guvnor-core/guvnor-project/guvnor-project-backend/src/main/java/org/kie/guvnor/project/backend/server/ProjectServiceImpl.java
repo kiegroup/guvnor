@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.project.backend.server;
 
+import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.InvalidPathException;
@@ -41,11 +43,14 @@ import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
 import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
+import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
+import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -67,32 +72,39 @@ public class ProjectServiceImpl
     private POMService pomService;
     private M2RepoService m2RepoService;
     private KModuleService kModuleService;
+    private MetadataService metadataService;
     private PackageConfigurationContentHandler packageConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+
+    private Identity identity;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
 
     @Inject
-    public ProjectServiceImpl( final M2RepoService m2RepoService,
-                               final @Named("ioStrategy") IOService ioService,
+    public ProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
                                final Paths paths,
-                               final KModuleService kModuleService,
+                               final M2RepoService m2RepoService,
                                final POMService pomService,
+                               final KModuleService kModuleService,
+                               final MetadataService metadataService,
                                final PackageConfigurationContentHandler packageConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
-                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent ) {
-        this.m2RepoService = m2RepoService;
+                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                               final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
-        this.kModuleService = kModuleService;
+        this.m2RepoService = m2RepoService;
         this.pomService = pomService;
+        this.kModuleService = kModuleService;
+        this.metadataService = metadataService;
         this.packageConfigurationContentHandler = packageConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
+        this.identity = identity;
     }
 
     @Override
@@ -347,7 +359,7 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public PackageConfiguration loadPackageConfiguration( final Path path ) {
+    public PackageConfiguration load( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
             return packageConfigurationContentHandler.toModel( content );
@@ -365,11 +377,51 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public void save( final Path path,
-                      final PackageConfiguration packageConfiguration ) {
-        ioService.write( paths.convert( path ), packageConfigurationContentHandler.toString( packageConfiguration ) );
+    public Path save( final Path resource,
+                      final PackageConfiguration packageConfiguration,
+                      final Metadata metadata,
+                      final String comment ) {
+        try {
+            ioService.write( paths.convert( resource ),
+                             packageConfigurationContentHandler.toString( packageConfiguration ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
+            return resource;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( resource.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( resource.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( resource.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
+    }
+
 }

@@ -221,20 +221,26 @@ public class FactModelsEditorPresenter {
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 factModelService.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         view.setNotDirty();
-                                                         view.hideBusyIndicator();
-                                                         metadataWidget.resetDirty();
-                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                                                     }
-                                                 } ).save( path,
-                                                           view.getContent(),
-                                                           metadataWidget.getContent(),
-                                                           comment );
+                                                 factModelService.call( getSaveSuccessCallback(),
+                                                                        new DefaultErrorCallback() ).save( path,
+                                                                                                           view.getContent(),
+                                                                                                           metadataWidget.getContent(),
+                                                                                                           comment );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                metadataWidget.resetDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @WorkbenchPartView

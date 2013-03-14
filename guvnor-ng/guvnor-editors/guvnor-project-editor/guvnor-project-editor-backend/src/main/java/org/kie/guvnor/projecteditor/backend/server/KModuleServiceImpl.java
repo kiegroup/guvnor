@@ -28,6 +28,7 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
 import org.kie.guvnor.project.backend.server.KModuleContentHandler;
@@ -36,6 +37,7 @@ import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
+import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -123,7 +125,22 @@ public class KModuleServiceImpl
 
     @Override
     public KModuleModel load( final Path path ) {
-        return moduleContentHandler.toModel( ioService.readAllString( paths.convert( path ) ) );
+        try {
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+            final String content = ioService.readAllString( nioPath );
+
+            return moduleContentHandler.toModel( content );
+
+        } catch ( NoSuchFileException e ) {
+            throw new NoSuchFilePortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override
@@ -131,23 +148,45 @@ public class KModuleServiceImpl
                       final KModuleModel content,
                       final Metadata metadata,
                       final String comment ) {
-        if ( metadata == null ) {
-            ioService.write(
-                    paths.convert( path ),
-                    moduleContentHandler.toString( content ),
-                    makeCommentedOption( comment ) );
-        } else {
-            ioService.write(
-                    paths.convert( path ),
-                    moduleContentHandler.toString( content ),
-                    metadataService.setUpAttributes( path,
-                                                     metadata ),
-                    makeCommentedOption( comment ) );
-        }
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+        try {
+            if ( metadata == null ) {
+                ioService.write(
+                        paths.convert( path ),
+                        moduleContentHandler.toString( content ),
+                        makeCommentedOption( comment ) );
+            } else {
+                ioService.write(
+                        paths.convert( path ),
+                        moduleContentHandler.toString( content ),
+                        metadataService.setUpAttributes( path,
+                                                         metadata ),
+                        makeCommentedOption( comment ) );
+            }
 
-        return path;
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+
+            return path;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( path.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( path.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( path.toURI() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
     }
 
     @Override

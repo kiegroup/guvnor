@@ -148,20 +148,25 @@ public class ScenarioEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
-
-                                                 service.call( new RemoteCallback<Path>() {
-                                                     @Override
-                                                     public void callback( final Path response ) {
-                                                         BusyPopup.close();
-                                                         metadataWidget.resetDirty();
-                                                         notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                                                     }
-                                                 } ).save( path,
-                                                           scenarioWidgetComponentCreator.getScenario(),
-                                                           metadataWidget.getContent(),
-                                                           commitMessage );
+                                                 service.call( getSaveSuccessCallback(),
+                                                               new DefaultErrorCallback() ).save( path,
+                                                                                                  scenarioWidgetComponentCreator.getScenario(),
+                                                                                                  metadataWidget.getContent(),
+                                                                                                  commitMessage );
                                              }
                                          } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                BusyPopup.close();
+                metadataWidget.resetDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @WorkbenchPartTitle

@@ -25,6 +25,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
@@ -32,6 +34,9 @@ import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.IsDirty;
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -47,16 +52,18 @@ public class ProjectConfigScreenPresenter
         implements ProjectConfigScreenView.Presenter {
 
     private ProjectConfigScreenView view;
-    private Caller<ProjectService> projectEditorServiceCaller;
-    private Caller<MetadataService> metadataService;
-    private Path path;
-    private PackageConfiguration packageConfiguration;
 
-    private FileMenuBuilder menuBuilder;
+    private Caller<ProjectService> projectService;
+    private Caller<MetadataService> metadataService;
+    private PackageConfiguration packageConfiguration;
 
     private Event<NotificationEvent> notification;
 
+    private FileMenuBuilder menuBuilder;
     private Menus menus;
+
+    private Path path;
+    private boolean isReadOnly;
 
     public ProjectConfigScreenPresenter() {
     }
@@ -64,12 +71,12 @@ public class ProjectConfigScreenPresenter
     @Inject
     public ProjectConfigScreenPresenter( @New ProjectConfigScreenView view,
                                          @New FileMenuBuilder menuBuilder,
-                                         Caller<ProjectService> projectEditorServiceCaller,
+                                         Caller<ProjectService> projectService,
                                          Caller<MetadataService> metadataService,
                                          Event<NotificationEvent> notification ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
-        this.projectEditorServiceCaller = projectEditorServiceCaller;
+        this.projectService = projectService;
         this.metadataService = metadataService;
         this.notification = notification;
         view.setPresenter( this );
@@ -82,8 +89,8 @@ public class ProjectConfigScreenPresenter
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        projectEditorServiceCaller.call( getModelSuccessCallback(),
-                                         new DefaultErrorCallback() ).loadPackageConfiguration( path );
+        projectService.call( getModelSuccessCallback(),
+                             new DefaultErrorCallback() ).load( path );
     }
 
     private void makeMenuBar() {
@@ -136,14 +143,53 @@ public class ProjectConfigScreenPresenter
 
     @OnSave
     public void onSave() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        projectEditorServiceCaller.call( new RemoteCallback<Void>() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 projectService.call( getSaveSuccessCallback(),
+                                                                      new DefaultErrorCallback() ).save( path,
+                                                                                                         packageConfiguration,
+                                                                                                         view.getMetadata(),
+                                                                                                         comment );
+                                             }
+                                         } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
             @Override
-            public void callback( Void v ) {
+            public void callback( final Path path ) {
+                view.setNotDirty();
                 view.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
-        } ).save( path, packageConfiguration );
+        };
+    }
+
+    @IsDirty
+    public boolean isDirty() {
+        return view.isDirty();
+    }
+
+    @OnClose
+    public void onClose() {
+        this.path = null;
+    }
+
+    @OnMayClose
+    public boolean checkIfDirty() {
+        if ( isDirty() ) {
+            return view.confirmClose();
+        }
+        return true;
     }
 
     @WorkbenchMenu

@@ -2,7 +2,9 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
 import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
@@ -65,6 +67,31 @@ public class ProjectConfigScreenViewImpl
     public void setMetadata( final Metadata metadata ) {
         metadataWidget.setContent( metadata,
                                    false );
+    }
+
+    @Override
+    public Metadata getMetadata() {
+        return metadataWidget.getContent();
+    }
+
+    @Override
+    public boolean isDirty() {
+        return importsWidget.isDirty();
+    }
+
+    @Override
+    public void setNotDirty() {
+        importsWidget.setNotDirty();
+    }
+
+    @Override
+    public boolean confirmClose() {
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
+
+    @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     @Override
