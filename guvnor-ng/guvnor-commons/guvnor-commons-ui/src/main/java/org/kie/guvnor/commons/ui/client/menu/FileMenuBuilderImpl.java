@@ -26,6 +26,7 @@ import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithFileNameAndCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CopyPopup;
@@ -117,15 +118,9 @@ public class FileMenuBuilderImpl
                 final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String comment ) {
-                        deleteService.call( new RemoteCallback<Path>() {
-                            @Override
-                            public void callback( Path response ) {
-                                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                                placeManager.closePlace( new PathPlaceRequest( path ) );
-                                callback.onSuccess( null );
-                            }
-                        } ).delete( path,
-                                    comment );
+                        deleteService.call( getDeleteSuccessCallback( callback ),
+                                            new DefaultErrorCallback() ).delete( path,
+                                                                                 comment );
                     }
                 } );
 
@@ -133,6 +128,18 @@ public class FileMenuBuilderImpl
             }
         };
         return this;
+    }
+
+    private RemoteCallback<Path> getDeleteSuccessCallback( final Callback<Void, Void> callback ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                placeManager.closePlace( new PathPlaceRequest( path ) );
+                callback.onSuccess( null );
+            }
+        };
     }
 
     @Override
@@ -167,15 +174,10 @@ public class FileMenuBuilderImpl
                 final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
                     public void execute( final FileNameAndCommitMessage details ) {
-                        renameService.call( new RemoteCallback<Path>() {
-                            @Override
-                            public void callback( Path response ) {
-                                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                callback.onSuccess( response );
-                            }
-                        } ).rename( path,
-                                    details.getNewFileName(),
-                                    details.getCommitMessage() );
+                        renameService.call( getRenameSuccessCallback( callback ),
+                                            new DefaultErrorCallback() ).rename( path,
+                                                                                 details.getNewFileName(),
+                                                                                 details.getCommitMessage() );
                     }
                 } );
 
@@ -184,6 +186,17 @@ public class FileMenuBuilderImpl
         };
 
         return this;
+    }
+
+    private RemoteCallback<Path> getRenameSuccessCallback( final Callback<Path, Void> callback ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                callback.onSuccess( path );
+            }
+        };
     }
 
     @Override
@@ -218,17 +231,10 @@ public class FileMenuBuilderImpl
                 final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
                     public void execute( final FileNameAndCommitMessage details ) {
-                        copyService.call(
-                                new RemoteCallback<Path>() {
-                                    @Override
-                                    public void callback( Path result ) {
-                                        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                        callback.onSuccess( result );
-                                    }
-                                }
-                                        ).copy( path,
-                                                details.getNewFileName(),
-                                                details.getCommitMessage() );
+                        copyService.call( getCopySuccessCallback( callback ),
+                                          new DefaultErrorCallback() ).copy( path,
+                                                                             details.getNewFileName(),
+                                                                             details.getCommitMessage() );
                     }
                 } );
                 popup.show();
@@ -236,6 +242,17 @@ public class FileMenuBuilderImpl
         };
 
         return this;
+    }
+
+    private RemoteCallback<Path> getCopySuccessCallback( final Callback<Path, Void> callback ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                callback.onSuccess( path );
+            }
+        };
     }
 
     @Override
