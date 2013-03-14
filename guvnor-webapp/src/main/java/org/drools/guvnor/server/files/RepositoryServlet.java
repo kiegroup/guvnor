@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 /**
@@ -52,7 +53,7 @@ public class RepositoryServlet extends HttpServlet {
                 manager.setRepository(new RulesRepository(TestEnvironmentSessionHelper.getSession(false)));
                 return manager;
             } catch (Exception e) {
-                throw new IllegalStateException();
+                throw new IllegalStateException(e.getMessage());
             }
 
         }
@@ -133,26 +134,35 @@ public class RepositoryServlet extends HttpServlet {
     }
 
     static String[] unpack(String auth) {
-
-        // Get encoded user and password, comes after "BASIC "
-        if (Contexts.isApplicationContextActive()) {
-            String userpassEncoded = auth.substring(6);
-            String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded.getBytes()));
-
-            String[] a = userpassDecoded.split(":", 2);
-            for (int i = 0; i < a.length; i++) {
-                a[i] = a[i].trim();
-            }
-            if (a.length == 2) {
-                return a;
-            } else if (a.length == 1) {
-                //pwd is empty
-                return new String[]{a[0], ""};
+        try {
+            // Get encoded user and password, comes after "BASIC "
+            if (Contexts.isApplicationContextActive()) {
+                String userpassEncoded = auth.substring(6);
+                String userpassDecoded =  new String(org.apache.commons.codec.binary.Base64.decodeBase64(userpassEncoded.getBytes("UTF-8")));
+                String[] parts = userpassDecoded.split(":");
+                if(parts.length == 2) {
+                    return parts;
+                } else if(parts.length > 2) {
+                    String usrPart = parts[0];
+                    String pwdPart = "";
+                    for(int i=1;i<parts.length;i++) {
+                        pwdPart += parts[i] + ":";
+                    }
+                    if(pwdPart.endsWith(":")) {
+                        pwdPart = pwdPart.substring(0, pwdPart.length() - 1);
+                    }
+                    return new String[]{usrPart, pwdPart};
+                } else if(parts.length == 1) {
+                    return new String[]{parts[0], ""};
+                } else {
+                    return new String[]{"", ""};
+                }
             } else {
-                return new String[]{"", ""};
+                return new String[]{"test", "password"};
             }
-        } else {
-            return new String[]{"test", "password"};
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e.getMessage());
         }
+
     }
 }
