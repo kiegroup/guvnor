@@ -46,7 +46,7 @@ public class GlobalFactPopulatorTest {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
 
         KieSession ksession = mock( KieSession.class );
         Map<String, Object> populatedData = new HashMap<String, Object>();

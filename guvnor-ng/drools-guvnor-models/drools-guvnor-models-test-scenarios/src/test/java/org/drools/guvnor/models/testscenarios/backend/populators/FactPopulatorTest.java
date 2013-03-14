@@ -589,13 +589,13 @@ public class FactPopulatorTest {
 
     private TypeResolver getTypeResolver() {
         TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), getClassLoader());
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.MyCollectionWrapper");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.Cheesery");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.Cheese");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.SqlDateWrapper");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.CheeseType");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.Person");
-        resolver.addImport("org.kie.guvnor.testscenario.backend.server.OuterFact");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.MyCollectionWrapper");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.Cheesery");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.Cheese");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.SqlDateWrapper");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.CheeseType");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.Person");
+        resolver.addImport("org.drools.guvnor.models.testscenarios.backend.OuterFact");
         return resolver;
     }
 

@@ -16,7 +16,7 @@
 
 package foo.bar
 
-import org.kie.guvnor.testscenario.backend.server.Cheese
+import org.drools.guvnor.models.testscenarios.backend.Cheese
 
 
 rule "rule1"

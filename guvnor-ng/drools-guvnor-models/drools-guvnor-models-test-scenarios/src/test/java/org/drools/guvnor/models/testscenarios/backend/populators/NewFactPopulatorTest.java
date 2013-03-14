@@ -52,7 +52,7 @@ public class NewFactPopulatorTest {
 
     @Test
     public void testDummyRunNoRules() throws Exception {
-        typeResolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
+        typeResolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
 
         List<Field> fieldData = new ArrayList<Field>();
         fieldData.add( new FieldData( "type",

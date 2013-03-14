@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.testscenario.backend.server;
+package org.drools.guvnor.models.testscenarios.backend;
 
 import java.util.Date;
 

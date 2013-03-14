@@ -16,8 +16,8 @@
 
 package foo.bar
 
-import org.kie.guvnor.testscenario.backend.server.Cheese
-import org.kie.guvnor.testscenario.backend.server.Person
+import org.drools.guvnor.models.testscenarios.backend.Cheese
+import org.drools.guvnor.models.testscenarios.backend.Person
 
 global Person p
 
@@ -25,8 +25,20 @@ rule "rule1"
     when
         c: Cheese()
     then
-        insert(new Cheese());
+        p.setName("rule1");
 end
 
+rule "rule2"
+    when
+        c: Cheese()
+    then
+        p.setStatus("rule2");
+end
 
+rule "rule3"
+    when
+        c: Cheese()
+    then
+        p.setAge(42);
 
+end

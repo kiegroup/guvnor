@@ -12,7 +12,7 @@ public class PopulatingWithMVELTest {
 
     @Test
     public void testMVELPopulate() throws Exception {
-        Object q = MVEL.eval("new org.kie.guvnor.testscenario.backend.server.DumbFact()");
+        Object q = MVEL.eval("new org.drools.guvnor.models.testscenarios.backend.DumbFact()");
 
         Map m = new HashMap();
         m.put("obj", q);

@@ -85,8 +85,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         TypeResolver resolver = new ClassTypeResolver(
                                                        new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Person" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Person" );
 
         Scenario scenario = new Scenario();
 
@@ -236,8 +236,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.CheeseType" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.CheeseType" );
 
         Scenario scenario = new Scenario();
         scenario.getFixtures().add( cheeseFactData );
@@ -418,8 +418,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Person" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Person" );
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 
@@ -499,8 +499,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Person" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Person" );
 
         KieSession ksession = getKieSession( "test_rules_infinite_loop.drl" );
 
@@ -688,7 +688,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
         ScenarioRunner run = new ScenarioRunner( ksession,
@@ -729,7 +729,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
         ScenarioRunner run = new ScenarioRunner( ksession,
@@ -772,7 +772,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
 
         KieSession ksession = getKieSession( "test_stateful.drl" );
         ScenarioRunner run = new ScenarioRunner( ksession,
@@ -790,8 +790,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
 
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Person" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Person" );
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 
@@ -824,8 +824,8 @@ public class ScenarioRunnerTest extends RuleUnit {
     public void testCollection() throws Exception {
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheese" );
-        resolver.addImport( "org.kie.guvnor.testscenario.backend.server.Cheesery" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheese" );
+        resolver.addImport( "org.drools.guvnor.models.testscenarios.backend.Cheesery" );
 
         KieSession ksession = getKieSession( "test_rules2.drl" );
 

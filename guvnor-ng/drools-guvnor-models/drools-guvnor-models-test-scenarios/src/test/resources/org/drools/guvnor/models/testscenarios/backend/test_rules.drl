@@ -14,31 +14,42 @@
  * limitations under the License.
  */
 
-package foo.bar
+package org.pkg1
 
-import org.kie.guvnor.testscenario.backend.server.Cheese
-import org.kie.guvnor.testscenario.backend.server.Person
+import org.drools.guvnor.models.testscenarios.backend.Cheese
 
-global Person p
+global java.util.List list
 
 rule "rule1"
     when
         c: Cheese()
     then
-        p.setName("rule1");
+        System.out.println("rule1---");
+        c.setType("rule1");
 end
 
 rule "rule2"
     when
         c: Cheese()
     then
-        p.setStatus("rule2");
+        c.setType("rule2");
+        System.out.println("rule2---");
 end
 
 rule "rule3"
     when
         c: Cheese()
     then
-        p.setAge(42);
-
+        //we are not using a list, but thats cool, we won't fire this rule...
+        list.add("rule3");
+        c.setType("rule3");
+        System.out.println("rule3---");
 end
+
+rule "rule4"
+    when
+        not Cheese()
+    then
+        System.err.println("whee");
+end
+
