@@ -28,15 +28,15 @@
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
-        org.drools.guvnor.server.jaxrs.PackageResource
+        org.drools.guvnor.server.jaxrs.PackageResource,
         org.drools.guvnor.server.jaxrs.CategoryResource		      
       </param-value>
     </init-param>
     <init-param>
       <param-name>jaxrs.providers</param-name>
       <param-value>
-          org.apache.cxf.jaxrs.provider.AtomEntryProvider
-          org.apache.cxf.jaxrs.provider.AtomFeedProvider	
+          org.apache.cxf.jaxrs.provider.AtomEntryProvider,
+          org.apache.cxf.jaxrs.provider.AtomFeedProvider,	
           org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
         </param-value>
     </init-param>
