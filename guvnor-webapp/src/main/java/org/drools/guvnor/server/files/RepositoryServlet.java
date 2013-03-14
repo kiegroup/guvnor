@@ -134,35 +134,29 @@ public class RepositoryServlet extends HttpServlet {
     }
 
     static String[] unpack(String auth) {
-        try {
+    	try {
+            String username = null;
+            String password = "";
             // Get encoded user and password, comes after "BASIC "
             if (Contexts.isApplicationContextActive()) {
-                String userpassEncoded = auth.substring(6);
-                String userpassDecoded =  new String(org.apache.commons.codec.binary.Base64.decodeBase64(userpassEncoded.getBytes("UTF-8")));
-                String[] parts = userpassDecoded.split(":");
-                if(parts.length == 2) {
-                    return parts;
-                } else if(parts.length > 2) {
-                    String usrPart = parts[0];
-                    String pwdPart = "";
-                    for(int i=1;i<parts.length;i++) {
-                        pwdPart += parts[i] + ":";
-                    }
-                    if(pwdPart.endsWith(":")) {
-                        pwdPart = pwdPart.substring(0, pwdPart.length() - 1);
-                    }
-                    return new String[]{usrPart, pwdPart};
-                } else if(parts.length == 1) {
-                    return new String[]{parts[0], ""};
+                String authEncoded = auth.substring(6);
+                String authDecoded = new String(org.apache.commons.codec.binary.Base64.decodeBase64(authEncoded
+                        .getBytes("UTF-8")));
+                int idx = authDecoded.indexOf(':');
+ 
+                if (idx == -1) {
+                    username = authDecoded;
                 } else {
-                    return new String[]{"", ""};
+                    username = authDecoded.substring(0, idx);
+                    if (idx < (authDecoded.length() - 1)) {
+                        password = authDecoded.substring(idx + 1);
+                    }
                 }
-            } else {
-                return new String[]{"test", "password"};
+ 
             }
+            return new String[] { username, password };
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e.getMessage());
         }
-
     }
 }
