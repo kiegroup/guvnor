@@ -71,7 +71,7 @@ public class ExplorerServiceImplTest {
         final URL parentUrl = this.getClass().getResource( "/" );
         final org.kie.commons.java.nio.file.Path parentNioPath = fs.getPath( parentUrl.toURI() );
 
-        final URL childUrl = this.getClass().getResource( "/ProjectStructureValid" );
+        final URL childUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path childNioPath = fs.getPath( childUrl.toURI() );
         final org.kie.commons.java.nio.file.Path childParentNioPath = childNioPath.getParent();
 
@@ -113,7 +113,7 @@ public class ExplorerServiceImplTest {
         boolean fail = true;
         for ( final Item item : result.getItems() ) {
             if ( item instanceof ProjectItem ) {
-                assertEquals( "ProjectStructureValid",
+                assertEquals( "ExplorerBackendTestProjectStructureValid",
                               item.getCaption() );
                 if ( fail == false ) {
                     fail( "There should be only one ProjectItem called 'ProjectStructureValid'" );
@@ -132,7 +132,7 @@ public class ExplorerServiceImplTest {
                                                                                             ExplorerService.class,
                                                                                             cc );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureValid" );
+        final URL testUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
@@ -152,7 +152,7 @@ public class ExplorerServiceImplTest {
                                                                                             ExplorerService.class,
                                                                                             cc );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureValid/src" );
+        final URL testUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid/src" );
         final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
@@ -172,7 +172,7 @@ public class ExplorerServiceImplTest {
                                                                                             ExplorerService.class,
                                                                                             cc );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureValid/src/main" );
+        final URL testUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid/src/main" );
         final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
@@ -209,13 +209,13 @@ public class ExplorerServiceImplTest {
                       items.get( 4 ).getCaption() );
 
         //Check items' Paths
-        assertEquals( makePath( "/ProjectStructureValid/pom.xml" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/pom.xml" ),
                       items.get( 0 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/project.imports" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/project.imports" ),
                       items.get( 1 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/java" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/java" ),
                       items.get( 2 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources" ),
                       items.get( 3 ).getPath() );
         assertEquals( makePath( "/" ),
                       items.get( 4 ).getPath() );
@@ -229,9 +229,9 @@ public class ExplorerServiceImplTest {
         int breadCrumbIndex = breadCrumbs.size();
         assertTrue( breadCrumbIndex > 0 );
         breadCrumbIndex--;
-        assertEquals( "ProjectStructureValid",
+        assertEquals( "ExplorerBackendTestProjectStructureValid",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
     }
 
@@ -244,7 +244,7 @@ public class ExplorerServiceImplTest {
                                                                                             ExplorerService.class,
                                                                                             cc );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureValid/src/main/resources" );
+        final URL testUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid/src/main/resources" );
         final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
@@ -268,9 +268,9 @@ public class ExplorerServiceImplTest {
         assertContainsCaption( "..", items );
 
         //Check items' Paths
-        assertContainsPath( makePath( "/ProjectStructureValid/src/main/resources/rule1.drl" ), items );
-        assertContainsPath( makePath( "/ProjectStructureValid/src/main/resources/org" ), items );
-        assertContainsPathUri( makePath( "/ProjectStructureValid/src/main" ).toURI(), items );
+        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/rule1.drl" ), items );
+        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org" ), items );
+        assertContainsPathUri( makePath( "/ExplorerBackendTestProjectStructureValid/src/main" ).toURI(), items );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
@@ -283,12 +283,12 @@ public class ExplorerServiceImplTest {
         breadCrumbIndex--;
         assertEquals( ItemNames.SOURCE_RESOURCES,
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
-        assertEquals( "ProjectStructureValid",
+        assertEquals( "ExplorerBackendTestProjectStructureValid",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
     }
 
@@ -389,7 +389,7 @@ public class ExplorerServiceImplTest {
                                                                                             ExplorerService.class,
                                                                                             cc );
 
-        final URL testUrl = this.getClass().getResource( "/ProjectStructureValid/src/main/resources/org/kie/test" );
+        final URL testUrl = this.getClass().getResource( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org/kie/test" );
         final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
@@ -413,9 +413,9 @@ public class ExplorerServiceImplTest {
                       items.get( 1 ).getCaption() );
 
         //Check items' Paths
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org/kie/test/rule1.drl" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org/kie/test/rule1.drl" ),
                       items.get( 0 ).getPath() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org/kie" ).toURI(),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org/kie" ).toURI(),
                       items.get( 1 ).getPath().toURI() );
 
         //Check breadcrumbs
@@ -429,27 +429,27 @@ public class ExplorerServiceImplTest {
         breadCrumbIndex--;
         assertEquals( "test",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org/kie/test" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org/kie/test" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
         assertEquals( "kie",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org/kie" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org/kie" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
         assertEquals( "org",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources/org" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
         assertEquals( ItemNames.SOURCE_RESOURCES,
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid/src/main/resources" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
         breadCrumbIndex--;
-        assertEquals( "ProjectStructureValid",
+        assertEquals( "ExplorerBackendTestProjectStructureValid",
                       breadCrumbs.get( breadCrumbIndex ).getCaption() );
-        assertEquals( makePath( "/ProjectStructureValid" ),
+        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid" ),
                       breadCrumbs.get( breadCrumbIndex ).getPath() );
     }
 

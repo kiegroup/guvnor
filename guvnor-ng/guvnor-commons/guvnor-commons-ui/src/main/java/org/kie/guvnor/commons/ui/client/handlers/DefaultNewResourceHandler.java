@@ -67,7 +67,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
             public void callback( final Path path ) {
                 callback.onSuccess( path != null );
             }
-        } ).resolvePackage( path );
+        } ).resolveSrcPackage( path );
     }
 
     protected String buildFileName( final ClientResourceType resourceType,

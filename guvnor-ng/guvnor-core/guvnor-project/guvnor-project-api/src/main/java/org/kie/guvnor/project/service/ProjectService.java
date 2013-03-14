@@ -41,11 +41,30 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
-     * The folder must be within a valid Project structure and at least reference /src/main/resources or deeper.
+     * The folder must be within a valid Project structure and at least reference /src/main/java, /src/main/resources,
+     * src/test/java or src/test/resources (or deeper).
      * @param resource
-     * @return Path to the folder containing the resource file.
+     * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
     Path resolvePackage( final Path resource );
+
+    /**
+     * Given a Resource path resolve it to the containing Source Package Path. A Source Package path is the folder
+     * containing the resource. The folder must be within a valid Project structure and at least reference
+     * /src/main/java or /src/main/resources (or deeper).
+     * @param resource
+     * @return Path to the Source folder containing the resource file or null if the resource is not in a Source package.
+     */
+    Path resolveSrcPackage( final Path resource );
+
+    /**
+     * Given a Resource path resolve it to the containing Test Package Path. A Test Package path is the folder
+     * containing the resource. The folder must be within a valid Project structure and at least reference
+     * /src/test/java or /src/test/resources (or deeper).
+     * @param resource
+     * @return Path to the Test folder containing the resource file or null if the resource is not in a Test package.
+     */
+    Path resolveTestPackage( final Path resource );
 
     /**
      * Given a Package path resolve it to a package name.
