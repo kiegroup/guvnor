@@ -75,13 +75,21 @@ public interface CommonConstants
     String Validate();
 
     String Restore();
-    
+
     String Copy();
-    
+
     String Delete();
-    
+
     String Rename();
-    
+
+    String Restoring();
+
+    String Copying();
+
+    String Deleting();
+
+    String Renaming();
+
     String Move();
 
     String EditTabTitle();
@@ -101,13 +109,13 @@ public interface CommonConstants
     String ItemSavedSuccessfully();
 
     String ItemDeletedSuccessfully();
-    
+
     String ItemRenamedSuccessfully();
-    
+
     String ItemCopiedSuccessfully();
-    
+
     String ItemMovedSuccessfully();
-    
+
     String ItemPathSubheading();
 
     String ItemUndefinedPath();

@@ -2,10 +2,11 @@ package org.kie.guvnor.guided.scorecard.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 
-public interface GuidedScoreCardEditorView
-        extends IsWidget {
+public interface GuidedScoreCardEditorView extends HasBusyIndicator,
+                                                   IsWidget {
 
     void setContent( final ScoreCardModel model,
                      final DataModelOracle oracle );
@@ -19,9 +20,5 @@ public interface GuidedScoreCardEditorView
     boolean confirmClose();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

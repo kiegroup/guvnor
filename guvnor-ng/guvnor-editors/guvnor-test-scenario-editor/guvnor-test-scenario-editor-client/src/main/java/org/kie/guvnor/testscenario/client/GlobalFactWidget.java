@@ -19,7 +19,7 @@ package org.kie.guvnor.testscenario.client;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
+import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.FactData;

@@ -1,5 +1,6 @@
 package org.kie.guvnor.commons.ui.client.callbacks;
 
+import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.Message;
 
@@ -11,8 +12,9 @@ public class DefaultErrorCallback implements ErrorCallback {
     @Override
     public boolean error( final Message message,
                           final Throwable throwable ) {
-        //TODO Do something useful with the error!
-        return true;
+        Window.alert( message.toString() );
+        Window.alert( throwable.getMessage() );
+        return false;
     }
 
 }

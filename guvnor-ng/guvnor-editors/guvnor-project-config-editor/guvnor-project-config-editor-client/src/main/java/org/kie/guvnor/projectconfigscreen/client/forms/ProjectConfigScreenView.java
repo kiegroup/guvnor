@@ -2,11 +2,12 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
-public interface ProjectConfigScreenView
-        extends IsWidget {
+public interface ProjectConfigScreenView extends HasBusyIndicator,
+                                                 IsWidget {
 
     interface Presenter {
 
@@ -30,9 +31,5 @@ public interface ProjectConfigScreenView
     boolean confirmClose();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

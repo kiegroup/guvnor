@@ -8,18 +8,18 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleResourceType;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -38,6 +38,9 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
     @Inject
     private GuidedRuleResourceType resourceType;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @Override
     public String getDescription() {
@@ -60,13 +63,13 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  service.call( getSuccessCallback( presenter ),
-                                                               new DefaultErrorCallback() ).create( contextPath,
-                                                                                                    buildFileName( resourceType,
-                                                                                                                   baseFileName ),
-                                                                                                    ruleModel,
-                                                                                                    comment );
+                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                                                       buildFileName( resourceType,
+                                                                                                                                                      baseFileName ),
+                                                                                                                                       ruleModel,
+                                                                                                                                       comment );
                                              }
                                          } );
     }
@@ -76,7 +79,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
             @Override
             public void callback( final Path path ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
                 final PlaceRequest place = new PathPlaceRequest( path );

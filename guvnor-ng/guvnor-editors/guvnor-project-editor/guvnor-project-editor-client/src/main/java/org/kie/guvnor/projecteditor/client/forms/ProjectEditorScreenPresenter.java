@@ -93,7 +93,8 @@ public class
         this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
 
         pathToPomXML = path;
-        pomPanel.init( path, isReadOnly );
+        pomPanel.init( path,
+                       isReadOnly );
 
         if ( !isReadOnly ) {
             addKModuleEditor();

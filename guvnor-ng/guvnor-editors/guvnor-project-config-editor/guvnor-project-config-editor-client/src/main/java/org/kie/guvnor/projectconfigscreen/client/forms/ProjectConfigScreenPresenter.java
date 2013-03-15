@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -90,7 +91,7 @@ public class ProjectConfigScreenPresenter
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         projectService.call( getModelSuccessCallback(),
-                             new DefaultErrorCallback() ).load( path );
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private void makeMenuBar() {
@@ -154,10 +155,10 @@ public class ProjectConfigScreenPresenter
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  projectService.call( getSaveSuccessCallback(),
-                                                                      new DefaultErrorCallback() ).save( path,
-                                                                                                         packageConfiguration,
-                                                                                                         view.getMetadata(),
-                                                                                                         comment );
+                                                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                               packageConfiguration,
+                                                                                                                               view.getMetadata(),
+                                                                                                                               comment );
                                              }
                                          } );
     }

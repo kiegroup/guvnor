@@ -13,6 +13,7 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.dtablexls.client.editor.AttachmentFileWidget;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
@@ -20,7 +21,6 @@ import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -42,6 +42,9 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
     @Inject
     private AttachmentFileWidget uploadWidget;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @PostConstruct
     private void setupExtensions() {
@@ -67,7 +70,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 BusyPopup.showMessage( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
+                                                 busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
                                                  uploadWidget.submit( contextPath,
                                                                       buildFileName( resourceType,
                                                                                      baseFileName ),
@@ -75,7 +78,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
                                                                           @Override
                                                                           public void execute() {
-                                                                              BusyPopup.close();
+                                                                              busyIndicatorView.hideBusyIndicator();
                                                                               presenter.complete();
                                                                               notifySuccess();
                                                                               final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),

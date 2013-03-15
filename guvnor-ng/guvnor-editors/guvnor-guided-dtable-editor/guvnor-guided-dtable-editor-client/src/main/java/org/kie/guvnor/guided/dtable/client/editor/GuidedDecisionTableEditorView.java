@@ -2,13 +2,15 @@ package org.kie.guvnor.guided.dtable.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Decision Table Editor View definition
  */
-public interface GuidedDecisionTableEditorView extends IsWidget {
+public interface GuidedDecisionTableEditorView extends HasBusyIndicator,
+                                                       IsWidget {
 
     void setContent( final Path path,
                      final DataModelOracle dataModel,
@@ -24,9 +26,5 @@ public interface GuidedDecisionTableEditorView extends IsWidget {
     boolean confirmClose();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

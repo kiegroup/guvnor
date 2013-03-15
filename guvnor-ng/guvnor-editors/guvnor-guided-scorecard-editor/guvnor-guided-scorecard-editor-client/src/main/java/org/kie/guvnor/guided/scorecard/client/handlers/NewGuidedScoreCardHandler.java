@@ -8,12 +8,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
@@ -39,6 +40,9 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     @Inject
     private GuidedScoreCardResourceType resourceType;
 
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
+
     @Override
     public String getDescription() {
         return Constants.INSTANCE.newGuidedScoreCardDescription();
@@ -60,13 +64,13 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  scoreCardService.call( getSuccessCallback( presenter ),
-                                                                        new DefaultErrorCallback() ).create( contextPath,
-                                                                                                             buildFileName( resourceType,
-                                                                                                                            baseFileName ),
-                                                                                                             model,
-                                                                                                             comment );
+                                                                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                                                                buildFileName( resourceType,
+                                                                                                                                                               baseFileName ),
+                                                                                                                                                model,
+                                                                                                                                                comment );
                                              }
                                          } );
     }

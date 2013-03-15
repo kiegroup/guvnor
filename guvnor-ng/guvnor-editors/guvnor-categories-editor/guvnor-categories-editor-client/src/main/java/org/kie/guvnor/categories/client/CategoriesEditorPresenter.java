@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.categories.client.type.CategoryDefinitionResourceType;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -75,7 +75,7 @@ public class CategoriesEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         categoryService.call( getModelSuccessCallback(),
-                              new DefaultErrorCallback() ).getContent( path );
+                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getContent( path );
     }
 
     private void makeMenuBar() {
@@ -106,8 +106,8 @@ public class CategoriesEditorPresenter {
                                              public void execute( final String commitMessage ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  categoryService.call( getSaveSuccessCallback(),
-                                                                       new DefaultErrorCallback() ).save( path,
-                                                                                                          view.getContent() );
+                                                                       new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                      view.getContent() );
                                              }
                                          } );
     }

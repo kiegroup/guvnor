@@ -26,6 +26,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -153,7 +154,7 @@ public class GuidedDecisionTableEditorPresenter {
         } );
 
         service.call( getModelSuccessCallback(),
-                      new DefaultErrorCallback() ).loadContent( path );
+                      new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
 
     private void makeMenuBar() {
@@ -209,10 +210,10 @@ public class GuidedDecisionTableEditorPresenter {
                                              public void execute( final String commitMessage ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  service.call( getSaveSuccessCallback(),
-                                                               new DefaultErrorCallback() ).save( path,
-                                                                                                  view.getContent(),
-                                                                                                  metadataWidget.getContent(),
-                                                                                                  commitMessage );
+                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                        view.getContent(),
+                                                                                                                        metadataWidget.getContent(),
+                                                                                                                        commitMessage );
                                              }
                                          } );
     }

@@ -18,11 +18,12 @@ package org.kie.guvnor.guided.rule.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
-public interface GuidedRuleEditorView
-        extends IsWidget {
+public interface GuidedRuleEditorView extends HasBusyIndicator,
+                                              IsWidget {
 
     void setContent( final Path path,
                      final RuleModel model,
@@ -40,9 +41,5 @@ public interface GuidedRuleEditorView
     void refresh();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

@@ -27,6 +27,7 @@ import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -176,7 +177,7 @@ public class GuidedScoreCardEditorPresenter {
 
     private void loadContent() {
         scoreCardEditorService.call( getModelSuccessCallback(),
-                                     new DefaultErrorCallback() ).loadContent( path );
+                                     new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
 
     private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
@@ -212,10 +213,10 @@ public class GuidedScoreCardEditorPresenter {
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  scoreCardEditorService.call( getSaveSuccessCallback(),
-                                                                              new DefaultErrorCallback() ).save( path,
-                                                                                                                 view.getModel(),
-                                                                                                                 metadataWidget.getContent(),
-                                                                                                                 comment );
+                                                                              new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                                       view.getModel(),
+                                                                                                                                       metadataWidget.getContent(),
+                                                                                                                                       comment );
                                              }
                                          } );
     }

@@ -32,7 +32,7 @@ import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
 import org.drools.guvnor.models.commons.shared.rule.ActionSetField;
 import org.drools.guvnor.models.commons.shared.rule.ActionUpdateField;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
-import org.kie.guvnor.commons.ui.client.widget.ErrorPopup;
+import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;

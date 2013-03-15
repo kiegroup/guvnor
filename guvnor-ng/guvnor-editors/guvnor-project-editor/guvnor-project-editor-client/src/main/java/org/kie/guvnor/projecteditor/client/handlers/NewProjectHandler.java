@@ -11,18 +11,18 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.places.ProjectEditorPlace;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
@@ -47,6 +47,9 @@ public class NewProjectHandler
     @Inject
     private Caller<ProjectService> projectServiceCaller;
 
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
+
     @Override
     public String getDescription() {
         return ProjectEditorConstants.INSTANCE.newProjectDescription();
@@ -66,9 +69,9 @@ public class NewProjectHandler
                                              new CommandWithCommitMessage() {
                                                  @Override
                                                  public void execute( final String comment ) {
-                                                     BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                     busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                      projectServiceCaller.call( getSuccessCallback( presenter ),
-                                                                                new DefaultErrorCallback() ).newProject( contextPath, projectName );
+                                                                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath, projectName );
                                                  }
                                              } );
         } else {
@@ -81,7 +84,7 @@ public class NewProjectHandler
 
             @Override
             public void callback( Path pathToPom ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 placeManager.goTo( new ProjectEditorPlace( pathToPom ) );

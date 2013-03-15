@@ -13,6 +13,7 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.scorecardxls.client.editor.AttachmentFileWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
@@ -42,6 +43,9 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Inject
     private AttachmentFileWidget uploadWidget;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @PostConstruct
     private void setupExtensions() {

@@ -11,12 +11,13 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
@@ -26,7 +27,6 @@ import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWiz
 import org.kie.guvnor.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -58,6 +58,9 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Inject
     private NewGuidedDecisionTableWizard wizard;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     private NewResourcePresenter presenter;
 
@@ -133,14 +136,14 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
                                              @Override
                                              public void execute( final String comment ) {
-                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  service.call( getSuccessCallback( presenter,
                                                                                    postSaveCommand ),
-                                                               new DefaultErrorCallback() ).create( contextPath,
-                                                                                                    buildFileName( resourceType,
-                                                                                                                   baseFileName ),
-                                                                                                    model,
-                                                                                                    comment );
+                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                                                       buildFileName( resourceType,
+                                                                                                                                                      baseFileName ),
+                                                                                                                                       model,
+                                                                                                                                       comment );
                                              }
                                          } );
     }
@@ -151,7 +154,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
             @Override
             public void callback( final Path path ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
                 executePostSaveCommand();

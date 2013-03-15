@@ -47,10 +47,12 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
@@ -67,7 +69,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
@@ -101,6 +102,8 @@ public class ScenarioEditorPresenter
     private MultiPageEditor multiPage;
     private Path path;
 
+    private BusyIndicatorView busyIndicatorView;
+
     @Inject
     public ScenarioEditorPresenter( Caller<ScenarioTestEditorService> service,
                                     Caller<DataModelService> dataModelService,
@@ -108,7 +111,8 @@ public class ScenarioEditorPresenter
                                     final Caller<MetadataService> metadataService,
                                     MultiPageEditor multiPage,
                                     @New FileMenuBuilder menuBuilder,
-                                    Event<NotificationEvent> notification ) {
+                                    Event<NotificationEvent> notification,
+                                    BusyIndicatorView busyIndicatorView ) {
         this.service = service;
         this.projectService = projectService;
         this.dataModelService = dataModelService;
@@ -116,7 +120,7 @@ public class ScenarioEditorPresenter
         this.multiPage = multiPage;
         this.menuBuilder = menuBuilder;
         this.notification = notification;
-
+        this.busyIndicatorView = busyIndicatorView;
     }
 
     private void makeMenuBar() {
@@ -147,12 +151,12 @@ public class ScenarioEditorPresenter
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String commitMessage ) {
-                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  service.call( getSaveSuccessCallback(),
-                                                               new DefaultErrorCallback() ).save( path,
-                                                                                                  scenarioWidgetComponentCreator.getScenario(),
-                                                                                                  metadataWidget.getContent(),
-                                                                                                  commitMessage );
+                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
+                                                                                                                                     scenarioWidgetComponentCreator.getScenario(),
+                                                                                                                                     metadataWidget.getContent(),
+                                                                                                                                     commitMessage );
                                              }
                                          } );
     }
@@ -162,7 +166,7 @@ public class ScenarioEditorPresenter
 
             @Override
             public void callback( final Path path ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 metadataWidget.resetDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }

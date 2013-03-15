@@ -52,6 +52,7 @@ public class POMEditorPanel
         if ( isReadOnly ) {
             view.setReadOnly();
         }
+        //Busy popup is handled by ProjectEditorScreen
         pomServiceCaller.call( getModelSuccessCallback(),
                                new DefaultErrorCallback() ).load( path );
     }
@@ -86,6 +87,7 @@ public class POMEditorPanel
     public void save( final String commitMessage,
                       final Command callback,
                       final Metadata metadata ) {
+        //Busy popup is handled by ProjectEditorScreen
         pomServiceCaller.call( getSaveSuccessCallback( callback ),
                                new DefaultErrorCallback() ).save( path,
                                                                   model,

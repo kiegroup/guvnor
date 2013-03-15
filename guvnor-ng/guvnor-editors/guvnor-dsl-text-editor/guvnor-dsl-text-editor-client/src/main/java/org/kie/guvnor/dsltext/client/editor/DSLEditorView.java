@@ -1,9 +1,10 @@
 package org.kie.guvnor.dsltext.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 
-public interface DSLEditorView
-        extends IsWidget {
+public interface DSLEditorView extends HasBusyIndicator,
+                                       IsWidget {
 
     void setContent( final String content );
 
@@ -18,9 +19,5 @@ public interface DSLEditorView
     void makeReadOnly();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

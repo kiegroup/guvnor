@@ -9,10 +9,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.defaulteditor.service.DefaultEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -27,7 +29,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
@@ -53,6 +54,9 @@ public class GuvnorTextEditorPresenter
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @Inject
     @New
@@ -117,12 +121,12 @@ public class GuvnorTextEditorPresenter
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String commitMessage ) {
-                                                 BusyPopup.showMessage( CommonConstants.INSTANCE.Saving() );
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  defaultEditorService.call( getSaveSuccessCallback(),
-                                                                            new DefaultErrorCallback() ).save( path,
-                                                                                                               view.getContent(),
-                                                                                                               metadataWidget.getContent(),
-                                                                                                               commitMessage );
+                                                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
+                                                                                                                                                  view.getContent(),
+                                                                                                                                                  metadataWidget.getContent(),
+                                                                                                                                                  commitMessage );
                                              }
                                          } );
     }
@@ -132,7 +136,7 @@ public class GuvnorTextEditorPresenter
 
             @Override
             public void callback( final Path path ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 view.setDirty( false );
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }

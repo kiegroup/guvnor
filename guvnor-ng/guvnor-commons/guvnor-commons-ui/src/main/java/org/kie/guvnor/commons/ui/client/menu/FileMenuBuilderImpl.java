@@ -22,11 +22,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Callback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithFileNameAndCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.CopyPopup;
@@ -34,6 +33,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.DeletePopup;
 import org.kie.guvnor.commons.ui.client.popups.file.FileNameAndCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.RenamePopup;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -73,6 +73,9 @@ public class FileMenuBuilderImpl
     @Inject
     private PlaceManager placeManager;
 
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
+
     private Command saveCommand = null;
     private Command deleteCommand = null;
     private Command renameCommand = null;
@@ -94,34 +97,16 @@ public class FileMenuBuilderImpl
 
     @Override
     public FileMenuBuilder addDelete( final Path path ) {
-        addDelete( path, new Callback<Void, Void>() {
-            @Override
-            public void onFailure( Void reason ) {
-
-            }
-
-            @Override
-            public void onSuccess( Void result ) {
-
-            }
-        } );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addDelete( final Path path,
-                                      final Callback<Void, Void> callback ) {
         this.deleteCommand = new Command() {
             @Override
             public void execute() {
                 final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String comment ) {
-                        deleteService.call( getDeleteSuccessCallback( path,
-                                                                      callback ),
-                                            new DefaultErrorCallback() ).delete( path,
-                                                                                 comment );
+                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
+                        deleteService.call( getDeleteSuccessCallback( path ),
+                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( path,
+                                                                                                                    comment );
                     }
                 } );
 
@@ -131,15 +116,14 @@ public class FileMenuBuilderImpl
         return this;
     }
 
-    private RemoteCallback<Void> getDeleteSuccessCallback( final Path path,
-                                                           final Callback<Void, Void> callback ) {
+    private RemoteCallback<Void> getDeleteSuccessCallback( final Path path ) {
         return new RemoteCallback<Void>() {
 
             @Override
             public void callback( final Void response ) {
+                busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
                 placeManager.closePlace( new PathPlaceRequest( path ) );
-                callback.onSuccess( null );
             }
         };
     }
@@ -152,34 +136,17 @@ public class FileMenuBuilderImpl
 
     @Override
     public FileMenuBuilder addRename( final Path path ) {
-        addRename( path, new Callback<Path, Void>() {
-            @Override
-            public void onFailure( Void reason ) {
-
-            }
-
-            @Override
-            public void onSuccess( Path result ) {
-
-            }
-        } );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addRename( final Path path,
-                                      final Callback<Path, Void> callback ) {
         this.renameCommand = new Command() {
             @Override
             public void execute() {
                 final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
                     public void execute( final FileNameAndCommitMessage details ) {
-                        renameService.call( getRenameSuccessCallback( callback ),
-                                            new DefaultErrorCallback() ).rename( path,
-                                                                                 details.getNewFileName(),
-                                                                                 details.getCommitMessage() );
+                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                        renameService.call( getRenameSuccessCallback(),
+                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( path,
+                                                                                                                    details.getNewFileName(),
+                                                                                                                    details.getCommitMessage() );
                     }
                 } );
 
@@ -190,13 +157,13 @@ public class FileMenuBuilderImpl
         return this;
     }
 
-    private RemoteCallback<Path> getRenameSuccessCallback( final Callback<Path, Void> callback ) {
+    private RemoteCallback<Path> getRenameSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
             public void callback( final Path path ) {
+                busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                callback.onSuccess( path );
             }
         };
     }
@@ -209,34 +176,17 @@ public class FileMenuBuilderImpl
 
     @Override
     public FileMenuBuilder addCopy( final Path path ) {
-        addCopy( path, new Callback<Path, Void>() {
-            @Override
-            public void onFailure( Void reason ) {
-
-            }
-
-            @Override
-            public void onSuccess( Path result ) {
-
-            }
-        } );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addCopy( final Path path,
-                                    final Callback<Path, Void> callback ) {
         this.copyCommand = new Command() {
             @Override
             public void execute() {
                 final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
                     @Override
                     public void execute( final FileNameAndCommitMessage details ) {
-                        copyService.call( getCopySuccessCallback( callback ),
-                                          new DefaultErrorCallback() ).copy( path,
-                                                                             details.getNewFileName(),
-                                                                             details.getCommitMessage() );
+                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                        copyService.call( getCopySuccessCallback(),
+                                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( path,
+                                                                                                                details.getNewFileName(),
+                                                                                                                details.getCommitMessage() );
                     }
                 } );
                 popup.show();
@@ -246,13 +196,13 @@ public class FileMenuBuilderImpl
         return this;
     }
 
-    private RemoteCallback<Path> getCopySuccessCallback( final Callback<Path, Void> callback ) {
+    private RemoteCallback<Path> getCopySuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
             public void callback( final Path path ) {
+                busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                callback.onSuccess( path );
             }
         };
     }
@@ -319,4 +269,5 @@ public class FileMenuBuilderImpl
 
         return menuItems;
     }
+
 }

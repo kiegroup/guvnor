@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
@@ -159,7 +160,7 @@ public class GlobalsEditorPresenter {
 
     private void loadContent() {
         globalsEditorService.call( getModelSuccessCallback(),
-                                   new DefaultErrorCallback() ).loadContent( path );
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
 
     private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
@@ -193,10 +194,10 @@ public class GlobalsEditorPresenter {
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  globalsEditorService.call( getSaveSuccessCallback(),
-                                                                            new DefaultErrorCallback() ).save( path,
-                                                                                                               model,
-                                                                                                               metadataWidget.getContent(),
-                                                                                                               comment );
+                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                                     model,
+                                                                                                                                     metadataWidget.getContent(),
+                                                                                                                                     comment );
                                              }
                                          } );
     }

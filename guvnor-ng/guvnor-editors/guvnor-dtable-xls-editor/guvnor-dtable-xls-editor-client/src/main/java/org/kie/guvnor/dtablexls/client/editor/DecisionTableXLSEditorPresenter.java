@@ -29,6 +29,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.client.widgets.ConversionMessageWidget;
@@ -44,7 +45,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.Command;
@@ -76,6 +76,9 @@ public class DecisionTableXLSEditorPresenter {
 
     @Inject
     private MultiPageEditor multiPage;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @Inject
     @New
@@ -157,11 +160,11 @@ public class DecisionTableXLSEditorPresenter {
     }
 
     private void convert() {
-        BusyPopup.showMessage( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
+        busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
         decisionTableXLSService.call( new RemoteCallback<ConversionResult>() {
             @Override
             public void callback( final ConversionResult response ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 if ( response.getMessages().size() > 0 ) {
                     final PopupListWidget popup = new PopupListWidget();
                     for ( ConversionMessage message : response.getMessages() ) {

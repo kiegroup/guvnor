@@ -3,13 +3,15 @@ package org.kie.guvnor.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Rule Template Editor View definition
  */
-public interface GuidedRuleTemplateEditorView extends IsWidget {
+public interface GuidedRuleTemplateEditorView extends HasBusyIndicator,
+                                                      IsWidget {
 
     void setContent( final Path path,
                      final TemplateModel model,
@@ -26,9 +28,5 @@ public interface GuidedRuleTemplateEditorView extends IsWidget {
     boolean confirmClose();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }

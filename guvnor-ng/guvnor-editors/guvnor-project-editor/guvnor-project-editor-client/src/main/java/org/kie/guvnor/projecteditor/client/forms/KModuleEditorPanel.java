@@ -38,11 +38,10 @@ public class KModuleEditorPanel
     public void init( Path path,
                       boolean readOnly ) {
         this.path = path;
-
         if ( readOnly ) {
             view.makeReadOnly();
         }
-
+        //Busy popup is handled by ProjectEditorScreen
         projectEditorServiceCaller.call( getModelSuccessCallback(),
                                          new DefaultErrorCallback() ).load( path );
     }
@@ -68,6 +67,7 @@ public class KModuleEditorPanel
 
     public void save( String commitMessage,
                       Metadata metadata ) {
+        //Busy popup is handled by ProjectEditorScreen
         projectEditorServiceCaller.call( getSaveSuccessCallback(),
                                          new DefaultErrorCallback() ).save( path,
                                                                             model,

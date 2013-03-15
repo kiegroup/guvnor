@@ -1,11 +1,13 @@
 package org.kie.guvnor.enums.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 
 /**
  * Enum Editor View definition
  */
-public interface EnumEditorView extends IsWidget {
+public interface EnumEditorView extends HasBusyIndicator,
+                                        IsWidget {
 
     void setContent( String content );
 
@@ -18,9 +20,5 @@ public interface EnumEditorView extends IsWidget {
     boolean confirmClose();
 
     void alertReadOnly();
-
-    void showBusyIndicator( final String message );
-
-    void hideBusyIndicator();
 
 }
