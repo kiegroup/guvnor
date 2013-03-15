@@ -10,13 +10,10 @@ import javax.inject.Named;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
-import org.drools.guvnor.server.contenthandler.drools.ScorecardsContentHandler;
 import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +21,12 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class GuidedScoreCardMigrater {
+public class TestScenarioMigrater {
 
-    protected static final Logger logger = LoggerFactory.getLogger(GuidedScoreCardMigrater.class);
+    protected static final Logger logger = LoggerFactory.getLogger(TestScenarioMigrater.class);
 
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
-    
-    @Inject
-    protected GuidedRuleEditorService guidedRuleEditorService;
 
     @Inject
     protected MigrationPathManager migrationPathManager;
@@ -45,7 +39,7 @@ public class GuidedScoreCardMigrater {
     private IOService ioService;
 
     public void migrate(Module jcrModule,  AssetItem jcrAssetItem) {      
-        if (!AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
+        if (!AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
         }
@@ -60,12 +54,10 @@ public class GuidedScoreCardMigrater {
             attrs = new HashMap<String, Object>();
         }        
         
-/*        ScorecardsContentHandler h = new ScorecardsContentHandler();
-        String sourceDRL = h.getRawDRL(jcrAssetItem);*/
+        String content = jcrAssetItem.getContent();
         
-        String sourceContent = jcrAssetItem.getContent();        
         //TODO: add import from .package
 
-        ioService.write( nioPath, sourceContent, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, content, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 }

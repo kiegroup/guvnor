@@ -59,9 +59,13 @@ public class GuidedDecisionTableMigrater {
             attrs = new HashMap<String, Object>();
         }        
         
-        GuidedDTContentHandler h = new GuidedDTContentHandler();
-        String sourceDRL = h.getRawDRL(jcrAssetItem);
+/*        GuidedDTContentHandler h = new GuidedDTContentHandler();
+        String sourceContent = h.getRawDRL(jcrAssetItem);*/
+        
+        String sourceContent = jcrAssetItem.getContent();
+        
+        //TODO: add import from .package
 
-        ioService.write( nioPath, sourceDRL, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, sourceContent, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 }

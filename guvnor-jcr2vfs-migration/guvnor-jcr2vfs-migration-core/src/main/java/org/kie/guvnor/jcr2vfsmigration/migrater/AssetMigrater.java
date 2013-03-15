@@ -30,6 +30,7 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrate
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedScoreCardMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.TestScenarioMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -62,8 +63,9 @@ public class AssetMigrater {
     @Inject
     protected AttachementAssetMigrater attachementAssetMigrater;
     @Inject
-    protected GuidedScoreCardMigrater guidedScoreCardMigrater;    
-
+    protected GuidedScoreCardMigrater guidedScoreCardMigrater;   
+    
+    protected TestScenarioMigrater testScenarioMigrater;    
     @Inject
     protected MetadataService metadataService;        
     @Inject
@@ -154,6 +156,8 @@ public class AssetMigrater {
             logger.info("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
             guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
+            testScenarioMigrater.migrate(jcrModule, jcrAssetItem);
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
