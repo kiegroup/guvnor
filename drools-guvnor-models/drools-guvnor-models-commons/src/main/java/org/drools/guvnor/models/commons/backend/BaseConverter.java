@@ -1,6 +1,6 @@
 package org.drools.guvnor.models.commons.backend;
 
-import org.kie.builder.impl.FormatConverter;
+import org.drools.compiler.kie.builder.impl.FormatConverter;
 
 public abstract class BaseConverter implements FormatConverter {
 

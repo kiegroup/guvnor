@@ -2,10 +2,8 @@ package org.drools.guvnor.models.guided.template.backend;
 
 import org.drools.guvnor.models.commons.backend.BaseConverter;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.builder.impl.FormatConversionResult;
-import org.kie.builder.impl.FormatConverter;
-import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
-import org.drools.guvnor.models.guided.template.backend.BRDRTXMLPersistence;
+import org.drools.compiler.kie.builder.impl.FormatConversionResult;
+import org.drools.compiler.kie.builder.impl.FormatConverter;
 
 public class GuidedRuleTemplateConverter extends BaseConverter implements FormatConverter {
 

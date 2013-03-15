@@ -2,8 +2,8 @@ package org.drools.guvnor.models.guided.scorecard.backend;
 
 import org.drools.guvnor.models.commons.backend.BaseConverter;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
-import org.kie.builder.impl.FormatConversionResult;
-import org.kie.builder.impl.FormatConverter;
+import org.drools.compiler.kie.builder.impl.FormatConversionResult;
+import org.drools.compiler.kie.builder.impl.FormatConverter;
 
 public class GuidedScoreCardConverter extends BaseConverter implements FormatConverter {
 

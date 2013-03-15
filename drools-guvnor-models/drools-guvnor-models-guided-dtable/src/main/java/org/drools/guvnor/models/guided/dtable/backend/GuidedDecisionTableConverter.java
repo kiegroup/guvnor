@@ -4,15 +4,13 @@ import org.drools.guvnor.models.commons.backend.BaseConverter;
 import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.IPattern;
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.builder.impl.FormatConversionResult;
+import org.drools.compiler.kie.builder.impl.FormatConversionResult;
 
 public class GuidedDecisionTableConverter extends BaseConverter {
 
