@@ -41,6 +41,7 @@ import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -152,6 +153,10 @@ public class GuidedRuleEditorPresenter {
             }
         } );
 
+        loadContent();
+    }
+
+    private void loadContent() {
         service.call( getModelSuccessCallback(),
                       new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
@@ -276,6 +281,16 @@ public class GuidedRuleEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

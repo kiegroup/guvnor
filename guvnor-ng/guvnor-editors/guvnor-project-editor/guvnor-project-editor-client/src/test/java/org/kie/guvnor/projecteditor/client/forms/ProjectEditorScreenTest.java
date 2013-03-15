@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import com.google.gwt.user.client.Command;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +25,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import static org.junit.Assert.*;

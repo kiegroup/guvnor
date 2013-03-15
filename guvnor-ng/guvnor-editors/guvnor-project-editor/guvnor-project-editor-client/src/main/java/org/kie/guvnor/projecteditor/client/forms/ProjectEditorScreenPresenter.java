@@ -28,6 +28,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.client.type.POMResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -143,12 +144,9 @@ public class
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        buildServiceCaller.call(
-                                new RemoteCallback<Void>() {
-                                    @Override
-                                    public void callback( final Void v ) {
-                                    }
-                                } ).buildAndDeploy( pathToPomXML );
+                        view.showBusyIndicator( ProjectEditorConstants.INSTANCE.Building() );
+                        buildServiceCaller.call( getBuildSuccessCallback(),
+                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( pathToPomXML );
                     }
                 } )
                 .endMenu().build();
@@ -174,6 +172,15 @@ public class
 //            ));
 //        }
 
+    }
+
+    private RemoteCallback getBuildSuccessCallback() {
+        return new RemoteCallback<Void>() {
+            @Override
+            public void callback( final Void v ) {
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     private void addKModuleEditor() {
@@ -241,6 +248,7 @@ public class
             @Override
             public void callback( final Metadata metadata ) {
                 pomMetadata = metadata;
+                view.hideBusyIndicator();
                 view.setPOMMetadata( metadata );
             }
         };
@@ -252,6 +260,7 @@ public class
             @Override
             public void callback( final Metadata metadata ) {
                 kmoduleMetadata = metadata;
+                view.hideBusyIndicator();
                 view.setKModuleMetadata( metadata );
             }
         };

@@ -18,6 +18,7 @@ package org.kie.guvnor.enums.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import org.kie.guvnor.enums.service.EnumService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -135,6 +137,10 @@ public class EnumEditorPresenter {
             }
         } );
 
+        loadContent();
+    }
+
+    private void loadContent() {
         enumService.call( getModelSuccessCallback(),
                           new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
@@ -233,6 +239,16 @@ public class EnumEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

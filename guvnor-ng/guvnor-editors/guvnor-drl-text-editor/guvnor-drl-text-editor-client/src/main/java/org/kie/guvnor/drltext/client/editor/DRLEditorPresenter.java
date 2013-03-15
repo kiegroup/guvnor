@@ -18,6 +18,7 @@ package org.kie.guvnor.drltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -120,6 +122,10 @@ public class DRLEditorPresenter {
             }
         } );
 
+        loadContent();
+    }
+
+    private void loadContent() {
         drlTextEditorService.call( getModelSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
@@ -226,6 +232,16 @@ public class DRLEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

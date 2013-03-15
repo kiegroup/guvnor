@@ -18,6 +18,7 @@ package org.kie.guvnor.dsltext.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import org.kie.guvnor.dsltext.service.DSLTextEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -119,6 +121,10 @@ public class DSLEditorPresenter {
             }
         } );
 
+        loadContent();
+    }
+
+    private void loadContent() {
         dslTextEditorService.call( getModelSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
@@ -221,6 +227,16 @@ public class DSLEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

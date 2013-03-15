@@ -17,6 +17,7 @@
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -33,6 +34,7 @@ import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.services.version.events.RestoreEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -89,6 +91,11 @@ public class ProjectConfigScreenPresenter
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
+        loadContent();
+    }
+
+    private void loadContent() {
         projectService.call( getModelSuccessCallback(),
                              new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
@@ -196,6 +203,16 @@ public class ProjectConfigScreenPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }
