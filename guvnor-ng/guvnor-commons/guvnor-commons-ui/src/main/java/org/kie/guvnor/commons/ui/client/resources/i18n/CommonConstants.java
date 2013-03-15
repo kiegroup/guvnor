@@ -174,4 +174,14 @@ public interface CommonConstants
 
     String Saving();
 
+    String ExceptionInvalidPath0( final String uri );
+
+    String ExceptionFileAlreadyExists0( final String uri );
+
+    String ExceptionNoSuchFile0( final String uri );
+
+    String ExceptionSecurity0( final String uri );
+
+    String ExceptionGeneric0( final String message );
+
 }
