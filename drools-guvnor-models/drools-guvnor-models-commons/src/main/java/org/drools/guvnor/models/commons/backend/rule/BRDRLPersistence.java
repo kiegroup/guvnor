@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.models.commons.backend.rule;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
 import org.drools.guvnor.models.commons.shared.imports.Import;

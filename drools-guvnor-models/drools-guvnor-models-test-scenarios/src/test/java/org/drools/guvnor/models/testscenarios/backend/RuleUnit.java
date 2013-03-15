@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;

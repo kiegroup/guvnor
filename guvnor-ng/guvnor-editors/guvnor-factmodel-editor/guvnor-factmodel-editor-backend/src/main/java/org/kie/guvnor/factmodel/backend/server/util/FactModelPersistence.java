@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.lang.descr.AnnotationDescr;
