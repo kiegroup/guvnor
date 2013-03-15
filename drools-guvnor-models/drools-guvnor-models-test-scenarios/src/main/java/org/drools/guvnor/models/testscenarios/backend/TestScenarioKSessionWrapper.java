@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.backend.executors.MethodExecutor;
 import org.drools.guvnor.models.testscenarios.backend.verifiers.FactVerifier;
 import org.drools.guvnor.models.testscenarios.backend.verifiers.RuleFiredVerifier;

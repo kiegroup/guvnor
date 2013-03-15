@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
 import org.drools.guvnor.models.testscenarios.shared.Field;
 

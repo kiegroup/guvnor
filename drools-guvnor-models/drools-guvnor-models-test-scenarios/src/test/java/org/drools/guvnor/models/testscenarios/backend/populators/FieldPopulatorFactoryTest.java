@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;

@@ -32,8 +32,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;

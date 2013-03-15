@@ -9,7 +9,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.backend.SqlDateWrapper;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 

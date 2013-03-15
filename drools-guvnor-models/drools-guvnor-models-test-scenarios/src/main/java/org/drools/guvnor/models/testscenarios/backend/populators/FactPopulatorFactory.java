@@ -18,7 +18,7 @@ package org.drools.guvnor.models.testscenarios.backend.populators;
 
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
 
 public class FactPopulatorFactory {

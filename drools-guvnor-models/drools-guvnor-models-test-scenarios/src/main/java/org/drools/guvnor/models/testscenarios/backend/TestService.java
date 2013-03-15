@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.models.testscenarios.backend;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.junit.runner.notification.RunListener;
 import org.kie.runtime.KieSession;
 

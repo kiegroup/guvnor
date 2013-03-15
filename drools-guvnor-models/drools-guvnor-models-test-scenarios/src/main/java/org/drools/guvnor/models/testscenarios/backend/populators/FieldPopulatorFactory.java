@@ -19,7 +19,7 @@ package org.drools.guvnor.models.testscenarios.backend.populators;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
 import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
 import org.drools.guvnor.models.testscenarios.shared.Field;

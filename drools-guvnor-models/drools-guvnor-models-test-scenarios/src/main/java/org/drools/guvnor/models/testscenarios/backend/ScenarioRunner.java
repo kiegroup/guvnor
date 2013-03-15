@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulator;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulatorFactory;
 import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.guvnor.models.testscenarios.backend.util.FieldTypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;

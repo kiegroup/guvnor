@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.drools.guvnor.models.testscenarios.shared.FieldData;

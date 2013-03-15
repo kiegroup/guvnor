@@ -19,7 +19,7 @@ package org.drools.guvnor.models.testscenarios.backend.populators;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;

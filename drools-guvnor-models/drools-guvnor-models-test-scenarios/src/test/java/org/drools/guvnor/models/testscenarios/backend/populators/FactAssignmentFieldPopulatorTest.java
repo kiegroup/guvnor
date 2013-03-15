@@ -23,8 +23,8 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.junit.Test;
 import org.drools.guvnor.models.testscenarios.backend.MatryoshkaDoll;
 import org.drools.guvnor.models.testscenarios.backend.Mouse;

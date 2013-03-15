@@ -30,8 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.Field;
@@ -51,7 +51,7 @@ public class FactPopulatorTest {
 
     static {
         try {
-            Class.forName("org.drools.base.mvel.MVELCompilationUnit");
+            Class.forName("org.drools.core.base.mvel.MVELCompilationUnit");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

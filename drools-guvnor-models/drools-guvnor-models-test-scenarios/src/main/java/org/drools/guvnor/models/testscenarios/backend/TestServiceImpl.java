@@ -16,8 +16,7 @@
 
 package org.drools.guvnor.models.testscenarios.backend;
 
-import org.drools.base.TypeResolver;
-import org.drools.guvnor.models.testscenarios.backend.ScenarioRunner4JUnit;
+import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
