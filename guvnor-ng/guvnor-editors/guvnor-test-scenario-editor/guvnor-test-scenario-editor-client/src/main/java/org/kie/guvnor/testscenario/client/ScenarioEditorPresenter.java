@@ -236,7 +236,7 @@ public class ScenarioEditorPresenter
                                         ifFixturesSizeZeroThenAddExecutionTrace();
 
                                         if ( !isReadOnly ) {
-                                            layout.add( new TestRunnerWidget( ScenarioEditorPresenter.this, service, packageName ) );
+                                            layout.add( new TestRunnerWidget( ScenarioEditorPresenter.this, service, path ) );
                                         }
 
                                         renderEditor();

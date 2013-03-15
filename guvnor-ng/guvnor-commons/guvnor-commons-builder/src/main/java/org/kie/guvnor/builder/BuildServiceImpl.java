@@ -39,17 +39,12 @@ import org.uberfire.backend.vfs.Path;
 public class BuildServiceImpl
         implements BuildService {
 
-    private static final String POM_FILE = "pom.xml";
-
     private Paths paths;
     private Event<BuildResults> buildResultsEvent;
     private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
     private POMService pomService;
     private M2RepoService m2RepoService;
-    private IOService ioService;
     private ProjectService projectService;
-
-    @Inject
     private LRUBuilderCache cache;
 
     public BuildServiceImpl() {
@@ -62,15 +57,15 @@ public class BuildServiceImpl
                              final M2RepoService m2RepoService,
                              final Event<BuildResults> buildResultsEvent,
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
-                             final IOService ioService,
-                             final ProjectService projectService ) {
+                             final ProjectService projectService,
+                             final LRUBuilderCache cache) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.buildResultsEvent = buildResultsEvent;
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
-        this.ioService = ioService;
         this.projectService = projectService;
+        this.cache = cache;
     }
 
     @Override
@@ -104,7 +99,7 @@ public class BuildServiceImpl
 
     @Override
     public void addResource( final Path resource ) {
-        final Path pathToPom = getPathToPom( resource );
+        final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
         }
@@ -118,7 +113,7 @@ public class BuildServiceImpl
 
     @Override
     public void deleteResource( final Path resource ) {
-        final Path pathToPom = getPathToPom( resource );
+        final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
         }
@@ -132,7 +127,7 @@ public class BuildServiceImpl
 
     @Override
     public void updateResource( final Path resource ) {
-        final Path pathToPom = getPathToPom( resource );
+        final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
         }
@@ -142,18 +137,6 @@ public class BuildServiceImpl
         }
         final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
-    }
-
-    private Path getPathToPom( final Path resource ) {
-        final Path projectPath = projectService.resolveProject( resource );
-        if ( projectPath == null ) {
-            return null;
-        }
-        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_FILE );
-        if ( pom == null ) {
-            return null;
-        }
-        return paths.convert( pom );
     }
 
 }

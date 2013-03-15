@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
+import org.drools.guvnor.models.testscenarios.backend.ScenarioRunner;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -32,7 +34,9 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.commons.service.session.SessionService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -61,6 +65,12 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private SessionService sessionService;
+
+    @Inject
+    private ProjectService projectService;
 
     @Inject
     private CopyService copyService;
@@ -230,8 +240,30 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
     }
 
     @Override
-    public SingleScenarioResult runScenario( String packageName,
-                                             Scenario scenario ) {
+    public SingleScenarioResult runScenario(Path path,
+                                            Scenario scenario) {
+
+        Path pathToPom = projectService.resolvePathToPom(path);
+        sessionService.newKieSession(pathToPom);
+
+        try {
+
+            ScenarioRunner scenarioRunner = new ScenarioRunner(sessionService.newKieSession(pathToPom));
+
+            scenarioRunner.run(scenario);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //TODO: -Rikkola-
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();  //TODO: -Rikkola-
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();  //TODO: -Rikkola-
+        } catch (InstantiationException e) {
+            e.printStackTrace();  //TODO: -Rikkola-
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  //TODO: -Rikkola-
+        }
+
         return null;  //TODO: -Rikkola-
     }
 }

@@ -74,6 +74,13 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
     String resolvePackageName( final Path packagePath );
 
     /**
+     * Path for the project pom.xml that the given resource belongs to.
+     * @param Path to resourceresource
+     * @return Path to pom.xml for the given resource
+     */
+    Path resolvePathToPom(Path resource);
+
+    /**
      * Creates a new project to the given path.
      * @param activePath
      * @param name

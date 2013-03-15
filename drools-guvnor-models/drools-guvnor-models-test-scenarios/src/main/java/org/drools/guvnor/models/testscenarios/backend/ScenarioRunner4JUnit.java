@@ -41,8 +41,7 @@ public class ScenarioRunner4JUnit extends Runner {
         EachTestNotifier eachNotifier = new EachTestNotifier( notifier, description );
         try {
             eachNotifier.fireTestStarted();
-            ScenarioRunner runner = new ScenarioRunner( ksession,
-                                                        resolver );
+            ScenarioRunner runner = new ScenarioRunner( ksession );
             runner.run( scenario );
             if ( !scenario.wasSuccessful() ) {
                 StringBuilder builder = new StringBuilder();

@@ -145,6 +145,19 @@ public class ProjectServiceImpl
     }
 
     @Override
+    public Path resolvePathToPom( final Path resource ) {
+        final Path projectPath = resolveProject( resource );
+        if ( projectPath == null ) {
+            return null;
+        }
+        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_FILENAME );
+        if ( pom == null ) {
+            return null;
+        }
+        return paths.convert( pom );
+    }
+
+    @Override
     public Path resolvePackage( final Path resource ) {
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {

@@ -23,7 +23,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
+import org.drools.base.ClassTypeResolver;
+import org.drools.base.TypeResolver;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulator;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulatorFactory;
 import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
@@ -35,6 +42,10 @@ import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.RetractFact;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.api.runtime.KieSession;
+import org.drools.guvnor.models.testscenarios.shared.Expectation;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.kie.runtime.KieRuntime;
+import org.kie.runtime.KieSession;
 import org.mvel2.MVEL;
 
 /**
@@ -42,6 +53,7 @@ import org.mvel2.MVEL;
  */
 public class ScenarioRunner {
 
+    private final KieSession ksession;
     private TestScenarioKSessionWrapper workingMemoryWrapper;
     private FactPopulatorFactory factPopulatorFactory;
     private FactPopulator factPopulator;
@@ -62,29 +74,38 @@ public class ScenarioRunner {
      * particular enum field values. See EnumFieldPopulator and
      * FactFieldValueVerifier
      */
-    public ScenarioRunner( final KieSession ksession,
-                           final TypeResolver resolver ) throws ClassNotFoundException {
-
-        Map<String, Object> populatedData = new HashMap<String, Object>();
-        Map<String, Object> globalData = new HashMap<String, Object>();
-
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-
-        this.workingMemoryWrapper = new TestScenarioKSessionWrapper( ksession,
-                                                                     resolver,
-                                                                     classloader,
-                                                                     populatedData,
-                                                                     globalData );
-        this.factPopulatorFactory = new FactPopulatorFactory( populatedData,
-                                                              globalData,
-                                                              resolver,
-                                                              classloader );
-        this.factPopulator = new FactPopulator( ksession,
-                                                populatedData );
+    public ScenarioRunner( final KieSession ksession ) throws ClassNotFoundException {
+        this.ksession = ksession;
     }
 
     public void run( Scenario scenario )
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+
+        Map<String, Object> populatedData = new HashMap<String, Object>();
+        Map<String, Object> globalData = new HashMap<String, Object>();
+
+
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+
+        // This looks safe!
+        ClassLoader classloader2 = ((InternalRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+
+        ClassTypeResolver resolver = new ClassTypeResolver(
+                scenario.getImports().getImportStrings(),
+                classloader2 );
+
+        this.workingMemoryWrapper = new TestScenarioKSessionWrapper(ksession,
+                resolver,
+                classloader,
+                populatedData,
+                globalData);
+        this.factPopulatorFactory = new FactPopulatorFactory(populatedData,
+                globalData,
+                resolver,
+                classloader);
+        this.factPopulator = new FactPopulator(ksession,
+                populatedData);
+
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.setLastRunResult( new Date() );
 

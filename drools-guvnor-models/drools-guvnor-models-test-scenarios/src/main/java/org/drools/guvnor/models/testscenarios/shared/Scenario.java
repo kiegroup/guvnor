@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.models.testscenarios.shared;
 
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -67,7 +69,10 @@ public class Scenario {
      * it is exclusive (ie all rules can fire BUT the ones in the list).
      */
     private boolean           inclusive        = false;
-    
+
+
+    private Imports imports = new Imports();
+
     public Scenario() { }
     
     public Scenario( String name ) {
@@ -432,4 +437,7 @@ public class Scenario {
         return this.name;
     }
 
+    public Imports getImports() {
+        return imports;
+    }
 }

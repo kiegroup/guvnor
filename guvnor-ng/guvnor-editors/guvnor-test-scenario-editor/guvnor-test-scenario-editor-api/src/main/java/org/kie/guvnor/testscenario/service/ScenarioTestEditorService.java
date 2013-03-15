@@ -25,6 +25,7 @@ import org.kie.guvnor.services.file.SupportsDelete;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsRename;
 import org.kie.guvnor.services.file.SupportsUpdate;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Service definition for Globals editor
@@ -40,6 +41,6 @@ public interface ScenarioTestEditorService
         SupportsRename {
 
 
-    SingleScenarioResult runScenario(String packageName, Scenario scenario);
+    SingleScenarioResult runScenario(Path path, Scenario scenario);
 
 }

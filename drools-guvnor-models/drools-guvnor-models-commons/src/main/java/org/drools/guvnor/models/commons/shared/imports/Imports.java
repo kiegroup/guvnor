@@ -15,9 +15,7 @@
  */
 package org.drools.guvnor.models.commons.shared.imports;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Imports {
 
@@ -32,6 +30,16 @@ public class Imports {
 
     public List<Import> getImports() {
         return imports;
+    }
+
+    public Set<String> getImportStrings() {
+        Set<String> strings = new HashSet<String>();
+
+        for (Import item : imports) {
+            strings.add(item.getType());
+        }
+
+        return strings;
     }
 
     public String toString() {

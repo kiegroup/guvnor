@@ -50,6 +50,7 @@ import org.drools.guvnor.models.testscenarios.shared.ScenarioRunResult;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.SmallLabel;
 
@@ -64,7 +65,7 @@ public class TestRunnerWidget extends Composite {
 
     public TestRunnerWidget(final ScenarioEditorPresenter parent,
                             final Caller<ScenarioTestEditorService> testScenarioEditorService,
-                            final String packageName) {
+                            final Path path) {
 
         final Button run = new Button( TestScenarioConstants.INSTANCE.RunScenario() );
         run.setTitle( TestScenarioConstants.INSTANCE.RunScenarioTip() );
@@ -91,7 +92,7 @@ public class TestRunnerWidget extends Composite {
                     }
                 }
 
-                ).runScenario(packageName,
+                ).runScenario(path,
                         parent.getScenario());
             }
         } );
