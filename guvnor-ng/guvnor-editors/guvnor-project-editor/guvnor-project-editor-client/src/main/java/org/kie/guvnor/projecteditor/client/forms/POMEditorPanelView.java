@@ -16,27 +16,27 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.project.model.Dependency;
 import org.kie.guvnor.project.model.GAV;
 
-import java.util.List;
-
-public interface POMEditorPanelView
-        extends IsWidget {
-
+public interface POMEditorPanelView extends HasBusyIndicator,
+                                            IsWidget {
 
     String getTitleWidget();
 
-    void setTitleText(String titleText);
+    void setTitleText( String titleText );
 
-    void showSaveSuccessful(String fileName);
+    void showSaveSuccessful( String fileName );
 
-    void setDependencies(List<Dependency> dependencies);
+    void setDependencies( List<Dependency> dependencies );
 
-    void setGAV(GAV gav);
+    void setGAV( GAV gav );
 
-    void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler);
+    void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );
 
     void setReadOnly();
 }

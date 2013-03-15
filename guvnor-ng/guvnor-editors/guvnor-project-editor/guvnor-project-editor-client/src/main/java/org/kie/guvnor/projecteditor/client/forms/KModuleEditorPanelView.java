@@ -16,12 +16,13 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 
-public interface KModuleEditorPanelView
-        extends ListFormComboPanelView {
+public interface KModuleEditorPanelView extends HasBusyIndicator,
+                                                ListFormComboPanelView {
 
-    void showSaveSuccessful(String fileName);
+    void showSaveSuccessful( String fileName );
 
     void makeReadOnly();
 }

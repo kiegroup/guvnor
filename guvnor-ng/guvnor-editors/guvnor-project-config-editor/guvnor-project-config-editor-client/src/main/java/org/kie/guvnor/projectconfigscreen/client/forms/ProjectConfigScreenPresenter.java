@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -115,8 +114,9 @@ public class ProjectConfigScreenPresenter
 
     @Override
     public void onShowMetadata() {
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         metadataService.call( getMetadataSuccessCallback(),
-                              new DefaultErrorCallback() ).getMetadata( path );
+                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
     }
 
     private RemoteCallback<PackageConfiguration> getModelSuccessCallback() {

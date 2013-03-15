@@ -23,9 +23,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
@@ -71,6 +72,9 @@ public class ScoreCardXLSEditorPresenter {
     private MultiPageEditor multiPage;
 
     @Inject
+    private BusyIndicatorView busyIndicatorView;
+
+    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -94,9 +98,10 @@ public class ScoreCardXLSEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
+                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new DefaultErrorCallback() ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
             }
 
             @Override

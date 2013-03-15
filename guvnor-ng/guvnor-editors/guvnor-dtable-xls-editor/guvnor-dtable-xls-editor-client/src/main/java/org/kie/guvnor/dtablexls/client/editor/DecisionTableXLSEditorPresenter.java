@@ -26,7 +26,7 @@ import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessag
 import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
@@ -104,9 +104,10 @@ public class DecisionTableXLSEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
+                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new DefaultErrorCallback() ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
             }
 
             @Override

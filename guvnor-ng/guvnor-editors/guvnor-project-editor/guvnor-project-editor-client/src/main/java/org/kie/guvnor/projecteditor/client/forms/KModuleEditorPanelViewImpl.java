@@ -16,30 +16,40 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelViewImpl;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelViewImpl;
+import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 public class KModuleEditorPanelViewImpl
         extends ListFormComboPanelViewImpl
         implements KModuleEditorPanelView {
 
-
     private final Event<NotificationEvent> notificationEvent;
 
     @Inject
-    public KModuleEditorPanelViewImpl(Event<NotificationEvent> notificationEvent) {
+    public KModuleEditorPanelViewImpl( Event<NotificationEvent> notificationEvent ) {
         super();
-        setListTitle(ProjectEditorConstants.INSTANCE.KBases());
+        setListTitle( ProjectEditorConstants.INSTANCE.KBases() );
         this.notificationEvent = notificationEvent;
     }
 
     @Override
-    public void showSaveSuccessful(String fileName) {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
+    public void showSaveSuccessful( String fileName ) {
+        notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName ) ) );
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 
 }

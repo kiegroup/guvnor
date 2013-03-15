@@ -18,17 +18,17 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
 
 public class POMEditorPanel
         implements IsWidget {
@@ -54,7 +54,7 @@ public class POMEditorPanel
         }
         //Busy popup is handled by ProjectEditorScreen
         pomServiceCaller.call( getModelSuccessCallback(),
-                               new DefaultErrorCallback() ).load( path );
+                               new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private RemoteCallback<POM> getModelSuccessCallback() {
@@ -89,10 +89,10 @@ public class POMEditorPanel
                       final Metadata metadata ) {
         //Busy popup is handled by ProjectEditorScreen
         pomServiceCaller.call( getSaveSuccessCallback( callback ),
-                               new DefaultErrorCallback() ).save( path,
-                                                                  model,
-                                                                  metadata,
-                                                                  commitMessage );
+                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                        model,
+                                                                                        metadata,
+                                                                                        commitMessage );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback( final Command callback ) {

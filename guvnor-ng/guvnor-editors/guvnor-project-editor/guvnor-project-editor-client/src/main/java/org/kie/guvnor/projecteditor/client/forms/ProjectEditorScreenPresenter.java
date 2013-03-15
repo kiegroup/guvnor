@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
@@ -91,14 +91,18 @@ public class
                       final PlaceRequest request ) {
 
         this.isReadOnly = request.getParameter( "readOnly", null ) == null ? false : true;
-
         pathToPomXML = path;
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         pomPanel.init( path,
                        isReadOnly );
 
         if ( !isReadOnly ) {
             addKModuleEditor();
         }
+
+        view.hideBusyIndicator();
 
         makeMenuBar();
     }
@@ -111,19 +115,21 @@ public class
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
+                        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                         saveOperationService.save( pathToPomXML,
                                                    new CommandWithCommitMessage() {
                                                        @Override
                                                        public void execute( final String comment ) {
                                                            // We need to use callback here or jgit will break when we save two files at the same time.
                                                            pomPanel.save( comment,
-                                                                          new com.google.gwt.user.client.Command() {
+                                                                          new Command() {
                                                                               @Override
                                                                               public void execute() {
                                                                                   if ( kModuleEditorPanel.hasBeenInitialized() ) {
                                                                                       kModuleEditorPanel.save( comment,
                                                                                                                kmoduleMetadata );
                                                                                   }
+                                                                                  view.hideBusyIndicator();
                                                                               }
                                                                           }, pomMetadata );
                                                        }
@@ -172,7 +178,7 @@ public class
 
     private void addKModuleEditor() {
         kModuleServiceCaller.call( getResolveKModulePathSuccessCallback(),
-                                   new DefaultErrorCallback() ).pathToRelatedKModuleFileIfAny( pathToPomXML );
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).pathToRelatedKModuleFileIfAny( pathToPomXML );
     }
 
     private RemoteCallback<Path> getResolveKModulePathSuccessCallback() {
@@ -207,8 +213,9 @@ public class
     @Override
     public void onPOMMetadataTabSelected() {
         if ( pomMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
             metadataService.call( getPOMMetadataSuccessCallback(),
-                                  new DefaultErrorCallback() ).getMetadata( pathToPomXML );
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToPomXML );
         }
     }
 
@@ -222,8 +229,9 @@ public class
     @Override
     public void onKModuleMetadataTabSelected() {
         if ( kmoduleMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
             metadataService.call( getKModuleMetadataSuccessCallback(),
-                                  new DefaultErrorCallback() ).getMetadata( pathToKModuleXML );
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToKModuleXML );
         }
     }
 

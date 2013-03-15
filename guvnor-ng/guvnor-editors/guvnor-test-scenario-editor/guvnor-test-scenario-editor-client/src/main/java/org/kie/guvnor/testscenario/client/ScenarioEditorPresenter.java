@@ -46,7 +46,6 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -202,9 +201,10 @@ public class ScenarioEditorPresenter
                                          MetadataConstants.INSTANCE.Metadata() ) {
                 @Override
                 public void onFocus() {
+                    busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                     metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                        isReadOnly ),
-                                          new DefaultErrorCallback() ).getMetadata( path );
+                                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
                 }
 
                 @Override

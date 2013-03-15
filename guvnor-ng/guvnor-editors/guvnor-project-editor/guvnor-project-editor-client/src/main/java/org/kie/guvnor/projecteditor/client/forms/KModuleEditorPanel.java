@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
@@ -43,7 +43,7 @@ public class KModuleEditorPanel
         }
         //Busy popup is handled by ProjectEditorScreen
         projectEditorServiceCaller.call( getModelSuccessCallback(),
-                                         new DefaultErrorCallback() ).load( path );
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private RemoteCallback<KModuleModel> getModelSuccessCallback() {
@@ -69,10 +69,10 @@ public class KModuleEditorPanel
                       Metadata metadata ) {
         //Busy popup is handled by ProjectEditorScreen
         projectEditorServiceCaller.call( getSaveSuccessCallback(),
-                                         new DefaultErrorCallback() ).save( path,
-                                                                            model,
-                                                                            metadata,
-                                                                            commitMessage );
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                  model,
+                                                                                                  metadata,
+                                                                                                  commitMessage );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

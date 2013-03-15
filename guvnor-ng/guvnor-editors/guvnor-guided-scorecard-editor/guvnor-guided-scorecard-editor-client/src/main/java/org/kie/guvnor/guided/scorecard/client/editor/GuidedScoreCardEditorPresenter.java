@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -143,9 +142,10 @@ public class GuidedScoreCardEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
+                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new DefaultErrorCallback() ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
             }
 
             @Override
