@@ -53,6 +53,7 @@ public class ErrorPopup extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
         popup.setDynamicSafe( true );
         popup.setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+        popup.setHideOthers( false );
     }
 
     public void show() {
