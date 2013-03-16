@@ -29,7 +29,13 @@
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-core-services-backend</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>

@@ -16,15 +16,12 @@ public class ScenarioRunner4JUnit extends Runner {
     private Description descr;
     // the actual scenario test to be executed
     private Scenario scenario;
-    private KieSession ksession;
-    private TypeResolver resolver;
+    private KieSession  ksession;
 
     public ScenarioRunner4JUnit( Scenario scenario,
-                                 KieSession ksession,
-                                 TypeResolver resolver ) throws InitializationError {
+                                 KieSession ksession) throws InitializationError {
         this.scenario = scenario;
         this.ksession = ksession;
-        this.resolver = resolver;
         this.descr = Description.createSuiteDescription( "Scenario test case" );
         this.descr.addChild( Description.createTestDescription( getClass(),
                                                                 scenario.getName() ) );
