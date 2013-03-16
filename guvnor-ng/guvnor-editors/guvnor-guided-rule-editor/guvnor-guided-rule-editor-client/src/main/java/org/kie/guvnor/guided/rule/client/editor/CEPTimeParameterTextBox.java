@@ -23,7 +23,7 @@ import org.drools.guvnor.models.commons.shared.rule.HasParameterizedOperator;
  */
 public class CEPTimeParameterTextBox extends AbstractCEPRestrictedEntryTextBox {
 
-    // A valid Operator parameter expression (regex lifted from org.drools.time.TimeUtils.parseTimeString and improved)
+    // A valid Operator parameter expression (regex lifted from org.drools.core.time.TimeUtils.parseTimeString and improved)
     private static final RegExp VALID_TIME = RegExp.compile( "(^\\+?\\*?$)|(^\\-?\\*?$)|(^((\\d+)[Dd]?)?\\s*((\\d+)[Hh]?)?\\s*((\\d+)[Mm]?)?\\s*((\\d+)[Ss]?)?\\s*((\\d+)([Mm]?[Ss]?)?)?$)" );
 
     public CEPTimeParameterTextBox( HasParameterizedOperator hop,

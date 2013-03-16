@@ -29,7 +29,7 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
-import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
