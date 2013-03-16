@@ -47,7 +47,7 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.runtime.rule.impl.RuleFlowGroupImpl;
+import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
