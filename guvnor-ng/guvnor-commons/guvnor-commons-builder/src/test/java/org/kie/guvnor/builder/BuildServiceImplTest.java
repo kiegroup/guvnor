@@ -22,7 +22,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.drools.rule.TypeMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;

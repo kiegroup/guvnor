@@ -8,7 +8,7 @@ import javax.inject.Named;
 
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.rule.TypeMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
