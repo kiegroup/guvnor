@@ -17,7 +17,7 @@ package org.drools.guvnor.models.commons.shared.workitems;
 
 /**
  * A ParameterDefinition used in Guvnor.
- * @see org.drools.process.core.ParameterDefinition
+ * @see org.drools.core.process.core.ParameterDefinition
  */
 public abstract class PortableParameterDefinition {
 
