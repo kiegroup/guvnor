@@ -18,7 +18,7 @@ package org.drools.guvnor.examples.mortgage.client;
 
 import javax.swing.JOptionPane;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.agent.KnowledgeAgent;
 import org.kie.agent.KnowledgeAgentFactory;
 import org.kie.definition.type.FactType;
