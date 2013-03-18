@@ -30,8 +30,8 @@ import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.junit.Test;
 import org.drools.guvnor.models.testscenarios.shared.Field;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class GlobalFactPopulatorTest {
 

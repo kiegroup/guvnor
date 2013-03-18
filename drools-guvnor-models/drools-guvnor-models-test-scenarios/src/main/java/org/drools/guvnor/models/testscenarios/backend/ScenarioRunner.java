@@ -34,7 +34,7 @@ import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.RetractFact;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
 
 /**

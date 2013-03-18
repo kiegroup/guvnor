@@ -30,7 +30,7 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.junit.Before;
 import org.junit.Test;
 import org.drools.guvnor.models.testscenarios.backend.Cheese;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class FactVerifierTest {
 

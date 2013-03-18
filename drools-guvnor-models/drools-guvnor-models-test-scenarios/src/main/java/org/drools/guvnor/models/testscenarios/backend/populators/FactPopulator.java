@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class FactPopulator {
 

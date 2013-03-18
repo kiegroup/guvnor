@@ -51,7 +51,7 @@ import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class ScenarioRunnerTest extends RuleUnit {
 

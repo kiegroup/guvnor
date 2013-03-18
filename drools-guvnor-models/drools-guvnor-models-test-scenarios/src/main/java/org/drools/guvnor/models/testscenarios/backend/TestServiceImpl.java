@@ -22,7 +22,7 @@ import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class TestServiceImpl
         implements

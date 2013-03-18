@@ -45,7 +45,7 @@ import org.drools.guvnor.models.testscenarios.backend.MyCollectionWrapper;
 import org.drools.guvnor.models.testscenarios.backend.OuterFact;
 import org.drools.guvnor.models.testscenarios.backend.Person;
 import org.drools.guvnor.models.testscenarios.backend.SqlDateWrapper;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class FactPopulatorTest {
 

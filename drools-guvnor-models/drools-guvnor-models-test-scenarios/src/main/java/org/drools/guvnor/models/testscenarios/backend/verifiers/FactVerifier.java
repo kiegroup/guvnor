@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class FactVerifier {
 

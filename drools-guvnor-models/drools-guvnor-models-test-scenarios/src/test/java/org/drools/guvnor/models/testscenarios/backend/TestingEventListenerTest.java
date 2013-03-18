@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class TestingEventListenerTest extends RuleUnit {
 

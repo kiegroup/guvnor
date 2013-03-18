@@ -33,7 +33,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class TestScenarioKSessionWrapper {
 

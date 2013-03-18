@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 class ExistingFactPopulator extends FactPopulatorBase {
 

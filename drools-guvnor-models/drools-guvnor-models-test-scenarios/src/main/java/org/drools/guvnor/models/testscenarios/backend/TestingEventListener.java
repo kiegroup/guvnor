@@ -15,8 +15,8 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 
 /**
  * This tracks what is happening in the engine with rule activations and firings.

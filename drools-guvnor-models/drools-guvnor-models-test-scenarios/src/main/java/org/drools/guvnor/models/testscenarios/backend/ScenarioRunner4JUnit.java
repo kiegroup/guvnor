@@ -8,7 +8,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class ScenarioRunner4JUnit extends Runner {
 

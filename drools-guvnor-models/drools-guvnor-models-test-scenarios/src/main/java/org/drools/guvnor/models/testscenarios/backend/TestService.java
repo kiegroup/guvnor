@@ -18,7 +18,7 @@ package org.drools.guvnor.models.testscenarios.backend;
 
 import org.drools.core.base.TypeResolver;
 import org.junit.runner.notification.RunListener;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public interface TestService<T> {
     

@@ -31,8 +31,8 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 /**
  * A class with some utilities for testing rules.
