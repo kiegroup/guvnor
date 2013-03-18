@@ -12,13 +12,13 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class TestRuntimeReportingService {
 
-    private final PlaceManager placeManager;
-
-    private final ListDataProvider<TestResultMessage> dataProvider = new ListDataProvider<TestResultMessage>();
-
     @Inject
-    public TestRuntimeReportingService(PlaceManager placeManager) {
-        this.placeManager = placeManager;
+    private PlaceManager placeManager;
+
+    private ListDataProvider<TestResultMessage> dataProvider = new ListDataProvider<TestResultMessage>();
+
+    public TestRuntimeReportingService() {
+
     }
 
     public void addBuildMessages(final @Observes TestResultMessage message) {
