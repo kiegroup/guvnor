@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.Message;
