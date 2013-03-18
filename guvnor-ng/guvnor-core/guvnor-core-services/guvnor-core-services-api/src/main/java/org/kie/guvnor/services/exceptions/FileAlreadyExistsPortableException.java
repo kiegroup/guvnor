@@ -18,4 +18,8 @@ public class FileAlreadyExistsPortableException extends GenericPortableException
         this.path = path;
     }
 
+    public String getPath() {
+        return path;
+    }
+
 }

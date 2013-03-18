@@ -21,16 +21,16 @@ public class DefaultErrorCallback implements ErrorCallback {
         try {
             throw throwable;
         } catch ( InvalidPathPortableException e ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionInvalidPath0( e.getMessage() ) );
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionInvalidPath0( e.getPath() ) );
 
         } catch ( FileAlreadyExistsPortableException e ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( e.getMessage() ) );
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( e.getPath() ) );
 
         } catch ( NoSuchFilePortableException e ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionNoSuchFile0( e.getMessage() ) );
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionNoSuchFile0( e.getPath() ) );
 
         } catch ( SecurityPortableException e ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionSecurity0( e.getMessage() ) );
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionSecurity0( e.getPath() ) );
 
         } catch ( GenericPortableException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );

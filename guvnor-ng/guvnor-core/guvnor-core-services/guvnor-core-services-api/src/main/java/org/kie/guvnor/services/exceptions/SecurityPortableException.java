@@ -18,4 +18,8 @@ public class SecurityPortableException extends GenericPortableException {
         this.path = path;
     }
 
+    public String getPath() {
+        return path;
+    }
+
 }
