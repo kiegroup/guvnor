@@ -31,11 +31,8 @@ import org.drools.guvnor.models.testscenarios.backend.verifiers.RuleFiredVerifie
 import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
-<<<<<<< HEAD
-=======
 import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
->>>>>>> Correct Test Scenario imports following refactoring
 import org.kie.api.runtime.KieSession;
 
 public class TestScenarioKSessionWrapper {
