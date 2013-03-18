@@ -23,12 +23,12 @@ import java.util.List;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.kie.api.KieServices;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.Message;
-import org.kie.builder.model.KieBaseModel;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.model.KieSessionModel.KieSessionType;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.runtime.KieSession;
