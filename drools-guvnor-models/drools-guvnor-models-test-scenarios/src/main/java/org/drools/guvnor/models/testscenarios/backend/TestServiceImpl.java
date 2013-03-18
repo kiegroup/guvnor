@@ -36,8 +36,7 @@ public class TestServiceImpl
         try {
             // execute the test scenario
             ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
-                                                                    ksession,
-                                                                    resolver );
+                                                                    ksession );
             JUnitCore junit = new JUnitCore();
             junit.addListener( listener );
             junit.run( runner );

@@ -31,6 +31,8 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulator;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulatorFactory;
 import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
@@ -44,7 +46,6 @@ import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.api.runtime.KieSession;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KieSession;
 import org.mvel2.MVEL;
 

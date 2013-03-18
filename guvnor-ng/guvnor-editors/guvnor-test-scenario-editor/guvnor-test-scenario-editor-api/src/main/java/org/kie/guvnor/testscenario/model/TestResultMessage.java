@@ -7,6 +7,9 @@ public class TestResultMessage {
 
     private String message;
 
+    public TestResultMessage() {
+    }
+
     public TestResultMessage(String message) {
         this.message = message;
     }

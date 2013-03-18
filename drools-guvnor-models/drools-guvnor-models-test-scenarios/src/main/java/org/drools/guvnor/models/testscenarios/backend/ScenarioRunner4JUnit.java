@@ -1,6 +1,5 @@
 package org.drools.guvnor.models.testscenarios.backend;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
