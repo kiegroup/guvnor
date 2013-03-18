@@ -30,6 +30,7 @@ import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel.KieSessionType;
 import org.kie.conf.EventProcessingOption;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
@@ -46,7 +47,7 @@ public abstract class RuleUnit {
         
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem()
-                              .write(org.kie.io.ResourceFactory.newClassPathResource( uri, getClass() ) )
+                              .write(ResourceFactory.newClassPathResource(uri, getClass()) )
                               .writeKModuleXML( createKieProjectWithPackages(ks).toXML() );
         KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
         
