@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.viewsource.client.screen;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -34,7 +35,8 @@ public class ViewSourceViewImpl
     @Inject
     private ViewDRLSourceWidget drlSourceViewer;
 
-    public ViewSourceViewImpl() {
+    @PostConstruct
+    public void initialize() {
         initWidget( drlSourceViewer );
     }
 
