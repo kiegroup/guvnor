@@ -72,7 +72,8 @@ public class DecisionTableXLSEditorPresenter {
     @Inject
     private DecisionTableXLSEditorView view;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    private MetadataWidget metadataWidget;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -104,10 +105,10 @@ public class DecisionTableXLSEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override

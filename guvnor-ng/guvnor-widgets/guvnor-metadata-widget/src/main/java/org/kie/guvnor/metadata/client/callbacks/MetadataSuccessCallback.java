@@ -22,5 +22,6 @@ public class MetadataSuccessCallback implements RemoteCallback<Metadata> {
     public void callback( final Metadata metadata ) {
         metadataWidget.setContent( metadata,
                                    isReadOnly );
+        metadataWidget.hideBusyIndicator();
     }
 }

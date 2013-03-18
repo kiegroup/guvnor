@@ -42,6 +42,7 @@ import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.version.events.RestoreEvent;
+import org.kie.guvnor.viewsource.client.callbacks.ViewSourceSuccessCallback;
 import org.kie.guvnor.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
@@ -97,7 +98,8 @@ public class GuidedRuleTemplateEditorPresenter {
     private FileMenuBuilder menuBuilder;
     private Menus menus;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    private MetadataWidget metadataWidget;
 
     private EventBus eventBus = new SimpleEventBus();
 
@@ -125,12 +127,10 @@ public class GuidedRuleTemplateEditorPresenter {
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
-                service.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String response ) {
-                        viewSource.setContent( response );
-                    }
-                } ).toSource( path, view.getContent() );
+                viewSource.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                service.call( new ViewSourceSuccessCallback( viewSource ),
+                              new HasBusyIndicatorDefaultErrorCallback( viewSource ) ).toSource( path,
+                                                                                                 view.getContent() );
             }
 
             @Override
@@ -163,10 +163,10 @@ public class GuidedRuleTemplateEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override

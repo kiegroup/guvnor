@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -28,8 +30,12 @@ public class ProjectEditorScreenViewImpl
         implements ProjectEditorScreenView {
 
     private Presenter presenter;
-    private MetadataWidget pomMetaDataPanel = new MetadataWidget();
-    private MetadataWidget kModuleMetaDataPanel = new MetadataWidget();
+
+    @Inject
+    private MetadataWidget pomMetaDataPanel;
+
+    @Inject
+    private MetadataWidget kModuleMetaDataPanel;
 
     @Override
     public void setPresenter( Presenter presenter ) {

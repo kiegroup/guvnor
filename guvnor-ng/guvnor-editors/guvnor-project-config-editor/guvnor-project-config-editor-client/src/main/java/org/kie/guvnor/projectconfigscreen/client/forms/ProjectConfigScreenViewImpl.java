@@ -20,13 +20,16 @@ public class ProjectConfigScreenViewImpl
         implements ProjectConfigScreenView {
 
     private final ImportsWidgetPresenter importsWidget;
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+
+    private MetadataWidget metadataWidget;
 
     private Presenter presenter;
 
     @Inject
-    public ProjectConfigScreenViewImpl( final ImportsWidgetPresenter importsWidget ) {
+    public ProjectConfigScreenViewImpl( final ImportsWidgetPresenter importsWidget,
+                                        final MetadataWidget metadataWidget ) {
         this.importsWidget = importsWidget;
+        this.metadataWidget = metadataWidget;
         addPage( new Page( importsWidget,
                            ImportConstants.INSTANCE.Imports() ) {
             @Override

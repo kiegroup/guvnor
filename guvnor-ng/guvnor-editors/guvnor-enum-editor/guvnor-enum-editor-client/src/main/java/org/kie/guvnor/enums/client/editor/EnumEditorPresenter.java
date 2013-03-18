@@ -89,7 +89,8 @@ public class EnumEditorPresenter {
     private FileMenuBuilder menuBuilder;
     private Menus menus;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    private MetadataWidget metadataWidget;
 
     private Path path;
     private PlaceRequest place;
@@ -125,10 +126,10 @@ public class EnumEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override

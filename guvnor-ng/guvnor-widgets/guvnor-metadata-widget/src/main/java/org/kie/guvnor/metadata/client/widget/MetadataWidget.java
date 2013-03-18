@@ -19,6 +19,8 @@ package org.kie.guvnor.metadata.client.widget;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -32,6 +34,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
@@ -46,8 +50,8 @@ import static org.kie.commons.validation.PortablePreconditions.*;
  * This displays the metadata for a versionable artifact. It also captures
  * edits, but it does not load or save anything itself.
  */
-public class MetadataWidget
-        extends DirtyableComposite {
+@Dependent
+public class MetadataWidget extends DirtyableComposite implements HasBusyIndicator {
 
     private ClientTypeRegistry clientTypeRegistry = null;
 
@@ -59,6 +63,9 @@ public class MetadataWidget
     private String currentSectionName;
 
     private List<DirtyableComposite> compositeList = new ArrayList<DirtyableComposite>();
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     public MetadataWidget() {
         layout.setWidth( "100%" );
@@ -345,4 +352,13 @@ public class MetadataWidget
         return clientTypeRegistry;
     }
 
+    @Override
+    public void showBusyIndicator( final String message ) {
+        busyIndicatorView.showBusyIndicator( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        busyIndicatorView.hideBusyIndicator();
+    }
 }

@@ -79,7 +79,8 @@ public class DRLEditorPresenter {
     @Inject
     private DRLEditorView view;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    private MetadataWidget metadataWidget;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -110,10 +111,10 @@ public class DRLEditorPresenter {
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override

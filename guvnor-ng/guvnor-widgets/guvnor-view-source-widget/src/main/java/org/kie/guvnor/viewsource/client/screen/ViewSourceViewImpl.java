@@ -16,17 +16,23 @@
 
 package org.kie.guvnor.viewsource.client.screen;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.guvnor.viewsource.client.widget.ViewDRLSourceWidget;
-
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.Composite;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.guvnor.viewsource.client.widget.ViewDRLSourceWidget;
 
 @Dependent
 public class ViewSourceViewImpl
         extends Composite
         implements ViewSourceView {
 
-    final ViewDRLSourceWidget drlSourceViewer = new ViewDRLSourceWidget();
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private ViewDRLSourceWidget drlSourceViewer;
 
     public ViewSourceViewImpl() {
         initWidget( drlSourceViewer );
@@ -41,4 +47,15 @@ public class ViewSourceViewImpl
     public void clear() {
         drlSourceViewer.clearContent();
     }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        busyIndicatorView.showBusyIndicator( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        busyIndicatorView.hideBusyIndicator();
+    }
+
 }

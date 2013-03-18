@@ -81,7 +81,9 @@ public class GuvnorDefaultEditorPresenter
     private FileMenuBuilder menuBuilder;
     private Menus menus;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    @Inject
+    private MetadataWidget metadataWidget;
+
     private boolean isReadOnly;
     private Path path;
 
@@ -102,10 +104,10 @@ public class GuvnorDefaultEditorPresenter
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                 metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                    isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override

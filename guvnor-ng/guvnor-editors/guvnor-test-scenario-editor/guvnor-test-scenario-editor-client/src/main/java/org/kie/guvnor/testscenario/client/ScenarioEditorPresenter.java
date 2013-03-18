@@ -96,7 +96,7 @@ public class ScenarioEditorPresenter
     private final Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
 
-    private final MetadataWidget metadataWidget = new MetadataWidget();
+    private MetadataWidget metadataWidget;
 
     private MultiPageEditor multiPage;
     private Path path;
@@ -104,19 +104,21 @@ public class ScenarioEditorPresenter
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    public ScenarioEditorPresenter( Caller<ScenarioTestEditorService> service,
-                                    Caller<DataModelService> dataModelService,
-                                    Caller<ProjectService> projectService,
+    public ScenarioEditorPresenter( final Caller<ScenarioTestEditorService> service,
+                                    final Caller<DataModelService> dataModelService,
+                                    final Caller<ProjectService> projectService,
                                     final Caller<MetadataService> metadataService,
-                                    MultiPageEditor multiPage,
-                                    @New FileMenuBuilder menuBuilder,
-                                    Event<NotificationEvent> notification,
-                                    BusyIndicatorView busyIndicatorView ) {
+                                    final MultiPageEditor multiPage,
+                                    final MetadataWidget metadataWidget,
+                                    final @New FileMenuBuilder menuBuilder,
+                                    final Event<NotificationEvent> notification,
+                                    final BusyIndicatorView busyIndicatorView ) {
         this.service = service;
         this.projectService = projectService;
         this.dataModelService = dataModelService;
         this.metadataService = metadataService;
         this.multiPage = multiPage;
+        this.metadataWidget = metadataWidget;
         this.menuBuilder = menuBuilder;
         this.notification = notification;
         this.busyIndicatorView = busyIndicatorView;
@@ -201,10 +203,10 @@ public class ScenarioEditorPresenter
                                          MetadataConstants.INSTANCE.Metadata() ) {
                 @Override
                 public void onFocus() {
-                    busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                     metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                        isReadOnly ),
-                                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getMetadata( path );
+                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
                 }
 
                 @Override

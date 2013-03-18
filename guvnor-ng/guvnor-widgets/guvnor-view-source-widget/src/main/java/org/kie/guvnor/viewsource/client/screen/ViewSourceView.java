@@ -17,9 +17,10 @@
 package org.kie.guvnor.viewsource.client.screen;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 
-public interface ViewSourceView
-        extends IsWidget {
+public interface ViewSourceView extends HasBusyIndicator,
+                                        IsWidget {
 
     void setContent( final String content );
 
