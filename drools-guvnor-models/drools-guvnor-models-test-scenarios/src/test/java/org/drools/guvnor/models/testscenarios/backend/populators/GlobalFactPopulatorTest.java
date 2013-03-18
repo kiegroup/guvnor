@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.models.testscenarios.backend.populators;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,11 +24,14 @@ import java.util.Map;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.junit.Test;
-import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class GlobalFactPopulatorTest {
 
@@ -40,8 +40,8 @@ public class GlobalFactPopulatorTest {
 
         FactData global = new FactData( "Cheese",
                                         "c",
-                                        Arrays.<Field> asList( new FieldData( "type",
-                                                                              "cheddar" ) ),
+                                        Arrays.<Field>asList( new FieldData( "type",
+                                                                             "cheddar" ) ),
                                         false );
 
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
@@ -57,11 +57,11 @@ public class GlobalFactPopulatorTest {
                                                                            global,
                                                                            globalData );
 
-        globalFactPopulator.populate( ksession, 
+        globalFactPopulator.populate( ksession,
                                       new HashMap<String, FactHandle>() );
-        
-        verify( ksession ).setGlobal( eq( global.getName() ), 
-                                      any( Object.class )  );
+
+        verify( ksession ).setGlobal( eq( global.getName() ),
+                                      any( Object.class ) );
         assertEquals( 1,
                       globalData.size() );
         assertEquals( 0,

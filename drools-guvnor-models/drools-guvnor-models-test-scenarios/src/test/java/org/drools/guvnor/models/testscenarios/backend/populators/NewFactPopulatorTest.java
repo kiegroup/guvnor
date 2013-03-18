@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.models.testscenarios.backend.populators;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,11 +31,14 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 public class NewFactPopulatorTest {
 
     private TypeResolver            typeResolver;
     private HashMap<String, Object> populatedData;
-    private KieSession              workingMemory;
+    private KieSession workingMemory;
 
     @Before
     public void setUp() throws Exception {

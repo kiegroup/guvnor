@@ -33,37 +33,37 @@ class NewFactPopulator extends FactPopulatorBase {
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
             ClassLoader classLoader,
-            FactData fact) throws ClassNotFoundException,
+            FactData fact ) throws ClassNotFoundException,
             InstantiationException,
             IllegalAccessException {
-        super(populatedData,
-                typeResolver,
-                classLoader,
-                fact);
+        super( populatedData,
+               typeResolver,
+               classLoader,
+               fact );
         factObject = resolveFactObject();
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException,
             IllegalAccessException,
             InstantiationException {
-        Object factObject = typeResolver.resolveType(getTypeName(typeResolver,
-                fact)).newInstance();
-        populatedData.put(fact.getName(),
-                factObject);
+        Object factObject = typeResolver.resolveType( getTypeName( typeResolver,
+                                                                   fact ) ).newInstance();
+        populatedData.put( fact.getName(),
+                           factObject );
         return factObject;
     }
 
     @Override
     public List<FieldPopulator> getFieldPopulators()
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-        return getFieldPopulators(factObject);
+        return getFieldPopulators( factObject );
     }
 
     @Override
-    public void populate(KieSession ksession,
-                         Map<String, FactHandle> factHandles) {
-        factHandles.put(fact.getName(),
-                        ksession.insert(factObject));
+    public void populate( KieSession ksession,
+                          Map<String, FactHandle> factHandles ) {
+        factHandles.put( fact.getName(),
+                         ksession.insert( factObject ) );
     }
 
 }

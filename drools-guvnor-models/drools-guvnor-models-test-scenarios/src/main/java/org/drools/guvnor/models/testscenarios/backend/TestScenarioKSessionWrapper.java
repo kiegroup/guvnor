@@ -22,36 +22,39 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.base.TypeResolver;
-import org.drools.guvnor.models.testscenarios.backend.executors.MethodExecutor;
-import org.drools.guvnor.models.testscenarios.backend.verifiers.FactVerifier;
-import org.drools.guvnor.models.testscenarios.backend.verifiers.RuleFiredVerifier;
-import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
-import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.guvnor.models.testscenarios.backend.executors.MethodExecutor;
+import org.drools.guvnor.models.testscenarios.backend.verifiers.FactVerifier;
+import org.drools.guvnor.models.testscenarios.backend.verifiers.RuleFiredVerifier;
 import org.drools.guvnor.models.testscenarios.shared.CallMethod;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Expectation;
+<<<<<<< HEAD
+=======
+import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
+import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
+>>>>>>> Correct Test Scenario imports following refactoring
 import org.kie.api.runtime.KieSession;
 
 public class TestScenarioKSessionWrapper {
 
-    private final KieSession          ksession;
+    private final KieSession ksession;
     private final FactVerifier factVerifier;
     private final RuleFiredVerifier ruleFiredVerifier = new RuleFiredVerifier();
 
-    private TestingEventListener eventListener     = null;
+    private TestingEventListener eventListener = null;
     private final MethodExecutor methodExecutor;
     private final Map<String, Object> populatedData;
 
-    private final ClassLoader         classLoader;
+    private final ClassLoader classLoader;
 
-    public TestScenarioKSessionWrapper(KieSession ksession,
-                                            final TypeResolver resolver,
-                                            final ClassLoader classLoader,
-                                            Map<String, Object> populatedData,
-                                            Map<String, Object> globalData) {
+    public TestScenarioKSessionWrapper( KieSession ksession,
+                                        final TypeResolver resolver,
+                                        final ClassLoader classLoader,
+                                        Map<String, Object> populatedData,
+                                        Map<String, Object> globalData ) {
         this.ksession = ksession;
         this.populatedData = populatedData;
         this.methodExecutor = new MethodExecutor( populatedData );
@@ -61,8 +64,8 @@ public class TestScenarioKSessionWrapper {
                                          globalData );
     }
 
-    private FactVerifier initFactVerifier(TypeResolver resolver,
-                                          Map<String, Object> globalData) {
+    private FactVerifier initFactVerifier( TypeResolver resolver,
+                                           Map<String, Object> globalData ) {
         return new FactVerifier( populatedData,
                                  resolver,
                                  classLoader,
@@ -70,17 +73,17 @@ public class TestScenarioKSessionWrapper {
                                  globalData );
     }
 
-    public void activateRuleFlowGroup(String activateRuleFlowGroupName) {
+    public void activateRuleFlowGroup( String activateRuleFlowGroupName ) {
         // mark does not want to make the following methods public, so for now we have to downcast
-        ((RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName )).setAutoDeactivate( false );
+        ( (RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName ) ).setAutoDeactivate( false );
         // same for the following method
-        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup( activateRuleFlowGroupName );
+        ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( activateRuleFlowGroupName );
     }
 
-    public void verifyExpectation(Expectation expectation) throws InvocationTargetException,
-                                                          NoSuchMethodException,
-                                                          IllegalAccessException,
-                                                          InstantiationException {
+    public void verifyExpectation( Expectation expectation ) throws InvocationTargetException,
+            NoSuchMethodException,
+            IllegalAccessException,
+            InstantiationException {
         if ( expectation instanceof VerifyFact ) {
             factVerifier.verify( (VerifyFact) expectation );
         } else if ( expectation instanceof VerifyRuleFired ) {
@@ -88,14 +91,14 @@ public class TestScenarioKSessionWrapper {
         }
     }
 
-    public void executeMethod(CallMethod callMethod) {
+    public void executeMethod( CallMethod callMethod ) {
         methodExecutor.executeMethod( callMethod );
     }
 
-    private void fireAllRules(ScenarioSettings scenarioSettings) {
+    private void fireAllRules( ScenarioSettings scenarioSettings ) {
         this.ksession.fireAllRules( eventListener.getAgendaFilter( scenarioSettings.getRuleList(),
-                                                                        scenarioSettings.isInclusive() ),
-                                         scenarioSettings.getMaxRuleFirings() );
+                                                                   scenarioSettings.isInclusive() ),
+                                    scenarioSettings.getMaxRuleFirings() );
     }
 
     private void resetEventListener() {
@@ -107,8 +110,8 @@ public class TestScenarioKSessionWrapper {
         this.ruleFiredVerifier.setFireCounter( eventListener.getFiringCounts() );
     }
 
-    public void executeSubScenario(ExecutionTrace executionTrace,
-                                   ScenarioSettings scenarioSettings) {
+    public void executeSubScenario( ExecutionTrace executionTrace,
+                                    ScenarioSettings scenarioSettings ) {
 
         resetEventListener();
 
@@ -124,12 +127,12 @@ public class TestScenarioKSessionWrapper {
         executionTrace.setRulesFired( eventListener.getRulesFiredSummary() );
     }
 
-    private void applyTimeMachine(ExecutionTrace executionTrace) {
-        ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime( getTargetTime( executionTrace ) - getCurrentTime(),
-                                                                              TimeUnit.MILLISECONDS );
+    private void applyTimeMachine( ExecutionTrace executionTrace ) {
+        ( (PseudoClockScheduler) ksession.getSessionClock() ).advanceTime( getTargetTime( executionTrace ) - getCurrentTime(),
+                                                                           TimeUnit.MILLISECONDS );
     }
 
-    private long getTargetTime(ExecutionTrace executionTrace) {
+    private long getTargetTime( ExecutionTrace executionTrace ) {
         if ( executionTrace.getScenarioSimulatedDate() != null ) {
             return executionTrace.getScenarioSimulatedDate().getTime();
         } else {

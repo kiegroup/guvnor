@@ -27,24 +27,24 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class FactPopulator {
 
-    private Map<String, Populator>        toBePopulatedData = new HashMap<String, Populator>();
+    private Map<String, Populator> toBePopulatedData = new HashMap<String, Populator>();
 
-    private final Map<String, Object>     populatedData;
-    private final Map<String, FactHandle> factHandles       = new HashMap<String, FactHandle>();
+    private final Map<String, Object> populatedData;
+    private final Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
 
-    private final KieSession              ksession;
+    private final KieSession ksession;
 
-    public FactPopulator(KieSession ksession,
-                         Map<String, Object> populatedData) {
+    public FactPopulator( KieSession ksession,
+                          Map<String, Object> populatedData ) {
         this.ksession = ksession;
         this.populatedData = populatedData;
     }
 
     public void populate() throws ClassNotFoundException,
-                                  InstantiationException,
-                                  IllegalAccessException,
-                                  InvocationTargetException,
-                                  NoSuchMethodException {
+            InstantiationException,
+            IllegalAccessException,
+            InvocationTargetException,
+            NoSuchMethodException {
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
 
         for ( Populator populator : toBePopulatedData.values() ) {
@@ -63,12 +63,12 @@ public class FactPopulator {
         toBePopulatedData.clear();
     }
 
-    public void retractFact(String retractFactName) {
+    public void retractFact( String retractFactName ) {
         this.ksession.delete( this.factHandles.get( retractFactName ) );
         this.populatedData.remove( retractFactName );
     }
 
-    public void add(Populator factPopulator) {
+    public void add( Populator factPopulator ) {
         toBePopulatedData.put( factPopulator.getName(),
                                factPopulator );
     }

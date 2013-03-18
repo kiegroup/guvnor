@@ -29,13 +29,13 @@ class GlobalFactPopulator extends FactPopulatorBase {
 
     private final Object factObject;
 
-    public GlobalFactPopulator(Map<String, Object> populatedData,
-                               TypeResolver typeResolver,
-                               ClassLoader classLoader,
-                               FactData fact,
-                               Map<String, Object> globalData) throws ClassNotFoundException,
-                                                              InstantiationException,
-                                                              IllegalAccessException {
+    public GlobalFactPopulator( Map<String, Object> populatedData,
+                                TypeResolver typeResolver,
+                                ClassLoader classLoader,
+                                FactData fact,
+                                Map<String, Object> globalData ) throws ClassNotFoundException,
+            InstantiationException,
+            IllegalAccessException {
         super( populatedData,
                typeResolver,
                classLoader,
@@ -47,24 +47,24 @@ class GlobalFactPopulator extends FactPopulatorBase {
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException,
-                                        IllegalAccessException,
-                                        InstantiationException {
+            IllegalAccessException,
+            InstantiationException {
         return typeResolver.resolveType( getTypeName( typeResolver,
                                                       fact ) ).newInstance();
     }
 
     @Override
     public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
-                                                            IllegalAccessException,
-                                                            InstantiationException,
-                                                            InvocationTargetException,
-                                                            NoSuchMethodException {
+            IllegalAccessException,
+            InstantiationException,
+            InvocationTargetException,
+            NoSuchMethodException {
         return getFieldPopulators( factObject );
     }
 
     @Override
-    public void populate(KieSession ksession,
-                         Map<String, FactHandle> factHandles) {
+    public void populate( KieSession ksession,
+                          Map<String, FactHandle> factHandles ) {
         ksession.setGlobal( fact.getName(),
                             factObject );
     }

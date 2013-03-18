@@ -1,10 +1,5 @@
 package org.drools.guvnor.models.testscenarios.backend;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.HashSet;
 
 import org.junit.Assert;
@@ -13,6 +8,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.rule.Match;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class RuleCoverageListenerTest {
 
@@ -32,40 +29,39 @@ public class RuleCoverageListenerTest {
         rules.add( "rule3" );
 
         RuleCoverageListener ls = new RuleCoverageListener( rules );
-        Assert.assertEquals(3,
-                ls.rules.size());
-        Assert.assertEquals(0,
-                ls.getPercentCovered());
+        Assert.assertEquals( 3,
+                             ls.rules.size() );
+        Assert.assertEquals( 0,
+                             ls.getPercentCovered() );
 
-        
         ls.afterMatchFired( amfe );
-        Assert.assertEquals(2,
-                ls.rules.size());
+        Assert.assertEquals( 2,
+                             ls.rules.size() );
         assertTrue( ls.rules.contains( "rule2" ) );
         assertTrue( ls.rules.contains( "rule3" ) );
         assertFalse( ls.rules.contains( "rule1" ) );
-        Assert.assertEquals(33,
-                ls.getPercentCovered());
+        Assert.assertEquals( 33,
+                             ls.getPercentCovered() );
 
         ls.afterMatchFired( amfe );
-        Assert.assertEquals(1,
-                ls.rules.size());
+        Assert.assertEquals( 1,
+                             ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
         assertFalse( ls.rules.contains( "rule1" ) );
         assertTrue( ls.rules.contains( "rule3" ) );
 
-        Assert.assertEquals(66,
-                ls.getPercentCovered());
+        Assert.assertEquals( 66,
+                             ls.getPercentCovered() );
 
         ls.afterMatchFired( amfe );
-        Assert.assertEquals(0,
-                ls.rules.size());
+        Assert.assertEquals( 0,
+                             ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
         assertFalse( ls.rules.contains( "rule1" ) );
         assertFalse( ls.rules.contains( "rule3" ) );
 
-        Assert.assertEquals(100,
-                ls.getPercentCovered());
+        Assert.assertEquals( 100,
+                             ls.getPercentCovered() );
 
     }
 

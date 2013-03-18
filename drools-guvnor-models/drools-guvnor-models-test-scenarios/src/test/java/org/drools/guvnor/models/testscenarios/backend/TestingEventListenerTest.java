@@ -16,10 +16,6 @@
 
 package org.drools.guvnor.models.testscenarios.backend;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,64 +23,64 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.*;
+
 public class TestingEventListenerTest extends RuleUnit {
 
     @Test
     public void testInclusive() throws Exception {
         HashSet<String> set = new HashSet<String>();
-        set.add("rule1");
-        set.add("rule2");
+        set.add( "rule1" );
+        set.add( "rule2" );
 
-        KieSession session  = getKieSession("test_rules.drl");
+        KieSession session = getKieSession( "test_rules.drl" );
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), true);
 
-        session.addEventListener(ls);
+        session.addEventListener( ls );
 
-        session.insert(new Cheese());
-        session.fireAllRules(ls.getAgendaFilter(set, true));
+        session.insert( new Cheese() );
+        session.fireAllRules( ls.getAgendaFilter( set, true ) );
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule1" ) );
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule2" ) );
 
         //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
-        assertFalse(ls.firingCounts.containsKey("rule3"));
-        assertFalse(ls.firingCounts.containsKey("rule4"));
+        assertFalse( ls.firingCounts.containsKey( "rule3" ) );
+        assertFalse( ls.firingCounts.containsKey( "rule4" ) );
 
-        session.insert(new Cheese());
-        session.fireAllRules(ls.getAgendaFilter(set, true));
-        assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule1"));
-        assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule2"));
-        assertFalse(ls.firingCounts.containsKey("rule3"));
-        assertEquals(4, ls.totalFires);
+        session.insert( new Cheese() );
+        session.fireAllRules( ls.getAgendaFilter( set, true ) );
+        assertEquals( new Integer( 2 ), (Integer) ls.firingCounts.get( "rule1" ) );
+        assertEquals( new Integer( 2 ), (Integer) ls.firingCounts.get( "rule2" ) );
+        assertFalse( ls.firingCounts.containsKey( "rule3" ) );
+        assertEquals( 4, ls.totalFires );
 
     }
-
 
     @Test
     public void testExclusive() throws Exception {
         HashSet<String> set = new HashSet<String>();
-        set.add("rule3");
+        set.add( "rule3" );
 
-        KieSession session  = getKieSession("test_rules.drl");
+        KieSession session = getKieSession( "test_rules.drl" );
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
 
-        session.addEventListener(ls);
+        session.addEventListener( ls );
 
-        session.insert(new Cheese());
-        session.fireAllRules(ls.getAgendaFilter(set, false));
+        session.insert( new Cheese() );
+        session.fireAllRules( ls.getAgendaFilter( set, false ) );
 
         //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
-        assertFalse(ls.firingCounts.containsKey("rule3"));
-        assertFalse(ls.firingCounts.containsKey("rule4"));
-
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule2" ) );
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule1" ) );
+        assertFalse( ls.firingCounts.containsKey( "rule3" ) );
+        assertFalse( ls.firingCounts.containsKey( "rule4" ) );
 
     }
 
@@ -92,31 +88,29 @@ public class TestingEventListenerTest extends RuleUnit {
     public void testNoFilter() throws Exception {
         HashSet<String> set = new HashSet<String>();
 
-
-        KieSession session  = getKieSession("test_rules.drl");
+        KieSession session = getKieSession( "test_rules.drl" );
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
 
-        session.addEventListener(ls);
+        session.addEventListener( ls );
 
-        session.insert(new Cheese());
+        session.insert( new Cheese() );
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
-        session.fireAllRules(ls.getAgendaFilter(set, false));
+        session.setGlobal( "list", list );
+        session.fireAllRules( ls.getAgendaFilter( set, false ) );
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule1" ) );
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule2" ) );
+        assertEquals( new Integer( 1 ), (Integer) ls.firingCounts.get( "rule3" ) );
 
         String[] summary = ls.getRulesFiredSummary();
-        assertEquals(3, summary.length);
-        assertNotNull(summary[0]);
-        assertFalse(summary[1].equals(""));
+        assertEquals( 3, summary.length );
+        assertNotNull( summary[ 0 ] );
+        assertFalse( summary[ 1 ].equals( "" ) );
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
     }
-
 
 }

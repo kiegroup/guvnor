@@ -15,22 +15,20 @@
 */
 package org.drools.guvnor.models.testscenarios.backend.verifiers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 import org.drools.core.base.TypeResolver;
+import org.drools.guvnor.models.testscenarios.backend.Cheese;
 import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.guvnor.models.testscenarios.backend.Cheese;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class FactVerifierTest {
 
@@ -115,7 +113,7 @@ public class FactVerifierTest {
                                 42 );
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put( "f1", f1 );
-        
+
         // configure the mock to return the value
         when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
 
@@ -158,7 +156,7 @@ public class FactVerifierTest {
 
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put( "f1", f1 );
-        
+
         // configure the mock to return the value
         when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
 
@@ -185,7 +183,7 @@ public class FactVerifierTest {
 
         HashMap<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put( "f1", f1 );
-        
+
         // configure the mock to return the value
         when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
 

@@ -27,10 +27,10 @@ import org.kie.api.runtime.rule.FactHandle;
 
 class ExistingFactPopulator extends FactPopulatorBase {
 
-    public ExistingFactPopulator(Map<String, Object> populatedData,
-                                 TypeResolver typeResolver,
-                                 ClassLoader classLoader,
-                                 FactData fact) throws ClassNotFoundException {
+    public ExistingFactPopulator( Map<String, Object> populatedData,
+                                  TypeResolver typeResolver,
+                                  ClassLoader classLoader,
+                                  FactData fact ) throws ClassNotFoundException {
         super( populatedData,
                typeResolver,
                classLoader,
@@ -45,17 +45,17 @@ class ExistingFactPopulator extends FactPopulatorBase {
     }
 
     @Override
-    public List<FieldPopulator> getFieldPopulators()throws ClassNotFoundException,
-                                                           IllegalAccessException,
-                                                           InstantiationException,
-                                                           InvocationTargetException,
-                                                           NoSuchMethodException {
+    public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
+            IllegalAccessException,
+            InstantiationException,
+            InvocationTargetException,
+            NoSuchMethodException {
         return getFieldPopulators( resolveFactObject() );
     }
 
     @Override
-    public void populate(KieSession ksession,
-                         Map<String, FactHandle> factHandles) {
+    public void populate( KieSession ksession,
+                          Map<String, FactHandle> factHandles ) {
         ksession.update( factHandles.get( fact.getName() ),
                          populatedData.get( fact.getName() ) );
 

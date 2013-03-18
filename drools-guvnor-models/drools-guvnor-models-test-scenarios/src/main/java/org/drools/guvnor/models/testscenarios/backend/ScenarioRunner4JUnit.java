@@ -16,8 +16,8 @@ public class ScenarioRunner4JUnit extends Runner {
     private Description descr;
     // the actual scenario test to be executed
     private Scenario scenario;
-    private KieSession  ksession;
-    private TypeResolver resolver;    
+    private KieSession ksession;
+    private TypeResolver resolver;
 
     public ScenarioRunner4JUnit( Scenario scenario,
                                  KieSession ksession,
@@ -38,20 +38,20 @@ public class ScenarioRunner4JUnit extends Runner {
     @Override
     public void run( RunNotifier notifier ) {
         Description description = descr.getChildren().get( 0 );
-        EachTestNotifier eachNotifier= new EachTestNotifier(notifier, description);
+        EachTestNotifier eachNotifier = new EachTestNotifier( notifier, description );
         try {
             eachNotifier.fireTestStarted();
             ScenarioRunner runner = new ScenarioRunner( ksession,
                                                         resolver );
             runner.run( scenario );
-            if( ! scenario.wasSuccessful() ) {
+            if ( !scenario.wasSuccessful() ) {
                 StringBuilder builder = new StringBuilder();
-                for( String message : scenario.getFailureMessages() ) {
+                for ( String message : scenario.getFailureMessages() ) {
                     builder.append( message ).append( "\n" );
                 }
                 eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
             }
-        } catch( Throwable t ) {
+        } catch ( Throwable t ) {
             eachNotifier.addFailure( t );
         } finally {
             // has to always be called as per junit docs

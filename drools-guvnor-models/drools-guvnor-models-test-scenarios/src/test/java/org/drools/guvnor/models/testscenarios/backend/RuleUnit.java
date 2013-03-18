@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.models.testscenarios.backend;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -28,11 +26,13 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel.KieSessionType;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * A class with some utilities for testing rules.
@@ -42,36 +42,36 @@ public abstract class RuleUnit {
     /**
      * Return a wm ready to go based on the rules in a drl at the specified uri (in the classpath).
      */
-    public KieSession getKieSession(String uri)
+    public KieSession getKieSession( String uri )
             throws DroolsParserException, IOException, Exception {
-        
+
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem()
-                              .write(ResourceFactory.newClassPathResource(uri, getClass()) )
-                              .writeKModuleXML( createKieProjectWithPackages(ks).toXML() );
+                .write( ResourceFactory.newClassPathResource( uri, getClass() ) )
+                .writeKModuleXML( createKieProjectWithPackages( ks ).toXML() );
         KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
-        
+
         List<Message> results = builder.getResults().getMessages();
         assertTrue( results.toString(), results.isEmpty() );
-        
+
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
-   
+
         return ksession;
     }
-    
-    private KieModuleModel createKieProjectWithPackages(KieServices ks) {
+
+    private KieModuleModel createKieProjectWithPackages( KieServices ks ) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage("*")
+                .addPackage( "*" )
                 .setDefault( true );
 
-        kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( KieSessionType.STATEFUL )
-                .setClockType(ClockTypeOption.get("pseudo"))
+        kieBaseModel1.newKieSessionModel( "KSession1" )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( "pseudo" ) )
                 .setDefault( true );
 
         return kproj;
-    }    
+    }
 }

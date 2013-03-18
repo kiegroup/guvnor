@@ -27,16 +27,16 @@ import org.kie.api.runtime.KieSession;
 public class FactVerifier {
 
     private final Map<String, Object> populatedData;
-    private final TypeResolver        resolver;
-    private final KieSession          ksession;
+    private final TypeResolver resolver;
+    private final KieSession ksession;
     private final Map<String, Object> globalData;
-    private final ClassLoader         classLoader;
+    private final ClassLoader classLoader;
 
-    public FactVerifier(Map<String, Object> populatedData,
-                        TypeResolver resolver,
-                        ClassLoader classLoader,
-                        KieSession ksession,
-                        Map<String, Object> globalData) {
+    public FactVerifier( Map<String, Object> populatedData,
+                         TypeResolver resolver,
+                         ClassLoader classLoader,
+                         KieSession ksession,
+                         Map<String, Object> globalData ) {
         this.populatedData = populatedData;
         this.resolver = resolver;
         this.classLoader = classLoader;
@@ -44,10 +44,10 @@ public class FactVerifier {
         this.globalData = globalData;
     }
 
-    public void verify(VerifyFact verifyFact) throws InvocationTargetException,
-                                             NoSuchMethodException,
-                                             InstantiationException,
-                                             IllegalAccessException {
+    public void verify( VerifyFact verifyFact ) throws InvocationTargetException,
+            NoSuchMethodException,
+            InstantiationException,
+            IllegalAccessException {
 
         //Clear existing results
         for ( VerifyField vf : verifyFact.getFieldValues() ) {
@@ -59,9 +59,9 @@ public class FactVerifier {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                verifyFact.getName(),
                                                                                getFactObject(
-                                                                                              verifyFact.getName(),
-                                                                                              populatedData,
-                                                                                              globalData ),
+                                                                                       verifyFact.getName(),
+                                                                                       populatedData,
+                                                                                       globalData ),
                                                                                resolver,
                                                                                classLoader );
             fieldVerifier.checkFields( verifyFact.getFieldValues() );
@@ -83,13 +83,13 @@ public class FactVerifier {
         }
     }
 
-    private boolean verifyFact(Object factObject,
-                               VerifyFact verifyFact,
-                               Map<String, Object> populatedData,
-                               TypeResolver resolver) throws InvocationTargetException,
-                                                     NoSuchMethodException,
-                                                     InstantiationException,
-                                                     IllegalAccessException {
+    private boolean verifyFact( Object factObject,
+                                VerifyFact verifyFact,
+                                Map<String, Object> populatedData,
+                                TypeResolver resolver ) throws InvocationTargetException,
+            NoSuchMethodException,
+            InstantiationException,
+            IllegalAccessException {
         if ( factObject.getClass().getSimpleName().equals( verifyFact.getName() ) ) {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                verifyFact.getName(),
@@ -104,9 +104,9 @@ public class FactVerifier {
         return false;
     }
 
-    private Object getFactObject(String factName,
-                                 Map<String, Object> populatedData,
-                                 Map<String, Object> globalData) {
+    private Object getFactObject( String factName,
+                                  Map<String, Object> populatedData,
+                                  Map<String, Object> globalData ) {
 
         if ( populatedData.containsKey( factName ) ) {
             return populatedData.get( factName );

@@ -28,12 +28,12 @@ public interface Populator {
     public String getName();
 
     public List<FieldPopulator> getFieldPopulators() throws ClassNotFoundException,
-                                                    IllegalAccessException,
-                                                    InstantiationException,
-                                                    InvocationTargetException,
-                                                    NoSuchMethodException;
+            IllegalAccessException,
+            InstantiationException,
+            InvocationTargetException,
+            NoSuchMethodException;
 
-    public void populate(KieSession ksession,
-                         Map<String, FactHandle> factHandles);
+    public void populate( KieSession ksession,
+                          Map<String, FactHandle> factHandles );
 
 }

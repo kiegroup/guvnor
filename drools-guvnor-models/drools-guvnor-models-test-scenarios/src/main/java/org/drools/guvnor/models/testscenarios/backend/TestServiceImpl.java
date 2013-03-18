@@ -29,10 +29,10 @@ public class TestServiceImpl
         TestService<Scenario> {
 
     @Override
-    public void run(Scenario scenario,
-                    KieSession ksession,
-                    TypeResolver resolver, 
-                    RunListener listener) {
+    public void run( Scenario scenario,
+                     KieSession ksession,
+                     TypeResolver resolver,
+                     RunListener listener ) {
         try {
             // execute the test scenario
             ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
@@ -48,9 +48,9 @@ public class TestServiceImpl
         }
     }
 
-    private void reportUnrecoverableError(String message,
-                                          RunListener listener,
-                                          Exception e) {
+    private void reportUnrecoverableError( String message,
+                                           RunListener listener,
+                                           Exception e ) {
         try {
             Description description = Description.createSuiteDescription( message );
             listener.testFailure( new Failure( description,

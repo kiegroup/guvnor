@@ -21,7 +21,7 @@ import org.kie.api.runtime.rule.Match;
 /**
  * This tracks what is happening in the engine with rule activations and firings.
  * It also allows you to choose what to include/exclude from firing.
- *
+ * <p/>
  * If a rule is not allowed to fire, it will still be counted as an activation.
  * If it is allowed to fire, then it will only be counted after the activation is fired.
  */
@@ -31,16 +31,18 @@ public class TestingEventListener
 
     final Map<String, Integer> firingCounts = new HashMap<String, Integer>( 100 );
 
-    long                       totalFires;
+    long totalFires;
 
     public TestingEventListener() {
     }
 
-    public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames,
-                                        final boolean inclusive) {
+    public AgendaFilter getAgendaFilter( final HashSet<String> ruleNames,
+                                         final boolean inclusive ) {
         return new AgendaFilter() {
-            public boolean accept(Match activation) {
-                if ( ruleNames.isEmpty() ) return true;
+            public boolean accept( Match activation ) {
+                if ( ruleNames.isEmpty() ) {
+                    return true;
+                }
                 String ruleName = activation.getRule().getName();
 
                 if ( inclusive ) {
@@ -52,25 +54,25 @@ public class TestingEventListener
         };
     }
 
-    public void afterMatchFired(AfterMatchFiredEvent event) {
+    public void afterMatchFired( AfterMatchFiredEvent event ) {
         recordFiring( event.getMatch().getRule() );
     }
 
-    private void recordFiring(Rule rule) {
+    private void recordFiring( Rule rule ) {
         record( rule, this.firingCounts );
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+    public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+    public void agendaGroupPushed( AgendaGroupPushedEvent event ) {
     }
 
-    public void beforeMatchFired(BeforeMatchFiredEvent event) {
+    public void beforeMatchFired( BeforeMatchFiredEvent event ) {
     }
 
-    private void record(Rule rule,
-                        Map<String, Integer> counts) {
+    private void record( Rule rule,
+                         Map<String, Integer> counts ) {
         this.totalFires++;
         String name = rule.getName();
         if ( !counts.containsKey( name ) ) {
@@ -82,7 +84,7 @@ public class TestingEventListener
 
     /**
      * @return A map of the number of times a given rule "fired".
-     * (of course in reality the side effect of its firing may have been nilled out).
+     *         (of course in reality the side effect of its firing may have been nilled out).
      */
     public Map<String, Integer> getFiringCounts() {
         return this.firingCounts;
@@ -92,37 +94,37 @@ public class TestingEventListener
      * Return a list of the rules fired, for display purposes.
      */
     public String[] getRulesFiredSummary() {
-        String[] r = new String[firingCounts.size()];
+        String[] r = new String[ firingCounts.size() ];
         int i = 0;
         for ( Entry<String, Integer> e : firingCounts.entrySet() ) {
-            r[i] = e.getKey() + " [" + e.getValue() + "]";
+            r[ i ] = e.getKey() + " [" + e.getValue() + "]";
             i++;
         }
         return r;
     }
 
     @Override
-    public void matchCreated(MatchCreatedEvent event) {
+    public void matchCreated( MatchCreatedEvent event ) {
     }
 
     @Override
-    public void matchCancelled(MatchCancelledEvent event) {
+    public void matchCancelled( MatchCancelledEvent event ) {
     }
 
     @Override
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
     }
 
     @Override
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
     }
 
     @Override
-    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
     }
 
     @Override
-    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
     }
 
 }
