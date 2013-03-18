@@ -24,14 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.guvnor.models.testscenarios.backend.populators.FactPopulator;
@@ -45,8 +37,6 @@ import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.RetractFact;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.api.runtime.KieSession;
-import org.drools.guvnor.models.testscenarios.shared.Expectation;
-import org.kie.runtime.KieSession;
 import org.mvel2.MVEL;
 
 /**
@@ -71,9 +61,6 @@ public class ScenarioRunner {
      * thread context be set appropriately. The PackageBuilder can
      * provide a suitable TypeResolver for a given package header,
      * and the Package config can provide a classloader.
-     * @param resolver This is used by MVEL to instantiate classes in expressions, in
-     * particular enum field values. See EnumFieldPopulator and
-     * FactFieldValueVerifier
      */
     public ScenarioRunner( final KieSession ksession ) throws ClassNotFoundException {
         this.ksession = ksession;
