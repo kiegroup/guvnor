@@ -23,8 +23,8 @@ import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.agent.KnowledgeAgentFactory;
 import org.kie.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.Resource;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class MortgageClientExample {
 
