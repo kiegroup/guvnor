@@ -1,6 +1,7 @@
 package org.kie.guvnor.testscenario.client.resources.images;
 
 import com.google.gwt.user.client.ui.Image;
+import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 
@@ -21,8 +22,8 @@ public class TestScenarioAltedImages {
     }
 
     public Image Wizard() {
-        Image image = new Image( TestScenarioImages.INSTANCE.newWiz() );
-        image.setAltText( TestScenarioConstants.INSTANCE.Wizard() );
+        Image image = new Image(TestScenarioImages.INSTANCE.newWiz());
+        image.setAltText(TestScenarioConstants.INSTANCE.Wizard());
         return image;
     }
 

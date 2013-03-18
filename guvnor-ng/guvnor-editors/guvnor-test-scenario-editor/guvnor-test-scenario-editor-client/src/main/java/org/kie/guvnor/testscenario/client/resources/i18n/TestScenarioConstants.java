@@ -240,4 +240,7 @@ public interface TestScenarioConstants
 
     String AddFieldToFact();
 
+    String Text();
+
+    String TestPassed();
 }
