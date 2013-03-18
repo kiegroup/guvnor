@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.agent.KnowledgeAgentFactory;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.Resource;

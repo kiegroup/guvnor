@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.runtime.rule.Match;
 
