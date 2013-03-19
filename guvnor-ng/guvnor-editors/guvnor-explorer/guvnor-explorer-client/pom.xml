@@ -26,6 +26,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-commons-ui</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-backend</artifactId>
     </dependency>

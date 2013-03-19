@@ -9,6 +9,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.explorer.client.resources.i18n.Constants;
 import org.kie.guvnor.explorer.model.ExplorerContent;
 import org.kie.guvnor.explorer.model.Item;
@@ -52,17 +55,12 @@ public class ExplorerPresenter {
     private WorkbenchContext context;
 
     @Inject
-    private View view;
+    private ExplorerView view;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     private Path activePath;
-
-    public interface View
-            extends
-            UberView<ExplorerPresenter> {
-
-        void setContent( ExplorerContent content );
-
-    }
 
     @OnStart
     public void onStart() {
@@ -95,25 +93,21 @@ public class ExplorerPresenter {
 
     private void loadItems( final Path path ) {
         if ( path == null ) {
-            loadRootItems();
-            activePath = path;
+            busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            rootService.call( getRootItemsSuccessCallback( path ),
+                              new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).listRoots();
         } else {
             if ( !path.equals( activePath ) ) {
-                explorerService.call( new RemoteCallback<ExplorerContent>() {
-
-                    @Override
-                    public void callback( final ExplorerContent content ) {
-                        view.setContent( content );
-                        activePath = path;
-                    }
-
-                } ).getContentInScope( path );
+                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                explorerService.call( getContentInScopeSuccessCallback( path ),
+                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getContentInScope( path );
             }
         }
     }
 
-    private void loadRootItems() {
-        rootService.call( new RemoteCallback<Collection<Root>>() {
+    private RemoteCallback<Collection<Root>> getRootItemsSuccessCallback( final Path path ) {
+        return new RemoteCallback<Collection<Root>>() {
+
             @Override
             public void callback( final Collection<Root> roots ) {
                 final List<Item> items = new ArrayList<Item>();
@@ -121,9 +115,24 @@ public class ExplorerPresenter {
                     items.add( wrapRoot( root ) );
                 }
                 final ExplorerContent content = new ExplorerContent( items );
+                activePath = path;
                 view.setContent( content );
+                busyIndicatorView.hideBusyIndicator();
             }
-        } ).listRoots();
+        };
+    }
+
+    private RemoteCallback<ExplorerContent> getContentInScopeSuccessCallback( final Path path ) {
+        return new RemoteCallback<ExplorerContent>() {
+
+            @Override
+            public void callback( final ExplorerContent content ) {
+                activePath = path;
+                view.setContent( content );
+                busyIndicatorView.hideBusyIndicator();
+            }
+
+        };
     }
 
     private RepositoryItem wrapRoot( final Root root ) {
