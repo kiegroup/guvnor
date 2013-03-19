@@ -40,9 +40,5 @@ public interface ScoreCardXLSEditorConstants
 
     String Uploading();
 
-    String UploadSuccess();
-
-    String UploadFailure0(String p0);
-
     String Download();
 }

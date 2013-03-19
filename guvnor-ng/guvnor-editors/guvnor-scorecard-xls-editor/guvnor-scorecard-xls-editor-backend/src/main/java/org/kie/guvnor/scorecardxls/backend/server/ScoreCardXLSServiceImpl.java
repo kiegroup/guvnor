@@ -24,15 +24,20 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.FileAlreadyExistsException;
+import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
+import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
+import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
 import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
@@ -45,6 +50,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -74,6 +80,9 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
 
     @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -111,37 +120,85 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     }
 
     @Override
-    public OutputStream save( final Path path ) {
-        return save( path,
-                     "Uploaded" );
-    }
+    public Path create( final Path resource,
+                        final InputStream content,
+                        final String comment ) {
+        log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
 
-    @Override
-    public OutputStream save( final Path path,
-                              final String comment ) {
-        log.info( "USER:" + identity.getName() + " SAVING asset [" + path.getFileName() + "]" );
-
-        OutputStream outputStream = null;
         try {
-            outputStream = ioService.newOutputStream( paths.convert( path ),
-                                                      makeCommentedOption( comment ) );
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            ioService.createFile( nioPath );
+            final OutputStream outputStream = ioService.newOutputStream( nioPath,
+                                                                         makeCommentedOption( comment ) );
+            IOUtils.copy( content,
+                          outputStream );
 
-            //Adds and updates are handled by the same POST of FORM data.. so raise an Added event for both
-            resourceAddedEvent.fire( new ResourceAddedEvent( path ) );
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( resource ) );
 
-            return outputStream;
+            return resource;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( resource.toURI() );
+
+        } catch ( SecurityException e ) {
+            throw new SecurityPortableException( resource.toURI() );
 
         } catch ( IllegalArgumentException e ) {
             throw new GenericPortableException( e.getMessage() );
 
-        } catch ( UnsupportedOperationException e ) {
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( resource.toURI() );
+
+        } catch ( java.io.IOException e ) {
             throw new GenericPortableException( e.getMessage() );
 
         } catch ( IOException e ) {
             throw new GenericPortableException( e.getMessage() );
 
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        }
+    }
+
+    @Override
+    public Path save( final Path resource,
+                      final InputStream content,
+                      final String comment ) {
+        log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
+
+        try {
+            final OutputStream outputStream = ioService.newOutputStream( paths.convert( resource ),
+                                                                         makeCommentedOption( comment ) );
+            IOUtils.copy( content,
+                          outputStream );
+
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+
+            return resource;
+
+        } catch ( InvalidPathException e ) {
+            throw new InvalidPathPortableException( resource.toURI() );
+
         } catch ( SecurityException e ) {
-            throw new SecurityPortableException( path.toURI() );
+            throw new SecurityPortableException( resource.toURI() );
+
+        } catch ( IllegalArgumentException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( FileAlreadyExistsException e ) {
+            throw new FileAlreadyExistsPortableException( resource.toURI() );
+
+        } catch ( java.io.IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( IOException e ) {
+            throw new GenericPortableException( e.getMessage() );
+
+        } catch ( UnsupportedOperationException e ) {
+            throw new GenericPortableException( e.getMessage() );
 
         }
     }

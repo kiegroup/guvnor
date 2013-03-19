@@ -13,14 +13,16 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.widget.AttachmentFileWidget;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
-import org.kie.guvnor.dtablexls.client.editor.AttachmentFileWidget;
+import org.kie.guvnor.dtablexls.client.editor.URLHelper;
 import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.guvnor.dtablexls.client.resources.images.ImageResources;
 import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -74,6 +76,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                                  uploadWidget.submit( contextPath,
                                                                       buildFileName( resourceType,
                                                                                      baseFileName ),
+                                                                      URLHelper.getServletUrl(),
                                                                       new Command() {
 
                                                                           @Override
@@ -89,7 +92,15 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                                                               placeManager.goTo( place );
                                                                           }
 
-                                                                      } );
+                                                                      },
+                                                                      new Command() {
+
+                                                                          @Override
+                                                                          public void execute() {
+                                                                              BusyPopup.close();
+                                                                          }
+                                                                      }
+                                                                    );
                                              }
                                          } );
     }

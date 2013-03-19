@@ -13,8 +13,9 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.widget.AttachmentFileWidget;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
-import org.kie.guvnor.scorecardxls.client.editor.AttachmentFileWidget;
+import org.kie.guvnor.scorecardxls.client.editor.URLHelper;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
 import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
@@ -75,6 +76,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                                  uploadWidget.submit( contextPath,
                                                                       buildFileName( resourceType,
                                                                                      baseFileName ),
+                                                                      URLHelper.getServletUrl(),
                                                                       new Command() {
 
                                                                           @Override
@@ -90,7 +92,15 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                                                               placeManager.goTo( place );
                                                                           }
 
-                                                                      } );
+                                                                      },
+                                                                      new Command() {
+
+                                                                          @Override
+                                                                          public void execute() {
+                                                                              BusyPopup.close();
+                                                                          }
+                                                                      }
+                                                                    );
                                              }
                                          } );
 

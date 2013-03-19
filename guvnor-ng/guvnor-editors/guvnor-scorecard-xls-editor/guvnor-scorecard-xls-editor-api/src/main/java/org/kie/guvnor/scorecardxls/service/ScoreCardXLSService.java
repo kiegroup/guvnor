@@ -17,7 +17,6 @@
 package org.kie.guvnor.scorecardxls.service;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
@@ -35,9 +34,12 @@ public interface ScoreCardXLSService
 
     InputStream load( final Path path );
 
-    OutputStream save( final Path path );
+    Path create( final Path resource,
+                 final InputStream content,
+                 final String comment );
 
-    OutputStream save( final Path path,
-                       final String comment );
+    Path save( final Path resource,
+               final InputStream content,
+               final String comment );
 
 }

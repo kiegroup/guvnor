@@ -14,51 +14,40 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.scorecardxls.backend.server;
+package org.kie.guvnor.services.backend.file.upload;
 
 import org.apache.commons.fileupload.FileItem;
-
+import org.kie.guvnor.services.file.upload.FileOperation;
+import org.uberfire.backend.vfs.Path;
 
 public class FormData {
+
     private FileItem file;
-    private String path;
-    private String fileName;
-    private String fullPath;
-    
+    private FileOperation operation;
+    private Path targetPath;
+
     public FileItem getFile() {
         return file;
     }
 
-    public void setFile(FileItem file) {
+    public void setFile( final FileItem file ) {
         this.file = file;
     }
 
-    public void closeFile() {
+    public FileOperation getOperation() {
+        return operation;
     }
 
-    public String getPath() {
-        return path;
+    public void setOperation( final FileOperation operation ) {
+        this.operation = operation;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public Path getTargetPath() {
+        return targetPath;
     }
 
-    public String getFileName() {
-        return fileName;
+    public void setTargetPath( final Path targetPath ) {
+        this.targetPath = targetPath;
     }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFullPath() {
-        return fullPath;
-    }
-
-    public void setFullPath(String fullPath) {
-        this.fullPath = fullPath;
-    }
-
 
 }

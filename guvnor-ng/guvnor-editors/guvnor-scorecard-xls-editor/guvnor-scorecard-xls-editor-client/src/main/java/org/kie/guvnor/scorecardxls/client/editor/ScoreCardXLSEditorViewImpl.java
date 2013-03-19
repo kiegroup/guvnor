@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Well;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -33,9 +32,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.widget.AttachmentFileWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.resources.images.ImageResources;
-import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
@@ -81,6 +80,7 @@ public class ScoreCardXLSEditorViewImpl
             public void onClick( final ClickEvent event ) {
                 BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
                 uploadWidget.submit( path,
+                                     URLHelper.getServletUrl(),
                                      new Command() {
 
                                          @Override
@@ -89,7 +89,16 @@ public class ScoreCardXLSEditorViewImpl
                                              notifySuccess();
                                          }
 
-                                     } );
+                                     },
+                                     new Command() {
+
+                                         @Override
+                                         public void execute() {
+                                             BusyPopup.close();
+                                         }
+
+                                     }
+                                   );
             }
         } );
 
@@ -104,9 +113,7 @@ public class ScoreCardXLSEditorViewImpl
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                Window.open( GWT.getModuleBaseURL() + "scorecardxls/file?"
-                                     + HTMLFileManagerFields.FORM_FIELD_PATH + "="
-                                     + path.toURI(),
+                Window.open( URLHelper.getDownloadUrl( path ),
                              "downloading",
                              "resizable=no,scrollbars=yes,status=no" );
             }

@@ -174,6 +174,10 @@ public interface CommonConstants
 
     String Saving();
 
+    String UploadSuccess();
+
+    String UploadFailure0(String p0);
+
     String ExceptionInvalidPath0( final String uri );
 
     String ExceptionFileAlreadyExists0( final String uri );

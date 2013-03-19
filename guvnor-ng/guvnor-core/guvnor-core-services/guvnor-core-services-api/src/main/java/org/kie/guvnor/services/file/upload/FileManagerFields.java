@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.scorecardxls.service;
+package org.kie.guvnor.services.file.upload;
 
 /**
  * This is a central location for all form fields use in HTML forms for submission to the file servlet.
  * The all must be unique, of course.
  */
-public class HTMLFileManagerFields {
+public class FileManagerFields {
 
     public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
     public static final String FORM_FIELD_PATH = "attachmentPath";
     public static final String FORM_FIELD_NAME = "fileName";
     public static final String FORM_FIELD_FULL_PATH = "attachmentFullPath";
-   
+    public static final String FORM_FIELD_OPERATION = "operation";
+
 }

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.scorecardxls.client.editor;
+package org.kie.guvnor.commons.ui.client.widget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -24,8 +23,9 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
-import org.kie.guvnor.scorecardxls.service.HTMLFileManagerFields;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.services.file.upload.FileManagerFields;
+import org.kie.guvnor.services.file.upload.FileOperation;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -37,9 +37,9 @@ public class AttachmentFileWidget extends Composite {
     private final HorizontalPanel fields = new HorizontalPanel();
 
     private Command successCallback;
+    private Command errorCallback;
 
     public AttachmentFileWidget() {
-        form.setAction( GWT.getModuleBaseURL() + "scorecardxls/file" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
@@ -48,17 +48,18 @@ public class AttachmentFileWidget extends Composite {
             @Override
             public void onSubmitComplete( final FormPanel.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadSuccess() );
-                    onSuccessCallback();
+                    executeCallback( successCallback );
+                    Window.alert( CommonConstants.INSTANCE.UploadSuccess() );
                 } else {
-                    Window.alert( ScoreCardXLSEditorConstants.INSTANCE.UploadFailure0( event.getResults() ) );
+                    executeCallback( errorCallback );
+                    Window.alert( CommonConstants.INSTANCE.UploadFailure0( event.getResults() ) );
                 }
             }
 
         } );
 
         final FileUpload up = new FileUpload();
-        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+        up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
 
         fields.add( up );
         form.add( fields );
@@ -66,29 +67,41 @@ public class AttachmentFileWidget extends Composite {
         initWidget( form );
     }
 
-    private void onSuccessCallback() {
-        if ( this.successCallback == null ) {
+    private void executeCallback( final Command callback ) {
+        if ( callback == null ) {
             return;
         }
-        this.successCallback.execute();
+        callback.execute();
     }
 
     public void submit( final Path context,
                         final String fileName,
-                        final Command successCallback ) {
+                        final String targetUrl,
+                        final Command successCallback,
+                        final Command errorCallback ) {
         this.successCallback = successCallback;
-        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_PATH,
+        this.errorCallback = errorCallback;
+        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_PATH,
                                     context.toURI() ) );
-        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_NAME,
+        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_NAME,
                                     fileName ) );
+        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_OPERATION,
+                                    FileOperation.CREATE.toString() ) );
+        form.setAction( targetUrl );
         form.submit();
     }
 
     public void submit( final Path path,
-                        final Command successCallback ) {
+                        final String targetUrl,
+                        final Command successCallback,
+                        final Command errorCallback ) {
         this.successCallback = successCallback;
-        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_FULL_PATH,
+        this.errorCallback = errorCallback;
+        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_FULL_PATH,
                                     path.toURI() ) );
+        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_OPERATION,
+                                    FileOperation.UPDATE.toString() ) );
+        form.setAction( targetUrl );
         form.submit();
     }
 

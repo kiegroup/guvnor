@@ -42,10 +42,6 @@ public interface DecisionTableXLSEditorConstants
 
     String Uploading();
 
-    String UploadSuccess();
-
-    String UploadFailure0(String p0);
-
     String Download();
 
     String Converting();
