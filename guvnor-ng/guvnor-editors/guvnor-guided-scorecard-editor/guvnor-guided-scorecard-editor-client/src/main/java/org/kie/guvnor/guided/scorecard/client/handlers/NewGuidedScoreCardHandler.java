@@ -80,7 +80,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
             @Override
             public void callback( final Path path ) {
-                BusyPopup.close();
+                busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
                 final PlaceRequest place = new PathPlaceRequest( path );

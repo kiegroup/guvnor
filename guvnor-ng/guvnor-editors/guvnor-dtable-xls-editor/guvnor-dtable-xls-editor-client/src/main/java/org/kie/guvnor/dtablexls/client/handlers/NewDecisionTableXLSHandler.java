@@ -73,9 +73,15 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                              @Override
                                              public void execute( final String comment ) {
                                                  busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
+
+                                                 final String fileName = buildFileName( resourceType,
+                                                                                        baseFileName );
+                                                 final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                                                           fileName,
+                                                                                           contextPath.toURI() + "/" + fileName );
+
                                                  uploadWidget.submit( contextPath,
-                                                                      buildFileName( resourceType,
-                                                                                     baseFileName ),
+                                                                      fileName,
                                                                       URLHelper.getServletUrl(),
                                                                       new Command() {
 
@@ -84,10 +90,6 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                                                               busyIndicatorView.hideBusyIndicator();
                                                                               presenter.complete();
                                                                               notifySuccess();
-                                                                              final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
-                                                                                                                        buildFileName( resourceType,
-                                                                                                                                       baseFileName ),
-                                                                                                                        contextPath.toURI() );
                                                                               final PlaceRequest place = new PathPlaceRequest( newPath );
                                                                               placeManager.goTo( place );
                                                                           }
@@ -97,7 +99,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
                                                                           @Override
                                                                           public void execute() {
-                                                                              BusyPopup.close();
+                                                                              busyIndicatorView.hideBusyIndicator();
                                                                           }
                                                                       }
                                                                     );

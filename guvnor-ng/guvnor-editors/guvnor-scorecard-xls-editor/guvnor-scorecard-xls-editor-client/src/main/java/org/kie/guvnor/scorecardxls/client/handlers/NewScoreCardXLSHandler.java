@@ -22,7 +22,6 @@ import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -72,22 +71,24 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+                                                 busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+
+                                                 final String fileName = buildFileName( resourceType,
+                                                                                        baseFileName );
+                                                 final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                                                           fileName,
+                                                                                           contextPath.toURI() + "/" + fileName );
+
                                                  uploadWidget.submit( contextPath,
-                                                                      buildFileName( resourceType,
-                                                                                     baseFileName ),
+                                                                      fileName,
                                                                       URLHelper.getServletUrl(),
                                                                       new Command() {
 
                                                                           @Override
                                                                           public void execute() {
-                                                                              BusyPopup.close();
+                                                                              busyIndicatorView.hideBusyIndicator();
                                                                               presenter.complete();
                                                                               notifySuccess();
-                                                                              final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
-                                                                                                                        buildFileName( resourceType,
-                                                                                                                                       baseFileName ),
-                                                                                                                        contextPath.toURI() );
                                                                               final PlaceRequest place = new PathPlaceRequest( newPath );
                                                                               placeManager.goTo( place );
                                                                           }
@@ -97,7 +98,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
                                                                           @Override
                                                                           public void execute() {
-                                                                              BusyPopup.close();
+                                                                              busyIndicatorView.hideBusyIndicator();
                                                                           }
                                                                       }
                                                                     );
