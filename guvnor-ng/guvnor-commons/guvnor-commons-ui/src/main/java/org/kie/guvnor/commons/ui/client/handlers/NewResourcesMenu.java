@@ -15,6 +15,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +49,22 @@ public class NewResourcesMenu {
                         newResourcePresenter.show( activeHandler );
                     }
                 } ).endMenu().build().getItems().get( 0 );
-                newResourceHandlers.put( activeHandler, menuItem );
+                newResourceHandlers.put( activeHandler,
+                                         menuItem );
                 items.add( menuItem );
             }
         }
+
+        //Sort MenuItems by caption
+        Collections.sort( items,
+                          new Comparator<MenuItem>() {
+            @Override
+            public int compare( final MenuItem o1,
+                                final MenuItem o2 ) {
+                return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
+            }
+        } );
+
     }
 
     public List<MenuItem> getMenuItems() {
