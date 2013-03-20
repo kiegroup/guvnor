@@ -132,26 +132,22 @@ public class BRDRLPersistence
      * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
-    public String marshal( RuleModel model ) {
+    public String marshal( final RuleModel model ) {
         return marshalRule( model );
     }
 
-    protected String marshalRule( RuleModel model ) {
+    protected String marshalRule( final RuleModel model ) {
         boolean isDSLEnhanced = model.hasDSLSentences();
         bindingsPatterns = new HashMap<String, IFactPattern>();
         bindingsFields = new HashMap<String, FieldConstraint>();
 
         StringBuilder buf = new StringBuilder();
 
-        //Append package name and imports to DRL
-        PackageNameWriter.write( buf,
-                                 model );
-        ImportsWriter.write( buf,
-                             model );
-
         //Build rule
-        this.marshalHeader( model,
-                            buf );
+        this.marshalPackageHeader( model,
+                                   buf );
+        this.marshalRuleHeader( model,
+                                buf );
         this.marshalMetadata( buf,
                               model );
         this.marshalAttributes( buf,
@@ -169,12 +165,22 @@ public class BRDRLPersistence
         return buf.toString();
     }
 
-    protected void marshalFooter( StringBuilder buf ) {
+    protected void marshalFooter( final StringBuilder buf ) {
         buf.append( "end\n" );
     }
 
-    protected void marshalHeader( RuleModel model,
-                                  StringBuilder buf ) {
+    //Append package name and imports to DRL
+    protected void marshalPackageHeader( final RuleModel model,
+                                         final StringBuilder buf ) {
+        PackageNameWriter.write( buf,
+                                 model );
+        ImportsWriter.write( buf,
+                             model );
+    }
+
+    //Append rule header
+    protected void marshalRuleHeader( final RuleModel model,
+                                      final StringBuilder buf ) {
         buf.append( "rule \"" + marshalRuleName( model ) + "\"" );
         if ( null != model.parentName && model.parentName.length() > 0 ) {
             buf.append( " extends \"" + model.parentName + "\"\n" );
@@ -183,7 +189,7 @@ public class BRDRLPersistence
         }
     }
 
-    protected String marshalRuleName( RuleModel model ) {
+    protected String marshalRuleName( final RuleModel model ) {
         return model.name;
     }
 
@@ -192,8 +198,8 @@ public class BRDRLPersistence
      * @param buf
      * @param model
      */
-    private void marshalAttributes( StringBuilder buf,
-                                    RuleModel model ) {
+    protected void marshalAttributes( final StringBuilder buf,
+                                      final RuleModel model ) {
         boolean hasDialect = false;
         for ( int i = 0; i < model.attributes.length; i++ ) {
             RuleAttribute attr = model.attributes[ i ];
@@ -222,8 +228,8 @@ public class BRDRLPersistence
      * @param buf
      * @param model
      */
-    private void marshalMetadata( StringBuilder buf,
-                                  RuleModel model ) {
+    protected void marshalMetadata( final StringBuilder buf,
+                                    final RuleModel model ) {
         if ( model.metadataList != null ) {
             for ( int i = 0; i < model.metadataList.length; i++ ) {
                 buf.append( "\t" ).append( model.metadataList[ i ] ).append( "\n" );
@@ -236,9 +242,9 @@ public class BRDRLPersistence
      * @param buf
      * @param model
      */
-    private void marshalLHS( StringBuilder buf,
-                             RuleModel model,
-                             boolean isDSLEnhanced ) {
+    protected void marshalLHS( final StringBuilder buf,
+                               final RuleModel model,
+                               final boolean isDSLEnhanced ) {
         String indentation = "\t\t";
         String nestedIndentation = indentation;
         boolean isNegated = model.isNegated();
@@ -267,10 +273,10 @@ public class BRDRLPersistence
         }
     }
 
-    protected LHSPatternVisitor getLHSPatternVisitor( boolean isDSLEnhanced,
-                                                      StringBuilder buf,
-                                                      String nestedIndentation,
-                                                      boolean isNegated ) {
+    protected LHSPatternVisitor getLHSPatternVisitor( final boolean isDSLEnhanced,
+                                                      final StringBuilder buf,
+                                                      final String nestedIndentation,
+                                                      final boolean isNegated ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
@@ -280,9 +286,9 @@ public class BRDRLPersistence
                                       isNegated );
     }
 
-    private void marshalRHS( StringBuilder buf,
-                             RuleModel model,
-                             boolean isDSLEnhanced ) {
+    protected void marshalRHS( final StringBuilder buf,
+                               final RuleModel model,
+                               final boolean isDSLEnhanced ) {
         String indentation = "\t\t";
         if ( model.rhs != null ) {
 
@@ -309,9 +315,9 @@ public class BRDRLPersistence
         }
     }
 
-    protected RHSActionVisitor getRHSActionVisitor( boolean isDSLEnhanced,
-                                                    StringBuilder buf,
-                                                    String indentation ) {
+    protected RHSActionVisitor getRHSActionVisitor( final boolean isDSLEnhanced,
+                                                    final StringBuilder buf,
+                                                    final String indentation ) {
         return new RHSActionVisitor( isDSLEnhanced,
                                      bindingsPatterns,
                                      bindingsFields,
@@ -320,7 +326,7 @@ public class BRDRLPersistence
                                      indentation );
     }
 
-    private Map<String, List<ActionFieldValue>> getRHSClassDependencies( RuleModel model ) {
+    private Map<String, List<ActionFieldValue>> getRHSClassDependencies( final RuleModel model ) {
         if ( model != null ) {
             RHSClassDependencyVisitor dependencyVisitor = new RHSClassDependencyVisitor();
             for ( IAction action : model.rhs ) {
@@ -333,7 +339,7 @@ public class BRDRLPersistence
         return empty;
     }
 
-    private List<PortableWorkDefinition> getRHSWorkItemDependencies( RuleModel model ) {
+    private List<PortableWorkDefinition> getRHSWorkItemDependencies( final RuleModel model ) {
         if ( model != null ) {
             List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
             for ( IAction action : model.rhs ) {
@@ -358,13 +364,13 @@ public class BRDRLPersistence
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
 
-        public LHSPatternVisitor( boolean isDSLEnhanced,
-                                  Map<String, IFactPattern> bindingsPatterns,
-                                  Map<String, FieldConstraint> bindingsFields,
-                                  DRLConstraintValueBuilder constraintValueBuilder,
-                                  StringBuilder b,
-                                  String indentation,
-                                  boolean isPatternNegated ) {
+        public LHSPatternVisitor( final boolean isDSLEnhanced,
+                                  final Map<String, IFactPattern> bindingsPatterns,
+                                  final Map<String, FieldConstraint> bindingsFields,
+                                  final DRLConstraintValueBuilder constraintValueBuilder,
+                                  final StringBuilder b,
+                                  final String indentation,
+                                  final boolean isPatternNegated ) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
@@ -374,7 +380,7 @@ public class BRDRLPersistence
             buf = b;
         }
 
-        public void visitFactPattern( FactPattern pattern ) {
+        public void visitFactPattern( final FactPattern pattern ) {
             buf.append( indentation );
             if ( isDSLEnhanced ) {
                 // adding passthrough markup
@@ -387,7 +393,7 @@ public class BRDRLPersistence
             buf.append( "\n" );
         }
 
-        public void visitFreeFormLine( FreeFormLine ffl ) {
+        public void visitFreeFormLine( final FreeFormLine ffl ) {
             String[] lines = ffl.getText().split( "\\n|\\r\\n" );
             for ( String line : lines ) {
                 this.buf.append( indentation );
@@ -398,7 +404,7 @@ public class BRDRLPersistence
             }
         }
 
-        public void visitCompositeFactPattern( CompositeFactPattern pattern ) {
+        public void visitCompositeFactPattern( final CompositeFactPattern pattern ) {
             buf.append( indentation );
             if ( isDSLEnhanced ) {
                 // adding passthrough markup
@@ -563,7 +569,7 @@ public class BRDRLPersistence
             buf.append( " from entry-point \"" + pattern.getEntryPointName() + "\"\n" );
         }
 
-        private void renderCompositeFOL( CompositeFactPattern pattern ) {
+        private void renderCompositeFOL( final CompositeFactPattern pattern ) {
             buf.append( pattern.getType() );
             if ( pattern.getPatterns() != null ) {
                 buf.append( " (" );
@@ -578,8 +584,8 @@ public class BRDRLPersistence
             }
         }
 
-        private void renderSubPattern( CompositeFactPattern pattern,
-                                       int subIndex ) {
+        private void renderSubPattern( final CompositeFactPattern pattern,
+                                       final int subIndex ) {
             if ( pattern.getPatterns() == null || pattern.getPatterns().length == 0 ) {
                 return;
             }
@@ -600,7 +606,7 @@ public class BRDRLPersistence
             }
         }
 
-        private void renderExpression( ExpressionFormLine expression ) {
+        private void renderExpression( final ExpressionFormLine expression ) {
             buf.append( expression.getText() );
         }
 
@@ -610,7 +616,7 @@ public class BRDRLPersistence
             buf.append( "\n" );
         }
 
-        private void generateFactPattern( FactPattern pattern ) {
+        private void generateFactPattern( final FactPattern pattern ) {
             if ( pattern.isNegated() ) {
                 buf.append( "not " );
             } else if ( pattern.isBound() ) {
@@ -639,7 +645,7 @@ public class BRDRLPersistence
             }
         }
 
-        private void generateConstraints( FactPattern pattern ) {
+        private void generateConstraints( final FactPattern pattern ) {
             int printedCount = 0;
             for ( int i = 0; i < pattern.getFieldConstraints().length; i++ ) {
                 StringBuilder buffer = new StringBuilder();
@@ -661,9 +667,9 @@ public class BRDRLPersistence
          * in for the ones that aren't at top level. This makes for more
          * readable DRL in the most common cases.
          */
-        private void generateConstraint( FieldConstraint con,
-                                         boolean nested,
-                                         StringBuilder buf ) {
+        private void generateConstraint( final FieldConstraint con,
+                                         final boolean nested,
+                                         final StringBuilder buf ) {
             if ( con instanceof CompositeFieldConstraint ) {
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 if ( nested ) {
@@ -692,7 +698,7 @@ public class BRDRLPersistence
         }
 
         private void generateSingleFieldConstraint( final SingleFieldConstraint constr,
-                                                    StringBuilder buf ) {
+                                                    final StringBuilder buf ) {
             if ( constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                 buf.append( "eval( " );
                 buf.append( constr.getValue() );
@@ -831,8 +837,8 @@ public class BRDRLPersistence
             }
         }
 
-        protected void buildReturnValueFieldValue( String value,
-                                                   StringBuilder buf ) {
+        protected void buildReturnValueFieldValue( final String value,
+                                                   final StringBuilder buf ) {
             buf.append( " " );
             buf.append( "( " );
             buf.append( value );
@@ -840,7 +846,7 @@ public class BRDRLPersistence
             buf.append( " " );
         }
 
-        protected StringBuilder buildOperatorParameterDRL( Map<String, String> parameters ) {
+        protected StringBuilder buildOperatorParameterDRL( final Map<String, String> parameters ) {
             String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
             if ( className == null ) {
                 throw new IllegalStateException( "Implementation of 'org.kie.guvnor.guided.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
@@ -862,11 +868,11 @@ public class BRDRLPersistence
 
         }
 
-        protected void buildLiteralFieldValue( String operator,
-                                               int type,
-                                               String fieldType,
-                                               String value,
-                                               StringBuilder buf ) {
+        protected void buildLiteralFieldValue( final String operator,
+                                               final int type,
+                                               final String fieldType,
+                                               final String value,
+                                               final StringBuilder buf ) {
             if ( OperatorsOracle.operatorRequiresList( operator ) ) {
                 populateValueList( buf,
                                    type,
@@ -918,8 +924,8 @@ public class BRDRLPersistence
             buf.append( " )" );
         }
 
-        protected void buildExpressionFieldValue( ExpressionFormLine expression,
-                                                  StringBuilder buf ) {
+        protected void buildExpressionFieldValue( final ExpressionFormLine expression,
+                                                  final StringBuilder buf ) {
             if ( expression != null ) {
                 buf.append( " " );
                 buf.append( expression.getText() );
@@ -927,10 +933,10 @@ public class BRDRLPersistence
             }
         }
 
-        protected void buildTemplateFieldValue( int type,
-                                                String fieldType,
-                                                String value,
-                                                StringBuilder buf ) {
+        protected void buildTemplateFieldValue( final int type,
+                                                final String fieldType,
+                                                final String value,
+                                                final StringBuilder buf ) {
             buf.append( " " );
             constraintValueBuilder.buildLHSFieldValue( buf,
                                                        type,
@@ -939,11 +945,11 @@ public class BRDRLPersistence
             buf.append( " " );
         }
 
-        private void buildEnumFieldValue( String operator,
-                                          int type,
-                                          String fieldType,
-                                          String value,
-                                          StringBuilder buf ) {
+        private void buildEnumFieldValue( final String operator,
+                                          final int type,
+                                          final String fieldType,
+                                          final String value,
+                                          final StringBuilder buf ) {
 
             if ( OperatorsOracle.operatorRequiresList( operator ) ) {
                 populateValueList( buf,
@@ -962,9 +968,9 @@ public class BRDRLPersistence
             buf.append( " " );
         }
 
-        protected void buildDefaultFieldValue( String operator,
-                                               String value,
-                                               StringBuilder buf ) {
+        protected void buildDefaultFieldValue( final String operator,
+                                               final String value,
+                                               final StringBuilder buf ) {
             if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                 buf.append( " " );
                 buf.append( value );
@@ -987,12 +993,12 @@ public class BRDRLPersistence
         //Keep a record of Work Items that are instantiated for Actions that depend on them
         private Set<String> instantiatedWorkItems;
 
-        public RHSActionVisitor( boolean isDSLEnhanced,
-                                 Map<String, IFactPattern> bindingsPatterns,
-                                 Map<String, FieldConstraint> bindingsFields,
-                                 DRLConstraintValueBuilder constraintValueBuilder,
-                                 StringBuilder b,
-                                 String indentation ) {
+        public RHSActionVisitor( final boolean isDSLEnhanced,
+                                 final Map<String, IFactPattern> bindingsPatterns,
+                                 final Map<String, FieldConstraint> bindingsFields,
+                                 final DRLConstraintValueBuilder constraintValueBuilder,
+                                 final StringBuilder b,
+                                 final String indentation ) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
@@ -1012,7 +1018,7 @@ public class BRDRLPersistence
                                      true );
         }
 
-        public void visitFreeFormLine( FreeFormLine ffl ) {
+        public void visitFreeFormLine( final FreeFormLine ffl ) {
             String[] lines = ffl.getText().split( "\\n|\\r\\n" );
             for ( String line : lines ) {
                 this.buf.append( indentation );
@@ -1142,8 +1148,8 @@ public class BRDRLPersistence
             buf.append( " );\n" );
         }
 
-        private void makeWorkItemParameterDRL( PortableParameterDefinition ppd,
-                                               String wiImplName ) {
+        private void makeWorkItemParameterDRL( final PortableParameterDefinition ppd,
+                                               final String wiImplName ) {
             boolean makeParameter = true;
 
             //Only add bound parameters if their binding exists (i.e. the corresponding column has a value or - for Limited Entry - is true)
@@ -1165,7 +1171,7 @@ public class BRDRLPersistence
             }
         }
 
-        private boolean isBindingValid( String binding ) {
+        private boolean isBindingValid( final String binding ) {
             if ( bindingsPatterns.containsKey( binding ) ) {
                 return true;
             }
@@ -1210,8 +1216,8 @@ public class BRDRLPersistence
             }
         }
 
-        private void generateSetMethodCallParameterValue( StringBuilder buf,
-                                                          ActionFieldValue fieldValue ) {
+        private void generateSetMethodCallParameterValue( final StringBuilder buf,
+                                                          final ActionFieldValue fieldValue ) {
             if ( fieldValue.isFormula() ) {
                 buildFormulaFieldValue( fieldValue,
                                         buf );
@@ -1227,20 +1233,20 @@ public class BRDRLPersistence
             }
         }
 
-        protected void buildFormulaFieldValue( ActionFieldValue fieldValue,
-                                               StringBuilder buf ) {
+        protected void buildFormulaFieldValue( final ActionFieldValue fieldValue,
+                                               final StringBuilder buf ) {
             buf.append( fieldValue.getValue().substring( 1 ) );
         }
 
-        protected void buildTemplateFieldValue( ActionFieldValue fieldValue,
-                                                StringBuilder buf ) {
+        protected void buildTemplateFieldValue( final ActionFieldValue fieldValue,
+                                                final StringBuilder buf ) {
             constraintValueBuilder.buildRHSFieldValue( buf,
                                                        fieldValue.getType(),
                                                        "@{" + fieldValue.getValue() + "}" );
         }
 
-        protected void buildWorkItemFieldValue( ActionWorkItemFieldValue afv,
-                                                StringBuilder buf ) {
+        protected void buildWorkItemFieldValue( final ActionWorkItemFieldValue afv,
+                                                final StringBuilder buf ) {
             if ( instantiatedWorkItems.contains( afv.getWorkItemName() ) ) {
                 buf.append( "(" );
                 buf.append( afv.getWorkItemParameterClassName() );
@@ -1255,8 +1261,8 @@ public class BRDRLPersistence
             }
         }
 
-        protected void buildDefaultFieldValue( ActionFieldValue fieldValue,
-                                               StringBuilder buf ) {
+        protected void buildDefaultFieldValue( final ActionFieldValue fieldValue,
+                                               final StringBuilder buf ) {
             constraintValueBuilder.buildRHSFieldValue( buf,
                                                        fieldValue.getType(),
                                                        fieldValue.getValue() );

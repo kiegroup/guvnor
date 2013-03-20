@@ -15,16 +15,14 @@ import org.drools.compiler.kie.builder.impl.FormatConversionResult;
 public class GuidedDecisionTableConverter extends BaseConverter {
 
     @Override
-    public FormatConversionResult convert(String name, byte[] input) {
-        String xml = new String(input);
+    public FormatConversionResult convert( String name,
+                                           byte[] input ) {
+        String xml = new String( input );
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
 
-        String drl = new StringBuilder()
-                .append( getPackageDeclaration(name) )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( GuidedDTDRLPersistence.getInstance().marshal(model) ).toString();
+        String drl = new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
 
-        return new FormatConversionResult( getDestinationName(name, hasDSLSentences(model)), drl.getBytes() );
+        return new FormatConversionResult( getDestinationName( name, hasDSLSentences( model ) ), drl.getBytes() );
     }
 
     // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.
@@ -32,17 +30,17 @@ public class GuidedDecisionTableConverter extends BaseConverter {
     // a DataModelOracle just to determine whether the model has DSLs is an expensive operation and not needed here.
     public static boolean hasDSLSentences( final GuidedDecisionTable52 model ) {
         for ( CompositeColumn<? extends BaseColumn> column : model.getConditions() ) {
-            if ( column instanceof BRLConditionColumn) {
+            if ( column instanceof BRLConditionColumn ) {
                 final BRLConditionColumn brlColumn = (BRLConditionColumn) column;
                 for ( IPattern pattern : brlColumn.getDefinition() ) {
-                    if ( pattern instanceof DSLSentence) {
+                    if ( pattern instanceof DSLSentence ) {
                         return true;
                     }
                 }
             }
         }
         for ( ActionCol52 column : model.getActionCols() ) {
-            if ( column instanceof BRLActionColumn) {
+            if ( column instanceof BRLActionColumn ) {
                 final BRLActionColumn brlColumn = (BRLActionColumn) column;
                 for ( IAction action : brlColumn.getDefinition() ) {
                     if ( action instanceof DSLSentence ) {

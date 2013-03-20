@@ -17,11 +17,12 @@
 package org.drools.guvnor.models.guided.template.backend;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
 
-import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
-import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
+import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.IFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
@@ -39,7 +40,6 @@ public class BRDRTPersistence
 
     private static final Logger log = LoggerFactory.getLogger( BRDRTPersistence.class );
     private static final BRLPersistence INSTANCE = new BRDRTPersistence();
-    private static final String PACKAGE_DECLARATION = "\npackage __template_dummy_package__\n";
 
     private BRDRTPersistence() {
         super();
@@ -50,33 +50,51 @@ public class BRDRTPersistence
     }
 
     @Override
-    public String marshal( RuleModel model ) {
-
-        final StringBuilder sb = new StringBuilder();
-
-        //Append package name and imports to DRL
-        PackageNameWriter.write( sb,
-                                 model );
-        ImportsWriter.write( sb,
-                             model );
+    public String marshal( final RuleModel model ) {
 
         //Build rule
-        final String ruleTemplate = super.marshalRule( model );
+        final String ruleTemplate = marshalRule( model );
         log.debug( "ruleTemplate:\n{}",
                    ruleTemplate );
 
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
         final String generatedDRl = tplCompiler.compile( dataProvider,
-                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ) ).substring( PACKAGE_DECLARATION.length() ).trim();
+                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ) );
         log.debug( "generated drl:\n{}",
                    generatedDRl );
 
-        sb.append( generatedDRl );
-        return sb.toString();
+        return generatedDRl;
     }
 
-    private DataProvider chooseDataProvider( RuleModel model ) {
+    protected String marshalRule( final RuleModel model ) {
+        boolean isDSLEnhanced = model.hasDSLSentences();
+        bindingsPatterns = new HashMap<String, IFactPattern>();
+        bindingsFields = new HashMap<String, FieldConstraint>();
+
+        StringBuilder buf = new StringBuilder();
+
+        //Build rule
+        this.marshalRuleHeader( model,
+                                buf );
+        super.marshalMetadata( buf,
+                               model );
+        super.marshalAttributes( buf,
+                                 model );
+
+        buf.append( "\twhen\n" );
+        super.marshalLHS( buf,
+                          model,
+                          isDSLEnhanced );
+        buf.append( "\tthen\n" );
+        super.marshalRHS( buf,
+                          model,
+                          isDSLEnhanced );
+        this.marshalFooter( buf );
+        return buf.toString();
+    }
+
+    private DataProvider chooseDataProvider( final RuleModel model ) {
         DataProvider dataProvider;
         TemplateModel tplModel = (TemplateModel) model;
         if ( tplModel.getRowsCount() > 0 ) {
@@ -87,7 +105,7 @@ public class BRDRTPersistence
         return dataProvider;
     }
 
-    private String[][] generateEmptyIterator( TemplateModel templateModel ) {
+    private String[][] generateEmptyIterator( final TemplateModel templateModel ) {
         String[][] rows = new String[ 1 ][];
 
         InterpolationVariable[] interpolationVariables = templateModel.getInterpolationVariablesList();
@@ -103,8 +121,9 @@ public class BRDRTPersistence
     }
 
     @Override
-    protected void marshalHeader( RuleModel model,
-                                  StringBuilder buf ) {
+    protected void marshalRuleHeader( final RuleModel model,
+                                      final StringBuilder buf ) {
+        //Append Template header
         TemplateModel templateModel = (TemplateModel) model;
         buf.append( "template header\n" );
 
@@ -116,18 +135,25 @@ public class BRDRTPersistence
                 buf.append( var.getVarName() ).append( '\n' );
             }
         }
-        buf.append( PACKAGE_DECLARATION ).append( "\ntemplate \"" ).append( super.marshalRuleName( templateModel ) ).append( "\"\n\n" );
-        super.marshalHeader( model,
-                             buf );
+        buf.append( "\n" );
+
+        //Append Package header
+        super.marshalPackageHeader( model,
+                                    buf );
+
+        //Append Template definition
+        buf.append( "\ntemplate \"" ).append( super.marshalRuleName( templateModel ) ).append( "\"\n\n" );
+        super.marshalRuleHeader( model,
+                                 buf );
     }
 
     @Override
-    protected String marshalRuleName( RuleModel model ) {
+    protected String marshalRuleName( final RuleModel model ) {
         return super.marshalRuleName( model ) + "_@{row.rowNumber}";
     }
 
     @Override
-    protected void marshalFooter( StringBuilder buf ) {
+    protected void marshalFooter( final StringBuilder buf ) {
         super.marshalFooter( buf );
         buf.append( "\nend template" );
     }

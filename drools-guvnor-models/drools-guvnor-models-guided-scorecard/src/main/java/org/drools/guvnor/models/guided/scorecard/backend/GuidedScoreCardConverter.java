@@ -1,9 +1,9 @@
 package org.drools.guvnor.models.guided.scorecard.backend;
 
-import org.drools.guvnor.models.commons.backend.BaseConverter;
-import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.compiler.kie.builder.impl.FormatConversionResult;
 import org.drools.compiler.kie.builder.impl.FormatConverter;
+import org.drools.guvnor.models.commons.backend.BaseConverter;
+import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 
 public class GuidedScoreCardConverter extends BaseConverter implements FormatConverter {
 
@@ -13,10 +13,7 @@ public class GuidedScoreCardConverter extends BaseConverter implements FormatCon
         String xml = new String( input );
         ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall( xml );
 
-        String drl = new StringBuilder()
-                .append( getPackageDeclaration( name ) )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
+        String drl = new StringBuilder().append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
 
         return new FormatConversionResult( getDestinationName( name ), drl.getBytes() );
     }
