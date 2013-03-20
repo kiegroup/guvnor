@@ -13,9 +13,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.models.commons.rule;
+package org.drools.guvnor.models.commons.backend.rule;
 
-import org.drools.guvnor.models.commons.backend.rule.BRXMLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.DSLVariableValue;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;

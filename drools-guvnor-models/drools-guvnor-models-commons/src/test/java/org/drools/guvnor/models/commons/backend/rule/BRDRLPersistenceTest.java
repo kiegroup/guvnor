@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.models.commons.rule;
+package org.drools.guvnor.models.commons.backend.rule;
 
-import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
-import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.ActionCallMethod;
 import org.drools.guvnor.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldFunction;

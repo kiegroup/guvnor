@@ -16,10 +16,38 @@
 
 package org.drools.guvnor.models.commons.backend.rule;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
@@ -70,31 +98,6 @@ import org.drools.guvnor.models.commons.shared.workitems.PortableObjectParameter
 import org.drools.guvnor.models.commons.shared.workitems.PortableParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class persists the rule model to DRL and back
@@ -139,6 +142,14 @@ public class BRDRLPersistence
         bindingsFields = new HashMap<String, FieldConstraint>();
 
         StringBuilder buf = new StringBuilder();
+
+        //Append package name and imports to DRL
+        PackageNameWriter.write( buf,
+                                 model );
+        ImportsWriter.write( buf,
+                             model );
+
+        //Build rule
         this.marshalHeader( model,
                             buf );
         this.marshalMetadata( buf,
@@ -1136,7 +1147,7 @@ public class BRDRLPersistence
             boolean makeParameter = true;
 
             //Only add bound parameters if their binding exists (i.e. the corresponding column has a value or - for Limited Entry - is true)
-            if ( ppd instanceof HasBinding) {
+            if ( ppd instanceof HasBinding ) {
                 HasBinding hb = (HasBinding) ppd;
                 if ( hb.isBound() ) {
                     String binding = hb.getBinding();
@@ -1350,7 +1361,7 @@ public class BRDRLPersistence
     public RuleModel unmarshalUsingDSL( final String str,
                                         final List<String> globals,
                                         final String... dsls ) {
-        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ).registerGlobals(globals) );
+        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ).registerGlobals( globals ) );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1379,23 +1390,32 @@ public class BRDRLPersistence
     }
 
     private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo ) {
+        //De-serialize model
         RuleDescr ruleDescr = parseDrl( expandedDRLInfo );
-        RuleModel m = new RuleModel();
-        m.name = ruleDescr.getName();
-        addImports( m,
-                    expandedDRLInfo.plainDrl );
-        boolean isJavaDialect = parseAttributes( m, ruleDescr.getAttributes() );
-        Map<String, String> boundParams = parseLhs( m, ruleDescr.getLhs(), expandedDRLInfo );
-        parseRhs( m, (String) ruleDescr.getConsequence(), isJavaDialect, boundParams, expandedDRLInfo );
-        return m;
-    }
+        RuleModel model = new RuleModel();
+        model.name = ruleDescr.getName();
 
-    private void addImports( final RuleModel model,
-                             final String drl ) {
-        final Imports imports = ImportsParser.parseImports( drl );
+        //De-serialize Package name
+        final String packageName = PackageNameParser.parsePackageName( expandedDRLInfo.plainDrl );
+        model.setPackageName( packageName );
+
+        //De-serialize imports
+        final Imports imports = ImportsParser.parseImports( expandedDRLInfo.plainDrl );
         for ( Import item : imports.getImports() ) {
             model.getImports().addImport( item );
         }
+
+        boolean isJavaDialect = parseAttributes( model,
+                                                 ruleDescr.getAttributes() );
+        Map<String, String> boundParams = parseLhs( model,
+                                                    ruleDescr.getLhs(),
+                                                    expandedDRLInfo );
+        parseRhs( model,
+                  (String) ruleDescr.getConsequence(),
+                  isJavaDialect,
+                  boundParams,
+                  expandedDRLInfo );
+        return model;
     }
 
     private ExpandedDRLInfo preprocessDSL( String str ) {
@@ -1498,42 +1518,42 @@ public class BRDRLPersistence
             rhsDslPatterns = new ArrayList<String>();
         }
 
-        public boolean hasGlobal(String name) {
-            return globals.contains(name);
+        public boolean hasGlobal( String name ) {
+            return globals.contains( name );
         }
 
-        public ExpandedDRLInfo registerGlobals(List<String> globalStatements) {
-            if (globalStatements != null) {
-                for (String globalStatement : globalStatements) {
-                    String identifier = getIdentifier(globalStatement);
-                    if (identifier != null) {
-                        globals.add(identifier);
+        public ExpandedDRLInfo registerGlobals( List<String> globalStatements ) {
+            if ( globalStatements != null ) {
+                for ( String globalStatement : globalStatements ) {
+                    String identifier = getIdentifier( globalStatement );
+                    if ( identifier != null ) {
+                        globals.add( identifier );
                     }
                 }
             }
             return this;
         }
 
-        private String getIdentifier(String globalStatement) {
+        private String getIdentifier( String globalStatement ) {
             globalStatement = globalStatement.trim();
-            if ( !globalStatement.startsWith("global") ) {
+            if ( !globalStatement.startsWith( "global" ) ) {
                 return null;
             }
-            int lastSpace = globalStatement.lastIndexOf(' ');
+            int lastSpace = globalStatement.lastIndexOf( ' ' );
             if ( lastSpace < 0 ) {
                 return null;
             }
-            String identifier = globalStatement.substring(lastSpace+1);
-            if ( identifier.endsWith(";") ) {
-                identifier = identifier.substring(0, identifier.length()-1);
+            String identifier = globalStatement.substring( lastSpace + 1 );
+            if ( identifier.endsWith( ";" ) ) {
+                identifier = identifier.substring( 0, identifier.length() - 1 );
             }
             return identifier;
         }
 
-        public ExpandedDRLInfo registerGlobalDescrs(List<GlobalDescr> globalDescrs) {
-            if (globalDescrs != null) {
-                for (GlobalDescr globalDescr : globalDescrs) {
-                    globals.add(globalDescr.getIdentifier());
+        public ExpandedDRLInfo registerGlobalDescrs( List<GlobalDescr> globalDescrs ) {
+            if ( globalDescrs != null ) {
+                for ( GlobalDescr globalDescr : globalDescrs ) {
+                    globals.add( globalDescr.getIdentifier() );
                 }
             }
             return this;
@@ -1548,8 +1568,8 @@ public class BRDRLPersistence
         } catch ( DroolsParserException e ) {
             throw new RuntimeException( e );
         }
-        expandedDRLInfo.registerGlobalDescrs(packageDescr.getGlobals());
-        return packageDescr.getRules().get(0);
+        expandedDRLInfo.registerGlobalDescrs( packageDescr.getGlobals() );
+        return packageDescr.getRules().get( 0 );
     }
 
     private boolean parseAttributes( RuleModel m,
@@ -1790,12 +1810,12 @@ public class BRDRLPersistence
                                 setStatements.put( variable, setters );
                             }
                             setters.add( line );
-                        } else if ( methodName.equals("add") && expandedDRLInfo.hasGlobal(variable) ) {
-                            String factName = line.substring( argStart+1, line.lastIndexOf(')') ).trim();
+                        } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
+                            String factName = line.substring( argStart + 1, line.lastIndexOf( ')' ) ).trim();
                             ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
                             actionGlobalCollectionAdd.setGlobalName( variable );
-                            actionGlobalCollectionAdd.setFactName(factName);
-                            m.addRhsItem(actionGlobalCollectionAdd);
+                            actionGlobalCollectionAdd.setFactName( factName );
+                            m.addRhsItem( actionGlobalCollectionAdd );
                         } else {
                             ActionCallMethod acm = new ActionCallMethod();
                             acm.setMethodName( methodName );

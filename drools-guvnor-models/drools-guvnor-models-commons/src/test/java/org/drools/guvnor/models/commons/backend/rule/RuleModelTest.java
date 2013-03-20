@@ -1,4 +1,4 @@
-package org.drools.guvnor.models.commons.rule;
+package org.drools.guvnor.models.commons.backend.rule;
 
 import com.thoughtworks.xstream.XStream;
 import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;

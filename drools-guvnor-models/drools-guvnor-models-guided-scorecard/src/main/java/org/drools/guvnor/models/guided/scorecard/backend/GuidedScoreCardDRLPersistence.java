@@ -31,6 +31,8 @@ import org.dmg.pmml.pmml_4_1.descr.Output;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.ArrayUtils;
+import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
@@ -42,8 +44,20 @@ public class GuidedScoreCardDRLPersistence {
 
     public static String marshal( final ScoreCardModel model ) {
         final PMML pmml = createPMMLDocument( model );
-        return ScorecardCompiler.convertToDRL( pmml,
-                                               ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL );
+
+        final StringBuilder sb = new StringBuilder();
+
+        //Append package name and imports to DRL
+        PackageNameWriter.write( sb,
+                                 model );
+        ImportsWriter.write( sb,
+                             model );
+
+        //Build rules
+        sb.append( ScorecardCompiler.convertToDRL( pmml,
+                                                   ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL ) );
+
+        return sb.toString();
     }
 
     private static PMML createPMMLDocument( final ScoreCardModel model ) {

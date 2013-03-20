@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.models.commons.rule;
+package org.drools.guvnor.models.commons.backend.rule;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
-import org.drools.guvnor.models.commons.backend.rule.BRXMLPersistence;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.shared.rule.ActionGlobalCollectionAdd;

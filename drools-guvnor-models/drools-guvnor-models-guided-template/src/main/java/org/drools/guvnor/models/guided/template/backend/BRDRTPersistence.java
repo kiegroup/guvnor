@@ -18,6 +18,8 @@ package org.drools.guvnor.models.guided.template.backend;
 
 import java.io.ByteArrayInputStream;
 
+import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
@@ -50,17 +52,28 @@ public class BRDRTPersistence
     @Override
     public String marshal( RuleModel model ) {
 
-        String ruleTemplate = super.marshalRule( model );
+        final StringBuilder sb = new StringBuilder();
+
+        //Append package name and imports to DRL
+        PackageNameWriter.write( sb,
+                                 model );
+        ImportsWriter.write( sb,
+                             model );
+
+        //Build rule
+        final String ruleTemplate = super.marshalRule( model );
         log.debug( "ruleTemplate:\n{}",
                    ruleTemplate );
 
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
-        String generatedDRl = tplCompiler.compile( dataProvider,
-                                                   new ByteArrayInputStream( ruleTemplate.getBytes() ) ).substring( PACKAGE_DECLARATION.length() ).trim();
+        final String generatedDRl = tplCompiler.compile( dataProvider,
+                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ) ).substring( PACKAGE_DECLARATION.length() ).trim();
         log.debug( "generated drl:\n{}",
                    generatedDRl );
-        return generatedDRl;
+
+        sb.append( generatedDRl );
+        return sb.toString();
     }
 
     private DataProvider chooseDataProvider( RuleModel model ) {

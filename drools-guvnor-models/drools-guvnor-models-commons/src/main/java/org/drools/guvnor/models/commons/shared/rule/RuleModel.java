@@ -20,9 +20,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.guvnor.models.commons.shared.imports.HasImports;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 
-public class RuleModel {
+public class RuleModel implements HasImports,
+                                  HasPackageName {
 
     /**
      * This name is generally not used - the asset name or the file name is
@@ -38,6 +41,8 @@ public class RuleModel {
     public IAction[] rhs = new IAction[ 0 ];
 
     private Imports imports = new Imports();
+
+    private String packageName;
 
     //Is the Rule to be negated (i.e. "not ( PatternX, PatternY... )"
     private boolean isNegated;
@@ -758,6 +763,14 @@ public class RuleModel {
 
     public Imports getImports() {
         return imports;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName( String packageName ) {
+        this.packageName = packageName;
     }
 
 }

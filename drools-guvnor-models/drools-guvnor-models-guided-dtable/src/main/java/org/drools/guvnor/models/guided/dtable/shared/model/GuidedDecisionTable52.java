@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
 import org.drools.guvnor.models.commons.shared.auditlog.DefaultAuditLog;
+import org.drools.guvnor.models.commons.shared.imports.HasImports;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.guvnor.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter;
 
@@ -31,7 +33,8 @@ import org.drools.guvnor.models.guided.dtable.shared.auditlog.DecisionTableAudit
  * the decision tables module). This works by taking the column definitions, and
  * combining them with the table of data to produce rule models.
  */
-public class GuidedDecisionTable52 {
+public class GuidedDecisionTable52 implements HasImports,
+                                              HasPackageName {
 
     private static final long serialVersionUID = 510l;
 
@@ -80,6 +83,8 @@ public class GuidedDecisionTable52 {
     private AuditLog auditLog;
 
     private Imports imports = new Imports();
+
+    private String packageName;
 
     public enum TableFormat {
         EXTENDED_ENTRY,
@@ -354,6 +359,14 @@ public class GuidedDecisionTable52 {
 
     public Imports getImports() {
         return imports;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName( String packageName ) {
+        this.packageName = packageName;
     }
 
 }

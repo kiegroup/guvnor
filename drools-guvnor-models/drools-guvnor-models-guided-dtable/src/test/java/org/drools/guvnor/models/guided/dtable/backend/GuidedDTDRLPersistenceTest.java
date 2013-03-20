@@ -16,19 +16,34 @@
 
 package org.drools.guvnor.models.guided.dtable.backend;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
-import org.drools.guvnor.models.guided.dtable.backend.util.DataUtilities;
-import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDTTemplateDataProvider;
-import org.drools.guvnor.models.guided.dtable.backend.util.TemplateDataProvider;
-import org.junit.Test;
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.ActionExecuteWorkItem;
+import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
+import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
+import org.drools.guvnor.models.commons.shared.rule.ActionSetField;
+import org.drools.guvnor.models.commons.shared.rule.ActionWorkItemFieldValue;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.rule.RuleAttribute;
+import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableFloatParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableIntegerParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.guided.dtable.backend.util.DataUtilities;
+import org.drools.guvnor.models.guided.dtable.backend.util.GuidedDTTemplateDataProvider;
+import org.drools.guvnor.models.guided.dtable.backend.util.TemplateDataProvider;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -54,21 +69,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCondition
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.guvnor.models.commons.shared.rule.ActionExecuteWorkItem;
-import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
-import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
-import org.drools.guvnor.models.commons.shared.rule.ActionSetField;
-import org.drools.guvnor.models.commons.shared.rule.ActionWorkItemFieldValue;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.FactPattern;
-import org.drools.guvnor.models.commons.shared.rule.RuleAttribute;
-import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
-import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -161,7 +162,6 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "rating == ( age * 0.3 )" ) > drl.indexOf( "rating == ( age * 0.2 )" ) );
         assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 );
         assertTrue( drl.indexOf( "salience 66" ) > 0 );
-
     }
 
     @Test
@@ -243,7 +243,6 @@ public class GuidedDTDRLPersistenceTest {
         assertFalse( p.validCell( null ) );
         assertFalse( p.validCell( "" ) );
         assertFalse( p.validCell( "  " ) );
-
     }
 
     @Test
@@ -4278,7 +4277,38 @@ public class GuidedDTDRLPersistenceTest {
         action1StartIndex = drl.indexOf( "insert( fact0 );",
                                          ruleStartIndex );
         assertTrue( action1StartIndex == -1 );
+    }
 
+    @Test
+    public void testPackageNameAndImports() throws Exception {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setPackageName( "org.drools.guvnor.models.guided.dtable.backend" );
+        dt.getImports().addImport( new Import( "java.lang.String" ) );
+
+        dt.setTableName( "michael" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Driver" );
+
+        ConditionCol52 con = new ConditionCol52();
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFactField( "age" );
+        con.setHeader( "Driver f1 age" );
+        con.setOperator( "==" );
+        p1.getChildColumns().add( con );
+
+        dt.getConditions().add( p1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "42" }
+        } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        assertTrue( drl.indexOf( "package org.drools.guvnor.models.guided.dtable.backend;" ) == 0 );
+        assertTrue( drl.indexOf( "import java.lang.String;" ) > 0 );
     }
 
 }

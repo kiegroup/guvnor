@@ -16,8 +16,14 @@
 
 package org.drools.guvnor.models.guided.dtable.backend;
 
-import org.drools.guvnor.models.commons.shared.rule.IAction;
-import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.guvnor.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldList;
@@ -32,6 +38,8 @@ import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.FromEntryPointFactPattern;
+import org.drools.guvnor.models.commons.shared.rule.IAction;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.shared.rule.RuleAttribute;
 import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
@@ -67,12 +75,6 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
  */
@@ -89,6 +91,13 @@ public class GuidedDTDRLPersistence {
         List<List<DTCellValue52>> data = dt.getData();
         List<BaseColumn> allColumns = dt.getExpandedColumns();
 
+        //Append package name and imports to DRL
+        PackageNameWriter.write( sb,
+                                 dt );
+        ImportsWriter.write( sb,
+                             dt );
+
+        //Build rules
         for ( int i = 0; i < data.size(); i++ ) {
 
             List<DTCellValue52> row = data.get( i );
@@ -160,7 +169,7 @@ public class GuidedDTDRLPersistence {
                           row,
                           rm );
 
-            } else if ( c instanceof BRLActionColumn) {
+            } else if ( c instanceof BRLActionColumn ) {
                 doAction( allColumns,
                           (BRLActionColumn) c,
                           actions,
@@ -199,12 +208,12 @@ public class GuidedDTDRLPersistence {
                                   (ActionWorkItemSetFieldCol52) c,
                                   cell );
 
-                    } else if ( c instanceof ActionSetFieldCol52) {
+                    } else if ( c instanceof ActionSetFieldCol52 ) {
                         doAction( actions,
                                   (ActionSetFieldCol52) c,
                                   cell );
 
-                    } else if ( c instanceof ActionRetractFactCol52) {
+                    } else if ( c instanceof ActionRetractFactCol52 ) {
                         doAction( actions,
                                   (ActionRetractFactCol52) c,
                                   cell );
@@ -484,7 +493,7 @@ public class GuidedDTDRLPersistence {
                                                  String boundName ) {
         for ( LabelledAction labelledAction : actions ) {
             IAction action = labelledAction.action;
-            if ( action instanceof ActionFieldList) {
+            if ( action instanceof ActionFieldList ) {
                 if ( labelledAction.boundName.equals( boundName ) ) {
                     return labelledAction;
                 }
@@ -504,7 +513,7 @@ public class GuidedDTDRLPersistence {
 
         for ( CompositeColumn<?> cc : conditionPatterns ) {
 
-            if ( cc instanceof LimitedEntryBRLConditionColumn) {
+            if ( cc instanceof LimitedEntryBRLConditionColumn ) {
                 doCondition( allColumns,
                              (LimitedEntryBRLConditionColumn) cc,
                              patterns,
@@ -757,12 +766,12 @@ public class GuidedDTDRLPersistence {
         }
 
         for ( IPattern ifp : patterns ) {
-            if ( ifp instanceof FactPattern) {
+            if ( ifp instanceof FactPattern ) {
                 FactPattern fp = (FactPattern) ifp;
                 if ( fp.getBoundName() != null && fp.getBoundName().equals( boundName ) ) {
                     return fp;
                 }
-            } else if ( ifp instanceof FromEntryPointFactPattern) {
+            } else if ( ifp instanceof FromEntryPointFactPattern ) {
                 FromEntryPointFactPattern fefp = (FromEntryPointFactPattern) ifp;
                 FactPattern fp = fefp.getFactPattern();
                 if ( fp.getBoundName() != null && fp.getBoundName().equals( boundName ) ) {
@@ -812,7 +821,7 @@ public class GuidedDTDRLPersistence {
             MetadataCol52 meta = metadataCols.get( j );
             int index = allColumns.indexOf( meta );
 
-            String cell = GuidedDTDRLUtilities.convertDTCellValueToString(row.get(index));
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
@@ -865,7 +874,7 @@ public class GuidedDTDRLPersistence {
         } else {
 
             sfc.setOperator( c.getOperator() );
-            if ( OperatorsOracle.operatorRequiresList(c.getOperator()) ) {
+            if ( OperatorsOracle.operatorRequiresList( c.getOperator() ) ) {
                 sfc.setValue( makeInList( cell ) );
             } else {
                 if ( !c.getOperator().equals( "== null" ) && !c.getOperator().equals( "!= null" ) ) {
@@ -888,7 +897,7 @@ public class GuidedDTDRLPersistence {
                                                        List<BaseColumn> allColumns,
                                                        List<List<DTCellValue52>> data ) {
 
-        GuidedDTDRLOtherwiseHelper.OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder(c);
+        GuidedDTDRLOtherwiseHelper.OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );
         return builder.makeFieldConstraint( c,
                                             allColumns,
                                             data );

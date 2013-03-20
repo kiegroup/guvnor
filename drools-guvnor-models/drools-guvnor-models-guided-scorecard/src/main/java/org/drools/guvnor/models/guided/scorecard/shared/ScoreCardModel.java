@@ -19,9 +19,12 @@ package org.drools.guvnor.models.guided.scorecard.shared;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.models.commons.shared.imports.HasImports;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 
-public class ScoreCardModel {
+public class ScoreCardModel implements HasImports,
+                                       HasPackageName {
 
     private String name;
     private String reasonCodesAlgorithm;

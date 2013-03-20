@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.models.commons.backend.imports;
-
-import org.drools.guvnor.models.commons.shared.imports.Import;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+package org.drools.guvnor.models.commons.backend.packages;
 
 /**
- * Utility methods to parse an Imports Config
+ * Utility methods to parse a Package Name
  */
-public final class ImportsParser {
+public final class PackageNameParser {
 
-    private static final String KEYWORD = "import ";
+    private static final String KEYWORD = "package ";
 
-    private ImportsParser() {
+    private PackageNameParser() {
     }
 
-    public static Imports parseImports( final String content ) {
-        Imports imports = new Imports();
+    public static String parsePackageName( final String content ) {
+        String packageName = "";
 
         if ( content == null || content.trim().equals( "" ) ) {
-            return imports;
+            return packageName;
         } else {
             final String[] lines = content.split( "\\n" );
 
@@ -44,12 +41,12 @@ public final class ImportsParser {
                         if ( line.endsWith( ";" ) ) {
                             line = line.substring( 0, line.length() - 1 );
                         }
-                        imports.addImport( new Import( line ) );
+                        return line;
                     }
                 }
             }
 
-            return imports;
+            return packageName;
         }
 
     }
