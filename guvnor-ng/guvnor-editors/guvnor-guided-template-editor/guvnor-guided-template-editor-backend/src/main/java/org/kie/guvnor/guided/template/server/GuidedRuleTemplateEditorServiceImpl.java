@@ -38,6 +38,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -99,12 +100,17 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     @Inject
     private SourceServices sourceServices;
 
+    @Inject
+    private ProjectService projectService;
+
     public Path create( final Path context,
                         final String fileName,
                         final TemplateModel content,
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -176,6 +182,8 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                       final Metadata metadata,
                       final String comment ) {
         try {
+            model.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              BRDRTXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),

@@ -26,10 +26,6 @@ public class GuidedRuleSourceService
 
     private static final String PATTERN = ".gre.drl";
 
-    protected GuidedRuleSourceService() {
-        super( "/src/main/resources" );
-    }
-
     @Override
     public String getPattern() {
         return PATTERN;
@@ -38,10 +34,7 @@ public class GuidedRuleSourceService
     @Override
     public String getSource( final Path path,
                              final RuleModel model ) {
-        return new StringBuilder()
-                .append( returnPackageDeclaration( path ) ).append( "\n" )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( BRDRLPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( BRDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

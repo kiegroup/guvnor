@@ -123,6 +123,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -226,6 +228,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
+            model.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              toSource( resource,
                                        model ),

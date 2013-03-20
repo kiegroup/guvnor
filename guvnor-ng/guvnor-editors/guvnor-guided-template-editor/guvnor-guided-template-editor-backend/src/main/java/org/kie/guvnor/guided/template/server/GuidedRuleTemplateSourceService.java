@@ -26,10 +26,6 @@ public class GuidedRuleTemplateSourceService
 
     private static final String PATTERN = ".template";
 
-    protected GuidedRuleTemplateSourceService() {
-        super( "/src/main/resources" );
-    }
-
     @Override
     public String getPattern() {
         return PATTERN;
@@ -38,10 +34,7 @@ public class GuidedRuleTemplateSourceService
     @Override
     public String getSource( final Path path,
                              final TemplateModel model ) {
-        return new StringBuilder()
-                .append( returnPackageDeclaration( path ) ).append( "\n" )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( BRDRTPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( BRDRTPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

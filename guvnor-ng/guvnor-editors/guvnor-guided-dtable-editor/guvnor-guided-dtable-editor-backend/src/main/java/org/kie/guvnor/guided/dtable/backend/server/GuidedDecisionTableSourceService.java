@@ -26,10 +26,6 @@ public class GuidedDecisionTableSourceService
 
     private static final String PATTERN = ".gdst";
 
-    protected GuidedDecisionTableSourceService() {
-        super( "/src/main/resources" );
-    }
-
     @Override
     public String getPattern() {
         return PATTERN;
@@ -38,10 +34,7 @@ public class GuidedDecisionTableSourceService
     @Override
     public String getSource( final Path path,
                              final GuidedDecisionTable52 model ) {
-        return new StringBuilder()
-                .append( returnPackageDeclaration( path ) ).append( "\n" )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

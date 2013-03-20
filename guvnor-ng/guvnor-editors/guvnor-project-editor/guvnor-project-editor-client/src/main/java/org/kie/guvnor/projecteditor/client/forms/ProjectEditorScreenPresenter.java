@@ -116,12 +116,12 @@ public class
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                         saveOperationService.save( pathToPomXML,
                                                    new CommandWithCommitMessage() {
                                                        @Override
                                                        public void execute( final String comment ) {
                                                            // We need to use callback here or jgit will break when we save two files at the same time.
+                                                           view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                            pomPanel.save( comment,
                                                                           new Command() {
                                                                               @Override

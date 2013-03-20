@@ -40,6 +40,7 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -106,6 +107,9 @@ public class FactModelServiceImpl implements FactModelService {
     @Inject
     private SourceServices sourceServices;
 
+    @Inject
+    private ProjectService projectService;
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -113,6 +117,8 @@ public class FactModelServiceImpl implements FactModelService {
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -190,6 +196,8 @@ public class FactModelServiceImpl implements FactModelService {
                       final Metadata metadata,
                       final String comment ) {
         try {
+            content.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              FactModelPersistence.marshal( content ),
                              metadataService.setUpAttributes( resource,

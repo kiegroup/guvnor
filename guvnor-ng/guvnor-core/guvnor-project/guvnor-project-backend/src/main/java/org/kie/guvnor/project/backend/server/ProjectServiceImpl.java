@@ -300,7 +300,7 @@ public class ProjectServiceImpl
                                                "" );
         }
         if ( packageName.length() == 0 ) {
-            return "defaultpkg";
+            return ProjectService.DEFAULT_PACKAGE;
         }
         if ( packageName.startsWith( "/" ) ) {
             packageName = packageName.substring( 1 );

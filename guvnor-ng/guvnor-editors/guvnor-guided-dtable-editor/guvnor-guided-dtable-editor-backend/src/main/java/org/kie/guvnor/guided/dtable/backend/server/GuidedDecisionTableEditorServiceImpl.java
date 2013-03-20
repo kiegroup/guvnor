@@ -40,6 +40,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -101,6 +102,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     @Inject
     private SourceServices sourceServices;
 
+    @Inject
+    private ProjectService projectService;
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -108,6 +112,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -179,9 +185,12 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                       final Metadata metadata,
                       final String comment ) {
         try {
+            model.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              GuidedDTXMLPersistence.getInstance().marshal( model ),
-                             metadataService.setUpAttributes( resource, metadata ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties

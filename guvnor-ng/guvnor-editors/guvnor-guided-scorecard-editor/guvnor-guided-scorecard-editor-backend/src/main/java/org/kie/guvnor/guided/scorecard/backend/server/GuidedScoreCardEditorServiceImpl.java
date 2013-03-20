@@ -42,6 +42,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -98,10 +99,13 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     private Identity identity;
 
     @Inject
+    private DataModelService dataModelService;
+
+    @Inject
     private SourceServices sourceServices;
 
     @Inject
-    private DataModelService dataModelService;
+    private ProjectService projectService;
 
     private static final String RESOURCE_EXTENSION = "scgd";
 
@@ -112,6 +116,8 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -183,6 +189,8 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                       final Metadata metadata,
                       final String comment ) {
         try {
+            model.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),

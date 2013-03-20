@@ -22,6 +22,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
@@ -35,6 +38,7 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.drltext.model.DrlModelContent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -93,6 +97,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     @Inject
     private DataModelService dataModelService;
 
+    @Inject
+    private ProjectService projectService;
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -100,13 +107,16 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                         final String comment ) {
         Path newPath = null;
         try {
+            final String drl = assertPackageName( content,
+                                                  context );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
-                             content,
+                             drl,
                              makeCommentedOption( comment ) );
 
             //Signal creation to interested parties
@@ -172,8 +182,11 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
+            final String drl = assertPackageName( content,
+                                                  resource );
+
             ioService.write( paths.convert( resource ),
-                             content,
+                             drl,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
@@ -243,6 +256,34 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public boolean isValid( final Path path,
                             final String content ) {
         return !validate( path, content ).hasLines();
+    }
+
+    //Check if the DRL contains a Package declaration, appending one if it does not exist
+    private String assertPackageName( final String drl,
+                                      final Path resource ) {
+        final String existingPackageName = PackageNameParser.parsePackageName( drl );
+        if ( !"".equals( existingPackageName ) ) {
+            return drl;
+        }
+
+        final String requiredPackageName = projectService.resolvePackageName( resource );
+        final HasPackageName mockHasPackageName = new HasPackageName() {
+
+            @Override
+            public String getPackageName() {
+                return requiredPackageName;
+            }
+
+            @Override
+            public void setPackageName( final String packageName ) {
+                //Nothing to do here
+            }
+        };
+        final StringBuilder sb = new StringBuilder();
+        PackageNameWriter.write( sb,
+                                 mockHasPackageName );
+        sb.append( drl );
+        return sb.toString();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

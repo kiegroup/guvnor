@@ -21,21 +21,10 @@ import org.kie.commons.java.nio.file.Path;
 public abstract class DRLBaseSourceService
         extends BaseSourceService<String> {
 
-    protected DRLBaseSourceService() {
-        super( "/src/main/resources" );
-    }
-
     @Override
     public String getSource( final Path path,
                              final String drl ) {
-        String packageDeclaration = returnPackageDeclaration( path );
-
-        String source = drl;
-        if ( !source.contains( packageDeclaration ) ) {
-            source = packageDeclaration + "\n" + source;
-        }
-
-        return source;
+        return drl;
     }
 
 }

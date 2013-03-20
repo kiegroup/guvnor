@@ -26,10 +26,6 @@ public class GuidedScoreCardSourceService
 
     private static final String PATTERN = ".scgd";
 
-    protected GuidedScoreCardSourceService() {
-        super( "/src/main/resources" );
-    }
-
     @Override
     public String getPattern() {
         return PATTERN;
@@ -38,10 +34,7 @@ public class GuidedScoreCardSourceService
     @Override
     public String getSource( final Path path,
                              final ScoreCardModel model ) {
-        return new StringBuilder()
-                .append( returnPackageDeclaration( path ) ).append( "\n" )
-                .append( model.getImports().toString() ).append( "\n" )
-                .append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
+        return new StringBuilder().append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
     }
 
 }

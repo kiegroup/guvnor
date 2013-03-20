@@ -16,17 +16,22 @@
 
 package org.kie.guvnor.factmodel.model;
 
+import org.drools.guvnor.models.commons.shared.imports.HasImports;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Model for Declarative Fact Types
  */
 @Portable
-public class FactModels {
+public class FactModels implements HasImports,
+                                   HasPackageName {
+
+    private String packageName;
 
     private Imports imports = new Imports();
 
@@ -43,7 +48,18 @@ public class FactModels {
         return imports;
     }
 
-    public void setImports(Imports imports) {
+    public void setImports( Imports imports ) {
         this.imports = imports;
     }
+
+    @Override
+    public String getPackageName() {
+        return this.packageName;
+    }
+
+    @Override
+    public void setPackageName( final String packageName ) {
+        this.packageName = packageName;
+    }
+
 }

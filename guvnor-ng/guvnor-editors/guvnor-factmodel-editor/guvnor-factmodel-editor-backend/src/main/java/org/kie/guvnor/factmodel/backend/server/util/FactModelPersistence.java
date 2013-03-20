@@ -6,12 +6,15 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.backend.imports.ImportsWriter;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.factmodel.model.AnnotationMetaModel;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModels;
@@ -26,8 +29,12 @@ public class FactModelPersistence {
 
     public static String marshal( final FactModels content ) {
         final StringBuilder sb = new StringBuilder();
-        sb.append( content.getImports().toString() );
-        sb.append( "\n" );
+
+        PackageNameWriter.write( sb,
+                                 content );
+        ImportsWriter.write( sb,
+                             content );
+
         for ( final FactMetaModel factMetaModel : content.getModels() ) {
             sb.append( toDRL( factMetaModel ) ).append( "\n\n" );
         }
@@ -78,13 +85,19 @@ public class FactModelPersistence {
 
     public static FactModels unmarshal( final String content ) {
         try {
+            //De-serialize model
             final List<FactMetaModel> models = toModel( content );
             final FactModels factModels = new FactModels();
             factModels.getModels().addAll( models );
 
+            //De-serialize Package name
+            final String packageName = PackageNameParser.parsePackageName( content );
+            factModels.setPackageName( packageName );
+
             //De-serialize imports
             final Imports imports = ImportsParser.parseImports( content );
             factModels.setImports( imports );
+
             return factModels;
 
         } catch ( final DroolsParserException e ) {

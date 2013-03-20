@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.globals.backend.server.util;
 
+import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
 import org.kie.guvnor.globals.model.Global;
@@ -40,6 +42,10 @@ public class GlobalsPersistence {
 
     public String marshal( final GlobalsModel model ) {
         final StringBuilder sb = new StringBuilder();
+
+        PackageNameWriter.write( sb,
+                                 model );
+
         for ( Global global : model.getGlobals() ) {
             sb.append( "global " ).append( global.getClassName() ).append( " " ).append( global.getAlias() ).append( ";\n" );
         }
@@ -47,10 +53,15 @@ public class GlobalsPersistence {
     }
 
     public GlobalsModel unmarshal( final String content ) {
+        //De-serialize model
         final List<Pair<String, String>> parsedGlobalsContent = GlobalsParser.parseGlobals( content );
         final List<Global> globals = makeGlobals( parsedGlobalsContent );
         final GlobalsModel model = new GlobalsModel();
         model.setGlobals( globals );
+
+        //De-serialize Package name
+        final String packageName = PackageNameParser.parsePackageName( content );
+        model.setPackageName( packageName );
         return model;
     }
 

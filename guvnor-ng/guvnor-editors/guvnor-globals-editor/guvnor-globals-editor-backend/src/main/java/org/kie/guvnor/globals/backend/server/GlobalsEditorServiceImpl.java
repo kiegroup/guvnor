@@ -38,6 +38,7 @@ import org.kie.guvnor.globals.backend.server.util.GlobalsPersistence;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
 import org.kie.guvnor.globals.model.GlobalsModel;
 import org.kie.guvnor.globals.service.GlobalsEditorService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -99,6 +100,9 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     @Inject
     private SourceServices sourceServices;
 
+    @Inject
+    private ProjectService projectService;
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -106,6 +110,8 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                         final String comment ) {
         Path newPath = null;
         try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
+
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             newPath = paths.convert( nioPath,
                                      false );
@@ -179,6 +185,8 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
+            content.setPackageName( projectService.resolvePackageName( resource ) );
+
             ioService.write( paths.convert( resource ),
                              GlobalsPersistence.getInstance().marshal( content ),
                              metadataService.setUpAttributes( resource,

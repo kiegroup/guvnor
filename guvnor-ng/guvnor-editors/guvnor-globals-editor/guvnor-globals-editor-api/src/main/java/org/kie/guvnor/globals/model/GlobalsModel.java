@@ -1,15 +1,18 @@
 package org.kie.guvnor.globals.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * The model for Globals
  */
 @Portable
-public class GlobalsModel {
+public class GlobalsModel implements HasPackageName {
+
+    private String packageName;
 
     private List<Global> globals = new ArrayList<Global>();
 
@@ -21,4 +24,13 @@ public class GlobalsModel {
         this.globals = globals;
     }
 
+    @Override
+    public String getPackageName() {
+        return this.packageName;
+    }
+
+    @Override
+    public void setPackageName( final String packageName ) {
+        this.packageName = packageName;
+    }
 }
