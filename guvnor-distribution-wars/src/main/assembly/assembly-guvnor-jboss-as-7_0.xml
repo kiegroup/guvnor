@@ -76,6 +76,10 @@
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
           <exclude>WEB-INF/lib/javax*.jar</exclude>
           <exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>
+
+          <!-- Netty-->
+          <exclude>WEB-INF/lib/netty-3*.jar</exclude>
+
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
