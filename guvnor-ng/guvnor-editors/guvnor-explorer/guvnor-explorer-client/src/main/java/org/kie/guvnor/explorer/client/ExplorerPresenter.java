@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
@@ -80,7 +81,7 @@ public class ExplorerPresenter {
 
     public void pathChangeHandler( @Observes PathChangeEvent event ) {
         final Path path = event.getPath();
-        loadItems( path );
+        loadItemsWithBusyIndicator( path );
     }
 
     public void openResource( final Path path ) {
@@ -93,79 +94,126 @@ public class ExplorerPresenter {
 
     private void loadItems( final Path path ) {
         if ( path == null ) {
+            rootService.call( new RootItemsSuccessCallback( path ),
+                              new DefaultErrorCallback() ).listRoots();
+        } else {
+            if ( !path.equals( activePath ) ) {
+                explorerService.call( new ContentInScopeSuccessCallback( path ),
+                                      new DefaultErrorCallback() ).getContentInScope( path );
+            }
+        }
+    }
+
+    private void loadItemsWithBusyIndicator( final Path path ) {
+        if ( path == null ) {
             busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-            rootService.call( getRootItemsSuccessCallback( path ),
+            rootService.call( new RootItemsSuccessCallbackWithBusyIndicator( path ),
                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).listRoots();
         } else {
             if ( !path.equals( activePath ) ) {
                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                explorerService.call( getContentInScopeSuccessCallback( path ),
+                explorerService.call( new ContentInScopeSuccessCallbackWithBusyIndicator( path ),
                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getContentInScope( path );
             }
         }
     }
 
-    private RemoteCallback<Collection<Root>> getRootItemsSuccessCallback( final Path path ) {
-        return new RemoteCallback<Collection<Root>>() {
-
-            @Override
-            public void callback( final Collection<Root> roots ) {
-                final List<Item> items = new ArrayList<Item>();
-                for ( final Root root : roots ) {
-                    items.add( wrapRoot( root ) );
-                }
-                final ExplorerContent content = new ExplorerContent( items );
-                activePath = path;
-                view.setContent( content );
-                busyIndicatorView.hideBusyIndicator();
-            }
-        };
-    }
-
-    private RemoteCallback<ExplorerContent> getContentInScopeSuccessCallback( final Path path ) {
-        return new RemoteCallback<ExplorerContent>() {
-
-            @Override
-            public void callback( final ExplorerContent content ) {
-                activePath = path;
-                view.setContent( content );
-                busyIndicatorView.hideBusyIndicator();
-            }
-
-        };
-    }
-
-    private RepositoryItem wrapRoot( final Root root ) {
-        final RepositoryItem repositoryItem = new RepositoryItem( root.getPath() );
-        return repositoryItem;
-    }
-
     // Refresh when a Resource has been added
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        //TODO Refresh only if required
         activePath = null;
-        onStart();
+        //TODO Refresh only if required
+        loadItems( context.getActivePath() );
     }
 
     // Refresh when a Resource has been deleted
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        //TODO Refresh only if required
         activePath = null;
-        onStart();
+        //TODO Refresh only if required
+        loadItems( context.getActivePath() );
     }
 
     // Refresh when a Resource has been copied
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
-        //TODO Refresh only if required
         activePath = null;
-        onStart();
+        //TODO Refresh only if required
+        loadItems( context.getActivePath() );
     }
 
     // Refresh when a Resource has been renamed
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        //TODO Refresh only if required
         activePath = null;
-        onStart();
+        //TODO Refresh only if required
+        loadItems( context.getActivePath() );
+    }
+
+    private class RootItemsSuccessCallback implements RemoteCallback<Collection<Root>> {
+
+        protected final Path path;
+
+        private RootItemsSuccessCallback( final Path path ) {
+            this.path = path;
+        }
+
+        @Override
+        public void callback( final Collection<Root> roots ) {
+            final List<Item> items = new ArrayList<Item>();
+            for ( final Root root : roots ) {
+                items.add( wrapRoot( root ) );
+            }
+            final ExplorerContent content = new ExplorerContent( items );
+            activePath = path;
+            view.setContent( content );
+        }
+
+        private RepositoryItem wrapRoot( final Root root ) {
+            final RepositoryItem repositoryItem = new RepositoryItem( root.getPath() );
+            return repositoryItem;
+        }
+
+    }
+
+    private class ContentInScopeSuccessCallback implements RemoteCallback<ExplorerContent> {
+
+        protected final Path path;
+
+        private ContentInScopeSuccessCallback( final Path path ) {
+            this.path = path;
+        }
+
+        @Override
+        public void callback( final ExplorerContent content ) {
+            activePath = path;
+            view.setContent( content );
+        }
+
+    }
+
+    private class RootItemsSuccessCallbackWithBusyIndicator extends RootItemsSuccessCallback {
+
+        private RootItemsSuccessCallbackWithBusyIndicator( final Path path ) {
+            super( path );
+        }
+
+        @Override
+        public void callback( final Collection<Root> roots ) {
+            super.callback( roots );
+            busyIndicatorView.hideBusyIndicator();
+        }
+
+    }
+
+    private class ContentInScopeSuccessCallbackWithBusyIndicator extends ContentInScopeSuccessCallback {
+
+        private ContentInScopeSuccessCallbackWithBusyIndicator( final Path path ) {
+            super( path );
+        }
+
+        @Override
+        public void callback( final ExplorerContent content ) {
+            super.callback( content );
+            busyIndicatorView.hideBusyIndicator();
+        }
+
     }
 
 }
