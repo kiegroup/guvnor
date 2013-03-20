@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.RuleBase;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -36,6 +37,7 @@ import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.RetractFact;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
 
@@ -76,7 +78,9 @@ public class ScenarioRunner {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
         // This looks safe!
-        ClassLoader classloader2 = ((InternalRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+        KieBase kieBase = ksession.getKieBase();
+        RuleBase ruleBase = ((KnowledgeBaseImpl) kieBase).getRuleBase();
+        ClassLoader classloader2 = ((InternalRuleBase) ruleBase).getRootClassLoader();
 
         ClassTypeResolver resolver = new ClassTypeResolver(
                 scenario.getImports().getImportStrings(),
