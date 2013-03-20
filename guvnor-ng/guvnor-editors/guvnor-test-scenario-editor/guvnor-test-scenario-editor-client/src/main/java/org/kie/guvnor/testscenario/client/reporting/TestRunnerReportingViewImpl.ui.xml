@@ -25,6 +25,7 @@
   <ui:with field="resources" type="org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources"/>
 
   <gwt:HorizontalPanel ui:field="panel" width="100%">
-    <cellview:DataGrid ui:field='dataGrid' width="100%"/>
+    <cellview:DataGrid ui:field='dataGrid' width="300px"/>
+    <gwt:TextArea ui:field='explanationArea' enabled="false" width="100%"/>
   </gwt:HorizontalPanel>
 </ui:UiBinder>

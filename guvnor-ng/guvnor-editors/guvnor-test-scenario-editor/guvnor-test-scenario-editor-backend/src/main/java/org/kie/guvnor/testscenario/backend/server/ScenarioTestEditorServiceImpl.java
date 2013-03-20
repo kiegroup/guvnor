@@ -16,10 +16,12 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
+import org.drools.guvnor.models.testscenarios.backend.ScenarioRunner4JUnit;
 import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.junit.runners.model.InitializationError;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -242,23 +244,23 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
                                             Scenario scenario) {
 
         // XXX: Testing
-        testResultMessageEvent.fire(new TestResultMessage("Test Started"));
+//        testResultMessageEvent.fire(new TestResultMessage("Test Started"));
+//
+//        // TODO: Uncomment once this works.
 
-        // TODO: Uncomment once this works.
+        Path pathToPom = projectService.resolvePathToPom(path);
+        sessionService.newKieSession(pathToPom);
 
-//        Path pathToPom = projectService.resolvePathToPom(path);
-//        sessionService.newKieSession(pathToPom);
-//
-//        try {
-//            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
-//                    scenario,
-//                    sessionService.newKieSession(pathToPom));
-//
-//            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
-//
-//        } catch (InitializationError e) {
-//            throw new GenericPortableException(e.getMessage());
-//        }
+        try {
+            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
+                    scenario,
+                    sessionService.newKieSession(pathToPom));
+
+            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
+
+        } catch (InitializationError e) {
+            throw new GenericPortableException(e.getMessage());
+        }
 
         return null;  //TODO: -Rikkola-
     }

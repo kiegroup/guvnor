@@ -3,6 +3,7 @@ package org.kie.guvnor.testscenario.client.reporting;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.kie.guvnor.testscenario.model.TestResultMessage;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -13,13 +14,15 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults")
-public class TestRunnerReportingScreen {
+public class TestRunnerReportingScreen
+        implements TestRunnerReportingView.Presenter {
 
     private final TestRunnerReportingView view;
 
     @Inject
     public TestRunnerReportingScreen(TestRunnerReportingView view) {
         this.view = view;
+        view.setPresenter(this);
     }
 
     @DefaultPosition
@@ -35,5 +38,10 @@ public class TestRunnerReportingScreen {
     @WorkbenchPartView
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    @Override
+    public void onMessageSelected(TestResultMessage message) {
+        view.setExplanation(message.getMessage());
     }
 }

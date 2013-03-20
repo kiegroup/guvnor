@@ -1,9 +1,9 @@
 package org.kie.guvnor.builder;
 
-import org.kie.KieServices;
-import org.kie.builder.ReleaseId;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.commons.service.session.SessionService;
-import org.kie.runtime.KieSession;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;

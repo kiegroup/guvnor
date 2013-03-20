@@ -37,6 +37,9 @@ public class TestRunnerReportingViewImpl
     @UiField
     HorizontalPanel panel;
 
+    @UiField
+    TextArea explanationArea;
+
     public static final ProvidesKey<TestResultMessage> KEY_PROVIDER = new ProvidesKey<TestResultMessage>() {
         @Override
         public Object getKey(TestResultMessage item) {
@@ -91,7 +94,7 @@ public class TestRunnerReportingViewImpl
         Column<TestResultMessage, String> column = new Column<TestResultMessage, String>(new TextCell()) {
             @Override
             public String getValue(TestResultMessage message) {
-                return message.getMessage();
+                return message.getTestName();
             }
         };
         dataGrid.addColumn(column, TestScenarioConstants.INSTANCE.Text());
@@ -101,5 +104,10 @@ public class TestRunnerReportingViewImpl
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setExplanation(String explanation) {
+        explanationArea.setText(explanation);
     }
 }
