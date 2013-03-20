@@ -64,7 +64,7 @@ public class AssetMigrater {
     protected AttachementAssetMigrater attachementAssetMigrater;
     @Inject
     protected GuidedScoreCardMigrater guidedScoreCardMigrater;   
-    
+    @Inject
     protected TestScenarioMigrater testScenarioMigrater;    
     @Inject
     protected MetadataService metadataService;        
