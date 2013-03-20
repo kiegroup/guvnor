@@ -31,7 +31,9 @@ public class CustomJUnitRunNotifier
         ArrayList<org.kie.guvnor.testscenario.model.Failure> result = new ArrayList<org.kie.guvnor.testscenario.model.Failure>();
 
         for (Failure failure : failures) {
-            result.add(new org.kie.guvnor.testscenario.model.Failure(failure.getMessage()));
+            result.add(new org.kie.guvnor.testscenario.model.Failure(
+                    failure.getDescription().getDisplayName(),
+                    failure.getMessage()));
         }
 
         return result;

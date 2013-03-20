@@ -16,12 +16,10 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
-import org.drools.guvnor.models.testscenarios.backend.ScenarioRunner4JUnit;
 import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.junit.runners.model.InitializationError;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -37,6 +35,7 @@ import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.testscenario.model.Failure;
 import org.kie.guvnor.testscenario.model.TestResultMessage;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
@@ -50,6 +49,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -243,24 +243,24 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
     public SingleScenarioResult runScenario(Path path,
                                             Scenario scenario) {
 
-        // XXX: Testing
-//        testResultMessageEvent.fire(new TestResultMessage("Test Started"));
+//        XXX: Testing
+        testResultMessageEvent.fire(new TestResultMessage(true, 7, 7, new ArrayList<Failure>()));
 //
 //        // TODO: Uncomment once this works.
 
-        Path pathToPom = projectService.resolvePathToPom(path);
-        sessionService.newKieSession(pathToPom);
+//        Path pathToPom = projectService.resolvePathToPom(path);
+//        sessionService.newKieSession(pathToPom);
 
-        try {
-            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
-                    scenario,
-                    sessionService.newKieSession(pathToPom));
-
-            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
-
-        } catch (InitializationError e) {
-            throw new GenericPortableException(e.getMessage());
-        }
+//        try {
+//            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
+//                    scenario,
+//                    sessionService.newKieSession(pathToPom));
+//
+//            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
+//
+//        } catch (InitializationError e) {
+//            throw new GenericPortableException(e.getMessage());
+//        }
 
         return null;  //TODO: -Rikkola-
     }

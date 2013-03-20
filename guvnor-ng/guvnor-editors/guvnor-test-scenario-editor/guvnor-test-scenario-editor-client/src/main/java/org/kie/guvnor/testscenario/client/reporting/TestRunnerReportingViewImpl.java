@@ -10,12 +10,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.ProvidesKey;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.guvnor.testscenario.client.service.TestRuntimeReportingService;
-import org.kie.guvnor.testscenario.model.TestResultMessage;
+import org.kie.guvnor.testscenario.model.Failure;
 
 import javax.inject.Inject;
 
@@ -32,7 +30,7 @@ public class TestRunnerReportingViewImpl
     }
 
     @UiField(provided = true)
-    DataGrid<TestResultMessage> dataGrid;
+    DataGrid<Failure> dataGrid;
 
     @UiField
     HorizontalPanel panel;
@@ -40,16 +38,10 @@ public class TestRunnerReportingViewImpl
     @UiField
     TextArea explanationArea;
 
-    public static final ProvidesKey<TestResultMessage> KEY_PROVIDER = new ProvidesKey<TestResultMessage>() {
-        @Override
-        public Object getKey(TestResultMessage item) {
-            return item == null ? null : item.getTimestamp();
-        }
-    };
 
     @Inject
     public TestRunnerReportingViewImpl(TestRuntimeReportingService testRuntimeReportingService) {
-        dataGrid = new DataGrid<TestResultMessage>(KEY_PROVIDER);
+        dataGrid = new DataGrid<Failure>();
         dataGrid.setWidth("100%");
 
         dataGrid.setAutoHeaderRefreshDisabled(true);
@@ -58,7 +50,7 @@ public class TestRunnerReportingViewImpl
 
         setUpColumns();
 
-        testRuntimeReportingService.addDataDisplay(dataGrid);
+//        testRuntimeReportingService.addDataDisplay(dataGrid);
 
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -76,14 +68,10 @@ public class TestRunnerReportingViewImpl
     }
 
     private void addSuccessColumn() {
-        Column<TestResultMessage, ImageResource> column = new Column<TestResultMessage, ImageResource>(new ImageResourceCell()) {
+        Column<Failure, ImageResource> column = new Column<Failure, ImageResource>(new ImageResourceCell()) {
             @Override
-            public ImageResource getValue(TestResultMessage message) {
-                if (message.isSuccessful()) {
-                    return TestScenarioImages.INSTANCE.testPassed();
-                } else {
-                    return CommonImages.INSTANCE.error();
-                }
+            public ImageResource getValue(Failure message) {
+                return CommonImages.INSTANCE.error();
             }
         };
         dataGrid.addColumn(column);
@@ -91,12 +79,13 @@ public class TestRunnerReportingViewImpl
     }
 
     private void addTextColumn() {
-        Column<TestResultMessage, String> column = new Column<TestResultMessage, String>(new TextCell()) {
+        Column<Failure, String> column = new Column<Failure, String>(new TextCell()) {
             @Override
-            public String getValue(TestResultMessage message) {
-                return message.getTestName();
+            public String getValue(Failure failure) {
+                return failure.getDisplayName();
             }
         };
+
         dataGrid.addColumn(column, TestScenarioConstants.INSTANCE.Text());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }

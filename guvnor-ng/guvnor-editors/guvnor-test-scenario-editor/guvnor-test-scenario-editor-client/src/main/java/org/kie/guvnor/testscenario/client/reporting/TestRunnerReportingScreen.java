@@ -3,7 +3,7 @@ package org.kie.guvnor.testscenario.client.reporting;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.guvnor.testscenario.model.TestResultMessage;
+import org.kie.guvnor.testscenario.model.Failure;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -41,7 +41,7 @@ public class TestRunnerReportingScreen
     }
 
     @Override
-    public void onMessageSelected(TestResultMessage message) {
-        view.setExplanation(message.getMessage());
+    public void onMessageSelected(Failure failure) {
+        view.setExplanation(failure.getMessage());
     }
 }

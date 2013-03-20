@@ -2,6 +2,7 @@ package org.kie.guvnor.testscenario.client.service;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import org.kie.guvnor.testscenario.model.Failure;
 import org.kie.guvnor.testscenario.model.TestResultMessage;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -15,19 +16,19 @@ public class TestRuntimeReportingService {
     @Inject
     private PlaceManager placeManager;
 
-    private ListDataProvider<TestResultMessage> dataProvider = new ListDataProvider<TestResultMessage>();
+    private ListDataProvider<Failure> dataProvider = new ListDataProvider<Failure>();
 
     public TestRuntimeReportingService() {
 
     }
 
     public void addBuildMessages(final @Observes TestResultMessage message) {
-        dataProvider.getList().add(message);
+        dataProvider.getList().addAll(message.getFailures());
 
         placeManager.goTo("org.kie.guvnor.TestResults");
     }
 
-    public void addDataDisplay(HasData<TestResultMessage> display) {
+    public void addDataDisplay(HasData<Failure> display) {
         dataProvider.addDataDisplay(display);
     }
 }
