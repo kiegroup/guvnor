@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
@@ -40,8 +39,6 @@ public class TemplateModel
     private int idCol = 0;
 
     private int rowsCount = 0;
-
-    private Imports imports = new Imports();
 
     /**
      * Append a row of data
@@ -256,7 +253,4 @@ public class TemplateModel
         this.idCol = idCol;
     }
 
-    public Imports getImports() {
-        return imports;
-    }
 }

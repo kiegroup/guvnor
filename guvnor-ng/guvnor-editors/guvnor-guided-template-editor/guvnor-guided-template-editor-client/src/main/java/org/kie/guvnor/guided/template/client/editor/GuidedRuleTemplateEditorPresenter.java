@@ -34,6 +34,8 @@ import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.guvnor.datamodel.events.ImportAddedEvent;
+import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
@@ -198,12 +200,26 @@ public class GuidedRuleTemplateEditorPresenter {
                                  eventBus,
                                  isReadOnly );
                 importsWidget.setContent( oracle,
-                                          response.getRuleModel().getImports(),
+                                          model.getImports(),
                                           isReadOnly );
 
                 view.hideBusyIndicator();
             }
         };
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refresh();
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refresh();
     }
 
     private void makeMenuBar() {

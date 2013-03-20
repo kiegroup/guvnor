@@ -27,6 +27,8 @@ public interface GuidedRuleTemplateEditorView extends HasBusyIndicator,
 
     boolean confirmClose();
 
+    void refresh();
+
     void alertReadOnly();
 
 }

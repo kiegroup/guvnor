@@ -43,10 +43,6 @@ public class ScoreCardModel implements HasImports,
     public ScoreCardModel() {
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
     public String getReasonCodeField() {
         return reasonCodeField;
     }
@@ -119,11 +115,23 @@ public class ScoreCardModel implements HasImports,
         this.characteristics = characteristics;
     }
 
+    @Override
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @Override
     public void setPackageName( final String packageName ) {
         this.packageName = packageName;
     }
 
+    @Override
     public Imports getImports() {
         return imports;
+    }
+
+    @Override
+    public void setImports( final Imports imports ) {
+        this.imports = imports;
     }
 }

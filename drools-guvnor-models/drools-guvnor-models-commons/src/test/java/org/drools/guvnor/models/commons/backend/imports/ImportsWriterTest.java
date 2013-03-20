@@ -22,6 +22,12 @@ public class ImportsWriterTest {
             public Imports getImports() {
                 return imports;
             }
+
+            @Override
+            public void setImports( final Imports imports ) {
+                //Nothing to do here
+            }
+
         };
 
         final StringBuilder sb = new StringBuilder();
@@ -44,6 +50,12 @@ public class ImportsWriterTest {
             public Imports getImports() {
                 return imports;
             }
+
+            @Override
+            public void setImports( final Imports imports ) {
+                //Nothing to do here
+            }
+
         };
 
         final StringBuilder sb = new StringBuilder();
@@ -72,6 +84,12 @@ public class ImportsWriterTest {
             public Imports getImports() {
                 return imports;
             }
+
+            @Override
+            public void setImports( final Imports imports ) {
+                //Nothing to do here
+            }
+
         };
 
         final StringBuilder sb = new StringBuilder();
@@ -104,6 +122,12 @@ public class ImportsWriterTest {
             public Imports getImports() {
                 return imports;
             }
+
+            @Override
+            public void setImports( final Imports imports ) {
+                //Nothing to do here
+            }
+
         };
 
         final StringBuilder sb = new StringBuilder();

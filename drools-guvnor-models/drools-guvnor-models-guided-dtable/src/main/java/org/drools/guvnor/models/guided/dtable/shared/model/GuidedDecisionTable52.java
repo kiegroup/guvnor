@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
 import org.drools.guvnor.models.commons.shared.auditlog.DefaultAuditLog;
 import org.drools.guvnor.models.commons.shared.imports.HasImports;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.drools.guvnor.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter;
 
 /**
@@ -359,6 +359,11 @@ public class GuidedDecisionTable52 implements HasImports,
 
     public Imports getImports() {
         return imports;
+    }
+
+    @Override
+    public void setImports( final Imports imports ) {
+        this.imports = imports;
     }
 
     public String getPackageName() {

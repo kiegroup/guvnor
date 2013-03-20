@@ -765,6 +765,11 @@ public class RuleModel implements HasImports,
         return imports;
     }
 
+    @Override
+    public void setImports( final Imports imports ) {
+        this.imports = imports;
+    }
+
     public String getPackageName() {
         return packageName;
     }

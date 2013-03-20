@@ -77,6 +77,11 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
     }
 
     @Override
+    public void refresh() {
+        modeller.refreshWidget();
+    }
+
+    @Override
     public void alertReadOnly() {
         Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }

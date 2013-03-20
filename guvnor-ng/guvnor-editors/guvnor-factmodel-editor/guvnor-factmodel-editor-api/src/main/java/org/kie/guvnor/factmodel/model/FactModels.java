@@ -44,10 +44,12 @@ public class FactModels implements HasImports,
         return models;
     }
 
+    @Override
     public Imports getImports() {
         return imports;
     }
 
+    @Override
     public void setImports( Imports imports ) {
         this.imports = imports;
     }
