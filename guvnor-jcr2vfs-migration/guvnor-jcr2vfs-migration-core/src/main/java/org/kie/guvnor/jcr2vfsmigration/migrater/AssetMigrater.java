@@ -18,6 +18,9 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
+import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
+import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.repository.Preferred;
@@ -30,8 +33,10 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedDecisionTableMigrate
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedEditorMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.GuidedScoreCardMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
+import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetWithPackagePropertyMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.TestScenarioMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
@@ -57,7 +62,9 @@ public class AssetMigrater {
     @Inject
     protected GuidedEditorMigrater guidedEditorMigrater;
     @Inject
-    protected PlainTextAssetMigrater plainTextAssetMigrater;        
+    protected PlainTextAssetMigrater plainTextAssetMigrater;      
+    @Inject
+    protected PlainTextAssetWithPackagePropertyMigrater plainTextAssetWithPackagePropertyMigrater;       
     @Inject
     protected GuidedDecisionTableMigrater guidedDecisionTableMigrater;
     @Inject
@@ -127,8 +134,7 @@ public class AssetMigrater {
             guidedEditorMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
             guidedDecisionTableMigrater.migrate(jcrModule, jcrAssetItem);
-        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat()) 
-                || AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
+        } else if (AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FORM_DEFINITION.equals(jcrAssetItem.getFormat())
@@ -144,6 +150,8 @@ public class AssetMigrater {
                 || "json".equals(jcrAssetItem.getFormat())
                 || "fw".equals(jcrAssetItem.getFormat())) {
             plainTextAssetMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())) {
+            plainTextAssetWithPackagePropertyMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||"png".equals(jcrAssetItem.getFormat())

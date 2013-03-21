@@ -16,6 +16,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,9 @@ public class GuidedEditorMigrater {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
+    
+    @Inject
+    PackageImportHelper packageImportHelper;
     
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         if (!AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
@@ -65,11 +68,10 @@ public class GuidedEditorMigrater {
         try {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
             String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
-            /*        RuleModel vfsRuleModel = convertRuleModel(
-                            (org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());*/
-                    //guidedRuleEditorService.save(path, vfsRuleModel, checkinComment);
 
-            ioService.write( nioPath, sourceDRL, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+            String  sourceDRLWithImport = packageImportHelper.assertPackageName(sourceDRL, path);
+            
+            ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
         } catch (SerializationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
