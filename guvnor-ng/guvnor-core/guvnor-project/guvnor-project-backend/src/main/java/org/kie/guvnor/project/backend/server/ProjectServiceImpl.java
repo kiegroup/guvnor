@@ -299,9 +299,6 @@ public class ProjectServiceImpl
             packageName = packageName.replace( TEST_RESOURCES_PATH,
                                                "" );
         }
-        if ( packageName.length() == 0 ) {
-            return ProjectService.DEFAULT_PACKAGE;
-        }
         if ( packageName.startsWith( "/" ) ) {
             packageName = packageName.substring( 1 );
         }

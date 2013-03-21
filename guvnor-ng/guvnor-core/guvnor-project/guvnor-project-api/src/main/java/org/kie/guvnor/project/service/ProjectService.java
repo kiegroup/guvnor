@@ -30,8 +30,6 @@ import org.uberfire.backend.vfs.Path;
 public interface ProjectService extends SupportsRead<PackageConfiguration>,
                                         SupportsUpdate<PackageConfiguration> {
 
-    public static final String DEFAULT_PACKAGE = "defaultpkg";
-
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
     /**
@@ -80,7 +78,7 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
      * @param Path to resourceresource
      * @return Path to pom.xml for the given resource
      */
-    Path resolvePathToPom(Path resource);
+    Path resolvePathToPom( Path resource );
 
     /**
      * Creates a new project to the given path.

@@ -4,6 +4,7 @@ import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.service.DataModelService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,7 +112,13 @@ public abstract class BaseFactBuilder implements FactBuilder {
     }
 
     protected String getFactType( final Class<?> clazz ) {
-        return clazz.getName();
+        final String qualifiedName = clazz.getName();
+        final String packageName = clazz.getPackage().getName();
+        final String simpleName = clazz.getSimpleName();
+        if ( packageName.equals( DataModelService.DEFAULT_PACKAGE ) ) {
+            return simpleName;
+        }
+        return qualifiedName;
     }
 
     protected boolean isCollectionType( final Class<?> clazz ) {

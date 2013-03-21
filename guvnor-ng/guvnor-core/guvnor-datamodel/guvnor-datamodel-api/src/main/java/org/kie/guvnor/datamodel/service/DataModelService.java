@@ -23,6 +23,8 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataModelService {
 
+    public static final String DEFAULT_PACKAGE = "defaultpkg";
+
     DataModelOracle getDataModel( final Path resourcePath );
 
 }
