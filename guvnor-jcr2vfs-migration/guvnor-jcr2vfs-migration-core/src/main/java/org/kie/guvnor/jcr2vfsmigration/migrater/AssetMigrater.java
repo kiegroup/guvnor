@@ -138,7 +138,6 @@ public class AssetMigrater {
                 || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FORM_DEFINITION.equals(jcrAssetItem.getFormat())
-                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SPRING_CONTEXT.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SERVICE_CONFIG.equals(jcrAssetItem.getFormat())
                 || AssetFormats.WORKITEM_DEFINITION.equals(jcrAssetItem.getFormat())
@@ -150,7 +149,8 @@ public class AssetMigrater {
                 || "json".equals(jcrAssetItem.getFormat())
                 || "fw".equals(jcrAssetItem.getFormat())) {
             plainTextAssetMigrater.migrate(jcrModule, jcrAssetItem);
-        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())) {
+        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
             plainTextAssetWithPackagePropertyMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())

@@ -17,6 +17,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,9 @@ public class GuidedScoreCardMigrater {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+    
+    @Inject
+    protected PackageImportHelper packageImportHelper;
 
     public void migrate(Module jcrModule,  AssetItem jcrAssetItem) {      
         if (!AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
@@ -63,9 +67,10 @@ public class GuidedScoreCardMigrater {
 /*        ScorecardsContentHandler h = new ScorecardsContentHandler();
         String sourceDRL = h.getRawDRL(jcrAssetItem);*/
         
-        String sourceContent = jcrAssetItem.getContent();        
-        //TODO: add import from .package
+        String sourceContent = jcrAssetItem.getContent();    
+        
+        String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
 
-        ioService.write( nioPath, sourceContent, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, sourceContentWithPackage, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 }
