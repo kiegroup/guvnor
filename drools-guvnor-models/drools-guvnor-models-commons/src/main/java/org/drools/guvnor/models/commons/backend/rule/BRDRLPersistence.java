@@ -1361,13 +1361,13 @@ public class BRDRLPersistence
      * @see BRLPersistence#unmarshal(String)
      */
     public RuleModel unmarshal( String str ) {
-        return getRuleModel( preprocessDSL( str ) );
+        return getRuleModel( preprocessDRL(str) );
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
                                         final List<String> globals,
                                         final String... dsls ) {
-        return getRuleModel( parseDSLs( preprocessDSL( str ), dsls ).registerGlobals( globals ) );
+        return getRuleModel( parseDSLs( preprocessDRL(str), dsls ).registerGlobals( globals ) );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1417,14 +1417,14 @@ public class BRDRLPersistence
                                                     ruleDescr.getLhs(),
                                                     expandedDRLInfo );
         parseRhs( model,
-                  (String) ruleDescr.getConsequence(),
+                  expandedDRLInfo.consequence != null ? expandedDRLInfo.consequence : (String)ruleDescr.getConsequence(),
                   isJavaDialect,
                   boundParams,
                   expandedDRLInfo );
         return model;
     }
 
-    private ExpandedDRLInfo preprocessDSL( String str ) {
+    private ExpandedDRLInfo preprocessDRL(String str) {
         boolean hasDsl = false;
         StringBuilder drl = new StringBuilder();
         String thenLine = null;
@@ -1434,6 +1434,8 @@ public class BRDRLPersistence
 
         String[] lines = str.split( "\n" );
         RuleSection ruleSection = RuleSection.HEADER;
+        int lhsParenthesisBalance = 0;
+
         for ( String line : lines ) {
             if ( ruleSection == RuleSection.HEADER ) {
                 drl.append( line ).append( "\n" );
@@ -1453,7 +1455,13 @@ public class BRDRLPersistence
                 statementsWithoutParanthesis++;
             }
             if ( ruleSection == RuleSection.LHS ) {
-                lhsStatements.add( line );
+                if (lhsParenthesisBalance == 0) {
+                    lhsStatements.add( line );
+                } else {
+                    String oldLine = lhsStatements.remove(lhsStatements.size()-1);
+                    lhsStatements.add( oldLine + " " + line );
+                }
+                lhsParenthesisBalance += paranthesisBalance(line);
             } else {
                 rhsStatements.add( line );
             }
@@ -1461,12 +1469,27 @@ public class BRDRLPersistence
 
         hasDsl |= statementsWithoutParanthesis == lhsStatements.size() + rhsStatements.size();
 
-        ExpandedDRLInfo expandedDRLInfo = new ExpandedDRLInfo( hasDsl );
+        return createExpandedDRLInfo(hasDsl, drl, thenLine, lhsStatements, rhsStatements);
+    }
+
+    private int paranthesisBalance(String str) {
+        int balance = 0;
+        for (char ch : str.toCharArray()) {
+            if (ch == '(') {
+                balance++;
+            } else if (ch == ')') {
+                balance--;
+            }
+        }
+        return balance;
+    }
+
+    private ExpandedDRLInfo createExpandedDRLInfo(boolean hasDsl, StringBuilder drl, String thenLine, List<String> lhsStatements, List<String> rhsStatements) {
         if ( !hasDsl ) {
-            expandedDRLInfo.plainDrl = str;
-            return expandedDRLInfo;
+            return processFreeFormStatement(drl, thenLine, lhsStatements, rhsStatements);
         }
 
+        ExpandedDRLInfo expandedDRLInfo = new ExpandedDRLInfo( hasDsl );
         int lineCounter = -1;
         for ( String statement : lhsStatements ) {
             lineCounter++;
@@ -1501,15 +1524,55 @@ public class BRDRLPersistence
         return expandedDRLInfo;
     }
 
+    private ExpandedDRLInfo processFreeFormStatement(StringBuilder drl, String thenLine, List<String> lhsStatements, List<String> rhsStatements) {
+        ExpandedDRLInfo expandedDRLInfo = new ExpandedDRLInfo( false );
+
+        int lineCounter = -1;
+        for ( String statement : lhsStatements ) {
+            lineCounter++;
+            if (isValidLHSStatement(statement)) {
+                drl.append( statement ).append( "\n" );
+            } else {
+                expandedDRLInfo.freeFormStatementsInLhs.put( lineCounter, statement );
+            }
+        }
+
+        drl.append( thenLine ).append( "\n" );
+
+        expandedDRLInfo.consequence = "";
+        lineCounter = -1;
+        for ( String statement : rhsStatements ) {
+            String trimmed = statement.trim();
+            if ( trimmed.endsWith("end") ) {
+                trimmed = trimmed.substring(0, trimmed.length()-3);
+            }
+            if (trimmed.length() > 0) {
+                expandedDRLInfo.consequence += (trimmed + "\n");
+            }
+            drl.append( statement ).append( "\n" );
+        }
+
+        expandedDRLInfo.plainDrl = drl.toString();
+        return expandedDRLInfo;
+    }
+
+    private boolean isValidLHSStatement(String lhs) {
+        // TODO: How to identify a non valid (free form) lhs statement?
+        return lhs.indexOf('(') > 0 || lhs.indexOf(':') > 0;
+    }
+
     private enum RuleSection {HEADER, LHS, RHS}
 
     private static class ExpandedDRLInfo {
 
         private final boolean hasDsl;
         private String plainDrl;
+        private String consequence;
 
         private Map<Integer, String> dslStatementsInLhs;
         private Map<Integer, String> dslStatementsInRhs;
+
+        private Map<Integer, String> freeFormStatementsInLhs;
 
         private List<String> lhsDslPatterns;
         private List<String> rhsDslPatterns;
@@ -1520,6 +1583,7 @@ public class BRDRLPersistence
             this.hasDsl = hasDsl;
             dslStatementsInLhs = new HashMap<Integer, String>();
             dslStatementsInRhs = new HashMap<Integer, String>();
+            freeFormStatementsInLhs = new HashMap<Integer, String>();
             lhsDslPatterns = new ArrayList<String>();
             rhsDslPatterns = new ArrayList<String>();
         }
@@ -1597,23 +1661,40 @@ public class BRDRLPersistence
         Map<String, String> boundParams = new HashMap<String, String>();
         int lineCounter = -1;
         for ( BaseDescr descr : lhs.getDescrs() ) {
-            lineCounter = parseDslInLhs( m, expandedDRLInfo, lineCounter );
+            lineCounter = parseNonDrlInLhs(m, expandedDRLInfo, lineCounter);
             m.addLhsItem( parseBaseDescr( descr, boundParams ) );
         }
-        parseDslInLhs( m, expandedDRLInfo, lineCounter );
+        parseNonDrlInLhs(m, expandedDRLInfo, lineCounter);
         return boundParams;
     }
 
-    private int parseDslInLhs( RuleModel m,
-                               ExpandedDRLInfo expandedDRLInfo,
-                               int lineCounter ) {
+    private int parseNonDrlInLhs( RuleModel m,
+                                  ExpandedDRLInfo expandedDRLInfo,
+                                  int lineCounter) {
         lineCounter++;
+        lineCounter = parseDslInLhs(m, expandedDRLInfo, lineCounter);
+        lineCounter = parseFreeForm(m, expandedDRLInfo, lineCounter);
+        return lineCounter;
+    }
+
+    private int parseDslInLhs(RuleModel m, ExpandedDRLInfo expandedDRLInfo, int lineCounter) {
         if ( expandedDRLInfo.hasDsl ) {
             String dslLine = expandedDRLInfo.dslStatementsInLhs.get( lineCounter );
             while ( dslLine != null ) {
                 m.addLhsItem( toDSLSentence( expandedDRLInfo.lhsDslPatterns, dslLine ) );
                 dslLine = expandedDRLInfo.dslStatementsInLhs.get( ++lineCounter );
             }
+        }
+        return lineCounter;
+    }
+
+    private int parseFreeForm(RuleModel m, ExpandedDRLInfo expandedDRLInfo, int lineCounter) {
+        String freeForm = expandedDRLInfo.freeFormStatementsInLhs.get( lineCounter );
+        while ( freeForm != null ) {
+            FreeFormLine ffl = new FreeFormLine();
+            ffl.setText( freeForm );
+            m.addLhsItem( ffl );
+            freeForm = expandedDRLInfo.freeFormStatementsInLhs.get( ++lineCounter );
         }
         return lineCounter;
     }
@@ -1848,6 +1929,10 @@ public class BRDRLPersistence
                     if ( split.length == 2 ) {
                         factsType.put( split[ 1 ], split[ 0 ] );
                     }
+                } else if (line.trim().length() > 0) {
+                    FreeFormLine ffl = new FreeFormLine();
+                    ffl.setText(line);
+                    m.addRhsItem( ffl );
                 }
             }
         }

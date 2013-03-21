@@ -2233,8 +2233,7 @@ public class BRDRLPersistenceTest {
         final String cleanActual = actual.replaceAll( "\\s+",
                                                       "" );
 
-        assertEquals( cleanExpected,
-                      cleanActual );
+        assertEquals( cleanExpected, cleanActual );
     }
 
     @Test
@@ -3002,10 +3001,9 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    @Ignore("This doesn't pass at the moment. Any un-parsable Text should fall through to a FreeFormat DRL segment")
     public void testFreeFormatDRLCondition() {
         final String drl = "rule \"r0\"\n" +
-                "dialect \"mvel\"" +
+                "dialect \"mvel\"\n" +
                 "when\n" +
                 "$a : Applicant( )\n" +
                 "Here's something typed by the user as free-format DRL\n" +
@@ -3031,23 +3029,22 @@ public class BRDRLPersistenceTest {
         //Condition line 2
         assertTrue( m.lhs[ 1 ] instanceof FreeFormLine );
         final FreeFormLine ffl = (FreeFormLine) m.lhs[ 1 ];
-        assertEquals( "Here's something typed by the user as free-format DRL\n",
+        assertEquals( "Here's something typed by the user as free-format DRL",
                       ffl.getText() );
 
         //Condition line 3
         assertTrue( m.lhs[ 2 ] instanceof FactPattern );
         final FactPattern fp2 = (FactPattern) m.lhs[ 2 ];
         assertEquals( "$b",
-                      fp1.getBoundName() );
+                      fp2.getBoundName() );
         assertEquals( "Bananna",
-                      fp1.getFactType() );
+                      fp2.getFactType() );
     }
 
     @Test
-    @Ignore("This doesn't pass at the moment. Any un-parsable Text should fall through to a FreeFormat DRL segment")
     public void testFreeFormatDRLAction() {
         final String drl = "rule \"r0\"\n" +
-                "dialect \"mvel\"" +
+                "dialect \"mvel\"\n" +
                 "when\n" +
                 "$a : Applicant( )\n" +
                 "then\n" +
@@ -3071,15 +3068,19 @@ public class BRDRLPersistenceTest {
                       fp1.getFactType() );
 
         //RHS
-        assertEquals( 3,
+        assertEquals( 2,
                       m.rhs.length );
 
-        //Action line 1
-        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
-        final ActionSetField a1 = (ActionSetField) m.rhs[ 0 ];
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
+        assertEquals( "Here's something typed by the user as free-format DRL",
+                ffl.getText() );
+
+        assertTrue( m.rhs[ 1 ] instanceof ActionSetField );
+        final ActionSetField a1 = (ActionSetField) m.rhs[ 1 ];
         assertEquals( "$a",
                       a1.getVariable() );
-        assertEquals( 1,
+        assertEquals( 2,
                       a1.getFieldValues().length );
 
         final ActionFieldValue fv1a1 = a1.getFieldValues()[ 0 ];
@@ -3088,21 +3089,7 @@ public class BRDRLPersistenceTest {
         assertEquals( "Michael",
                       fv1a1.getValue() );
 
-        //Action line 2
-        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
-        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 1 ];
-        assertEquals( "Here's something typed by the user as free-format DRL\n",
-                      ffl.getText() );
-
-        //Action line 3
-        assertTrue( m.rhs[ 2 ] instanceof ActionSetField );
-        final ActionSetField a2 = (ActionSetField) m.rhs[ 2 ];
-        assertEquals( "$a",
-                      a1.getVariable() );
-        assertEquals( 1,
-                      a1.getFieldValues().length );
-
-        final ActionFieldValue fv1a2 = a1.getFieldValues()[ 2 ];
+        final ActionFieldValue fv1a2 = a1.getFieldValues()[ 1 ];
         assertEquals( "age",
                       fv1a2.getField() );
         assertEquals( "40",
