@@ -16,6 +16,7 @@ import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -46,9 +47,9 @@ public class FactModelsMigrater {
     
     @Inject
     private Paths paths;
-    
+        
     @Inject
-    PackageImportHelper packageImportHelper;
+    DRLTextEditorService drlTextEditorServiceImpl;
     
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {      
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
@@ -72,7 +73,7 @@ public class FactModelsMigrater {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
             h.assembleSource(jcrAsset.getContent(), stringBuilder);
 
-            String  sourceDRLWithImport = packageImportHelper.assertPackageName(stringBuilder.toString(), path);
+            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(stringBuilder.toString(), path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));  
         } catch (SerializationException e) {

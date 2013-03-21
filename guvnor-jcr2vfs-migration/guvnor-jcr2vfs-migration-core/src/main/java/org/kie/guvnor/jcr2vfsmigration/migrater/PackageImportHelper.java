@@ -12,7 +12,6 @@ public class PackageImportHelper {
     @Inject
     private ProjectService projectService;
     
-    //TODO: duplicate the DRLTextEditorServiceImpl. But we can not move this helper method to a common place. as this depends on ProjectService.
     //Check if the DRL contains a Package declaration, appending one if it does not exist
     public String assertPackageName( final String drl,
                                      final Path resource ) {

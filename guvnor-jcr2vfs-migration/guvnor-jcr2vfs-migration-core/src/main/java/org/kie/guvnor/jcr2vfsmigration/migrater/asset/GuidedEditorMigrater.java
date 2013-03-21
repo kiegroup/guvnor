@@ -15,6 +15,7 @@ import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -47,7 +48,7 @@ public class GuidedEditorMigrater {
     private IOService ioService;
     
     @Inject
-    PackageImportHelper packageImportHelper;
+    DRLTextEditorService drlTextEditorServiceImpl;
     
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         if (!AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
@@ -69,7 +70,7 @@ public class GuidedEditorMigrater {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
             String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
 
-            String  sourceDRLWithImport = packageImportHelper.assertPackageName(sourceDRL, path);
+            String  sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(sourceDRL, path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
         } catch (SerializationException e) {

@@ -18,6 +18,7 @@ import org.drools.repository.RulesRepository;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class PlainTextAssetWithPackagePropertyMigrater {
     protected MigrationPathManager migrationPathManager;
     
     @Inject
-    PackageImportHelper packageImportHelper;
+    DRLTextEditorService drlTextEditorServiceImpl;
 
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);
@@ -58,7 +59,7 @@ public class PlainTextAssetWithPackagePropertyMigrater {
         
         String content = jcrAssetItem.getContent();
         
-        String sourceWithImport = packageImportHelper.assertPackageName(content, path);
+        String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
 
         ioService.write( nioPath, sourceWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
