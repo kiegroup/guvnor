@@ -259,8 +259,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     }
 
     //Check if the DRL contains a Package declaration, appending one if it does not exist
-    private String assertPackageName( final String drl,
-                                      final Path resource ) {
+    @Override
+    public String assertPackageName( final String drl,
+                                     final Path resource ) {
         final String existingPackageName = PackageNameParser.parsePackageName( drl );
         if ( !"".equals( existingPackageName ) ) {
             return drl;

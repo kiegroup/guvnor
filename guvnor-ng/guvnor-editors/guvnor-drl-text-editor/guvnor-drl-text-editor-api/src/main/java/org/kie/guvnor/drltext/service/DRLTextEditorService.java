@@ -40,4 +40,7 @@ public interface DRLTextEditorService
 
     DrlModelContent loadContent( final Path path );
 
+    String assertPackageName( final String drl,
+                              final Path resource );
+
 }
