@@ -24,8 +24,13 @@
   <ui:with field="i18n" type="org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:HorizontalPanel ui:field="panel" width="100%">
-    <cellview:DataGrid ui:field='dataGrid' width="300px"/>
-    <gwt:TextArea ui:field='explanationArea' enabled="false" width="100%"/>
-  </gwt:HorizontalPanel>
+  <gwt:VerticalPanel ui:field="panel" width="100%">
+    <gwt:HTML ui:field="successPanel"/>
+    <gwt:HorizontalPanel>
+      <cellview:DataGrid ui:field='dataGrid'/>
+      <gwt:Label ui:field='explanationLabel' width="100%"/>
+    </gwt:HorizontalPanel>
+  </gwt:VerticalPanel>
+
+
 </ui:UiBinder>

@@ -82,13 +82,13 @@ public class TestRunnerWidget extends Composite {
                         layout.add(actions);
                         layout.add(results);
                         actions.setVisible(true);
-                        ScenarioRunResult result = singleScenarioResult.getResult();
-                        if (result.hasErrors()) {
-                            showErrors(result.getErrors());
-                        } else {
-                            showResults(parent,
-                                    singleScenarioResult);
-                        }
+//                        ScenarioRunResult result = singleScenarioResult.getResult();
+//                        if (result.hasErrors()) {
+//                            showErrors(result.getErrors());
+//                        } else {
+//                            showResults(parent,
+//                                    singleScenarioResult);
+//                        }
                     }
                 }
 

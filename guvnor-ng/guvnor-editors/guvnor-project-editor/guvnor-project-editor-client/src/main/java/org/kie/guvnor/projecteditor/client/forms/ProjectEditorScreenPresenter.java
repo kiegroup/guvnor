@@ -120,8 +120,8 @@ public class
                                                    new CommandWithCommitMessage() {
                                                        @Override
                                                        public void execute( final String comment ) {
-                                                           // We need to use callback here or jgit will break when we save two files at the same time.
                                                            view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                           // We need to use callback here or jgit will break when we save two files at the same time.
                                                            pomPanel.save( comment,
                                                                           new Command() {
                                                                               @Override

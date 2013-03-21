@@ -35,7 +35,6 @@ import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.testscenario.model.Failure;
 import org.kie.guvnor.testscenario.model.TestResultMessage;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
@@ -49,7 +48,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -244,23 +242,18 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
                                             Scenario scenario) {
 
 //        XXX: Testing
-        testResultMessageEvent.fire(new TestResultMessage(true, 7, 7, new ArrayList<Failure>()));
+//        ArrayList<Failure> failures = new ArrayList<Failure>();
+//        failures.add(new Failure("myTest1()", "1 != x, expected blaa blaa"));
+//        failures.add(new Failure("myTest2()", "5 != x, CCCCCCCCC CCCCCCCCCC"));
+//        failures.add(new Failure("myTest3()", "8 != x, FDFDFDFDFDFDFDFDFD"));
+//        testResultMessageEvent.fire(new TestResultMessage(false, 7, 7, failures));
 //
 //        // TODO: Uncomment once this works.
+        Path pathToPom = projectService.resolvePathToPom(path);
 
-//        Path pathToPom = projectService.resolvePathToPom(path);
-//        sessionService.newKieSession(pathToPom);
+        sessionService.newKieSession(pathToPom);
 
-//        try {
-//            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
-//                    scenario,
-//                    sessionService.newKieSession(pathToPom));
-//
-//            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
-//
-//        } catch (InitializationError e) {
-//            throw new GenericPortableException(e.getMessage());
-//        }
+        new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom), testResultMessageEvent);
 
         return null;  //TODO: -Rikkola-
     }

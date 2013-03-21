@@ -243,4 +243,8 @@ public interface TestScenarioConstants
     String Text();
 
     String TestPassed();
+
+    String Success();
+
+    String ThereWereTestFailures();
 }

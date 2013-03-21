@@ -2,6 +2,7 @@ package org.kie.guvnor.testscenario.client.reporting;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.guvnor.testscenario.client.service.TestRuntimeReportingService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -14,7 +15,9 @@ public class TestRunnerReportingScreenTest {
     @Before
     public void setUp() throws Exception {
         view = mock(TestRunnerReportingView.class);
-        screen = new TestRunnerReportingScreen(view);
+        TestRuntimeReportingService testRuntimeReportingService = mock(TestRuntimeReportingService.class);
+        screen = new TestRunnerReportingScreen(view,
+                testRuntimeReportingService);
     }
 
     @Test

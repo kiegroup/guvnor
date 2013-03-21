@@ -1,6 +1,7 @@
 package org.kie.guvnor.builder;
 
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.commons.service.session.SessionService;
@@ -26,7 +27,9 @@ public class SessionServiceImpl
     public KieSession newKieSession(Path pathToPom) {
 
         final Builder builder = cache.assertBuilder(pathToPom);
-        ReleaseId releaseId = builder.getKieModule().getReleaseId();
+        KieModule kieModule = builder.getKieModule();
+
+        ReleaseId releaseId = kieModule.getReleaseId();
 
         return KieServices.Factory.get().newKieContainer(releaseId).newKieSession();
     }

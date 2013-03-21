@@ -22,7 +22,7 @@ public class TestResultMessage {
         this.failures = failures;
     }
 
-    public boolean isWasSuccessful() {
+    public boolean wasSuccessful() {
         return wasSuccessful;
     }
 
