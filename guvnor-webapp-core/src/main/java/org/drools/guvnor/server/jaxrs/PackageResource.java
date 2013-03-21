@@ -930,6 +930,27 @@ public class PackageResource extends Resource {
     }
 
     @POST
+    @Path("{packageName}/snapshot/{snapshotName}")
+    public void createPackageSnapshotWithOptions(
+            @PathParam("packageName") final String packageName,
+            @PathParam("snapshotName") final String snapshotName,SnapshotCreationData moduleData) throws SerializationException {
+        compileModuleIfNeeded(packageName);
+        repositoryModuleOperations.createModuleSnapshot(packageName,
+                                                        snapshotName,
+                                                        true,
+                                                        "REST API Snapshot",
+                                                        moduleData.getBuildMode(),
+                                                        moduleData.getStatusOperator(),
+                                                        moduleData.getStatusDescriptionValue(),
+                                                        moduleData.getEnableStatusSelector(),
+                                                        moduleData.getCategoryOperator(),
+                                                        moduleData.getCategoryValue(),
+                                                        moduleData.getEnableCategorySelector(),
+                                                        moduleData.getCustomSelectorConfigName());
+        
+    }
+    
+    @POST
     @Path("{packageName}/assets")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
