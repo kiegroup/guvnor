@@ -41,7 +41,7 @@ import org.uberfire.backend.server.util.Paths;
 
 public class Builder {
 
-    private final static String RESOURCE_PATH = "/src/main/resources";
+    private final static String RESOURCE_PATH = "src/main/resources";
 
     private KieBuilder kieBuilder;
     private final KieServices kieServices;
@@ -105,12 +105,20 @@ public class Builder {
         final BufferedInputStream bis = new BufferedInputStream( is );
         kieFileSystem.write( destinationPath,
                              KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+        handles.put( destinationPath,
+                     resource );
 
         //Incremental build
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
 
         //Messages from incremental build
         final IncrementalBuildResults results = convertMessages( incrementalResults );
+
+        //Tidy-up removed message handles
+        for ( Message message : incrementalResults.getRemovedMessages() ) {
+            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        }
+
         return results;
     }
 
@@ -128,6 +136,12 @@ public class Builder {
 
         //Messages from incremental build
         final IncrementalBuildResults results = convertMessages( incrementalResults );
+
+        //Tidy-up removed message handles
+        for ( Message message : incrementalResults.getRemovedMessages() ) {
+            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        }
+
         return results;
     }
 
@@ -154,6 +168,8 @@ public class Builder {
                 final BufferedInputStream bis = new BufferedInputStream( is );
                 kieFileSystem.write( destinationPath,
                                      KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                handles.put( destinationPath,
+                             path );
             }
         }
     }
@@ -202,7 +218,6 @@ public class Builder {
         m.setLine( message.getLine() );
         if ( message.getPath() != null && !message.getPath().isEmpty() ) {
             m.setPath( paths.convert( handles.get( RESOURCE_PATH + "/" + message.getPath() ) ) );
-
         }
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );
