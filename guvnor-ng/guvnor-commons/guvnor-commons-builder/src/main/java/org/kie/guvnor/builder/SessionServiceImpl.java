@@ -5,6 +5,7 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.commons.service.session.SessionService;
+import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.uberfire.backend.vfs.Path;
 
 import javax.inject.Inject;
@@ -27,7 +28,14 @@ public class SessionServiceImpl
     public KieSession newKieSession(Path pathToPom) {
 
         final Builder builder = cache.assertBuilder(pathToPom);
-        KieModule kieModule = builder.getKieModule();
+
+        KieModule kieModule = null;
+
+        try {
+            kieModule = builder.getKieModule();
+        } catch (RuntimeException e) {
+            throw new GenericPortableException(e.getMessage());
+        }
 
         ReleaseId releaseId = kieModule.getReleaseId();
 

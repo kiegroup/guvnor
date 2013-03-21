@@ -251,8 +251,6 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
 //        // TODO: Uncomment once this works.
         Path pathToPom = projectService.resolvePathToPom(path);
 
-        sessionService.newKieSession(pathToPom);
-
         new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom), testResultMessageEvent);
 
         return null;  //TODO: -Rikkola-
