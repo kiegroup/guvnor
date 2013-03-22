@@ -12,19 +12,14 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
-import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
-import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
-import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.repository.Preferred;
@@ -40,14 +35,12 @@ import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.PlainTextAssetWithPackagePropertyMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.asset.TestScenarioMigrater;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.Identity;
 
 
 @ApplicationScoped
@@ -205,6 +198,8 @@ public class AssetMigrater {
             guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
             testScenarioMigrater.migrate(jcrModule, jcrAssetItem);
+        } else if ("package".equals(jcrAssetItem.getFormat())) {
+            //Ignore
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
             logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
