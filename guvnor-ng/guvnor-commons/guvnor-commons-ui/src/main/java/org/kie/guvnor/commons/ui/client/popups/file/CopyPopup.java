@@ -24,9 +24,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class CopyPopup extends FormStylePopup {
 
@@ -35,7 +36,7 @@ public class CopyPopup extends FormStylePopup {
 
     public CopyPopup( final CommandWithFileNameAndCommitMessage command ) {
         super( CommonImages.INSTANCE.edit(),
-               "Copy this item" );
+               CommonConstants.INSTANCE.CopyPopupTitle() );
 
         checkNotNull( "command",
                       command );
@@ -44,27 +45,23 @@ public class CopyPopup extends FormStylePopup {
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         setGlassEnabled( true );
 
-        nameTextBox.setTitle( "New name" );
+        nameTextBox.setTitle( CommonConstants.INSTANCE.NewName() );
         nameTextBox.setWidth( "200px" );
-        addAttribute( "New name:",
+        addAttribute( CommonConstants.INSTANCE.NewNameColon(),
                       nameTextBox );
 
-        checkInCommentTextBox.setTitle( "Check in comment" );
+        checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:",
+        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
                       checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( "Create copy" );
+        final Button create = new Button( CommonConstants.INSTANCE.CopyPopupCreateACopy() );
         create.addClickHandler( new ClickHandler() {
             public void onClick( final ClickEvent arg0 ) {
 
                 if ( nameTextBox.getText() == null || "".equals( nameTextBox.getText() ) ) {
-                    Window.alert( "Please enter the name you would like to copy this asset to" );
-                    return;
-                }
-
-                if ( !Window.confirm( "Are you sure you want to copy this asset to " + nameTextBox.getText() ) ) {
+                    Window.alert( CommonConstants.INSTANCE.CopyPopupCreateACopyNamePrompt() );
                     return;
                 }
 
@@ -75,7 +72,7 @@ public class CopyPopup extends FormStylePopup {
         } );
         hp.add( create );
 
-        final Button cancel = new Button( "Cancel" );
+        final Button cancel = new Button( CommonConstants.INSTANCE.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
             public void onClick( final ClickEvent arg0 ) {
                 hide();

@@ -24,9 +24,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class DeletePopup extends FormStylePopup {
 
@@ -34,7 +35,7 @@ public class DeletePopup extends FormStylePopup {
 
     public DeletePopup( final CommandWithCommitMessage command ) {
         super( CommonImages.INSTANCE.edit(),
-               "Delete this item" );
+               CommonConstants.INSTANCE.DeletePopupTitle() );
 
         checkNotNull( "command",
                       command );
@@ -43,17 +44,17 @@ public class DeletePopup extends FormStylePopup {
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         setGlassEnabled( true );
 
-        checkInCommentTextBox.setTitle( "Check in comment" );
+        checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:",
+        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
                       checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( "Delete item" );
+        final Button create = new Button( CommonConstants.INSTANCE.DeletePopupDelete() );
         create.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent arg0 ) {
 
-                if ( !Window.confirm( "Are you sure you want to delete this asset?" ) ) {
+                if ( !Window.confirm( CommonConstants.INSTANCE.DeletePopupRenameNamePrompt() ) ) {
                     return;
                 }
 

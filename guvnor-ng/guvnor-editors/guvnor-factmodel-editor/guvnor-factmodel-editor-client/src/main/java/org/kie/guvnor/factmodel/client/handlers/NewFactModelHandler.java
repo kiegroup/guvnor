@@ -10,8 +10,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.factmodel.client.resources.i18n.Constants;
@@ -57,20 +55,13 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final FactModels factModel = new FactModels();
-
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 factModelService.call( getSuccessCallback( presenter ),
-                                                                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                                                                                buildFileName( resourceType,
-                                                                                                                                                               baseFileName ),
-                                                                                                                                                factModel,
-                                                                                                                                                comment );
-                                             }
-                                         } );
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        factModelService.call( getSuccessCallback( presenter ),
+                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                       buildFileName( resourceType,
+                                                                                                                      baseFileName ),
+                                                                                                       factModel,
+                                                                                                       "" );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

@@ -11,8 +11,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
@@ -20,7 +18,6 @@ import org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
@@ -59,20 +56,13 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                         final NewResourcePresenter presenter ) {
         final ScoreCardModel model = new ScoreCardModel();
         model.setName( baseFileName );
-
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 scoreCardService.call( getSuccessCallback( presenter ),
-                                                                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                                                                                buildFileName( resourceType,
-                                                                                                                                                               baseFileName ),
-                                                                                                                                                model,
-                                                                                                                                                comment );
-                                             }
-                                         } );
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        scoreCardService.call( getSuccessCallback( presenter ),
+                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                       buildFileName( resourceType,
+                                                                                                                      baseFileName ),
+                                                                                                       model,
+                                                                                                       "" );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

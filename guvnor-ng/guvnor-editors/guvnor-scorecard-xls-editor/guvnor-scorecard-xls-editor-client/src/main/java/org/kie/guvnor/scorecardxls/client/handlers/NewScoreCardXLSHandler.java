@@ -11,8 +11,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.widget.AttachmentFileWidget;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.scorecardxls.client.editor.URLHelper;
@@ -67,43 +65,37 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     public void create( final Path contextPath,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+        busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
 
-                                                 final String fileName = buildFileName( resourceType,
-                                                                                        baseFileName );
-                                                 final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
-                                                                                           fileName,
-                                                                                           contextPath.toURI() + "/" + fileName );
+        final String fileName = buildFileName( resourceType,
+                                               baseFileName );
+        final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+                                                  fileName,
+                                                  contextPath.toURI() + "/" + fileName );
 
-                                                 uploadWidget.submit( contextPath,
-                                                                      fileName,
-                                                                      URLHelper.getServletUrl(),
-                                                                      new Command() {
+        uploadWidget.submit( contextPath,
+                             fileName,
+                             URLHelper.getServletUrl(),
+                             new Command() {
 
-                                                                          @Override
-                                                                          public void execute() {
-                                                                              busyIndicatorView.hideBusyIndicator();
-                                                                              presenter.complete();
-                                                                              notifySuccess();
-                                                                              final PlaceRequest place = new PathPlaceRequest( newPath );
-                                                                              placeManager.goTo( place );
-                                                                          }
+                                 @Override
+                                 public void execute() {
+                                     busyIndicatorView.hideBusyIndicator();
+                                     presenter.complete();
+                                     notifySuccess();
+                                     final PlaceRequest place = new PathPlaceRequest( newPath );
+                                     placeManager.goTo( place );
+                                 }
 
-                                                                      },
-                                                                      new Command() {
+                             },
+                             new Command() {
 
-                                                                          @Override
-                                                                          public void execute() {
-                                                                              busyIndicatorView.hideBusyIndicator();
-                                                                          }
-                                                                      }
-                                                                    );
-                                             }
-                                         } );
+                                 @Override
+                                 public void execute() {
+                                     busyIndicatorView.hideBusyIndicator();
+                                 }
+                             }
+                           );
 
     }
 

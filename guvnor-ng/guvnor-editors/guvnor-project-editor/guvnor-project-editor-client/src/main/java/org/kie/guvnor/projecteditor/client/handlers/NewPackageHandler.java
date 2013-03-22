@@ -40,7 +40,8 @@ public class NewPackageHandler
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         projectService.call( getSuccessCallback( presenter ),
-                             new DefaultErrorCallback() ).newPackage( contextPath, baseFileName );
+                             new DefaultErrorCallback() ).newPackage( contextPath,
+                                                                      baseFileName );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

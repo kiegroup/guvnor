@@ -14,8 +14,6 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -131,21 +129,14 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                       final Path contextPath,
                       final GuidedDecisionTable52 model,
                       final Command postSaveCommand ) {
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 service.call( getSuccessCallback( presenter,
-                                                                                   postSaveCommand ),
-                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                                                                       buildFileName( resourceType,
-                                                                                                                                                      baseFileName ),
-                                                                                                                                       model,
-                                                                                                                                       comment );
-                                             }
-                                         } );
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        service.call( getSuccessCallback( presenter,
+                                          postSaveCommand ),
+                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                              buildFileName( resourceType,
+                                                                                                             baseFileName ),
+                                                                                              model,
+                                                                                              "" );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter,

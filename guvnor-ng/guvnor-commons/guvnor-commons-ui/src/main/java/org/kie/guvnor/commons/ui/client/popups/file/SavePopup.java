@@ -19,7 +19,6 @@ package org.kie.guvnor.commons.ui.client.popups.file;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -28,7 +27,7 @@ import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * A popup and confirmation dialog for committing an asset.
@@ -39,7 +38,7 @@ public class SavePopup extends FormStylePopup {
 
     public SavePopup( final CommandWithCommitMessage command ) {
         super( CommonImages.INSTANCE.edit(),
-               "Save this item" );
+               CommonConstants.INSTANCE.SavePopupTitle() );
 
         checkNotNull( "command",
                       command );
@@ -48,26 +47,22 @@ public class SavePopup extends FormStylePopup {
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         setGlassEnabled( true );
 
-        checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.AddAnOptionalCheckInComment() );
+        checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( "Check in comment:", checkInCommentTextBox );
+        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
+                      checkInCommentTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( "Save" );
+        final Button create = new Button( CommonConstants.INSTANCE.Save() );
         create.addClickHandler( new ClickHandler() {
             public void onClick( final ClickEvent arg0 ) {
-
-                if ( !Window.confirm( "Are you sure you want to save this asset?" ) ) {
-                    return;
-                }
-
                 hide();
                 command.execute( checkInCommentTextBox.getText() );
             }
         } );
         hp.add( create );
 
-        final Button cancel = new Button( "Cancel" );
+        final Button cancel = new Button( CommonConstants.INSTANCE.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
             public void onClick( final ClickEvent arg0 ) {
                 hide();

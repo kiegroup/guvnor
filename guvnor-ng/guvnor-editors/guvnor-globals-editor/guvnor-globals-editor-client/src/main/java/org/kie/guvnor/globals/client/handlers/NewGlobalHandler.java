@@ -10,8 +10,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
@@ -57,20 +55,13 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final GlobalsModel model = new GlobalsModel();
-
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 globalsService.call( getSuccessCallback( presenter ),
-                                                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                                                                              buildFileName( resourceType,
-                                                                                                                                                             baseFileName ),
-                                                                                                                                              model,
-                                                                                                                                              comment );
-                                             }
-                                         } );
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        globalsService.call( getSuccessCallback( presenter ),
+                             new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                                     buildFileName( resourceType,
+                                                                                                                    baseFileName ),
+                                                                                                     model,
+                                                                                                     "" );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

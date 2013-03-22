@@ -40,7 +40,8 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         projectService.call( getSuccessCallback( presenter ),
-                             new DefaultErrorCallback() ).newDirectory( contextPath, baseFileName );
+                             new DefaultErrorCallback() ).newDirectory( contextPath,
+                                                                        baseFileName );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

@@ -74,6 +74,9 @@ public class RenameServiceImpl implements RenameService {
         } catch ( UnsupportedOperationException e ) {
             throw new GenericPortableException( e.getMessage() );
 
+        } catch ( Exception e ) {
+            throw new GenericPortableException( e.getMessage() );
+
         } finally {
             return targetPath;
         }

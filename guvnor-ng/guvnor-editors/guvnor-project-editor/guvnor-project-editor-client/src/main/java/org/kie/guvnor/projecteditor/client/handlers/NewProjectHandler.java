@@ -14,8 +14,6 @@ import org.kie.commons.data.Pair;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.project.service.ProjectService;
@@ -65,15 +63,9 @@ public class NewProjectHandler
                         final String projectName,
                         final NewResourcePresenter presenter ) {
         if ( contextPath != null ) {
-            new SaveOperationService().save( contextPath,
-                                             new CommandWithCommitMessage() {
-                                                 @Override
-                                                 public void execute( final String comment ) {
-                                                     busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                     projectServiceCaller.call( getSuccessCallback( presenter ),
-                                                                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath, projectName );
-                                                 }
-                                             } );
+            busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+            projectServiceCaller.call( getSuccessCallback( presenter ),
+                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath, projectName );
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }

@@ -11,8 +11,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
@@ -58,20 +56,13 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
                         final NewResourcePresenter presenter ) {
         final RuleModel ruleModel = new RuleModel();
         ruleModel.name = baseFileName;
-
-        new SaveOperationService().save( contextPath,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 service.call( getSuccessCallback( presenter ),
-                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                                                                       buildFileName( resourceType,
-                                                                                                                                                      baseFileName ),
-                                                                                                                                       ruleModel,
-                                                                                                                                       comment );
-                                             }
-                                         } );
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        service.call( getSuccessCallback( presenter ),
+                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                                                                              buildFileName( resourceType,
+                                                                                                             baseFileName ),
+                                                                                              ruleModel,
+                                                                                              "" );
     }
 
     private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

@@ -188,4 +188,32 @@ public interface CommonConstants
 
     String ExceptionGeneric0( final String message );
 
+    String NewName();
+
+    String NewNameColon();
+
+    String CheckInComment();
+
+    String CheckInCommentColon();
+
+    String CopyPopupTitle();
+
+    String CopyPopupCreateACopy();
+
+    String CopyPopupCreateACopyNamePrompt();
+
+    String RenamePopupTitle();
+
+    String RenamePopupRenameItem();
+
+    String RenamePopupRenameNamePrompt();
+
+    String SavePopupTitle();
+
+    String DeletePopupTitle();
+
+    String DeletePopupDelete();
+
+    String DeletePopupRenameNamePrompt();
+
 }
