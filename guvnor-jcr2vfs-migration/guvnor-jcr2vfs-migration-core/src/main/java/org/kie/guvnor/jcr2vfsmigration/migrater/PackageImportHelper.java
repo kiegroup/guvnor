@@ -18,6 +18,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
@@ -107,5 +108,67 @@ public class PackageImportHelper {
         
         sb.append( drl );
         return sb.toString();
+    }
+    
+    public String assertPackageImportXML(final String xml, final Path resource) {
+        if(packageHeaderInfo.getHeader() == null) {
+            return xml;
+        }
+        
+        final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
+        if ( imports == null ) {
+            return xml;
+        }
+        
+        DocumentBuilderFactory domfac=DocumentBuilderFactory.newInstance();
+
+        try {
+            DocumentBuilder dombuilder=domfac.newDocumentBuilder();
+            Document doc=dombuilder.parse(new ByteArrayInputStream(xml.getBytes()));
+            
+            if(doc.getElementsByTagName("imports").getLength() !=0) {
+                return xml;
+            }
+            
+            Element root=doc.getDocumentElement();
+            Element importsElement = doc.createElement("imports");
+            for ( final Import i : imports.getImports() ) {
+                Element importElement = doc.createElement("import");    
+                importElement.appendChild(doc.createTextNode(i.getType()));
+                importsElement.appendChild(importElement);               
+            }
+
+            root.appendChild(importsElement);
+
+            //output xml with pretty format
+            TransformerFactory transfac = TransformerFactory.newInstance();
+            Transformer trans = transfac.newTransformer();
+            trans.setOutputProperty(OutputKeys.METHOD, "xml");
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+            trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
+
+            StringWriter sw = new StringWriter();
+            StreamResult result = new StreamResult(sw);
+            DOMSource s = new DOMSource(root);
+
+            trans.transform(s, result);
+            String xmlString = sw.toString();
+            
+            return xmlString;
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        
+        return xml;
     }
 }

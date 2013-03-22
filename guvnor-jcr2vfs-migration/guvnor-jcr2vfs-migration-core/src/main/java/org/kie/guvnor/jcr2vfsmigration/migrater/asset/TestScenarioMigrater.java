@@ -14,6 +14,7 @@ import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,9 @@ public class TestScenarioMigrater {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+    
+    @Inject
+    protected PackageImportHelper packageImportHelper;
 
     public void migrate(Module jcrModule,  AssetItem jcrAssetItem) {      
         if (!AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
@@ -56,7 +60,8 @@ public class TestScenarioMigrater {
         
         String content = jcrAssetItem.getContent();
         
-        //TODO: add import from .package
+        String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(content, path);
+        sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
 
         ioService.write( nioPath, content, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }

@@ -70,6 +70,7 @@ public class GuidedScoreCardMigrater {
         String sourceContent = jcrAssetItem.getContent();    
         
         String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
+        sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
 
         ioService.write( nioPath, sourceContentWithPackage, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
