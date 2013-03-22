@@ -23,7 +23,7 @@
     </dependency>
      <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>Guvnor-Jaxb-Entities</artifactId>
+      <artifactId>guvnor-jaxb-entities</artifactId>
      </dependency>    
     <dependency>
       <groupId>org.drools</groupId>
