@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.factmodel.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -40,7 +42,9 @@ import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
 import org.kie.guvnor.factmodel.model.FactModels;
 import org.kie.guvnor.factmodel.service.FactModelService;
+import org.kie.guvnor.factmodel.type.FactModelResourceTypeDefinition;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
@@ -48,6 +52,7 @@ import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
 import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
+import org.kie.guvnor.services.file.FileDiscoveryService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -57,8 +62,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
-
-import static java.util.Collections.*;
 
 /**
  *
@@ -109,6 +112,12 @@ public class FactModelServiceImpl implements FactModelService {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private FactModelResourceTypeDefinition typeDefinition;
+
+    @Inject
+    private FileDiscoveryService fileDiscoveryService;
 
     @Override
     public Path create( final Path context,
@@ -179,15 +188,34 @@ public class FactModelServiceImpl implements FactModelService {
     @Override
     public FactModelContent loadContent( final Path path ) {
         final FactModels factModels = load( path );
+        final List<FactMetaModel> allAvailableTypes = loadAllAvailableTypes( path );
+        allAvailableTypes.addAll( factModels.getModels() );
         final DataModelOracle oracle = dataModelService.getDataModel( path );
         return new FactModelContent( factModels,
-                                     loadAllAvailableTypes( path ),
+                                     allAvailableTypes,
                                      oracle );
     }
 
     private List<FactMetaModel> loadAllAvailableTypes( final Path path ) {
-        //TODO {porcelli} list other DRL_MODEL's from the project
-        return emptyList();
+        final List<FactMetaModel> allAvailableTypes = new ArrayList<FactMetaModel>();
+        final Path projectRoot = projectService.resolveProject( path );
+        if ( projectRoot == null ) {
+            return allAvailableTypes;
+        }
+        final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
+        final org.kie.commons.java.nio.file.Path nioSrcRoot = nioProjectRoot.resolve( "src/main/resources" );
+        final Collection<org.kie.commons.java.nio.file.Path> modelNioPaths = fileDiscoveryService.discoverFiles( nioSrcRoot,
+                                                                                                                 new FileExtensionFilter( typeDefinition.getSuffix() ),
+                                                                                                                 true );
+        for ( org.kie.commons.java.nio.file.Path modelNioPath : modelNioPaths ) {
+            final Path modelPath = paths.convert( modelNioPath );
+            if ( !modelPath.equals( path ) ) {
+                final List<FactMetaModel> model = load( modelPath ).getModels();
+                allAvailableTypes.addAll( model );
+            }
+        }
+
+        return allAvailableTypes;
     }
 
     @Override

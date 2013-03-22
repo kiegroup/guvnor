@@ -191,7 +191,6 @@ public class FactModelsEditorPresenter {
                 superTypes = content.getSuperTypes();
 
                 final ModelNameHelper modelNameHelper = new ModelNameHelper();
-
                 for ( final FactMetaModel currentModel : superTypes ) {
                     modelNameHelper.getTypeDescriptions().put( currentModel.getName(),
                                                                currentModel.getName() );

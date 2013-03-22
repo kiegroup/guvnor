@@ -19,7 +19,8 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
 
     @Override
     public Collection<Path> discoverFiles( final Path pathToSearch,
-                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter ) {
+                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter,
+                                           final boolean recursive ) {
         PortablePreconditions.checkNotNull( "pathToSearch",
                                             pathToSearch );
         PortablePreconditions.checkNotNull( "filter",
@@ -40,13 +41,29 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
             return discoveredFiles;
         }
 
-        //Path represents a Folder, so check its content
-        final DirectoryStream<Path> files = Files.newDirectoryStream( pathToSearch,
-                                                                      filter );
-        for ( final Path file : files ) {
-            discoveredFiles.add( file );
+        //Path represents a Folder, so check and recursively add it's content, if applicable
+        final DirectoryStream<Path> paths = Files.newDirectoryStream( pathToSearch );
+        for ( final Path path : paths ) {
+            if ( Files.isRegularFile( path ) ) {
+                if ( filter.accept( path ) ) {
+                    discoveredFiles.add( path );
+                }
+            } else if ( recursive && Files.isDirectory( path ) ) {
+                discoveredFiles.addAll( discoverFiles( path,
+                                                       filter,
+                                                       recursive ) );
+            }
         }
 
         return discoveredFiles;
     }
+
+    @Override
+    public Collection<Path> discoverFiles( final Path pathToSearch,
+                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter ) {
+        return discoverFiles( pathToSearch,
+                              filter,
+                              false );
+    }
+
 }
