@@ -51,6 +51,9 @@ public class FactModelsMigrater {
     @Inject
     DRLTextEditorService drlTextEditorServiceImpl;
     
+    @Inject
+    PackageImportHelper packageImportHelper;
+    
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {      
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
@@ -74,6 +77,7 @@ public class FactModelsMigrater {
             h.assembleSource(jcrAsset.getContent(), stringBuilder);
 
             String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(stringBuilder.toString(), path);
+            sourceDRLWithImport = packageImportHelper.assertPackageImportDRL(sourceDRLWithImport, path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));  
         } catch (SerializationException e) {

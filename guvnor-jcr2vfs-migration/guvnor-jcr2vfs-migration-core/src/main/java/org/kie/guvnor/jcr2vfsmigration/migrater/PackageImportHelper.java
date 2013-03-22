@@ -17,6 +17,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.w3c.dom.Document;
@@ -26,6 +28,9 @@ import org.xml.sax.SAXException;
 public class PackageImportHelper {    
     @Inject
     private ProjectService projectService;
+    
+    @Inject
+    private PackageHeaderInfo packageHeaderInfo;
     
     //Check if the xml contains a Package declaration, appending one if it does not exist
     public String assertPackageNameXML( final String xml,
@@ -84,4 +89,23 @@ public class PackageImportHelper {
         return xml;
     }
 
+    public String assertPackageImportDRL( final String drl,
+                                          final Path resource) {
+        if(packageHeaderInfo.getHeader() == null) {
+            return drl;
+        }
+        
+        final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
+        if ( imports == null ) {
+            return drl;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append( imports.toString() );
+        if ( imports.getImports().size() > 0 ) {
+            sb.append( "\n" );
+        }
+        
+        sb.append( drl );
+        return sb.toString();
+    }
 }

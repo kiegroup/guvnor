@@ -50,6 +50,9 @@ public class GuidedEditorMigrater {
     @Inject
     DRLTextEditorService drlTextEditorServiceImpl;
     
+    @Inject
+    PackageImportHelper packageImportHelper;
+    
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         if (!AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
@@ -71,6 +74,7 @@ public class GuidedEditorMigrater {
             String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
 
             String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(sourceDRL, path);
+            sourceDRLWithImport = packageImportHelper.assertPackageImportDRL(sourceDRLWithImport, path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
         } catch (SerializationException e) {

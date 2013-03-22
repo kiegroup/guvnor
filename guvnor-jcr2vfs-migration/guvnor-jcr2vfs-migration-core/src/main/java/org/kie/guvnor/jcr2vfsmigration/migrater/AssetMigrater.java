@@ -1,11 +1,13 @@
 package org.kie.guvnor.jcr2vfsmigration.migrater;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -16,6 +18,8 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
@@ -43,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 
 
 @ApplicationScoped
@@ -80,20 +85,54 @@ public class AssetMigrater {
     @Inject
     private Paths paths;
     
+    private String header = null;
+    
+    @Produces
+    public PackageHeaderInfo getPackageHeaderInfo() {
+        return new PackageHeaderInfo(header);
+    }
+    
     public void migrateAll() {
         logger.info("  Asset migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
         for (Module jcrModule : jcrModules) {
+            
+            //Load drools.package first if it exists            
+            QueryPageRequest queryPageRequest = new QueryPageRequest("drools",
+                    false, 
+                    0,
+                    10);
+            try {
+                List<String> formats = new ArrayList<String>();
+                formats.add("package");
+                AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
+                        formats, 
+                        null,
+                        0,
+                        10);
+                PageResponse<AssetPageRow> response = jcrRepositoryAssetService.findAssetPage(request);
+                if (response.getTotalRowSize() >0) {
+                    AssetPageRow row = response.getPageRowList().get(0);
+                    AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+                    header = assetItemJCR.getContent();
+                }
+
+            } catch (SerializationException e) {
+                throw new IllegalStateException(e);
+            }
+            
+            
             boolean hasMorePages = true;
             int startRowIndex = 0;
             final int pageSize = 100;
+            PageResponse<AssetPageRow> response;
             while (hasMorePages) {
                 AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
                         null, // get all formats
                         null,
                         startRowIndex,
                         pageSize);
-                PageResponse<AssetPageRow> response;
+                
                 try {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {              
