@@ -709,6 +709,15 @@ public class PackageResource extends Resource {
             ai.updateTitle(asset.getTitle());
             ai.updateDescription(asset.getDescription());
             ai.updateValid(assetValidator.validate(ai));
+            if (asset.getMetadata() != null){
+                AssetMetadata assetMetadata = asset.getMetadata();
+                if (assetMetadata.getState() != null) {
+                    ai.updateState(assetMetadata.getState());
+                }
+                if (assetMetadata.getCategories()!= null){
+                    ai.updateCategoryList(assetMetadata.getCategories());
+                }
+            }
             if (AssetFormats.affectsBinaryUpToDate(ai.getFormat())) {
                 ModuleItem pkg = ai.getModule();
                 pkg.updateBinaryUpToDate(false);
