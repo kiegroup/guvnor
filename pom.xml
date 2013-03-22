@@ -91,8 +91,8 @@
 
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
-    <module>guvnor-webapp-drools</module>
     <module>guvnor-jaxb-entities</module>
+    <module>guvnor-webapp-drools</module>
   </modules>
 
   <profiles>
