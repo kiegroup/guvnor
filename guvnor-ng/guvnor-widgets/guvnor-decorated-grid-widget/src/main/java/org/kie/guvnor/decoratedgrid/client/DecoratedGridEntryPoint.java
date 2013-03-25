@@ -13,19 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.guvnor.guided.template.client;
+package org.kie.guvnor.decoratedgrid.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
-import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 
 @EntryPoint
-public class GuidedRuleTemplateEntryPoint {
+public class DecoratedGridEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        GuidedTemplateEditorResources.INSTANCE.css().ensureInjected();
+        GridResources.INSTANCE.style().ensureInjected();
     }
 
 }

@@ -1,6 +1,22 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 @CHARSET "UTF-8";
 
-/* CellTable body */
+    /* CellTable body */
 @def rowHeight  24px ;
 @def rowHeaderHeight  24px ;
 @def rowHeaderSorterHeight  16px ;
@@ -8,7 +24,7 @@
 @def sidebarWidth  48px ;
 @def borderWidth  1px ;
 @def borderWidthThick  2px ;
-    
+
 .cellTable {
     cursor: default;
     table-layout: fixed;
@@ -21,22 +37,18 @@
     margin: 0px;
     font-size: 8pt;
     outline: none;
-    border-bottom: borderWidth solid #C8C8C8;
     border-right: borderWidth dotted grey;
 }
 
 .cellTableCellSelected {
-    border-bottom: borderWidth solid #b9b9b9;
     background-color: #b9b9b9;
 }
 
 .cellTableCellMultipleValues {
-    border-bottom: borderWidth solid #e09090;
     background-color: #e09090;
 }
 
 .cellTableCellOtherwise {
-    border-bottom: borderWidth solid #60f070;
     background-color: #60f070;
 }
 
@@ -45,7 +57,6 @@
     margin: 0px;
     font-size: 8pt;
     outline: none;
-    border-bottom: borderWidth solid #C8C8C8;
     background-color: #ffff99;
 }
 
@@ -73,7 +84,7 @@
     background: #fbfbfb;
 }
 
-/* Header */
+    /* Header */
 .headerRowBottom {
     border-bottom: borderWidthThick solid grey;
     border-right: borderWidth dotted grey;
@@ -93,8 +104,8 @@
 }
 
 .headerSplitter {
+    height: 8px;
     background-color: #a0a0a0;
-    height: rowHeaderSplitterHeight;
     border-right: borderWidth dotted grey;
 }
 
@@ -129,20 +140,66 @@
     width: sidebarWidth;
     text-align: center;
     border-right: borderWidth solid grey;
-    border-bottom: borderWidth solid #C8C8C8;
+}
+
+.cellTableEvenRow .cellTableCellSelected {
+    background-color: #b9b9b9;
+}
+
+.cellTableOddRow .cellTableCellSelected {
+    background-color: #b9b9b9;
+}
+
+.cellTableEvenRow .cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
+.cellTableOddRow .cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
+.cellTableEvenRow .cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
+.cellTableOddRow .cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
+.contextMenu {
+    border: 1px solid #707070;
+    background-color: white;
+    padding: 2px;
+    -webkit-box-shadow: 2px 2px 4px #bbb;
+    -moz-box-shadow: 2px 2px 4px #bbb;
+    box-shadow: 2px 2px 4px #bbb;
+}
+
+.contextMenuItem {
+    width: 64px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.contextMenuItem:HOVER {
+    width: 64px;
+    margin: 1px;
+    background-color: #d0d0d0;
+}
+
+.contextMenuItemEnabled {
+    color: black;
+}
+
+.contextMenuItemDisabled {
+    color: grey;
 }
 
 .metaColumn {
 }
-        
+
 .conditionColumn {
-	background-color: #ADD8E6;
-}
-
-.actionColumn {
-}
-
-.templateColumn {
+    background-color: #ADD8E6;
 }
 
 .cellTableEvenRow .conditionColumn {
@@ -161,77 +218,21 @@
     background: #ffff99;
 }
 
-.cellTableEvenRow .cellTableCellSelected {
-    border-bottom: borderWidth solid #b9b9b9;
-    background-color: #b9b9b9;
-}
-
-.cellTableOddRow .cellTableCellSelected {
-    border-bottom: borderWidth solid #b9b9b9;
-    background-color: #b9b9b9;
-}
-
-.cellTableEvenRow .cellTableCellOtherwise {
-    border-bottom: borderWidth solid #60f070;
-    background-color: #60f070;
-}
-
-.cellTableOddRow .cellTableCellOtherwise {
-    border-bottom: borderWidth solid #60f070;
-    background-color: #60f070;
-}
-
-.cellTableEvenRow .cellTableCellMultipleValues {
-    border-bottom: borderWidth solid #e09090;
-    background-color: #e09090;
-}
-
-.cellTableOddRow .cellTableCellMultipleValues {
-    border-bottom: borderWidth solid #e09090;
-    background-color: #e09090;
+.actionColumn {
 }
 
 .patternSectionHeader {
-	padding: 2px 2px 2px 2px;
-	margin: 2px 2px 2px 2px;
-	background-color: #d0d0d0;
-	width: 400px;
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 2px 2px;
+    background-color: #d0d0d0;
+    width: 400px;
 }
 
 .patternConditionSectionHeader {
-	margin-left: 16px;
+    margin-left: 16px;
 }
 
 .columnLabelHidden {
-	font-style: italic;
-	color: grey;
-}
-
-.contextMenu {
-    border: 1px solid #707070;
-    background-color: white;
-    padding: 2px;
-	-webkit-box-shadow: 2px 2px 4px #bbb;
-	-moz-box-shadow: 2px 2px 4px #bbb;
-	box-shadow: 2px 2px 4px #bbb;
-}
-
-.contextMenuItem {
-	width: 64px;
-	margin: 1px;
-	cursor: pointer;
-}
-
-.contextMenuItem:HOVER {
-	width: 64px;
-	margin: 1px;
-    background-color: #d0d0d0;
-}
-
-.contextMenuItemEnabled {
-	color: black;
-}
-
-.contextMenuItemDisabled {
-	color: grey;
+    font-style: italic;
+    color: grey;
 }

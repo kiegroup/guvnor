@@ -32,7 +32,7 @@ public interface GridResources
 
     public static final GridResources INSTANCE = GWT.create( GridResources.class );
 
-    public interface DecisionTableStyle
+    public interface GridStyle
             extends
             CssResource {
 
@@ -88,20 +88,6 @@ public interface GridResources
 
         String selectorCell();
 
-        String metaColumn();
-
-        String conditionColumn();
-
-        String actionColumn();
-
-        String templateColumn();
-
-        String patternSectionHeader();
-
-        String patternConditionSectionHeader();
-
-        String columnLabelHidden();
-
         String contextMenu();
 
         String contextMenuItem();
@@ -128,6 +114,6 @@ public interface GridResources
     CollapseExpand collapseExpand();
 
     @Source({ "css/grid.css" })
-    DecisionTableStyle style();
+    GridStyle style();
 
 };
