@@ -139,27 +139,4 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                                                               "" );
     }
 
-    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter,
-                                                     final Command postSaveCommand ) {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                busyIndicatorView.hideBusyIndicator();
-                presenter.complete();
-                notifySuccess();
-                executePostSaveCommand();
-                final PlaceRequest place = new PathPlaceRequest( path );
-                placeManager.goTo( place );
-            }
-
-            private void executePostSaveCommand() {
-                if ( postSaveCommand != null ) {
-                    postSaveCommand.execute();
-                }
-            }
-
-        };
-    }
-
 }

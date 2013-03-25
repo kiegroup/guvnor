@@ -27,4 +27,10 @@ public class TestScenarioAltedImages {
         return image;
     }
 
+
+    public Image TestScenario() {
+        Image image = new Image(TestScenarioImages.INSTANCE.testManager());
+        image.setAltText(TestScenarioConstants.INSTANCE.TestScenario());
+        return image;
+    }
 }

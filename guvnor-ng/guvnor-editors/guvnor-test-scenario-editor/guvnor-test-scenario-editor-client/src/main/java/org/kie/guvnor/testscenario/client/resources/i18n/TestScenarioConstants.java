@@ -247,4 +247,8 @@ public interface TestScenarioConstants
     String Success();
 
     String ThereWereTestFailures();
+
+    String NewTestScenarioDescription();
+
+    String TestScenario();
 }

@@ -44,7 +44,7 @@ public class NewPackageHandler
                                                                       baseFileName );
     }
 
-    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
         return new RemoteCallback<Path>() {
 
             @Override

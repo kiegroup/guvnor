@@ -32,9 +32,6 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     private Caller<GuidedScoreCardEditorService> scoreCardService;
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private GuidedScoreCardResourceType resourceType;
 
     @Inject
@@ -63,20 +60,6 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                                                                                                                       baseFileName ),
                                                                                                        model,
                                                                                                        "" );
-    }
-
-    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                busyIndicatorView.hideBusyIndicator();
-                presenter.complete();
-                notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path );
-                placeManager.goTo( place );
-            }
-        };
     }
 
 }

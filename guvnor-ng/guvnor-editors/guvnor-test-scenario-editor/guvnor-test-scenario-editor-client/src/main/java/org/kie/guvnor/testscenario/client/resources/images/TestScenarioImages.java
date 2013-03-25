@@ -23,4 +23,7 @@ public interface TestScenarioImages
 
     @Source("test_passed.png")
     ImageResource testPassed();
+
+    @Source("test_manager.png")
+    ImageResource testManager();
 }

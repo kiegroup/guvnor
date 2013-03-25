@@ -64,18 +64,4 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
                                                                                                        "" );
     }
 
-    private RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                busyIndicatorView.hideBusyIndicator();
-                presenter.complete();
-                notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path );
-                placeManager.goTo( place );
-            }
-        };
-    }
-
 }
