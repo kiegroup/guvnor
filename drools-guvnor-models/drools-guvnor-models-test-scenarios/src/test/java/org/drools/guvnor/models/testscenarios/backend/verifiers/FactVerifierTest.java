@@ -18,6 +18,7 @@ package org.drools.guvnor.models.testscenarios.backend.verifiers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.guvnor.models.testscenarios.backend.Cheese;
@@ -50,7 +51,8 @@ public class FactVerifierTest {
         c.setType( "stilton" );
 
         // configure the mock to return the value
-        when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) c ) );
+        Set o = Collections.singleton( (Object) c );
+        when( ksession.getObjects() ).thenReturn( o );
 
         VerifyFact vf = new VerifyFact( "Cheese",
                                         new ArrayList<VerifyField>(),
@@ -115,7 +117,8 @@ public class FactVerifierTest {
         populatedData.put( "f1", f1 );
 
         // configure the mock to return the value
-        when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
+        Set o = Collections.singleton( (Object) f1);
+        when( ksession.getObjects() ).thenReturn( o );
 
         FactVerifier factVerifier = new FactVerifier( populatedData, typeResolver, classLoader, ksession, new HashMap<String, Object>() );
 
@@ -158,7 +161,8 @@ public class FactVerifierTest {
         populatedData.put( "f1", f1 );
 
         // configure the mock to return the value
-        when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
+        Set o = Collections.singleton( (Object) f1 );
+        when( ksession.getObjects() ).thenReturn( o );
 
         FactVerifier factVerifier = new FactVerifier( populatedData, typeResolver, classLoader, ksession, new HashMap<String, Object>() );
 
@@ -185,7 +189,8 @@ public class FactVerifierTest {
         populatedData.put( "f1", f1 );
 
         // configure the mock to return the value
-        when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
+        Set o = Collections.singleton( (Object) f1 );
+        when( ksession.getObjects() ).thenReturn( o );
 
         FactVerifier factVerifier = new FactVerifier( populatedData, typeResolver, classLoader, ksession, new HashMap<String, Object>() );
 
@@ -214,7 +219,8 @@ public class FactVerifierTest {
         populatedData.put( "f1", f1 );
 
         // configure the mock to return the value
-        when( ksession.getObjects() ).thenReturn( Collections.singleton( (Object) f1 ) );
+        Set o = Collections.singleton( (Object) f1 );
+        when( ksession.getObjects() ).thenReturn( o );
 
         FactVerifier factVerifier = new FactVerifier( populatedData, typeResolver, classLoader, ksession, new HashMap<String, Object>() );
 
