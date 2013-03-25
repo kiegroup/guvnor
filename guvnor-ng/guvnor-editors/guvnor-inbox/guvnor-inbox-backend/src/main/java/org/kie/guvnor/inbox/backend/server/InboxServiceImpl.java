@@ -257,12 +257,11 @@ public class InboxServiceImpl
                               List<InboxEntry> entries ) {
         Path path = userServices.buildPath( INBOX, boxName );
 
-        System.out.println( "writeEntries: " + path.toString() );
+        //System.out.println( "writeEntries: " + path.toString() );
         String entry = getXStream().toXML( entries );
-        System.out.println( "writeEntries: " + entry );
+        //System.out.println( "writeEntries: " + entry );
 
         ioService.write( path, entry );
-
     }
 
     private XStream getXStream() {
