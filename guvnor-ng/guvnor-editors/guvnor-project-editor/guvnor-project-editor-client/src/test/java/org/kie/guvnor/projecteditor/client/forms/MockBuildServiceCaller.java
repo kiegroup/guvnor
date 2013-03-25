@@ -45,16 +45,21 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public void addResource( Path resource ) {
+            public void addPackageResource( Path resource ) {
             }
 
             @Override
-            public void deleteResource( Path resource ) {
+            public void deletePackageResource( Path resource ) {
             }
 
             @Override
-            public void updateResource( Path resource ) {
+            public void updatePackageResource( Path resource ) {
             }
+
+            @Override
+            public void updateProjectResource( Path resource ) {
+            }
+
         };
     }
 

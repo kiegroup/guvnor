@@ -123,7 +123,7 @@ public class ProjectServiceImpl
             path = path.getParent();
         }
         if ( hasPom( path ) && hasKModule( path ) ) {
-            return resource;
+            return paths.convert( path );
         }
         while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
             path = path.getParent();

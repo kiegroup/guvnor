@@ -35,21 +35,27 @@ public interface BuildService {
     void buildAndDeploy( final Path pathToPom );
 
     /**
-     * Add a resource to the build.
+     * Add a Package resource to the build.
      * @param resource
      */
-    void addResource( final Path resource );
+    void addPackageResource( final Path resource );
 
     /**
-     * Remove a resource from the build.
+     * Remove a Package resource from the build.
      * @param resource
      */
-    void deleteResource( final Path resource );
+    void deletePackageResource( final Path resource );
 
     /**
-     * Update an existing resource in the build.
+     * Update an existing Package resource in the build.
      * @param resource
      */
-    void updateResource( final Path resource );
+    void updatePackageResource( final Path resource );
+
+    /**
+     * Update an existing Project resource in the build.
+     * @param resource
+     */
+    void updateProjectResource( final Path resource );
 
 }

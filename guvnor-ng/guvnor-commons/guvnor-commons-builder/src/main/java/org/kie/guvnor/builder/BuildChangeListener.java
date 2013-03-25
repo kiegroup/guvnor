@@ -13,6 +13,8 @@ import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.config.AppConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
@@ -28,6 +30,8 @@ public class BuildChangeListener {
     private static final String POM_FILE = "pom.xml";
 
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
+
+    private static final Logger log = LoggerFactory.getLogger( BuildChangeListener.class );
 
     @Inject
     private Paths paths;
@@ -98,10 +102,10 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    buildService.addResource( resource );
+                    buildService.addPackageResource( resource );
                 } catch ( Exception e ) {
-                    //Swallow for now...
-                    System.out.println( e.fillInStackTrace() );
+                    log.error( e.getMessage(),
+                               e );
                 }
             }
         } );
@@ -130,10 +134,10 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    buildService.deleteResource( resource );
+                    buildService.deletePackageResource( resource );
                 } catch ( Exception e ) {
-                    //Swallow for now...
-                    System.out.println( e.fillInStackTrace() );
+                    log.error( e.getMessage(),
+                               e );
                 }
             }
         } );
@@ -150,22 +154,48 @@ public class BuildChangeListener {
                                             resourceUpdatedEvent );
         final Path resource = resourceUpdatedEvent.getPath();
 
-        //If resource is not within a Package it cannot be used for an incremental build
-        final Path packagePath = projectService.resolvePackage( resource );
-        if ( packagePath == null ) {
+        //If resource is not within a Project it cannot be used for an incremental build
+        final Path projectPath = projectService.resolveProject( resource );
+        if ( projectPath == null ) {
             return;
         }
 
-        //Schedule an incremental build
+        //If resource is not within a Package it must be pom.xml or kmodule.xml; both of which cannot be processed incrementally
+        final Path packagePath = projectService.resolvePackage( resource );
+        if ( packagePath == null ) {
+            scheduleProjectResourceUpdate( resource );
+        } else {
+            schedulePackageResourceUpdate( resource );
+        }
+    }
+
+    //Schedule an incremental build for a project resource
+    private void scheduleProjectResourceUpdate( final Path resource ) {
         executor.execute( new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    buildService.updateResource( resource );
+                    buildService.updateProjectResource( resource );
                 } catch ( Exception e ) {
-                    //Swallow for now...
-                    System.out.println( e.fillInStackTrace() );
+                    log.error( e.getMessage(),
+                               e );
+                }
+            }
+        } );
+    }
+
+    //Schedule an incremental build for a package resource
+    private void schedulePackageResourceUpdate( final Path resource ) {
+        executor.execute( new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    buildService.updatePackageResource( resource );
+                } catch ( Exception e ) {
+                    log.error( e.getMessage(),
+                               e );
                 }
             }
         } );

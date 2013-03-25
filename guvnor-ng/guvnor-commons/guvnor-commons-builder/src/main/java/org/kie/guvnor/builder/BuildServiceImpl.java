@@ -21,9 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.commons.io.IOService;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
@@ -58,7 +57,7 @@ public class BuildServiceImpl
                              final Event<BuildResults> buildResultsEvent,
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final ProjectService projectService,
-                             final LRUBuilderCache cache) {
+                             final LRUBuilderCache cache ) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
@@ -98,7 +97,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void addResource( final Path resource ) {
+    public void addPackageResource( final Path resource ) {
         final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
@@ -112,7 +111,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void deleteResource( final Path resource ) {
+    public void deletePackageResource( final Path resource ) {
         final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
@@ -126,7 +125,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void updateResource( final Path resource ) {
+    public void updatePackageResource( final Path resource ) {
         final Path pathToPom = projectService.resolvePathToPom( resource );
         if ( pathToPom == null ) {
             return;
@@ -137,6 +136,18 @@ public class BuildServiceImpl
         }
         final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
         incrementalBuildResultsEvent.fire( results );
+    }
+
+    @Override
+    public void updateProjectResource( final Path resource ) {
+        final Path pathToPom = projectService.resolvePathToPom( resource );
+        if ( pathToPom == null ) {
+            return;
+        }
+        final Builder builder = cache.assertBuilder( pathToPom );
+        if ( !builder.isBuilt() ) {
+            build( pathToPom );
+        }
     }
 
 }
