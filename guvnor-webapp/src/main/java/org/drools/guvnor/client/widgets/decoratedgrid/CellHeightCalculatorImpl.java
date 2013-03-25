@@ -30,10 +30,10 @@ import com.google.gwt.core.client.GWT;
 public class CellHeightCalculatorImpl {
 
     protected static final DecisionTableResources resource = GWT.create( DecisionTableResources.class );
-    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
+    protected static final DecisionTableStyle style = resource.cellTableStyle();
 
-    public int calculateHeight(int rowSpan) {
-        int divHeight = (style.rowHeight()) * rowSpan - style.borderWidth();
+    public int calculateHeight( int rowSpan ) {
+        int divHeight = ( style.rowHeight() ) * rowSpan;
         return divHeight;
     }
 
