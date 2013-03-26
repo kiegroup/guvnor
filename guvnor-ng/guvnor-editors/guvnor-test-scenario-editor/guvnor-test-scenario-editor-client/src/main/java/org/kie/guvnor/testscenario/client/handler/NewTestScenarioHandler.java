@@ -2,7 +2,9 @@ package org.kie.guvnor.testscenario.client.handler;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
@@ -10,6 +12,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +24,9 @@ public class NewTestScenarioHandler
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private Caller<ScenarioTestEditorService> service;
 
     @Override
     public String getDescription() {
@@ -34,13 +40,12 @@ public class NewTestScenarioHandler
 
     @Override
     public void create(Path context, String baseFileName, NewResourcePresenter presenter) {
-        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        drlTextService.call( getSuccessCallback( presenter ),
-                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                buildFileName( resourceType,
-                        baseFileName ),
-                "",
-                "" );
+        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+
+        service.call(
+                getSuccessCallback(presenter),
+                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)
+        ).create(context, baseFileName, new Scenario(), "");
     }
 
     @Override
