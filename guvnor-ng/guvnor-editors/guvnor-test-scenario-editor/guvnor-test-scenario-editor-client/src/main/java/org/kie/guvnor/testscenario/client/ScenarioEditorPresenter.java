@@ -52,6 +52,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
@@ -95,6 +96,9 @@ public class ScenarioEditorPresenter
     private boolean isReadOnly;
     private final Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
+    private DataModelOracle oracle;
+
+    private final ImportsWidgetPresenter importsWidget;
 
     private MetadataWidget metadataWidget;
 
@@ -108,6 +112,7 @@ public class ScenarioEditorPresenter
                                     final Caller<DataModelService> dataModelService,
                                     final Caller<ProjectService> projectService,
                                     final Caller<MetadataService> metadataService,
+                                    final ImportsWidgetPresenter importsWidget,
                                     final MultiPageEditor multiPage,
                                     final MetadataWidget metadataWidget,
                                     final @New FileMenuBuilder menuBuilder,
@@ -117,6 +122,7 @@ public class ScenarioEditorPresenter
         this.projectService = projectService;
         this.dataModelService = dataModelService;
         this.metadataService = metadataService;
+        this.importsWidget = importsWidget;
         this.multiPage = multiPage;
         this.metadataWidget = metadataWidget;
         this.menuBuilder = menuBuilder;
@@ -198,6 +204,9 @@ public class ScenarioEditorPresenter
 
         multiPage.addWidget( layout, "Test Scenario" );
 
+        multiPage.addWidget( importsWidget,
+                CommonConstants.INSTANCE.ConfigTabTitle() );
+
         if ( !isReadOnly ) {
             multiPage.addPage( new Page( metadataWidget,
                                          MetadataConstants.INSTANCE.Metadata() ) {
@@ -240,6 +249,10 @@ public class ScenarioEditorPresenter
                                         }
 
                                         renderEditor();
+
+                                        importsWidget.setContent( oracle,
+                                                scenario.getImports(),
+                                                isReadOnly );
 
                                         layout.setWidth( "100%" );
                                     }

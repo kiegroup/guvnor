@@ -28,6 +28,7 @@ import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.session.SessionService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.exceptions.*;
 import org.kie.guvnor.services.file.CopyService;
@@ -37,6 +38,7 @@ import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.model.Failure;
 import org.kie.guvnor.testscenario.model.TestResultMessage;
+import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -54,7 +56,8 @@ import java.util.Date;
 
 @Service
 @ApplicationScoped
-public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService {
+public class ScenarioTestEditorServiceImpl
+        implements ScenarioTestEditorService {
 
     @Inject
     @Named("ioStrategy")
@@ -92,6 +95,9 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
 
     @Inject
     private Event<TestResultMessage> testResultMessageEvent;
+
+    @Inject
+    private DataModelService dataModelService;
 
     @Inject
     private Paths paths;
@@ -240,21 +246,17 @@ public class ScenarioTestEditorServiceImpl implements ScenarioTestEditorService 
     }
 
     @Override
-    public SingleScenarioResult runScenario(Path path,
-                                            Scenario scenario) {
+    public TestScenarioModelContent loadContent(Path path) {
+        return new TestScenarioModelContent(load(path), dataModelService.getDataModel(path));
+    }
 
-//        XXX: Testing
-//        ArrayList<Failure> failures = new ArrayList<Failure>();
-//        failures.add(new Failure("myTest1()", "1 != x, expected blaa blaa"));
-//        failures.add(new Failure("myTest2()", "5 != x, CCCCCCCCC CCCCCCCCCC"));
-//        failures.add(new Failure("myTest3()", "8 != x, FDFDFDFDFDFDFDFDFD"));
-//        testResultMessageEvent.fire(new TestResultMessage(false, 7, 7, failures));
-//
-//        // TODO: Uncomment once this works.
+    @Override
+    public void runScenario(Path path,
+                            Scenario scenario) {
+
         Path pathToPom = projectService.resolvePathToPom(path);
 
         new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom), testResultMessageEvent);
 
-        return null;  //TODO: -Rikkola-
     }
 }

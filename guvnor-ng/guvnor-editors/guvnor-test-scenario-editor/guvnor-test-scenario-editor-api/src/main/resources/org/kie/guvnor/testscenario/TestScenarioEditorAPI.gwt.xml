@@ -25,6 +25,8 @@
 
   <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
 
+  <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
+
   <source path="model"/>
   <source path="service"/>
   <source path="type"/>

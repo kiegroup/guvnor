@@ -58,21 +58,14 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
             public void onClick(ClickEvent event) {
                 BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
 
-                testScenarioEditorService.call(new RemoteCallback<SingleScenarioResult>() {
+                testScenarioEditorService.call(new RemoteCallback<Void>() {
                     @Override
-                    public void callback(SingleScenarioResult singleScenarioResult) {
+                    public void callback(Void v) {
                         BusyPopup.close();
                         layout.clear();
                         layout.add(actions);
                         layout.add(results);
                         actions.setVisible(true);
-//                        ScenarioRunResult result = singleScenarioResult.getResult();
-//                        if (result.hasErrors()) {
-//                            showErrors(result.getErrors());
-//                        } else {
-//                            showResults(parent,
-//                                    singleScenarioResult);
-//                        }
                     }
                 },
                         new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)

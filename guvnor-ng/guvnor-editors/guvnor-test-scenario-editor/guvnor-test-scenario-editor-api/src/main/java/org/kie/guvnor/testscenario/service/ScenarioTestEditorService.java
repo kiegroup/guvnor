@@ -25,6 +25,7 @@ import org.kie.guvnor.services.file.SupportsDelete;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsRename;
 import org.kie.guvnor.services.file.SupportsUpdate;
+import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -41,6 +42,8 @@ public interface ScenarioTestEditorService
         SupportsRename {
 
 
-    SingleScenarioResult runScenario(Path path, Scenario scenario);
+    TestScenarioModelContent loadContent(Path path);
+
+    void runScenario(Path path, Scenario scenario);
 
 }
