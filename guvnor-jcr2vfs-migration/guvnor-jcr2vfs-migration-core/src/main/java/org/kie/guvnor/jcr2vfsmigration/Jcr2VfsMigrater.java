@@ -73,14 +73,11 @@ public class Jcr2VfsMigrater {
 //    //1. How to migrate the globalArea (moduleServiceJCR.listModules() wont return globalArea)
 //    //2. This is also globalArea related: How to handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
 //    //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
-//    //3. Do we want to migrate archived assets and archived packages? probably not...
 //    //4. Do we want to migrate package snapshot? probably not...As long as we migrate package history correctly, users can always build a package
 //    //with the specified version by themselves.
       //5. Migrate categories
       //6. migratePackagePermissions.   migrateRolesAndPermissionsMetaData
-      //7. Test scenario  
-      //9. Migrate asset discussion  
-      //10. Migrate asset state  
+
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
