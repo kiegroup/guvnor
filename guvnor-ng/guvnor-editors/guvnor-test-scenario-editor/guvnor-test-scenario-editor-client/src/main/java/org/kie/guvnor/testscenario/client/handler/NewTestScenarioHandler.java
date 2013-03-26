@@ -10,6 +10,7 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.guvnor.testscenario.client.TestScenarioResourceType;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
@@ -28,6 +29,9 @@ public class NewTestScenarioHandler
     @Inject
     private Caller<ScenarioTestEditorService> service;
 
+    @Inject
+    private TestScenarioResourceType resourceType;
+
     @Override
     public String getDescription() {
         return TestScenarioConstants.INSTANCE.NewTestScenarioDescription();
@@ -45,7 +49,10 @@ public class NewTestScenarioHandler
         service.call(
                 getSuccessCallback(presenter),
                 new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)
-        ).create(context, baseFileName, new Scenario(), "");
+        ).create(context,
+                buildFileName(resourceType, baseFileName),
+                new Scenario(),
+                "");
     }
 
     @Override
