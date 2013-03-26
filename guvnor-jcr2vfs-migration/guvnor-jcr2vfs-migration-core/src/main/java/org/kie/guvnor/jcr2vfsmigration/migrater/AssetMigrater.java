@@ -17,7 +17,6 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
@@ -91,10 +90,6 @@ public class AssetMigrater {
         for (Module jcrModule : jcrModules) {
             
             //Load drools.package first if it exists            
-            QueryPageRequest queryPageRequest = new QueryPageRequest("drools",
-                    false, 
-                    0,
-                    10);
             try {
                 List<String> formats = new ArrayList<String>();
                 formats.add("package");
