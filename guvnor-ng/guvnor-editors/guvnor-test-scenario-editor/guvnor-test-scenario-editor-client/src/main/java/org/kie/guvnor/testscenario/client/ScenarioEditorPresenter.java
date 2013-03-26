@@ -96,7 +96,6 @@ public class ScenarioEditorPresenter
     private boolean isReadOnly;
     private final Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
-    private DataModelOracle oracle;
 
     private final ImportsWidgetPresenter importsWidget;
 
@@ -250,7 +249,7 @@ public class ScenarioEditorPresenter
 
                                         renderEditor();
 
-                                        importsWidget.setContent( oracle,
+                                        importsWidget.setContent( dmo,
                                                 scenario.getImports(),
                                                 isReadOnly );
 

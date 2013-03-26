@@ -8,7 +8,7 @@ import org.kie.guvnor.services.backend.file.DotFileFilter;
  */
 public class ModelFilter extends DotFileFilter {
 
-    private static final String[] PATTERNS = new String[]{ "pom.xml", ".model.drl" };
+    private static final String[] PATTERNS = new String[]{ "pom.xml", ".model.drl", ".drl" };
 
     @Override
     public boolean accept( final Path path ) {
