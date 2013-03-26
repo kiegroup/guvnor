@@ -16,10 +16,12 @@
 
 package org.kie.guvnor.metadata.client.widget;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -113,12 +115,14 @@ public class VersionBrowser extends Composite {
         }
 
         final ListBox history = new ListBox( true );
+        history.setWidth("640px");
 
         for ( int i = 0; i < versions.size(); i++ ) {
             final VersionRecord version = versions.get( i );
 
+            DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd h:mm a");
             final String s = MetadataConstants.INSTANCE.property0ModifiedOn1By23( String.valueOf( i + 1 ),
-                                                                                  version.date().toString(),
+                                                                                  fmt.format(version.date()),
                                                                                   version.author(),
                                                                                   version.comment() );
             history.addItem( s, version.uri() );
