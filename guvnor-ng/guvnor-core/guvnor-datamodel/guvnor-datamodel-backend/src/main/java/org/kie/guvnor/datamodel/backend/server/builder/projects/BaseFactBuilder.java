@@ -112,13 +112,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
     }
 
     protected String getFactType( final Class<?> clazz ) {
-        final String qualifiedName = clazz.getName();
-        final String packageName = clazz.getPackage().getName();
-        final String simpleName = clazz.getSimpleName();
-        if ( packageName.equals( DataModelService.DEFAULT_PACKAGE ) ) {
-            return simpleName;
-        }
-        return qualifiedName;
+        return clazz.getName();
     }
 
     protected boolean isCollectionType( final Class<?> clazz ) {
