@@ -66,13 +66,16 @@ public class PlainTextAssetWithPackagePropertyMigrater {
             sb.append("function '" + jcrAssetItem.getName() + "'"); 
             sb.append( "\n" );
         }
+        
         String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
+        sourceWithImport = packageImportHelper.assertPackageImportDRL(sourceWithImport, path);
+        
         sb.append(sourceWithImport);
         sb.append( "\n" );
+        sb.append( "\n" );
         sb.append("end");
-        sourceWithImport = packageImportHelper.assertPackageImportDRL(sourceWithImport, path);
 
-        ioService.write( nioPath, sourceWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, sb.toString(), attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 
  }
