@@ -86,10 +86,12 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
      * Creates a new project to the given path.
      * @param activePath
      * @param name
+     * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
     Path newProject( final Path activePath,
-                     final String name );
+                     final String name,
+                     final String baseURL);
 
     Path newPackage( final Path contextPath,
                      final String packageName );

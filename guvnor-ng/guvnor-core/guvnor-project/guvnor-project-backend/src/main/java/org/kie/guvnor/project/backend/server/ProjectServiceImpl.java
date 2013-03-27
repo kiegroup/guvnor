@@ -315,7 +315,8 @@ public class ProjectServiceImpl
 
     @Override
     public Path newProject( final Path activePath,
-                            final String projectName ) {
+                            final String projectName,
+                            final String baseURL) {
 
         Path projectRootPath = null;
         try {
@@ -329,7 +330,7 @@ public class ProjectServiceImpl
             kModuleService.setUpKModuleStructure( projectRootPath );
 
             //Create POM.xml
-            pomService.create( projectRootPath );
+            pomService.create( projectRootPath, baseURL );
 
             //Create Project configuration
             final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),

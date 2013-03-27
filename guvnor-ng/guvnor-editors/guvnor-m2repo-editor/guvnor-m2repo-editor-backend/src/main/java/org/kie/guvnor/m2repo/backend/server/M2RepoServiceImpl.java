@@ -118,9 +118,22 @@ public class M2RepoServiceImpl
         return response;
     }
 
+    /**
+     * @param baseURL the base URL where Guvnor M2 repo is hosted in web container. return a Guvnor M2 repo
+     * URL point to local file system if baseURL is not available.
+     * @return String
+     */
     @Override
-    public String getRepositoryURL() {
-        return repository.getRepositoryURL();
+    public String getRepositoryURL(String baseURL) {
+        if(baseURL == null) {
+            return repository.getRepositoryURL();
+        } else {
+            if(baseURL.endsWith("/")) {
+                return baseURL + "maven2/";                
+            } else {
+                return baseURL + "/maven2/";  
+            }
+        }
     }
 
 

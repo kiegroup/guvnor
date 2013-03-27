@@ -6,6 +6,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -64,8 +65,10 @@ public class NewProjectHandler
                         final NewResourcePresenter presenter ) {
         if ( contextPath != null ) {
             busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+            String url = GWT.getModuleBaseURL();
+            String baseURL = url.substring(0, url.indexOf("org.kie.guvnor.GuvnorShowcase"));
             projectServiceCaller.call( getSuccessCallback( presenter ),
-                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath, projectName );
+                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath, projectName, baseURL );
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }

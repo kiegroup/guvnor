@@ -38,7 +38,7 @@ public class ModuleMigrater {
     private void migrate(Module jcrModule) {
         //Set up project structure:        
         Path modulePath = migrationPathManager.generateRootPath();  
-        projectService.newProject(modulePath, jcrModule.getName());
+        projectService.newProject(modulePath, jcrModule.getName(), null);
     }
 
 }

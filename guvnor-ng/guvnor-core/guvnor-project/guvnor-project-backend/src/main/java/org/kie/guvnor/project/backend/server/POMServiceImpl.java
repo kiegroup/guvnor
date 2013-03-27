@@ -71,14 +71,14 @@ public class POMServiceImpl
     }
 
     @Override
-    public Path create( final Path projectRoot ) {
+    public Path create( final Path projectRoot, final String baseURL ) {
         org.kie.commons.java.nio.file.Path pathToPOMXML = null;
         try {
             final POM pomModel = new POM();
             final Repository repository = new Repository();
             repository.setId( "guvnor-m2-repo" );
             repository.setName( "Guvnor M2 Repo" );
-            repository.setUrl( m2RepoService.getRepositoryURL() );
+            repository.setUrl( m2RepoService.getRepositoryURL(baseURL) );
             pomModel.addRepository( repository );
 
             final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );

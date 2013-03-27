@@ -169,7 +169,7 @@ public class BuildServiceImplTest {
                                                                                 M2RepoService.class,
                                                                                 cc );
 
-        String m2RepoURL = m2RepoService.getRepositoryURL();
+        String m2RepoURL = m2RepoService.getRepositoryURL(null);
         GAV gav = new GAV( "org.kie.example",
                            "guvnor-m2repo-dependency-example1", "1.0" );
 

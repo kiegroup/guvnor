@@ -36,11 +36,6 @@ public class MockPomServiceCaller
         service = new POMService() {
 
             @Override
-            public Path create( Path context ) {
-                return null;
-            }
-
-            @Override
             public POM load( Path path ) {
                 callback.callback( gavModel );
                 return gavModel;
@@ -54,6 +49,12 @@ public class MockPomServiceCaller
                 MockPomServiceCaller.this.pomModel = content;
                 callback.callback( path );
                 return path;
+            }
+
+            @Override
+            public Path create(Path projectRoot, String baseURL) {
+                // TODO Auto-generated method stub
+                return null;
             }
 
         };

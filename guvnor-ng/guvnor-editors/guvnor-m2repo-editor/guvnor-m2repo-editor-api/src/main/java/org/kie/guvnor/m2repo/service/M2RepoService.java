@@ -41,5 +41,5 @@ public interface M2RepoService {
 
     public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters);
 
-    public String getRepositoryURL();
+    public String getRepositoryURL(String baseURL);
 }
