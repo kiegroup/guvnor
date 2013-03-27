@@ -175,10 +175,8 @@ public class GuvnorM2Repository {
 
     public boolean deleteFile(String[] fullPaths) {
         for (String fullPath : fullPaths) {
-            System.out.println("-------deleting: " + fullPath);
             final File file = new File(fullPath);
             if (file.exists()) {
-                System.out.println("-------deleted: " + fullPath);
                 file.delete();
             }
         }
@@ -264,7 +262,7 @@ public class GuvnorM2Repository {
             ZipEntry entry;
 
             while ((entry = zis.getNextEntry()) != null)  {
-                System.out.println("entry: " + entry.getName() + ", " + entry.getSize());
+                //System.out.println("entry: " + entry.getName() + ", " + entry.getSize());
                         // consume all the data from this entry
                 if(entry.getName().startsWith("META-INF/maven") &&  entry.getName().endsWith("pom.xml")) {
                     InputStreamReader isr = new InputStreamReader(zis, "UTF-8");
@@ -293,30 +291,31 @@ public class GuvnorM2Repository {
         try {
             ZipFile war = new ZipFile(originalJarFile);
 
-        ZipOutputStream append = new ZipOutputStream(new FileOutputStream(appendedJarFile));
+            ZipOutputStream append = new ZipOutputStream(new FileOutputStream(
+                    appendedJarFile));
 
-        // first, copy contents from existing war
-        Enumeration<? extends ZipEntry> entries = war.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry e = entries.nextElement();
-            System.out.println("copy: " + e.getName());
-            append.putNextEntry(e);
-            if (!e.isDirectory()) {
-                IOUtil.copy(war.getInputStream(e), append);
+            // first, copy contents from existing war
+            Enumeration<? extends ZipEntry> entries = war.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry e = entries.nextElement();
+                // System.out.println("copy: " + e.getName());
+                append.putNextEntry(e);
+                if (!e.isDirectory()) {
+                    IOUtil.copy(war.getInputStream(e), append);
+                }
+                append.closeEntry();
             }
+
+            // append pom.
+            ZipEntry e = new ZipEntry(getPomXmlPath(gav));
+            // System.out.println("append: " + e.getName());
+            append.putNextEntry(e);
+            append.write(pom.getBytes());
             append.closeEntry();
-        }
 
-        //append pom.
-        ZipEntry e = new ZipEntry(getPomXmlPath(gav));
-        System.out.println("append: " + e.getName());
-        append.putNextEntry(e);
-        append.write(pom.getBytes());
-        append.closeEntry();
-
-        // close
-        war.close();
-        append.close();
+            // close
+            war.close();
+            append.close();
         } catch (ZipException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -386,7 +385,6 @@ public class GuvnorM2Repository {
 
         return stringWriter.toString();
     }
-
 
     public static String generatePomProperties(GAV gav) {
         StringBuilder sBuilder = new StringBuilder();

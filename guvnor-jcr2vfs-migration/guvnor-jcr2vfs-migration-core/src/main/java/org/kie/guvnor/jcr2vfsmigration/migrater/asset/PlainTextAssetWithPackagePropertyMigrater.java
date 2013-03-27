@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
@@ -57,7 +58,18 @@ public class PlainTextAssetWithPackagePropertyMigrater {
         
         String content = jcrAssetItem.getContent();
         
+        StringBuilder sb = new StringBuilder();
+        if(AssetFormats.DRL.equals(jcrAssetItem.getFormat())) {
+            sb.append("rule '" + jcrAssetItem.getName() + "'");     
+            sb.append( "\n" );
+        } else if (AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
+            sb.append("function '" + jcrAssetItem.getName() + "'"); 
+            sb.append( "\n" );
+        }
         String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
+        sb.append(sourceWithImport);
+        sb.append( "\n" );
+        sb.append("end");
         sourceWithImport = packageImportHelper.assertPackageImportDRL(sourceWithImport, path);
 
         ioService.write( nioPath, sourceWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));

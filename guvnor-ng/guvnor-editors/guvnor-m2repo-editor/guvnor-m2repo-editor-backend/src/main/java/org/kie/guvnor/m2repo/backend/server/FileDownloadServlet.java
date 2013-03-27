@@ -76,8 +76,6 @@ public class FileDownloadServlet extends HttpServlet {
             HttpServletResponse response, boolean content) throws IOException {
         String requestedFile = request.getPathInfo();
 
-        System.out.println("------requestedFile:" + requestedFile);
-
         if (requestedFile == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -85,8 +83,7 @@ public class FileDownloadServlet extends HttpServlet {
 
         File file = new File(".",
                 URLDecoder.decode(requestedFile, "UTF-8"));
-        System.out.println("------file:" + file.getAbsolutePath());
-
+ 
         if (!file.exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
