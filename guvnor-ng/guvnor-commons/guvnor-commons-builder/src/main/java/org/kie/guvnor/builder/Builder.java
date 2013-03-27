@@ -17,11 +17,16 @@
 package org.kie.guvnor.builder;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.api.KieServices;
+import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.api.builder.KieBuilder;
@@ -43,6 +48,8 @@ public class Builder {
 
     private final static String RESOURCE_PATH = "src/main/resources";
 
+    private final static String ERROR_CLASS_NOT_FOUND = "Class not found";
+
     private KieBuilder kieBuilder;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
@@ -50,6 +57,7 @@ public class Builder {
     private final Paths paths;
     private final String artifactId;
     private final IOService ioService;
+    private final ProjectService projectService;
     private final DirectoryStream.Filter<Path> filter;
 
     private final String projectPrefix;
@@ -59,11 +67,13 @@ public class Builder {
     public Builder( final Path moduleDirectory,
                     final String artifactId,
                     final Paths paths,
-                    final IOService ioService ) {
+                    final IOService ioService,
+                    final ProjectService projectService ) {
         this( moduleDirectory,
               artifactId,
               paths,
               ioService,
+              projectService,
               new DotFileFilter() );
     }
 
@@ -71,11 +81,13 @@ public class Builder {
                     final String artifactId,
                     final Paths paths,
                     final IOService ioService,
+                    final ProjectService projectService,
                     final DirectoryStream.Filter<Path> filter ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;
         this.ioService = ioService;
+        this.projectService = projectService;
         this.filter = filter;
 
         projectPrefix = moduleDirectory.toUri().toString();
@@ -91,6 +103,23 @@ public class Builder {
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
         final Results kieResults = kieBuilder.buildAll().getResults();
         final BuildResults results = convertMessages( kieResults );
+
+        //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
+        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
+        if ( Files.exists( nioExternalImportsPath ) ) {
+            final org.uberfire.backend.vfs.Path externalImportsPath = paths.convert( nioExternalImportsPath );
+            final PackageConfiguration packageConfiguration = projectService.load( externalImportsPath );
+            final Imports imports = packageConfiguration.getImports();
+            for ( final Import item : imports.getImports() ) {
+                try {
+                    Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
+                } catch ( ClassNotFoundException cnfe ) {
+                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
+                                                          cnfe ) );
+                }
+            }
+        }
+
         return results;
     }
 
@@ -222,6 +251,14 @@ public class Builder {
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );
         return m;
+    }
+
+    private BuildMessage makeMessage( final String prefix,
+                                      final Exception e ) {
+        final BuildMessage buildMessage = new BuildMessage();
+        buildMessage.setLevel( BuildMessage.Level.ERROR );
+        buildMessage.setText( prefix + ": " + e.getMessage() );
+        return buildMessage;
     }
 
 }

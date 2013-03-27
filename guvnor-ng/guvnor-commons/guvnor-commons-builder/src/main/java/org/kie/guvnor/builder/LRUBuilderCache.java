@@ -53,7 +53,8 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
             builder = new Builder( paths.convert( projectPath ),
                                    gav.getGav().getArtifactId(),
                                    paths,
-                                   ioService );
+                                   ioService,
+                                   projectService );
             setEntry( pathToPom,
                       builder );
         }

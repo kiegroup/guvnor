@@ -31,6 +31,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
@@ -73,6 +74,7 @@ public class ProjectServiceImpl
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     private Identity identity;
 
@@ -89,6 +91,7 @@ public class ProjectServiceImpl
                                final PackageConfigurationContentHandler packageConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
                                final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                               final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
@@ -98,6 +101,7 @@ public class ProjectServiceImpl
         this.packageConfigurationContentHandler = packageConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
+        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.identity = identity;
     }
 
@@ -452,6 +456,9 @@ public class ProjectServiceImpl
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
+
+            //Invalidate Project-level DMO cache as project.imports has changed.
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
             //Signal update to interested parties
             resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );

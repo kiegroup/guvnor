@@ -127,7 +127,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
         final BuildResults results = new BuildResults();
         final List<String> errors = dmoBuilder.getErrors();
         for ( final String error : errors ) {
-            results.getMessages().add( makeMessage( error ) );
+            results.addBuildMessage( makeMessage( error ) );
         }
         if ( !results.getMessages().isEmpty() ) {
             throw new BuildException( results );

@@ -31,6 +31,7 @@ import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
@@ -51,6 +52,7 @@ public class BuildServiceImplTest {
     public void testBuilderSimpleKProject() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -59,7 +61,8 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder( path,
                                              "guvnor-m2repo-dependency-example1",
                                              paths,
-                                             ioService );
+                                             ioService,
+                                             projectService );
 
         final BuildResults results = builder.build();
 
@@ -70,6 +73,7 @@ public class BuildServiceImplTest {
     public void testBuilderKProjectHasDependency() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -78,7 +82,8 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder( path,
                                              "guvnor-m2repo-dependency-example2",
                                              paths,
-                                             ioService );
+                                             ioService,
+                                             projectService );
 
         final BuildResults results = builder.build();
 
@@ -89,6 +94,7 @@ public class BuildServiceImplTest {
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -97,7 +103,8 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder( path,
                                              "guvnor-m2repo-dependency-example2",
                                              paths,
-                                             ioService );
+                                             ioService,
+                                             projectService );
 
         final BuildResults results = builder.build();
         assertTrue( results.getMessages().isEmpty() );
@@ -130,6 +137,7 @@ public class BuildServiceImplTest {
     public void testKProjectContainsXLS() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -138,7 +146,8 @@ public class BuildServiceImplTest {
         final Builder builder = new Builder( path,
                                              "example-with-excel",
                                              paths,
-                                             ioService );
+                                             ioService,
+                                             projectService );
 
         final BuildResults results = builder.build();
 

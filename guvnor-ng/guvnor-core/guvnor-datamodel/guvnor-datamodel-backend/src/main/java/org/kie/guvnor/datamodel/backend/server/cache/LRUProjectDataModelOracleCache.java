@@ -6,9 +6,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.core.rule.TypeMetaInfo;
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.core.rule.TypeMetaInfo;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
@@ -35,6 +35,10 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 @Named("ProjectDataModelOracleCache")
 public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefinition> {
+
+    private static final String ERROR_CLASS_NOT_FOUND = "Class not found";
+
+    private static final String ERROR_IO = "IO Error";
 
     @Inject
     private Paths paths;
@@ -90,6 +94,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
                                              gav.getGav().getArtifactId(),
                                              paths,
                                              ioService,
+                                             projectService,
                                              new ModelFilter() );
 
         //If the Project had errors report them to the user and return an empty ProjectDefinition
@@ -112,12 +117,13 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent() );
                 } catch ( IOException ioe ) {
-                    results.getMessages().add( makeMessage( ioe ) );
+                    results.addBuildMessage( makeMessage( ERROR_IO,
+                                                          ioe ) );
                 }
             }
         }
 
-        //Add external imports
+        //Add external imports. The availability of these classes is checked in Builder and failed fast. Here we load them into the DMO
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( projectPath ).resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
@@ -128,9 +134,12 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
-                    results.getMessages().add( makeMessage( cnfe ) );
+                    //This should not happen as Builder would have failed to load them and failed fast.
+                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
+                                                          cnfe ) );
                 } catch ( IOException ioe ) {
-                    results.getMessages().add( makeMessage( ioe ) );
+                    results.addBuildMessage( makeMessage( ERROR_IO,
+                                                          ioe ) );
                 }
             }
         }
@@ -143,10 +152,11 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         return pdBuilder.build();
     }
 
-    private BuildMessage makeMessage( final Exception e ) {
+    private BuildMessage makeMessage( final String prefix,
+                                      final Exception e ) {
         final BuildMessage buildMessage = new BuildMessage();
         buildMessage.setLevel( BuildMessage.Level.ERROR );
-        buildMessage.setText( e.getMessage() );
+        buildMessage.setText( prefix + ": " + e.getMessage() );
         return buildMessage;
     }
 
