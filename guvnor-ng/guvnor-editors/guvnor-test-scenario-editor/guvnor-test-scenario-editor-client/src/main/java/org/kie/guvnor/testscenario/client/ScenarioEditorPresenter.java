@@ -16,34 +16,14 @@
 
 package org.kie.guvnor.testscenario.client;
 
-import java.util.List;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
-import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.Fixture;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
-import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.guvnor.models.testscenarios.shared.*;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -62,13 +42,10 @@ import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.*;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
@@ -78,7 +55,11 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+import java.util.List;
+
+@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
 public class ScenarioEditorPresenter
         implements ScenarioParentWidget {
 
@@ -107,16 +88,16 @@ public class ScenarioEditorPresenter
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    public ScenarioEditorPresenter( final Caller<ScenarioTestEditorService> service,
-                                    final Caller<DataModelService> dataModelService,
-                                    final Caller<ProjectService> projectService,
-                                    final Caller<MetadataService> metadataService,
-                                    final ImportsWidgetPresenter importsWidget,
-                                    final MultiPageEditor multiPage,
-                                    final MetadataWidget metadataWidget,
-                                    final @New FileMenuBuilder menuBuilder,
-                                    final Event<NotificationEvent> notification,
-                                    final BusyIndicatorView busyIndicatorView ) {
+    public ScenarioEditorPresenter(final Caller<ScenarioTestEditorService> service,
+                                   final Caller<DataModelService> dataModelService,
+                                   final Caller<ProjectService> projectService,
+                                   final Caller<MetadataService> metadataService,
+                                   final ImportsWidgetPresenter importsWidget,
+                                   final MultiPageEditor multiPage,
+                                   final MetadataWidget metadataWidget,
+                                   final @New FileMenuBuilder menuBuilder,
+                                   final Event<NotificationEvent> notification,
+                                   final BusyIndicatorView busyIndicatorView) {
         this.service = service;
         this.projectService = projectService;
         this.dataModelService = dataModelService;
@@ -130,51 +111,51 @@ public class ScenarioEditorPresenter
     }
 
     private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
+        if (isReadOnly) {
+            menus = menuBuilder.addRestoreVersion(path).build();
         } else {
             menus = menuBuilder
-                    .addSave( new Command() {
+                    .addSave(new Command() {
                         @Override
                         public void execute() {
                             onSave();
                         }
-                    } )
-                    .addCopy( path )
-                    .addRename( path )
-                    .addDelete( path )
+                    })
+                    .addCopy(path)
+                    .addRename(path)
+                    .addDelete(path)
                     .build();
         }
     }
 
     private void onSave() {
-        if ( isReadOnly ) {
-            Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+        if (isReadOnly) {
+            Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
             return;
         }
 
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 service.call( getSaveSuccessCallback(),
-                                                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
-                                                                                                                                     scenarioWidgetComponentCreator.getScenario(),
-                                                                                                                                     metadataWidget.getContent(),
-                                                                                                                                     commitMessage );
-                                             }
-                                         } );
+        new SaveOperationService().save(path,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        service.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save(path,
+                                scenarioWidgetComponentCreator.getScenario(),
+                                metadataWidget.getContent(),
+                                commitMessage);
+                    }
+                });
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path path ) {
+            public void callback(final Path path) {
                 busyIndicatorView.hideBusyIndicator();
                 metadataWidget.resetDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             }
         };
     }
@@ -195,173 +176,164 @@ public class ScenarioEditorPresenter
     }
 
     @OnStart
-    public void onStart( final Path path,
-                         final PlaceRequest place ) {
+    public void onStart(final Path path,
+                        final PlaceRequest place) {
 
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
         this.path = path;
 
-        multiPage.addWidget( layout, "Test Scenario" );
+        multiPage.addWidget(layout, "Test Scenario");
 
-        multiPage.addWidget( importsWidget,
-                CommonConstants.INSTANCE.ConfigTabTitle() );
+        multiPage.addWidget(importsWidget,
+                CommonConstants.INSTANCE.ConfigTabTitle());
 
-        if ( !isReadOnly ) {
-            multiPage.addPage( new Page( metadataWidget,
-                                         MetadataConstants.INSTANCE.Metadata() ) {
+        if (!isReadOnly) {
+            multiPage.addPage(new Page(metadataWidget,
+                    MetadataConstants.INSTANCE.Metadata()) {
                 @Override
                 public void onFocus() {
-                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                       isReadOnly ),
-                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                    metadataWidget.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+                    metadataService.call(new MetadataSuccessCallback(metadataWidget,
+                            isReadOnly),
+                            new HasBusyIndicatorDefaultErrorCallback(metadataWidget)).getMetadata(path);
                 }
 
                 @Override
                 public void onLostFocus() {
                     // Nothing to do here.
                 }
-            } );
+            });
         }
 
-        dataModelService.call(
-                new RemoteCallback<DataModelOracle>() {
-                    @Override
-                    public void callback( DataModelOracle dataModelOracle ) {
-                        dmo = dataModelOracle;
-                        projectService.call( new RemoteCallback<String>() {
-                            @Override
-                            public void callback( final String packageName ) {
-                                service.call( new RemoteCallback<Scenario>() {
-                                    @Override
-                                    public void callback( Scenario scenario ) {
-                                        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( packageName, ScenarioEditorPresenter.this );
 
-                                        setScenario( scenario );
+        service.call(new RemoteCallback<TestScenarioModelContent>() {
+            @Override
+            public void callback(TestScenarioModelContent modelContent) {
+                dmo = modelContent.getOracle();
+                dmo.filter( modelContent.getScenario().getImports() );
 
-                                        setShowResults( false );
+                scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(modelContent.getPackageName(), ScenarioEditorPresenter.this);
 
-                                        ifFixturesSizeZeroThenAddExecutionTrace();
+                setScenario(modelContent.getScenario());
 
-                                        if ( !isReadOnly ) {
-                                            layout.add( new TestRunnerWidget( ScenarioEditorPresenter.this, service, path ) );
-                                        }
+                setShowResults(false);
 
-                                        renderEditor();
+                ifFixturesSizeZeroThenAddExecutionTrace();
 
-                                        importsWidget.setContent( dmo,
-                                                scenario.getImports(),
-                                                isReadOnly );
-
-                                        layout.setWidth( "100%" );
-                                    }
-                                } ).load( path );
-                            }
-                        } ).resolvePackageName( path );
-                    }
+                if (!isReadOnly) {
+                    layout.add(new TestRunnerWidget(ScenarioEditorPresenter.this, service, path));
                 }
-                             ).getDataModel( path );
+
+                renderEditor();
+
+                importsWidget.setContent(dmo,
+                        modelContent.getScenario().getImports(),
+                        isReadOnly);
+
+                layout.setWidth("100%");
+            }
+        }).loadContent(path);
 
         makeMenuBar();
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {
-        if ( getScenario().getFixtures().size() == 0 ) {
-            getScenario().getFixtures().add( new ExecutionTrace() );
+        if (getScenario().getFixtures().size() == 0) {
+            getScenario().getFixtures().add(new ExecutionTrace());
         }
     }
 
-    private void createWidgetForEditorLayout( DirtyableFlexTable editorLayout,
-                                              int layoutRow,
-                                              int layoutColumn,
-                                              Widget widget ) {
-        editorLayout.setWidget( layoutRow,
-                                layoutColumn,
-                                widget );
+    private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout,
+                                             int layoutRow,
+                                             int layoutColumn,
+                                             Widget widget) {
+        editorLayout.setWidget(layoutRow,
+                layoutColumn,
+                widget);
     }
 
     public void renderEditor() {
 
-        if ( this.layout.getWidgetCount() == 2 ) {
-            this.layout.remove( 1 );
+        if (this.layout.getWidgetCount() == 2) {
+            this.layout.remove(1);
         }
 
         DirtyableFlexTable editorLayout = scenarioWidgetComponentCreator.createDirtyableFlexTable();
-        this.layout.add( editorLayout );
+        this.layout.add(editorLayout);
         ScenarioHelper scenarioHelper = new ScenarioHelper();
 
-        List<Fixture> fixtures = scenarioHelper.lumpyMap( getScenario().getFixtures() );
-        List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor( fixtures );
+        List<Fixture> fixtures = scenarioHelper.lumpyMap(getScenario().getFixtures());
+        List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor(fixtures);
 
         int layoutRow = 1;
         int executionTraceLine = 0;
         ExecutionTrace previousExecutionTrace = null;
-        for ( final Fixture fixture : fixtures ) {
-            if ( fixture instanceof ExecutionTrace ) {
+        for (final Fixture fixture : fixtures) {
+            if (fixture instanceof ExecutionTrace) {
                 ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createExpectPanel( currentExecutionTrace ) );
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        0,
+                        scenarioWidgetComponentCreator.createExpectPanel(currentExecutionTrace));
 
                 executionTraceLine++;
-                if ( executionTraceLine >= listExecutionTrace.size() ) {
+                if (executionTraceLine >= listExecutionTrace.size()) {
                     executionTraceLine = listExecutionTrace.size() - 1;
                 }
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createExecutionWidget( currentExecutionTrace ) );
-                editorLayout.setHorizontalAlignmentForFlexCellFormatter( layoutRow,
-                                                                         2,
-                                                                         HasHorizontalAlignment.ALIGN_LEFT );
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        1,
+                        scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
+                editorLayout.setHorizontalAlignmentForFlexCellFormatter(layoutRow,
+                        2,
+                        HasHorizontalAlignment.ALIGN_LEFT);
 
                 previousExecutionTrace = currentExecutionTrace;
 
-            } else if ( fixture instanceof FixturesMap ) {
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createGivenLabelButton( listExecutionTrace,
-                                                                                                    executionTraceLine,
-                                                                                                    previousExecutionTrace ) );
+            } else if (fixture instanceof FixturesMap) {
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        0,
+                        scenarioWidgetComponentCreator.createGivenLabelButton(listExecutionTrace,
+                                executionTraceLine,
+                                previousExecutionTrace));
                 layoutRow++;
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createGivenPanel( listExecutionTrace,
-                                                                                              executionTraceLine,
-                                                                                              (FixturesMap) fixture ) );
-            } else if ( fixture instanceof CallFixtureMap ) {
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createCallMethodLabelButton( listExecutionTrace,
-                                                                                                         executionTraceLine,
-                                                                                                         previousExecutionTrace ) );
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        1,
+                        scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
+                                executionTraceLine,
+                                (FixturesMap) fixture));
+            } else if (fixture instanceof CallFixtureMap) {
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        0,
+                        scenarioWidgetComponentCreator.createCallMethodLabelButton(listExecutionTrace,
+                                executionTraceLine,
+                                previousExecutionTrace));
                 layoutRow++;
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createCallMethodOnGivenPanel( listExecutionTrace,
-                                                                                                          executionTraceLine,
-                                                                                                          (CallFixtureMap) fixture ) );
+                createWidgetForEditorLayout(editorLayout,
+                        layoutRow,
+                        1,
+                        scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
+                                executionTraceLine,
+                                (CallFixtureMap) fixture));
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
-                Fixture first = fixturesList.get( 0 );
+                Fixture first = fixturesList.get(0);
 
-                if ( first instanceof VerifyFact ) {
-                    createWidgetForEditorLayout( editorLayout,
-                                                 layoutRow,
-                                                 1,
-                                                 scenarioWidgetComponentCreator.createVerifyFactsPanel( listExecutionTrace,
-                                                                                                        executionTraceLine,
-                                                                                                        fixturesList ) );
-                } else if ( first instanceof VerifyRuleFired ) {
-                    createWidgetForEditorLayout( editorLayout,
-                                                 layoutRow,
-                                                 1,
-                                                 scenarioWidgetComponentCreator.createVerifyRulesFiredWidget( fixturesList ) );
+                if (first instanceof VerifyFact) {
+                    createWidgetForEditorLayout(editorLayout,
+                            layoutRow,
+                            1,
+                            scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
+                                    executionTraceLine,
+                                    fixturesList));
+                } else if (first instanceof VerifyRuleFired) {
+                    createWidgetForEditorLayout(editorLayout,
+                            layoutRow,
+                            1,
+                            scenarioWidgetComponentCreator.createVerifyRulesFiredWidget(fixturesList));
                 }
 
             }
@@ -369,67 +341,67 @@ public class ScenarioEditorPresenter
         }
 
         // add more execution sections.
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     scenarioWidgetComponentCreator.createAddExecuteButton() );
+        createWidgetForEditorLayout(editorLayout,
+                layoutRow,
+                0,
+                scenarioWidgetComponentCreator.createAddExecuteButton());
         layoutRow++;
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     scenarioWidgetComponentCreator.createSmallLabel() );
+        createWidgetForEditorLayout(editorLayout,
+                layoutRow,
+                0,
+                scenarioWidgetComponentCreator.createSmallLabel());
 
         // config section
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     1,
-                                     scenarioWidgetComponentCreator.createConfigWidget() );
+        createWidgetForEditorLayout(editorLayout,
+                layoutRow,
+                1,
+                scenarioWidgetComponentCreator.createConfigWidget());
 
         layoutRow++;
 
         // global section
         HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     horizontalPanel );
+        createWidgetForEditorLayout(editorLayout,
+                layoutRow,
+                0,
+                horizontalPanel);
 
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     1,
-                                     scenarioWidgetComponentCreator.createGlobalPanel( scenarioHelper,
-                                                                                       previousExecutionTrace ) );
+        createWidgetForEditorLayout(editorLayout,
+                layoutRow,
+                1,
+                scenarioWidgetComponentCreator.createGlobalPanel(scenarioHelper,
+                        previousExecutionTrace));
     }
 
-    public Widget getRuleSelectionWidget( final String packageName,
-                                          final RuleSelectionEvent selected ) {
+    public Widget getRuleSelectionWidget(final String packageName,
+                                         final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         final TextBox ruleNameTextBox = scenarioWidgetComponentCreator.createRuleNameTextBox();
-        horizontalPanel.add( ruleNameTextBox );
-        if ( availableRules != null ) {
-            final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox( availableRules );
-            availableRulesBox.setSelectedIndex( 0 );
-            if ( availableRulesHandlerRegistration != null ) {
+        horizontalPanel.add(ruleNameTextBox);
+        if (availableRules != null) {
+            final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox(availableRules);
+            availableRulesBox.setSelectedIndex(0);
+            if (availableRulesHandlerRegistration != null) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler( ruleNameTextBox,
-                                                                                                          availableRulesBox );
+            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler(ruleNameTextBox,
+                    availableRulesBox);
 
-            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
-            horizontalPanel.add( availableRulesBox );
+            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler(ruleSelectionCL);
+            horizontalPanel.add(availableRulesBox);
 
         } else {
 
-            final Button showList = new Button( TestScenarioConstants.INSTANCE.showListButton() );
-            horizontalPanel.add( showList );
-            showList.addClickHandler( new ClickHandler() {
+            final Button showList = new Button(TestScenarioConstants.INSTANCE.showListButton());
+            horizontalPanel.add(showList);
+            showList.addClickHandler(new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
-                    horizontalPanel.remove( showList );
-                    final Image busy = new Image( ImageResources.INSTANCE.searching() );
-                    final Label loading = new SmallLabel( TestScenarioConstants.INSTANCE.loadingList1() );
-                    horizontalPanel.add( busy );
-                    horizontalPanel.add( loading );
+                public void onClick(ClickEvent event) {
+                    horizontalPanel.remove(showList);
+                    final Image busy = new Image(ImageResources.INSTANCE.searching());
+                    final Label loading = new SmallLabel(TestScenarioConstants.INSTANCE.loadingList1());
+                    horizontalPanel.add(busy);
+                    horizontalPanel.add(loading);
 
 //                    Scheduler scheduler = Scheduler.get();
 //                    scheduler.scheduleDeferred(new Command() {
@@ -469,26 +441,26 @@ public class ScenarioEditorPresenter
 //                    });
 
                 }
-            } );
+            });
 
         }
 
-        Button ok = scenarioWidgetComponentCreator.createOkButton( selected,
-                                                                   ruleNameTextBox );
-        horizontalPanel.add( ok );
+        Button ok = scenarioWidgetComponentCreator.createOkButton(selected,
+                ruleNameTextBox);
+        horizontalPanel.add(ok);
         return horizontalPanel;
     }
 
-    void setShowResults( boolean showResults ) {
-        scenarioWidgetComponentCreator.setShowResults( showResults );
+    void setShowResults(boolean showResults) {
+        scenarioWidgetComponentCreator.setShowResults(showResults);
     }
 
     boolean isShowResults() {
         return scenarioWidgetComponentCreator.isShowResults();
     }
 
-    public void setScenario( Scenario scenario ) {
-        scenarioWidgetComponentCreator.setScenario( scenario );
+    public void setScenario(Scenario scenario) {
+        scenarioWidgetComponentCreator.setScenario(scenario);
     }
 
     public Scenario getScenario() {

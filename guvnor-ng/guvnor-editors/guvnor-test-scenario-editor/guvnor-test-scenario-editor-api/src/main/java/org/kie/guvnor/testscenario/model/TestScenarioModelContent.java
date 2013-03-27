@@ -11,15 +11,17 @@ public class TestScenarioModelContent {
     private Scenario scenario;
 
     private DataModelOracle oracle;
+    private String packageName;
 
 
     public TestScenarioModelContent() {
 
     }
 
-    public TestScenarioModelContent(Scenario scenario, DataModelOracle oracle) {
+    public TestScenarioModelContent(Scenario scenario, DataModelOracle oracle, String packageName) {
         this.scenario = scenario;
         this.oracle = oracle;
+        this.packageName = packageName;
     }
 
     public Scenario getScenario() {
@@ -28,5 +30,9 @@ public class TestScenarioModelContent {
 
     public DataModelOracle getOracle() {
         return oracle;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }

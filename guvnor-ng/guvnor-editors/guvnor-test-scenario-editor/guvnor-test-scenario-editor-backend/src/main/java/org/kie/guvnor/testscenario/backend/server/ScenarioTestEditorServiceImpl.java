@@ -18,7 +18,6 @@ package org.kie.guvnor.testscenario.backend.server;
 
 import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.drools.guvnor.models.testscenarios.shared.SingleScenarioResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
@@ -36,7 +35,6 @@ import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.testscenario.model.Failure;
 import org.kie.guvnor.testscenario.model.TestResultMessage;
 import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
@@ -51,7 +49,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -247,7 +244,10 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public TestScenarioModelContent loadContent(Path path) {
-        return new TestScenarioModelContent(load(path), dataModelService.getDataModel(path));
+        return new TestScenarioModelContent(
+                load(path),
+                dataModelService.getDataModel(path),
+                projectService.resolvePackageName(path));
     }
 
     @Override
