@@ -205,7 +205,6 @@ public class ScenarioEditorPresenter
             });
         }
 
-
         service.call(new RemoteCallback<TestScenarioModelContent>() {
             @Override
             public void callback(TestScenarioModelContent modelContent) {

@@ -93,7 +93,7 @@ public class GuvnorM2Repository {
         return "file://" + file.getAbsolutePath();
     }
 
-    public void deployArtifact(InputStream is, GAV gav) {
+    public void deployArtifact(InputStream inputStream, GAV gav) {
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(gav, null, "jar"));
 
         try {
@@ -105,7 +105,7 @@ public class GuvnorM2Repository {
 
             final byte[] buf = new byte[BUFFER_SIZE];
             int byteRead = 0;
-            while ((byteRead = is.read(buf)) != -1) {
+            while ((byteRead = inputStream.read(buf)) != -1) {
                 fos.write(buf, 0, byteRead);
             }
             fos.flush();
@@ -157,8 +157,6 @@ public class GuvnorM2Repository {
         } catch (DeploymentException e) {
             throw new RuntimeException(e);
         }
-        
-        //MavenRepository.getMavenRepository().deployArtifact(new ReleaseIdImpl(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()), jarFile, pomfile);
     }
 
     private RemoteRepository getGuvnorM2Repository() {

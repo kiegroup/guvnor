@@ -39,7 +39,9 @@ public class SessionServiceImpl
 
         ReleaseId releaseId = kieModule.getReleaseId();
 
-        return KieServices.Factory.get().newKieContainer(releaseId).newKieSession();
+        // XXX: TODO: Remove "someSession" -Rikkola-
+        KieSession someSession = KieServices.Factory.get().newKieContainer(releaseId).newKieSession("someSession");
+        return someSession;
     }
 
 }

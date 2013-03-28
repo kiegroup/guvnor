@@ -107,7 +107,7 @@ public class KBaseConverter
         }
         String equalsBehavior = reader.getAttribute("equalsBehavior");
         if (equalsBehavior != null) {
-            kBase.setEqualsBehavior(AssertBehaviorOption.valueOf(equalsBehavior));
+            kBase.setEqualsBehavior(AssertBehaviorOption.determineAssertBehaviorMode(equalsBehavior));
         }
 
         String scope = reader.getAttribute("scope");

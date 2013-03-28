@@ -20,5 +20,30 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum AssertBehaviorOption {
-    EQUALITY, IDENTITY;
+
+    EQUALITY("equality"), IDENTITY("identity");
+
+    private final String string;
+
+    AssertBehaviorOption(String mode) {
+        this.string = mode;
+    }
+
+    @Override
+    public String toString() {
+        return string;
+    }
+
+    public static AssertBehaviorOption determineAssertBehaviorMode(String equalsBehavior) {
+        if (EQUALITY.getMode().equalsIgnoreCase(equalsBehavior)) {
+            return EQUALITY;
+        } else if (IDENTITY.getMode().equalsIgnoreCase(equalsBehavior)) {
+            return IDENTITY;
+        }
+        throw new IllegalArgumentException("Illegal enum value '" + equalsBehavior + "' for AssertBehaviourOption");
+    }
+
+    public String getMode() {
+        return string;
+    }
 }

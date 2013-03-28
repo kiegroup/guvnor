@@ -81,12 +81,12 @@ public class BuildServiceImpl
 
         //Deploy, if no errors
         if ( results.getMessages().isEmpty() ) {
-            final POM gav = pomService.load( pathToPom );
+            final POM pom = pomService.load( pathToPom );
             final Builder builder = cache.assertBuilder( pathToPom );
             final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
             final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
-            m2RepoService.deployJar( input,
-                                     gav.getGav() );
+            m2RepoService.deployJar(input,
+                    pom.getGav());
         }
     }
 
