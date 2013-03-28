@@ -14,52 +14,57 @@ import java.util.List;
 public class CustomJUnitRunNotifier
         extends RunNotifier {
 
+    private final Event<TestResultMessage> testResultMessageEvent;
+
     public CustomJUnitRunNotifier(final Event<TestResultMessage> testResultMessageEvent) {
+
+        this.testResultMessageEvent = testResultMessageEvent;
 
         addListener(new RunListener() {
 
-            public void testRunStarted(Description description) throws Exception {
-                String stop = "in the name of love!";
-            }
-
-            public void testStarted(Description description) throws Exception {
-                String stop = "in the name of love!";
-            }
-
             public void testFinished(Description description) throws Exception {
-                String stop = "in the name of love!";
+                reportTestSuccess();
             }
 
             public void testFailure(Failure failure) throws Exception {
-                ArrayList<org.kie.guvnor.testscenario.model.Failure> failures = new ArrayList<org.kie.guvnor.testscenario.model.Failure>();
-                failures.add(failureToFailure(failure));
-
-                testResultMessageEvent.fire(new TestResultMessage(
-                        false,
-                        1,
-                        1,
-                        failures));
-
-
-                String stop = "in the name of love!";
+                reportTestFailure(failure);
             }
 
             public void testAssumptionFailure(Failure failure) {
-                String stop = "in the name of love!";
-            }
-
-            public void testIgnored(Description description) throws Exception {
-                String stop = "in the name of love!";
+                reportTestFailure(failure);
             }
 
             public void testRunFinished(Result result) throws Exception {
-                testResultMessageEvent.fire(new TestResultMessage(
-                        result.wasSuccessful(),
-                        result.getRunCount(),
-                        result.getFailureCount(),
-                        getFailures(result.getFailures())));
+                reportTestRunResult(result);
             }
         });
+    }
+
+    private void reportTestRunResult(Result result) {
+        testResultMessageEvent.fire(new TestResultMessage(
+                result.wasSuccessful(),
+                result.getRunCount(),
+                result.getFailureCount(),
+                getFailures(result.getFailures())));
+    }
+
+    private void reportTestSuccess() {
+        testResultMessageEvent.fire(new TestResultMessage(
+                true,
+                1,
+                1,
+                new ArrayList<org.kie.guvnor.testscenario.model.Failure>()));
+    }
+
+    private void reportTestFailure(Failure failure) {
+        ArrayList<org.kie.guvnor.testscenario.model.Failure> failures = new ArrayList<org.kie.guvnor.testscenario.model.Failure>();
+        failures.add(failureToFailure(failure));
+
+        testResultMessageEvent.fire(new TestResultMessage(
+                false,
+                1,
+                1,
+                failures));
     }
 
     private List<org.kie.guvnor.testscenario.model.Failure> getFailures(List<Failure> failures) {

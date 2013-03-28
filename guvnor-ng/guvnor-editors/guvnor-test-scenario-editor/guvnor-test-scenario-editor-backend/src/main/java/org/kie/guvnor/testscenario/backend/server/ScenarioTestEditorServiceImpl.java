@@ -235,11 +235,10 @@ public class ScenarioTestEditorServiceImpl
     private CommentedOption makeCommentedOption(final String commitMessage) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption(name,
+        return new CommentedOption(name,
                 null,
                 commitMessage,
                 when);
-        return co;
     }
 
     @Override
@@ -256,7 +255,7 @@ public class ScenarioTestEditorServiceImpl
 
         Path pathToPom = projectService.resolvePathToPom(path);
 
-        new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom), testResultMessageEvent);
+        new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom, "someSession"), testResultMessageEvent);
 
     }
 }

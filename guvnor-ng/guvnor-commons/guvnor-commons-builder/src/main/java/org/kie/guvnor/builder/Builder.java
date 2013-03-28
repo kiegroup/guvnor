@@ -25,6 +25,8 @@ import java.util.Map;
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.internal.builder.IncrementalResults;
@@ -63,6 +65,7 @@ public class Builder {
     private final String projectPrefix;
 
     private Map<String, Path> handles = new HashMap<String, Path>();
+    private KieContainer kieContainer;
 
     public Builder( final Path moduleDirectory,
                     final String artifactId,
@@ -95,7 +98,7 @@ public class Builder {
         kieFileSystem = kieServices.newKieFileSystem();
 
         DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
-        visitPaths( directoryStream );
+        visitPaths(directoryStream);
     }
 
     public BuildResults build() {
@@ -103,6 +106,8 @@ public class Builder {
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
         final Results kieResults = kieBuilder.buildAll().getResults();
         final BuildResults results = convertMessages( kieResults );
+
+        kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
         //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
@@ -129,7 +134,7 @@ public class Builder {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
         }
         //Add new resource
-        final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+        final String destinationPath = resource.toUri().toString().substring(projectPrefix.length() + 1);
         final InputStream is = ioService.newInputStream( resource );
         final BufferedInputStream bis = new BufferedInputStream( is );
         kieFileSystem.write( destinationPath,
@@ -158,7 +163,7 @@ public class Builder {
         }
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
-        kieFileSystem.delete( destinationPath );
+        kieFileSystem.delete(destinationPath);
 
         //Incremental build
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
@@ -180,6 +185,13 @@ public class Builder {
 
     public KieModule getKieModule() {
         return kieBuilder.getKieModule();
+    }
+
+    public KieContainer getKieContainer() {
+        if (!isBuilt()) {
+            build();
+        }
+        return kieContainer;
     }
 
     public boolean isBuilt() {
@@ -222,7 +234,7 @@ public class Builder {
             results.addAddedMessage( convertMessage( message ) );
         }
         for ( final Message message : kieIncrementalResults.getRemovedMessages() ) {
-            results.addRemovedMessage( convertMessage( message ) );
+            results.addRemovedMessage(convertMessage(message));
         }
 
         return results;
@@ -256,7 +268,7 @@ public class Builder {
     private BuildMessage makeMessage( final String prefix,
                                       final Exception e ) {
         final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel( BuildMessage.Level.ERROR );
+        buildMessage.setLevel(BuildMessage.Level.ERROR);
         buildMessage.setText( prefix + ": " + e.getMessage() );
         return buildMessage;
     }

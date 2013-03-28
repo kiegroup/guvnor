@@ -5,6 +5,6 @@ import org.uberfire.backend.vfs.Path;
 
 public interface SessionService {
 
-    KieSession newKieSession( final Path pathToPom );
+    KieSession newKieSession(final Path pathToPom, String sessionName);
 
 }

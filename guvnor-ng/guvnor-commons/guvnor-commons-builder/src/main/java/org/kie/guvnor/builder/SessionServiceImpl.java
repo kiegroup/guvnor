@@ -1,10 +1,9 @@
 package org.kie.guvnor.builder;
 
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.commons.service.session.SessionService;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.uberfire.backend.vfs.Path;
 
@@ -14,34 +13,33 @@ public class SessionServiceImpl
         implements SessionService {
 
     private LRUBuilderCache cache;
+    private M2RepoService m2RepoService;
 
     public SessionServiceImpl() {
         //Empty constructor for Weld
     }
 
     @Inject
-    public SessionServiceImpl(final LRUBuilderCache cache) {
+    public SessionServiceImpl(final LRUBuilderCache cache,
+                              M2RepoService m2RepoService) {
         this.cache = cache;
+        this.m2RepoService = m2RepoService;
     }
 
     @Override
-    public KieSession newKieSession(Path pathToPom) {
+    public KieSession newKieSession(Path pathToPom, String sessionName) {
 
         final Builder builder = cache.assertBuilder(pathToPom);
 
-        KieModule kieModule = null;
+        KieContainer kieContainer = null;
 
         try {
-            kieModule = builder.getKieModule();
+            kieContainer = builder.getKieContainer();
         } catch (RuntimeException e) {
             throw new GenericPortableException(e.getMessage());
         }
 
-        ReleaseId releaseId = kieModule.getReleaseId();
-
-        // XXX: TODO: Remove "someSession" -Rikkola-
-        KieSession someSession = KieServices.Factory.get().newKieContainer(releaseId).newKieSession("someSession");
-        return someSession;
+        return kieContainer.newKieSession(sessionName);
     }
 
 }
