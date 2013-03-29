@@ -55,27 +55,27 @@ public class PlainTextAssetWithPackagePropertyMigrater {
         } catch ( final NoSuchFileException ex ) {
             attrs = new HashMap<String, Object>();
         }
-        
-        String content = jcrAssetItem.getContent();
-        
+ 
         StringBuilder sb = new StringBuilder();
+        
         if(AssetFormats.DRL.equals(jcrAssetItem.getFormat())) {
             sb.append("rule '" + jcrAssetItem.getName() + "'");     
+            sb.append( "\n" );
             sb.append( "\n" );
         } else if (AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
             sb.append("function '" + jcrAssetItem.getName() + "'"); 
             sb.append( "\n" );
-        }
+            sb.append( "\n" );
+        }        
+        sb.append(jcrAssetItem.getContent());      
+        sb.append( "\n" );
+        sb.append( "\n" );
+        sb.append("end");     
         
-        String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
+        String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(sb.toString(), path);
         sourceWithImport = packageImportHelper.assertPackageImportDRL(sourceWithImport, path);
         
-        sb.append(sourceWithImport);
-        sb.append( "\n" );
-        sb.append( "\n" );
-        sb.append("end");
-
-        ioService.write( nioPath, sb.toString(), attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, sourceWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 
  }
