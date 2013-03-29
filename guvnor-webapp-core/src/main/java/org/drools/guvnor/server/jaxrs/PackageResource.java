@@ -917,6 +917,7 @@ public class PackageResource extends Resource {
 
     @POST
     @Path("{packageName}/snapshot/{snapshotName}")
+    @Consumes(MediaType.APPLICATION_XML)
     public void createPackageSnapshot(
             @PathParam("packageName") final String packageName,
             @PathParam("snapshotName") final String snapshotName) throws SerializationException {
