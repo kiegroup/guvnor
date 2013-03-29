@@ -10,6 +10,8 @@ import javax.inject.Named;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -62,14 +64,17 @@ public class GuidedDecisionTableMigrater {
             attrs = new HashMap<String, Object>();
         }        
         
+        GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( jcrAssetItem.getContent() );
+        String sourceContent = GuidedDTXMLPersistence.getInstance().marshal( model );
+        
 /*        GuidedDTContentHandler h = new GuidedDTContentHandler();
         String sourceContent = h.getRawDRL(jcrAssetItem);*/
         
-        String sourceContent = jcrAssetItem.getContent();
+        //String sourceContent = jcrAssetItem.getContent();
         
-        String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
-        sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
+        //String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
+        //sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
 
-        ioService.write( nioPath, sourceContentWithPackage, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        ioService.write( nioPath, sourceContent, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 }
