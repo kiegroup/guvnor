@@ -57,18 +57,13 @@ public class OtherMetaView
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
         final Map<Integer, String> _categories = new TreeMap<Integer, String>();
-        Mode _mode = Mode.ENABLED;
 
         for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
             if ( entry.getKey().startsWith( CATEGORY ) ) {
                 final Pair<Integer, Object> result = extractValue( entry );
                 _categories.put( result.getK1(), result.getK2().toString() );
-            } else if ( entry.getKey().equals( MODE ) ) {
-                _mode = Mode.valueOf( entry.getValue().toString() );
-            }
+            } 
         }
-
-        final Mode mode = _mode;
 
         final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
 
@@ -79,11 +74,6 @@ public class OtherMetaView
             @Override
             public List<String> categories() {
                 return categories;
-            }
-
-            @Override
-            public Mode mode() {
-                return mode;
             }
 
             @Override

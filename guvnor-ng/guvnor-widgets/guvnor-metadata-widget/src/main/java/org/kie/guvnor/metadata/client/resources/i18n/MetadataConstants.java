@@ -24,10 +24,6 @@ public interface MetadataConstants extends
 
     String CreatedByMetaData();
 
-    String IsDisabledMetaData();
-
-    String DisableTip();
-
     String FormatMetaData();
 
     String OtherMetaData();

@@ -37,7 +37,6 @@ import org.kie.commons.java.nio.file.attribute.FileTime;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributes;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionAttributesUtil;
 import org.kie.guvnor.services.backend.metadata.attribute.DiscussionView;
-import org.kie.guvnor.services.backend.metadata.attribute.Mode;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaView;
@@ -52,7 +51,6 @@ import org.uberfire.backend.vfs.Path;
 import static java.util.Collections.*;
 import static org.kie.commons.validation.PortablePreconditions.*;
 import static org.kie.guvnor.services.backend.metadata.MetadataBuilder.*;
-import static org.kie.guvnor.services.backend.metadata.attribute.Mode.*;
 
 @Service
 @ApplicationScoped
@@ -87,7 +85,6 @@ public class MetadataServiceImpl implements MetadataService {
                     .withExternalRelation( dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get( 0 ) : null )
                     .withExternalSource( dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get( 0 ) : null )
                     .withDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : null )
-                    .withDisabledOption( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false )
                     .withCategories( otherMetaView.readAttributes().categories() )
                     .withDiscussion( discussView.readAttributes().discussion() )
                     .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
@@ -170,11 +167,6 @@ public class MetadataServiceImpl implements MetadataService {
                     @Override
                     public List<String> categories() {
                         return metadata.getCategories();
-                    }
-
-                    @Override
-                    public Mode mode() {
-                        return metadata.isDisabled() == true ? Mode.DISABLED : Mode.ENABLED;
                     }
 
                     @Override

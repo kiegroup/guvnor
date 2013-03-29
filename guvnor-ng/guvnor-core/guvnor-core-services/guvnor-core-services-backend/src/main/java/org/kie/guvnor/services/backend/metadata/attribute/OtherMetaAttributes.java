@@ -26,7 +26,4 @@ import java.util.List;
 public interface OtherMetaAttributes extends BasicFileAttributes {
 
     List<String> categories();
-
-    Mode mode();
-
 }

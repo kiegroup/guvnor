@@ -50,7 +50,6 @@ public final class MetadataBuilder {
     private String description;
 
     //not dcore
-    private boolean disabled;
     private List<String> categories = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord> version = new ArrayList<VersionRecord>();
@@ -118,11 +117,6 @@ public final class MetadataBuilder {
         return this;
     }
 
-    public MetadataBuilder withDisabledOption( final boolean disabled ) {
-        this.disabled = disabled;
-        return this;
-    }
-
     public MetadataBuilder withCategories( final List<String> categories ) {
         this.categories = categories;
         return this;
@@ -142,7 +136,7 @@ public final class MetadataBuilder {
         return new Metadata( path, checkinComment, lastContributor, creator,
                              lastModified, dateCreated, subject, type,
                              externalRelation, externalSource,
-                             description, disabled, categories, discussion, version );
+                             description, categories, discussion, version );
     }
 
 }

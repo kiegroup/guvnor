@@ -53,9 +53,6 @@ public final class OtherMetaAttributesUtil {
                             put( buildAttrName( OtherMetaView.CATEGORY, i ), attrs.categories().get( i ) );
                         }
                     }
-                    if ( attribute.equals( "*" ) || attribute.equals( OtherMetaView.MODE ) ) {
-                        put( OtherMetaView.MODE, attrs.mode() );
-                    }
                     if ( attribute.equals( "*" ) ) {
                         break;
                     }

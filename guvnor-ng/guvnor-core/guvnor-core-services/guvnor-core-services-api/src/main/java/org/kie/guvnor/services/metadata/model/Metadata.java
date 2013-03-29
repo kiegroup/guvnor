@@ -48,7 +48,6 @@ public class Metadata {
     private String description;
 
     //not dcore
-    private boolean disabled;
     private List<String>           categories = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord>    version    = new ArrayList<VersionRecord>();
@@ -68,7 +67,6 @@ public class Metadata {
                      final String externalRelation,
                      final String externalSource,
                      final String description,
-                     final boolean disabled,
                      final List<String> categories,
                      final List<DiscussionRecord> discussion,
                      final List<VersionRecord> version ) {
@@ -83,7 +81,6 @@ public class Metadata {
         this.externalRelation = externalRelation;
         this.externalSource = externalSource;
         this.description = description;
-        this.disabled = disabled;
         this.categories = categories;
         this.discussion = discussion;
         this.version = version;
@@ -133,10 +130,6 @@ public class Metadata {
         return description;
     }
 
-    public boolean isDisabled() {
-        return disabled;
-    }
-
     public List<String> getCategories() {
         return categories;
     }
@@ -147,10 +140,6 @@ public class Metadata {
 
     public List<VersionRecord> getVersion() {
         return version;
-    }
-
-    public void setDisabled( final boolean disabled ) {
-        this.disabled = disabled;
     }
 
     public void setSubject( final String subject ) {

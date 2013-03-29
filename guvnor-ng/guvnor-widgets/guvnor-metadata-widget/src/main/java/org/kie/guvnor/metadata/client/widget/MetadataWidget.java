@@ -109,18 +109,6 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
         addAttribute( MetadataConstants.INSTANCE.CreatedByMetaData(),
                       readOnlyText( metadata.getCreator() ) );
 
-        addAttribute( MetadataConstants.INSTANCE.IsDisabledMetaData(),
-                      editableBoolean( new FieldBooleanBinding() {
-                          public boolean getValue() {
-                              return metadata.isDisabled();
-                          }
-
-                          public void setValue( final boolean val ) {
-                              makeDirty();
-                              metadata.setDisabled( val );
-                          }
-                      }, MetadataConstants.INSTANCE.DisableTip() ) );
-
         addAttribute( MetadataConstants.INSTANCE.FormatMetaData(),
                       readOnlyText( getClientTypeRegistry().resolve( metadata.getPath() ).getShortName() ) );
         addAttribute( "URI:",

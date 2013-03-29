@@ -31,8 +31,6 @@ import org.uberfire.backend.Root;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
-import static org.kie.guvnor.services.backend.metadata.attribute.Mode.*;
-
 @Service
 
 @ApplicationScoped
@@ -120,7 +118,6 @@ public class SearchServiceImpl implements SearchService {
             row.setLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) );
             row.setCreatedDate( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) );
             row.setDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : "" );
-            row.setDisabled( otherMetaView.readAttributes().mode() != null ? otherMetaView.readAttributes().mode().equals( DISABLED ) : false );
             result.add( row );
         }
 
