@@ -9,16 +9,20 @@ import javax.inject.Named;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
+import org.kie.guvnor.jcr2vfsmigration.migrater.PackageHeaderInfo;
 import org.kie.guvnor.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.kie.guvnor.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.guvnor.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -48,6 +52,12 @@ public class GuidedDecisionTableMigrater {
     @Inject
     protected PackageImportHelper packageImportHelper;
 
+    @Inject
+    private ProjectService projectService;
+    
+    @Inject
+    private PackageHeaderInfo packageHeaderInfo;
+    
     public void migrate(Module jcrModule,  AssetItem jcrAssetItem) {      
         if (!AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
@@ -65,6 +75,21 @@ public class GuidedDecisionTableMigrater {
         }        
         
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( jcrAssetItem.getContent() );
+        
+        //Add package
+        final String requiredPackageName = projectService.resolvePackageName( path );        
+        if(requiredPackageName != null && !"".equals(requiredPackageName)) {
+            model.setPackageName(requiredPackageName);
+        }
+
+        //Add import
+        if(packageHeaderInfo.getHeader() != null) {
+            final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
+            if ( imports != null ) {
+                model.setImports(imports);
+            }            
+        }
+        
         String sourceContent = GuidedDTXMLPersistence.getInstance().marshal( model );
         
 /*        GuidedDTContentHandler h = new GuidedDTContentHandler();
