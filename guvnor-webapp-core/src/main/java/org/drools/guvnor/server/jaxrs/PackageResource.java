@@ -680,6 +680,7 @@ public class PackageResource extends Resource {
             if (assetMetadata.getState() != null) {
                 ai.updateState(assetMetadata.getState());
             }
+            ai.updateDisabled(assetMetadata.getDisabled());
             ai.updateValid(assetValidator.validate(ai));
             if (AssetFormats.affectsBinaryUpToDate(ai.getFormat())) {
                 ModuleItem pkg = ai.getModule();
@@ -716,7 +717,8 @@ public class PackageResource extends Resource {
                 }
                 if (assetMetadata.getCategories()!= null){
                     ai.updateCategoryList(assetMetadata.getCategories());
-                }
+                }              
+                ai.updateDisabled(assetMetadata.isDisabled());
             }
             if (AssetFormats.affectsBinaryUpToDate(ai.getFormat())) {
                 ModuleItem pkg = ai.getModule();
