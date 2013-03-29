@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(namespace = "http://www.w3.org/2005/Atom", name = "SnapshotCreationData")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"buildMode", "statusOperator", "statusDescriptionValue", "enableStatusSelector", "categoryOperator",
-    "categoryValue", "enableCategorySelector", "customSelectorConfigName", "source"})
+    "categoryValue", "enableCategorySelector", "customSelectorConfigName"})
 public class SnapshotCreationData {
 
     private String buildMode;
