@@ -11,7 +11,12 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.RepositoryModuleService;
+import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
+import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -34,6 +39,9 @@ public class GuidedEditorMigrater {
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
 
+    @Inject @Preferred
+    private RulesRepository rulesRepository;
+    
     @Inject
     protected GuidedRuleEditorService guidedRuleEditorService;
 
@@ -71,9 +79,14 @@ public class GuidedEditorMigrater {
         
         try {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
-            String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
+            //String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
 
-            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(sourceDRL, path);
+            StringBuilder sb = new StringBuilder();
+            BRMSPackageBuilder builder = new BRMSPackageBuilder(rulesRepository.loadModuleByUUID(jcrModule.getUuid()));
+            BRLContentHandler handler = new BRLContentHandler();
+            handler.assembleDRL(builder, jcrAsset, sb);
+
+            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(sb.toString(), path);
             sourceDRLWithImport = packageImportHelper.assertPackageImportDRL(sourceDRLWithImport, path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
