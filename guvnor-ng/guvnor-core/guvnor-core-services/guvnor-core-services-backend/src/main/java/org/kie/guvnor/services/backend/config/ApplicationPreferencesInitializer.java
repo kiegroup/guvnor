@@ -23,28 +23,37 @@ import org.kie.guvnor.services.config.ApplicationPreferences;
 
 public class ApplicationPreferencesInitializer {
 
-    public static void setSystemProperties( Map<String, String> preferences ) {
-        setProperty( preferences, ApplicationPreferences.DATE_FORMAT );
-        setProperty( preferences, ApplicationPreferences.DEFAULT_LANGUAGE );
-        setProperty( preferences, ApplicationPreferences.DEFAULT_COUNTRY );
+    public static void setSystemProperties( final Map<String, String> preferences ) {
+        setSystemProperty( preferences,
+                           ApplicationPreferences.DATE_FORMAT );
+        setSystemProperty( preferences,
+                           ApplicationPreferences.DATE_TIME_FORMAT );
+        setSystemProperty( preferences,
+                           ApplicationPreferences.DEFAULT_LANGUAGE );
+        setSystemProperty( preferences,
+                           ApplicationPreferences.DEFAULT_COUNTRY );
 
-        setProperty( preferences, ApplicationPreferences.DESIGNER_URL );
-        setProperty( preferences, ApplicationPreferences.DESIGNER_PROFILE );
-        setProperty( preferences, ApplicationPreferences.DESIGNER_CONTEXT );
-
-        setProperty( preferences, KeyStoreHelper.PROP_SIGN );
-        setProperty( preferences, KeyStoreHelper.PROP_PVT_KS_URL );
-        setProperty( preferences, KeyStoreHelper.PROP_PVT_KS_PWD );
-        setProperty( preferences, KeyStoreHelper.PROP_PVT_ALIAS );
-        setProperty( preferences, KeyStoreHelper.PROP_PVT_PWD );
-        setProperty( preferences, KeyStoreHelper.PROP_PUB_KS_URL );
-        setProperty( preferences, KeyStoreHelper.PROP_PUB_KS_PWD );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_SIGN );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PVT_KS_URL );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PVT_KS_PWD );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PVT_ALIAS );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PVT_PWD );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PUB_KS_URL );
+        setSystemProperty( preferences,
+                           KeyStoreHelper.PROP_PUB_KS_PWD );
     }
 
-    private static void setProperty( Map<String, String> preferences,
-                                     String value ) {
+    private static void setSystemProperty( final Map<String, String> preferences,
+                                           final String value ) {
         if ( preferences.containsKey( value ) ) {
-            System.setProperty( value, preferences.get( value ) );
+            System.setProperty( value,
+                                preferences.get( value ) );
         }
     }
 }

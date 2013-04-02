@@ -19,6 +19,7 @@ package org.kie.guvnor.services.backend.config;
 import java.util.Date;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.services.config.AppConfigService;
@@ -29,10 +30,13 @@ public class AppConfigServiceImpl implements AppConfigService {
 
     private Map<String, String> preferences;
 
+    @Inject
+    private ApplicationPreferencesLoader preferencesLoader;
+
     @Override
     public Map<String, String> loadPreferences() {
         if ( preferences == null ) {
-            preferences = ApplicationPreferencesLoader.load();
+            preferences = preferencesLoader.load();
             ApplicationPreferencesInitializer.setSystemProperties( preferences );
         }
         return preferences;
