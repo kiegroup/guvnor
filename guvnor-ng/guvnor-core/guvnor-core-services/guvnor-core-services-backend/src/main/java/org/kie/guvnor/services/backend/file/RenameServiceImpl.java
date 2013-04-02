@@ -42,8 +42,10 @@ public class RenameServiceImpl implements RenameService {
                         final String comment ) {
         System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
 
-        final String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName;
-        final String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName;
+        String originalFileName = path.getFileName().substring(path.getFileName().lastIndexOf( "/" )+1);
+        final String extension = originalFileName.substring( originalFileName.indexOf("."));
+        final String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName + extension;
+        final String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName + extension;
         final Path targetPath = PathFactory.newPath( path.getFileSystem(),
                                                      targetName,
                                                      targetURI );
@@ -81,5 +83,4 @@ public class RenameServiceImpl implements RenameService {
             return targetPath;
         }
     }
-
 }
