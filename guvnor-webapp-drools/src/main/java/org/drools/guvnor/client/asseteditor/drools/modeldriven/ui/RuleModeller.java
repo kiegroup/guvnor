@@ -164,8 +164,10 @@ public class RuleModeller extends DirtyableComposite
                                               "20px" );
         layout.getColumnFormatter().setWidth( 2,
                                               "48px" );
-        layout.getColumnFormatter().setWidth( 3,
-                                              "*" );//90%
+      //GUVNOR-2003 - nheron
+      // Does not work on IE8 & IE9
+      //  layout.getColumnFormatter().setWidth( 3,
+      //                                        "*" );//90%
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
 
