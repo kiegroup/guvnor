@@ -51,6 +51,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--  Temporary hack until we fix the dependency problem. jbpm-bpmn2 resolves to 6.0.0-SNAPSHOT:
+    org.jbpm:jbpm-bpmn2:jar:6.0.0-SNAPSHOT:compile (version managed from 5.4.1-SNAPSHOT)-->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <version>${jbpm.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
