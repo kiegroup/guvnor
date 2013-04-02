@@ -16,24 +16,23 @@
 
 package org.kie.guvnor.dtablexls.backend.server;
 
-
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
 
 @Singleton
 public class TestAppSetup {
 
     private final IOService         ioService         = new IOServiceDotFileImpl();
-    private final ActiveFileSystems activeFileSystems = new ActiveFileSystemsImpl();
-
+    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
+    
     @PostConstruct
     public void onStartup() {
     }
@@ -45,9 +44,9 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("fs")
-    public ActiveFileSystems fileSystems() {
-        return activeFileSystems;
+    @Named("system")
+    public Repository systemRepository() {
+        return systemRepository;
     }
 
 }

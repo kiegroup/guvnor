@@ -20,6 +20,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.service.KModuleService;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
@@ -33,11 +35,18 @@ import static org.mockito.Mockito.mock;
 public class TestAppSetup {
 
     private final IOService ioService = new IOServiceDotFileImpl();
+    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
 
     @Produces
     @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
+    }
+
+    @Produces
+    @Named("system")
+    public Repository systemRepository() {
+        return systemRepository;
     }
 
     @Produces

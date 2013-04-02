@@ -32,7 +32,6 @@ import javax.inject.Singleton;
 public class TestAppSetup {
 
     private final IOService         ioService         = new IOServiceDotFileImpl();
-    private final ActiveFileSystems activeFileSystems = new ActiveFileSystemsImpl();
 
     @PostConstruct
     public void onStartup() {
@@ -44,10 +43,6 @@ public class TestAppSetup {
         return ioService;
     }
 
-    @Produces
-    @Named("fs")
-    public ActiveFileSystems fileSystems() {
-        return activeFileSystems;
-    }
+
 
 }

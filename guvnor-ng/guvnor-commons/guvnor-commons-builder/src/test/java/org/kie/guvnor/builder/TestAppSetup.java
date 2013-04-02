@@ -24,8 +24,8 @@ import javax.inject.Singleton;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.guvnor.project.service.KModuleService;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
 import static org.mockito.Mockito.*;
 
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 public class TestAppSetup {
 
     private final IOService ioService = new IOServiceDotFileImpl();
-    private final ActiveFileSystems activeFileSystems = new ActiveFileSystemsImpl();
+    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
 
     @PostConstruct
     public void onStartup() {
@@ -46,9 +46,9 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("fs")
-    public ActiveFileSystems makeFileSystems() {
-        return activeFileSystems;
+    @Named("system")
+    public Repository systemRepository() {
+        return systemRepository;
     }
 
     @Produces

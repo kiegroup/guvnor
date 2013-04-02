@@ -50,20 +50,20 @@ public class MailboxService {
     private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
 
     private ExecutorService executor = null;
-    public static final String          MAIL_MAN = "mailman";
+    public static final String MAIL_MAN = "mailman";
 
     @Inject
     private InboxService inboxService;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-    
+    @Named("ioSystemStrategy")
+    private IOService ioSystemService;
+
     private org.kie.commons.java.nio.file.Path bootstrapRoot = null;
 
     @PostConstruct
     public void setup() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems().iterator();
         if ( fsIterator.hasNext() ) {
             final FileSystem bootstrap = fsIterator.next();
             final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = bootstrap.getRootDirectories().iterator();
@@ -71,7 +71,7 @@ public class MailboxService {
                 this.bootstrapRoot = rootIterator.next();
             }
         }
-        
+
         executor = Executors.newSingleThreadExecutor();
         log.info( "mailbox service is up" );
         wakeUp();
@@ -152,19 +152,19 @@ public class MailboxService {
         }
         return entries;
     }
-    
+
     public String[] listUsers() {
         //TODO: a temporary hack to retrieve user list. Please refactor later.
         List<String> userList = new ArrayList<String>();
-        org.kie.commons.java.nio.file.Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/");
+        org.kie.commons.java.nio.file.Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/" );
         final Iterator<org.kie.commons.java.nio.file.Path> userIterator = userRoot.iterator();
         if ( userIterator.hasNext() ) {
             org.kie.commons.java.nio.file.Path userDir = userIterator.next();
-            userList.add(userDir.getFileName().toString());
+            userList.add( userDir.getFileName().toString() );
         }
-        
-        String[] result = new String[userList.size()];
-        return userList.toArray(result);
+
+        String[] result = new String[ userList.size() ];
+        return userList.toArray( result );
     }
 
 }

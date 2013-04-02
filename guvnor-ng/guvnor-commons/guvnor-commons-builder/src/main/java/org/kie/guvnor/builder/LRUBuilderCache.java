@@ -3,6 +3,7 @@ package org.kie.guvnor.builder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
@@ -30,6 +31,7 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
     private ProjectService projectService;
 
     @Inject
+    @Named("ioStrategy")
     private IOService ioService;
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {

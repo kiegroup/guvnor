@@ -47,6 +47,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
     private POMService pomService;
 
     @Inject
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
