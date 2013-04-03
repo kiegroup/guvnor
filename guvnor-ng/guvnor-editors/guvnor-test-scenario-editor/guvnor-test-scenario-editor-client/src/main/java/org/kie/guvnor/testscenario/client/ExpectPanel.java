@@ -25,6 +25,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
@@ -32,21 +33,23 @@ import org.uberfire.client.common.SmallLabel;
 public class ExpectPanel extends HorizontalPanel {
 
     protected final Scenario scenario;
-    protected final ScenarioEditorPresenter parent;
+    protected final ScenarioParentWidget parent;
     protected final ExecutionTrace previousEx;
 
-    public ExpectPanel(String packageName,
-                       ExecutionTrace previousEx,
+    public ExpectPanel(ExecutionTrace previousEx,
                        final Scenario scenario,
-                       final ScenarioEditorPresenter parent) {
+                       final ScenarioParentWidget parent,
+                       ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
+                       DataModelOracle dmo) {
         this.scenario = scenario;
         this.parent = parent;
         this.previousEx = previousEx;
 
-        add( new ExpectationButton( packageName,
-                                    previousEx,
+        add( new ExpectationButton( previousEx,
                                     scenario,
-                                    parent ) );
+                                    parent,
+                                    scenarioWidgetComponentCreator,
+                                    dmo) );
         add( new SmallLabel( TestScenarioConstants.INSTANCE.EXPECT() ) );
         add( new DeleteButton() );
     }

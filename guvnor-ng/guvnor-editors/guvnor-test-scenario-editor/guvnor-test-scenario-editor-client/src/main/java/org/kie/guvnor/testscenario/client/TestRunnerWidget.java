@@ -47,7 +47,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
     private SimplePanel actions = new SimplePanel();
 
-    public TestRunnerWidget(final ScenarioEditorPresenter parent,
+    public TestRunnerWidget(final Scenario scenario,
                             final Caller<ScenarioTestEditorService> testScenarioEditorService,
                             final Path path) {
 
@@ -70,7 +70,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
                 },
                         new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)
                 ).runScenario(path,
-                        parent.getScenario());
+                        scenario);
             }
         });
 
@@ -111,111 +111,111 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
     }
 
-    private void showResults(final ScenarioEditorPresenter parent,
-                             final SingleScenarioResult data) {
-        results.clear();
-        results.setVisible(true);
-
-        parent.setScenario(data.getResult().getScenario());
-
-        parent.setShowResults(true);
-        parent.renderEditor();
-
-        int failures = 0;
-        int total = 0;
-        VerticalPanel resultsDetail = new VerticalPanel();
-
-        for (Iterator<Fixture> fixturesIterator = data.getResult().getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
-            Fixture fixture = fixturesIterator.next();
-            if (fixture instanceof VerifyRuleFired) {
-
-                VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-                HorizontalPanel panel = new HorizontalPanel();
-                if (!verifyRuleFired.getSuccessResult().booleanValue()) {
-                    panel.add(new Image(CommonImages.INSTANCE.warning()));
-                    failures++;
-                } else {
-                    panel.add(new Image(TestScenarioImages.INSTANCE.testPassed()));
-                }
-                panel.add(new SmallLabel(verifyRuleFired.getExplanation()));
-                resultsDetail.add(panel);
-                total++;
-            } else if (fixture instanceof VerifyFact) {
-                VerifyFact verifyFact = (VerifyFact) fixture;
-                for (Iterator<VerifyField> fieldIterator = verifyFact.getFieldValues().iterator(); fieldIterator.hasNext(); ) {
-                    total++;
-                    VerifyField verifyField = fieldIterator.next();
-                    HorizontalPanel panel = new HorizontalPanel();
-                    if (!verifyField.getSuccessResult().booleanValue()) {
-                        panel.add(new Image(CommonImages.INSTANCE.warning()));
-                        failures++;
-                    } else {
-                        panel.add(new Image(TestScenarioImages.INSTANCE.testPassed()));
-                    }
-                    panel.add(new SmallLabel(verifyField.getExplanation()));
-                    resultsDetail.add(panel);
-                }
-
-            } else if (fixture instanceof ExecutionTrace) {
-                ExecutionTrace ex = (ExecutionTrace) fixture;
-                if (ex.getNumberOfRulesFired() == data.getResult().getScenario().getMaxRuleFirings()) {
-                    Window.alert(TestScenarioConstants.INSTANCE.MaxRuleFiringsReachedWarning(
-                            data.getResult().getScenario().getMaxRuleFirings()));
-                }
-            }
-
-        }
-
-        results.setWidget(0,
-                0,
-                new SmallLabel(TestScenarioConstants.INSTANCE.Results()));
-        results.getFlexCellFormatter().setHorizontalAlignment(0,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
-        if (failures > 0) {
-            results.setWidget(0,
-                    1,
-                    new PercentageBar("#CC0000",
-                            150,
-                            failures,
-                            total));
-        } else {
-            results.setWidget(0,
-                    1,
-                    new PercentageBar("GREEN",
-                            150,
-                            failures,
-                            total));
-        }
-
-        results.setWidget(1,
-                0,
-                new SmallLabel(TestScenarioConstants.INSTANCE.SummaryColon()));
-        results.getFlexCellFormatter().setHorizontalAlignment(1,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
-        results.setWidget(1,
-                1,
-                resultsDetail);
-        results.setWidget(2,
-                0,
-                new SmallLabel(TestScenarioConstants.INSTANCE.AuditLogColon()));
-
-        final Button showExp = new Button(TestScenarioConstants.INSTANCE.ShowEventsButton());
-        results.setWidget(2,
-                1,
-                showExp);
-        showExp.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                showExp.setVisible(false);
-                results.setWidget(2,
-                        1,
-                        doAuditView(data.getAuditLog()));
-            }
-        });
-
-    }
+//    private void showResults(final ScenarioEditorPresenter parent,
+//                             final SingleScenarioResult data) {
+//        results.clear();
+//        results.setVisible(true);
+//
+//        parent.setScenario(data.getResult().getScenario());
+//
+//        parent.setShowResults(true);
+//        parent.renderEditor();
+//
+//        int failures = 0;
+//        int total = 0;
+//        VerticalPanel resultsDetail = new VerticalPanel();
+//
+//        for (Iterator<Fixture> fixturesIterator = data.getResult().getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
+//            Fixture fixture = fixturesIterator.next();
+//            if (fixture instanceof VerifyRuleFired) {
+//
+//                VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
+//                HorizontalPanel panel = new HorizontalPanel();
+//                if (!verifyRuleFired.getSuccessResult().booleanValue()) {
+//                    panel.add(new Image(CommonImages.INSTANCE.warning()));
+//                    failures++;
+//                } else {
+//                    panel.add(new Image(TestScenarioImages.INSTANCE.testPassed()));
+//                }
+//                panel.add(new SmallLabel(verifyRuleFired.getExplanation()));
+//                resultsDetail.add(panel);
+//                total++;
+//            } else if (fixture instanceof VerifyFact) {
+//                VerifyFact verifyFact = (VerifyFact) fixture;
+//                for (Iterator<VerifyField> fieldIterator = verifyFact.getFieldValues().iterator(); fieldIterator.hasNext(); ) {
+//                    total++;
+//                    VerifyField verifyField = fieldIterator.next();
+//                    HorizontalPanel panel = new HorizontalPanel();
+//                    if (!verifyField.getSuccessResult().booleanValue()) {
+//                        panel.add(new Image(CommonImages.INSTANCE.warning()));
+//                        failures++;
+//                    } else {
+//                        panel.add(new Image(TestScenarioImages.INSTANCE.testPassed()));
+//                    }
+//                    panel.add(new SmallLabel(verifyField.getExplanation()));
+//                    resultsDetail.add(panel);
+//                }
+//
+//            } else if (fixture instanceof ExecutionTrace) {
+//                ExecutionTrace ex = (ExecutionTrace) fixture;
+//                if (ex.getNumberOfRulesFired() == data.getResult().getScenario().getMaxRuleFirings()) {
+//                    Window.alert(TestScenarioConstants.INSTANCE.MaxRuleFiringsReachedWarning(
+//                            data.getResult().getScenario().getMaxRuleFirings()));
+//                }
+//            }
+//
+//        }
+//
+//        results.setWidget(0,
+//                0,
+//                new SmallLabel(TestScenarioConstants.INSTANCE.Results()));
+//        results.getFlexCellFormatter().setHorizontalAlignment(0,
+//                0,
+//                HasHorizontalAlignment.ALIGN_RIGHT);
+//        if (failures > 0) {
+//            results.setWidget(0,
+//                    1,
+//                    new PercentageBar("#CC0000",
+//                            150,
+//                            failures,
+//                            total));
+//        } else {
+//            results.setWidget(0,
+//                    1,
+//                    new PercentageBar("GREEN",
+//                            150,
+//                            failures,
+//                            total));
+//        }
+//
+//        results.setWidget(1,
+//                0,
+//                new SmallLabel(TestScenarioConstants.INSTANCE.SummaryColon()));
+//        results.getFlexCellFormatter().setHorizontalAlignment(1,
+//                0,
+//                HasHorizontalAlignment.ALIGN_RIGHT);
+//        results.setWidget(1,
+//                1,
+//                resultsDetail);
+//        results.setWidget(2,
+//                0,
+//                new SmallLabel(TestScenarioConstants.INSTANCE.AuditLogColon()));
+//
+//        final Button showExp = new Button(TestScenarioConstants.INSTANCE.ShowEventsButton());
+//        results.setWidget(2,
+//                1,
+//                showExp);
+//        showExp.addClickHandler(new ClickHandler() {
+//
+//            public void onClick(ClickEvent event) {
+//                showExp.setVisible(false);
+//                results.setWidget(2,
+//                        1,
+//                        doAuditView(data.getAuditLog()));
+//            }
+//        });
+//
+//    }
 
     private Widget doAuditView(List<String[]> auditLog) {
         VerticalPanel vp = new VerticalPanel();

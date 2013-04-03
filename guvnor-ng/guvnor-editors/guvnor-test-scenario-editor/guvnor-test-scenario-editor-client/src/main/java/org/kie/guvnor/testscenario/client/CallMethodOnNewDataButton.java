@@ -22,6 +22,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.guvnor.models.testscenarios.shared.CallMethod;
@@ -38,12 +39,14 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
     public CallMethodOnNewDataButton(final ExecutionTrace previousEx,
                                      final Scenario scenario,
                                      final ExecutionTrace currentEx,
-                                     ScenarioEditorPresenter scenarioWidget) {
+                                     ScenarioParentWidget scenarioWidget,
+                                     DataModelOracle dmo) {
         super( ItemAltedImages.INSTANCE.NewItem(),
                TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
-               scenarioWidget );
+               scenarioWidget,
+               dmo);
 
         this.currentEx = currentEx;
     }

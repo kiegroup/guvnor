@@ -37,18 +37,19 @@ class GlobalButton
         extends ImageButton {
 
     private final Scenario scenario;
-    private final ScenarioEditorPresenter parent;
+    private final ScenarioParentWidget parent;
 
     private final DataModelOracle dmo;
 
     public GlobalButton(final Scenario scenario,
-                        final ScenarioEditorPresenter parent) {
+                        final ScenarioParentWidget parent,
+                        final DataModelOracle dmo) {
         super(ItemAltedImages.INSTANCE.NewItem(),
                 TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario());
 
         this.scenario = scenario;
         this.parent = parent;
-        this.dmo = parent.dmo;
+        this.dmo = dmo;
 
         addGlobalButtonClickHandler();
     }

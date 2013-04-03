@@ -34,7 +34,7 @@ import org.uberfire.client.common.ImageButton;
 abstract class TestScenarioButton extends ImageButton {
 
     protected final Scenario scenario;
-    protected final ScenarioEditorPresenter parent;
+    protected final ScenarioParentWidget parent;
     protected final DataModelOracle            dmo;
     protected final ExecutionTrace previousEx;
 
@@ -42,13 +42,14 @@ abstract class TestScenarioButton extends ImageButton {
                               String tooltip,
                               final ExecutionTrace previousEx,
                               final Scenario scenario,
-                              ScenarioEditorPresenter scenarioWidget) {
+                              ScenarioParentWidget scenarioWidget,
+                              DataModelOracle dmo) {
         super( img,
                tooltip );
         this.previousEx = previousEx;
         this.scenario = scenario;
         this.parent = scenarioWidget;
-        this.dmo = scenarioWidget.dmo;
+        this.dmo = dmo;
 
         addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {

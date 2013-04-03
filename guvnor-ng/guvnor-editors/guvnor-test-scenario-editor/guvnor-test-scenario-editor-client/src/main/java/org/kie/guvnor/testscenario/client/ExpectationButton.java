@@ -21,6 +21,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
@@ -32,19 +33,21 @@ import java.util.ArrayList;
 public class ExpectationButton
         extends TestScenarioButton {
 
-    private final String packageName;
+    private final ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
 
-    public ExpectationButton(final String packageName,
-                             final ExecutionTrace previousEx,
+    public ExpectationButton(final ExecutionTrace previousEx,
                              final Scenario scenario,
-                             ScenarioEditorPresenter scenarioWidget) {
+                             ScenarioParentWidget scenarioWidget,
+                             ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
+                             DataModelOracle dmo) {
         super(ItemAltedImages.INSTANCE.NewItem(),
                 TestScenarioConstants.INSTANCE.AddANewExpectation(),
                 previousEx,
                 scenario,
-                scenarioWidget);
+                scenarioWidget,
+                dmo);
 
-        this.packageName = packageName;
+        this.scenarioWidgetComponentCreator = scenarioWidgetComponentCreator;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class ExpectationButton
             super(TestScenarioAltedImages.INSTANCE.RuleAsset(),
                     TestScenarioConstants.INSTANCE.NewExpectation());
 
-            Widget selectRule = parent.getRuleSelectionWidget(packageName,
+            Widget selectRule = scenarioWidgetComponentCreator.getRuleSelectionWidget(
                     new RuleSelectionEvent() {
 
                         public void ruleSelected(String name) {

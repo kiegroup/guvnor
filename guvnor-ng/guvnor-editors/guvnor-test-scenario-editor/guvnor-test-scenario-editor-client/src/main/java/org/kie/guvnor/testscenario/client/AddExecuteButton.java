@@ -26,7 +26,7 @@ import org.drools.guvnor.models.testscenarios.shared.Scenario;
 public class AddExecuteButton extends Button {
 
     public AddExecuteButton(final Scenario scenario,
-                            final ScenarioEditorPresenter parent) {
+                            final ScenarioParentWidget parent) {
         super(TestScenarioConstants.INSTANCE.MoreDotDot());
 
         setTitle(TestScenarioConstants.INSTANCE.AddAnotherSectionOfDataAndExpectations());

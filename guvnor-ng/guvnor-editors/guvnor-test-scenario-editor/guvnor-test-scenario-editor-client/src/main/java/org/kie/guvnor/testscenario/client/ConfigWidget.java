@@ -33,112 +33,110 @@ import java.util.List;
 
 public class ConfigWidget extends Composite {
 
+    private final ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
+
     public ConfigWidget(final Scenario sc,
-                        final String packageName,
-                        final ScenarioEditorPresenter scWidget) {
+                        ScenarioWidgetComponentCreator scenarioWidgetComponentCreator) {
 
-        final ListBox box = new ListBox( true );
+        this.scenarioWidgetComponentCreator = scenarioWidgetComponentCreator;
 
-        for ( int i = 0; i < sc.getRules().size(); i++ ) {
-            box.addItem( sc.getRules().get( i ) );
+        final ListBox box = new ListBox(true);
+
+        for (int i = 0; i < sc.getRules().size(); i++) {
+            box.addItem(sc.getRules().get(i));
         }
         HorizontalPanel filter = new HorizontalPanel();
 
         final Image add = ItemAltedImages.INSTANCE.NewItem();
         add.setAltText(TestScenarioConstants.INSTANCE.AddANewRule());
-        add.setTitle(TestScenarioConstants.INSTANCE.AddANewRule() );
-        add.addClickHandler( new ClickHandler() {
+        add.setTitle(TestScenarioConstants.INSTANCE.AddANewRule());
+        add.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                showRulePopup( (Widget) event.getSource(),
-                               box,
-                               packageName,
-                               sc.getRules(),
-                               scWidget );
+                showRulePopup(
+                        box,
+                        sc.getRules());
             }
-        } );
+        });
 
         final Image remove = Images.INSTANCE.Trash();
-        remove.setAltText(TestScenarioConstants.INSTANCE.RemoveSelectedRule() );
-        remove.setTitle(TestScenarioConstants.INSTANCE.RemoveSelectedRule() );
-        remove.addClickHandler( new ClickHandler() {
+        remove.setAltText(TestScenarioConstants.INSTANCE.RemoveSelectedRule());
+        remove.setTitle(TestScenarioConstants.INSTANCE.RemoveSelectedRule());
+        remove.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( box.getSelectedIndex() == -1 ) {
-                    Window.alert( TestScenarioConstants.INSTANCE.PleaseChooseARuleToRemove() );
+                if (box.getSelectedIndex() == -1) {
+                    Window.alert(TestScenarioConstants.INSTANCE.PleaseChooseARuleToRemove());
                 } else {
-                    String r = box.getItemText( box.getSelectedIndex() );
-                    sc.getRules().remove( r );
-                    box.removeItem( box.getSelectedIndex() );
+                    String r = box.getItemText(box.getSelectedIndex());
+                    sc.getRules().remove(r);
+                    box.removeItem(box.getSelectedIndex());
                 }
             }
-        } );
+        });
         VerticalPanel actions = new VerticalPanel();
-        actions.add( add );
-        actions.add( remove );
+        actions.add(add);
+        actions.add(remove);
 
         final ListBox drop = new ListBox();
-        drop.addItem( TestScenarioConstants.INSTANCE.AllowTheseRulesToFire(),
-                      "inc" ); //NON-NLS
-        drop.addItem( TestScenarioConstants.INSTANCE.PreventTheseRulesFromFiring(),
-                      "exc" ); //NON-NLS
-        drop.addItem( TestScenarioConstants.INSTANCE.AllRulesMayFire() );
-        drop.addChangeHandler( new ChangeHandler() {
+        drop.addItem(TestScenarioConstants.INSTANCE.AllowTheseRulesToFire(),
+                "inc"); //NON-NLS
+        drop.addItem(TestScenarioConstants.INSTANCE.PreventTheseRulesFromFiring(),
+                "exc"); //NON-NLS
+        drop.addItem(TestScenarioConstants.INSTANCE.AllRulesMayFire());
+        drop.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                String s = drop.getValue( drop.getSelectedIndex() );
-                if ( s.equals( "inc" ) ) { //NON-NLS
-                    sc.setInclusive( true );
-                    add.setVisible( true );
-                    remove.setVisible( true );
-                    box.setVisible( true );
-                } else if ( s.equals( "exc" ) ) { //NON-NLS
-                    sc.setInclusive( false );
-                    add.setVisible( true );
-                    remove.setVisible( true );
-                    box.setVisible( true );
+                String s = drop.getValue(drop.getSelectedIndex());
+                if (s.equals("inc")) { //NON-NLS
+                    sc.setInclusive(true);
+                    add.setVisible(true);
+                    remove.setVisible(true);
+                    box.setVisible(true);
+                } else if (s.equals("exc")) { //NON-NLS
+                    sc.setInclusive(false);
+                    add.setVisible(true);
+                    remove.setVisible(true);
+                    box.setVisible(true);
                 } else {
                     sc.getRules().clear();
                     box.clear();
-                    box.setVisible( false );
-                    add.setVisible( false );
-                    remove.setVisible( false );
+                    box.setVisible(false);
+                    add.setVisible(false);
+                    remove.setVisible(false);
                 }
             }
-        } );
+        });
 
-        if ( sc.getRules().size() > 0 ) {
-            drop.setSelectedIndex( (sc.isInclusive()) ? 0 : 1 );
+        if (sc.getRules().size() > 0) {
+            drop.setSelectedIndex((sc.isInclusive()) ? 0 : 1);
         } else {
-            drop.setSelectedIndex( 2 );
-            box.setVisible( false );
-            add.setVisible( false );
-            remove.setVisible( false );
+            drop.setSelectedIndex(2);
+            box.setVisible(false);
+            add.setVisible(false);
+            remove.setVisible(false);
         }
 
-        filter.add( drop );
-        filter.add( box );
-        filter.add( actions );
+        filter.add(drop);
+        filter.add(box);
+        filter.add(actions);
 
-        initWidget( filter );
+        initWidget(filter);
     }
 
-    private void showRulePopup(Widget w,
-                               final ListBox box,
-                               String packageName,
-                               final List<String> filterList,
-                               ScenarioEditorPresenter scw) {
+    private void showRulePopup(final ListBox box,
+                               final List<String> filterList) {
         final FormStylePopup pop = new FormStylePopup(TestScenarioAltedImages.INSTANCE.RuleAsset(),
-                TestScenarioConstants.INSTANCE.SelectRule() );
+                TestScenarioConstants.INSTANCE.SelectRule());
 
-        Widget ruleSelector = scw.getRuleSelectionWidget( packageName,
-                                                          new RuleSelectionEvent() {
-                                                              public void ruleSelected(String r) {
-                                                                  filterList.add( r );
-                                                                  box.addItem( r );
-                                                                  pop.hide();
+        Widget ruleSelector = scenarioWidgetComponentCreator.getRuleSelectionWidget(
+                new RuleSelectionEvent() {
+                    public void ruleSelected(String r) {
+                        filterList.add(r);
+                        box.addItem(r);
+                        pop.hide();
 
-                                                              }
-                                                          } );
+                    }
+                });
 
-        pop.addRow( ruleSelector );
+        pop.addRow(ruleSelector);
 
         pop.show();
 

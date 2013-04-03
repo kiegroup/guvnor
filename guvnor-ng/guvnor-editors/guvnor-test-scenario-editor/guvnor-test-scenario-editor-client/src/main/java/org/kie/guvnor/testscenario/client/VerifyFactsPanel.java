@@ -35,18 +35,17 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     private final Scenario scenario;
 
-    private final ScenarioEditorPresenter parent;
+    private final ScenarioParentWidget parent;
 
     public VerifyFactsPanel(FixtureList verifyFacts,
                             ExecutionTrace executionTrace,
                             final Scenario scenario,
-                            ScenarioEditorPresenter scenarioWidget,
-                            boolean showResults) {
+                            ScenarioParentWidget scenarioWidget,
+                            boolean showResults,
+                            DataModelOracle dmo) {
 
         this.scenario = scenario;
         this.parent = scenarioWidget;
-
-        DataModelOracle dmo = scenarioWidget.dmo;
 
         for ( Fixture fixture : verifyFacts ) {
             if ( fixture instanceof VerifyFact ) {

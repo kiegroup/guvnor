@@ -38,7 +38,7 @@ import org.uberfire.client.common.SmallLabel;
 
 public class CallMethodWidget extends DirtyableComposite {
 
-    protected final ScenarioEditorPresenter parent;
+    protected final ScenarioParentWidget parent;
     protected final Scenario scenario;
     protected final CallMethod mCall;
     protected final String                   factName;
@@ -54,17 +54,18 @@ public class CallMethodWidget extends DirtyableComposite {
     private final DataModelOracle dmo;
 
     public CallMethodWidget(String factName,
-                            ScenarioEditorPresenter parent,
+                            ScenarioParentWidget parent,
                             Scenario scenario,
                             CallMethod mCall,
-                            ExecutionTrace executionTrace) {
+                            ExecutionTrace executionTrace,
+                            DataModelOracle dmo) {
         super();
         this.factName = factName;
         this.parent = parent;
         this.scenario = scenario;
         this.mCall = mCall;
         this.executionTrace = executionTrace;
-        this.dmo = parent.dmo;
+        this.dmo = dmo;
 
         this.layout = new DirtyableFlexTable();
 

@@ -19,6 +19,7 @@ package org.kie.guvnor.testscenario.client;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.SmallLabel;
 
@@ -27,10 +28,15 @@ public class CallMethodLabelButton extends HorizontalPanel {
     public CallMethodLabelButton(ExecutionTrace previousEx,
                                  Scenario scenario,
                                  ExecutionTrace executionTrace,
-                                 ScenarioEditorPresenter scenarioWidget) {
+                                 ScenarioParentWidget scenarioWidget,
+                                 DataModelOracle dmo) {
 
-        add(new CallMethodOnNewDataButton(previousEx, scenario, executionTrace,
-                scenarioWidget));
+        add(new CallMethodOnNewDataButton(
+                previousEx,
+                scenario,
+                executionTrace,
+                scenarioWidget,
+                dmo));
         add(new SmallLabel(TestScenarioConstants.INSTANCE.CALL()));
 
     }
