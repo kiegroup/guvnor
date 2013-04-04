@@ -366,9 +366,8 @@ public class ProjectServiceImpl
     }
 
     private Path getFileSystemRoot( final Path activePath ) {
-        return PathFactory.newPath( activePath.getFileSystem(),
-                                    "/",
-                                    activePath.toURI() );
+        return paths.convert( paths.convert( activePath ).getRoot(),
+                false );   
     }
 
     private Path getProjectRootPath( final Path fsRoot,
