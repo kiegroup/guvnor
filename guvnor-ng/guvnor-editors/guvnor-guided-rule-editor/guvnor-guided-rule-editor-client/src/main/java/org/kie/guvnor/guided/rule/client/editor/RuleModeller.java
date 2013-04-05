@@ -34,8 +34,8 @@ import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
+import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -63,12 +63,14 @@ public class RuleModeller extends DirtyableComposite
     private RuleModel model;
     private DataModelOracle dataModel;
     private RuleModellerConfiguration configuration;
+
     private boolean showingOptions = false;
     private int currentLayoutRow = 0;
     private Path path;
     private ModellerWidgetFactory widgetFactory;
     private EventBus eventBus;
     private boolean isReadOnly = false;
+    private boolean isDSLEnabled = true;
 
     private List<RuleModellerWidget> lhsWidgets = new ArrayList<RuleModellerWidget>();
     private List<RuleModellerWidget> rhsWidgets = new ArrayList<RuleModellerWidget>();
@@ -82,25 +84,41 @@ public class RuleModeller extends DirtyableComposite
         }
     };
 
-    //used by RuleModeller
+    //used by Guided Rule (DRL + DSLR)
+    public RuleModeller( final Path path,
+                         final RuleModel model,
+                         final DataModelOracle dataModel,
+                         final ModellerWidgetFactory widgetFactory,
+                         final EventBus eventBus,
+                         final boolean isReadOnly,
+                         final boolean isDSLEnabled ) {
+        this( path,
+              model,
+              dataModel,
+              widgetFactory,
+              RuleModellerConfiguration.getDefault(),
+              eventBus,
+              isReadOnly );
+        this.isDSLEnabled = isDSLEnabled;
+    }
+
+    //used by Guided Templates
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final DataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
-        this.path = path;
-        this.model = model;
-        this.dataModel = dataModel;
-        this.widgetFactory = widgetFactory;
-        this.configuration = RuleModellerConfiguration.getDefault();
-        this.eventBus = eventBus;
-        this.isReadOnly = isReadOnly;
-
-        doLayout();
+        this( path,
+              model,
+              dataModel,
+              widgetFactory,
+              eventBus,
+              isReadOnly,
+              true );
     }
 
-    //used by GuidedDecisionTableWidget
+    //used by Guided Decision BRL Fragments
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final DataModelOracle dataModel,
@@ -752,6 +770,10 @@ public class RuleModeller extends DirtyableComposite
 
     public boolean isReadOnly() {
         return isReadOnly;
+    }
+
+    public boolean isDSLEnabled() {
+        return isDSLEnabled;
     }
 
 }

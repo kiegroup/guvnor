@@ -28,7 +28,8 @@ public interface GuidedRuleEditorView extends HasBusyIndicator,
     void setContent( final Path path,
                      final RuleModel model,
                      final DataModelOracle dataModel,
-                     final boolean isReadOnly );
+                     final boolean isReadOnly,
+                     final boolean isDSLEnabled );
 
     RuleModel getContent();
 

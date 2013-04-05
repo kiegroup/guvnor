@@ -44,13 +44,15 @@ public class GuidedRuleEditorViewImpl
     public void setContent( final Path path,
                             final RuleModel model,
                             final DataModelOracle dataModel,
-                            final boolean isReadOnly ) {
+                            final boolean isReadOnly,
+                            final boolean isDSLEnabled ) {
         modeller = new RuleModeller( path,
                                      model,
                                      dataModel,
                                      new RuleModellerWidgetFactory(),
                                      localBus,
-                                     isReadOnly );
+                                     isReadOnly,
+                                     isDSLEnabled );
         panel.add( this.modeller );
     }
 

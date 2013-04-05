@@ -166,6 +166,11 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // The list of DSL sentences
     private void addDSLSentences() {
+        //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
+        if ( !ruleModeller.isDSLEnabled() ) {
+            return;
+        }
+
         for ( final DSLSentence sen : completions.getDSLConditions() ) {
             final String sentence = sen.toString();
             final String key = "DSL" + sentence;

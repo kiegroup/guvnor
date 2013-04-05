@@ -36,6 +36,7 @@ import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleDRLResourceType;
+import org.kie.guvnor.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
@@ -91,6 +92,9 @@ public class GuidedRuleDRLEditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
+    private GuidedRuleDSLRResourceType resourceTypeDSL;
+
+    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -101,6 +105,7 @@ public class GuidedRuleDRLEditorPresenter {
     private Path path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private boolean isDSLEnabled;
 
     private RuleModel model;
     private DataModelOracle oracle;
@@ -111,6 +116,7 @@ public class GuidedRuleDRLEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isDSLEnabled = resourceTypeDSL.accept( path );
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -190,7 +196,8 @@ public class GuidedRuleDRLEditorPresenter {
                 view.setContent( path,
                                  model,
                                  oracle,
-                                 isReadOnly );
+                                 isReadOnly,
+                                 isDSLEnabled );
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );

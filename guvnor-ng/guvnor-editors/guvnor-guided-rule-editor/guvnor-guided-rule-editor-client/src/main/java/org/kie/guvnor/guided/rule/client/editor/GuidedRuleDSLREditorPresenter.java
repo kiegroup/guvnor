@@ -91,6 +91,9 @@ public class GuidedRuleDSLREditorPresenter {
     private Caller<MetadataService> metadataService;
 
     @Inject
+    private GuidedRuleDSLRResourceType resourceTypeDSL;
+
+    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -101,6 +104,7 @@ public class GuidedRuleDSLREditorPresenter {
     private Path path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private boolean isDSLEnabled;
 
     private RuleModel model;
     private DataModelOracle oracle;
@@ -111,6 +115,7 @@ public class GuidedRuleDSLREditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isDSLEnabled = resourceTypeDSL.accept( path );
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -190,7 +195,8 @@ public class GuidedRuleDSLREditorPresenter {
                 view.setContent( path,
                                  model,
                                  oracle,
-                                 isReadOnly );
+                                 isReadOnly,
+                                 isDSLEnabled );
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );

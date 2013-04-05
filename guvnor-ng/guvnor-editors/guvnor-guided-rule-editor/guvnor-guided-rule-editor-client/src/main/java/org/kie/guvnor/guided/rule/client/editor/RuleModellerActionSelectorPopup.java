@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.guided.rule.client.editor;
 
+import java.util.Iterator;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -29,7 +32,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.ActionCallMethod;
 import org.drools.guvnor.models.commons.shared.rule.ActionGlobalCollectionAdd;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
@@ -37,15 +39,13 @@ import org.drools.guvnor.models.commons.shared.rule.ActionInsertLogicalFact;
 import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
 import org.drools.guvnor.models.commons.shared.rule.ActionSetField;
 import org.drools.guvnor.models.commons.shared.rule.ActionUpdateField;
+import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.FreeFormLine;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.InfoPopup;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Pop-up for adding Actions to the (RuleModeller) guided editor
@@ -174,6 +174,11 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     // Add DSL sentences
     private void addDSLSentences() {
+        //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
+        if ( !ruleModeller.isDSLEnabled() ) {
+            return;
+        }
+
         for ( final DSLSentence sen : completions.getDSLActions() ) {
             final String sentence = sen.toString();
             final String key = "DSL" + sentence;
