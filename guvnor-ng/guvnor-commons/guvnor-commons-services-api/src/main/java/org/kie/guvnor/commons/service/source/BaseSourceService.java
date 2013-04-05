@@ -11,8 +11,9 @@ public abstract class BaseSourceService<T>
     @Override
     public boolean accepts( final Path path ) {
         final String pattern = getPattern();
+        final String suffix = "." + pattern;
         final String uri = path.toUri().toString();
-        return uri.substring( uri.length() - pattern.length() ).equals( pattern );
+        return uri.substring( uri.length() - suffix.length() ).equals( suffix );
     }
 
 }

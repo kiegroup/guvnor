@@ -16,19 +16,25 @@
 
 package org.kie.guvnor.guided.template.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 
+@ApplicationScoped
 public class GuidedRuleTemplateSourceService
         extends BaseSourceService<TemplateModel> {
 
-    private static final String PATTERN = ".template";
+    @Inject
+    private GuidedRuleTemplateResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
-        return PATTERN;
+        return resourceType.getSuffix();
     }
 
     @Override

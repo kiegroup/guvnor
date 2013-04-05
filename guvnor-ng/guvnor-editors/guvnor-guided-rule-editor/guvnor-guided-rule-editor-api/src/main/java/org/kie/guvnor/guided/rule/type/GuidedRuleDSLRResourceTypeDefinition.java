@@ -6,12 +6,12 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
-public class GuidedRuleResourceTypeDefinition
+public class GuidedRuleDSLRResourceTypeDefinition
         implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "guided rule";
+        return "guided rule (with DSL)";
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GuidedRuleResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "gre.drl";
+        return "gre.dslr";
     }
 
     @Override

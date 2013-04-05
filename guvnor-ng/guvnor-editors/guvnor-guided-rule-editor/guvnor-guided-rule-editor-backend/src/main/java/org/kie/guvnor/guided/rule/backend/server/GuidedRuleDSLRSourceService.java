@@ -16,19 +16,25 @@
 
 package org.kie.guvnor.guided.rule.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 
-public class GuidedRuleSourceService
+@ApplicationScoped
+public class GuidedRuleDSLRSourceService
         extends BaseSourceService<RuleModel> {
 
-    private static final String PATTERN = ".gre.drl";
+    @Inject
+    private GuidedRuleDSLRResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
-        return PATTERN;
+        return resourceType.getSuffix();
     }
 
     @Override

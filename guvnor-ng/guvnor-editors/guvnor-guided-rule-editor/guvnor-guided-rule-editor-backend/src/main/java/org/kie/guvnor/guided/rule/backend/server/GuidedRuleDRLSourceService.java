@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.guided.dtable.backend.server;
+package org.kie.guvnor.guided.rule.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
-import org.kie.guvnor.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.kie.guvnor.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 
 @ApplicationScoped
-public class GuidedDecisionTableSourceService
-        extends BaseSourceService<GuidedDecisionTable52> {
+public class GuidedRuleDRLSourceService
+        extends BaseSourceService<RuleModel> {
 
     @Inject
-    private GuidedDTableResourceTypeDefinition resourceType;
+    private GuidedRuleDRLResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
@@ -39,8 +39,8 @@ public class GuidedDecisionTableSourceService
 
     @Override
     public String getSource( final Path path,
-                             final GuidedDecisionTable52 model ) {
-        return new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
+                             final RuleModel model ) {
+        return new StringBuilder().append( BRDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
 }

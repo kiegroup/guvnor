@@ -16,19 +16,25 @@
 
 package org.kie.guvnor.guided.scorecard.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 
+@ApplicationScoped
 public class GuidedScoreCardSourceService
         extends BaseSourceService<ScoreCardModel> {
 
-    private static final String PATTERN = ".scgd";
+    @Inject
+    private GuidedScoreCardResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
-        return PATTERN;
+        return resourceType.getSuffix();
     }
 
     @Override
