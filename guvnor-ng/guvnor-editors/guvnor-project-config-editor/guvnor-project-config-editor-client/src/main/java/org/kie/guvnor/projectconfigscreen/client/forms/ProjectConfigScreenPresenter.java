@@ -31,6 +31,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.projectconfigscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -111,7 +112,7 @@ public class ProjectConfigScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Project Import Suggestions";
+        return ProjectConfigScreenConstants.INSTANCE.ExternalImports();
     }
 
     @WorkbenchPartView

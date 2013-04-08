@@ -23,7 +23,7 @@ public interface ProjectConfigScreenConstants
         extends
         Messages {
 
-    ProjectConfigScreenConstants INSTANCE = GWT.create(ProjectConfigScreenConstants.class);
+    ProjectConfigScreenConstants INSTANCE = GWT.create( ProjectConfigScreenConstants.class );
 
     String ProjectModel();
 
@@ -79,7 +79,7 @@ public interface ProjectConfigScreenConstants
 
     String Save();
 
-    String SaveSuccessful(String fileName);
+    String SaveSuccessful( String fileName );
 
     String Build();
 
@@ -116,4 +116,7 @@ public interface ProjectConfigScreenConstants
     String PomDotXmlMetadata();
 
     String KModuleDotXmlMetadata();
+
+    String ExternalImports();
+
 }

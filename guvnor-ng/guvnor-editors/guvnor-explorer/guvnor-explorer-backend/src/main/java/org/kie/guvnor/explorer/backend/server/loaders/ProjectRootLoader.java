@@ -60,14 +60,17 @@ public class ProjectRootLoader implements ItemsLoader {
         //Add pom.xml file
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path pomPath = pRoot.resolve( POM_PATH );
+        final String projectName = pRoot.getFileName().toString();
         if ( Files.exists( pomPath ) ) {
-            items.add( new FileItem( paths.convert( pomPath ) ) );
+            items.add( new FileItem( paths.convert( pomPath ),
+                                     "Project definition '" + projectName + "'" ) );
         }
 
         //Add Project Imports
         final org.kie.commons.java.nio.file.Path projectImportsPath = pRoot.resolve( PROJECT_IMPORTS_PATH );
         if ( Files.exists( projectImportsPath ) ) {
-            items.add( new FileItem( paths.convert( projectImportsPath ) ) );
+            items.add( new FileItem( paths.convert( projectImportsPath ),
+                                     "External imports" ) );
         }
 
         //Add Items within Project's Java Source Resources path
