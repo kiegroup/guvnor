@@ -34,7 +34,7 @@ public interface DRLTextEditorConstants
 
     String ShowFactTypes();
 
-    String NewDrlTextDescription();
+    String NewDrlDescription();
 
     String DRL();
 }

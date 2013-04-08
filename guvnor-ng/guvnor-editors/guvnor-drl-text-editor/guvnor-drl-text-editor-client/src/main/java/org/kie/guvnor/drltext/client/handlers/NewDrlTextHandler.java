@@ -41,7 +41,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return DRLTextEditorConstants.INSTANCE.NewDrlTextDescription();
+        return DRLTextEditorConstants.INSTANCE.NewDrlDescription();
     }
 
     @Override
