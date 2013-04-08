@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.guvnor</groupId>
     <artifactId>guvnor-ng</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0.Beta1</version>
   </parent>
 
   <artifactId>guvnor-showcase</artifactId>
