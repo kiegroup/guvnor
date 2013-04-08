@@ -37,8 +37,10 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.services.config.AppConfigService;
+import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
@@ -74,11 +76,15 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
+    @Inject
+    private Caller<FileExplorerRootService> rootService;
+
     @AfterInitialization
     public void startApp() {
         loadPreferences();
-        hideLoadingPopup();
+        setupFileSystems();
         setupMenu();
+        hideLoadingPopup();
     }
 
     private void loadPreferences() {
@@ -107,10 +113,10 @@ public class ShowcaseEntryPoint {
                 } )
                 .endMenu()
                 .newTopLevelMenu( "Perspectives" )
-                    .withItems( getPerspectives() )
+                .withItems( getPerspectives() )
                 .endMenu()
                 .newTopLevelMenu( "Logout" )
-                    .respondsWith( new Command() {
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
                         redirect( GWT.getModuleBaseURL() + "uf_logout" );
@@ -118,26 +124,36 @@ public class ShowcaseEntryPoint {
                 } )
                 .endMenu()
                 .newTopLevelMenu( "Find" )
-                    .position( MenuPosition.RIGHT )
-                    .respondsWith( new Command() {
-                        @Override
-                        public void execute() {
-                            placeManager.goTo( "FindForm" );
-                        }
-                    } )
+                .position( MenuPosition.RIGHT )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "FindForm" );
+                    }
+                } )
                 .endMenu()
                 .newSearchItem( "Search..." )
-                    .position( MenuPosition.RIGHT )
-                    .respondsWith( new MenuSearchItem.SearchCommand() {
-                        @Override
-                        public void execute( final String term ) {
-                            placeManager.goTo( new DefaultPlaceRequest( "FullTextSearchForm" ).addParameter( "term", term ) );
-                        }
-                    } )
+                .position( MenuPosition.RIGHT )
+                .respondsWith( new MenuSearchItem.SearchCommand() {
+                    @Override
+                    public void execute( final String term ) {
+                        placeManager.goTo( new DefaultPlaceRequest( "FullTextSearchForm" ).addParameter( "term", term ) );
+                    }
+                } )
                 .endMenu()
                 .build();
 
         menubar.aggregateWorkbenchMenus( menus );
+    }
+
+    private void setupFileSystems() {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
+
+            @Override
+            public void callback( final Collection<Root> roots ) {
+                //Nothing to do; this just ensures FileSystems have been initialized
+            }
+        } ).listRoots();
     }
 
     private List<MenuItem> getPerspectives() {
