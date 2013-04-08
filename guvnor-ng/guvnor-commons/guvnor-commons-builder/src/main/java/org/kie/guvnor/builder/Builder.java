@@ -62,7 +62,7 @@ public class Builder {
 
     private final String projectPrefix;
 
-    private Map<String, Path> handles = new HashMap<String, Path>();
+    private Map<String, org.uberfire.backend.vfs.Path> handles = new HashMap<String, org.uberfire.backend.vfs.Path>();
     private KieContainer kieContainer;
 
     public Builder( final Path moduleDirectory,
@@ -141,7 +141,7 @@ public class Builder {
         kieFileSystem.write( destinationPath,
                              KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
         handles.put( destinationPath,
-                     resource );
+                     paths.convert( resource ) );
 
         //Incremental build
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
@@ -188,6 +188,10 @@ public class Builder {
         return kieBuilder.getKieModule();
     }
 
+    public KieModule getKieModuleIgnoringErrors() {
+        return ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors();
+    }
+
     public KieContainer getKieContainer() {
         if ( !isBuilt() ) {
             build();
@@ -211,7 +215,7 @@ public class Builder {
                 kieFileSystem.write( destinationPath,
                                      KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
                 handles.put( destinationPath,
-                             path );
+                             paths.convert( path ) );
             }
         }
     }
@@ -259,7 +263,7 @@ public class Builder {
         m.setArtifactID( artifactId );
         m.setLine( message.getLine() );
         if ( message.getPath() != null && !message.getPath().isEmpty() ) {
-            m.setPath( paths.convert( handles.get( RESOURCE_PATH + "/" + message.getPath() ) ) );
+            m.setPath( handles.get( RESOURCE_PATH + "/" + message.getPath() ) );
         }
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );

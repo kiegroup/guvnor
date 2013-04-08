@@ -17,14 +17,11 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.kie.guvnor.datamodel.backend.server.cache.BuildException;
 import org.kie.guvnor.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -44,9 +41,6 @@ public class DataModelServiceImpl
     @Inject
     private ProjectService projectService;
 
-    @Inject
-    private Event<BuildResults> messagesEvent;
-
     @Override
     public DataModelOracle getDataModel( final Path resourcePath ) {
         PortablePreconditions.checkNotNull( "resourcePath",
@@ -60,13 +54,8 @@ public class DataModelServiceImpl
         }
 
         //Retrieve (or build) oracle
-        DataModelOracle oracle = new PackageDataModelOracle();
-        try {
-            oracle = cachePackages.assertPackageDataModelOracle( projectPath,
-                                                                 packagePath );
-        } catch ( BuildException be ) {
-            messagesEvent.fire( be.getResults() );
-        }
+        final DataModelOracle oracle = cachePackages.assertPackageDataModelOracle( projectPath,
+                                                                                   packagePath );
         return oracle;
     }
 

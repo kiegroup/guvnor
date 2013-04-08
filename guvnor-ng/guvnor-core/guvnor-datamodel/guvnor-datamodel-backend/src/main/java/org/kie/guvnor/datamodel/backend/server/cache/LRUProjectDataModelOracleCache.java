@@ -2,6 +2,7 @@ package org.kie.guvnor.datamodel.backend.server.cache;
 
 import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,14 +14,12 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.builder.Builder;
-import org.kie.guvnor.commons.service.builder.BuildService;
+import org.kie.guvnor.builder.LRUBuilderCache;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.kie.guvnor.datamodel.backend.server.ModelFilter;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -54,7 +53,10 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
     private ProjectService projectService;
 
     @Inject
-    private BuildService buildService;
+    private LRUBuilderCache cache;
+
+    @Inject
+    private Event<BuildResults> buildResultsEvent;
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
@@ -69,7 +71,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
     }
 
     //Check the ProjectDefinition for the Project has been created, otherwise create one!
-    public synchronized ProjectDefinition assertProjectDataModelOracle( final Path projectPath ) throws BuildException {
+    public synchronized ProjectDefinition assertProjectDataModelOracle( final Path projectPath ) {
         ProjectDefinition projectDefinition = getEntry( projectPath );
         if ( projectDefinition == null ) {
             projectDefinition = makeProjectDefinition( projectPath );
@@ -79,33 +81,13 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         return projectDefinition;
     }
 
-    private ProjectDefinition makeProjectDefinition( final Path projectPath ) throws BuildException {
-        //Build the Project to get all available classes
-        final Path pathToPom = paths.convert( paths.convert( projectPath ).resolve( "pom.xml" ) );
-        final POM gav = pomService.load( pathToPom );
+    private ProjectDefinition makeProjectDefinition( final Path projectPath ) {
+        //Get a Builder for the project
+        final Builder builder = cache.assertBuilder( projectPath );
 
-        //If we need a Project DMO chances are we're editing an asset. Therefore perform a full build to get
-        //the validation errors for the project. This could be moved to ProjectExplorer when opening a Project
-        buildService.build( pathToPom );
-
-        //Cannot re-use Builder cache as the Builders in the cache are configured to perform a full build
-        //of all assets. If any asset is invalid the underlying KieBuilder will not produce a package and
-        //it is therefore impossible to retrieve model details if, for example, a rule is invalid.
-        final Builder builder = new Builder( paths.convert( pathToPom ).getParent(),
-                                             gav.getGav().getArtifactId(),
-                                             paths,
-                                             ioService,
-                                             projectService,
-                                             new ModelFilter() );
-
-        //If the Project had errors report them to the user and return an empty ProjectDefinition
+        //Create the ProjectDefinition...
         final BuildResults results = builder.build();
-        if ( !results.getMessages().isEmpty() ) {
-            throw new BuildException( results );
-        }
-
-        //Otherwise create the ProjectDefinition...
-        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
+        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
         final ProjectDefinitionBuilder pdBuilder = ProjectDefinitionBuilder.newProjectDefinitionBuilder();
 
         //Add all classes from the KieModule metaData
@@ -145,9 +127,9 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
             }
         }
 
-        //If there were errors constructing the DataModelOracle advise the user and return an empty DataModelOracle
+        //Report any errors to the user
         if ( !results.getMessages().isEmpty() ) {
-            throw new BuildException( results );
+            buildResultsEvent.fire( results );
         }
 
         return pdBuilder.build();

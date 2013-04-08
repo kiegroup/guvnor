@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,7 +13,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
-import org.kie.guvnor.commons.service.builder.model.BuildResults;
+import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -55,6 +56,9 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
     @Inject
     private ProjectService projectService;
 
+    @Inject
+    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
+
     public synchronized void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
@@ -93,7 +97,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
     public synchronized DataModelOracle assertPackageDataModelOracle( final Path projectPath,
-                                                                      final Path packagePath ) throws BuildException {
+                                                                      final Path packagePath ) {
         DataModelOracle oracle = getEntry( packagePath );
         if ( oracle == null ) {
             oracle = makePackageDataModelOracle( projectPath,
@@ -105,7 +109,7 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
     }
 
     private DataModelOracle makePackageDataModelOracle( final Path projectPath,
-                                                        final Path packagePath ) throws BuildException {
+                                                        final Path packagePath ) {
         final String packageName = projectService.resolvePackageName( packagePath );
         final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newDataModelBuilder( packageName );
         final ProjectDefinition projectDefinition = cacheProjects.assertProjectDataModelOracle( projectPath );
@@ -123,14 +127,14 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
         loadGlobalsForPackage( dmoBuilder,
                                packagePath );
 
-        //Report any errors
-        final BuildResults results = new BuildResults();
-        final List<String> errors = dmoBuilder.getErrors();
-        for ( final String error : errors ) {
-            results.addBuildMessage( makeMessage( error ) );
-        }
-        if ( !results.getMessages().isEmpty() ) {
-            throw new BuildException( results );
+        //Report any incremental Build errors to Users
+        if ( !dmoBuilder.getErrors().isEmpty() ) {
+            final IncrementalBuildResults results = new IncrementalBuildResults();
+            final List<String> errors = dmoBuilder.getErrors();
+            for ( final String error : errors ) {
+                results.addAddedMessage( makeMessage( error ) );
+            }
+            incrementalBuildResultsEvent.fire( results );
         }
 
         return dmoBuilder.build();
