@@ -35,6 +35,7 @@ import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -63,8 +64,8 @@ import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleDSLREditor", supportedTypes = { GuidedRuleDSLRResourceType.class }, priority = 102)
-public class GuidedRuleDSLREditorPresenter {
+@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class }, priority = 102)
+public class GuidedRuleEditorPresenter {
 
     @Inject
     private ImportsWidgetPresenter importsWidget;

@@ -197,9 +197,9 @@ public class ExplorerServiceImplTest {
         assertContainsParentFolderItem( items, 1 );
 
         //Check items' caption
-        assertEquals( "pom.xml",
+        assertEquals( "Project definition 'ExplorerBackendTestProjectStructureValid'",
                       items.get( 0 ).getCaption() );
-        assertEquals( "project.imports",
+        assertEquals( "External imports",
                       items.get( 1 ).getCaption() );
         assertEquals( ItemNames.SOURCE_JAVA,
                       items.get( 2 ).getCaption() );
