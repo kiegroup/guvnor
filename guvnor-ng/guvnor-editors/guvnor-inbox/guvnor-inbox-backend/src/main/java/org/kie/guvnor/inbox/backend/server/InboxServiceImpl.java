@@ -24,7 +24,7 @@ import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.inbox.model.InboxPageRequest;
 import org.kie.guvnor.inbox.model.InboxPageRow;
 import org.kie.guvnor.inbox.service.InboxService;
-import org.uberfire.client.workbench.services.UserServices;
+import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
@@ -58,7 +58,7 @@ public class InboxServiceImpl
     private IOService ioService;
 
     @Inject
-    private UserServices userServices;
+    private UserServicesImpl userServices;
 
     @Inject
     @SessionScoped

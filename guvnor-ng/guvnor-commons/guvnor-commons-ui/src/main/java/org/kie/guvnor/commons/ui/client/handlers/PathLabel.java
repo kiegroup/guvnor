@@ -6,12 +6,12 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.AttrsUtil;
+import org.uberfire.backend.vfs.BasicFileAttributes;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.VFSTempUtil;
 
 /**
  * A Label to show a Path, truncated to the closest folder level
@@ -32,7 +32,7 @@ public class PathLabel extends Paragraph {
             vfsService.call( new RemoteCallback<Map>() {
                 @Override
                 public void callback( final Map response ) {
-                    final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                    final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
                     if ( attrs.isRegularFile() ) {
                         activePath = stripFileName( path );
                         setText( activePath.toURI() );
