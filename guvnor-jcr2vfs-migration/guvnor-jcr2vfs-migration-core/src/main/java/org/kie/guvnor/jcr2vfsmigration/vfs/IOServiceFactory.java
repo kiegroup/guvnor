@@ -27,6 +27,8 @@ import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
 import static org.kie.guvnor.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
@@ -63,6 +65,13 @@ public class IOServiceFactory {
     @Named("migrationFS")
     public FileSystem migrationFS() {
         return fs;
+    }
+    
+    @Produces
+    @Named("system")
+    public Repository systemRepository() {
+        DefaultSystemRepository systemRepository = new DefaultSystemRepository();
+        return systemRepository;
     }
 
 }

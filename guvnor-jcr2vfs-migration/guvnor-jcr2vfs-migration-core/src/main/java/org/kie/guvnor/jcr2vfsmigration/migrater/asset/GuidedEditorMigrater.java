@@ -17,6 +17,13 @@ import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
+import org.drools.guvnor.server.util.BRDRTPersistence;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.server.util.BRDRLPersistence;
+import org.drools.ide.common.server.util.BRDRTXMLPersistence;
+import org.drools.ide.common.server.util.BRLPersistence;
+import org.drools.ide.common.server.util.BRXMLPersistence;
+
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
@@ -67,20 +74,27 @@ public class GuidedEditorMigrater {
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
         }
         
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);        
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-
-        Map<String, Object> attrs;
-        try {
-            attrs = ioService.readAttributes( nioPath );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
-        
         try {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
-            //String sourceDRL = getSourceDRL((org.drools.ide.common.client.modeldriven.brl.RuleModel) jcrAsset.getContent());
+            
+            RuleModel ruleModel = getBrlXmlPersistence().unmarshal( jcrAssetItem.getContent() );
+            
+            Path path = null;
+            if(ruleModel.hasDSLSentences()) {
+                path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem, true);                        
+            } else {
+                path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem, false);                        
+            }
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
+            Map<String, Object> attrs;
+            try {
+                attrs = ioService.readAttributes( nioPath );
+            } catch ( final NoSuchFileException ex ) {
+                attrs = new HashMap<String, Object>();
+            }
+            
+            
             StringBuilder sb = new StringBuilder();
             BRMSPackageBuilder builder = new BRMSPackageBuilder(rulesRepository.loadModuleByUUID(jcrModule.getUuid()));
             BRLContentHandler handler = new BRLContentHandler();
@@ -95,18 +109,8 @@ public class GuidedEditorMigrater {
             e.printStackTrace();
         }
     }
-
-    private String getSourceDRL(org.drools.ide.common.client.modeldriven.brl.RuleModel model/*, BRMSPackageBuilder builder*/) {
-
-        String drl = getBrlDrlPersistence().marshal( model );
-/*        if ( builder.hasDSL() && model.hasDSLSentences() ) {
-            drl = builder.getDSLExpander().expand( drl );
-        }*/
-        return drl;
+    
+    protected BRLPersistence getBrlXmlPersistence() {
+        return BRXMLPersistence.getInstance();
     }
-
-    protected org.drools.ide.common.server.util.BRLPersistence getBrlDrlPersistence() {
-        return org.drools.ide.common.server.util.BRDRLPersistence.getInstance();
-    }
-
 }
