@@ -35,7 +35,7 @@ public class MigrationPathManager {
 
     public Path generateRootPath() {
 
-        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "projects" ) );
+        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "project" ));
 
         final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
 
@@ -43,7 +43,7 @@ public class MigrationPathManager {
     }
     
     public Path generatePathForModule( Module jcrModule ) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( "projects" ) + "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
 
         final Path path = PathFactory.newPath( paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
 
@@ -54,7 +54,7 @@ public class MigrationPathManager {
     public Path generatePathForAsset( Module jcrModule,
                                       Asset jcrAsset,
                                       boolean hasDSL) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( "projects" ) + "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
         
         //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
         org.kie.commons.java.nio.file.Path assetPath = null;
@@ -79,7 +79,7 @@ public class MigrationPathManager {
     } 
 
     public Path generatePathForAsset(Module jcrModule, AssetItem jcrAssetItem, boolean hasDSL) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry("projects") + "/"  + escapePathEntry(jcrModule.getName()));
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry(jcrModule.getName()));
 
         org.kie.commons.java.nio.file.Path assetPath = null;
         if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && !hasDSL) {

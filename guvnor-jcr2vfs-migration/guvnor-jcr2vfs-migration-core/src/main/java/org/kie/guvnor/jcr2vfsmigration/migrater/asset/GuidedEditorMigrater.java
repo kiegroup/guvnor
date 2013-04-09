@@ -85,6 +85,7 @@ public class GuidedEditorMigrater {
             } else {
                 path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem, false);                        
             }
+            
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
             Map<String, Object> attrs;
