@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -89,6 +90,10 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
+                if(checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());  
+                    return;
+                }
                 dependency.setArtifactId(value);
             }
         });
@@ -111,6 +116,10 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
+                if(checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());       
+                    return;
+                }
                 dependency.setGroupId(value);
             }
         });
@@ -133,11 +142,23 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
+                if(checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());      
+                    return;
+                }
                 dependency.setVersion(value);
             }
         });
         dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.VersionID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    }
+    
+    boolean checkIsInValid(String content) {
+        if(content !=null && (content.contains("<") || content.contains(">") || content.contains("&"))) {
+            return true;
+        }
+        
+        return false;
     }
 
     private void addRemoveRowColumn() {

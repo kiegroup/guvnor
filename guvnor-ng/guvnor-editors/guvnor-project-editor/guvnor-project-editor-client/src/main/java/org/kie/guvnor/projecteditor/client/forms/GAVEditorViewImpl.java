@@ -1,10 +1,13 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
+import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +50,10 @@ public class GAVEditorViewImpl
 
     @UiHandler("groupIdTextBox")
     public void onGroupIdChange(KeyUpEvent event) {
+        if(checkIsInValid(groupIdTextBox.getText())) {
+            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());  
+            return;
+        }
         presenter.onGroupIdChange(groupIdTextBox.getText());
     }
 
@@ -64,6 +71,10 @@ public class GAVEditorViewImpl
 
     @UiHandler("artifactIdTextBox")
     public void onArtifactIdChange(KeyUpEvent event) {
+        if(checkIsInValid(artifactIdTextBox.getText())) {
+            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());    
+            return;
+        }
         presenter.onArtifactIdChange(artifactIdTextBox.getText());
     }
 
@@ -74,6 +85,18 @@ public class GAVEditorViewImpl
 
     @UiHandler("versionIdTextBox")
     public void onVersionIdChange(KeyUpEvent event) {
+        if(checkIsInValid(versionIdTextBox.getText())) {
+            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());     
+            return;
+        }
         presenter.onVersionIdChange(versionIdTextBox.getText());
+    }
+    
+    boolean checkIsInValid(String content) {
+        if(content !=null && (content.contains("<") || content.contains(">") || content.contains("&"))) {
+            return true;
+        }
+        
+        return false;
     }
 }

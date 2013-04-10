@@ -126,4 +126,6 @@ public interface ProjectEditorConstants
     String newFolderDescription();
 
     String NoRepositorySelectedPleaseSelectARepository();
+    
+    String XMLMarkIsNotAllowed();
 }
