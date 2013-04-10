@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.globals.backend.server;
 
-import org.kie.guvnor.commons.service.source.DRLBaseSourceService;
+import org.kie.guvnor.commons.service.backend.DRLBaseSourceService;
 
 public class GlobalsSourceService
         extends DRLBaseSourceService {

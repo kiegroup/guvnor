@@ -26,12 +26,8 @@ import org.drools.guvnor.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -39,11 +35,6 @@ import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -107,65 +98,31 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                         final String fileName,
                         final TemplateModel content,
                         final String comment ) {
-        Path newPath = null;
-        try {
-            content.setPackageName( projectService.resolvePackageName( context ) );
+        content.setPackageName( projectService.resolvePackageName( context ) );
 
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            newPath = paths.convert( nioPath,
-                                     false );
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+        final Path newPath = paths.convert( nioPath,
+                                            false );
 
-            ioService.createFile( nioPath );
-            ioService.write( nioPath,
-                             BRDRTXMLPersistence.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+        ioService.createFile( nioPath );
+        ioService.write( nioPath,
+                         BRDRTXMLPersistence.getInstance().marshal( content ),
+                         makeCommentedOption( comment ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-            return newPath;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( newPath.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( newPath.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( newPath.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return newPath;
     }
 
     @Override
     public TemplateModel load( final Path path ) {
-        try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+        final String content = ioService.readAllString( paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content );
-
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content );
     }
 
     @Override
@@ -181,38 +138,17 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                       final TemplateModel model,
                       final Metadata metadata,
                       final String comment ) {
-        try {
-            model.setPackageName( projectService.resolvePackageName( resource ) );
+        model.setPackageName( projectService.resolvePackageName( resource ) );
 
-            ioService.write( paths.convert( resource ),
-                             BRDRTXMLPersistence.getInstance().marshal( model ),
-                             metadataService.setUpAttributes( resource, metadata ),
-                             makeCommentedOption( comment ) );
+        ioService.write( paths.convert( resource ),
+                         BRDRTXMLPersistence.getInstance().marshal( model ),
+                         metadataService.setUpAttributes( resource, metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return resource;
     }
 
     @Override

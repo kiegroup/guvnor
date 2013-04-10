@@ -1,7 +1,6 @@
 package org.kie.guvnor.services.backend.file;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.services.file.LinkedFilter;
 
 /**
  * A Filter to exclude "META-INF" folder from users

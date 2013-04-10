@@ -1,4 +1,4 @@
-package org.kie.guvnor.services.file;
+package org.kie.guvnor.services.backend.file;
 
 import java.util.Collection;
 

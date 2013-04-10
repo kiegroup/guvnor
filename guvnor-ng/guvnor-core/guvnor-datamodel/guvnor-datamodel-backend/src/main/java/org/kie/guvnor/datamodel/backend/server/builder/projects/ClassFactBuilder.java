@@ -1,7 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.guvnor.datamodel.model.ClassMethodInspector;
 import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;

@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.testscenario.client;
 
+import javax.enterprise.inject.New;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
@@ -26,19 +28,21 @@ import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCa
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import javax.enterprise.inject.New;
-
-@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
+@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
 public class ScenarioEditorPresenter {
 
     private final FileMenuBuilder menuBuilder;
@@ -50,72 +54,69 @@ public class ScenarioEditorPresenter {
 
     private Path path;
 
-    private BusyIndicatorView busyIndicatorView;
     private Scenario scenario;
 
     @Inject
-    public ScenarioEditorPresenter(final @New ScenarioEditorView view,
-                                   final @New FileMenuBuilder menuBuilder,
-                                   final BusyIndicatorView busyIndicatorView,
-                                   final Caller<ScenarioTestEditorService> service) {
+    public ScenarioEditorPresenter( final @New ScenarioEditorView view,
+                                    final @New FileMenuBuilder menuBuilder,
+                                    final Caller<ScenarioTestEditorService> service ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
-        this.busyIndicatorView = busyIndicatorView;
         this.service = service;
     }
 
     @OnStart
-    public void onStart(final Path path,
-                        final PlaceRequest place) {
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
 
-        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         this.path = path;
 
-        if (!isReadOnly) {
-            view.addMetaDataPage(path, isReadOnly);
+        if ( !isReadOnly ) {
+            view.addMetaDataPage( path, isReadOnly );
         }
 
-        service.call(new RemoteCallback<TestScenarioModelContent>() {
+        service.call( new RemoteCallback<TestScenarioModelContent>() {
             @Override
-            public void callback(TestScenarioModelContent modelContent) {
+            public void callback( TestScenarioModelContent modelContent ) {
                 scenario = modelContent.getScenario();
 
                 dmo = modelContent.getOracle();
-                dmo.filter(scenario.getImports());
+                dmo.filter( scenario.getImports() );
 
-                view.setScenario(modelContent.getPackageName(), scenario, dmo);
+                view.setScenario( modelContent.getPackageName(), scenario, dmo );
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
-                if (!isReadOnly) {
-                    view.addTestRunnerWidget(scenario, service, path);
+                if ( !isReadOnly ) {
+                    view.addTestRunnerWidget( scenario, service, path );
                 }
 
                 view.renderEditor();
 
-                view.initImportsTab(dmo, scenario.getImports(), isReadOnly);
+                view.initImportsTab( dmo, scenario.getImports(), isReadOnly );
             }
-        }).loadContent(path);
+        } ).loadContent( path );
 
         makeMenuBar();
     }
 
     private void onSave() {
-        if (isReadOnly) {
+        if ( isReadOnly ) {
             view.showCanNotSaveReadOnly();
         } else {
-            new SaveOperationService().save(path,
-                    new CommandWithCommitMessage() {
-                        @Override
-                        public void execute(final String commitMessage) {
-                            view.showBusyIndicator();
-                            service.call(getSaveSuccessCallback(),
-                                    new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save(path,
-                                    scenario,
-                                    view.getMetadata(),
-                                    commitMessage);
-                        }
-                    });
+            new SaveOperationService().save( path,
+                                             new CommandWithCommitMessage() {
+                                                 @Override
+                                                 public void execute( final String commitMessage ) {
+                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                     service.call( getSaveSuccessCallback(),
+                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                            scenario,
+                                                                                                                            view.getMetadata(),
+                                                                                                                            commitMessage );
+                                                 }
+                                             } );
         }
     }
 
@@ -123,8 +124,8 @@ public class ScenarioEditorPresenter {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
-                busyIndicatorView.hideBusyIndicator();
+            public void callback( final Path path ) {
+                view.hideBusyIndicator();
                 view.resetMetadataDirty();
                 view.showSaveSuccessful();
             }
@@ -147,26 +148,26 @@ public class ScenarioEditorPresenter {
     }
 
     private void makeMenuBar() {
-        if (isReadOnly) {
-            menus = menuBuilder.addRestoreVersion(path).build();
+        if ( isReadOnly ) {
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addSave(new Command() {
+                    .addSave( new Command() {
                         @Override
                         public void execute() {
                             onSave();
                         }
-                    })
-                    .addCopy(path)
-                    .addRename(path)
-                    .addDelete(path)
+                    } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
                     .build();
         }
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {
-        if (scenario.getFixtures().size() == 0) {
-            scenario.getFixtures().add(new ExecutionTrace());
+        if ( scenario.getFixtures().size() == 0 ) {
+            scenario.getFixtures().add( new ExecutionTrace() );
         }
     }
 }

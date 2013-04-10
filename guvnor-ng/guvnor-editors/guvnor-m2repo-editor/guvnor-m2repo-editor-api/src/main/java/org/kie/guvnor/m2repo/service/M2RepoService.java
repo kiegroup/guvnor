@@ -22,21 +22,19 @@ import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.project.model.GAV;
 
-import java.io.InputStream;
-
-
 @Remote
 public interface M2RepoService {
 
-    public String getJarName(String path);
+    public String getJarName( String path );
 
-    public void deleteJar(String[] path);
+    public void deleteJar( String[] path );
 
-    public String loadPOMStringFromJar(String path);
+    public String loadPOMStringFromJar( String path );
 
-    public GAV loadGAVFromJar(String path);
+    public GAV loadGAVFromJar( String path );
 
-    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters);
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest,
+                                                  String filters );
 
-    public String getRepositoryURL(String baseURL);
+    public String getRepositoryURL( String baseURL );
 }

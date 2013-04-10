@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.dtablexls.backend.server;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -28,20 +29,10 @@ import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService;
-import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -57,7 +48,7 @@ import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
-public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
+public class DecisionTableXLSServiceImpl implements ExtendedDecisionTableXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( DecisionTableXLSServiceImpl.class );
 
@@ -96,31 +87,13 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
     private Identity identity;
 
     public InputStream load( final Path path ) {
-        try {
-            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                      StandardOpenOption.READ );
+        final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                  StandardOpenOption.READ );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return inputStream;
-
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( path.toURI() );
-
-        }
+        return inputStream;
     }
 
     public Path create( final Path resource,
@@ -141,27 +114,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
 
             return resource;
 
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( java.io.IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
         } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
         }
     }
 
@@ -181,27 +135,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService {
 
             return resource;
 
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( java.io.IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
         } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
         }
     }
 

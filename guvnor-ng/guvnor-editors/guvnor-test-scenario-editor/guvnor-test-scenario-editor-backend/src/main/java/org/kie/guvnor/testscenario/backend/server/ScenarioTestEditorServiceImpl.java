@@ -16,20 +16,21 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
+import java.util.Date;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.session.SessionService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.exceptions.*;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -44,12 +45,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -103,159 +98,104 @@ public class ScenarioTestEditorServiceImpl
     private Identity identity;
 
     @Override
-    public Path create(final Path context,
-                       final String fileName,
-                       final Scenario content,
-                       final String comment) {
-        Path newPath = null;
-        try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert(context).resolve(fileName);
-            newPath = paths.convert(nioPath,
-                    false);
+    public Path create( final Path context,
+                        final String fileName,
+                        final Scenario content,
+                        final String comment ) {
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+        final Path newPath = paths.convert( nioPath,
+                                            false );
 
-            ioService.createFile(nioPath);
-            ioService.write(nioPath,
-                    ScenarioXMLPersistence.getInstance().marshal(content),
-                    makeCommentedOption(comment));
+        ioService.createFile( nioPath );
+        ioService.write( nioPath,
+                         ScenarioXMLPersistence.getInstance().marshal( content ),
+                         makeCommentedOption( comment ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire(new ResourceAddedEvent(newPath));
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-            return newPath;
-
-        } catch (InvalidPathException e) {
-            throw new InvalidPathPortableException(newPath.toURI());
-
-        } catch (SecurityException e) {
-            throw new SecurityPortableException(newPath.toURI());
-
-        } catch (IllegalArgumentException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        } catch (FileAlreadyExistsException e) {
-            throw new FileAlreadyExistsPortableException(newPath.toURI());
-
-        } catch (IOException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        } catch (UnsupportedOperationException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        }
+        return newPath;
     }
 
     @Override
-    public Scenario load(final Path path) {
-        try {
-            final String content = ioService.readAllString(paths.convert(path));
+    public Scenario load( final Path path ) {
+        final String content = ioService.readAllString( paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire(new ResourceOpenedEvent(path));
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return ScenarioXMLPersistence.getInstance().unmarshal(content);
-
-        } catch (NoSuchFileException e) {
-            throw new NoSuchFilePortableException(path.toURI());
-
-        } catch (IllegalArgumentException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        } catch (IOException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        }
+        return ScenarioXMLPersistence.getInstance().unmarshal( content );
     }
 
     @Override
-    public Path save(final Path resource,
-                     final Scenario content,
-                     final Metadata metadata,
-                     final String comment) {
-        try {
-            ioService.write(paths.convert(resource),
-                    ScenarioXMLPersistence.getInstance().marshal(content),
-                    metadataService.setUpAttributes(resource,
-                            metadata),
-                    makeCommentedOption(comment));
+    public Path save( final Path resource,
+                      final Scenario content,
+                      final Metadata metadata,
+                      final String comment ) {
+        ioService.write( paths.convert( resource ),
+                         ScenarioXMLPersistence.getInstance().marshal( content ),
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Invalidate Package-level DMO cache as Globals have changed.
-            invalidatePackageDMOEvent.fire(new InvalidateDMOPackageCacheEvent(resource));
+        //Invalidate Package-level DMO cache as Globals have changed.
+        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire(new ResourceUpdatedEvent(resource));
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch (InvalidPathException e) {
-            throw new InvalidPathPortableException(resource.toURI());
-
-        } catch (SecurityException e) {
-            throw new SecurityPortableException(resource.toURI());
-
-        } catch (IllegalArgumentException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        } catch (FileAlreadyExistsException e) {
-            throw new FileAlreadyExistsPortableException(resource.toURI());
-
-        } catch (IOException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        } catch (UnsupportedOperationException e) {
-            throw new GenericPortableException(e.getMessage());
-
-        }
+        return resource;
     }
 
     @Override
-    public void delete(final Path path,
-                       final String comment) {
-        deleteService.delete(path,
-                comment);
+    public void delete( final Path path,
+                        final String comment ) {
+        deleteService.delete( path,
+                              comment );
     }
 
     @Override
-    public Path rename(final Path path,
-                       final String newName,
-                       final String comment) {
-        return renameService.rename(path,
-                newName,
-                comment);
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
+        return renameService.rename( path,
+                                     newName,
+                                     comment );
     }
 
     @Override
-    public Path copy(final Path path,
-                     final String newName,
-                     final String comment) {
-        return copyService.copy(path,
-                newName,
-                comment);
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
+        return copyService.copy( path,
+                                 newName,
+                                 comment );
     }
 
-    private CommentedOption makeCommentedOption(final String commitMessage) {
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        return new CommentedOption(name,
-                null,
-                commitMessage,
-                when);
+        return new CommentedOption( name,
+                                    null,
+                                    commitMessage,
+                                    when );
     }
 
     @Override
-    public TestScenarioModelContent loadContent(Path path) {
+    public TestScenarioModelContent loadContent( Path path ) {
         return new TestScenarioModelContent(
-                load(path),
-                dataModelService.getDataModel(path),
-                projectService.resolvePackageName(path));
+                load( path ),
+                dataModelService.getDataModel( path ),
+                projectService.resolvePackageName( path ) );
     }
 
     @Override
-    public void runScenario(Path path,
-                            Scenario scenario) {
+    public void runScenario( Path path,
+                             Scenario scenario ) {
 
-        Path pathToPom = projectService.resolvePathToPom(path);
+        Path pathToPom = projectService.resolvePathToPom( path );
 
-        new ScenarioRunnerWrapper().run(scenario, sessionService.newKieSession(pathToPom, "someSession"), testResultMessageEvent);
+        new ScenarioRunnerWrapper().run( scenario, sessionService.newKieSession( pathToPom, "someSession" ), testResultMessageEvent );
 
     }
 }

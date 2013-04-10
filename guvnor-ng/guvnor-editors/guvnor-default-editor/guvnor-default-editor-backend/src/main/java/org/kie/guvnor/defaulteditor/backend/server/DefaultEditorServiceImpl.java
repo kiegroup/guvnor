@@ -24,15 +24,8 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
 import org.kie.guvnor.defaulteditor.service.DefaultEditorService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.slf4j.Logger;
@@ -70,37 +63,16 @@ public class DefaultEditorServiceImpl
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        try {
-            ioService.write( paths.convert( resource ),
-                             content,
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+        ioService.write( paths.convert( resource ),
+                         content,
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return resource;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

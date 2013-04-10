@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.SourceService;
+import org.kie.guvnor.commons.service.backend.SourceService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

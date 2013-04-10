@@ -1,7 +1,6 @@
 package org.kie.guvnor.services.backend.file;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.services.file.LinkedFilter;
 
 /**
  * A Filter to exclude "dot Files" that can be hidden from users

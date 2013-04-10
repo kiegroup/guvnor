@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.commons.service.backend.BaseSourceService;
 import org.kie.guvnor.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 
 @ApplicationScoped

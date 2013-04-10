@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.service.source;
+package org.kie.guvnor.commons.service.backend;
 
 import org.kie.commons.java.nio.file.Path;
 
-public abstract class DRLBaseSourceService
-        extends BaseSourceService<String> {
+public interface SourceService<T> {
 
-    @Override
-    public String getSource( final Path path,
-                             final String drl ) {
-        return drl;
-    }
+    boolean accepts( final Path path );
+
+    /**
+     * @param path path to the file
+     * @param model the current model. Originally loaded from the file, but the content might have changed.
+     * @return Source generated from the model, not from the file that the path points to.
+     */
+    String getSource( final Path path,
+                      final T model );
+
+    String getPattern();
 
 }

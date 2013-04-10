@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.service.source;
+package org.kie.guvnor.commons.service.backend;
 
 import org.kie.commons.java.nio.file.Path;
 
-public interface SourceService<T> {
+public interface SourceServices {
 
-    boolean accepts( final Path path );
+    boolean hasServiceFor( final Path path );
 
-    /**
-     * @param path path to the file
-     * @param model the current model. Originally loaded from the file, but the content might have changed.
-     * @return Source generated from the model, not from the file that the path points to.
-     */
-    String getSource( final Path path,
-                      final T model );
-
-    String getPattern();
+    SourceService getServiceFor( final Path path );
 
 }

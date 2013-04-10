@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.model;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -27,6 +27,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
+import org.kie.guvnor.datamodel.model.MethodInfo;
 
 /**
  * Finds all methods that are not getters or setters from a class.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.scorecardxls.service;
+package org.kie.guvnor.commons.service.backend;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.services.file.SupportsCopy;
-import org.kie.guvnor.services.file.SupportsDelete;
-import org.kie.guvnor.services.file.SupportsRename;
+import org.kie.commons.java.nio.file.Path;
 
-@Remote
-public interface ScoreCardXLSService
-        extends ValidationService<String>,
-                SupportsDelete,
-                SupportsCopy,
-                SupportsRename {
+public abstract class DRLBaseSourceService
+        extends BaseSourceService<String> {
+
+    @Override
+    public String getSource( final Path path,
+                             final String drl ) {
+        return drl;
+    }
 
 }

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.commons.service.backend.BaseSourceService;
 import org.kie.guvnor.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 
 @ApplicationScoped

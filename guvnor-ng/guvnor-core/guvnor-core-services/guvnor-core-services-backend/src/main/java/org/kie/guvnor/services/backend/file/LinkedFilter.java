@@ -1,4 +1,4 @@
-package org.kie.guvnor.services.file;
+package org.kie.guvnor.services.backend.file;
 
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;

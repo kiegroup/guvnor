@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.commons.service.source;
+package org.kie.guvnor.scorecardxls.backend.server;
 
-import org.kie.commons.java.nio.file.Path;
+import java.io.InputStream;
 
-public interface SourceServices {
+import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
+import org.uberfire.backend.vfs.Path;
 
-    boolean hasServiceFor( final Path path );
+public interface ExtendedScoreCardXLSService
+        extends ScoreCardXLSService {
 
-    SourceService getServiceFor( final Path path );
+    InputStream load( final Path path );
+
+    Path create( final Path resource,
+                 final InputStream content,
+                 final String comment );
+
+    Path save( final Path resource,
+               final InputStream content,
+               final String comment );
 
 }

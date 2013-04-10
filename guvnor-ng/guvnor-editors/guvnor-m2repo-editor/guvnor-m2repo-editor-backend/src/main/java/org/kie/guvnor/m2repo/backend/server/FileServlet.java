@@ -16,6 +16,19 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.List;
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -26,21 +39,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
-
-import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -51,48 +50,48 @@ public class FileServlet extends HttpServlet {
     private static final long serialVersionUID = 510l;
 
     @Inject
-    private M2RepoServiceImpl m2RepoService;
-    
+    private ExtendedM2RepoService m2RepoService;
+
     @Inject
     private GuvnorM2Repository repository;
+
     /**
      * Posting accepts content of various types -
      * may be an attachement for an asset, or perhaps a repository import to process.
      */
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException,
-                                                       IOException {
+    protected void doPost( HttpServletRequest request,
+                           HttpServletResponse response ) throws ServletException,
+            IOException {
 
         response.setContentType( "text/html" );
-        FormData uploadItem = getFormData(request);
+        FormData uploadItem = getFormData( request );
 
-        
-        if ( uploadItem.getFile() != null) {
+        if ( uploadItem.getFile() != null ) {
             response.getWriter().write( processUpload( uploadItem ) );
             return;
         }
-        
+
         response.getWriter().write( "NO-SCRIPT-DATA" );
     }
 
-    private String processUpload(FormData uploadItem) throws IOException {
+    private String processUpload( FormData uploadItem ) throws IOException {
 
         // If the file it doesn't exist.
-        if ("".equals(uploadItem.getFile().getName())) {
-            throw new IOException("No file selected.");
+        if ( "".equals( uploadItem.getFile().getName() ) ) {
+            throw new IOException( "No file selected." );
         }
 
-        String processResult = uploadFile(uploadItem);
+        String processResult = uploadFile( uploadItem );
         uploadItem.getFile().getInputStream().close();
-        
+
         return processResult;
     }
-    
+
     /**
      * Get the form data from the inbound request.
      */
     @SuppressWarnings("rawtypes")
-    public static FormData getFormData(HttpServletRequest request) throws IOException {
+    public static FormData getFormData( HttpServletRequest request ) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
         upload.setHeaderEncoding( "UTF-8" );
@@ -107,29 +106,28 @@ public class FileServlet extends HttpServlet {
                 if ( !item.isFormField() ) {
                     data.setFile( item );
                 }
-                
-                
+
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.GROUP_ID ) ) {
-                    System.out.println("GROUP_ID:" + item.getString());
-                    emptyGAV.setGroupId(item.getString());
+                    System.out.println( "GROUP_ID:" + item.getString() );
+                    emptyGAV.setGroupId( item.getString() );
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
-                    System.out.println("ARTIFACT_ID:" + item.getString());
-                    emptyGAV.setArtifactId(item.getString());
+                    System.out.println( "ARTIFACT_ID:" + item.getString() );
+                    emptyGAV.setArtifactId( item.getString() );
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION_ID ) ) {
-                    System.out.println("VERSION_ID:" + item.getString());
-                    emptyGAV.setVersion(item.getString());
+                    System.out.println( "VERSION_ID:" + item.getString() );
+                    emptyGAV.setVersion( item.getString() );
                 }
             }
-            
-            if(emptyGAV.getArtifactId() == null 
-                    || "".equals(emptyGAV.getArtifactId()) 
-                    || emptyGAV.getArtifactId() == null 
-                    || "".equals(emptyGAV.getArtifactId()) 
+
+            if ( emptyGAV.getArtifactId() == null
+                    || "".equals( emptyGAV.getArtifactId() )
+                    || emptyGAV.getArtifactId() == null
+                    || "".equals( emptyGAV.getArtifactId() )
                     || emptyGAV.getVersion() == null
-                    || "".equals(emptyGAV.getVersion()) ) {
-                data.setGav(null);
+                    || "".equals( emptyGAV.getVersion() ) ) {
+                data.setGav( null );
             } else {
-                data.setGav(emptyGAV);
+                data.setGav( emptyGAV );
             }
 
             return data;
@@ -137,62 +135,62 @@ public class FileServlet extends HttpServlet {
             //TODO
             //throw new RulesRepositoryException( e );
         }
-        
+
         return null;
     }
-    
-    public String uploadFile(FormData uploadItem) throws IOException {
+
+    public String uploadFile( FormData uploadItem ) throws IOException {
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
         GAV gav = uploadItem.getGav();
 
         try {
-            if (gav == null) {
-                if (!fileData.markSupported()) {
-                    fileData = new BufferedInputStream(fileData);
+            if ( gav == null ) {
+                if ( !fileData.markSupported() ) {
+                    fileData = new BufferedInputStream( fileData );
                 }
 
-                fileData.mark(fileData.available()); // is available() safe?
-                String pom = GuvnorM2Repository.loadPOMFromJar(fileData);
+                fileData.mark( fileData.available() ); // is available() safe?
+                String pom = GuvnorM2Repository.loadPOMFromJar( fileData );
                 fileData.reset();
 
-                if (pom != null) {
-                    Model model = new MavenXpp3Reader().read(new StringReader(pom));
+                if ( pom != null ) {
+                    Model model = new MavenXpp3Reader().read( new StringReader( pom ) );
 
                     String groupId = model.getGroupId();
                     String artifactId = model.getArtifactId();
                     String version = model.getVersion();
 
-                    if (groupId == null) {
+                    if ( groupId == null ) {
                         groupId = model.getParent().getGroupId();
                     }
-                    if (version == null) {
+                    if ( version == null ) {
                         version = model.getParent().getVersion();
                     }
 
-                    gav = new GAV(groupId, artifactId, version);
+                    gav = new GAV( groupId, artifactId, version );
                 } else {
-                    return "NO VALID POM";                   
+                    return "NO VALID POM";
                 }
             }
-            
-            m2RepoService.deployJar(fileData, gav);
+
+            m2RepoService.deployJar( fileData, gav );
             uploadItem.getFile().getInputStream().close();
 
             return "OK";
-        } catch (XmlPullParserException e) {
-        } catch (IOException ioe) {
+        } catch ( XmlPullParserException e ) {
+        } catch ( IOException ioe ) {
         }
 
         return "INTERNAL ERROR";
-    }    
-  
+    }
+
     /**
      * doGet acting like a dispatcher.
      */
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse res) throws ServletException,
-                                                 IOException {
+    protected void doGet( HttpServletRequest req,
+                          HttpServletResponse res ) throws ServletException,
+            IOException {
 
         String path = req.getParameter( HTMLFileManagerFields.FORM_FIELD_PATH );
 
@@ -204,13 +202,13 @@ public class FileServlet extends HttpServlet {
         }
     }
 
-    protected void processAttachmentDownload(String path,
-                                             HttpServletResponse response) throws IOException {
+    protected void processAttachmentDownload( String path,
+                                              HttpServletResponse response ) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        IOUtils.copy(m2RepoService.loadJar(path), output);
-        
-        String fileName = m2RepoService.getJarName(path);
-        
+        IOUtils.copy( m2RepoService.loadJar( path ), output );
+
+        String fileName = m2RepoService.getJarName( path );
+
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
                             "attachment; filename=" + fileName + ";" );

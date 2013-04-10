@@ -15,7 +15,7 @@ import org.kie.guvnor.explorer.model.ItemNames;
 import org.kie.guvnor.explorer.model.ParentFolderItem;
 import org.kie.guvnor.services.backend.file.LinkedDotFileFilter;
 import org.kie.guvnor.services.backend.file.LinkedMetaInfFolderFilter;
-import org.kie.guvnor.services.file.LinkedFilter;
+import org.kie.guvnor.services.backend.file.LinkedFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

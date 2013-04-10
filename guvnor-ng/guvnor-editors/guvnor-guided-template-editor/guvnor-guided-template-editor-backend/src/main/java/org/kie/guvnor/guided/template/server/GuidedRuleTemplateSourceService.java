@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.models.guided.template.backend.BRDRTPersistence;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.source.BaseSourceService;
+import org.kie.guvnor.commons.service.backend.BaseSourceService;
 import org.kie.guvnor.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 
 @ApplicationScoped

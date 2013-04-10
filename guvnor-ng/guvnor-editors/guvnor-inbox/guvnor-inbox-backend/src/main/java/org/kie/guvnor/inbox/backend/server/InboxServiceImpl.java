@@ -15,6 +15,15 @@
  */
 package org.kie.guvnor.inbox.backend.server;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
@@ -28,15 +37,6 @@ import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

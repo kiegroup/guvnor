@@ -26,11 +26,7 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
@@ -38,11 +34,6 @@ import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.enums.model.EnumModel;
 import org.kie.guvnor.enums.model.EnumModelContent;
 import org.kie.guvnor.enums.service.EnumService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -103,63 +94,29 @@ public class EnumServiceImpl implements EnumService {
                         final String fileName,
                         final String content,
                         final String comment ) {
-        Path newPath = null;
-        try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            newPath = paths.convert( nioPath,
-                                     false );
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+        final Path newPath = paths.convert( nioPath,
+                                            false );
 
-            ioService.createFile( nioPath );
-            ioService.write( nioPath,
-                             content,
-                             makeCommentedOption( comment ) );
+        ioService.createFile( nioPath );
+        ioService.write( nioPath,
+                         content,
+                         makeCommentedOption( comment ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-            return newPath;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( newPath.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( newPath.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( newPath.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return newPath;
     }
 
     @Override
     public String load( final Path path ) {
-        try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+        final String content = ioService.readAllString( paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return content;
-
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return content;
     }
 
     @Override
@@ -172,40 +129,19 @@ public class EnumServiceImpl implements EnumService {
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        try {
-            ioService.write( paths.convert( resource ),
-                             content,
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+        ioService.write( paths.convert( resource ),
+                         content,
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Invalidate Package-level DMO cache as Enums have changed.
-            invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+        //Invalidate Package-level DMO cache as Enums have changed.
+        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return resource;
     }
 
     @Override

@@ -6,11 +6,6 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.file.DeleteService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -38,26 +33,9 @@ public class DeleteServiceImpl implements DeleteService {
                         final String comment ) {
         System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
-        try {
-            ioService.delete( paths.convert( path ) );
+        ioService.delete( paths.convert( path ) );
 
-            resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
-
-        } catch ( DirectoryNotEmptyException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( SecurityException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( path.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-        }
+        resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
     }
 
 }

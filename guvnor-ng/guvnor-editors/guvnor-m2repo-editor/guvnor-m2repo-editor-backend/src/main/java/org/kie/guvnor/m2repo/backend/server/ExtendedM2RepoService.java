@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.scorecardxls.service;
+package org.kie.guvnor.m2repo.backend.server;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.services.file.SupportsCopy;
-import org.kie.guvnor.services.file.SupportsDelete;
-import org.kie.guvnor.services.file.SupportsRename;
+import java.io.InputStream;
 
-@Remote
-public interface ScoreCardXLSService
-        extends ValidationService<String>,
-                SupportsDelete,
-                SupportsCopy,
-                SupportsRename {
+import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.project.model.GAV;
+
+public interface ExtendedM2RepoService extends M2RepoService {
+
+    public void deployJar( InputStream is,
+                           GAV gav );
+
+    public InputStream loadJar( String path );
 
 }

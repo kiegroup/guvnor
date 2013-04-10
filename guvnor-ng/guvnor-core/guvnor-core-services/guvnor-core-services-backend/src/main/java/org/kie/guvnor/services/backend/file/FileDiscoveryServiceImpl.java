@@ -9,7 +9,6 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.services.file.FileDiscoveryService;
 
 /**
  * Default implementation of FileDiscoveryService

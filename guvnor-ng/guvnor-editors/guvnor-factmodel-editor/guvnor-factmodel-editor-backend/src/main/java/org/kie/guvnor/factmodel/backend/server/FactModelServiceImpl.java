@@ -27,12 +27,8 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.commons.service.source.SourceServices;
+import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -45,14 +41,9 @@ import org.kie.guvnor.factmodel.service.FactModelService;
 import org.kie.guvnor.factmodel.type.FactModelResourceTypeDefinition;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.backend.file.FileExtensionFilter;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
-import org.kie.guvnor.services.file.FileDiscoveryService;
+import org.kie.guvnor.services.backend.file.FileDiscoveryService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -124,65 +115,31 @@ public class FactModelServiceImpl implements FactModelService {
                         final String fileName,
                         final FactModels content,
                         final String comment ) {
-        Path newPath = null;
-        try {
-            content.setPackageName( projectService.resolvePackageName( context ) );
+        content.setPackageName( projectService.resolvePackageName( context ) );
 
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            newPath = paths.convert( nioPath,
-                                     false );
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+        final Path newPath = paths.convert( nioPath,
+                                            false );
 
-            ioService.createFile( nioPath );
-            ioService.write( nioPath,
-                             FactModelPersistence.marshal( content ),
-                             makeCommentedOption( comment ) );
+        ioService.createFile( nioPath );
+        ioService.write( nioPath,
+                         FactModelPersistence.marshal( content ),
+                         makeCommentedOption( comment ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-            return newPath;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( newPath.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( newPath.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( newPath.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return newPath;
     }
 
     @Override
     public FactModels load( final Path path ) {
-        try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+        final String content = ioService.readAllString( paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return FactModelPersistence.unmarshal( content );
-
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return FactModelPersistence.unmarshal( content );
     }
 
     @Override
@@ -223,42 +180,21 @@ public class FactModelServiceImpl implements FactModelService {
                       final FactModels content,
                       final Metadata metadata,
                       final String comment ) {
-        try {
-            content.setPackageName( projectService.resolvePackageName( resource ) );
+        content.setPackageName( projectService.resolvePackageName( resource ) );
 
-            ioService.write( paths.convert( resource ),
-                             FactModelPersistence.marshal( content ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+        ioService.write( paths.convert( resource ),
+                         FactModelPersistence.marshal( content ),
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Invalidate Project-level DMO cache as Model has changed.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+        //Invalidate Project-level DMO cache as Model has changed.
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return resource;
     }
 
     @Override

@@ -24,28 +24,18 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
@@ -316,58 +306,34 @@ public class ProjectServiceImpl
     @Override
     public Path newProject( final Path activePath,
                             final String projectName,
-                            final String baseURL) {
+                            final String baseURL ) {
+        //Projects are always created in the FS root
+        final Path fsRoot = getFileSystemRoot( activePath );
+        final Path projectRootPath = getProjectRootPath( fsRoot,
+                                                         projectName );
 
-        Path projectRootPath = null;
-        try {
+        //Set-up project structure and KModule.xml
+        kModuleService.setUpKModuleStructure( projectRootPath );
 
-            //Projects are always created in the FS root
-            final Path fsRoot = getFileSystemRoot( activePath );
-            projectRootPath = getProjectRootPath( fsRoot,
-                                                  projectName );
+        //Create POM.xml
+        pomService.create( projectRootPath, baseURL );
 
-            //Set-up project structure and KModule.xml
-            kModuleService.setUpKModuleStructure( projectRootPath );
+        //Create Project configuration
+        final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
+                                                      false );
+        ioService.createFile( paths.convert( projectConfigPath ) );
+        ioService.write( paths.convert( projectConfigPath ),
+                         packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
 
-            //Create POM.xml
-            pomService.create( projectRootPath, baseURL );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
-            //Create Project configuration
-            final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
-                                                          false );
-            ioService.createFile( paths.convert( projectConfigPath ) );
-            ioService.write( paths.convert( projectConfigPath ),
-                             packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
-
-            return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( projectRootPath.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( projectRootPath.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( projectRootPath.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
     }
 
     private Path getFileSystemRoot( final Path activePath ) {
         return paths.convert( paths.convert( activePath ).getRoot(),
-                false );   
+                              false );
     }
 
     private Path getProjectRootPath( final Path fsRoot,
@@ -386,35 +352,12 @@ public class ProjectServiceImpl
     @Override
     public Path newDirectory( final Path contextPath,
                               final String dirName ) {
-        Path directoryPath = null;
-        try {
+        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
 
-            directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
+        //Signal creation to interested parties
+        resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
-
-            return directoryPath;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( directoryPath.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( directoryPath.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( directoryPath.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return directoryPath;
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
@@ -429,20 +372,8 @@ public class ProjectServiceImpl
 
     @Override
     public PackageConfiguration load( final Path path ) {
-        try {
-            final String content = ioService.readAllString( paths.convert( path ) );
-            return packageConfigurationContentHandler.toModel( content );
-
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        final String content = ioService.readAllString( paths.convert( path ) );
+        return packageConfigurationContentHandler.toModel( content );
     }
 
     @Override
@@ -450,40 +381,19 @@ public class ProjectServiceImpl
                       final PackageConfiguration packageConfiguration,
                       final Metadata metadata,
                       final String comment ) {
-        try {
-            ioService.write( paths.convert( resource ),
-                             packageConfigurationContentHandler.toString( packageConfiguration ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+        ioService.write( paths.convert( resource ),
+                         packageConfigurationContentHandler.toString( packageConfiguration ),
+                         metadataService.setUpAttributes( resource,
+                                                          metadata ),
+                         makeCommentedOption( comment ) );
 
-            //Invalidate Project-level DMO cache as project.imports has changed.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+        //Invalidate Project-level DMO cache as project.imports has changed.
+        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //Signal update to interested parties
+        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-            return resource;
-
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( resource.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( resource.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( resource.toURI() );
-
-        } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        }
+        return resource;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

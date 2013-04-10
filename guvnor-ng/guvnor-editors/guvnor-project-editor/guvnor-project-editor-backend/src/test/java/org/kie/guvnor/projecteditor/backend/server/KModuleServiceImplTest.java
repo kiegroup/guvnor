@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
-import org.kie.guvnor.commons.service.source.SourceServices;
 import org.kie.guvnor.project.backend.server.KModuleContentHandler;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.services.metadata.MetadataService;

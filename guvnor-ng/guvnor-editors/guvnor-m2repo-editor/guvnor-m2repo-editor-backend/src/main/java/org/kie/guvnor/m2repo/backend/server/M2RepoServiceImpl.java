@@ -16,17 +16,6 @@
 
 package org.kie.guvnor.m2repo.backend.server;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.commons.data.tables.PageRequest;
-import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.m2repo.model.JarListPageRow;
-import org.kie.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.backend.server.POMContentHandler;
-import org.kie.guvnor.project.model.GAV;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,15 +23,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.guvnor.commons.data.tables.PageRequest;
+import org.kie.guvnor.commons.data.tables.PageResponse;
+import org.kie.guvnor.m2repo.model.JarListPageRow;
+import org.kie.guvnor.project.backend.server.POMContentHandler;
+import org.kie.guvnor.project.model.GAV;
 
-/**
- *
- */
 @Service
 @ApplicationScoped
 public class M2RepoServiceImpl
-        implements M2RepoService {
+        implements ExtendedM2RepoService {
 
     @Inject
     private GuvnorM2Repository repository;
@@ -50,67 +45,71 @@ public class M2RepoServiceImpl
     @Inject
     private POMContentHandler pomContentHandler;
 
-    public void deployJar(InputStream is, GAV gav) {
-        repository.deployArtifact(is, gav);
-    }
-
-    public InputStream loadJar(String path) {
-        return repository.loadFile(path);
+    @Override
+    public void deployJar( InputStream is,
+                           GAV gav ) {
+        repository.deployArtifact( is, gav );
     }
 
     @Override
-    public String getJarName(String path) {
-        return repository.getFileName(path);
+    public InputStream loadJar( String path ) {
+        return repository.loadFile( path );
     }
 
     @Override
-    public void deleteJar(String[] path) {
-        repository.deleteFile(path);
+    public String getJarName( String path ) {
+        return repository.getFileName( path );
     }
 
     @Override
-    public String loadPOMStringFromJar(String path) {
-        return repository.loadPOMFromJar(path);
+    public void deleteJar( String[] path ) {
+        repository.deleteFile( path );
     }
 
     @Override
-    public GAV loadGAVFromJar(String path) {
+    public String loadPOMStringFromJar( String path ) {
+        return repository.loadPOMFromJar( path );
+    }
+
+    @Override
+    public GAV loadGAVFromJar( String path ) {
         try {
-            return pomContentHandler.toModel(repository.loadPOMFromJar(path)).getGav();
-        } catch (IOException e) {
+            return pomContentHandler.toModel( repository.loadPOMFromJar( path ) ).getGav();
+        } catch ( IOException e ) {
             e.printStackTrace();  //TODO Needs to be logged -Rikkola-
-        } catch (XmlPullParserException e) {
+        } catch ( XmlPullParserException e ) {
             e.printStackTrace();  //TODO Needs to be logged -Rikkola-
         }
         return new GAV();
     }
 
     @Override
-    public PageResponse<JarListPageRow> listJars(PageRequest pageRequest, String filters) {
-        Collection<File> files = repository.listFiles(filters);
+    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest,
+                                                  String filters ) {
+        Collection<File> files = repository.listFiles( filters );
 
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
 
         int i = 0;
-        for (File file : files) {
-            if (i >= pageRequest.getStartRowIndex() + pageRequest.getPageSize()) {
+        for ( File file : files ) {
+            if ( i >= pageRequest.getStartRowIndex() + pageRequest.getPageSize() ) {
                 break;
             }
-            if (i >= pageRequest.getStartRowIndex()) {
+            if ( i >= pageRequest.getStartRowIndex() ) {
                 JarListPageRow jarListPageRow = new JarListPageRow();
-                jarListPageRow.setName(file.getName());
-                jarListPageRow.setPath(file.getPath());
-                jarListPageRow.setLastModified(new Date(file.lastModified()));
-                tradeRatePageRowList.add(jarListPageRow);
+                jarListPageRow.setName( file.getName() );
+                jarListPageRow.setPath( file.getPath() );
+                jarListPageRow.setLastModified( new Date( file.lastModified() ) );
+                tradeRatePageRowList.add( jarListPageRow );
             }
             i++;
         }
 
-        response.setPageRowList(tradeRatePageRowList);
-        response.setStartRowIndex(pageRequest.getStartRowIndex());
-        response.setTotalRowSize(files.size());
-        response.setTotalRowSizeExact(true);
+        response.setPageRowList( tradeRatePageRowList );
+        response.setStartRowIndex( pageRequest.getStartRowIndex() );
+        response.setTotalRowSize( files.size() );
+        response.setTotalRowSizeExact( true );
         //response.setLastPage(true);
 
         return response;
@@ -122,17 +121,16 @@ public class M2RepoServiceImpl
      * @return String
      */
     @Override
-    public String getRepositoryURL(String baseURL) {
-        if(baseURL == null) {
+    public String getRepositoryURL( String baseURL ) {
+        if ( baseURL == null ) {
             return repository.getRepositoryURL();
         } else {
-            if(baseURL.endsWith("/")) {
-                return baseURL + "maven2/";                
+            if ( baseURL.endsWith( "/" ) ) {
+                return baseURL + "maven2/";
             } else {
-                return baseURL + "/maven2/";  
+                return baseURL + "/maven2/";
             }
         }
     }
-
 
 }

@@ -34,7 +34,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.util.DateUtils;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.kie.guvnor.services.file.upload.FileManagerFields;
 import org.kie.guvnor.services.file.upload.FileOperation;
 import org.uberfire.backend.vfs.Path;
@@ -173,7 +172,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
             return data;
 
         } catch ( Exception e ) {
-            throw new GenericPortableException( e.getMessage() );
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
         }
     }
 
@@ -257,8 +256,9 @@ public abstract class AbstractFileServlet extends HttpServlet {
             response.setContentLength( output.size() );
             response.getOutputStream().write( output.toByteArray() );
             response.getOutputStream().flush();
+
         } catch ( Exception e ) {
-            throw new GenericPortableException( e.getMessage() );
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
         }
     }
 

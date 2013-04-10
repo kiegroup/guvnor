@@ -22,7 +22,7 @@ import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.cache.LRUCache;
-import org.kie.guvnor.services.file.FileDiscoveryService;
+import org.kie.guvnor.services.backend.file.FileDiscoveryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

@@ -26,8 +26,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
-import org.kie.guvnor.m2repo.backend.server.M2RepoServiceImpl;
-import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.kie.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -43,7 +42,7 @@ public class BuildServiceImpl
     private Event<BuildResults> buildResultsEvent;
     private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
     private POMService pomService;
-    private M2RepoServiceImpl m2RepoService;
+    private ExtendedM2RepoService m2RepoService;
     private ProjectService projectService;
     private LRUBuilderCache cache;
 
@@ -54,7 +53,7 @@ public class BuildServiceImpl
     @Inject
     public BuildServiceImpl( final Paths paths,
                              final POMService pomService,
-                             final M2RepoServiceImpl m2RepoService,
+                             final ExtendedM2RepoService m2RepoService,
                              final Event<BuildResults> buildResultsEvent,
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final ProjectService projectService,
@@ -86,8 +85,8 @@ public class BuildServiceImpl
             final Builder builder = cache.assertBuilder( pathToPom );
             final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
             final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
-            m2RepoService.deployJar(input,
-                    pom.getGav());
+            m2RepoService.deployJar( input,
+                                     pom.getGav() );
         }
     }
 

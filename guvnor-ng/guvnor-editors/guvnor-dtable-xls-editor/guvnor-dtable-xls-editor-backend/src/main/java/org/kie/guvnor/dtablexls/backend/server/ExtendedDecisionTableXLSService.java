@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.dtablexls.service;
+package org.kie.guvnor.dtablexls.backend.server;
 
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.validation.ValidationService;
-import org.kie.guvnor.services.file.SupportsCopy;
-import org.kie.guvnor.services.file.SupportsDelete;
-import org.kie.guvnor.services.file.SupportsRename;
+import java.io.InputStream;
+
+import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
-public interface DecisionTableXLSService
-        extends ValidationService<String>,
-                SupportsDelete,
-                SupportsCopy,
-                SupportsRename {
+public interface ExtendedDecisionTableXLSService
+        extends DecisionTableXLSService {
 
-    ConversionResult convert( final Path path );
+    InputStream load( final Path path );
+
+    Path create( final Path resource,
+                 final InputStream content,
+                 final String comment );
+
+    Path save( final Path resource,
+               final InputStream content,
+               final String comment );
 
 }

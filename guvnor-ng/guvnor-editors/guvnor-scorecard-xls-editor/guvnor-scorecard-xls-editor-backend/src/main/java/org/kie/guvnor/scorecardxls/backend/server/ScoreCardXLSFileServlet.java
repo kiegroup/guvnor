@@ -42,7 +42,7 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
     private Paths paths;
 
     @Inject
-    private ScoreCardXLSServiceImpl scoreCardXLSService;
+    private ExtendedScoreCardXLSService scoreCardXLSService;
 
     @Override
     protected InputStream doLoad( final Path path ) {

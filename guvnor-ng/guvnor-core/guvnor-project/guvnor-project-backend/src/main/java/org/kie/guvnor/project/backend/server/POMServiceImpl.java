@@ -1,5 +1,6 @@
 package org.kie.guvnor.project.backend.server;
 
+import java.io.IOException;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -9,21 +10,12 @@ import javax.inject.Named;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.InvalidPathException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.POMService;
-import org.kie.guvnor.services.exceptions.FileAlreadyExistsPortableException;
-import org.kie.guvnor.services.exceptions.GenericPortableException;
-import org.kie.guvnor.services.exceptions.InvalidPathPortableException;
-import org.kie.guvnor.services.exceptions.NoSuchFilePortableException;
-import org.kie.guvnor.services.exceptions.SecurityPortableException;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -71,14 +63,15 @@ public class POMServiceImpl
     }
 
     @Override
-    public Path create( final Path projectRoot, final String baseURL ) {
+    public Path create( final Path projectRoot,
+                        final String baseURL ) {
         org.kie.commons.java.nio.file.Path pathToPOMXML = null;
         try {
             final POM pomModel = new POM();
             final Repository repository = new Repository();
             repository.setId( "guvnor-m2-repo" );
             repository.setName( "Guvnor M2 Repo" );
-            repository.setUrl( m2RepoService.getRepositoryURL(baseURL) );
+            repository.setUrl( m2RepoService.getRepositoryURL( baseURL ) );
             pomModel.addRepository( repository );
 
             final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
@@ -92,27 +85,8 @@ public class POMServiceImpl
 
             return paths.convert( pathToPOMXML );
 
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( pathToPOMXML.toUri().toString() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( pathToPOMXML.toUri().toString() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( pathToPOMXML.toUri().toString() );
-
         } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( java.io.IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
         }
     }
 
@@ -124,20 +98,11 @@ public class POMServiceImpl
 
             return pomContentHandler.toModel( content );
 
-        } catch ( NoSuchFileException e ) {
-            throw new NoSuchFilePortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
         } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( java.io.IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
 
         } catch ( XmlPullParserException e ) {
-            throw new GenericPortableException( e.getMessage() );
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
 
         }
     }
@@ -168,26 +133,8 @@ public class POMServiceImpl
 
             return path;
 
-        } catch ( InvalidPathException e ) {
-            throw new InvalidPathPortableException( path.toURI() );
-
-        } catch ( SecurityException e ) {
-            throw new SecurityPortableException( path.toURI() );
-
-        } catch ( IllegalArgumentException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( FileAlreadyExistsException e ) {
-            throw new FileAlreadyExistsPortableException( path.toURI() );
-
         } catch ( IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( java.io.IOException e ) {
-            throw new GenericPortableException( e.getMessage() );
-
-        } catch ( UnsupportedOperationException e ) {
-            throw new GenericPortableException( e.getMessage() );
+            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
 
         }
     }

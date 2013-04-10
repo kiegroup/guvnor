@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.datamodel.model;
+package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import org.junit.Test;
+import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;
