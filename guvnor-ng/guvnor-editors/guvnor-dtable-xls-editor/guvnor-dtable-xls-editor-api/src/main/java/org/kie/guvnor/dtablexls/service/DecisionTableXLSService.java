@@ -33,16 +33,6 @@ public interface DecisionTableXLSService
                 SupportsCopy,
                 SupportsRename {
 
-    InputStream load( final Path path );
-
-    Path create( final Path resource,
-                 final InputStream content,
-                 final String comment );
-
-    Path save( final Path resource,
-               final InputStream content,
-               final String comment );
-
     ConversionResult convert( final Path path );
 
 }

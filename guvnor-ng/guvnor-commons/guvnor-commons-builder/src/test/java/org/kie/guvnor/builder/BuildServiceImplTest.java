@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
+import org.kie.guvnor.m2repo.backend.server.M2RepoServiceImpl;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.service.ProjectService;
@@ -163,10 +164,10 @@ public class BuildServiceImplTest {
     }
 
     private void setUpGuvnorM2Repo() {
-        Bean m2RepoServiceBean = (Bean) beanManager.getBeans( M2RepoService.class ).iterator().next();
+        Bean m2RepoServiceBean = (Bean) beanManager.getBeans( M2RepoServiceImpl.class ).iterator().next();
         CreationalContext cc = beanManager.createCreationalContext( m2RepoServiceBean );
-        M2RepoService m2RepoService = (M2RepoService) beanManager.getReference( m2RepoServiceBean,
-                                                                                M2RepoService.class,
+        M2RepoServiceImpl m2RepoService = (M2RepoServiceImpl) beanManager.getReference( m2RepoServiceBean,
+                                                                                M2RepoServiceImpl.class,
                                                                                 cc );
 
         String m2RepoURL = m2RepoService.getRepositoryURL(null);

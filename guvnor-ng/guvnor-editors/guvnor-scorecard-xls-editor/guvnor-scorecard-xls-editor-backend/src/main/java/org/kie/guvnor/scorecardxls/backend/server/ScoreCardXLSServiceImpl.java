@@ -90,7 +90,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
     @Inject
     private Identity identity;
 
-    @Override
     public InputStream load( final Path path ) {
         try {
             final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
@@ -119,7 +118,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
         }
     }
 
-    @Override
     public Path create( final Path resource,
                         final InputStream content,
                         final String comment ) {
@@ -162,7 +160,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService {
         }
     }
 
-    @Override
     public Path save( final Path resource,
                       final InputStream content,
                       final String comment ) {

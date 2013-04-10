@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
-import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.kie.guvnor.services.backend.file.upload.AbstractFileServlet;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -43,7 +42,7 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
     private Paths paths;
 
     @Inject
-    private ScoreCardXLSService scoreCardXLSService;
+    private ScoreCardXLSServiceImpl scoreCardXLSService;
 
     @Override
     protected InputStream doLoad( final Path path ) {

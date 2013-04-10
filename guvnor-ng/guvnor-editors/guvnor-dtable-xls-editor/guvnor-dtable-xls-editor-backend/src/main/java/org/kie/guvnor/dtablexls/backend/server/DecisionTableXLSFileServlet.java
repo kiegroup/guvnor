@@ -43,7 +43,7 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
     private Paths paths;
 
     @Inject
-    private DecisionTableXLSService decisionTableXLSService;
+    private DecisionTableXLSServiceImpl decisionTableXLSService;
 
     @Override
     protected InputStream doLoad( final Path path ) {

@@ -51,7 +51,7 @@ public class FileServlet extends HttpServlet {
     private static final long serialVersionUID = 510l;
 
     @Inject
-    private M2RepoService m2RepoService;
+    private M2RepoServiceImpl m2RepoService;
     
     @Inject
     private GuvnorM2Repository repository;

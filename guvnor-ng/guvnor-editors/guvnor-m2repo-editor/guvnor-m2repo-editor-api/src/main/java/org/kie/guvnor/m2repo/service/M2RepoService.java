@@ -27,9 +27,6 @@ import java.io.InputStream;
 
 @Remote
 public interface M2RepoService {
-    public void deployJar(InputStream is, GAV gav);
-
-    public InputStream loadJar(String path);
 
     public String getJarName(String path);
 

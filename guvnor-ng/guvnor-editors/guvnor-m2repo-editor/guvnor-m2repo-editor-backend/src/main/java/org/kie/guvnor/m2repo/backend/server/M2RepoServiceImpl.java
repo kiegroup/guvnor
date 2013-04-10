@@ -50,12 +50,10 @@ public class M2RepoServiceImpl
     @Inject
     private POMContentHandler pomContentHandler;
 
-    @Override
     public void deployJar(InputStream is, GAV gav) {
         repository.deployArtifact(is, gav);
     }
 
-    @Override
     public InputStream loadJar(String path) {
         return repository.loadFile(path);
     }
