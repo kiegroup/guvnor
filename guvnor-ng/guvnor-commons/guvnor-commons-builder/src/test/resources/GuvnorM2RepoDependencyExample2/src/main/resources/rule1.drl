@@ -1,4 +1,4 @@
-import org.kie.test.dependency1.Bean;
+import org.kie.test.Bean;
 
 rule Test
 

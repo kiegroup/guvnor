@@ -1,4 +1,4 @@
-package org.kie.test.dependency1;
+package org.kie.test;
 
 public class Bean {
     private final int value;
