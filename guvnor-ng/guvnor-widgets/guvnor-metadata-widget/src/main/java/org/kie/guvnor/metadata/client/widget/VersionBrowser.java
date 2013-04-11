@@ -117,7 +117,7 @@ public class VersionBrowser extends Composite {
         final ListBox history = new ListBox( true );
         history.setWidth("640px");
 
-        for ( int i = 0; i < versions.size(); i++ ) {
+        for ( int i = versions.size() -1; i >= 0; i-- ) {
             final VersionRecord version = versions.get( i );
 
             DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd h:mm a");
