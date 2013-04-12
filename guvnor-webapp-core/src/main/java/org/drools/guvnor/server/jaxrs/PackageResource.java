@@ -590,7 +590,7 @@ public class PackageResource extends Resource {
             if (categories != null) {
                 ai.updateCategoryList(categories);
             }
-            if (assetMetadata.getState() != null) {
+            if (assetMetadata!= null && assetMetadata.getState() != null) {
                 ai.updateState(assetMetadata.getState());
             }
             //The categories are not saved by addAsset(). Need to force it here.
