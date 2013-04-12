@@ -30,4 +30,12 @@ public interface Constants
 
     String newEnumDescription();
 
+    String FactColumnHeader();
+
+    String FieldColumnHeader();
+
+    String ContextColumnHeader();
+
+    String AddEnum();
+
 }

@@ -16,31 +16,23 @@
 
 package org.kie.guvnor.enums.client.editor;
 
-public class EnumRow {
+import org.kie.guvnor.commons.data.tables.AbstractPageRow;
+
+public class EnumRow extends AbstractPageRow {
 
     private String fieldName = "";
     private String factName = "";
     private String context = "";
 
-    public EnumRow( final String line ) {
-
-        if ( line == null || line.isEmpty() ) {
-            factName = "";
-            fieldName = "";
-            context = "";
-        } else {
-            factName = line.substring( 1, line.indexOf( "." ) );
-            fieldName = line.substring( line.indexOf( "." ) + 1, line.indexOf( "':" ) );
-            context = line.substring( line.indexOf( ":" ) + 1 ).trim();
-        }
+    public EnumRow() {
     }
 
-    public String getText() {
-        if ( factName == "" ) {
-            return "";
-        } else {
-            return "'" + factName + "." + fieldName + "': " + context;
-        }
+    public EnumRow( final String factName,
+                    final String fieldName,
+                    final String context ) {
+        this.factName = factName;
+        this.fieldName = fieldName;
+        this.context = context;
     }
 
     public String getFactName() {
@@ -60,11 +52,24 @@ public class EnumRow {
 
     }
 
-    public void setFieldName( String fieldName ) {
+    public void setFieldName( final String fieldName ) {
         this.fieldName = fieldName;
     }
 
     public void setContext( final String context ) {
         this.context = context;
+    }
+
+    public boolean isValid() {
+        return isValid( factName ) && isValid( fieldName ) && isValid( context );
+    }
+
+    private boolean isValid( final String value ) {
+        return !( value == null || value.isEmpty() );
+    }
+
+    @Override
+    public String toString() {
+        return "'" + factName + "." + fieldName + "' : " + context;
     }
 }
