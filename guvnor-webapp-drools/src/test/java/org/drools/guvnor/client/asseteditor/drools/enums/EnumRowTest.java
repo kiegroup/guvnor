@@ -32,39 +32,36 @@ public class EnumRowTest {
 
     @Test
     public void testEmpty() throws Exception {
-        EnumRow enumRow = new EnumRow("");
+        EnumRow enumRow = new EnumRow();
         assertEquals("", enumRow.getFactName());
         assertEquals("", enumRow.getFieldName());
         assertEquals("", enumRow.getContext());
-        assertEquals("", enumRow.getText());
+        assertEquals("", enumRow.toString());
     }
 
     @Test
     public void testInputOutPut() throws Exception {
-        EnumRow enumRow = new EnumRow("'Applicant.creditRating': ['AA', 'OK', 'Sub prime']");
-
+        EnumRow enumRow = EnumParser.parseEnums( "'Applicant.creditRating': ['AA', 'OK', 'Sub prime']").get( 0 );
 
         assertEquals("Applicant", enumRow.getFactName());
         assertEquals("creditRating", enumRow.getFieldName());
         assertEquals("['AA', 'OK', 'Sub prime']", enumRow.getContext());
-        assertEquals("'Applicant.creditRating': ['AA', 'OK', 'Sub prime']", enumRow.getText());
+        assertEquals("'Applicant.creditRating' : ['AA', 'OK', 'Sub prime']", enumRow.toString());
     }
 
     @Test
     public void testInputOutput2() throws Exception {
-
-        EnumRow enumRow = new EnumRow("'Person.age': ['22', '23', '24']");
+        EnumRow enumRow = EnumParser.parseEnums("'Person.age': ['22', '23', '24']").get( 0 );
 
         assertEquals("Person", enumRow.getFactName());
         assertEquals("age", enumRow.getFieldName());
         assertEquals("['22', '23', '24']", enumRow.getContext());
-        assertEquals("'Person.age': ['22', '23', '24']", enumRow.getText());
+        assertEquals("'Person.age' : ['22', '23', '24']", enumRow.toString());
     }
 
     @Test
     public void testModify() throws Exception {
-
-        EnumRow enumRow = new EnumRow("'Person.age': ['22', '23', '24']");
+        EnumRow enumRow = EnumParser.parseEnums("'Person.age': ['22', '23', '24']").get( 0 );
 
         enumRow.setFactName("Address");
         enumRow.setFieldName("street");
@@ -73,6 +70,6 @@ public class EnumRowTest {
         assertEquals("Address", enumRow.getFactName());
         assertEquals("street", enumRow.getFieldName());
         assertEquals("['carrotstreet', 'mystreet', 'bananastreet']", enumRow.getContext());
-        assertEquals("'Address.street': ['carrotstreet', 'mystreet', 'bananastreet']", enumRow.getText());
+        assertEquals("'Address.street' : ['carrotstreet', 'mystreet', 'bananastreet']", enumRow.toString());
     }
 }

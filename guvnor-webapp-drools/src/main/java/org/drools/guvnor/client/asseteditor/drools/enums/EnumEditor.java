@@ -23,9 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-
 import com.google.gwt.user.client.ui.Button;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
@@ -40,165 +38,141 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
  */
-public class EnumEditor extends DirtyableComposite implements EditorWidget,SaveEventListener {
-
-
+public class EnumEditor extends DirtyableComposite implements EditorWidget,
+                                                              SaveEventListener {
 
     private VerticalPanel panel;
 
-    private CellTable cellTable;
-    /*private Column<EnumRow, String> column = new Column<EnumRow, String>(new EditTextCell()) {
-
-
-        @Override
-        public String getValue(EnumRow enumRow) {
-            return enumRow.getText();
-        }
-    } ; */
-
-
-
+    private CellTable<EnumRow> cellTable;
 
     final private RuleContentText data;
     private ListDataProvider<EnumRow> dataProvider = new ListDataProvider<EnumRow>();
 
-
-    public EnumEditor(Asset a,
-                      RuleViewer v,
-                      ClientFactory clientFactory,
-                      EventBus eventBus) {
-        this(a);
+    public EnumEditor( Asset a,
+                       RuleViewer v,
+                       ClientFactory clientFactory,
+                       EventBus eventBus ) {
+        this( a );
     }
 
-    public EnumEditor(Asset a) {
-        this(a,
-                -1);
+    public EnumEditor( Asset a ) {
+        this( a,
+              -1 );
     }
 
-    public EnumEditor(Asset a,
-                      int visibleLines) {
+    public EnumEditor( Asset a,
+                       int visibleLines ) {
         data = (RuleContentText) a.getContent();
 
-        if (data.content == null) {
+        if ( data.content == null ) {
             data.content = "";
         }
 
         cellTable = new CellTable<EnumRow>();
-        cellTable.setWidth("100%");
-
-
-
-
-
+        cellTable.setWidth( "100%" );
         panel = new VerticalPanel();
 
+        final CellTable<EnumRow> cellTable = new CellTable<EnumRow>( Integer.MAX_VALUE );
+        cellTable.setWidth( "100%" );
 
-        String[] array = data.content.split("\n");
-
-        for(String line: array){
-            EnumRow enumRow = new EnumRow(line);
-
-            dataProvider.getList().add(enumRow);
-        }
-
-        DeleteButtonCell deleteButton= new DeleteButtonCell();
-        Column <EnumRow,String> delete= new Column <EnumRow,String>(deleteButton)
-        {
+        //Column definitions
+        final DeleteButtonCell deleteButton = new DeleteButtonCell();
+        final Column<EnumRow, String> deleteButtonColumn = new Column<EnumRow, String>( deleteButton ) {
             @Override
-            public String getValue(EnumRow enumRow1)
-            {
+            public String getValue( final EnumRow enumRow ) {
                 return "";
             }
         };
-
-         Column<EnumRow,String> columnFirst = new Column<EnumRow, String>(new EditTextCell()) {
-
-
+        final Column<EnumRow, String> factNameColumn = new Column<EnumRow, String>( new EditTextCell() ) {
             @Override
-            public String getValue(EnumRow enumRow) {
+            public String getValue( final EnumRow enumRow ) {
                 return enumRow.getFactName();
             }
-        } ;
-        Column<EnumRow,String> columnSecond = new Column<EnumRow, String>(new EditTextCell()) {
-
-
+        };
+        final Column<EnumRow, String> fieldNameColumn = new Column<EnumRow, String>( new EditTextCell() ) {
             @Override
-            public String getValue(EnumRow enumRow) {
+            public String getValue( final EnumRow enumRow ) {
                 return enumRow.getFieldName();
             }
-        } ;
-        Column<EnumRow,String> columnThird = new Column<EnumRow, String>(new EditTextCell()) {
-
-
+        };
+        final Column<EnumRow, String> contextColumn = new Column<EnumRow, String>( new EditTextCell() ) {
             @Override
-            public String getValue(EnumRow enumRow) {
+            public String getValue( final EnumRow enumRow ) {
                 return enumRow.getContext();
             }
-        } ;
-        columnFirst.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
+        };
 
-            public void update(int index, EnumRow object, String value) {
-               object.setFactName(value);
-
+        //Write updates back to the model
+        deleteButtonColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
+            @Override
+            public void update( final int index,
+                                final EnumRow object,
+                                final String value ) {
+                dataProvider.getList().remove( index );
             }
-        });
-        columnSecond.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
-
-            public void update(int index, EnumRow object, String value) {
-
-                object.setFieldName(value);
-
+        } );
+        factNameColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
+            @Override
+            public void update( final int index,
+                                final EnumRow object,
+                                final String value ) {
+                object.setFactName( value );
             }
-        });
-        columnThird.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
-
-            public void update(int index, EnumRow object, String value) {
-
-                object.setContext(value);
+        } );
+        fieldNameColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
+            @Override
+            public void update( final int index,
+                                final EnumRow object,
+                                final String value ) {
+                object.setFieldName( value );
             }
-        });
+        } );
+        contextColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
+            @Override
+            public void update( final int index,
+                                final EnumRow object,
+                                final String value ) {
+                object.setContext( value );
+            }
+        } );
 
-        cellTable.addColumn(delete);
-        cellTable.addColumn(columnFirst, "Fact");
-        cellTable.addColumn(columnSecond, "Field");
-        cellTable.addColumn(columnThird, "Context");
+        cellTable.addColumn( deleteButtonColumn );
+        cellTable.addColumn( factNameColumn,
+                             "Fact" );
+        cellTable.addColumn( fieldNameColumn,
+                             "Field" );
+        cellTable.addColumn( contextColumn,
+                             "Context" );
 
         // Connect the table to the data provider.
-        dataProvider.addDataDisplay(cellTable);
+        dataProvider.setList( EnumParser.parseEnums( data.content ) );
+        dataProvider.addDataDisplay( cellTable );
 
+        final Button addButton = new Button( "+",
+                                             new ClickHandler() {
+                                                 public void onClick( ClickEvent clickEvent ) {
+                                                     final EnumRow enumRow = new EnumRow();
+                                                     dataProvider.getList().add( enumRow );
+                                                 }
+                                             } );
 
+        panel.add( addButton );
+        panel.add( cellTable );
 
-        delete.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
-
-            public void update(int index, EnumRow object, String value) {
-                dataProvider.getList().remove(object);
-            }
-        });
-
-        Button addButton = new Button("+", new ClickHandler() {
-            public void onClick(ClickEvent clickEvent) {
-                EnumRow enumRow = new EnumRow("");
-                dataProvider.getList().add(enumRow);
-            }
-        });
-
-
-
-        panel.add(cellTable);
-        panel.add(addButton);
-        initWidget(panel);
-
+        initWidget( panel );
     }
 
-
-
-    public void onSave(SaveCommand saveCommand) {
+    public void onSave( SaveCommand saveCommand ) {
         data.content = "";
 
-
-        for(EnumRow enumRow : dataProvider.getList()){
-                data.content += enumRow.getText() + "\n";
-
+        if ( !dataProvider.getList().isEmpty() ) {
+            final StringBuilder sb = new StringBuilder();
+            for ( final EnumRow enumRow : dataProvider.getList() ) {
+                if ( enumRow.isValid() ) {
+                    sb.append( enumRow.toString() ).append( "\n" );
+                }
+            }
+            data.content = sb.toString();
         }
 
         saveCommand.save();

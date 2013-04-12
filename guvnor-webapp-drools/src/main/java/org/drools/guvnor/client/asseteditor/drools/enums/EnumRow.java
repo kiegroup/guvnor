@@ -16,78 +16,63 @@
 
 package org.drools.guvnor.client.asseteditor.drools.enums;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextArea;
+import org.drools.guvnor.client.rpc.AbstractPageRow;
 
-/**
- * Created with IntelliJ IDEA.
- * User: raymondefa
- * Date: 6/6/12
- * Time: 1:34 PM
- * To change this template use File | Settings | File Templates.
- */
-public class EnumRow {
+public class EnumRow extends AbstractPageRow {
 
-    private String fieldName="";
-    private String factName="";
-    private String context="";
+    private String fieldName = "";
+    private String factName = "";
+    private String context = "";
 
-    public EnumRow(String line) {
-
-        String text=line;
-         if(text==""){
-             factName="";
-             fieldName="";
-             context="";
-         }
-        else{
-        factName= text.substring(1,text.indexOf("."));
-
-        fieldName = text.substring(text.indexOf(".") +1,text.indexOf("':"));
-         context = text.substring(text.indexOf(":") +1 ).trim();
-         }
+    public EnumRow() {
     }
 
-
-
-    public String getText() {
-        if(factName==""){
-            return "";
-        }
-        else {
-        return "'" + factName + "." + fieldName + "': " + context;
-        }
+    public EnumRow( final String factName,
+                    final String fieldName,
+                    final String context ) {
+        this.factName = factName;
+        this.fieldName = fieldName;
+        this.context = context;
     }
-
 
     public String getFactName() {
-        return factName;  //To change body of created methods use File | Settings | File Templates.
+        return factName;
     }
 
     public String getFieldName() {
-        return fieldName;  //To change body of created methods use File | Settings | File Templates.
+        return fieldName;
     }
 
     public String getContext() {
-        return context;  //To change body of created methods use File | Settings | File Templates.
+        return context;
     }
 
-    public void setFactName(String factName) {
-        this.factName=factName;
+    public void setFactName( final String factName ) {
+        this.factName = factName;
 
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName=fieldName;
+    public void setFieldName( final String fieldName ) {
+        this.fieldName = fieldName;
     }
 
-    public void setContext(String context) {
-        this.context=context;
+    public void setContext( final String context ) {
+        this.context = context;
+    }
+
+    public boolean isValid() {
+        return isValid( factName ) && isValid( fieldName ) && isValid( context );
+    }
+
+    private boolean isValid( final String value ) {
+        return !( value == null || value.isEmpty() );
+    }
+
+    @Override
+    public String toString() {
+        if ( isValid() ) {
+            return "'" + factName + "." + fieldName + "' : " + context;
+        }
+        return "";
     }
 }
