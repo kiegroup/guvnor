@@ -487,6 +487,12 @@
       <artifactId>jaxb-xjc</artifactId>
     </dependency>
 
+    <!--JUnit for Test scenarios -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
