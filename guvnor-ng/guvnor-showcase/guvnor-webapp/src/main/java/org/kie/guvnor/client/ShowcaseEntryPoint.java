@@ -81,8 +81,8 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        loadPreferences();
         setupFileSystems();
+        loadPreferences();
         setupMenu();
         hideLoadingPopup();
     }

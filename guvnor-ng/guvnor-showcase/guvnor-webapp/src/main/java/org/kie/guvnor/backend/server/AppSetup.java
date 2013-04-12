@@ -16,74 +16,70 @@
 
 package org.kie.guvnor.backend.server;
 
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import javax.inject.Inject;
 
-import org.kie.commons.io.IOSearchService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.attribute.DublinCoreView;
-import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaView;
-import org.kie.kieora.backend.lucene.LuceneIndexEngine;
-import org.kie.kieora.backend.lucene.LuceneSearchIndex;
-import org.kie.kieora.backend.lucene.LuceneSetup;
-import org.kie.kieora.backend.lucene.fields.SimpleFieldFactory;
-import org.kie.kieora.backend.lucene.metamodels.InMemoryMetaModelStore;
-import org.kie.kieora.backend.lucene.setups.NIOLuceneSetup;
-import org.kie.kieora.engine.MetaIndexEngine;
-import org.kie.kieora.engine.MetaModelStore;
-import org.kie.kieora.io.IOSearchIndex;
-import org.kie.kieora.io.IOServiceIndexedImpl;
-import org.kie.kieora.search.SearchIndex;
+import org.kie.commons.services.cdi.Startup;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.repositories.DefaultSystemRepository;
+import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.server.config.ConfigGroup;
+import org.uberfire.backend.server.config.ConfigType;
+import org.uberfire.backend.server.config.ConfigurationFactory;
+import org.uberfire.backend.server.config.ConfigurationService;
 
+//This is a temporary solution when running in PROD-MODE as /webapp/.niogit/system.git folder
+//is not deployed to the Application Servers /bin folder. This will be remedied when an
+//installer is written to create the system.git repository in the correct location.
+@Startup
 @ApplicationScoped
 public class AppSetup {
 
-    private final IOService ioService;
-    private final IOSearchService ioSearchService;
+    private static final String PLAYGROUND_SCHEME = "git";
+    private static final String PLAYGROUND_ALIAS = "uf-playground";
+    private static final String PLAYGROUND_ORIGIN = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+    private static final String PLAYGROUND_UID = "guvnorngtestuser1";
+    private static final String PLAYGROUND_PWD = "test1234";
 
-    private final LuceneSetup luceneSetup = new NIOLuceneSetup();
-    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
+    @Inject
+    private RepositoryService repositoryService;
 
-    public AppSetup() {
-        final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
-        final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
-                                                                   luceneSetup,
-                                                                   new SimpleFieldFactory() );
-        final SearchIndex searchIndex = new LuceneSearchIndex( luceneSetup );
-        this.ioService = new IOServiceIndexedImpl( indexEngine,
-                                                   DublinCoreView.class,
-                                                   VersionAttributeView.class,
-                                                   OtherMetaView.class );
-        this.ioSearchService = new IOSearchIndex( searchIndex,
-                                                  this.ioService );
+    @Inject
+    private ConfigurationService configurationService;
+
+    @Inject
+    private ConfigurationFactory configurationFactory;
+
+    @PostConstruct
+    public void assertPlayground() {
+        final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
+        if ( repository == null ) {
+            repositoryService.cloneRepository( PLAYGROUND_SCHEME,
+                                               PLAYGROUND_ALIAS,
+                                               PLAYGROUND_ORIGIN,
+                                               PLAYGROUND_UID,
+                                               PLAYGROUND_PWD );
+            configurationService.addConfiguration( getConfiguration() );
+        }
     }
 
-    @PreDestroy
-    private void cleanup() {
-        luceneSetup.dispose();
-    }
-
-    @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
-    @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return systemRepository;
-    }
-
-    @Produces
-    @Named("ioSearchStrategy")
-    public IOSearchService ioSearchService() {
-        return ioSearchService;
+    private ConfigGroup getConfiguration() {
+        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
+                                                                       "settings",
+                                                                       "" );
+        group.addConfigItem( configurationFactory.newConfigItem( "drools.dateformat",
+                                                                 "dd-MMM-yyyy" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( "drools.datetimeformat",
+                                                                 "dd-MMM-yyyy hh:mm:ss" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultlanguage",
+                                                                 "en" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultcountry",
+                                                                 "US" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
+                                                                 "true" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
+                                                                 "false" ) );
+        return group;
     }
 
 }

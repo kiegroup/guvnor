@@ -387,6 +387,11 @@
       <artifactId>kie-nio2-fs</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-cdi</artifactId>
+    </dependency>
+
     <!-- Metadata -->
     <dependency>
       <groupId>org.kie.commons</groupId>
