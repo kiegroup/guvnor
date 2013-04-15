@@ -146,6 +146,7 @@ public class ProjectConfigScreenPresenter
             @Override
             public void callback( final Metadata metadata ) {
                 view.setMetadata( metadata );
+                view.hideBusyIndicator();
             }
         };
     }
