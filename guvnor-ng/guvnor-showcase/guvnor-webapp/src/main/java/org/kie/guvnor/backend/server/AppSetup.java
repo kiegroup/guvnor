@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.backend.server;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,11 +36,15 @@ import org.uberfire.backend.server.config.ConfigurationService;
 @ApplicationScoped
 public class AppSetup {
 
-    private static final String PLAYGROUND_SCHEME = "git";
-    private static final String PLAYGROUND_ALIAS = "uf-playground";
-    private static final String PLAYGROUND_ORIGIN = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-    private static final String PLAYGROUND_UID = "guvnorngtestuser1";
-    private static final String PLAYGROUND_PWD = "test1234";
+    // default repository section - start
+    private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
+    private static final String DROOLS_WB_PLAYGROUND_ALIAS = "uf-playground";
+    private static final String DROOLS_WB_PLAYGROUND_ORIGIN = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+    private static final String DROOLS_WB_PLAYGROUND_UID = "guvnorngtestuser1";
+    private static final String DROOLS_WB_PLAYGROUND_PWD = "test1234";
+
+    private static final String GLOBAL_SETTINGS = "settings";
+    // default repository section - end
 
     @Inject
     private RepositoryService repositoryService;
@@ -52,18 +57,31 @@ public class AppSetup {
 
     @PostConstruct
     public void assertPlayground() {
-        final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
+        // TODO in case repo is not defined in system repository so we add default
+        final Repository repository = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
         if ( repository == null ) {
-            repositoryService.cloneRepository( PLAYGROUND_SCHEME,
-                                               PLAYGROUND_ALIAS,
-                                               PLAYGROUND_ORIGIN,
-                                               PLAYGROUND_UID,
-                                               PLAYGROUND_PWD );
-            configurationService.addConfiguration( getConfiguration() );
+            repositoryService.cloneRepository( DROOLS_WB_PLAYGROUND_SCHEME,
+                                               DROOLS_WB_PLAYGROUND_ALIAS,
+                                               DROOLS_WB_PLAYGROUND_ORIGIN,
+                                               DROOLS_WB_PLAYGROUND_UID,
+                                               DROOLS_WB_PLAYGROUND_PWD );
+        }
+
+        // TODO in case mandatory properties are not defined in system repository so we add default
+        List<ConfigGroup> configGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
+        boolean globalSettingsDefined = false;
+        for ( ConfigGroup configGroup : configGroups ) {
+            if ( GLOBAL_SETTINGS.equals( configGroup.getName() ) ) {
+                globalSettingsDefined = true;
+                break;
+            }
+        }
+        if ( !globalSettingsDefined ) {
+            configurationService.addConfiguration( getGlobalConfiguration() );
         }
     }
 
-    private ConfigGroup getConfiguration() {
+    private ConfigGroup getGlobalConfiguration() {
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
                                                                        "settings",
                                                                        "" );
