@@ -463,7 +463,7 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
-
+    
     @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -572,7 +572,21 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
-
+    @GET
+    @Path("{packageName}/snapshots")
+    @Produces({MediaType.APPLICATION_ATOM_XML,MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public Snapshots getPackageSnapshot(
+            @PathParam("packageName") String packageName) {
+        try {
+            Snapshots snapshots = new Snapshots();
+            snapshots.setPackageName(packageName);
+            String[] theList = rulesRepository.listModuleSnapshots(packageName);  
+            snapshots.setListNames(theList);
+            return snapshots;
+        } catch (RuntimeException e) {
+            throw new WebApplicationException(e);
+        }
+    }
     @POST
     @Path("{packageName}/assets")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
