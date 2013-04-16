@@ -146,6 +146,8 @@ public class BPMN2ProcessHandler extends ContentHandler
                         // Put the old contents back as there is no updating possible
                         repoAsset.updateContent( content.getXml() );
                     }
+            	} else {
+                    repoAsset.updateContent( content.getXml() );
             	}
             }
             if ( content.getJson() != null ) {
