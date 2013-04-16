@@ -39,8 +39,6 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.guvnor.services.config.AppConfigService;
 import org.kie.guvnor.services.config.ApplicationPreferences;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
@@ -76,12 +74,8 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    @Inject
-    private Caller<FileExplorerRootService> rootService;
-
     @AfterInitialization
     public void startApp() {
-        setupFileSystems();
         loadPreferences();
         setupMenu();
         hideLoadingPopup();
@@ -144,16 +138,6 @@ public class ShowcaseEntryPoint {
                 .build();
 
         menubar.aggregateWorkbenchMenus( menus );
-    }
-
-    private void setupFileSystems() {
-        rootService.call( new RemoteCallback<Collection<Root>>() {
-
-            @Override
-            public void callback( final Collection<Root> roots ) {
-                //Nothing to do; this just ensures FileSystems have been initialized
-            }
-        } ).listRoots();
     }
 
     private List<MenuItem> getPerspectives() {

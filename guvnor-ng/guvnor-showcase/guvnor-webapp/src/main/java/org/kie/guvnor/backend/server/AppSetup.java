@@ -22,17 +22,19 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.commons.services.cdi.Startup;
+import org.kie.commons.services.cdi.StartupType;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.impl.ActiveFileSystemsFactory;
 
 //This is a temporary solution when running in PROD-MODE as /webapp/.niogit/system.git folder
 //is not deployed to the Application Servers /bin folder. This will be remedied when an
 //installer is written to create the system.git repository in the correct location.
-@Startup
+@Startup(StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class AppSetup {
 
@@ -54,6 +56,9 @@ public class AppSetup {
 
     @Inject
     private ConfigurationFactory configurationFactory;
+
+    @Inject
+    private ActiveFileSystemsFactory activeFileSystemsFactory;
 
     @PostConstruct
     public void assertPlayground() {
@@ -79,6 +84,9 @@ public class AppSetup {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
+
+        //Ensure FileSystems are loaded
+        activeFileSystemsFactory.fileSystems();
     }
 
     private ConfigGroup getGlobalConfiguration() {
