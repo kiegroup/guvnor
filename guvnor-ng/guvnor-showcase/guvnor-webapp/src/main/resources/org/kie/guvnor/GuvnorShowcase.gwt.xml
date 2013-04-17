@@ -31,6 +31,7 @@
   <inherits name="org.kie.guvnor.dsltext.GuvnorDSLTextEditorClient"/>
   <inherits name="org.kie.guvnor.globals.GuvnorGlobalsEditorClient"/>
   <inherits name="org.kie.guvnor.defaulteditor.DefaultEditorClient"/>
+  <inherits name="org.kie.guvnor.workitems.WorkItemsEditorClient"/>
 
   <inherits name="org.kie.guvnor.testscenario.GuvnorTestScenarioEditorClient"/>
 

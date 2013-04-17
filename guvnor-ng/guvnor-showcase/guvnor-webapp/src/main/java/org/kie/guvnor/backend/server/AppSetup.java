@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.kie.commons.services.cdi.Startup;
 import org.kie.commons.services.cdi.StartupType;
+import org.kie.guvnor.workitems.service.WorkItemsEditorService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -72,11 +73,11 @@ public class AppSetup {
                                                DROOLS_WB_PLAYGROUND_PWD );
         }
 
-        // TODO in case mandatory properties are not defined in system repository so we add default
-        List<ConfigGroup> configGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
+        //Define mandatory properties
+        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;
-        for ( ConfigGroup configGroup : configGroups ) {
-            if ( GLOBAL_SETTINGS.equals( configGroup.getName() ) ) {
+        for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
+            if ( GLOBAL_SETTINGS.equals( globalConfigGroup.getName() ) ) {
                 globalSettingsDefined = true;
                 break;
             }
@@ -85,13 +86,27 @@ public class AppSetup {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
 
+        //Define properties required by the Work Items Editor
+        List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration( ConfigType.EDITOR );
+        boolean workItemsEditorSettingsDefined = false;
+        for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
+            if ( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
+                workItemsEditorSettingsDefined = true;
+                break;
+            }
+        }
+        if ( !workItemsEditorSettingsDefined ) {
+            configurationService.addConfiguration( getWorkItemElementDefinitions() );
+        }
+
         //Ensure FileSystems are loaded
         activeFileSystemsFactory.fileSystems();
     }
 
     private ConfigGroup getGlobalConfiguration() {
+        //Global Configurations used by many of Drools Workbench editors
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                                                                       "settings",
+                                                                       GLOBAL_SETTINGS,
                                                                        "" );
         group.addConfigItem( configurationFactory.newConfigItem( "drools.dateformat",
                                                                  "dd-MMM-yyyy" ) );
@@ -105,6 +120,40 @@ public class AppSetup {
                                                                  "true" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
                                                                  "false" ) );
+        return group;
+    }
+
+    private ConfigGroup getWorkItemElementDefinitions() {
+        // Work Item Definition elements used when creating Work Item Definitions.
+        // Each entry in this file represents a Button in the Editor's Palette:-
+        //   - Underscores ('_') in the key will be converted in whitespaces (' ') and
+        //     will be used as Button's labels.
+        //   - The value will be the text pasted into the editor when an element in the
+        //     palette is selected. You can use a pipe ('|') to specify the place where
+        //     the cursor should be put after pasting the element into the editor.
+        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.EDITOR,
+                                                                       WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
+                                                                       "" );
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION,
+                                                                 "[\n" +
+                                                                         "    \"name\" : \"MyTask|\", \n" +
+                                                                         "    \"parameters\" : [ \n" +
+                                                                         "        \"MyFirstParam\" : new StringDataType(), \n" +
+                                                                         "        \"MySecondParam\" : new StringDataType(), \n" +
+                                                                         "        \"MyThirdParam\" : new ObjectDataType() \n" +
+                                                                         "    ], \n" +
+                                                                         "    \"results\" : [ \n" +
+                                                                         "        \"Result\" : new ObjectDataType(\"java.util.Map\") \n" +
+                                                                         "    ], \n" +
+                                                                         "    \"displayName\" : \"My Task\", \n" +
+                                                                         "    \"icon\" : \"\" \n" +
+                                                                         "]" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER,
+                                                                 "\"MyParam|\" : new StringDataType()" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT,
+                                                                 "\"Result|\" : new ObjectDataType()" ) );
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME,
+                                                                 "\"displayName\" : \"My Task|\"" ) );
         return group;
     }
 

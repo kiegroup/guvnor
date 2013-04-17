@@ -49,6 +49,7 @@
     <module>guvnor-dtable-xls-editor</module>
     <module>guvnor-scorecard-xls-editor</module>
     <module>guvnor-search-screen</module>
+    <module>guvnor-workitems-editor</module>
   </modules>
 
 </project>

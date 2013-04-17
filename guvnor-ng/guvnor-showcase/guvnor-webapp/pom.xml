@@ -331,6 +331,16 @@
       <artifactId>guvnor-test-scenario-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-workitems-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-workitems-editor-backend</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -568,6 +578,9 @@
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-explorer-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-workitems-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-workitems-editor-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-view-source-widget</compileSourcesArtifact>
