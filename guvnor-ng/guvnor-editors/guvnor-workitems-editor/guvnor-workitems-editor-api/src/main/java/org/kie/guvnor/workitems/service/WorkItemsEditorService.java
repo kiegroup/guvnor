@@ -24,7 +24,7 @@ import org.kie.guvnor.services.file.SupportsDelete;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsRename;
 import org.kie.guvnor.services.file.SupportsUpdate;
-import org.kie.guvnor.workitems.model.WorkItemsMetaContent;
+import org.kie.guvnor.workitems.model.WorkItemDefinitionElements;
 import org.kie.guvnor.workitems.model.WorkItemsModelContent;
 import org.uberfire.backend.vfs.Path;
 
@@ -51,6 +51,6 @@ public interface WorkItemsEditorService
 
     WorkItemsModelContent loadContent( final Path path );
 
-    WorkItemsMetaContent loadMetaContent();
+    WorkItemDefinitionElements loadDefinitionElements();
 
 }

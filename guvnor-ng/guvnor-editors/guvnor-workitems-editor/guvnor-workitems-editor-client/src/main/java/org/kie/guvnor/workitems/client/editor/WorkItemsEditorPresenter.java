@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.workitems.client.editor;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -154,7 +155,9 @@ public class WorkItemsEditorPresenter {
             @Override
             public void callback( final WorkItemsModelContent content ) {
                 final String definition = content.getDefinition();
-                view.setContent( definition );
+                final List<String> workItemImages = content.getWorkItemImages();
+                view.setContent( definition,
+                                 workItemImages );
                 view.hideBusyIndicator();
             }
         };

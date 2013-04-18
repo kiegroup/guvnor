@@ -17,6 +17,7 @@
 package org.kie.guvnor.workitems.backend.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,12 +32,15 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
+import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileDiscoveryService;
+import org.kie.guvnor.services.backend.file.FileExtensionsFilter;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.workitems.model.WorkItemsMetaContent;
+import org.kie.guvnor.workitems.model.WorkItemDefinitionElements;
 import org.kie.guvnor.workitems.model.WorkItemsModelContent;
 import org.kie.guvnor.workitems.service.WorkItemsEditorService;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -83,38 +87,39 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private ConfigurationService configurationService;
 
     @Inject
+    private FileDiscoveryService fileDiscoveryService;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
     private Paths paths;
 
     @Inject
     private Identity identity;
 
-    private WorkItemsMetaContent workItemsMetaContent;
+    private WorkItemDefinitionElements workItemDefinitionElements;
+    private FileExtensionsFilter imageFilter = new FileExtensionsFilter( new String[]{ "png", "gif", "jpg" } );
 
     @PostConstruct
-    public void setupResources() {
-        workItemsMetaContent = new WorkItemsMetaContent( loadWorkItemElementDefinitions(),
-                                                         loadWorkItemImages() );
+    public void setupWorkItemDefinitionElements() {
+        workItemDefinitionElements = new WorkItemDefinitionElements( loadWorkItemDefinitionElements() );
     }
 
-    private Map<String, String> loadWorkItemElementDefinitions() {
-        final Map<String, String> workItemElementDefinitions = new HashMap<String, String>();
+    private Map<String, String> loadWorkItemDefinitionElements() {
+        final Map<String, String> workItemDefinitionElements = new HashMap<String, String>();
         final List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration( ConfigType.EDITOR );
         for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
             if ( WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
                 for ( ConfigItem item : editorConfigGroup.getItems() ) {
                     final String itemName = item.getName();
                     final String itemValue = editorConfigGroup.getConfigItemValue( itemName );
-                    workItemElementDefinitions.put( itemName,
+                    workItemDefinitionElements.put( itemName,
                                                     itemValue );
                 }
             }
         }
-        return workItemElementDefinitions;
-    }
-
-    private List<String> loadWorkItemImages() {
-        //TODO How do Work Item images function under 6.0?
-        return new ArrayList<String>();
+        return workItemDefinitionElements;
     }
 
     @Override
@@ -123,7 +128,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                         final String content,
                         final String comment ) {
         //Get the template for new Work Item Definitions, stored as a configuration item
-        String defaultDefinition = workItemsMetaContent.getWorkItemElementDefinitions().get( WORK_ITEMS_EDITOR_SETTINGS_DEFINITION );
+        String defaultDefinition = workItemDefinitionElements.getDefinitionElements().get( WORK_ITEMS_EDITOR_SETTINGS_DEFINITION );
         if ( defaultDefinition == null ) {
             defaultDefinition = "";
         }
@@ -159,12 +164,30 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     @Override
     public WorkItemsModelContent loadContent( final Path path ) {
         final String definition = load( path );
-        return new WorkItemsModelContent( definition );
+        final List<String> workItemImages = loadWorkItemImages( path );
+        return new WorkItemsModelContent( definition,
+                                          workItemImages );
+    }
+
+    private List<String> loadWorkItemImages( final Path resourcePath ) {
+        final Path projectRoot = projectService.resolveProject( resourcePath );
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectRoot );
+        final org.kie.commons.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
+
+        final Collection<org.kie.commons.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
+                                                                                                              imageFilter,
+                                                                                                              true );
+        final List<String> images = new ArrayList<String>();
+        for ( org.kie.commons.java.nio.file.Path imagePath : imagePaths ) {
+            final org.kie.commons.java.nio.file.Path relativePath = nioResourceParent.relativize( imagePath );
+            images.add( relativePath.toString() );
+        }
+        return images;
     }
 
     @Override
-    public WorkItemsMetaContent loadMetaContent() {
-        return workItemsMetaContent;
+    public WorkItemDefinitionElements loadDefinitionElements() {
+        return workItemDefinitionElements;
     }
 
     @Override

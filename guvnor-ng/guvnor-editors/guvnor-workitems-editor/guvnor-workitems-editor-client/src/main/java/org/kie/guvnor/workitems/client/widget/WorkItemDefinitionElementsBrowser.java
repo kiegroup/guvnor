@@ -31,10 +31,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.guvnor.workitems.client.resources.i18n.WorkItemsEditorConstants;
-import org.kie.guvnor.workitems.model.WorkItemsMetaContent;
+import org.kie.guvnor.workitems.model.WorkItemDefinitionElements;
 import org.uberfire.client.mvp.UberView;
 
-public class WorkItemDefinitionElementsBrowser extends Composite implements HasWorkItemMetaData,
+public class WorkItemDefinitionElementsBrowser extends Composite implements HasWorkItemDefinitionElements,
                                                                             UberView<WorkItemDefinitionElementSelectedListener> {
 
     @Inject
@@ -142,15 +142,15 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
     }
 
     @Override
-    public void setMetaData( final WorkItemsMetaContent metaData ) {
-        final List<String> workItemImages = metaData.getWorkItemImages();
-        final Map<String, String> workItemElementDefinitions = metaData.getWorkItemElementDefinitions();
+    public void setDefinitionElements( final WorkItemDefinitionElements metaData ) {
+        final Map<String, String> workItemElementDefinitions = metaData.getDefinitionElements();
         for ( Map.Entry<String, String> entry : workItemElementDefinitions.entrySet() ) {
             elementsPanel.add( new PanelButton( entry.getKey(),
                                                 entry.getValue() ) );
         }
+    }
 
-        //TODO How do Work Item images function under 6.0?
+    public void setImages( final List<String> workItemImages ) {
         for ( String workItemImage : workItemImages ) {
             imagesList.addItem( workItemImage );
         }

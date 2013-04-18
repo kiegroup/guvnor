@@ -22,7 +22,7 @@ public interface FileDiscoveryService {
                                     final boolean recursive );
 
     /**
-     * Discover files. Convienience method excluding sub-folders
+     * Discover files. Convenience method excluding sub-folders
      * @param pathToSearch The root Path to search. Sub-folders are not included.
      * @param filter A filter to restrict the matched files.
      * @return

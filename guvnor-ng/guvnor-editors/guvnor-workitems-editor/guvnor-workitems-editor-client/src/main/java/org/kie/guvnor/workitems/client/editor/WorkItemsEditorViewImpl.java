@@ -16,6 +16,7 @@
 
 package org.kie.guvnor.workitems.client.editor;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -77,8 +78,10 @@ public class WorkItemsEditorViewImpl
     }
 
     @Override
-    public void setContent( final String definition ) {
+    public void setContent( final String definition,
+                            final List<String> workItemImages ) {
         workItemWidget.setContent( definition );
+        workItemBrowser.setImages( workItemImages );
     }
 
     @Override
