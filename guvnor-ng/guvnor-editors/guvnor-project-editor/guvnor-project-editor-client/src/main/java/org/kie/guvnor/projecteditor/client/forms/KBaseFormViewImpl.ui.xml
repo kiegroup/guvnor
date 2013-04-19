@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:editor='urn:import:org.kie.guvnor.projecteditor.client.forms'>
+             xmlns:editor='urn:import:org.kie.guvnor.projecteditor.client.forms'
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources"/>
@@ -36,20 +37,20 @@
       <div style="float:left" class='{resources.mainCss.selectionBox}'>
         <gwt:Label text="{i18n.EqualsBehavior}"/>
         <div>
-          <gwt:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
+          <b:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
         </div>
         <div>
-          <gwt:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
+          <b:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
         </div>
       </div>
       <div style="float:left" class='{resources.mainCss.selectionBox}'>
         <div>
           <gwt:Label text="{i18n.EventProcessingMode}"/>
           <div>
-            <gwt:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
+            <b:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
           </div>
           <div>
-            <gwt:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
+            <b:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
           </div>
         </div>
       </div>

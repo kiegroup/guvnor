@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-  xmlns:c="urn:import:org.uberfire.client.common">
+  xmlns:c="urn:import:org.uberfire.client.common"
+  xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="ufImages" type="org.uberfire.client.resources.CommonImages" />
@@ -70,9 +71,9 @@
       <gwt:VerticalPanel ui:field="conditionDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="calculationType" styleName="{res.css.wizardDTableFieldContainerValid">
           <gwt:Label text="{i18n.CalculationType}" styleName="{res.css.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false" styleName="{res.css.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false" styleName="{res.css.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false" styleName="{res.css.wizardDTableFields}" />
+          <b:RadioButton name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false" styleName="{res.css.wizardDTableFields}" />
+          <b:RadioButton name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false" styleName="{res.css.wizardDTableFields}" />
+          <b:RadioButton name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false" styleName="{res.css.wizardDTableFields}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel ui:field="columnHeaderContainer" styleName="{res.css.wizardDTableFieldContainerValid">
           <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{res.css.wizardDTableFields}" />
