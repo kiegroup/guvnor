@@ -15,7 +15,6 @@
  */
 package org.kie.guvnor.dtablexls.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
@@ -43,9 +42,6 @@ public class PopupListWidget extends Modal {
 
     @UiField
     protected VerticalPanel list;
-
-    @UiField
-    Button okButton;
 
     public PopupListWidget() {
         setTitle( DecisionTableXLSEditorConstants.INSTANCE.ConversionResults() );
