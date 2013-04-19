@@ -16,9 +16,6 @@
 
 package org.kie.guvnor.guided.dtable.service;
 
-import java.util.Set;
-
-import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;
@@ -46,5 +43,4 @@ public interface GuidedDecisionTableEditorService
 
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
-    Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 }

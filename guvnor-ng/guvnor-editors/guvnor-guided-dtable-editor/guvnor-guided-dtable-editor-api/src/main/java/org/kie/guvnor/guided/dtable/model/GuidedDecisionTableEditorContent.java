@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.guided.dtable.model;
 
+import java.util.Set;
+
+import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.oracle.DataModelOracle;
@@ -25,15 +28,17 @@ public class GuidedDecisionTableEditorContent {
 
     private DataModelOracle dataModel;
     private GuidedDecisionTable52 ruleModel;
+    private Set<PortableWorkDefinition> workItemDefinitions;
 
     public GuidedDecisionTableEditorContent() {
-
     }
 
     public GuidedDecisionTableEditorContent( final DataModelOracle dataModel,
-                                             final GuidedDecisionTable52 ruleModel ) {
+                                             final GuidedDecisionTable52 ruleModel,
+                                             final Set<PortableWorkDefinition> workItemDefinitions ) {
         this.dataModel = dataModel;
         this.ruleModel = ruleModel;
+        this.workItemDefinitions = workItemDefinitions;
     }
 
     public DataModelOracle getDataModel() {
@@ -42,6 +47,10 @@ public class GuidedDecisionTableEditorContent {
 
     public GuidedDecisionTable52 getRuleModel() {
         return ruleModel;
+    }
+
+    public Set<PortableWorkDefinition> getWorkItemDefinitions() {
+        return workItemDefinitions;
     }
 
 }

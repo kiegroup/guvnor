@@ -16,6 +16,9 @@
 
 package org.kie.guvnor.workitems.service;
 
+import java.util.Set;
+
+import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.services.file.SupportsCopy;
@@ -39,6 +42,8 @@ public interface WorkItemsEditorService
         SupportsCopy,
         SupportsRename {
 
+    public static final String WORK_ITEM_DEFINITION = "work-item-definition";
+
     public static final String WORK_ITEMS_EDITOR_SETTINGS = "work-items-editor-settings";
 
     public static final String WORK_ITEMS_EDITOR_SETTINGS_DEFINITION = "Definition";
@@ -52,5 +57,7 @@ public interface WorkItemsEditorService
     WorkItemsModelContent loadContent( final Path path );
 
     WorkItemDefinitionElements loadDefinitionElements();
+
+    Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path );
 
 }

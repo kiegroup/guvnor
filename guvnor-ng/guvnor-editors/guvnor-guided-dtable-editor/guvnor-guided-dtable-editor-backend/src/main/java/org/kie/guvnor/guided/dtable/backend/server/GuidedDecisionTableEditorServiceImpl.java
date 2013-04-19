@@ -42,6 +42,7 @@ import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.workitems.service.WorkItemsEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
@@ -94,6 +95,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     private SourceServices sourceServices;
 
     @Inject
+    private WorkItemsEditorService workItemsService;
+
+    @Inject
     private ProjectService projectService;
 
     @Override
@@ -132,8 +136,10 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         final GuidedDecisionTable52 model = load( path );
         final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
         return new GuidedDecisionTableEditorContent( oracle,
-                                                     model );
+                                                     model,
+                                                     workItemDefinitions );
     }
 
     @Override
@@ -178,11 +184,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
         return copyService.copy( path,
                                  newName,
                                  comment );
-    }
-
-    @Override
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions( Path path ) {
-        return null;
     }
 
     @Override

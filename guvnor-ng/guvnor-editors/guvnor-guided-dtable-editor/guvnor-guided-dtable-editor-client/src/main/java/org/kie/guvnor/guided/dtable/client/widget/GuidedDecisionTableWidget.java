@@ -15,6 +15,10 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -40,8 +44,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.commons.shared.rule.IPattern;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
+import org.drools.guvnor.models.commons.shared.rule.IPattern;
+import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -59,9 +64,12 @@ import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
+import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
@@ -70,9 +78,6 @@ import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.kie.guvnor.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
-import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 import org.uberfire.backend.vfs.Path;
@@ -84,10 +89,6 @@ import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.PrettyFormLayout;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -117,16 +118,13 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Path path;
     private Identity identity;
+    private Set<PortableWorkDefinition> workItemDefinitions;
 
     private VerticalDecisionTableWidget dtable;
     private SimplePanel dtableContainer = new SimplePanel();
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus eventBus = new SimpleEventBus();
-
-    //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
-    @SuppressWarnings("unused")
-    private EventBus globalEventBus;
 
     private static String SECTION_SEPARATOR = "..................";
 
@@ -156,15 +154,14 @@ public class GuidedDecisionTableWidget extends Composite
     public GuidedDecisionTableWidget( final Path path,
                                       final DataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
-                                      final EventBus globalEventBus,
                                       final Identity identity,
+                                      final Set<PortableWorkDefinition> workItemDefinitions,
                                       final boolean isReadOnly ) {
-
         this.path = path;
         this.oracle = oracle;
         this.model = model;
-        this.globalEventBus = globalEventBus;
         this.identity = identity;
+        this.workItemDefinitions = workItemDefinitions;
         this.rm = new BRLRuleModel( model );
         this.isReadOnly = isReadOnly;
 
@@ -303,7 +300,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     } );
 
-        } else if ( c instanceof ActionSetFieldCol52) {
+        } else if ( c instanceof ActionSetFieldCol52 ) {
             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
             Image edit = ImageResources508.INSTANCE.Edit();
             edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
@@ -398,7 +395,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     } );
 
-        } else if ( c instanceof ActionWorkItemCol52) {
+        } else if ( c instanceof ActionWorkItemCol52 ) {
             final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
             Image edit = ImageResources508.INSTANCE.Edit();
             edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
@@ -417,6 +414,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                      }
                                                                                                  },
                                                                                                  awi,
+                                                                                                 workItemDefinitions,
                                                                                                  false,
                                                                                                  isReadOnly );
                                             popup.show();
@@ -468,7 +466,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAction( final ActionCol52 c ) {
-        if ( c instanceof LimitedEntryBRLActionColumn) {
+        if ( c instanceof LimitedEntryBRLActionColumn ) {
             Image image = ImageResources508.INSTANCE.DeleteItemSmall();
             image.setAltText( Constants.INSTANCE.RemoveThisActionColumn() );
             return new ImageButton( image,
@@ -546,7 +544,7 @@ public class GuidedDecisionTableWidget extends Composite
         List<CompositeColumn<? extends BaseColumn>> columns = model.getConditions();
         boolean arePatternsDraggable = columns.size() > 1 && !isReadOnly;
         for ( CompositeColumn<?> column : columns ) {
-            if ( column instanceof Pattern52) {
+            if ( column instanceof Pattern52 ) {
                 Pattern52 p = (Pattern52) column;
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
@@ -598,7 +596,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                           patternLabel );
                 }
 
-            } else if ( column instanceof BRLConditionColumn) {
+            } else if ( column instanceof BRLConditionColumn ) {
                 BRLConditionColumn brl = (BRLConditionColumn) column;
 
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
@@ -921,6 +919,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                  }
                                                                              },
                                                                              awi,
+                                                                             workItemDefinitions,
                                                                              true,
                                                                              isReadOnly );
                         popup.show();

@@ -32,8 +32,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-server</artifactId>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-workitems-editor-api</artifactId>
     </dependency>
 
     <dependency>
@@ -54,6 +54,11 @@
     <dependency>
       <groupId>org.kie.guvnor</groupId>
       <artifactId>guvnor-guided-rule-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
     </dependency>
 
     <dependency>

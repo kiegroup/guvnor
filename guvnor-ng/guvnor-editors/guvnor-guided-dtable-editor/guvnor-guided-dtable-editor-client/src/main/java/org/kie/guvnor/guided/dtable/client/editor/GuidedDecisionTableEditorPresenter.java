@@ -193,6 +193,7 @@ public class GuidedDecisionTableEditorPresenter {
                 view.setContent( path,
                                  oracle,
                                  model,
+                                 response.getWorkItemDefinitions(),
                                  isReadOnly );
                 importsWidget.setContent( oracle,
                                           model.getImports(),

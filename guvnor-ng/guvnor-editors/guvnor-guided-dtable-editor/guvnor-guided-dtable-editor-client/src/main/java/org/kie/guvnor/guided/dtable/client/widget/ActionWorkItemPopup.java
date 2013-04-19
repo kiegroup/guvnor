@@ -15,6 +15,12 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,10 +29,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
-import org.kie.guvnor.commons.ui.client.workitems.WorkItemParametersWidget;
 import org.drools.guvnor.models.commons.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableEnumParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableFloatParameterDefinition;
@@ -36,20 +38,14 @@ import org.drools.guvnor.models.commons.shared.workitems.PortableObjectParameter
 import org.drools.guvnor.models.commons.shared.workitems.PortableParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
+import org.kie.guvnor.commons.ui.client.workitems.WorkItemParametersWidget;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
-
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A popup to define an Action to execute a Work Item
@@ -60,19 +56,17 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private GuidedDecisionTable52 model;
     private Path path;
     private WorkItemParametersWidget workItemInputParameters;
+    private Map<String, PortableWorkDefinition> workItemDefinitionsMap;
     private int workItemInputParametersIndex;
-    private Map<String, PortableWorkDefinition> workItemDefinitions;
 
     private final boolean isReadOnly;
-
-    @Inject
-    private Caller<GuidedDecisionTableEditorService> dtableService;
 
     public ActionWorkItemPopup( final Path path,
                                 final GuidedDecisionTable52 model,
                                 final IBindingProvider bindingProvider,
                                 final GenericColumnCommand refreshGrid,
                                 final ActionWorkItemCol52 col,
+                                final Set<PortableWorkDefinition> workItemDefinitions,
                                 final boolean isNew,
                                 final boolean isReadOnly ) {
         this.editingCol = cloneActionWorkItemColumn( col );
@@ -104,7 +98,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
         final ListBox workItemsListBox = new ListBox();
         addAttribute( Constants.INSTANCE.WorkItemNameColon(),
                       workItemsListBox );
-        setupWorkItems( workItemsListBox );
         workItemsListBox.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             workItemsListBox.addChangeHandler( new ChangeHandler() {
@@ -113,7 +106,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                     int index = workItemsListBox.getSelectedIndex();
                     if ( index >= 0 ) {
                         String selectedWorkItemName = workItemsListBox.getValue( index );
-                        editingCol.setWorkItemDefinition( workItemDefinitions.get( selectedWorkItemName ) );
+                        editingCol.setWorkItemDefinition( workItemDefinitionsMap.get( selectedWorkItemName ) );
                         showWorkItemParameters();
                         center();
                     }
@@ -126,6 +119,8 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemInputParametersIndex = addAttribute( Constants.INSTANCE.WorkItemInputParameters(),
                                                      workItemInputParameters,
                                                      false );
+        setupWorkItems( workItemsListBox,
+                        workItemDefinitions );
 
         //Hide column tick-box
         addAttribute( Constants.INSTANCE.HideThisColumn(),
@@ -212,7 +207,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         } else if ( ppd instanceof PortableEnumParameterDefinition ) {
             clone = new PortableEnumParameterDefinition();
             clone.setName( ppd.getName() );
-            ( (PortableEnumParameterDefinition) clone ).setClassName( ( (PortableEnumParameterDefinition) ppd ).getClassName() );
+            ( (PortableEnumParameterDefinition) clone ).setClassName( ppd.getClassName() );
             ( (PortableEnumParameterDefinition) clone ).setBinding( ( (PortableEnumParameterDefinition) ppd ).getBinding() );
             ( (PortableEnumParameterDefinition) clone ).setValues( ( (PortableEnumParameterDefinition) ppd ).getValues() );
             ( (PortableEnumParameterDefinition) clone ).setValue( ( (PortableEnumParameterDefinition) ppd ).getValue() );
@@ -232,14 +227,14 @@ public class ActionWorkItemPopup extends FormStylePopup {
         } else if ( ppd instanceof PortableListParameterDefinition ) {
             clone = new PortableListParameterDefinition();
             clone.setName( ppd.getName() );
+            ( (PortableListParameterDefinition) clone ).setClassName( ppd.getClassName() );
             ( (PortableListParameterDefinition) clone ).setBinding( ( (PortableListParameterDefinition) ppd ).getBinding() );
-            ( (PortableListParameterDefinition) clone ).setClassName( ( (PortableListParameterDefinition) ppd ).getClassName() );
             return clone;
         } else if ( ppd instanceof PortableObjectParameterDefinition ) {
             clone = new PortableObjectParameterDefinition();
             clone.setName( ppd.getName() );
+            ( (PortableObjectParameterDefinition) clone ).setClassName( ppd.getClassName() );
             ( (PortableObjectParameterDefinition) clone ).setBinding( ( (PortableObjectParameterDefinition) ppd ).getBinding() );
-            ( (PortableObjectParameterDefinition) clone ).setClassName( ( (PortableObjectParameterDefinition) ppd ).getClassName() );
             return clone;
         } else if ( ppd instanceof PortableStringParameterDefinition ) {
             clone = new PortableStringParameterDefinition();
@@ -251,52 +246,46 @@ public class ActionWorkItemPopup extends FormStylePopup {
         throw new IllegalArgumentException( "Unrecognized PortableParameterDefinition" );
     }
 
-    private void setupWorkItems( final ListBox workItemsListBox ) {
+    private void setupWorkItems( final ListBox workItemsListBox,
+                                 final Set<PortableWorkDefinition> workItemDefinitions ) {
         workItemsListBox.clear();
         workItemsListBox.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
 
-        dtableService.call( new RemoteCallback<Set<PortableWorkDefinition>>() {
-            @Override
-            public void callback( final Set<PortableWorkDefinition> result ) {
+        //Add list of Work Item Definitions to list box
+        if ( workItemDefinitions.size() > 0 ) {
+            workItemsListBox.clear();
+            workItemsListBox.setEnabled( true && !isReadOnly );
+            workItemsListBox.addItem( Constants.INSTANCE.Choose(),
+                                      "" );
+            workItemDefinitionsMap = new HashMap<String, PortableWorkDefinition>();
 
-                //Add list of Work Item Definitions to list box
-                if ( result.size() > 0 ) {
-                    workItemsListBox.clear();
-                    workItemsListBox.setEnabled( true && !isReadOnly );
-                    workItemsListBox.addItem( Constants.INSTANCE.Choose(),
-                                              "" );
-                    workItemDefinitions = new HashMap<String, PortableWorkDefinition>();
-
-                    String selectedName = null;
-                    boolean isWorkItemSelected = false;
-                    if ( editingCol.getWorkItemDefinition() != null ) {
-                        selectedName = editingCol.getWorkItemDefinition().getName();
-                    }
-
-                    //Add items
-                    int i = 0;
-                    for ( PortableWorkDefinition wid : result ) {
-                        workItemsListBox.addItem( wid.getDisplayName(),
-                                                  wid.getName() );
-                        workItemDefinitions.put( wid.getName(),
-                                                 wid );
-                        if ( wid.getName().equals( selectedName ) ) {
-                            workItemsListBox.setSelectedIndex( i + 1 );
-                            isWorkItemSelected = true;
-                        }
-                        i++;
-                    }
-
-                    //Show parameters if a Work Item is pre-selected
-                    setAttributeVisibility( workItemInputParametersIndex,
-                                            isWorkItemSelected );
-                    showWorkItemParameters();
-                    center();
-                }
+            String selectedName = null;
+            boolean isWorkItemSelected = false;
+            if ( editingCol.getWorkItemDefinition() != null ) {
+                selectedName = editingCol.getWorkItemDefinition().getName();
             }
-        } ).loadWorkItemDefinitions( this.path );
 
+            //Add items
+            int i = 0;
+            for ( PortableWorkDefinition wid : workItemDefinitions ) {
+                workItemsListBox.addItem( wid.getDisplayName(),
+                                          wid.getName() );
+                workItemDefinitionsMap.put( wid.getName(),
+                                            wid );
+                if ( wid.getName().equals( selectedName ) ) {
+                    workItemsListBox.setSelectedIndex( i + 1 );
+                    isWorkItemSelected = true;
+                }
+                i++;
+            }
+
+            //Show parameters if a Work Item is pre-selected
+            setAttributeVisibility( workItemInputParametersIndex,
+                                    isWorkItemSelected );
+            showWorkItemParameters();
+            center();
+        }
     }
 
     private void showWorkItemParameters() {
