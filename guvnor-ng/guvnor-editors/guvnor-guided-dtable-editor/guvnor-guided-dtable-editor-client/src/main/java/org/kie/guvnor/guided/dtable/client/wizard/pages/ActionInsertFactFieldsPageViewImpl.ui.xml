@@ -18,7 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
   xmlns:guvnor='urn:import:org.kie.guvnor.guided.rule.client.editor'
-  xmlns:c="urn:import:org.uberfire.client.common">
+  xmlns:c="urn:import:org.uberfire.client.common"
+  xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="ufImages" type="org.uberfire.client.resources.CommonImages" />
@@ -81,7 +82,7 @@
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-          <gwt:CheckBox ui:field="chkLogicalInsert" styleName="{res.css.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
+          <b:CheckBox ui:field="chkLogicalInsert" styleName="{res.css.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
         </gwt:HorizontalPanel>
       </gwt:VerticalPanel>
