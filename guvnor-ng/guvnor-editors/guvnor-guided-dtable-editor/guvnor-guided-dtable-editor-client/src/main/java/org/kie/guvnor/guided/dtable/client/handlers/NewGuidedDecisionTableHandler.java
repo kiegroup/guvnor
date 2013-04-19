@@ -60,7 +60,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    private NewResourcePresenter presenter;
+    private NewResourcePresenter newResourcePresenter;
 
     @PostConstruct
     private void setupExtensions() {
@@ -82,7 +82,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     public void create( final Path contextPath,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
-        this.presenter = presenter;
+        this.newResourcePresenter = presenter;
         if ( !options.isUsingWizard() ) {
             createEmptyDecisionTable( baseFileName,
                                       contextPath,
@@ -113,6 +113,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
             @Override
             public void callback( final DataModelOracle oracle ) {
+                newResourcePresenter.complete();
                 final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
                                                                                                                        contextPath,
                                                                                                                        tableFormat );
@@ -130,7 +131,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                       final GuidedDecisionTable52 model,
                       final Command postSaveCommand ) {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        service.call( getSuccessCallback( presenter,
+        service.call( getSuccessCallback( newResourcePresenter,
                                           postSaveCommand ),
                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
                                                                                               buildFileName( resourceType,
