@@ -33,6 +33,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService;
+import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -48,7 +49,10 @@ import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
-public class DecisionTableXLSServiceImpl implements ExtendedDecisionTableXLSService {
+// Implementation needs to implement both interfaces even though one extends the other
+// otherwise the implementation discovery mechanism for the @Service annotation fails.
+public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
+                                                    ExtendedDecisionTableXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( DecisionTableXLSServiceImpl.class );
 

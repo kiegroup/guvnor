@@ -21,8 +21,7 @@ import java.io.InputStream;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
 import org.uberfire.backend.vfs.Path;
 
-public interface ExtendedDecisionTableXLSService
-        extends DecisionTableXLSService {
+public interface ExtendedDecisionTableXLSService extends DecisionTableXLSService {
 
     InputStream load( final Path path );
 

@@ -31,13 +31,16 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.guvnor.commons.data.tables.PageRequest;
 import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
+import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.GAV;
 
 @Service
 @ApplicationScoped
-public class M2RepoServiceImpl
-        implements ExtendedM2RepoService {
+// Implementation needs to implement both interfaces even though one extends the other
+// otherwise the implementation discovery mechanism for the @Service annotation fails.
+public class M2RepoServiceImpl implements M2RepoService,
+                                          ExtendedM2RepoService {
 
     @Inject
     private GuvnorM2Repository repository;

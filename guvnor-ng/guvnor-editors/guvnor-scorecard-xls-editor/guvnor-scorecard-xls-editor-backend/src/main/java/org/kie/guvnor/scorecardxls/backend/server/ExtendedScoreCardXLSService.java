@@ -21,8 +21,7 @@ import java.io.InputStream;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;
 import org.uberfire.backend.vfs.Path;
 
-public interface ExtendedScoreCardXLSService
-        extends ScoreCardXLSService {
+public interface ExtendedScoreCardXLSService extends ScoreCardXLSService {
 
     InputStream load( final Path path );
 
