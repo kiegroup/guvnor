@@ -17,20 +17,21 @@ package org.kie.guvnor.dtablexls.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKButton;
+import org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 
 /**
  * A popup that can contain a list of items
  */
-public class PopupListWidget extends Composite {
+public class PopupListWidget extends Modal {
 
     interface PopupListWidgetBinder
             extends
@@ -41,31 +42,31 @@ public class PopupListWidget extends Composite {
     private static PopupListWidgetBinder uiBinder = GWT.create( PopupListWidgetBinder.class );
 
     @UiField
-    Modal popup;
-
-    @UiField
     protected VerticalPanel list;
 
     @UiField
     Button okButton;
 
     public PopupListWidget() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
-        popup.setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-    }
+        setTitle( DecisionTableXLSEditorConstants.INSTANCE.ConversionResults() );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
+        setWidth( "900px" );
+        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
 
-    public void show() {
-        popup.show();
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKButton( new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        } ) );
     }
 
     public void addListItem( Widget w ) {
         this.list.add( w );
-    }
-
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-        popup.hide();
     }
 
 }

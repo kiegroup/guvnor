@@ -20,26 +20,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +44,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
 import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
 import org.kie.guvnor.commons.security.AppRoles;
+import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKButton;
 import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.uberfire.security.Identity;
@@ -54,14 +52,11 @@ import org.uberfire.security.Identity;
 /**
  * The AuditLog View implementation
  */
-public class AuditLogViewImpl extends PopupPanel
+public class AuditLogViewImpl extends Modal
         implements
         AuditLogView {
 
     private final AuditLog auditLog;
-
-    @UiField
-    Modal popup;
 
     @UiField
     DropdownButton eventTypes;
@@ -86,8 +81,22 @@ public class AuditLogViewImpl extends PopupPanel
                              final Identity identity ) {
         this.auditLog = auditLog;
         this.identity = identity;
-        setWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
+
+        setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
+        setWidth( "900px" );
+
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKButton( new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        } ) );
+
         setup();
     }
 
@@ -144,8 +153,10 @@ public class AuditLogViewImpl extends PopupPanel
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
 
         GuvnorSimplePager gsp = new GuvnorSimplePager();
-        gsp.setPageSize( 5 );
         gsp.setDisplay( events );
+
+        events.setPageSize( 4 );
+        gsp.setPageSize( 4 );
 
         VerticalPanel vp = new VerticalPanel();
         vp.add( gsp );
@@ -169,22 +180,6 @@ public class AuditLogViewImpl extends PopupPanel
         } );
 
         return chkEventType;
-    }
-
-    @Override
-    public void show() {
-        popup.show();
-    }
-
-    @Override
-    public void hide() {
-        popup.hide();
-        super.hide();
-    }
-
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-        hide();
     }
 
     private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {

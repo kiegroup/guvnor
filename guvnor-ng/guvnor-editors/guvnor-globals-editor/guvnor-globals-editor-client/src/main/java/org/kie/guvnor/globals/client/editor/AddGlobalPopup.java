@@ -23,21 +23,20 @@ import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
-import org.uberfire.client.mvp.Command;
 
 @Dependent
-public class AddGlobalPopup extends Composite {
+public class AddGlobalPopup extends Modal {
 
     interface AddGlobalPopupBinder
             extends
@@ -65,14 +64,35 @@ public class AddGlobalPopup extends Composite {
     @UiField
     HelpInline classNameHelpInline;
 
-    @UiField
-    Modal popup;
+    private Command callbackCommand;
 
-    private Command okCommand;
+    private final Command okCommand = new Command() {
+        @Override
+        public void execute() {
+            onOKButtonClick();
+        }
+    };
+
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
+                                                                                      cancelCommand );
 
     public AddGlobalPopup() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
+        setTitle( GlobalsEditorConstants.INSTANCE.addGlobalPopupTitle() );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
+
+        add( uiBinder.createAndBindUi( this ) );
+        add( footer );
+
         aliasTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -82,9 +102,7 @@ public class AddGlobalPopup extends Composite {
         } );
     }
 
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-
+    private void onOKButtonClick() {
         boolean hasError = false;
         if ( aliasTextBox.getText() == null || aliasTextBox.getText().trim().isEmpty() ) {
             aliasGroup.setType( ControlGroupType.ERROR );
@@ -106,8 +124,8 @@ public class AddGlobalPopup extends Composite {
             return;
         }
 
-        if ( okCommand != null ) {
-            okCommand.execute();
+        if ( callbackCommand != null ) {
+            callbackCommand.execute();
         }
         hide();
     }
@@ -120,27 +138,14 @@ public class AddGlobalPopup extends Composite {
         return classNameListBox.getValue();
     }
 
-    @UiHandler("cancelButton")
-    public void onCancelButtonClick( final ClickEvent e ) {
-        hide();
-    }
-
-    public void hide() {
-        popup.hide();
-    }
-
-    public void setContent( final Command okCommand,
+    public void setContent( final Command callbackCommand,
                             final String[] allClassNames ) {
-        this.okCommand = okCommand;
+        this.callbackCommand = callbackCommand;
         this.classNameListBox.clear();
         this.aliasTextBox.setText( "" );
         for ( String className : allClassNames ) {
             classNameListBox.addItem( className );
         }
-    }
-
-    public void show() {
-        popup.show();
     }
 
 }

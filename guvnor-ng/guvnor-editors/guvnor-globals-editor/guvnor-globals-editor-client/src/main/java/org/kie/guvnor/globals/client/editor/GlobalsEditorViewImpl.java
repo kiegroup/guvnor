@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,7 +30,6 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.mvp.Command;
 
 /**
  * The Globals Editor View implementation

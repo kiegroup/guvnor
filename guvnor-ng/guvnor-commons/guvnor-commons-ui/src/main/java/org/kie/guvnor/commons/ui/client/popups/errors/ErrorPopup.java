@@ -15,22 +15,22 @@
  */
 package org.kie.guvnor.commons.ui.client.popups.errors;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKButton;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 
 /**
  * A popup that can contain a list of items
  */
-public class ErrorPopup extends Composite {
+public class ErrorPopup extends Modal {
 
     interface PopupListWidgetBinder
             extends
@@ -41,32 +41,28 @@ public class ErrorPopup extends Composite {
     private static PopupListWidgetBinder uiBinder = GWT.create( PopupListWidgetBinder.class );
 
     @UiField
-    Modal popup;
-
-    @UiField
     protected Label message;
 
-    @UiField
-    Button okButton;
-
     private ErrorPopup() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
-        popup.setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        popup.setHideOthers( false );
-    }
+        setTitle( CommonConstants.INSTANCE.Error() );
+        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
+        setHideOthers( false );
 
-    public void show() {
-        popup.show();
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKButton( new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        } ) );
     }
 
     public void setMessage( final String message ) {
         this.message.setText( message );
-    }
-
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-        popup.hide();
     }
 
     public static void showMessage( String message ) {

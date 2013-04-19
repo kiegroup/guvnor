@@ -19,19 +19,10 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="i18n" type="org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants"/>
-
-  <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="{i18n.Error}" backdrop="STATIC" keyboard="true" animation="true">
-      <b:Well>
-        <g:ScrollPanel width="100%" height="200px">
-          <g:Label ui:field="message"/>
-        </g:ScrollPanel>
-      </b:Well>
-      <b:ModalFooter>
-        <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.OK}"></b:Button>
-      </b:ModalFooter>
-    </b:Modal>
-  </g:HTMLPanel>
+  <b:Well>
+    <g:ScrollPanel width="100%" height="200px">
+      <g:Label ui:field="message"/>
+    </g:ScrollPanel>
+  </b:Well>
 
 </ui:UiBinder>

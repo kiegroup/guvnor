@@ -23,31 +23,30 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Well;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
+import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.guvnor.commons.ui.client.resources.i18n.NewItemPopupConstants;
 
 @ApplicationScoped
-public class NewResourceView extends PopupPanel implements NewResourcePresenter.View {
+public class NewResourceView extends Modal implements NewResourcePresenter.View {
 
     interface NewResourceViewBinder
             extends
@@ -61,8 +60,22 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
 
     private final Map<NewResourceHandler, RadioButton> handlerToWidgetMap = new HashMap<NewResourceHandler, RadioButton>();
 
-    @UiField
-    Modal popup;
+    private final Command okCommand = new Command() {
+        @Override
+        public void execute() {
+            onOKButtonClick();
+        }
+    };
+
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
+                                                                                      cancelCommand );
 
     @UiField
     ControlGroup fileNameGroup;
@@ -82,16 +95,18 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
     @UiField
     VerticalPanel handlerExtensions;
 
-    @UiField
-    Button okButton;
-
-    @UiField
-    Button cancelButton;
-
     public NewResourceView() {
-        setWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
-        popup.setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+        setTitle( NewItemPopupConstants.INSTANCE.popupTitle() );
+        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
+
+        footer.enableOkButton( false );
+
+        add( uiBinder.createAndBindUi( this ) );
+        add( footer );
     }
 
     @Override
@@ -104,13 +119,7 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
         //Clear previous resource name
         fileNameTextBox.setText( "" );
         fileNameGroup.setType( ControlGroupType.NONE );
-        popup.show();
-    }
-
-    @Override
-    public void hide() {
-        popup.hide();
-        super.hide();
+        super.show();
     }
 
     @Override
@@ -177,7 +186,6 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
             public void onValueChange( ValueChangeEvent<Boolean> event ) {
                 if ( event.getValue() == true ) {
                     selectNewResourceHandler( handler );
-                    center();
                 }
             }
         } );
@@ -187,12 +195,11 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
 
     private void selectNewResourceHandler( final NewResourceHandler handler ) {
         setActiveHandler( handler );
-        okButton.setEnabled( true );
+        footer.enableOkButton( true );
         presenter.setActiveHandler( handler );
     }
 
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
+    private void onOKButtonClick() {
         boolean hasError = false;
         if ( fileNameTextBox.getText() == null || fileNameTextBox.getText().trim().isEmpty() ) {
             fileNameGroup.setType( ControlGroupType.ERROR );
@@ -207,11 +214,6 @@ public class NewResourceView extends PopupPanel implements NewResourcePresenter.
         }
 
         presenter.makeItem();
-    }
-
-    @UiHandler("cancelButton")
-    public void onCancelButtonClick( final ClickEvent e ) {
-        hide();
     }
 
 }

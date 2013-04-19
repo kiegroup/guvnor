@@ -22,17 +22,10 @@
   <ui:with field="i18n" type="org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants"/>
   <ui:with field="i18nCommon" type="org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants"/>
 
-  <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="{i18n.ConversionResults}" backdrop="STATIC" keyboard="true" animation="true">
-      <b:Well>
-        <g:ScrollPanel width="100%" height="200px">
-          <g:VerticalPanel ui:field="list"/>
-        </g:ScrollPanel>
-      </b:Well>
-      <b:ModalFooter>
-        <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18nCommon.OK}"></b:Button>
-      </b:ModalFooter>
-    </b:Modal>
-  </g:HTMLPanel>
+  <b:Well>
+    <g:ScrollPanel width="100%" height="200px">
+      <g:VerticalPanel ui:field="list"/>
+    </g:ScrollPanel>
+  </b:Well>
 
 </ui:UiBinder>
