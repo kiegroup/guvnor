@@ -16,14 +16,27 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.kie.guvnor.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="images" type="org.kie.guvnor.guided.dtable.client.resources.images.ImageResources" />
+  <ui:with field="i18nCommon" type="org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants"/>
 
-  <gwt:VerticalPanel>
-    <gwt:DisclosurePanel/>
-    <gwt:ScrollPanel ui:field="spEvents"/>
-  </gwt:VerticalPanel>
+  <g:HTMLPanel>
+    <b:Modal ui:field="popup" title="{i18n.DecisionTableAuditLog}" backdrop="STATIC" keyboard="true" animation="true" width="900px">
+      <b:ButtonToolbar>
+        <b:ButtonGroup>
+          <b:DropdownButton text="{i18n.DecisionTableAuditLogEvents}" ui:field="eventTypes"/>
+        </b:ButtonGroup>
+      </b:ButtonToolbar>
+      <b:Well>
+        <g:SimplePanel ui:field="eventsContainer" height="400px"/>
+      </b:Well>
+      <b:ModalFooter>
+        <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18nCommon.OK}"></b:Button>
+      </b:ModalFooter>
+    </b:Modal>
+  </g:HTMLPanel>
 
 </ui:UiBinder>

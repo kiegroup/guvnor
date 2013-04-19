@@ -15,65 +15,61 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.auditlog;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
-import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
-import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
-import org.kie.guvnor.commons.security.AppRoles;
-import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
-import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
-import org.uberfire.client.common.Popup;
-import org.uberfire.security.Identity;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.ButtonGroup;
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.Modal;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
+import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
+import org.kie.guvnor.commons.security.AppRoles;
+import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
+import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.uberfire.security.Identity;
+
 /**
  * The AuditLog View implementation
  */
-public class AuditLogViewImpl extends Popup
+public class AuditLogViewImpl extends PopupPanel
         implements
         AuditLogView {
 
-    protected int MIN_WIDTH = 500;
-    protected int MIN_HEIGHT = 200;
-
-    private final org.drools.guvnor.models.commons.shared.auditlog.AuditLog auditLog;
-
-    private final Widget popupContent;
+    private final AuditLog auditLog;
 
     @UiField
-    ScrollPanel spEvents;
+    Modal popup;
 
-    private DisclosurePanel dpEventTypes;
+    @UiField
+    DropdownButton eventTypes;
+
+    @UiField
+    SimplePanel eventsContainer;
+
     private CellTable<AuditLogEntry> events;
-    private final VerticalPanel lstEventTypes = new VerticalPanel();
 
     //The current user's security context (admins can see all records)
     private final Identity identity;
@@ -88,45 +84,17 @@ public class AuditLogViewImpl extends Popup
 
     public AuditLogViewImpl( final AuditLog auditLog,
                              final Identity identity ) {
-        setTitle( Constants.INSTANCE.DecisionTableAuditLog() );
         this.auditLog = auditLog;
         this.identity = identity;
-
-        setHeight( getPopupHeight() + "px" );
-        setWidth( getPopupWidth() + "px" );
-
-        this.popupContent = uiBinder.createAndBindUi( this );
+        setWidget( uiBinder.createAndBindUi( this ) );
+        popup.setDynamicSafe( true );
+        setup();
     }
 
-    /**
-     * Width of pop-up, 50% of the client width or MIN_WIDTH
-     * @return
-     */
-    private int getPopupWidth() {
-        int w = (int) ( Window.getClientWidth() * 0.50 );
-        if ( w < MIN_WIDTH ) {
-            w = MIN_WIDTH;
-        }
-        return w;
-    }
-
-    /**
-     * Height of pop-up, 50% of the client height or MIN_HEIGHT
-     * @return
-     */
-    protected int getPopupHeight() {
-        int h = (int) ( Window.getClientHeight() * 0.50 );
-        if ( h < MIN_HEIGHT ) {
-            h = MIN_HEIGHT;
-        }
-        return h;
-    }
-
-    @Override
-    public Widget getContent() {
+    public void setup() {
         for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
-            lstEventTypes.add( makeEventTypeCheckBox( e.getKey(),
-                                                      e.getValue() ) );
+            eventTypes.add( makeEventTypeCheckBox( e.getKey(),
+                                                   e.getValue() ) );
         }
 
         events = new CellTable<AuditLogEntry>();
@@ -174,7 +142,6 @@ public class AuditLogViewImpl extends Popup
         events.setEmptyTableWidget( new Label( Constants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
-        events.setPageSize( 5 );
 
         GuvnorSimplePager gsp = new GuvnorSimplePager();
         gsp.setPageSize( 5 );
@@ -184,19 +151,7 @@ public class AuditLogViewImpl extends Popup
         vp.add( gsp );
         vp.add( events );
 
-        spEvents.setAlwaysShowScrollBars( false );
-        spEvents.add( vp );
-
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                fixWidgetSizes();
-            }
-
-        } );
-
-        return this.popupContent;
+        eventsContainer.add( vp );
     }
 
     private Widget makeEventTypeCheckBox( final String eventType,
@@ -216,37 +171,20 @@ public class AuditLogViewImpl extends Popup
         return chkEventType;
     }
 
-    private void fixWidgetSizes() {
-        final int lstEventsHeight = getClientHeight() - dpEventTypes.getOffsetHeight();
-        events.setWidth( spEvents.getElement().getClientWidth() + "px" );
-        spEvents.setHeight( lstEventsHeight + "px" );
+    @Override
+    public void show() {
+        popup.show();
     }
 
-    @UiFactory
-    DisclosurePanel makeEventTypeDisclosurePanel() {
-        //For some inexplicable reason it is impossible to I18N the DisclosurePanel title with uiBinder
-        dpEventTypes = new DisclosurePanel( Constants.INSTANCE.DecisionTableAuditLogEvents() );
-        dpEventTypes.add( lstEventTypes );
+    @Override
+    public void hide() {
+        popup.hide();
+        super.hide();
+    }
 
-        dpEventTypes.addOpenHandler( new OpenHandler<DisclosurePanel>() {
-
-            @Override
-            public void onOpen( OpenEvent<DisclosurePanel> event ) {
-                fixWidgetSizes();
-            }
-
-        } );
-
-        dpEventTypes.addCloseHandler( new CloseHandler<DisclosurePanel>() {
-
-            @Override
-            public void onClose( CloseEvent<DisclosurePanel> event ) {
-                fixWidgetSizes();
-            }
-
-        } );
-
-        return dpEventTypes;
+    @UiHandler("okButton")
+    public void onOKButtonClick( final ClickEvent e ) {
+        hide();
     }
 
     private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {
