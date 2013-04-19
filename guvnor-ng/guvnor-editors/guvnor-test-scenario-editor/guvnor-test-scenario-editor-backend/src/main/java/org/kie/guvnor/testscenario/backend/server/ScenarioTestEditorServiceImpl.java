@@ -188,14 +188,14 @@ public class ScenarioTestEditorServiceImpl
                 dataModelService.getDataModel( path ),
                 projectService.resolvePackageName( path ) );
     }
-
+    
     @Override
-    public void runScenario( Path path,
-                             Scenario scenario ) {
+    public void runScenario(Path path, Scenario scenario, String sessionName) {
 
-        Path pathToPom = projectService.resolvePathToPom( path );
+        Path pathToPom = projectService.resolvePathToPom(path);
 
-        new ScenarioRunnerWrapper().run( scenario, sessionService.newKieSession( pathToPom, "someSession" ), testResultMessageEvent );
-
+        new ScenarioRunnerWrapper().run(scenario,
+                sessionService.newKieSession(pathToPom, sessionName),
+                testResultMessageEvent);
     }
 }

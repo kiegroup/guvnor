@@ -251,4 +251,9 @@ public interface TestScenarioConstants
     String NewTestScenarioDescription();
 
     String TestScenario();
+    
+    String PleaseInputSessionName();
+    
+    String SessionName();
+
 }

@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.models.testscenarios.shared.*;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -34,6 +35,7 @@ import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
 
 import java.util.Iterator;
@@ -56,22 +58,38 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
         run.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+                final FormStylePopup pop = new FormStylePopup();
+                final TextBox sessionNameTextBox = new TextBox();        
+                pop.addAttribute(TestScenarioConstants.INSTANCE.SessionName() + ":", sessionNameTextBox);
 
-                testScenarioEditorService.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void v) {
-                        BusyPopup.close();
-                        layout.clear();
-                        layout.add(actions);
-                        layout.add(results);
-                        actions.setVisible(true);
+                Button ok = new Button("OK");
+                ok.addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
+                            Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
+                            return;
+                        }
+                        
+                        BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+
+                        testScenarioEditorService.call(new RemoteCallback<Void>() {
+                            @Override
+                            public void callback(Void v) {
+                                pop.hide();
+                                BusyPopup.close();
+                                layout.clear();
+                                layout.add(actions);
+                                layout.add(results);
+                                actions.setVisible(true);
+                            }
+                        },
+                                new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)
+                        ).runScenario(path, scenario, sessionNameTextBox.getText());                        
                     }
-                },
-                        new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)
-                ).runScenario(path,
-                        scenario);
-            }
+                });
+                pop.addAttribute( "", ok);
+                pop.show();                
+             }
         });
 
         actions.add(run);
