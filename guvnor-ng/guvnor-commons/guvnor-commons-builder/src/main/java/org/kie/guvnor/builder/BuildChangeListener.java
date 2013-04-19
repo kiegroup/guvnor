@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -90,6 +91,11 @@ public class BuildChangeListener {
                                             resourceAddedEvent );
         final Path resource = resourceAddedEvent.getPath();
 
+        //Incremental builds only operate on files
+        if ( !Files.isRegularFile( paths.convert( resource ) ) ) {
+            return;
+        }
+
         //If resource is not within a Package it cannot be used for an incremental build
         final Path packagePath = projectService.resolvePackage( resource );
         if ( packagePath == null ) {
@@ -122,6 +128,11 @@ public class BuildChangeListener {
                                             resourceDeletedEvent );
         final Path resource = resourceDeletedEvent.getPath();
 
+        //Incremental builds only operate on files
+        if ( !Files.isRegularFile( paths.convert( resource ) ) ) {
+            return;
+        }
+
         //If resource is not within a Package it cannot be used for an incremental build
         final Path packagePath = projectService.resolvePackage( resource );
         if ( packagePath == null ) {
@@ -153,6 +164,11 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
                                             resourceUpdatedEvent );
         final Path resource = resourceUpdatedEvent.getPath();
+
+        //Incremental builds only operate on files
+        if ( !Files.isRegularFile( paths.convert( resource ) ) ) {
+            return;
+        }
 
         //If resource is not within a Project it cannot be used for an incremental build
         final Path projectPath = projectService.resolveProject( resource );
