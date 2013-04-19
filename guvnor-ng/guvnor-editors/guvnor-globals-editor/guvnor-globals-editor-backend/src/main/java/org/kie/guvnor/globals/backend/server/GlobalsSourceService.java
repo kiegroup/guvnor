@@ -16,16 +16,20 @@
 
 package org.kie.guvnor.globals.backend.server;
 
+import javax.inject.Inject;
+
 import org.kie.guvnor.commons.service.backend.DRLBaseSourceService;
+import org.kie.guvnor.globals.type.GlobalResourceTypeDefinition;
 
 public class GlobalsSourceService
         extends DRLBaseSourceService {
 
-    private static final String PATTERN = ".global.drl";
+    @Inject
+    private GlobalResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
-        return PATTERN;
+        return resourceType.getSuffix();
     }
 
 }

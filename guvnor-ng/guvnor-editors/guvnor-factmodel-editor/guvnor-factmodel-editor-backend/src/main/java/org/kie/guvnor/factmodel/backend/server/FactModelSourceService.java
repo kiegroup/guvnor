@@ -16,16 +16,20 @@
 
 package org.kie.guvnor.factmodel.backend.server;
 
+import javax.inject.Inject;
+
 import org.kie.guvnor.commons.service.backend.DRLBaseSourceService;
+import org.kie.guvnor.factmodel.type.FactModelResourceTypeDefinition;
 
 public class FactModelSourceService
         extends DRLBaseSourceService {
 
-    private static final String PATTERN = ".model.drl";
+    @Inject
+    private FactModelResourceTypeDefinition resourceType;
 
     @Override
     public String getPattern() {
-        return PATTERN;
+        return resourceType.getSuffix();
     }
 
 }
