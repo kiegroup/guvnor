@@ -71,6 +71,7 @@ public class
     public ProjectEditorScreenPresenter( @New ProjectEditorScreenView view,
                                          @New POMEditorPanel pomPanel,
                                          @New KModuleEditorPanel kModuleEditorPanel,
+                                         @New RunAllTestScenariosEditor runAllTestScenariosEditor,
                                          Caller<KModuleService> kModuleServiceCaller,
                                          Caller<BuildService> buildServiceCaller,
                                          Caller<MetadataService> metadataService,
@@ -85,6 +86,7 @@ public class
 
         view.setPresenter( this );
         view.setPOMEditorPanel( pomPanel );
+        view.setTestScenarioPanel( runAllTestScenariosEditor );        
     }
 
     @OnStart

@@ -198,4 +198,13 @@ public class ScenarioTestEditorServiceImpl
                 sessionService.newKieSession(pathToPom, sessionName),
                 testResultMessageEvent);
     }
+    
+    public void runAllScenarios(Path testResourceDirpath, String sessionName) {
+
+        Path pathToPom = projectService.resolvePathToPom(testResourceDirpath);
+
+/*        new ScenarioRunnerWrapper().run(scenario,
+                sessionService.newKieSession(pathToPom, sessionName),
+                testResultMessageEvent);*/
+    }
 }
