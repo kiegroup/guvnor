@@ -83,6 +83,20 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
     Path resolvePathToPom( Path resource );
 
     /**
+     * Return true if the file is the Project's pom.xml file
+     * @param resource
+     * @return
+     */
+    boolean isPom( Path resource );
+
+    /**
+     * Return true if the file is the Project's kmodule.xml file
+     * @param resource
+     * @return
+     */
+    boolean isKModule( Path resource );
+
+    /**
      * Creates a new project to the given path.
      * @param activePath
      * @param name
@@ -91,7 +105,7 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
      */
     Path newProject( final Path activePath,
                      final String name,
-                     final String baseURL);
+                     final String baseURL );
 
     Path newPackage( final Path contextPath,
                      final String packageName );

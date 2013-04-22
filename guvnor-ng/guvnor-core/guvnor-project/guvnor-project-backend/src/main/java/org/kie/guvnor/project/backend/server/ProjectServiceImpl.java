@@ -46,11 +46,13 @@ public class ProjectServiceImpl
         implements ProjectService {
 
     private static final String SOURCE_FILENAME = "src";
-    private static final String POM_FILENAME = "pom.xml";
-    private static final String KMODULE_FILENAME = "src/main/resources/META-INF/kmodule.xml";
+
+    private static final String POM_PATH = "pom.xml";
+    private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
 
     private static final String SOURCE_JAVA_PATH = "src/main/java";
     private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
+
     private static final String TEST_JAVA_PATH = "src/test/java";
     private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
@@ -144,7 +146,7 @@ public class ProjectServiceImpl
         if ( projectPath == null ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_FILENAME );
+        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_PATH );
         if ( pom == null ) {
             return null;
         }
@@ -193,11 +195,18 @@ public class ProjectServiceImpl
 
     private Path doResolveSrcPackage( final Path resource,
                                       final Path projectRoot ) {
+        //The pom.xml and kmodule.xml files are not within a package
+        if ( isPom( resource ) || isKModule( resource ) ) {
+            return null;
+        }
+
         //The Path must be within a Project's src/main/java or src/main/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
         final org.kie.commons.java.nio.file.Path srcJavaPath = paths.convert( projectRoot ).resolve( SOURCE_JAVA_PATH );
         final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( SOURCE_RESOURCES_PATH );
+
+        //Check if path resides within a Java or Resources path
         if ( path.startsWith( srcJavaPath ) ) {
             resolved = true;
         } else if ( path.startsWith( srcResourcesPath ) ) {
@@ -236,11 +245,18 @@ public class ProjectServiceImpl
 
     private Path doResolveTestPackage( final Path resource,
                                        final Path projectRoot ) {
+        //The pom.xml and kmodule.xml files are not within a package
+        if ( isPom( resource ) || isKModule( resource ) ) {
+            return null;
+        }
+
         //The Path must be within a Project's src/test/java or src/test/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
         final org.kie.commons.java.nio.file.Path testJavaPath = paths.convert( projectRoot ).resolve( TEST_JAVA_PATH );
         final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
+
+        //Check if path resides within a Java or Resources path
         if ( path.startsWith( testJavaPath ) ) {
             resolved = true;
         } else if ( path.startsWith( testResourcesPath ) ) {
@@ -258,6 +274,34 @@ public class ProjectServiceImpl
         path = path.getParent();
 
         return paths.convert( path );
+    }
+
+    @Override
+    public boolean isPom( final Path resource ) {
+        //Null resource paths cannot resolve to a Project
+        if ( resource == null ) {
+            return false;
+        }
+
+        //Check if path equals pom.xml
+        final Path projectRoot = resolveProject( resource );
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( projectRoot ).resolve( POM_PATH );
+        return path.startsWith( pomFilePath );
+    }
+
+    @Override
+    public boolean isKModule( final Path resource ) {
+        //Null resource paths cannot resolve to a Project
+        if ( resource == null ) {
+            return false;
+        }
+
+        //Check if path equals kmodule.xml
+        final Path projectRoot = resolveProject( resource );
+        final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( projectRoot ).resolve( KMODULE_PATH );
+        return path.startsWith( kmoduleFilePath );
     }
 
     @Override
@@ -361,12 +405,12 @@ public class ProjectServiceImpl
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
-        final org.kie.commons.java.nio.file.Path pomPath = path.resolve( POM_FILENAME );
+        final org.kie.commons.java.nio.file.Path pomPath = path.resolve( POM_PATH );
         return Files.exists( pomPath );
     }
 
     private boolean hasKModule( final org.kie.commons.java.nio.file.Path path ) {
-        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_FILENAME );
+        final org.kie.commons.java.nio.file.Path kmodulePath = path.resolve( KMODULE_PATH );
         return Files.exists( kmodulePath );
     }
 

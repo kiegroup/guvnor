@@ -275,4 +275,112 @@ public class ProjectServiceImplResolvePackageValidTest {
                       result.toURI() );
     }
 
+    @Test
+    public void testResolvePackageWithPOMFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/pom.xml" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final Path result = projectService.resolvePackage( testPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testResolvePackageWithKModuleFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final Path result = projectService.resolvePackage( testPath );
+        assertNull( result );
+    }
+
+    @Test
+    public void testIsPOMFileWithPOMFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/pom.xml" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final boolean result = projectService.isPom( testPath );
+        assertTrue( result );
+    }
+
+    @Test
+    public void testIsPOMFileWithNonPOMFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/project.imports" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final boolean result = projectService.isPom( testPath );
+        assertFalse( result );
+    }
+
+    @Test
+    public void testIsKModuleFileWithKModuleFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final boolean result = projectService.isKModule( testPath );
+        assertTrue( result );
+    }
+
+    @Test
+    public void testIsKModuleFileWithNonKModuleFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                                         ProjectService.class,
+                                                                                         cc );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF" );
+        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a kModule.xml file resolves to a null package
+        final boolean result = projectService.isKModule( testPath );
+        assertFalse( result );
+    }
+
 }

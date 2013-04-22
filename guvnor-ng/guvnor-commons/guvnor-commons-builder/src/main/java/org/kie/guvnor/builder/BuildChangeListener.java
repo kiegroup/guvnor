@@ -176,9 +176,10 @@ public class BuildChangeListener {
             return;
         }
 
-        //If resource is not within a Package it must be pom.xml or kmodule.xml; both of which cannot be processed incrementally
-        final Path packagePath = projectService.resolvePackage( resource );
-        if ( packagePath == null ) {
+        //The pom.xml or kmodule.xml cannot be processed incrementally
+        final boolean isPomFile = projectService.isPom( resource );
+        final boolean isKModuleFile = projectService.isKModule( resource );
+        if ( isPomFile || isKModuleFile ) {
             scheduleProjectResourceUpdate( resource );
         } else {
             schedulePackageResourceUpdate( resource );
