@@ -107,6 +107,11 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
                                                                          makeCommentedOption( comment ) );
             IOUtils.copy( content,
                           outputStream );
+            outputStream.flush();
+            outputStream.close();
+
+            //Read Path to ensure attributes have been set
+            final Path newPath = paths.convert( nioPath );
 
             //Signal creation to interested parties
             resourceAddedEvent.fire( new ResourceAddedEvent( resource ) );
@@ -115,6 +120,13 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
         } catch ( IOException e ) {
             throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+
+        } finally {
+            try {
+                content.close();
+            } catch ( IOException e ) {
+                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+            }
         }
     }
 
@@ -124,10 +136,16 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final OutputStream outputStream = ioService.newOutputStream( paths.convert( resource ),
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( comment ) );
             IOUtils.copy( content,
                           outputStream );
+            outputStream.flush();
+            outputStream.close();
+
+            //Read Path to ensure attributes have been set
+            final Path newPath = paths.convert( nioPath );
 
             //Signal update to interested parties
             resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
@@ -136,6 +154,13 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
         } catch ( IOException e ) {
             throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+
+        } finally {
+            try {
+                content.close();
+            } catch ( IOException e ) {
+                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+            }
         }
     }
 
