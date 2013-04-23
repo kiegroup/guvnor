@@ -46,14 +46,32 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>FileServlet</servlet-name>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.dtablexls.backend.server.DecisionTableXLSFileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/dtablexls/file</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.scorecardxls.backend.server.ScoreCardXLSFileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/scorecardxls/file</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>M2RepoFileServlet</servlet-name>
     <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>FileServlet</servlet-name>
-    <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
+    <servlet-name>M2RepoFileServlet</servlet-name>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/m2repo/file</url-pattern>
   </servlet-mapping>
-  
+    
   <servlet>
     <servlet-name>FileDownloadServlet</servlet-name>
     <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
