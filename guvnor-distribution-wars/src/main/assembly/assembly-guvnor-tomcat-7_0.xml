@@ -16,6 +16,15 @@
     </fileSet>
   </fileSets>
   <dependencySets>
+    <!-- Add ANT dependency excluded in WAR pom that runs on Hosted Mode -->
+    <dependencySet>
+      <includes>
+        <include>org.apache.ant:ant:jar</include>
+        <include>org.apache.ant:ant-launcher:jar</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+    </dependencySet>
     <dependencySet>
       <includes>
         <include>org.kie.guvnor:guvnor-webapp:war</include>
