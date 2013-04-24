@@ -21,11 +21,15 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.GAV;
+
 
 public interface RunAllTestScenariosEditorView extends HasBusyIndicator,
                                             IsWidget {
-
+    interface Presenter {
+        void onRunAllButton();
+    }
+    void setPresenter(Presenter presenter);
+    
     String getTitleWidget();
 
     void setTitleText( String titleText );

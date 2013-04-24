@@ -22,17 +22,24 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.project.model.Dependency;
 import org.kie.guvnor.project.model.GAV;
+import org.kie.guvnor.projecteditor.client.forms.DependencyGridView.Presenter;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 public class RunAllTestScenariosEditorViewImpl
@@ -46,7 +53,9 @@ public class RunAllTestScenariosEditorViewImpl
             UiBinder<Widget, RunAllTestScenariosEditorViewImpl> {
 
     }
-
+    
+    private Presenter presenter;
+    
     private static RunAllTestScenariosEditorViewImplBinder uiBinder = GWT.create( RunAllTestScenariosEditorViewImplBinder.class );
 
     private final Event<NotificationEvent> notificationEvent;
@@ -111,8 +120,13 @@ public class RunAllTestScenariosEditorViewImpl
     }
     
     @UiHandler("runAllButton")
-    public void onRunAllButtonClick( final ClickEvent e ) {
-        Window.alert("runAllButton");
+    public void onRunAllButton( final ClickEvent e ) {
+        presenter.onRunAllButton();
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;        
     }
 
 }

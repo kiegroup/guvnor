@@ -18,56 +18,47 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.mvp.Command;
 
 public class RunAllTestScenariosEditor
-        implements IsWidget {
+        implements IsWidget, RunAllTestScenariosEditorView.Presenter, HasBusyIndicator {
 
-    @Inject
-    private final RunAllTestScenariosEditorView view = null;
+    //@Inject
+    private RunAllTestScenariosEditorView view;
     private Path path;
-    private POM model;
-    @Inject
-    private final Caller<POMService> pomServiceCaller = null;
 
-    public void init( final Path path,
+    //@Inject
+    private Caller<ScenarioTestEditorService> scenarioService;
+
+    @Inject
+    public void init( RunAllTestScenariosEditorView view, Caller<ScenarioTestEditorService> scenarioService, final Path path,
                       final boolean isReadOnly ) {
+        this.view = view;
+        this.scenarioService = scenarioService;
         this.path = path;
         if ( isReadOnly ) {
             view.setReadOnly();
         }
-        //Busy popup is handled by ProjectEditorScreen
-        pomServiceCaller.call( getModelSuccessCallback(),
-                               new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
-    }
-
-    private RemoteCallback<POM> getModelSuccessCallback() {
-        return new RemoteCallback<POM>() {
-
-            @Override
-            public void callback( final POM model ) {
-                RunAllTestScenariosEditor.this.model = model;
-/*                view.setGAV( model.getGav() );
-                view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
-                    @Override
-                    public void onChange( String newArtifactId ) {
-                        setTitle( newArtifactId );
-                    }
-                } );*/
-                setTitle( model.getGav().getArtifactId() );
-                view.setDependencies( RunAllTestScenariosEditor.this.model.getDependencies() );
-            }
-        };
+        
+        view.setPresenter(this);
     }
 
     private void setTitle( final String titleText ) {
@@ -81,23 +72,6 @@ public class RunAllTestScenariosEditor
     public void save( final String commitMessage,
                       final Command callback,
                       final Metadata metadata ) {
-        //Busy popup is handled by ProjectEditorScreen
-        pomServiceCaller.call( getSaveSuccessCallback( callback ),
-                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                        model,
-                                                                                        metadata,
-                                                                                        commitMessage );
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback( final Command callback ) {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                callback.execute();
-                view.showSaveSuccessful( "pom.xml" );
-            }
-        };
     }
 
     @Override
@@ -107,5 +81,46 @@ public class RunAllTestScenariosEditor
 
     public String getTitle() {
         return view.getTitleWidget();
+    }
+
+    @Override
+    public void onRunAllButton() {
+        final FormStylePopup pop = new FormStylePopup();
+        final TextBox sessionNameTextBox = new TextBox();        
+        pop.addAttribute("session name" + ":", sessionNameTextBox);
+
+        Button ok = new Button("OK");
+        ok.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
+                    Window.alert("TestScenarioConstants.INSTANCE.PleaseInputSessionName()");
+                    return;
+                }
+                
+                BusyPopup.showMessage("TestScenarioConstants.INSTANCE.BuildingAndRunningScenario()");
+
+                scenarioService.call(new RemoteCallback<Void>() {
+                    @Override
+                    public void callback(Void v) {
+                        pop.hide();
+                        BusyPopup.close();
+                    }
+                },
+                        new HasBusyIndicatorDefaultErrorCallback(RunAllTestScenariosEditor.this)
+                ).runAllScenarios(path, sessionNameTextBox.getText());                        
+            }
+        });
+        pop.addAttribute( "", ok);
+        pop.show();                
+    }
+
+    @Override
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 }

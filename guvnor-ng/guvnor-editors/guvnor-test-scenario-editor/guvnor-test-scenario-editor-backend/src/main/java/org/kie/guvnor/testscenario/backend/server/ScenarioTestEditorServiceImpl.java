@@ -16,7 +16,10 @@
 
 package org.kie.guvnor.testscenario.backend.server;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,10 +30,15 @@ import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.service.session.SessionService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.LinkedDotFileFilter;
+import org.kie.guvnor.services.backend.file.LinkedFilter;
+import org.kie.guvnor.services.backend.file.LinkedMetaInfFolderFilter;
 import org.kie.guvnor.services.file.CopyService;
 import org.kie.guvnor.services.file.DeleteService;
 import org.kie.guvnor.services.file.RenameService;
@@ -199,12 +207,56 @@ public class ScenarioTestEditorServiceImpl
                 testResultMessageEvent);
     }
     
-    public void runAllScenarios(Path testResourceDirpath, String sessionName) {
+    public void runAllScenarios(Path testResourcePath, String sessionName) {
 
-        Path pathToPom = projectService.resolvePathToPom(testResourceDirpath);
-
-/*        new ScenarioRunnerWrapper().run(scenario,
+        Path pathToPom = projectService.resolvePathToPom(testResourcePath);
+        
+        List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
+        List<Scenario> scenarios = new ArrayList<Scenario>();
+        for(Path path : scenarioPaths) {
+            Scenario s = load(path);
+            scenarios.add(s);
+        }
+        
+        new ScenarioRunnerWrapper().run(scenarios,
                 sessionService.newKieSession(pathToPom, sessionName),
-                testResultMessageEvent);*/
+                testResultMessageEvent);
     }
+    
+    public List<Path> loadScenarioPaths(final Path path) {
+
+        // Check Path exists
+        final List<Path> items = new ArrayList<Path>();
+        if (!Files.exists(paths.convert(path))) {
+            return items;
+        }
+
+        // Ensure Path represents a Folder
+        org.kie.commons.java.nio.file.Path pPath = paths.convert(path);
+        if (!Files.isDirectory(pPath)) {
+            pPath = pPath.getParent();
+        }
+
+        LinkedFilter filter =  new LinkedDotFileFilter();
+        filter.setNextFilter( new LinkedMetaInfFolderFilter() );
+        
+        // Get list of immediate children
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService
+                .newDirectoryStream(pPath);
+        for (final org.kie.commons.java.nio.file.Path p : directoryStream) {
+            if (filter.accept(p)) {
+                if (Files.isRegularFile(p)) {
+                    items.add(paths.convert(p));
+                } else if (Files.isDirectory(p)) {
+                    items.add(paths.convert(p));
+                }
+            }
+        }
+
+        // Add ability to move up one level in the hierarchy
+        //items.add(new ParentPackageItem(paths.convert(pPath.getParent()), ".."));
+
+        return items;
+    }
+
 }
