@@ -38,18 +38,18 @@ import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.mvp.Command;
 
-public class RunAllTestScenariosEditor
-        implements IsWidget, RunAllTestScenariosEditorView.Presenter, HasBusyIndicator {
+public class BulkRunTestScenarioEditor
+        implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {
 
     //@Inject
-    private RunAllTestScenariosEditorView view;
+    private BulkRunTestScenarioEditorView view;
     private Path path;
 
     //@Inject
     private Caller<ScenarioTestEditorService> scenarioService;
 
     @Inject
-    public void init( RunAllTestScenariosEditorView view, Caller<ScenarioTestEditorService> scenarioService, final Path path,
+    public void init( BulkRunTestScenarioEditorView view, Caller<ScenarioTestEditorService> scenarioService, final Path path,
                       final boolean isReadOnly ) {
         this.view = view;
         this.scenarioService = scenarioService;
@@ -106,7 +106,7 @@ public class RunAllTestScenariosEditor
                         BusyPopup.close();
                     }
                 },
-                        new HasBusyIndicatorDefaultErrorCallback(RunAllTestScenariosEditor.this)
+                        new HasBusyIndicatorDefaultErrorCallback(BulkRunTestScenarioEditor.this)
                 ).runAllScenarios(path, sessionNameTextBox.getText());                        
             }
         });

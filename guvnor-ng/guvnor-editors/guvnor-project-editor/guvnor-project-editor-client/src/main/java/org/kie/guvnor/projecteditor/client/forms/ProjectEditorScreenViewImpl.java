@@ -90,7 +90,7 @@ public class ProjectEditorScreenViewImpl
     }
     
     @Override
-    public void setTestScenarioPanel( RunAllTestScenariosEditor runAllTestScenariosEditor ) {
+    public void setTestScenarioPanel( BulkRunTestScenarioEditor runAllTestScenariosEditor ) {
         addPage( new Page( runAllTestScenariosEditor, ProjectEditorConstants.INSTANCE.TestScenarios() ) {
             @Override
             public void onFocus() {

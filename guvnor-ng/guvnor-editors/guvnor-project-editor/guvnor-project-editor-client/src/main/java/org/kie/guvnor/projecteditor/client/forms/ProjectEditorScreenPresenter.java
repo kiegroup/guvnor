@@ -71,7 +71,7 @@ public class
     public ProjectEditorScreenPresenter( @New ProjectEditorScreenView view,
                                          @New POMEditorPanel pomPanel,
                                          @New KModuleEditorPanel kModuleEditorPanel,
-                                         @New RunAllTestScenariosEditor runAllTestScenariosEditor,
+                                         @New BulkRunTestScenarioEditor runAllTestScenariosEditor,
                                          Caller<KModuleService> kModuleServiceCaller,
                                          Caller<BuildService> buildServiceCaller,
                                          Caller<MetadataService> metadataService,

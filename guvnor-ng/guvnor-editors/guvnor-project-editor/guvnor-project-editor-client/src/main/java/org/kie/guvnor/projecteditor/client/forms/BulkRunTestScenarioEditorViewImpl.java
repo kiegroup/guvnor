@@ -22,35 +22,26 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.GAV;
-import org.kie.guvnor.projecteditor.client.forms.DependencyGridView.Presenter;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
-public class RunAllTestScenariosEditorViewImpl
+public class BulkRunTestScenarioEditorViewImpl
         extends ResizeComposite
-        implements RunAllTestScenariosEditorView {
+        implements BulkRunTestScenarioEditorView {
 
     private String tabTitleLabel = ProjectEditorConstants.INSTANCE.ProjectModel();
 
     interface RunAllTestScenariosEditorViewImplBinder
             extends
-            UiBinder<Widget, RunAllTestScenariosEditorViewImpl> {
+            UiBinder<Widget, BulkRunTestScenarioEditorViewImpl> {
 
     }
     
@@ -64,7 +55,7 @@ public class RunAllTestScenariosEditorViewImpl
     DependencyGrid dependencyGrid;
 
     @Inject
-    public RunAllTestScenariosEditorViewImpl( Event<NotificationEvent> notificationEvent,
+    public BulkRunTestScenarioEditorViewImpl( Event<NotificationEvent> notificationEvent,
                                    DependencyGrid dependencyGrid ) {
         this.dependencyGrid = dependencyGrid;
         initWidget( uiBinder.createAndBindUi( this ) );

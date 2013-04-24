@@ -23,11 +23,12 @@ import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.project.model.Dependency;
 
 
-public interface RunAllTestScenariosEditorView extends HasBusyIndicator,
+public interface BulkRunTestScenarioEditorView extends HasBusyIndicator,
                                             IsWidget {
     interface Presenter {
         void onRunAllButton();
     }
+    
     void setPresenter(Presenter presenter);
     
     String getTitleWidget();
