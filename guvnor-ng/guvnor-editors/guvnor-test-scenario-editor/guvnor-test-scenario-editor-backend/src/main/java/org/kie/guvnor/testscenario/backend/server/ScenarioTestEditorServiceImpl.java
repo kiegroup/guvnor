@@ -211,7 +211,8 @@ public class ScenarioTestEditorServiceImpl
     public void runAllScenarios(Path testResourcePath, String sessionName) {
 
         Path pathToPom = projectService.resolvePathToPom(testResourcePath);
-        
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXXX:" + testResourcePath);
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXXX:" + testResourcePath.getFileName());
         List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
         List<Scenario> scenarios = new ArrayList<Scenario>();
         for(Path path : scenarioPaths) {

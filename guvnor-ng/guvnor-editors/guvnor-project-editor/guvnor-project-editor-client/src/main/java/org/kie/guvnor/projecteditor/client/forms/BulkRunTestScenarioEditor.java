@@ -33,10 +33,8 @@ import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCa
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
-import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.mvp.Command;
@@ -49,8 +47,8 @@ public class BulkRunTestScenarioEditor
     private BulkRunTestScenarioEditorView view;
     private Path path;
 
-    @Inject
-    private Caller<ScenarioTestEditorService> scenarioService;
+/*    @Inject
+    private Caller<ScenarioTestEditorService> scenarioService;*/
 
     @PostConstruct
     public void init() {
@@ -106,7 +104,7 @@ public class BulkRunTestScenarioEditor
                 
                 BusyPopup.showMessage("TestScenarioConstants.INSTANCE.BuildingAndRunningScenario()");
 
-                scenarioService.call(new RemoteCallback<Void>() {
+/*                scenarioService.call(new RemoteCallback<Void>() {
                     @Override
                     public void callback(Void v) {
                         pop.hide();
@@ -114,7 +112,7 @@ public class BulkRunTestScenarioEditor
                     }
                 },
                         new HasBusyIndicatorDefaultErrorCallback(BulkRunTestScenarioEditor.this)
-                ).runAllScenarios(path, sessionNameTextBox.getText());                        
+                ).runAllScenarios(path, sessionNameTextBox.getText());  */                      
             }
         });
         pop.addAttribute( "", ok);
