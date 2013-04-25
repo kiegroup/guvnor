@@ -46,24 +46,6 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>FileServlet</servlet-name>
-    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>FileServlet</servlet-name>
-    <url-pattern>/org.kie.guvnor.GuvnorShowcase/file</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>FileDownloadServlet</servlet-name>
-    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>FileDownloadServlet</servlet-name>
-    <url-pattern>/maven2/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>DTableXLSFileServlet</servlet-name>
     <servlet-class>org.kie.guvnor.dtablexls.backend.server.DecisionTableXLSFileServlet</servlet-class>
   </servlet>
