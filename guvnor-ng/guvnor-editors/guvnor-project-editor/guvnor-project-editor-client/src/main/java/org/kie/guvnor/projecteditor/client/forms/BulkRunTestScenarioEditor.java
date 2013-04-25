@@ -41,18 +41,18 @@ import org.uberfire.client.mvp.Command;
 public class BulkRunTestScenarioEditor
         implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {
 
-    //@Inject
+    @Inject
     private BulkRunTestScenarioEditorView view;
     private Path path;
 
-    //@Inject
+    @Inject
     private Caller<ScenarioTestEditorService> scenarioService;
 
-    @Inject
-    public void init( BulkRunTestScenarioEditorView view, Caller<ScenarioTestEditorService> scenarioService, final Path path,
+    //@Inject
+    public void init( /*BulkRunTestScenarioEditorView view, Caller<ScenarioTestEditorService> scenarioService, */final Path path,
                       final boolean isReadOnly ) {
-        this.view = view;
-        this.scenarioService = scenarioService;
+/*        this.view = view;
+        this.scenarioService = scenarioService;*/
         this.path = path;
         if ( isReadOnly ) {
             view.setReadOnly();

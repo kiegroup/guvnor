@@ -207,6 +207,7 @@ public class ScenarioTestEditorServiceImpl
                 testResultMessageEvent);
     }
     
+    @Override
     public void runAllScenarios(Path testResourcePath, String sessionName) {
 
         Path pathToPom = projectService.resolvePathToPom(testResourcePath);
