@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,10 +36,12 @@ import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.mvp.Command;
 
+@Dependent
 public class BulkRunTestScenarioEditor
         implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {
 
@@ -48,7 +52,12 @@ public class BulkRunTestScenarioEditor
     @Inject
     private Caller<ScenarioTestEditorService> scenarioService;
 
-    //@Inject
+    @PostConstruct
+    public void init() {
+        view.setPresenter(this);        
+    }
+    
+    @OnStart
     public void init( /*BulkRunTestScenarioEditorView view, Caller<ScenarioTestEditorService> scenarioService, */final Path path,
                       final boolean isReadOnly ) {
 /*        this.view = view;
@@ -57,8 +66,6 @@ public class BulkRunTestScenarioEditor
         if ( isReadOnly ) {
             view.setReadOnly();
         }
-        
-        view.setPresenter(this);
     }
 
     private void setTitle( final String titleText ) {
