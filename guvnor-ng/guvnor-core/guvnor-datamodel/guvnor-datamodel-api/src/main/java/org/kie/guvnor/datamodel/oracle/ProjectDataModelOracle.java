@@ -16,44 +16,20 @@
 
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
 
-import java.util.List;
-import java.util.Map;
+public interface ProjectDataModelOracle {
 
-public interface DataModelOracle {
-
+    //Fact and Field related methods
     String[] getFactTypes();
 
-    String[] getAllFactTypes();
-
-    String[] getExternalFactTypes();
-
-    String[] getEnumValues( final String factType,
-                            final String factField );
-
     Map<String, ModelField[]> getModelFields();
-
-    boolean hasEnums( final String qualifiedFactField );
-
-    boolean hasEnums( final String factType,
-                      final String factField );
-
-    boolean isDependentEnum( final String factType,
-                             final String factField,
-                             final String field );
-
-    DropDownData getEnums( final String type,
-                           final String field );
-
-    DropDownData getEnums( final String factType,
-                           final String factField,
-                           final Map<String, String> currentValueMap );
 
     boolean isFactTypeRecognized( final String factType );
 
@@ -74,25 +50,11 @@ public interface DataModelOracle {
     List<String> getMethodNames( final String factName,
                                  final int i );
 
-    String[] getGlobalVariables();
-
-    boolean isGlobalVariable( final String variable );
-
-    String[] getFieldCompletionsForGlobalVariable( final String variable );
-
-    String getGlobalVariable( final String variable );
-
     String getFieldType( final String variableClass,
                          final String fieldName );
 
     List<String> getMethodParams( final String factType,
                                   final String methodNameWithParams );
-
-    List<DSLSentence> getDSLActions();
-
-    String[] getGlobalCollections();
-
-    List<DSLSentence> getDSLConditions();
 
     String getParametricFieldType( final String factType,
                                    final String fieldName );
@@ -100,16 +62,30 @@ public interface DataModelOracle {
     String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
                                   final String factType );
 
-    List<MethodInfo> getMethodInfosForGlobalVariable( final String variable );
-
     MethodInfo getMethodInfo( final String factName,
                               final String methodName );
 
     String getFieldClassName( final String factName,
                               final String fieldName );
 
-    void filter( final Imports imports );
+    // Enumeration related methods
+    String[] getEnumValues( final String factType,
+                            final String factField );
 
-    void filter();
+    boolean hasEnums( final String qualifiedFactField );
+
+    boolean hasEnums( final String factType,
+                      final String factField );
+
+    boolean isDependentEnum( final String factType,
+                             final String factField,
+                             final String field );
+
+    DropDownData getEnums( final String type,
+                           final String field );
+
+    DropDownData getEnums( final String factType,
+                           final String factField,
+                           final Map<String, String> currentValueMap );
 
 }

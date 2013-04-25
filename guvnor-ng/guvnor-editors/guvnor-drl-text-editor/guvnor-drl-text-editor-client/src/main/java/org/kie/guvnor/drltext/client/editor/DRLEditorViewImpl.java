@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.drltext.client.widget.FactTypeBrowserWidget;
 import org.kie.guvnor.drltext.client.widget.RuleContentWidget;
 import org.uberfire.client.common.BusyPopup;
@@ -77,7 +77,7 @@ public class DRLEditorViewImpl
 
     @Override
     public void setContent( final String content,
-                            final DataModelOracle dataModel ) {
+                            final PackageDataModelOracle dataModel ) {
         ruleContentWidget.setContent( content, 15 );
         browser.setDataModel( dataModel );
     }

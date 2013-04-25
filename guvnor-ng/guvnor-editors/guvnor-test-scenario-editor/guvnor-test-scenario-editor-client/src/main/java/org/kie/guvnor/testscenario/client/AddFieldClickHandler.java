@@ -20,17 +20,17 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.FormStylePopup;
 
 abstract class AddFieldClickHandler
         implements SelectionHandler<String>, ClickHandler {
 
-    protected final DataModelOracle dmo;
+    protected final PackageDataModelOracle dmo;
     protected final ScenarioParentWidget parent;
 
-    public AddFieldClickHandler(DataModelOracle dmo,
+    public AddFieldClickHandler(PackageDataModelOracle dmo,
                                 ScenarioParentWidget parent) {
         this.dmo = dmo;
         this.parent = parent;

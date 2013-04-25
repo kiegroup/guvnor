@@ -17,7 +17,7 @@
 package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.testscenarios.shared.Fact;
 import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
 
@@ -28,7 +28,7 @@ public class AddFieldToFactClickHandler
     private final Fact fact;
 
     public AddFieldToFactClickHandler(Fact fact,
-                                      DataModelOracle dmo,
+                                      PackageDataModelOracle dmo,
                                       ScenarioParentWidget parent) {
         super(dmo, parent);
         this.fact = fact;

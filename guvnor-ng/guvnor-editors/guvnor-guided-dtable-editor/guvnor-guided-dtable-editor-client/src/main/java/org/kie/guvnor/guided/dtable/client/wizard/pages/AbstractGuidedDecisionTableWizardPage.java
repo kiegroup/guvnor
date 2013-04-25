@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.kie.guvnor.guided.dtable.client.wizard.NewAssetWizardContext;
@@ -43,7 +43,7 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     protected GuidedDecisionTableUtils modelUtils;
     protected DTCellValueUtilities cellUtils;
-    protected DataModelOracle oracle;
+    protected PackageDataModelOracle oracle;
 
     @Override
     public Widget asWidget() {
@@ -51,7 +51,7 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     }
 
     public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
-                            final DataModelOracle oracle,
+                            final PackageDataModelOracle oracle,
                             final GuidedDecisionTable52 model,
                             final Validator validator ) {
         this.context = context;

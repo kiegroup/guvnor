@@ -2,19 +2,19 @@ package org.kie.guvnor.drltext.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class DrlModelContent {
 
     private String drl;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     public DrlModelContent() {
     }
 
     public DrlModelContent( final String drl,
-                            final DataModelOracle oracle ) {
+                            final PackageDataModelOracle oracle ) {
         this.drl = PortablePreconditions.checkNotNull( "drl",
                                                        drl );
         this.oracle = PortablePreconditions.checkNotNull( "oracle",
@@ -25,7 +25,7 @@ public class DrlModelContent {
         return this.drl;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return this.oracle;
     }
 

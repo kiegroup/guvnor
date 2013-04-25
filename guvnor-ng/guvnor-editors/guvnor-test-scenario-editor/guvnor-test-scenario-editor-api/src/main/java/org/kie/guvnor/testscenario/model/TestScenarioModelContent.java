@@ -3,14 +3,14 @@ package org.kie.guvnor.testscenario.model;
 
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class TestScenarioModelContent {
 
     private Scenario scenario;
 
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private String packageName;
 
 
@@ -18,7 +18,7 @@ public class TestScenarioModelContent {
 
     }
 
-    public TestScenarioModelContent(Scenario scenario, DataModelOracle oracle, String packageName) {
+    public TestScenarioModelContent(Scenario scenario, PackageDataModelOracle oracle, String packageName) {
         this.scenario = scenario;
         this.oracle = oracle;
         this.packageName = packageName;
@@ -28,7 +28,7 @@ public class TestScenarioModelContent {
         return scenario;
     }
 
-    public DataModelOracle getOracle() {
+    public PackageDataModelOracle getOracle() {
         return oracle;
     }
 

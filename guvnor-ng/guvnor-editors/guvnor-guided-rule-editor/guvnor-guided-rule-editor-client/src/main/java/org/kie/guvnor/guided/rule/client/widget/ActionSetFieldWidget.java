@@ -35,7 +35,7 @@ import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
@@ -72,7 +72,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" );
 
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
         if ( completions.isGlobalVariable( set.getVariable() ) ) {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.getVariable() );
@@ -207,7 +207,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     protected void showAddFieldPopup( ClickEvent w ) {
-        final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        final PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
 
@@ -243,7 +243,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor( final ActionFieldValue val ) {
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         String type = "";
         if ( completions.isGlobalVariable( this.model.getVariable() ) ) {
             type = completions.getGlobalVariable( this.model.getVariable() );

@@ -53,7 +53,7 @@ import org.drools.guvnor.models.guided.scorecard.shared.Characteristic;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -86,14 +86,14 @@ public class GuidedScoreCardEditor extends Composite {
     private Grid scorecardPropertiesGrid;
 
     private ScoreCardModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     public GuidedScoreCardEditor() {
         initWidget( container );
     }
 
     public void setContent( final ScoreCardModel model,
-                            final DataModelOracle oracle ) {
+                            final PackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
         this.oracleModelFields = oracle.getModelFields();

@@ -16,16 +16,16 @@
 
 package org.kie.guvnor.datamodel.backend.server;
 
-import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
+import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
@@ -33,11 +33,11 @@ public class DataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TreeMap.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "java.util" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( pd ).build();
 
         final String[] getters = dmo.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
                                                           TreeMap.class.getSimpleName() );
@@ -86,11 +86,11 @@ public class DataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_ArrayList() throws Exception {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( ArrayList.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "java.util" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( pd ).build();
 
         final List<String> methodNames = dmo.getMethodNames( ArrayList.class.getSimpleName() );
 

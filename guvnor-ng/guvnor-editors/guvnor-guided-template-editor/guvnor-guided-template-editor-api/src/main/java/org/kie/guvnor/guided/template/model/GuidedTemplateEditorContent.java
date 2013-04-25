@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.template.model;
 
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * Container for data needed to edit a Guided Template
@@ -26,19 +26,19 @@ import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 @Portable
 public class GuidedTemplateEditorContent {
 
-    private DataModelOracle dataModel;
+    private PackageDataModelOracle dataModel;
     private TemplateModel ruleModel;
 
     public GuidedTemplateEditorContent() {
     }
 
-    public GuidedTemplateEditorContent( final DataModelOracle dataModel,
+    public GuidedTemplateEditorContent( final PackageDataModelOracle dataModel,
                                         final TemplateModel ruleModel ) {
         this.dataModel = dataModel;
         this.ruleModel = ruleModel;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return dataModel;
     }
 

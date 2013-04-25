@@ -31,7 +31,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.factmodel.backend.server.util.FactModelPersistence;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
@@ -147,7 +147,7 @@ public class FactModelServiceImpl implements FactModelService {
         final FactModels factModels = load( path );
         final List<FactMetaModel> allAvailableTypes = loadAllAvailableTypes( path );
         allAvailableTypes.addAll( factModels.getModels() );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         return new FactModelContent( factModels,
                                      allAvailableTypes,
                                      oracle );

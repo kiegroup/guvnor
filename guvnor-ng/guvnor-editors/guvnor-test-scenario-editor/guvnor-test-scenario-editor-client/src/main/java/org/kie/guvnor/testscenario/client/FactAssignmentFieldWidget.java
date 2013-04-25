@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
 import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -34,7 +34,7 @@ public class FactAssignmentFieldWidget implements IsWidget {
     public FactAssignmentFieldWidget(final FactAssignmentField factAssignmentField,
                                      final FixtureList definitionList,
                                      Scenario scenario,
-                                     DataModelOracle dmo,
+                                     PackageDataModelOracle dmo,
                                      final ScenarioParentWidget parent,
                                      ExecutionTrace executionTrace) {
 

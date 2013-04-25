@@ -1,31 +1,31 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestJavaEnum1;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestJavaEnum2;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests for the ProjectDefinition enums
+ * Tests for the ProjectDataModelOracle enums
  */
 public class DataModelOracleEnumTest {
 
     @Test
     public void testBasicEnums() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -56,7 +56,7 @@ public class DataModelOracleEnumTest {
                           new String[]{ "M", "F" } )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] personAgeEnum = dmo.getEnumValues( "Person",
                                                     "age" );
@@ -89,7 +89,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testBasicDependentEnums() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -112,7 +112,7 @@ public class DataModelOracleEnumTest {
                 .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2' : ['val3', 'val4'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         assertEquals( "String",
                       dmo.getFieldType( "Fact",
@@ -143,7 +143,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testSmartEnums1() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "type",
                                            String.class.getName(),
@@ -167,7 +167,7 @@ public class DataModelOracleEnumTest {
                           new String[]{ "RED", "WHITE", "BLUE" } )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] typeResult = dmo.getEnums( "Fact",
                                             "type" ).getFixedList();
@@ -209,7 +209,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testSmartEnumsDependingOnSeveralFields1() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -246,7 +246,7 @@ public class DataModelOracleEnumTest {
                           new String[]{ "d1", "d2" } )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Map<String, String> currentValueMap = new HashMap<String, String>();
         currentValueMap.put( "field1",
@@ -279,7 +279,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testSmartLookupEnums() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "type",
                                            String.class.getName(),
@@ -300,7 +300,7 @@ public class DataModelOracleEnumTest {
                           new String[]{ "select something from database where x=@{f1} and y=@{f2}" } )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Map<String, String> currentValueMap = new HashMap<String, String>();
         currentValueMap.put( "f1",
@@ -338,7 +338,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testDataHasEnums() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -354,7 +354,7 @@ public class DataModelOracleEnumTest {
                 .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         //Fact.field1 has explicit enumerations
         assertTrue( dmo.hasEnums( "Fact.field1" ) );
@@ -369,7 +369,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testDataHasEnumsFieldSuffixes() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -390,7 +390,7 @@ public class DataModelOracleEnumTest {
                 .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']" )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         //Fact.field1 has explicit enumerations
         assertTrue( dmo.hasEnums( "Fact.field1" ) );
@@ -410,7 +410,7 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testDependentEnums() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -443,7 +443,7 @@ public class DataModelOracleEnumTest {
                 .addEnum( "'Fact.field4' : ['f4val1', 'f4val2']" )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         assertTrue( dmo.isDependentEnum( "Fact",
                                          "field1",
@@ -461,11 +461,11 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testJavaEnum1() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestJavaEnum1.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );
@@ -499,11 +499,11 @@ public class DataModelOracleEnumTest {
 
     @Test
     public void testJavaEnum2() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestJavaEnum2.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );

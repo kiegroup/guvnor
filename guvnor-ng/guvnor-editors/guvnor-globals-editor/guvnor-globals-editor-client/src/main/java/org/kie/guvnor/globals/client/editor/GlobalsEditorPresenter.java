@@ -13,7 +13,7 @@ import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.client.type.GlobalResourceType;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
@@ -90,7 +90,7 @@ public class GlobalsEditorPresenter {
     private boolean isReadOnly;
 
     private GlobalsModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     @OnStart
     public void onStart( final Path path,

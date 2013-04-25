@@ -18,19 +18,19 @@ package org.kie.guvnor.globals.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class GlobalsEditorContent {
 
     private GlobalsModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     public GlobalsEditorContent() {
     }
 
     public GlobalsEditorContent( final GlobalsModel model,
-                                 final DataModelOracle oracle ) {
+                                 final PackageDataModelOracle oracle ) {
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
         this.oracle = PortablePreconditions.checkNotNull( "oracle",
@@ -41,7 +41,7 @@ public class GlobalsEditorContent {
         return this.model;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return this.oracle;
     }
 

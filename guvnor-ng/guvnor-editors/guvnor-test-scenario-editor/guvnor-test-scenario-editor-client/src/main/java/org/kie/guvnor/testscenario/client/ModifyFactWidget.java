@@ -17,7 +17,7 @@
 package org.kie.guvnor.testscenario.client;
 
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
@@ -28,7 +28,7 @@ public class ModifyFactWidget extends FactWidget {
     public ModifyFactWidget(String factType,
                             FixtureList definitionList,
                             Scenario scenario,
-                            DataModelOracle dmo,
+                            PackageDataModelOracle dmo,
                             ScenarioParentWidget parent,
                             ExecutionTrace executionTrace) {
         super(factType,

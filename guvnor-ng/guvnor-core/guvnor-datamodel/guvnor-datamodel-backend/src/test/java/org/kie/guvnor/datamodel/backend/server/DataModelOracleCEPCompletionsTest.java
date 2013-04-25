@@ -1,28 +1,28 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.util.Date;
+import java.util.List;
+
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
-import java.util.Date;
-import java.util.List;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests for the ProjectDefinition CEP completions
+ * Tests for the ProjectDataModelOracle CEP completions
  */
 public class DataModelOracleCEPCompletionsTest {
 
     @Test
     public void testCEPCompletions() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "NotAnEvent" )
                 .addField( new ModelField( "dateField",
                                            Date.class.getName(),
@@ -45,7 +45,7 @@ public class DataModelOracleCEPCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         //Check completions
         String[] types = dmo.getFactTypes();

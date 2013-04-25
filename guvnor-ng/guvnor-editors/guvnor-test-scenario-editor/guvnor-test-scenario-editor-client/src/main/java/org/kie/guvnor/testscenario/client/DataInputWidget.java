@@ -22,7 +22,7 @@ import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.uberfire.client.common.ClickableLabel;
@@ -33,7 +33,7 @@ public class DataInputWidget
         implements ScenarioParentWidget {
 
     private final Scenario scenario;
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
     protected final String type;
     private final ScenarioParentWidget parent;
     private final ExecutionTrace executionTrace;
@@ -43,7 +43,7 @@ public class DataInputWidget
     public DataInputWidget(String factType,
                            FixtureList definitionList,
                            Scenario scenario,
-                           DataModelOracle dmo,
+                           PackageDataModelOracle dmo,
                            ScenarioParentWidget parent,
                            ExecutionTrace executionTrace,
                            String headerText) {

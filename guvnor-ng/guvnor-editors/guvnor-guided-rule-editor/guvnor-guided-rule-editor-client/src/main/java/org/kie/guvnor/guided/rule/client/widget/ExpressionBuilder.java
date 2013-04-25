@@ -41,7 +41,7 @@ import org.drools.guvnor.models.commons.shared.rule.ExpressionVariable;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeEvent;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionChangeHandler;
 import org.kie.guvnor.guided.rule.client.editor.ExpressionTypeChangeEvent;
@@ -416,7 +416,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         return this.getModeller().getModel();
     }
 
-    private DataModelOracle getCompletionEngine() {
+    private PackageDataModelOracle getCompletionEngine() {
         return this.getModeller().getSuggestionCompletions();
     }
 

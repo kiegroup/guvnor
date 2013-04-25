@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.kie.guvnor.globals.model.Global;
 import org.uberfire.client.common.BusyPopup;
@@ -57,7 +57,7 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
     private ListDataProvider<Global> dataProvider = new ListDataProvider<Global>();
     private final Command addGlobalCommand = makeAddGlobalCommand();
 
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private GlobalsEditorPresenter presenter;
 
     private boolean isDirty = false;
@@ -136,7 +136,7 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
     }
 
     @Override
-    public void setContent( final DataModelOracle oracle,
+    public void setContent( final PackageDataModelOracle oracle,
                             final List<Global> globals,
                             final boolean isReadOnly ) {
         this.oracle = oracle;

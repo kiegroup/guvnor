@@ -17,7 +17,7 @@
 package org.kie.guvnor.factmodel.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +27,14 @@ public class FactModelContent {
 
     private FactModels factModels;
     private List<FactMetaModel> superTypes = new ArrayList<FactMetaModel>();
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     public FactModelContent() {
     }
 
     public FactModelContent( final FactModels factModels,
                              final List<FactMetaModel> superTypes,
-                             final DataModelOracle oracle ) {
+                             final PackageDataModelOracle oracle ) {
         this.factModels = factModels;
         this.superTypes.addAll( superTypes );
         this.oracle = oracle;
@@ -48,7 +48,7 @@ public class FactModelContent {
         return this.superTypes;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return this.oracle;
     }
 

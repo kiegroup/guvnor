@@ -24,7 +24,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
@@ -73,7 +73,7 @@ public class TemplateDataTableWidget extends Composite
      * Constructor
      */
     public TemplateDataTableWidget( TemplateModel model,
-                                    DataModelOracle sce,
+                                    PackageDataModelOracle sce,
                                     boolean isReadOnly,
                                     EventBus globalEventBus ) {
         if ( model == null ) {

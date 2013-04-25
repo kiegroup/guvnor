@@ -16,7 +16,7 @@ import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
@@ -27,8 +27,6 @@ import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Guided Decision Tables
@@ -109,10 +107,10 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private void createDecisionTableWithWizard( final String baseFileName,
                                                 final Path contextPath,
                                                 final GuidedDecisionTable52.TableFormat tableFormat ) {
-        dmoService.call( new RemoteCallback<DataModelOracle>() {
+        dmoService.call( new RemoteCallback<PackageDataModelOracle>() {
 
             @Override
-            public void callback( final DataModelOracle oracle ) {
+            public void callback( final PackageDataModelOracle oracle ) {
                 newResourcePresenter.complete();
                 final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
                                                                                                                        contextPath,

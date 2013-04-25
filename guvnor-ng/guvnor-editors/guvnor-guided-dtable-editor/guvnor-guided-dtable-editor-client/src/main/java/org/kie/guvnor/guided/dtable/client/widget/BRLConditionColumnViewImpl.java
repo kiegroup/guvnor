@@ -31,7 +31,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.BRLConditionVariableC
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.guvnor.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.uberfire.backend.vfs.Path;
@@ -46,7 +46,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     private Presenter presenter;
 
     public BRLConditionColumnViewImpl( final Path path,
-                                       final DataModelOracle oracle,
+                                       final PackageDataModelOracle oracle,
                                        final GuidedDecisionTable52 model,
                                        final BRLConditionColumn column,
                                        final EventBus eventBus,

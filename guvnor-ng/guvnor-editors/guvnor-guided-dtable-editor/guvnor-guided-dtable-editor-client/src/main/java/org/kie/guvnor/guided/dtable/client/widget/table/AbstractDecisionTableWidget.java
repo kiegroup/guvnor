@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.data.Coordinate;
@@ -111,7 +111,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected AbstractDecoratedDecisionTableGridWidget widget;
     protected GuidedDecisionTableUtils utils;
 
-    protected final DataModelOracle oracle;
+    protected final PackageDataModelOracle oracle;
     protected final GuidedDecisionTable52 model;
     protected final DecisionTableCellFactory cellFactory;
     protected final DecisionTableCellValueFactory cellValueFactory;
@@ -132,7 +132,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * Constructor
      */
     public AbstractDecisionTableWidget( GuidedDecisionTable52 model,
-                                        DataModelOracle oracle,
+                                        PackageDataModelOracle oracle,
                                         Identity identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {
@@ -562,7 +562,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * Return the DataModelOracle associated with this Decision Table
      * @return
      */
-    public DataModelOracle getOracle() {
+    public PackageDataModelOracle getOracle() {
         return this.oracle;
     }
 

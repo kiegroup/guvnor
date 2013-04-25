@@ -38,7 +38,7 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModelVisitor;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.editor.ModellerWidgetFactory;
 import org.kie.guvnor.guided.rule.client.editor.RuleModelEditor;
@@ -100,7 +100,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     protected final RuleModel ruleModel;
 
     public AbstractBRLColumnViewImpl( final Path path,
-                                      final DataModelOracle oracle,
+                                      final PackageDataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
                                       final BRLColumn<T, C> column,
                                       final EventBus eventBus,

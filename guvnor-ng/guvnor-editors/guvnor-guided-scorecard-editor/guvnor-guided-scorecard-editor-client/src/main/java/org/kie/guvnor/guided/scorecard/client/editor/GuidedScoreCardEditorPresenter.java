@@ -32,7 +32,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
@@ -101,7 +101,7 @@ public class GuidedScoreCardEditorPresenter {
     private boolean isReadOnly;
 
     private ScoreCardModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;

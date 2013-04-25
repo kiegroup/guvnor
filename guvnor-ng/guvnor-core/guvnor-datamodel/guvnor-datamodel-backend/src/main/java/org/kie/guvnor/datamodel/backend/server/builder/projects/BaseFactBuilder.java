@@ -1,36 +1,35 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.datamodel.service.DataModelService;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
+
 /**
  * Base FactBuilder containing common code
  */
 public abstract class BaseFactBuilder implements FactBuilder {
 
-    private final ProjectDefinitionBuilder builder;
+    private final ProjectDataModelOracleBuilder builder;
     private final String factType;
     private final List<ModelField> fields = new ArrayList<ModelField>();
     private final boolean isCollection;
     private final boolean isEvent;
 
-    public BaseFactBuilder( final ProjectDefinitionBuilder builder,
+    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final Class<?> clazz ) {
         this( builder,
               clazz,
               false );
     }
 
-    public BaseFactBuilder( final ProjectDefinitionBuilder builder,
+    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final Class<?> clazz,
                             final boolean isEvent ) {
         this.builder = builder;
@@ -44,7 +43,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
                                   DataType.TYPE_THIS ) );
     }
 
-    public BaseFactBuilder( final ProjectDefinitionBuilder builder,
+    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final String factType ) {
         this( builder,
               factType,
@@ -52,7 +51,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
               false );
     }
 
-    public BaseFactBuilder( final ProjectDefinitionBuilder builder,
+    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final String factType,
                             final boolean isCollection,
                             final boolean isEvent ) {
@@ -73,18 +72,18 @@ public abstract class BaseFactBuilder implements FactBuilder {
     }
 
     @Override
-    public ProjectDefinitionBuilder end() {
+    public ProjectDataModelOracleBuilder end() {
         return builder;
     }
 
     @Override
-    public void build( final ProjectDefinition oracle ) {
+    public void build( final ProjectDataModelOracleImpl oracle ) {
         oracle.addFactsAndFields( buildFactsAndFields() );
         oracle.addCollectionType( buildCollectionTypes() );
         oracle.addEventType( buildEventTypes() );
     }
 
-    public ProjectDefinitionBuilder getDataModelBuilder() {
+    public ProjectDataModelOracleBuilder getDataModelBuilder() {
         return this.builder;
     }
 

@@ -26,7 +26,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -35,7 +35,7 @@ abstract class TestScenarioButton extends ImageButton {
 
     protected final Scenario scenario;
     protected final ScenarioParentWidget parent;
-    protected final DataModelOracle            dmo;
+    protected final PackageDataModelOracle dmo;
     protected final ExecutionTrace previousEx;
 
     public TestScenarioButton(Image img,
@@ -43,7 +43,7 @@ abstract class TestScenarioButton extends ImageButton {
                               final ExecutionTrace previousEx,
                               final Scenario scenario,
                               ScenarioParentWidget scenarioWidget,
-                              DataModelOracle dmo) {
+                              PackageDataModelOracle dmo) {
         super( img,
                tooltip );
         this.previousEx = previousEx;

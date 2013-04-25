@@ -2,13 +2,13 @@ package org.kie.guvnor.drltext.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public interface DRLEditorView extends HasBusyIndicator,
                                        IsWidget {
 
     void setContent( final String content,
-                     final DataModelOracle dataModel );
+                     final PackageDataModelOracle dataModel );
 
     String getContent();
 

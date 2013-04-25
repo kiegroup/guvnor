@@ -30,7 +30,7 @@ import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fact;
@@ -48,7 +48,7 @@ public class FactDataWidgetFactory {
 
     private final DirtyableFlexTable widget;
     private final Scenario scenario;
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
     private final FixtureList definitionList;
     private final ExecutionTrace executionTrace;
 
@@ -57,7 +57,7 @@ public class FactDataWidgetFactory {
     private final ScenarioParentWidget parent;
 
     public FactDataWidgetFactory(Scenario scenario,
-                                 DataModelOracle dmo,
+                                 PackageDataModelOracle dmo,
                                  FixtureList definitionList,
                                  ExecutionTrace executionTrace,
                                  ScenarioParentWidget parent,

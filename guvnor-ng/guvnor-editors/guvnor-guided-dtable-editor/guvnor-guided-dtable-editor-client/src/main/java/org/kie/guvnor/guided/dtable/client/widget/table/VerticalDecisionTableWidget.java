@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.security.Identity;
@@ -30,7 +30,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
     private DecisionTableControlsWidget ctrls;
 
     public VerticalDecisionTableWidget( GuidedDecisionTable52 model,
-                                        DataModelOracle oracle,
+                                        PackageDataModelOracle oracle,
                                         Identity identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {

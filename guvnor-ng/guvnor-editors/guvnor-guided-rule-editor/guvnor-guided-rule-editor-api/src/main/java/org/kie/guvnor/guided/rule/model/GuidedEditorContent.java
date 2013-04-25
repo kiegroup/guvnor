@@ -18,25 +18,25 @@ package org.kie.guvnor.guided.rule.model;
 
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class GuidedEditorContent {
 
-    private DataModelOracle dataModel;
+    private PackageDataModelOracle dataModel;
     private RuleModel ruleModel;
 
     public GuidedEditorContent() {
 
     }
 
-    public GuidedEditorContent( final DataModelOracle dataModel,
+    public GuidedEditorContent( final PackageDataModelOracle dataModel,
                                 final RuleModel ruleModel ) {
         this.dataModel = dataModel;
         this.ruleModel = ruleModel;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return dataModel;
     }
 

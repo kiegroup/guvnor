@@ -36,7 +36,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
@@ -110,7 +110,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private boolean isReadOnly = false;
 
     private TemplateModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     @OnStart
     public void onStart( final Path path,

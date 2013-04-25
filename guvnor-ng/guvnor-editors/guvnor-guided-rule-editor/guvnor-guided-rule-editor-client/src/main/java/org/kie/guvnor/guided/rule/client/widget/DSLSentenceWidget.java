@@ -38,7 +38,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerLabel;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CustomFormPopUp;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -439,7 +439,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             implements
             DSLVariableEditor {
 
-        final DataModelOracle completions = getModeller().getSuggestionCompletions();
+        final PackageDataModelOracle completions = getModeller().getSuggestionCompletions();
         EnumDropDown resultWidget = null;
         String factType;
         String factField;

@@ -34,7 +34,7 @@ import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent;
 import org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService;
@@ -135,7 +135,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     @Override
     public ScoreCardModelContent loadContent( final Path path ) {
         final ScoreCardModel model = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         return new ScoreCardModelContent( model,
                                           oracle );
     }

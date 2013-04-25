@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
@@ -52,7 +52,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      * @param oracle DataModelOracle to assist with drop-downs
      */
     public DecisionTableCellValueFactory( GuidedDecisionTable52 model,
-                                          DataModelOracle oracle ) {
+                                          PackageDataModelOracle oracle ) {
         super( oracle );
         this.model = model;
         this.utilities = new DTCellValueUtilities( model,

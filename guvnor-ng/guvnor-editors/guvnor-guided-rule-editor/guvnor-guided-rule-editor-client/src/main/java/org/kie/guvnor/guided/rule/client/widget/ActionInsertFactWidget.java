@@ -37,7 +37,7 @@ import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.ActionValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
@@ -72,7 +72,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         this.layout = new DirtyableFlexTable();
         this.factType = set.getFactType();
 
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                                  set.getFactType() );
 
@@ -150,7 +150,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor( final ActionFieldValue val ) {
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         DropDownData enums = completions.getEnums( this.factType,
                                                    val.getField(),
                                                    FieldNatureUtil.toMap( this.model.getFieldValues() ) );
@@ -202,7 +202,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     protected void showAddFieldPopup( Widget w ) {
-        final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        final PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );

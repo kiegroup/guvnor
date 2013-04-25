@@ -35,7 +35,7 @@ import org.drools.guvnor.models.commons.shared.rule.FromCollectCompositeFactPatt
 import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromEntryPointFactPattern;
 import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -229,7 +229,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
      */
     protected void showRightPatternSelector( final Widget w ) {
         final ListBox box = new ListBox();
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
         box.addItem( Constants.INSTANCE.Choose() );

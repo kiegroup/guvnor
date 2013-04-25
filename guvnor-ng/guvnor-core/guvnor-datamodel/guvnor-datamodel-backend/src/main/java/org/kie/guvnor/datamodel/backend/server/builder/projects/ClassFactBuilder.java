@@ -1,12 +1,5 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
-import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
 import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -21,6 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.drools.core.util.asm.ClassFieldInspector;
+import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
+
 /**
  * Builder for Fact Types originating from a .class
  */
@@ -31,14 +31,14 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
     private final Map<String, String> fieldParametersType = new HashMap<String, String>();
 
-    public ClassFactBuilder( final ProjectDefinitionBuilder builder,
+    public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz ) throws IOException {
         this( builder,
               clazz,
               false );
     }
 
-    public ClassFactBuilder( final ProjectDefinitionBuilder builder,
+    public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz,
                              final boolean isEvent ) throws IOException {
         super( builder,
@@ -48,7 +48,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     @Override
-    public void build( final ProjectDefinition oracle ) {
+    public void build( final ProjectDataModelOracleImpl oracle ) {
         super.build( oracle );
         oracle.addMethodInformation( methodInformation );
         oracle.addFieldParametersType( fieldParametersType );
@@ -139,7 +139,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     // Remove the unneeded "fields" that come from java.lang.Object
-    private List<String> removeIrrelevantFields( Collection<String> fields ) {
+    private List<String> removeIrrelevantFields( final Collection<String> fields ) {
         final List<String> result = new ArrayList<String>();
         for ( String field : fields ) {
             //clone, empty, iterator, listIterator, size, toArray
@@ -151,7 +151,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     // Remove the unneeded "methods" that come from java.lang.Object
-    private Map<String, MethodSignature> removeIrrelevantMethods( Map<String, MethodSignature> methods ) {
+    private Map<String, MethodSignature> removeIrrelevantMethods( final Map<String, MethodSignature> methods ) {
         final Map<String, MethodSignature> result = new HashMap<String, MethodSignature>();
         for ( Map.Entry<String, MethodSignature> methodSignature : methods.entrySet() ) {
             String methodName = methodSignature.getKey();

@@ -19,7 +19,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.uberfire.client.common.BusyPopup;
 
@@ -35,7 +35,7 @@ public class GuidedScoreCardEditorViewImpl
 
     @Override
     public void setContent( final ScoreCardModel model,
-                            final DataModelOracle oracle ) {
+                            final PackageDataModelOracle oracle ) {
         this.editor.setContent( model,
                                 oracle );
     }

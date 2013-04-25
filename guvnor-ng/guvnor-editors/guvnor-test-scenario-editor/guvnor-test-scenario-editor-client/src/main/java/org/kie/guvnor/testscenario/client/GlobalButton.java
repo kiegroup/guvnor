@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.uberfire.client.common.FormStylePopup;
@@ -39,11 +39,11 @@ class GlobalButton
     private final Scenario scenario;
     private final ScenarioParentWidget parent;
 
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioParentWidget parent,
-                        final DataModelOracle dmo) {
+                        final PackageDataModelOracle dmo) {
         super(ItemAltedImages.INSTANCE.NewItem(),
                 TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario());
 

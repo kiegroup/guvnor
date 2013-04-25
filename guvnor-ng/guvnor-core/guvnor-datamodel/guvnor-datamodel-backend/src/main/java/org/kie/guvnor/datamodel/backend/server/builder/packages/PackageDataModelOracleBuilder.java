@@ -1,22 +1,23 @@
 package org.kie.guvnor.datamodel.backend.server.builder.packages;
 
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
-import org.drools.compiler.lang.dsl.DSLMappingEntry;
-import org.drools.compiler.lang.dsl.DSLMappingParseException;
-import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.kie.commons.data.Pair;
-import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
-import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.compiler.lang.dsl.DSLMappingEntry;
+import org.drools.compiler.lang.dsl.DSLMappingParseException;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.kie.commons.data.Pair;
+import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
+import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracleImpl;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for PackageDataModelOracle
@@ -25,8 +26,8 @@ public final class PackageDataModelOracleBuilder {
 
     private final String packageName;
 
-    private PackageDataModelOracle oracle = new PackageDataModelOracle();
-    private ProjectDefinition projectDefinition = new ProjectDefinition();
+    private PackageDataModelOracleImpl packageOracle = new PackageDataModelOracleImpl();
+    private ProjectDataModelOracle projectOracle = new ProjectDataModelOracleImpl();
 
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
     private List<DSLSentence> dslConditionSentences = new ArrayList<DSLSentence>();
@@ -40,11 +41,11 @@ public final class PackageDataModelOracleBuilder {
 
     private List<String> errors = new ArrayList<String>();
 
-    public static PackageDataModelOracleBuilder newDataModelBuilder() {
+    public static PackageDataModelOracleBuilder newPackageOracleBuilder() {
         return new PackageDataModelOracleBuilder( "" );
     }
 
-    public static PackageDataModelOracleBuilder newDataModelBuilder( final String packageName ) {
+    public static PackageDataModelOracleBuilder newPackageOracleBuilder( final String packageName ) {
         return new PackageDataModelOracleBuilder( packageName );
     }
 
@@ -52,8 +53,8 @@ public final class PackageDataModelOracleBuilder {
         this.packageName = packageName;
     }
 
-    public PackageDataModelOracleBuilder setProjectDefinition( final ProjectDefinition projectDefinition ) {
-        this.projectDefinition = projectDefinition;
+    public PackageDataModelOracleBuilder setProjectOracle( final ProjectDataModelOracle projectOracle ) {
+        this.projectOracle = projectOracle;
         return this;
     }
 
@@ -163,22 +164,32 @@ public final class PackageDataModelOracleBuilder {
         return this;
     }
 
-    public DataModelOracle build() {
+    public PackageDataModelOracle build() {
+        //Copy Project DMO into Package DMO
+        final ProjectDataModelOracleImpl pd = (ProjectDataModelOracleImpl) projectOracle;
+        packageOracle.addFactsAndFields( pd.getModelFields() );
+        packageOracle.addFieldParametersType( pd.getFieldParametersType() );
+        packageOracle.addEventType( pd.getEventTypes() );
+        packageOracle.addEnumDefinitions( pd.getEnumLists() );
+        packageOracle.addMethodInformation( pd.getMethodInformation() );
+        packageOracle.addCollectionType( pd.getCollectionTypes() );
+
+        //Add Package DMO specifics
         loadEnums();
         loadDsls();
         loadGlobals();
-        loadProjectDefinition();
-        return oracle;
+        loadProjectOracle();
+
+        return packageOracle;
     }
 
     public List<String> getErrors() {
         return errors;
     }
 
-    private void loadProjectDefinition() {
-        oracle.setPackageName( packageName );
-        oracle.setProjectDefinition( projectDefinition );
-        oracle.filter();
+    private void loadProjectOracle() {
+        packageOracle.setPackageName( packageName );
+        packageOracle.filter();
     }
 
     private void loadEnums() {
@@ -188,16 +199,16 @@ public final class PackageDataModelOracleBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        oracle.addPackageEnums( loadableEnums );
+        packageOracle.addPackageEnums( loadableEnums );
     }
 
     private void loadDsls() {
-        oracle.addPackageDslConditionSentences( dslConditionSentences );
-        oracle.addPackageDslActionSentences( dslActionSentences );
+        packageOracle.addPackageDslConditionSentences( dslConditionSentences );
+        packageOracle.addPackageDslActionSentences( dslActionSentences );
     }
 
     private void loadGlobals() {
-        oracle.addPackageGlobals( packageGlobalTypes );
+        packageOracle.addPackageGlobals( packageGlobalTypes );
     }
 
 }

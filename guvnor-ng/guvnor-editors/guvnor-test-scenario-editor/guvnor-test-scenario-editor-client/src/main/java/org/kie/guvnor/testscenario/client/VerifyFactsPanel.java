@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
@@ -42,7 +42,7 @@ public class VerifyFactsPanel extends VerticalPanel {
                             final Scenario scenario,
                             ScenarioParentWidget scenarioWidget,
                             boolean showResults,
-                            DataModelOracle dmo) {
+                            PackageDataModelOracle dmo) {
 
         this.scenario = scenario;
         this.parent = scenarioWidget;

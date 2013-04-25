@@ -38,7 +38,7 @@ import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromEntryPointFactPattern;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.InfoPopup;
@@ -51,7 +51,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     public RuleModellerConditionSelectorPopup( RuleModel model,
                                                RuleModeller ruleModeller,
                                                Integer position,
-                                               DataModelOracle dataModel ) {
+                                               PackageDataModelOracle dataModel ) {
         super( model, ruleModeller, position, dataModel );
     }
 

@@ -28,7 +28,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.uberfire.backend.vfs.Path;
@@ -43,7 +43,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
     private Presenter presenter;
 
     public LimitedEntryBRLActionColumnViewImpl( final Path path,
-                                                final DataModelOracle oracle,
+                                                final PackageDataModelOracle oracle,
                                                 final GuidedDecisionTable52 model,
                                                 final LimitedEntryBRLActionColumn column,
                                                 final EventBus eventBus,

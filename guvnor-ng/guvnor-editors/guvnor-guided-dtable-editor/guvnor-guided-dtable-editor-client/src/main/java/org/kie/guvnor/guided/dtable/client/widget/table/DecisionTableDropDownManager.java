@@ -18,7 +18,7 @@ package org.kie.guvnor.guided.dtable.client.widget.table;
 import com.google.gwt.cell.client.Cell.Context;
 import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.IPattern;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
@@ -54,14 +54,14 @@ public class DecisionTableDropDownManager
         implements
         CellTableDropDownDataValueMapProvider {
 
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTable52 model;
     private final DecisionTableCellValueFactory cellValueFactory;
     private final DTCellValueUtilities utilities;
     private DynamicData data;
 
     public DecisionTableDropDownManager( final GuidedDecisionTable52 model,
-                                         final DataModelOracle oracle ) {
+                                         final PackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -78,7 +78,7 @@ public class DecisionTableDropDownManager
 
     public DecisionTableDropDownManager( final GuidedDecisionTable52 model,
                                          final DynamicData data,
-                                         final DataModelOracle oracle ) {
+                                         final PackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

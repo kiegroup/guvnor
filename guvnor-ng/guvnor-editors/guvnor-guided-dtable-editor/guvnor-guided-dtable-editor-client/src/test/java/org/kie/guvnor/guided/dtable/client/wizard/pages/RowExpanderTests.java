@@ -15,14 +15,11 @@
  */
 package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
-import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
@@ -32,10 +29,13 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionIns
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +46,7 @@ public class RowExpanderTests {
     public void testExpansionNoExpansion() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -71,7 +71,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -161,7 +161,7 @@ public class RowExpanderTests {
     public void testExpansionWithValuesList() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -186,7 +186,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -306,7 +306,7 @@ public class RowExpanderTests {
     public void testExpansionWithGuvnorEnums() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -331,8 +331,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( "'Driver.name' : ['f1a', 'f1b'], 'Driver.age' : ['f2a', 'f2b'], 'Driver.dateOfBirth' : ['f3a', 'f3b'], 'Driver.approved' : ['f4a', 'f4b']" )
                 .build();
 
@@ -453,7 +453,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b', 'f1bf2c'], "
                 + "'Fact.field2[field1=f1c]' : ['f1cf2a', 'f1cf2b', 'f1cf2c']";
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -468,8 +468,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( enumDefinitions )
                 .build();
 
@@ -631,7 +631,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -646,8 +646,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( enumDefinitions )
                 .build();
 
@@ -765,7 +765,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -780,8 +780,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( enumDefinitions )
                 .build();
 
@@ -877,7 +877,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -892,8 +892,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( enumDefinitions )
                 .build();
 
@@ -983,7 +983,7 @@ public class RowExpanderTests {
                 + "'Fact.field3[field2=f1bf2a]' : ['f1bf2af3a', 'f1bf2af3b'], "
                 + "'Fact.field3[field2=f1bf2b]' : ['f1bf2bf3a', 'f1bf2bf3b']";
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -1003,8 +1003,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( enumDefinitions )
                 .build();
 
@@ -1176,7 +1176,7 @@ public class RowExpanderTests {
     public void testColumnValues() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
@@ -1186,8 +1186,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .build();
 
         Pattern52 p1 = new Pattern52();
@@ -1232,7 +1232,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList1() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
@@ -1242,8 +1242,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .build();
 
         Pattern52 p1 = new Pattern52();
@@ -1294,7 +1294,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList2() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1309,7 +1309,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1390,7 +1390,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList3() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1410,7 +1410,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1509,7 +1509,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndDefaultValues() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1529,7 +1529,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1635,7 +1635,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled1() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1655,7 +1655,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1715,7 +1715,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled2() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1735,7 +1735,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1818,7 +1818,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled3() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1838,7 +1838,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1941,7 +1941,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabledAndDefaultValues() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1961,7 +1961,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -2070,7 +2070,7 @@ public class RowExpanderTests {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
         dtable.setTableFormat( GuidedDecisionTable52.TableFormat.LIMITED_ENTRY );
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -2095,7 +2095,7 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -2239,7 +2239,7 @@ public class RowExpanderTests {
     public void testExpansionObjectUniqueness() {
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "gender",
                                            String.class.getName(),
@@ -2249,8 +2249,8 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder()
-                .setProjectDefinition( pd )
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( pd )
                 .addEnum( "'Driver.gender' : ['M', 'F']" )
                 .build();
 

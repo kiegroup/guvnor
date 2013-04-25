@@ -17,7 +17,8 @@
 package org.kie.guvnor.datamodel.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -25,6 +26,8 @@ public interface DataModelService {
 
     public static final String DEFAULT_PACKAGE = "defaultpkg";
 
-    DataModelOracle getDataModel( final Path resourcePath );
+    PackageDataModelOracle getDataModel( final Path resourcePath );
+
+    ProjectDataModelOracle getProjectDataModel( final Path resourcePath );
 
 }

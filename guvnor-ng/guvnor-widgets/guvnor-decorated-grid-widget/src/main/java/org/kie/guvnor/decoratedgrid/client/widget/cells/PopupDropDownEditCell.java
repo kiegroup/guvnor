@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
 /**
@@ -41,12 +41,12 @@ public class PopupDropDownEditCell extends
     private final String factType;
     private final String factField;
 
-    private final DataModelOracle sce;
+    private final PackageDataModelOracle sce;
     private final CellTableDropDownDataValueMapProvider dropDownManager;
 
     public PopupDropDownEditCell( final String factType,
                                   final String factField,
-                                  final DataModelOracle sce,
+                                  final PackageDataModelOracle sce,
                                   final CellTableDropDownDataValueMapProvider dropDownManager,
                                   final boolean isReadOnly ) {
         super( isReadOnly );

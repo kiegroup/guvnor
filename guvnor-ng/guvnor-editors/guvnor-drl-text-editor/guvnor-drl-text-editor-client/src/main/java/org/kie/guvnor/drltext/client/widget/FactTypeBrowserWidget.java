@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.drltext.client.resources.Resources;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.resources.images.ImageResources;
@@ -85,7 +85,7 @@ public class FactTypeBrowserWidget
         initWidget( panel );
     }
 
-    public void setDataModel( final DataModelOracle dataModel ) {
+    public void setDataModel( final PackageDataModelOracle dataModel ) {
         if ( tree.getItem( 0 ) != null ) {
             tree.clear();
         }

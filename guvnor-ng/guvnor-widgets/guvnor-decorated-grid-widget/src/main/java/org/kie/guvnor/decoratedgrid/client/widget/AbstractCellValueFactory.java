@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 
 import java.math.BigDecimal;
@@ -29,9 +29,9 @@ import java.util.List;
 public abstract class AbstractCellValueFactory<C, V> {
 
     // SuggestionCompletionEngine to aid data-type resolution etc
-    protected DataModelOracle oracle;
+    protected PackageDataModelOracle oracle;
 
-    public AbstractCellValueFactory( DataModelOracle oracle ) {
+    public AbstractCellValueFactory( PackageDataModelOracle oracle ) {
         if ( oracle == null ) {
             throw new IllegalArgumentException( "oracle cannot be null" );
         }

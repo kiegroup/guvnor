@@ -5,7 +5,7 @@ import org.drools.guvnor.models.commons.shared.imports.Imports;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -27,13 +27,13 @@ public interface ScenarioEditorView
 
     void setScenario( final String packageName,
                       final Scenario scenario,
-                      final DataModelOracle dmo );
+                      final PackageDataModelOracle dmo );
 
     void showSaveSuccessful();
 
     String getTitle();
 
-    void initImportsTab( final DataModelOracle dmo,
+    void initImportsTab( final PackageDataModelOracle dmo,
                          final Imports imports,
                          final boolean readOnly );
 

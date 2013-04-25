@@ -55,7 +55,7 @@ import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -91,7 +91,7 @@ public class ConstraintValueEditor
     private String fieldName;
     private String fieldType;
 
-    private final DataModelOracle sce;
+    private final PackageDataModelOracle sce;
     private final BaseSingleFieldConstraint constraint;
     private final Panel panel;
     private final RuleModel model;

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.workitems.PortableParameterDefinition;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
@@ -64,7 +64,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
     private final ActionWorkItemSetFieldCol52 editingCol;
     private final GuidedDecisionTable52 model;
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
 
     private final boolean isReadOnly;
@@ -82,7 +82,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         PortableParameterDefinition workParameterDefinition;
     }
 
-    public ActionWorkItemSetFieldPopup( final DataModelOracle oracle,
+    public ActionWorkItemSetFieldPopup( final PackageDataModelOracle oracle,
                                         final GuidedDecisionTable52 model,
                                         final GenericColumnCommand refreshGrid,
                                         final ActionWorkItemSetFieldCol52 col,

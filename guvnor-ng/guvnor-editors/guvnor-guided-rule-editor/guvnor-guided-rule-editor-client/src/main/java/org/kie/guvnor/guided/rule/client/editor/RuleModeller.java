@@ -36,7 +36,7 @@ import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
 import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
@@ -61,7 +61,7 @@ public class RuleModeller extends DirtyableComposite
 
     private DirtyableFlexTable layout;
     private RuleModel model;
-    private DataModelOracle dataModel;
+    private PackageDataModelOracle dataModel;
     private RuleModellerConfiguration configuration;
 
     private boolean showingOptions = false;
@@ -87,7 +87,7 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Rule (DRL + DSLR)
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final DataModelOracle dataModel,
+                         final PackageDataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly,
@@ -105,7 +105,7 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Templates
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final DataModelOracle dataModel,
+                         final PackageDataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
@@ -121,7 +121,7 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Decision BRL Fragments
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final DataModelOracle dataModel,
+                         final PackageDataModelOracle dataModel,
                          final ModellerWidgetFactory widgetFactory,
                          final RuleModellerConfiguration configuration,
                          final EventBus eventBus,
@@ -748,7 +748,7 @@ public class RuleModeller extends DirtyableComposite
         return ( layout.hasDirty() || dirtyflag );
     }
 
-    public DataModelOracle getSuggestionCompletions() {
+    public PackageDataModelOracle getSuggestionCompletions() {
         return dataModel;
     }
 

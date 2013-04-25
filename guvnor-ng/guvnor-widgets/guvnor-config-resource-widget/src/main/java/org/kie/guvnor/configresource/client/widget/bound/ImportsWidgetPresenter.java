@@ -26,7 +26,7 @@ import org.kie.guvnor.commons.ui.client.popups.list.FormListPopup;
 import org.kie.guvnor.commons.ui.client.popups.list.PopupItemSelectedCommand;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 import javax.enterprise.event.Event;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class ImportsWidgetPresenter
     private final Event<ImportAddedEvent> importAddedEvent;
     private final Event<ImportRemovedEvent> importRemovedEvent;
 
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private Imports resourceImports;
     private List<Pair<String, String>> imports;
 
@@ -61,7 +61,7 @@ public class ImportsWidgetPresenter
     }
 
     @Override
-    public void setContent( final DataModelOracle oracle,
+    public void setContent( final PackageDataModelOracle oracle,
                             final Imports resourceImports,
                             final boolean isReadOnly ) {
         this.oracle = checkNotNull( "oracle",

@@ -73,7 +73,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCondition
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.kie.guvnor.commons.ui.client.workitems.IBindingProvider;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.Resources;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
@@ -113,7 +113,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel actionsConfigWidget;
     private GuidedDecisionTable52 model;
     private GuidedDecisionTableUtils utils;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private BRLRuleModel rm;
 
     private Path path;
@@ -152,7 +152,7 @@ public class GuidedDecisionTableWidget extends Composite
     private final boolean isReadOnly;
 
     public GuidedDecisionTableWidget( final Path path,
-                                      final DataModelOracle oracle,
+                                      final PackageDataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
                                       final Identity identity,
                                       final Set<PortableWorkDefinition> workItemDefinitions,

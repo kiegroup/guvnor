@@ -33,7 +33,7 @@ import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.MethodParameterValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -74,7 +74,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         if ( completions.isGlobalVariable( set.getVariable() ) ) {
 
             List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable( set.getVariable() );
@@ -201,7 +201,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup( Widget w ) {
 
-        final DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        final PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.ChooseAMethodToInvoke() );
@@ -251,7 +251,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private Widget valueEditor( final ActionFieldFunction val ) {
 
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
 
         String type = "";
         if ( completions.isGlobalVariable( this.model.getVariable() ) ) {

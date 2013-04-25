@@ -1,20 +1,20 @@
 package org.kie.guvnor.datamodel.backend.server;
 
-import org.drools.core.util.asm.ClassFieldInspector;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
-import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
-import org.kie.guvnor.datamodel.backend.server.testclasses.Purchase;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+
+import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
+import org.kie.guvnor.datamodel.backend.server.testclasses.Purchase;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
@@ -40,12 +40,12 @@ public class DataModelParametricTypesTest {
     @Test
     @Ignore("See testClassFieldInspector")
     public void testParametricReturnTypes() throws Exception {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( Purchase.class )
                 .addClass( Product.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertNotNull( dmo );
 
@@ -71,11 +71,11 @@ public class DataModelParametricTypesTest {
 
     @Test
     public void testParametricMethod() throws Exception {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( Purchase.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertNotNull( dmo );
 

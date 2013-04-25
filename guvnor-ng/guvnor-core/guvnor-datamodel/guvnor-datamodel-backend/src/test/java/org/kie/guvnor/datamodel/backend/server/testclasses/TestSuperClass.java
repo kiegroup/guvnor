@@ -1,7 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server.testclasses;
 
 /**
- * Test class to check data-types are extracted correctly by ProjectDefinitionBuilder for subclasses and delegated classes
+ * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder for subclasses and delegated classes
  */
 public class TestSuperClass {
 

@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
@@ -63,7 +63,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private int defaultValueWidgetContainerIndex = -1;
 
     private final GuidedDecisionTable52 model;
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
     private final DTCellValueWidgetFactory factory;
     private final BRLRuleModel rm;
@@ -73,7 +73,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private final boolean isReadOnly;
 
-    public ActionSetFieldPopup( final DataModelOracle oracle,
+    public ActionSetFieldPopup( final PackageDataModelOracle oracle,
                                 final GuidedDecisionTable52 model,
                                 final GenericColumnCommand refreshGrid,
                                 final ActionSetFieldCol52 col,

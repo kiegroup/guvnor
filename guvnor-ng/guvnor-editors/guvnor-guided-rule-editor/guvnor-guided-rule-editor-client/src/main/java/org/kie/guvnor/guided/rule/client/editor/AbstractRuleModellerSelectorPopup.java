@@ -24,8 +24,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.services.config.ApplicationPreferences;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.Popup;
 
@@ -43,7 +43,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected RuleModel model;
     protected RuleModeller ruleModeller;
-    protected DataModelOracle completions;
+    protected PackageDataModelOracle completions;
     protected Map<String, Command> cmds = new HashMap<String, Command>();
     protected Integer position;
 
@@ -55,7 +55,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
     public AbstractRuleModellerSelectorPopup( RuleModel model,
                                               RuleModeller ruleModeller,
                                               Integer position,
-                                              DataModelOracle dataModel ) {
+                                              PackageDataModelOracle dataModel ) {
         this.model = model;
         this.position = position;
         this.ruleModeller = ruleModeller;

@@ -30,7 +30,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent;
 import org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService;
@@ -128,7 +128,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     @Override
     public GuidedTemplateEditorContent loadContent( final Path path ) {
         final TemplateModel model = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         return new GuidedTemplateEditorContent( oracle,
                                                 model );
     }

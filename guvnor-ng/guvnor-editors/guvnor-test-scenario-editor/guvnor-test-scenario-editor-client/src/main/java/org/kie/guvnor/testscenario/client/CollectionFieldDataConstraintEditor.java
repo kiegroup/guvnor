@@ -22,7 +22,7 @@ import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Fact;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.DirtyableComposite;
 
 /**
@@ -40,7 +40,7 @@ public class CollectionFieldDataConstraintEditor
     public CollectionFieldDataConstraintEditor(String factType,
                                                CollectionFieldData field,
                                                Fact givenFact,
-                                               DataModelOracle dmo,
+                                               PackageDataModelOracle dmo,
                                                Scenario scenario,
                                                ExecutionTrace executionTrace) {
         this.field = field;

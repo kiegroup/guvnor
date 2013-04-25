@@ -28,7 +28,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.handlers.NewGuidedDecisionTableHandler;
 import org.kie.guvnor.guided.dtable.client.widget.Validator;
 import org.kie.guvnor.guided.dtable.client.wizard.pages.AbstractGuidedDecisionTableWizardPage;
@@ -75,7 +75,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
     private NewGuidedDecisionTableAssetWizardContext context;
     private GuidedDecisionTable52 model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private NewGuidedDecisionTableHandler handler;
 
     @PostConstruct
@@ -89,7 +89,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
     }
 
     public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
-                            final DataModelOracle oracle,
+                            final PackageDataModelOracle oracle,
                             final NewGuidedDecisionTableHandler handler ) {
         this.context = context;
         this.model = new GuidedDecisionTable52();

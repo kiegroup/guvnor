@@ -23,8 +23,11 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.datamodel.backend.server.cache.LRUDataModelOracleCache;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracleImpl;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
@@ -39,10 +42,14 @@ public class DataModelServiceImpl
     private LRUDataModelOracleCache cachePackages;
 
     @Inject
+    @Named("ProjectDataModelOracleCache")
+    private LRUProjectDataModelOracleCache cacheProjects;
+
+    @Inject
     private ProjectService projectService;
 
     @Override
-    public DataModelOracle getDataModel( final Path resourcePath ) {
+    public PackageDataModelOracle getDataModel( final Path resourcePath ) {
         PortablePreconditions.checkNotNull( "resourcePath",
                                             resourcePath );
         final Path projectPath = resolveProjectPath( resourcePath );
@@ -50,12 +57,28 @@ public class DataModelServiceImpl
 
         //Resource was not within a Project structure
         if ( projectPath == null ) {
-            return new PackageDataModelOracle();
+            return new PackageDataModelOracleImpl();
         }
 
         //Retrieve (or build) oracle
-        final DataModelOracle oracle = cachePackages.assertPackageDataModelOracle( projectPath,
-                                                                                   packagePath );
+        final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( projectPath,
+                                                                                          packagePath );
+        return oracle;
+    }
+
+    @Override
+    public ProjectDataModelOracle getProjectDataModel( final Path resourcePath ) {
+        PortablePreconditions.checkNotNull( "resourcePath",
+                                            resourcePath );
+        final Path projectPath = resolveProjectPath( resourcePath );
+
+        //Resource was not within a Project structure
+        if ( projectPath == null ) {
+            return new ProjectDataModelOracleImpl();
+        }
+
+        //Retrieve (or build) oracle
+        final ProjectDataModelOracle oracle = cacheProjects.assertProjectDataModelOracle( projectPath );
         return oracle;
     }
 

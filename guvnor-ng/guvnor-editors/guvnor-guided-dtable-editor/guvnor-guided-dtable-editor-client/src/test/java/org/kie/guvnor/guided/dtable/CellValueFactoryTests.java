@@ -15,29 +15,6 @@
  */
 package org.kie.guvnor.guided.dtable;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.guvnor.services.config.ApplicationPreferences;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
-import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -45,14 +22,37 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
+import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
+import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
+import org.kie.guvnor.services.config.ApplicationPreferences;
+
+import static junit.framework.Assert.*;
 
 /**
  * Tests for CellValueFactory
  */
 public class CellValueFactoryTests {
 
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private GuidedDecisionTable52 dt = null;
     private DecisionTableCellValueFactory factory = null;
 
@@ -75,7 +75,7 @@ public class CellValueFactoryTests {
     @Before
     @SuppressWarnings("serial")
     public void setup() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "MyClass" )
                 .addField( new ModelField( "bigDecimalField",
                                            Integer.class.getName(),
@@ -135,7 +135,7 @@ public class CellValueFactoryTests {
                 .end()
                 .build();
 
-        oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         dt = new GuidedDecisionTable52();
 

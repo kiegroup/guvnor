@@ -1,14 +1,14 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for Fact Types
  */
 public interface FactBuilder {
 
-    public ProjectDefinitionBuilder end();
+    public ProjectDataModelOracleBuilder end();
 
-    public void build( final ProjectDefinition oracle );
+    public void build( final ProjectDataModelOracleImpl oracle );
 
 }

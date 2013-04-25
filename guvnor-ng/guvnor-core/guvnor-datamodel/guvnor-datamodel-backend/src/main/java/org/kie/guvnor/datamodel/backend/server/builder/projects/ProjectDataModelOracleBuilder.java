@@ -1,31 +1,32 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
-import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
+
 /**
  * Builder for DataModelOracle
  */
-public final class ProjectDefinitionBuilder {
+public final class ProjectDataModelOracleBuilder {
 
-    private ProjectDefinition projectDefinitions = new ProjectDefinition();
+    private ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
     private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
 
     private List<String> errors = new ArrayList<String>();
 
-    public static ProjectDefinitionBuilder newProjectDefinitionBuilder() {
-        return new ProjectDefinitionBuilder();
+    public static ProjectDataModelOracleBuilder newProjectOracleBuilder() {
+        return new ProjectDataModelOracleBuilder();
     }
 
-    private ProjectDefinitionBuilder() {
+    private ProjectDataModelOracleBuilder() {
     }
 
     public SimpleFactBuilder addFact( final String factType ) {
@@ -42,13 +43,13 @@ public final class ProjectDefinitionBuilder {
         return builder;
     }
 
-    public ProjectDefinitionBuilder addClass( final Class clazz ) throws IOException {
+    public ProjectDataModelOracleBuilder addClass( final Class clazz ) throws IOException {
         return addClass( clazz,
                          false );
     }
 
-    public ProjectDefinitionBuilder addClass( final Class clazz,
-                                              final boolean isEvent ) throws IOException {
+    public ProjectDataModelOracleBuilder addClass( final Class clazz,
+                                                   final boolean isEvent ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
                                                           clazz,
                                                           isEvent );
@@ -56,16 +57,16 @@ public final class ProjectDefinitionBuilder {
         return this;
     }
 
-    public ProjectDefinitionBuilder addEnum( final String factType,
-                                             final String fieldName,
-                                             final String[] values ) {
+    public ProjectDataModelOracleBuilder addEnum( final String factType,
+                                                  final String fieldName,
+                                                  final String[] values ) {
         final String qualifiedFactField = factType + "#" + fieldName;
         factFieldEnums.put( qualifiedFactField,
                             values );
         return this;
     }
 
-    public ProjectDefinitionBuilder addEnum( final String enumDefinition ) {
+    public ProjectDataModelOracleBuilder addEnum( final String enumDefinition ) {
         parseEnumDefinition( enumDefinition );
         return this;
     }
@@ -83,15 +84,15 @@ public final class ProjectDefinitionBuilder {
         errors.addAll( enumLoader.getErrors() );
     }
 
-    public ProjectDefinition build() {
+    public ProjectDataModelOracle build() {
         loadFactTypes();
         loadEnums();
-        return projectDefinitions;
+        return oracle;
     }
 
     private void loadFactTypes() {
         for ( final FactBuilder factBuilder : this.factTypeBuilders ) {
-            factBuilder.build( projectDefinitions );
+            factBuilder.build( oracle );
         }
     }
 
@@ -102,7 +103,7 @@ public final class ProjectDefinitionBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        projectDefinitions.addEnumDefinitions( loadableEnums );
+        oracle.addEnumDefinitions( loadableEnums );
     }
 
 }

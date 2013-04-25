@@ -32,7 +32,7 @@ import org.drools.guvnor.models.commons.shared.rule.ConnectiveConstraint;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.kie.guvnor.guided.rule.client.editor.ConstraintValueEditor;
 import org.kie.guvnor.guided.rule.client.editor.OperatorSelection;
@@ -68,7 +68,7 @@ public class Connectives {
     /**
      * Returns the completions.
      */
-    public DataModelOracle getCompletions() {
+    public PackageDataModelOracle getCompletions() {
         return this.modeller.getSuggestionCompletions();
     }
 

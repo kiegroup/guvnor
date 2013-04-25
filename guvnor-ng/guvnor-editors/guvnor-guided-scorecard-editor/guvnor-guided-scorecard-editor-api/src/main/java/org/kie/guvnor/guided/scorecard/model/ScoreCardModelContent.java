@@ -18,19 +18,19 @@ package org.kie.guvnor.guided.scorecard.model;
 
 import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class ScoreCardModelContent {
 
     private ScoreCardModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     public ScoreCardModelContent() {
     }
 
     public ScoreCardModelContent( final ScoreCardModel model,
-                                  final DataModelOracle oracle ) {
+                                  final PackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
     }
@@ -39,7 +39,7 @@ public class ScoreCardModelContent {
         return this.model;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return this.oracle;
     }
 

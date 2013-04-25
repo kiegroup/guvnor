@@ -27,7 +27,7 @@ import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerTextBox;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
@@ -60,7 +60,7 @@ public class FieldDataConstraintEditor
     public FieldDataConstraintEditor(String factType,
                                      FieldData field,
                                      Fact givenFact,
-                                     DataModelOracle dmo,
+                                     PackageDataModelOracle dmo,
                                      Scenario scenario,
                                      ExecutionTrace executionTrace) {
         this.field = field;

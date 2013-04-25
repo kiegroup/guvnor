@@ -23,11 +23,11 @@ import org.drools.guvnor.models.commons.shared.rule.ExpressionGlobalVariable;
 import org.drools.guvnor.models.commons.shared.rule.ExpressionMethod;
 import org.drools.guvnor.models.commons.shared.rule.ExpressionPart;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public class ExpressionPartHelper {
 
-    public static ExpressionPart getExpressionPartForMethod( DataModelOracle sce,
+    public static ExpressionPart getExpressionPartForMethod( PackageDataModelOracle sce,
                                                              String factName,
                                                              String methodName ) {
         MethodInfo mi = sce.getMethodInfo( factName, methodName );
@@ -38,7 +38,7 @@ public class ExpressionPartHelper {
         return new ExpressionMethod( mi.getName(), mi.getReturnClassType(), mi.getGenericType() );
     }
 
-    public static ExpressionPart getExpressionPartForField( DataModelOracle sce,
+    public static ExpressionPart getExpressionPartForField( PackageDataModelOracle sce,
                                                             String factName,
                                                             String fieldName ) {
         String fieldClassName = sce.getFieldClassName( factName, fieldName );
@@ -51,7 +51,7 @@ public class ExpressionPartHelper {
         return new ExpressionField( fieldName, fieldClassName, fieldGenericType );
     }
 
-    public static ExpressionPart getExpressionPartForGlobalVariable( DataModelOracle sce,
+    public static ExpressionPart getExpressionPartForGlobalVariable( PackageDataModelOracle sce,
                                                                      String varName ) {
         String globalVarType = sce.getGlobalVariable( varName );
         return new ExpressionGlobalVariable( varName, globalVarType, globalVarType );

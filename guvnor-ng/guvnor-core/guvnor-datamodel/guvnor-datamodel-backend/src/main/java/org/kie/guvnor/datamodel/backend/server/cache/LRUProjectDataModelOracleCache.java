@@ -17,9 +17,9 @@ import org.kie.guvnor.builder.Builder;
 import org.kie.guvnor.builder.LRUBuilderCache;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -33,7 +33,7 @@ import org.uberfire.backend.vfs.Path;
  */
 @ApplicationScoped
 @Named("ProjectDataModelOracleCache")
-public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefinition> {
+public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataModelOracle> {
 
     private static final String ERROR_CLASS_NOT_FOUND = "Class not found";
 
@@ -70,25 +70,25 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDefini
         }
     }
 
-    //Check the ProjectDefinition for the Project has been created, otherwise create one!
-    public synchronized ProjectDefinition assertProjectDataModelOracle( final Path projectPath ) {
-        ProjectDefinition projectDefinition = getEntry( projectPath );
-        if ( projectDefinition == null ) {
-            projectDefinition = makeProjectDefinition( projectPath );
+    //Check the ProjectOracle for the Project has been created, otherwise create one!
+    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final Path projectPath ) {
+        ProjectDataModelOracle projectOracle = getEntry( projectPath );
+        if ( projectOracle == null ) {
+            projectOracle = makeProjectOracle( projectPath );
             setEntry( projectPath,
-                      projectDefinition );
+                      projectOracle );
         }
-        return projectDefinition;
+        return projectOracle;
     }
 
-    private ProjectDefinition makeProjectDefinition( final Path projectPath ) {
+    private ProjectDataModelOracle makeProjectOracle( final Path projectPath ) {
         //Get a Builder for the project
         final Builder builder = cache.assertBuilder( projectPath );
 
-        //Create the ProjectDefinition...
+        //Create the ProjectOracle...
         final BuildResults results = builder.build();
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
-        final ProjectDefinitionBuilder pdBuilder = ProjectDefinitionBuilder.newProjectDefinitionBuilder();
+        final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
         //Add all classes from the KieModule metaData
         for ( final String packageName : metaData.getPackages() ) {

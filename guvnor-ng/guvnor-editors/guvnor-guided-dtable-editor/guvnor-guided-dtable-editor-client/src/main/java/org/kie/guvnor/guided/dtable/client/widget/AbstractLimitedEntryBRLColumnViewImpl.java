@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
@@ -88,7 +88,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
     protected final RuleModel ruleModel;
 
     public AbstractLimitedEntryBRLColumnViewImpl( final Path path,
-                                                  final DataModelOracle oracle,
+                                                  final PackageDataModelOracle oracle,
                                                   final GuidedDecisionTable52 model,
                                                   final BRLColumn<T, C> column,
                                                   final EventBus eventBus,

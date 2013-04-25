@@ -31,7 +31,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionVariableColu
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.editor.RuleModellerConfiguration;
 import org.uberfire.backend.vfs.Path;
@@ -46,7 +46,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     private Presenter presenter;
 
     public BRLActionColumnViewImpl( final Path path,
-                                    final DataModelOracle oracle,
+                                    final PackageDataModelOracle oracle,
                                     final GuidedDecisionTable52 model,
                                     final BRLActionColumn column,
                                     final EventBus eventBus,

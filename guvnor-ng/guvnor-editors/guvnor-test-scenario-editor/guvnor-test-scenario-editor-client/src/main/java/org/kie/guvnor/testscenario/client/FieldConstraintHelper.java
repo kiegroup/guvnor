@@ -23,7 +23,7 @@ import org.drools.guvnor.models.testscenarios.shared.Field;
 import org.drools.guvnor.models.testscenarios.shared.FieldData;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class FieldConstraintHelper {
 
     private final Scenario scenario;
     private final ExecutionTrace executionTrace;
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
     private final String factType;
     private Field field;
     private final Fact fact;
@@ -43,7 +43,7 @@ public class FieldConstraintHelper {
 
     public FieldConstraintHelper(Scenario scenario,
                                  ExecutionTrace executionTrace,
-                                 DataModelOracle dmo,
+                                 PackageDataModelOracle dmo,
                                  String factType,
                                  Field field,
                                  Fact fact) {

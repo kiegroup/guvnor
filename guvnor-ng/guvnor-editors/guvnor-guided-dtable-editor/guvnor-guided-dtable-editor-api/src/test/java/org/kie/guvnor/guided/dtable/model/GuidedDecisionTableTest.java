@@ -16,6 +16,12 @@
 
 package org.kie.guvnor.guided.dtable.model;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
@@ -27,17 +33,11 @@ import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +46,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testValueLists() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder()
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .addEnum( "Driver",
                           "name",
                           new String[]{ "bob", "michael" } )
@@ -267,7 +267,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testNumeric() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -282,7 +282,7 @@ public class GuidedDecisionTableTest {
                 .end()
                 .build();
 
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                              dt );
@@ -372,7 +372,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testGetType() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -397,7 +397,7 @@ public class GuidedDecisionTableTest {
                 .end()
                 .build();
 
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                              dt );
@@ -494,7 +494,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testNoConstraintLists() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder()
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .addEnum( "Driver",
                           "name",
                           new String[]{ "bob", "michael" } )
@@ -531,7 +531,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testNoConstraints() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -546,7 +546,7 @@ public class GuidedDecisionTableTest {
                 .end()
                 .build();
 
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                              dt );
@@ -641,7 +641,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionPredicateChoices() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -656,7 +656,7 @@ public class GuidedDecisionTableTest {
                 .end()
                 .build();
 
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                              dt );
@@ -685,7 +685,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionFormulaChoices() {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -700,7 +700,7 @@ public class GuidedDecisionTableTest {
                 .end()
                 .build();
 
-        final DataModelOracle oracle = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
                                                                              dt );

@@ -34,7 +34,7 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
@@ -147,7 +147,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
         final RuleModel model = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         return new GuidedEditorContent( oracle,
                                         model );
     }

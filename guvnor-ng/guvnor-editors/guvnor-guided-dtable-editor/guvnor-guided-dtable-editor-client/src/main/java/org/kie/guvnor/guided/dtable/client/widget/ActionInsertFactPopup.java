@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.resources.images.ImageResources508;
@@ -71,7 +71,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private int defaultValueWidgetContainerIndex = -1;
 
     private final GuidedDecisionTable52 model;
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
     private final DTCellValueWidgetFactory factory;
     private final BRLRuleModel validator;
@@ -81,7 +81,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     private final boolean isReadOnly;
 
-    public ActionInsertFactPopup( final DataModelOracle oracle,
+    public ActionInsertFactPopup( final PackageDataModelOracle oracle,
                                   final GuidedDecisionTable52 model,
                                   final GenericColumnCommand refreshGrid,
                                   final ActionInsertFactCol52 col,

@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class GivenPanel
                       int executionTraceLine,
                       FixturesMap given,
                       final Scenario scenario,
-                      DataModelOracle dmo,
+                      PackageDataModelOracle dmo,
                       final ScenarioParentWidget parent) {
 
         for (Map.Entry<String, FixtureList> e : given.entrySet()) {

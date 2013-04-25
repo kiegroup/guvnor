@@ -25,17 +25,17 @@ import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * Utilities for GuidedDecisionTable
  */
 public class GuidedDecisionTableUtils {
 
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTable52 model;
 
-    public GuidedDecisionTableUtils( final DataModelOracle oracle,
+    public GuidedDecisionTableUtils( final PackageDataModelOracle oracle,
                                      final GuidedDecisionTable52 model ) {
         PortablePreconditions.checkNotNull( "oracle",
                                             oracle );

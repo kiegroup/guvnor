@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
@@ -65,7 +65,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
      * @param eventBus An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory( final GuidedDecisionTable52 model,
-                                     final DataModelOracle oracle,
+                                     final PackageDataModelOracle oracle,
                                      final DecisionTableDropDownManager dropDownManager,
                                      final boolean isReadOnly,
                                      final EventBus eventBus ) {

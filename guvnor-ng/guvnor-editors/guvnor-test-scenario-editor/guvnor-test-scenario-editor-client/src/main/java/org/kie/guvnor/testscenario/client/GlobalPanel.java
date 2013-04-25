@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public class GlobalPanel extends VerticalPanel {
     public GlobalPanel(Map<String, FixtureList> globals,
                        Scenario scenario,
                        ExecutionTrace previousEx,
-                       DataModelOracle dmo,
+                       PackageDataModelOracle dmo,
                        ScenarioParentWidget scenarioWidget) {
         for (Map.Entry<String, FixtureList> e : globals.entrySet()) {
             add(new GlobalFactWidget(

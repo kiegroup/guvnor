@@ -2,7 +2,7 @@ package org.kie.guvnor.configresource.client.widget.bound;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public interface ImportsWidgetView
         extends IsWidget {
@@ -13,7 +13,7 @@ public interface ImportsWidgetView
 
         void onRemoveImport();
 
-        void setContent( final DataModelOracle oracle,
+        void setContent( final PackageDataModelOracle oracle,
                          final Imports resourceImports,
                          final boolean isReadOnly );
 

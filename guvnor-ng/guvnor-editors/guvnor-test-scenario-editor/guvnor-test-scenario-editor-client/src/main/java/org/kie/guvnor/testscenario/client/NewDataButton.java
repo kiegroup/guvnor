@@ -26,7 +26,7 @@ import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.RetractFact;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
@@ -48,7 +48,7 @@ public class NewDataButton extends TestScenarioButton {
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioParentWidget scenarioWidget,
-                         DataModelOracle dmo) {
+                         PackageDataModelOracle dmo) {
         super( ItemAltedImages.INSTANCE.NewItem(),
                 TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
                 previousEx,

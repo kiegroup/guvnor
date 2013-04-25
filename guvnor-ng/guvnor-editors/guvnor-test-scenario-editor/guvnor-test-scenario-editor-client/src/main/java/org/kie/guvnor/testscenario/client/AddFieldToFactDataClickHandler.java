@@ -2,7 +2,7 @@ package org.kie.guvnor.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.guvnor.models.testscenarios.shared.Fixture;
 import org.drools.guvnor.models.testscenarios.shared.FixtureList;
@@ -14,7 +14,7 @@ class AddFieldToFactDataClickHandler
     private final FixtureList definitionList;
 
     AddFieldToFactDataClickHandler(FixtureList definitionList,
-                                   DataModelOracle dmo,
+                                   PackageDataModelOracle dmo,
                                    ScenarioParentWidget parent) {
         super(dmo, parent);
         this.definitionList = definitionList;

@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -15,7 +15,7 @@ public interface GuidedRuleTemplateEditorView extends HasBusyIndicator,
 
     void setContent( final Path path,
                      final TemplateModel model,
-                     final DataModelOracle dataModel,
+                     final PackageDataModelOracle dataModel,
                      final EventBus eventBus,
                      final boolean isReadOnly );
 

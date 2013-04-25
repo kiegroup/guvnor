@@ -27,10 +27,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
@@ -67,7 +67,7 @@ import java.util.Set;
  */
 public class DTCellValueWidgetFactory {
 
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTable52 dtable;
     private final GuidedDecisionTableUtils utils;
     private final LimitedEntryDropDownManager dropDownManager;
@@ -78,7 +78,7 @@ public class DTCellValueWidgetFactory {
     private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_FORMAT );
 
     public static DTCellValueWidgetFactory getInstance( GuidedDecisionTable52 dtable,
-                                                        DataModelOracle oracle,
+                                                        PackageDataModelOracle oracle,
                                                         boolean isReadOnly,
                                                         boolean allowEmptyValues ) {
         switch ( dtable.getTableFormat() ) {
@@ -100,7 +100,7 @@ public class DTCellValueWidgetFactory {
     }
 
     private DTCellValueWidgetFactory( GuidedDecisionTable52 dtable,
-                                      DataModelOracle oracle,
+                                      PackageDataModelOracle oracle,
                                       LimitedEntryDropDownManager dropDownManager,
                                       boolean isReadOnly,
                                       boolean allowEmptyValues ) {

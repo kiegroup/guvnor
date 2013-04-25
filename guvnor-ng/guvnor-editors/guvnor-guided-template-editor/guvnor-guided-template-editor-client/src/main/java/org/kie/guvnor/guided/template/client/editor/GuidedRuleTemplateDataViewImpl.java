@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 
 /**
@@ -41,7 +41,7 @@ public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedR
 
     @Override
     public void setContent( final TemplateModel model,
-                            final DataModelOracle dataModel,
+                            final PackageDataModelOracle dataModel,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
 

@@ -43,7 +43,7 @@ import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.FreeFormLine;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.InfoPopup;
 
@@ -55,7 +55,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     public RuleModellerActionSelectorPopup( RuleModel model,
                                             RuleModeller ruleModeller,
                                             Integer position,
-                                            DataModelOracle dataModel ) {
+                                            PackageDataModelOracle dataModel ) {
         super( model, ruleModeller, position, dataModel );
     }
 

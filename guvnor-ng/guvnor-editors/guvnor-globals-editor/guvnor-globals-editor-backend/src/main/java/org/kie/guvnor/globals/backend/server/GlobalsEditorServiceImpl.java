@@ -28,7 +28,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.globals.backend.server.util.GlobalsPersistence;
 import org.kie.guvnor.globals.model.GlobalsEditorContent;
@@ -130,7 +130,7 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     public GlobalsEditorContent loadContent( final Path path ) {
         //De-serialize model
         final GlobalsModel model = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
 
         return new GlobalsEditorContent( model,
                                          oracle );

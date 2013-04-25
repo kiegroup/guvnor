@@ -1,6 +1,6 @@
 package org.kie.guvnor.testscenario.client;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public class FieldNameWidget implements FieldNameWidgetView.Presenter {
 
@@ -8,7 +8,7 @@ public class FieldNameWidget implements FieldNameWidgetView.Presenter {
 
 
     public FieldNameWidget(String fieldName,
-                           DataModelOracle dmo,
+                           PackageDataModelOracle dmo,
                            FieldNameWidgetView view) {
         this.view = view;
         this.view.setPresenter(this);

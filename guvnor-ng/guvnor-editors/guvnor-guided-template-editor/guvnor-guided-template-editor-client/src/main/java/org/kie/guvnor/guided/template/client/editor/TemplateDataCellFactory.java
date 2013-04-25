@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
@@ -32,7 +32,7 @@ public class TemplateDataCellFactory
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public TemplateDataCellFactory( DataModelOracle oracle,
+    public TemplateDataCellFactory( PackageDataModelOracle oracle,
                                     TemplateDropDownManager dropDownManager,
                                     boolean isReadOnly,
                                     EventBus eventBus ) {

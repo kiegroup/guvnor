@@ -32,7 +32,7 @@ import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.factmodel.client.type.FactModelResourceType;
 import org.kie.guvnor.factmodel.model.FactMetaModel;
 import org.kie.guvnor.factmodel.model.FactModelContent;
@@ -103,7 +103,7 @@ public class FactModelsEditorPresenter {
     private boolean isReadOnly;
 
     private FactModels model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
     private List<FactMetaModel> superTypes;
 
     @OnStart

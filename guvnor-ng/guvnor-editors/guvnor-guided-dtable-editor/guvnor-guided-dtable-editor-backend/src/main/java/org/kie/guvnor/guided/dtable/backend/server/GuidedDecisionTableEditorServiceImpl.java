@@ -32,7 +32,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.backend.SourceServices;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -135,7 +135,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         final GuidedDecisionTable52 model = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
         return new GuidedDecisionTableEditorContent( oracle,
                                                      model,

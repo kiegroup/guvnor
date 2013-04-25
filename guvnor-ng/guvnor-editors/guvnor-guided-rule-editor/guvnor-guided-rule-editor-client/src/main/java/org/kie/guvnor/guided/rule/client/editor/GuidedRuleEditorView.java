@@ -19,7 +19,7 @@ package org.kie.guvnor.guided.rule.client.editor;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 public interface GuidedRuleEditorView extends HasBusyIndicator,
@@ -27,7 +27,7 @@ public interface GuidedRuleEditorView extends HasBusyIndicator,
 
     void setContent( final Path path,
                      final RuleModel model,
-                     final DataModelOracle dataModel,
+                     final PackageDataModelOracle dataModel,
                      final boolean isReadOnly,
                      final boolean isDSLEnabled );
 

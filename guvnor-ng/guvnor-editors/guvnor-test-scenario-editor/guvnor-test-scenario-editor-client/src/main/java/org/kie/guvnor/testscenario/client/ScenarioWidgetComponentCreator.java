@@ -22,7 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.models.testscenarios.shared.*;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -33,7 +33,7 @@ import java.util.List;
 public class ScenarioWidgetComponentCreator {
 
     private final ScenarioParentWidget scenarioWidget;
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
 
     private final String[] availableRules;
     private HandlerRegistration availableRulesHandlerRegistration;
@@ -44,7 +44,7 @@ public class ScenarioWidgetComponentCreator {
 
     protected ScenarioWidgetComponentCreator(String packageName,
                                              ScenarioParentWidget scenarioWidget,
-                                             DataModelOracle dmo,
+                                             PackageDataModelOracle dmo,
                                              String[] availableRules) {
         this.scenarioWidget = scenarioWidget;
         this.packageName = packageName;

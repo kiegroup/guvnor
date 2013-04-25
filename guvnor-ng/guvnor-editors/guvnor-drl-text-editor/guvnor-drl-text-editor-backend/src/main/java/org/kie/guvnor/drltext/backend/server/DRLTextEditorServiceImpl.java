@@ -30,7 +30,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.commons.service.validation.model.BuilderResult;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.drltext.model.DrlModelContent;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
@@ -127,7 +127,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     @Override
     public DrlModelContent loadContent( final Path path ) {
         final String drl = load( path );
-        final DataModelOracle oracle = dataModelService.getDataModel( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
 
         return new DrlModelContent( drl,
                                     oracle );

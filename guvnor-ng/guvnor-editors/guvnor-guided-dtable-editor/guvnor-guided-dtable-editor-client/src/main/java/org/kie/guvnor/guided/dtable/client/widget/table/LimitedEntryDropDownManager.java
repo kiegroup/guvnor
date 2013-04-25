@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.DropDownDataValueMapProvider;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -40,12 +40,12 @@ public class LimitedEntryDropDownManager
         implements
         DropDownDataValueMapProvider<LimitedEntryDropDownManager.Context> {
 
-    protected final DataModelOracle oracle;
+    protected final PackageDataModelOracle oracle;
     protected final GuidedDecisionTable52 model;
     protected final DTCellValueUtilities utilities;
 
     public LimitedEntryDropDownManager( final GuidedDecisionTable52 model,
-                                        final DataModelOracle oracle ) {
+                                        final PackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

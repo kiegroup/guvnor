@@ -16,7 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import org.kie.guvnor.datamodel.model.DateConverter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionWorkItemCol52;
@@ -52,11 +52,11 @@ public class DTCellValueUtilities {
     }
 
     private final GuidedDecisionTable52 model;
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
 
     public DTCellValueUtilities( final GuidedDecisionTable52 model,
-                                 final DataModelOracle oracle ) {
+                                 final PackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
         this.utils = new GuidedDecisionTableUtils( oracle,

@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class DefaultValueDropDownManager extends LimitedEntryDropDownManager {
 
     public DefaultValueDropDownManager( final GuidedDecisionTable52 model,
-                                        final DataModelOracle oracle ) {
+                                        final PackageDataModelOracle oracle ) {
         super( model,
                oracle );
     }

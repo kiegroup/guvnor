@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.dtable.client.wizard.pages;
 
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -50,7 +50,7 @@ public class RowExpander {
 
     private final GuidedDecisionTable52 model;
     private final GuidedDecisionTableUtils modelUtils;
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
 
     private static final List<DTCellValue52> EMPTY_VALUE = new ArrayList<DTCellValue52>();
 
@@ -64,7 +64,7 @@ public class RowExpander {
      * @param oracle
      */
     public RowExpander( final GuidedDecisionTable52 model,
-                        final DataModelOracle oracle ) {
+                        final PackageDataModelOracle oracle ) {
         this.columns = new ArrayList<ColumnValues>();
         this.model = model;
         this.oracle = oracle;
@@ -402,11 +402,11 @@ public class RowExpander {
     static class ColumnDynamicValues extends ColumnValues {
 
         private final LimitedEntryDropDownManager.Context context;
-        private final DataModelOracle oracle;
+        private final PackageDataModelOracle oracle;
         private boolean initialiseValueList = true;
 
         ColumnDynamicValues( final List<ColumnValues> columns,
-                             final DataModelOracle oracle,
+                             final PackageDataModelOracle oracle,
                              final LimitedEntryDropDownManager.Context context,
                              final DTCellValue52 defaultValue ) {
             super( columns,

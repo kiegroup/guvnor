@@ -21,19 +21,19 @@ import java.util.Set;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class GuidedDecisionTableEditorContent {
 
-    private DataModelOracle dataModel;
+    private PackageDataModelOracle dataModel;
     private GuidedDecisionTable52 ruleModel;
     private Set<PortableWorkDefinition> workItemDefinitions;
 
     public GuidedDecisionTableEditorContent() {
     }
 
-    public GuidedDecisionTableEditorContent( final DataModelOracle dataModel,
+    public GuidedDecisionTableEditorContent( final PackageDataModelOracle dataModel,
                                              final GuidedDecisionTable52 ruleModel,
                                              final Set<PortableWorkDefinition> workItemDefinitions ) {
         this.dataModel = dataModel;
@@ -41,7 +41,7 @@ public class GuidedDecisionTableEditorContent {
         this.workItemDefinitions = workItemDefinitions;
     }
 
-    public DataModelOracle getDataModel() {
+    public PackageDataModelOracle getDataModel() {
         return dataModel;
     }
 

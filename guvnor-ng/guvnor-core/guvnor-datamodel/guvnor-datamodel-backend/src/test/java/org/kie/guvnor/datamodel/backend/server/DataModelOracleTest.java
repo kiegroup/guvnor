@@ -1,32 +1,32 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.io.IOException;
+
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestDataTypes;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestDelegatedClass;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestSubClass;
 import org.kie.guvnor.datamodel.backend.server.testclasses.TestSuperClass;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
- * Tests for the ProjectDefinition
+ * Tests for the ProjectDataModelOracle
  */
 public class DataModelOracleTest {
 
     @Test
     public void testDataTypes() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestDataTypes.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );
@@ -100,11 +100,11 @@ public class DataModelOracleTest {
 
     @Test
     public void testSuperClass() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestSuperClass.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );
@@ -124,11 +124,11 @@ public class DataModelOracleTest {
 
     @Test
     public void testSubClass() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestSubClass.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );
@@ -151,11 +151,11 @@ public class DataModelOracleTest {
 
     @Test
     public void testDelegatedClass() throws IOException {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( TestDelegatedClass.class )
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses" ).setProjectOracle( pd ).build();
 
         assertEquals( 1,
                       dmo.getFactTypes().length );

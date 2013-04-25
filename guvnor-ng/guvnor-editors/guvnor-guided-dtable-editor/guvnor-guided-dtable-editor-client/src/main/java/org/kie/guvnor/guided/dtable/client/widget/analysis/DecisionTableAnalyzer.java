@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.guided.dtable.client.widget.analysis;
 
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.kie.guvnor.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
@@ -58,9 +58,9 @@ import java.util.List;
 
 public class DecisionTableAnalyzer {
 
-    private final DataModelOracle oracle;
+    private final PackageDataModelOracle oracle;
 
-    public DecisionTableAnalyzer( final DataModelOracle oracle ) {
+    public DecisionTableAnalyzer( final PackageDataModelOracle oracle ) {
         this.oracle = oracle;
     }
 

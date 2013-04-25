@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.dtable.client.widget.GuidedDecisionTableWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
@@ -50,7 +50,7 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
 
     @Override
     public void setContent( final Path path,
-                            final DataModelOracle dataModel,
+                            final PackageDataModelOracle dataModel,
                             final GuidedDecisionTable52 model,
                             final Set<PortableWorkDefinition> workItemDefinitions,
                             final boolean isReadOnly ) {

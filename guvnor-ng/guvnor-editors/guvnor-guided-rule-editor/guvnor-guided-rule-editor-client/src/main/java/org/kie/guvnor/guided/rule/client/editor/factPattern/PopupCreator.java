@@ -36,7 +36,7 @@ import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
 import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.BindingTextBox;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
@@ -48,7 +48,7 @@ import org.uberfire.client.common.SmallLabel;
 public class PopupCreator {
 
     private FactPattern  pattern;
-    private DataModelOracle completions;
+    private PackageDataModelOracle completions;
     private RuleModeller modeller;
     private boolean      bindable;
 
@@ -69,14 +69,14 @@ public class PopupCreator {
     /**
      * Returns the completions.
      */
-    public DataModelOracle getCompletions() {
+    public PackageDataModelOracle getCompletions() {
         return completions;
     }
 
     /**
      * @param completions the completions to set
      */
-    public void setCompletions( DataModelOracle completions ) {
+    public void setCompletions( PackageDataModelOracle completions ) {
         this.completions = completions;
     }
 

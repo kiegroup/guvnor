@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.gwt.cell.client.Cell.Context;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
@@ -38,13 +38,13 @@ public class TemplateDropDownManager
         implements
         CellTableDropDownDataValueMapProvider {
 
-    private final DataModelOracle sce;
+    private final PackageDataModelOracle sce;
     private final TemplateModel model;
     private final TemplateDataCellValueFactory cellValueFactory;
     private DynamicData data;
 
     public TemplateDropDownManager( final TemplateModel model,
-                                    final DataModelOracle sce ) {
+                                    final PackageDataModelOracle sce ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "data cannot be null" );
         }
@@ -59,7 +59,7 @@ public class TemplateDropDownManager
 
     public TemplateDropDownManager( final TemplateModel model,
                                     final DynamicData data,
-                                    final DataModelOracle sce ) {
+                                    final PackageDataModelOracle sce ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

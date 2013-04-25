@@ -17,12 +17,12 @@ import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileDiscoveryService;
 import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.cache.LRUCache;
-import org.kie.guvnor.services.backend.file.FileDiscoveryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -31,7 +31,7 @@ import org.uberfire.backend.vfs.Path;
  */
 @ApplicationScoped
 @Named("PackageDataModelOracleCache")
-public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
+public class LRUDataModelOracleCache extends LRUCache<Path, PackageDataModelOracle> {
 
     private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_ENUMERATIONS = new FileExtensionFilter( ".enumeration" );
 
@@ -96,9 +96,9 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    public synchronized DataModelOracle assertPackageDataModelOracle( final Path projectPath,
-                                                                      final Path packagePath ) {
-        DataModelOracle oracle = getEntry( packagePath );
+    public synchronized PackageDataModelOracle assertPackageDataModelOracle( final Path projectPath,
+                                                                             final Path packagePath ) {
+        PackageDataModelOracle oracle = getEntry( packagePath );
         if ( oracle == null ) {
             oracle = makePackageDataModelOracle( projectPath,
                                                  packagePath );
@@ -108,12 +108,12 @@ public class LRUDataModelOracleCache extends LRUCache<Path, DataModelOracle> {
         return oracle;
     }
 
-    private DataModelOracle makePackageDataModelOracle( final Path projectPath,
-                                                        final Path packagePath ) {
+    private PackageDataModelOracle makePackageDataModelOracle( final Path projectPath,
+                                                               final Path packagePath ) {
         final String packageName = projectService.resolvePackageName( packagePath );
-        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newDataModelBuilder( packageName );
-        final ProjectDefinition projectDefinition = cacheProjects.assertProjectDataModelOracle( projectPath );
-        dmoBuilder.setProjectDefinition( projectDefinition );
+        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( packageName );
+        final ProjectDataModelOracle projectOracle = cacheProjects.assertProjectDataModelOracle( projectPath );
+        dmoBuilder.setProjectOracle( projectOracle );
 
         //Add Guvnor enumerations
         loadEnumsForPackage( dmoBuilder,

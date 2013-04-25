@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
@@ -43,7 +43,7 @@ public class GuidedRuleEditorViewImpl
     @Override
     public void setContent( final Path path,
                             final RuleModel model,
-                            final DataModelOracle dataModel,
+                            final PackageDataModelOracle dataModel,
                             final boolean isReadOnly,
                             final boolean isDSLEnabled ) {
         modeller = new RuleModeller( path,

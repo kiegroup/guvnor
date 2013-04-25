@@ -1,24 +1,24 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDefinitionBuilder;
+import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.datamodel.oracle.ProjectDefinition;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
- * Tests for the ProjectDefinition completions
+ * Tests for the ProjectDataModelOracle completions
  */
 public class DataModelOracleCompletionsTest {
 
     @Test
     public void testFactsAndFields() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -33,7 +33,7 @@ public class DataModelOracleCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       dmo.getFieldType( "Person",
@@ -45,7 +45,7 @@ public class DataModelOracleCompletionsTest {
 
     @Test
     public void testFactCompletions() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -77,7 +77,7 @@ public class DataModelOracleCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] types = dmo.getFactTypes();
         assertEquals( 2,
@@ -90,7 +90,7 @@ public class DataModelOracleCompletionsTest {
 
     @Test
     public void testFactFieldCompletions() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -110,7 +110,7 @@ public class DataModelOracleCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] personFields = dmo.getFieldCompletions( "Person" );
         assertEquals( 4,
@@ -128,7 +128,7 @@ public class DataModelOracleCompletionsTest {
 
     @Test
     public void testFactFieldOperatorCompletions() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -148,7 +148,7 @@ public class DataModelOracleCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] personThisOperators = dmo.getOperatorCompletions( "Person",
                                                                    "this" );
@@ -241,7 +241,7 @@ public class DataModelOracleCompletionsTest {
 
     @Test
     public void testFactFieldConnectiveOperatorCompletions() {
-        final ProjectDefinition pd = ProjectDefinitionBuilder.newProjectDefinitionBuilder()
+        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Person" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -261,7 +261,7 @@ public class DataModelOracleCompletionsTest {
                 .end()
                 .build();
 
-        final DataModelOracle dmo = PackageDataModelOracleBuilder.newDataModelBuilder().setProjectDefinition( pd ).build();
+        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
 
         String[] personThisConnectiveOperators = dmo.getConnectiveOperatorCompletions( "Person",
                                                                                        "this" );

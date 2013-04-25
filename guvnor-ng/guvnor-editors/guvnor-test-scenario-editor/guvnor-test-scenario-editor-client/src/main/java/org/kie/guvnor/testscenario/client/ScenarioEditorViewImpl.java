@@ -40,7 +40,7 @@ import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCa
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
@@ -105,7 +105,7 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void initImportsTab( DataModelOracle dmo,
+    public void initImportsTab( PackageDataModelOracle dmo,
                                 Imports imports,
                                 boolean readOnly ) {
         importsWidget.setContent(
@@ -284,7 +284,7 @@ public class ScenarioEditorViewImpl
     @Override
     public void setScenario( String packageName,
                              Scenario scenario,
-                             DataModelOracle dmo ) {
+                             PackageDataModelOracle dmo ) {
         String[] availableRules = { }; // TODO: Load available rules -Rikkola-
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( packageName, this, dmo, availableRules );
         scenarioWidgetComponentCreator.setScenario( scenario );

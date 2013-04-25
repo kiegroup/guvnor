@@ -30,7 +30,7 @@ import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.guvnor.drltext.client.type.DRLResourceType;
 import org.kie.guvnor.drltext.model.DrlModelContent;
@@ -155,7 +155,7 @@ public class DRLEditorPresenter {
             @Override
             public void callback( final DrlModelContent content ) {
                 final String drl = content.getDrl();
-                final DataModelOracle oracle = content.getDataModel();
+                final PackageDataModelOracle oracle = content.getDataModel();
                 if ( drl == null || drl.isEmpty() ) {
                     view.setContent( null,
                                      oracle );

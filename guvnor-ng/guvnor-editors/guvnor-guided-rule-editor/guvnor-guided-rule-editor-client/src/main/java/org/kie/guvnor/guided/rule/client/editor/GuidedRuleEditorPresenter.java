@@ -34,7 +34,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.kie.guvnor.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.kie.guvnor.guided.rule.model.GuidedEditorContent;
@@ -108,7 +108,7 @@ public class GuidedRuleEditorPresenter {
     private boolean isDSLEnabled;
 
     private RuleModel model;
-    private DataModelOracle oracle;
+    private PackageDataModelOracle oracle;
 
     @OnStart
     public void onStart( final Path path,

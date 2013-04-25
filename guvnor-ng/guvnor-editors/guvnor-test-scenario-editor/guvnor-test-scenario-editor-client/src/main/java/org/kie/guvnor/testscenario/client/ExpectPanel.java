@@ -25,7 +25,7 @@ import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
@@ -40,7 +40,7 @@ public class ExpectPanel extends HorizontalPanel {
                        final Scenario scenario,
                        final ScenarioParentWidget parent,
                        ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
-                       DataModelOracle dmo) {
+                       PackageDataModelOracle dmo) {
         this.scenario = scenario;
         this.parent = parent;
         this.previousEx = previousEx;

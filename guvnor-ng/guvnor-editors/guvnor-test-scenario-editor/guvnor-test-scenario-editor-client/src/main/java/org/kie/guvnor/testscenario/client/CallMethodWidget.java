@@ -26,7 +26,7 @@ import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.guvnor.models.testscenarios.shared.FactData;
@@ -51,14 +51,14 @@ public class CallMethodWidget extends DirtyableComposite {
     private String[]                         fieldCompletionValues;
     private String                           variableClass;
 
-    private final DataModelOracle dmo;
+    private final PackageDataModelOracle dmo;
 
     public CallMethodWidget(String factName,
                             ScenarioParentWidget parent,
                             Scenario scenario,
                             CallMethod mCall,
                             ExecutionTrace executionTrace,
-                            DataModelOracle dmo) {
+                            PackageDataModelOracle dmo) {
         super();
         this.factName = factName;
         this.parent = parent;

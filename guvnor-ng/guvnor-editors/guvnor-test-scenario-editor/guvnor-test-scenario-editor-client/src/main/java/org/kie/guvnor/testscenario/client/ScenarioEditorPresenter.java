@@ -29,7 +29,7 @@ import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
 import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.model.TestScenarioModelContent;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
@@ -48,7 +48,7 @@ public class ScenarioEditorPresenter {
     private final FileMenuBuilder menuBuilder;
     private final ScenarioEditorView view;
     private Menus menus;
-    protected DataModelOracle dmo;
+    protected PackageDataModelOracle dmo;
     private final Caller<ScenarioTestEditorService> service;
     private boolean isReadOnly;
 

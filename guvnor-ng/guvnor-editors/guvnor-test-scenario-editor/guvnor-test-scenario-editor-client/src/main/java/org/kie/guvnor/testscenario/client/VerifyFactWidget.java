@@ -37,7 +37,7 @@ import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
 import org.drools.guvnor.models.testscenarios.shared.VerifyField;
 import org.kie.guvnor.commons.ui.client.resources.CommonAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
@@ -51,13 +51,13 @@ public class VerifyFactWidget extends Composite {
     private Grid                       outer;
     private boolean                    showResults;
     private String                     type;
-    private DataModelOracle dmo;
+    private PackageDataModelOracle dmo;
     private Scenario scenario;
     private ExecutionTrace executionTrace;
 
     public VerifyFactWidget(final VerifyFact vf,
                             final Scenario sc,
-                            final DataModelOracle dmo,
+                            final PackageDataModelOracle dmo,
                             ExecutionTrace executionTrace,
                             boolean showResults) {
         outer = new Grid( 2,

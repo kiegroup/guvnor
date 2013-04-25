@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
@@ -43,7 +43,7 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
     @Override
     public void setContent( final Path path,
                             final TemplateModel model,
-                            final DataModelOracle dataModel,
+                            final PackageDataModelOracle dataModel,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
         this.modeller = new RuleModeller( path,

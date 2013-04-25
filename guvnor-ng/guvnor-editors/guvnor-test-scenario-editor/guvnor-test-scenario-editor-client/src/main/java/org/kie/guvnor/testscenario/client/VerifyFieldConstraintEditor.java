@@ -42,7 +42,7 @@ import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.DatePickerTextBox;
 import org.kie.guvnor.commons.ui.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.widget.EnumDropDown;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
@@ -64,14 +64,14 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     private VerifyField field;
     private final Panel                panel;
     private Scenario scenario;
-    private DataModelOracle dmo;
+    private PackageDataModelOracle dmo;
     private ValueChanged               callback;
     private ExecutionTrace executionTrace;
 
     public VerifyFieldConstraintEditor(String factType,
                                        ValueChanged callback,
                                        VerifyField field,
-                                       DataModelOracle dmo,
+                                       PackageDataModelOracle dmo,
                                        Scenario scenario,
                                        ExecutionTrace executionTrace) {
         this.field = field;

@@ -19,7 +19,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.kie.guvnor.services.config.ApplicationPreferences;
 import org.kie.guvnor.commons.ui.client.tables.CheckboxCellImpl;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigIntegerEditCell;
@@ -43,7 +43,7 @@ public abstract class AbstractCellFactory<T> {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    protected final DataModelOracle oracle;
+    protected final PackageDataModelOracle oracle;
 
     protected final CellTableDropDownDataValueMapProvider dropDownManager;
 
@@ -58,7 +58,7 @@ public abstract class AbstractCellFactory<T> {
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public AbstractCellFactory( final DataModelOracle oracle,
+    public AbstractCellFactory( final PackageDataModelOracle oracle,
                                 final CellTableDropDownDataValueMapProvider dropDownManager,
                                 final boolean isReadOnly,
                                 final EventBus eventBus ) {

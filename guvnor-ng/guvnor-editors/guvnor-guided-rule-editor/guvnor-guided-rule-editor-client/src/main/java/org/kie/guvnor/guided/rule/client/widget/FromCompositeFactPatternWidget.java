@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.commons.shared.rule.FactPattern;
 import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
-import org.kie.guvnor.datamodel.oracle.DataModelOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.guided.rule.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.rule.client.resources.images.GuidedRuleEditorImages508;
@@ -190,7 +190,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
      * Pops up the fact selector.
      */
     protected void showFactTypeSelector( final Widget w ) {
-        DataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
