@@ -7,6 +7,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -122,6 +123,38 @@ public class DataModelServiceTests {
                       oracle.getFieldCompletions( "p2.Bean2" )[ 0 ] );
         assertEquals( "field1",
                       oracle.getFieldCompletions( "p2.Bean2" )[ 1 ] );
+    }
+
+    @Test
+    @Ignore("See https://issues.jboss.org/browse/DROOLS-110")
+    public void testProjectDataModelOracleJavaDefaultPackage() throws Exception {
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
+        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
+                                                                                               DataModelService.class,
+                                                                                               cc );
+
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest2/src/main/java" );
+        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final Path packagePath = paths.convert( nioPackagePath );
+
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
+
+        assertNotNull( oracle );
+
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( "Bean1",
+                      oracle.getFactTypes()[ 0 ] );
+
+        assertEquals( 3,
+                      oracle.getFieldCompletions( "Bean1" ).length );
+        assertEquals( "this",
+                      oracle.getFieldCompletions( "Bean1" )[ 0 ] );
+        assertEquals( "field1",
+                      oracle.getFieldCompletions( "Bean1" )[ 1 ] );
+        assertEquals( "field2",
+                      oracle.getFieldCompletions( "Bean1" )[ 2 ] );
     }
 
 }
