@@ -168,11 +168,11 @@ public final class PackageDataModelOracleBuilder {
         //Copy Project DMO into Package DMO
         final ProjectDataModelOracleImpl pd = (ProjectDataModelOracleImpl) projectOracle;
         packageOracle.addFactsAndFields( pd.getModelFields() );
-        packageOracle.addFieldParametersType( pd.getFieldParametersType() );
-        packageOracle.addEventType( pd.getEventTypes() );
-        packageOracle.addEnumDefinitions( pd.getEnumLists() );
-        packageOracle.addMethodInformation( pd.getMethodInformation() );
-        packageOracle.addCollectionType( pd.getCollectionTypes() );
+        packageOracle.addFieldParametersType( pd.getProjectFieldParametersType() );
+        packageOracle.addEventType( pd.getProjectEventTypes() );
+        packageOracle.addEnumDefinitions( pd.getProjectJavaEnumLists() );
+        packageOracle.addMethodInformation( pd.getProjectMethodInformation() );
+        packageOracle.addCollectionType( pd.getProjectCollectionTypes() );
 
         //Add Package DMO specifics
         loadEnums();
@@ -199,7 +199,7 @@ public final class PackageDataModelOracleBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        packageOracle.addPackageEnums( loadableEnums );
+        packageOracle.addPackageGuvnorEnums( loadableEnums );
     }
 
     private void loadDsls() {

@@ -26,26 +26,26 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     protected String projectName;
 
     //Fact Types and their corresponding fields
-    protected Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>();
+    protected Map<String, ModelField[]> projectModelFields = new HashMap<String, ModelField[]>();
 
     //Map of the field that contains the parametrized type of a collection
     //for example given "List<String> name", key = "name" value = "String"
-    protected Map<String, String> fieldParametersType = new HashMap<String, String>();
+    protected Map<String, String> projectFieldParametersType = new HashMap<String, String>();
 
     //FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
-    protected Map<String, Boolean> eventTypes = new HashMap<String, Boolean>();
+    protected Map<String, Boolean> projectEventTypes = new HashMap<String, Boolean>();
 
     // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
-    protected Map<String, String[]> enumLists = new HashMap<String, String[]>();
+    protected Map<String, String[]> projectJavaEnumLists = new HashMap<String, String[]>();
+
+    //Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
+    protected Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<String, List<MethodInfo>>();
+
+    // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    protected Map<String, Boolean> projectCollectionTypes = new HashMap<String, Boolean>();
 
     // This is used to calculate what fields an enum list may depend on.
     private transient Map<String, Object> enumLookupFields;
-
-    //Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
-    protected Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
-
-    // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
-    protected Map<String, Boolean> collectionTypes = new HashMap<String, Boolean>();
 
     //Public constructor is needed for Errai Marshaller :(
     public ProjectDataModelOracleImpl() {
@@ -61,7 +61,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
      */
     @Override
     public String[] getFactTypes() {
-        final String[] types = modelFields.keySet().toArray( new String[ modelFields.size() ] );
+        final String[] types = projectModelFields.keySet().toArray( new String[ projectModelFields.size() ] );
         Arrays.sort( types );
         return types;
     }
@@ -76,10 +76,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         if ( type == null ) {
             return null;
         }
-        if ( modelFields.containsKey( type ) ) {
+        if ( projectModelFields.containsKey( type ) ) {
             return type;
         }
-        for ( Map.Entry<String, ModelField[]> entry : modelFields.entrySet() ) {
+        for ( Map.Entry<String, ModelField[]> entry : projectModelFields.entrySet() ) {
             for ( ModelField mf : entry.getValue() ) {
                 if ( DataType.TYPE_THIS.equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
                     return entry.getKey();
@@ -96,10 +96,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
      */
     @Override
     public boolean isFactTypeAnEvent( final String factType ) {
-        if ( !eventTypes.containsKey( factType ) ) {
+        if ( !projectEventTypes.containsKey( factType ) ) {
             return false;
         }
-        return eventTypes.get( factType );
+        return projectEventTypes.get( factType );
     }
 
     /**
@@ -109,7 +109,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
      */
     @Override
     public boolean isFactTypeRecognized( final String factType ) {
-        return modelFields.containsKey( factType );
+        return projectModelFields.containsKey( factType );
     }
 
     // ####################################
@@ -123,11 +123,11 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     private String[] getModelFields( final String modelClassName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        if ( !modelFields.containsKey( shortName ) ) {
+        if ( !projectModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = projectModelFields.get( shortName );
         final String[] fieldNames = new String[ fields.length ];
         for ( int i = 0; i < fields.length; i++ ) {
             fieldNames[ i ] = fields[ i ].getName();
@@ -139,11 +139,11 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     public String[] getFieldCompletions( final FieldAccessorsAndMutators accessorOrMutator,
                                          final String factType ) {
         final String shortName = getFactNameFromType( factType );
-        if ( !modelFields.containsKey( shortName ) ) {
+        if ( !projectModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = projectModelFields.get( shortName );
         final List<String> fieldNames = new ArrayList<String>();
         for ( int i = 0; i < fields.length; i++ ) {
             final ModelField field = fields[ i ];
@@ -166,7 +166,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     private ModelField getField( final String modelClassName,
                                  final String fieldName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        final ModelField[] fields = modelFields.get( shortName );
+        final ModelField[] fields = projectModelFields.get( shortName );
         if ( fields == null ) {
             return null;
         }
@@ -188,7 +188,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     @Override
     public Map<String, ModelField[]> getModelFields() {
-        return modelFields;
+        return projectModelFields;
     }
 
     // ####################################
@@ -205,7 +205,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     public String getParametricFieldType( final String factType,
                                           final String fieldName ) {
         final String qualifiedFactFieldName = factType + "#" + fieldName;
-        return fieldParametersType.get( fieldName );
+        return projectFieldParametersType.get( fieldName );
     }
 
     // ####################################
@@ -353,7 +353,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
                     dataEnumListsKeyBuilder.append( "]" );
                 }
 
-                final DropDownData data = DropDownData.create( enumLists.get( dataEnumListsKeyBuilder.toString() ) );
+                final DropDownData data = DropDownData.create( projectJavaEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
                 if ( data != null ) {
                     return data;
                 }
@@ -363,7 +363,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
                 final String queryString = getQueryString( type,
                                                            field,
                                                            fieldsNeeded,
-                                                           enumLists );
+                                                           projectJavaEnumLists );
                 final String[] valuePairs = new String[ fieldsNeeded.length ];
 
                 // collect all the values of the fields needed, then return it as a string...
@@ -437,7 +437,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public String[] getEnumValues( final String factType,
                                    final String field ) {
-        return enumLists.get( factType + "#" + field );
+        return projectJavaEnumLists.get( factType + "#" + field );
     }
 
     @Override
@@ -452,7 +452,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         final String key = qualifiedFactField.replace( ".",
                                                        "#" );
         final String dependentType = key + "[";
-        for ( String e : enumLists.keySet() ) {
+        for ( String e : projectJavaEnumLists.keySet() ) {
             //e.g. Fact.field1
             if ( e.equals( key ) ) {
                 return true;
@@ -510,7 +510,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     private Map<String, Object> loadDataEnumLookupFields() {
         if ( enumLookupFields == null ) {
             enumLookupFields = new HashMap<String, Object>();
-            final Set<String> keys = enumLists.keySet();
+            final Set<String> keys = projectJavaEnumLists.keySet();
             for ( String key : keys ) {
                 if ( key.indexOf( '[' ) != -1 ) {
                     int ix = key.indexOf( '[' );
@@ -532,14 +532,14 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
                         }
 
                         enumLookupFields.put( factField,
-                                              typeFieldBuilder.toString() );
+                                                     typeFieldBuilder.toString() );
                     } else {
                         final String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {
                             fields[ i ] = fields[ i ].trim();
                         }
                         enumLookupFields.put( factField,
-                                              fields );
+                                                     fields );
                     }
                 }
             }
@@ -572,7 +572,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public List<String> getMethodNames( final String factType,
                                         final int paramCount ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = projectMethodInformation.get( factType );
         final List<String> methodList = new ArrayList<String>();
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
@@ -593,7 +593,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public List<String> getMethodParams( final String factType,
                                          final String methodNameWithParams ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = projectMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
@@ -613,7 +613,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public MethodInfo getMethodInfo( final String factType,
                                      final String methodFullName ) {
-        final List<MethodInfo> infos = methodInformation.get( factType );
+        final List<MethodInfo> infos = projectMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().equals( methodFullName ) ) {
@@ -634,47 +634,47 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     public void addFactsAndFields( final Map<String, ModelField[]> modelFields ) {
-        this.modelFields.putAll( modelFields );
+        this.projectModelFields.putAll( modelFields );
     }
 
     public void addFieldParametersType( final Map<String, String> fieldParametersType ) {
-        this.fieldParametersType.putAll( fieldParametersType );
+        this.projectFieldParametersType.putAll( fieldParametersType );
     }
 
     public void addEventType( final Map<String, Boolean> eventTypes ) {
-        this.eventTypes.putAll( eventTypes );
+        this.projectEventTypes.putAll( eventTypes );
     }
 
     public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
-        this.enumLists.putAll( dataEnumLists );
+        this.projectJavaEnumLists.putAll( dataEnumLists );
     }
 
     public void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
-        this.methodInformation.putAll( methodInformation );
+        this.projectMethodInformation.putAll( methodInformation );
     }
 
     public void addCollectionType( final Map<String, Boolean> collectionTypes ) {
-        this.collectionTypes.putAll( collectionTypes );
+        this.projectCollectionTypes.putAll( collectionTypes );
     }
 
-    public Map<String, String> getFieldParametersType() {
-        return this.fieldParametersType;
+    public Map<String, String> getProjectFieldParametersType() {
+        return this.projectFieldParametersType;
     }
 
-    public Map<String, Boolean> getEventTypes() {
-        return this.eventTypes;
+    public Map<String, Boolean> getProjectEventTypes() {
+        return this.projectEventTypes;
     }
 
-    public Map<String, String[]> getEnumLists() {
-        return this.enumLists;
+    public Map<String, String[]> getProjectJavaEnumLists() {
+        return this.projectJavaEnumLists;
     }
 
-    public Map<String, List<MethodInfo>> getMethodInformation() {
-        return this.methodInformation;
+    public Map<String, List<MethodInfo>> getProjectMethodInformation() {
+        return this.projectMethodInformation;
     }
 
-    public Map<String, Boolean> getCollectionTypes() {
-        return this.collectionTypes;
+    public Map<String, Boolean> getProjectCollectionTypes() {
+        return this.projectCollectionTypes;
     }
 
 }

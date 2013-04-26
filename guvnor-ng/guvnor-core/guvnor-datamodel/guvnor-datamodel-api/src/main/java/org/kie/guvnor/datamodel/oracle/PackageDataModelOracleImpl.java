@@ -31,8 +31,30 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     //Imports from the Project into this Package
     private Imports imports = new Imports();
 
+    // Filtered (current package and imports) Fact Types and their corresponding fields
+    private Map<String, ModelField[]> filteredModelFields = new HashMap<String, ModelField[]>();
+
+    // Filtered (current package and imports) map of the field that contains the parametrized type of a collection
+    // for example given "List<String> name", key = "name" value = "String"
+    private Map<String, String> filteredFieldParametersType = new HashMap<String, String>();
+
+    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
+    private Map<String, Boolean> filteredEventTypes = new HashMap<String, Boolean>();
+
+    // Filtered (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
+    private Map<String, String[]> filteredEnumLists = new HashMap<String, String[]>();
+
+    // Filtered (current package and imports) Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
+    private Map<String, List<MethodInfo>> filteredMethodInformation = new HashMap<String, List<MethodInfo>>();
+
+    // Filtered (current package and imports) FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    private Map<String, Boolean> filteredCollectionTypes = new HashMap<String, Boolean>();
+
+    // Filtered (current package and imports) map of Globals {alias, class name}.
+    private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
+
     // Package-level enumeration definitions derived from "Guvnor" enumerations.
-    private Map<String, String[]> packageEnumDefinitions = new HashMap<String, String[]>();
+    private Map<String, String[]> packageGuvnorEnumLists = new HashMap<String, String[]>();
 
     // Package-level DSL language extensions.
     private List<DSLSentence> packageDSLConditionSentences = new ArrayList<DSLSentence>();
@@ -41,30 +63,8 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // Package-level map of Globals {alias, class name}.
     private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
 
-    // Scoped (current package and imports) FactTypes {factType, isCollection} to determine which Fact Types are Collections.
-    private Map<String, Boolean> scopedCollectionTypes = new HashMap<String, Boolean>();
-
-    // Scoped (current package and imports) FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
-    private Map<String, Boolean> scopedEventTypes = new HashMap<String, Boolean>();
-
-    // Scoped (current package and imports) Fact Types and their corresponding fields
-    private Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
-
-    // Scoped (current package and imports) Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
-    private Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
-
-    // Scoped (current package and imports) map of the field that contains the parametrized type of a collection
-    // for example given "List<String> name", key = "name" value = "String"
-    private Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
-
-    // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
-    private Map<String, String[]> scopedEnumLists = new HashMap<String, String[]>();
-
     // This is used to calculate what fields an enum list may depend on.
-    private transient Map<String, Object> scopedEnumLookupFields;
-
-    // Scoped (current package and imports) map of Globals {alias, class name}.
-    private Map<String, String> scopedGlobalTypes = new HashMap<String, String>();
+    private transient Map<String, Object> packageEnumLookupFields;
 
     //Public constructor is needed for Errai Marshaller :(
     public PackageDataModelOracleImpl() {
@@ -79,7 +79,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      * @return
      */
     public String[] getFactTypes() {
-        final String[] types = scopedModelFields.keySet().toArray( new String[ scopedModelFields.size() ] );
+        final String[] types = filteredModelFields.keySet().toArray( new String[ filteredModelFields.size() ] );
         Arrays.sort( types );
         return types;
     }
@@ -91,7 +91,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     @Override
     public String[] getAllFactTypes() {
         final List<String> types = new ArrayList<String>();
-        types.addAll( super.modelFields.keySet() );
+        types.addAll( super.projectModelFields.keySet() );
         final String[] result = new String[ types.size() ];
         types.toArray( result );
         Arrays.sort( result );
@@ -127,10 +127,10 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         if ( type == null ) {
             return null;
         }
-        if ( scopedModelFields.containsKey( type ) ) {
+        if ( filteredModelFields.containsKey( type ) ) {
             return type;
         }
-        for ( Map.Entry<String, ModelField[]> entry : scopedModelFields.entrySet() ) {
+        for ( Map.Entry<String, ModelField[]> entry : filteredModelFields.entrySet() ) {
             for ( ModelField mf : entry.getValue() ) {
                 if ( DataType.TYPE_THIS.equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
                     return entry.getKey();
@@ -146,10 +146,10 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      * @return
      */
     public boolean isFactTypeAnEvent( final String factType ) {
-        if ( !scopedEventTypes.containsKey( factType ) ) {
+        if ( !filteredEventTypes.containsKey( factType ) ) {
             return false;
         }
-        return scopedEventTypes.get( factType );
+        return filteredEventTypes.get( factType );
     }
 
     /**
@@ -158,7 +158,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      * @return
      */
     public boolean isFactTypeRecognized( final String factType ) {
-        return scopedModelFields.containsKey( factType );
+        return filteredModelFields.containsKey( factType );
     }
 
     // ####################################
@@ -171,11 +171,11 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
 
     private String[] getModelFields( final String modelClassName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        if ( !scopedModelFields.containsKey( shortName ) ) {
+        if ( !filteredModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = scopedModelFields.get( shortName );
+        final ModelField[] fields = filteredModelFields.get( shortName );
         final String[] fieldNames = new String[ fields.length ];
         for ( int i = 0; i < fields.length; i++ ) {
             fieldNames[ i ] = fields[ i ].getName();
@@ -186,11 +186,11 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     public String[] getFieldCompletions( final FieldAccessorsAndMutators accessorOrMutator,
                                          final String factType ) {
         final String shortName = getFactNameFromType( factType );
-        if ( !scopedModelFields.containsKey( shortName ) ) {
+        if ( !filteredModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
-        final ModelField[] fields = scopedModelFields.get( shortName );
+        final ModelField[] fields = filteredModelFields.get( shortName );
         final List<String> fieldNames = new ArrayList<String>();
         for ( int i = 0; i < fields.length; i++ ) {
             final ModelField field = fields[ i ];
@@ -212,7 +212,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     private ModelField getField( final String modelClassName,
                                  final String fieldName ) {
         final String shortName = getFactNameFromType( modelClassName );
-        final ModelField[] fields = scopedModelFields.get( shortName );
+        final ModelField[] fields = filteredModelFields.get( shortName );
         if ( fields == null ) {
             return null;
         }
@@ -232,7 +232,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     public Map<String, ModelField[]> getModelFields() {
-        return scopedModelFields;
+        return filteredModelFields;
     }
 
     // ####################################
@@ -329,26 +329,26 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
 
     public List<MethodInfo> getMethodInfosForGlobalVariable( final String varName ) {
         final String type = getGlobalVariable( varName );
-        return scopedMethodInformation.get( type );
+        return filteredMethodInformation.get( type );
     }
 
     public String getGlobalVariable( final String name ) {
-        return scopedGlobalTypes.get( name );
+        return filteredGlobalTypes.get( name );
     }
 
     public boolean isGlobalVariable( final String name ) {
-        return scopedGlobalTypes.containsKey( name );
+        return filteredGlobalTypes.containsKey( name );
     }
 
     public String[] getGlobalVariables() {
-        return OracleUtils.toStringArray( scopedGlobalTypes.keySet() );
+        return OracleUtils.toStringArray( filteredGlobalTypes.keySet() );
     }
 
     public String[] getGlobalCollections() {
         final List<String> globalCollections = new ArrayList<String>();
-        for ( Map.Entry<String, String> e : scopedGlobalTypes.entrySet() ) {
-            if ( scopedCollectionTypes.containsKey( e.getValue() ) ) {
-                if ( Boolean.TRUE.equals( scopedCollectionTypes.get( e.getValue() ) ) ) {
+        for ( Map.Entry<String, String> e : filteredGlobalTypes.entrySet() ) {
+            if ( filteredCollectionTypes.containsKey( e.getValue() ) ) {
+                if ( Boolean.TRUE.equals( filteredCollectionTypes.get( e.getValue() ) ) ) {
                     globalCollections.add( e.getKey() );
                 }
             }
@@ -426,7 +426,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
                     dataEnumListsKeyBuilder.append( "]" );
                 }
 
-                final DropDownData data = DropDownData.create( scopedEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
+                final DropDownData data = DropDownData.create( filteredEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
                 if ( data != null ) {
                     return data;
                 }
@@ -436,7 +436,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
                 final String queryString = getQueryString( type,
                                                            field,
                                                            fieldsNeeded,
-                                                           scopedEnumLists );
+                                                           filteredEnumLists );
                 final String[] valuePairs = new String[ fieldsNeeded.length ];
 
                 // collect all the values of the fields needed, then return it as a string...
@@ -509,7 +509,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      */
     public String[] getEnumValues( final String factType,
                                    final String field ) {
-        return scopedEnumLists.get( factType + "#" + field );
+        return filteredEnumLists.get( factType + "#" + field );
     }
 
     public boolean hasEnums( final String factType,
@@ -522,7 +522,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         final String key = qualifiedFactField.replace( ".",
                                                        "#" );
         final String dependentType = key + "[";
-        for ( String e : scopedEnumLists.keySet() ) {
+        for ( String e : filteredEnumLists.keySet() ) {
             //e.g. Fact.field1
             if ( e.equals( key ) ) {
                 return true;
@@ -577,9 +577,9 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      * This is only used by enums that are like Fact.field[something=X] and so on.
      */
     private Map<String, Object> loadDataEnumLookupFields() {
-        if ( scopedEnumLookupFields == null ) {
-            scopedEnumLookupFields = new HashMap<String, Object>();
-            final Set<String> keys = scopedEnumLists.keySet();
+        if ( packageEnumLookupFields == null ) {
+            packageEnumLookupFields = new HashMap<String, Object>();
+            final Set<String> keys = filteredEnumLists.keySet();
             for ( String key : keys ) {
                 if ( key.indexOf( '[' ) != -1 ) {
                     int ix = key.indexOf( '[' );
@@ -600,21 +600,21 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
                             }
                         }
 
-                        scopedEnumLookupFields.put( factField,
-                                                    typeFieldBuilder.toString() );
+                        packageEnumLookupFields.put( factField,
+                                                     typeFieldBuilder.toString() );
                     } else {
                         final String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {
                             fields[ i ] = fields[ i ].trim();
                         }
-                        scopedEnumLookupFields.put( factField,
-                                                    fields );
+                        packageEnumLookupFields.put( factField,
+                                                     fields );
                     }
                 }
             }
         }
 
-        return scopedEnumLookupFields;
+        return packageEnumLookupFields;
     }
 
     // ####################################
@@ -639,7 +639,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      */
     public List<String> getMethodNames( final String factType,
                                         final int paramCount ) {
-        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
+        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
         final List<String> methodList = new ArrayList<String>();
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
@@ -659,7 +659,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      */
     public List<String> getMethodParams( final String factType,
                                          final String methodNameWithParams ) {
-        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
+        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
@@ -678,7 +678,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      */
     public MethodInfo getMethodInfo( final String factType,
                                      final String methodFullName ) {
-        final List<MethodInfo> infos = scopedMethodInformation.get( factType );
+        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().equals( methodFullName ) ) {
@@ -705,7 +705,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     private String getParametricFieldType( String fieldName ) {
-        return scopedFieldParametersType.get( fieldName );
+        return filteredFieldParametersType.get( fieldName );
     }
 
     public void filter( final Imports imports ) {
@@ -715,47 +715,47 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
 
     public void filter() {
         //Filter and rename Model Fields based on package name and imports
-        scopedModelFields.clear();
-        scopedModelFields.putAll( PackageDataModelOracleUtils.filterModelFields( packageName,
-                                                                                 imports,
-                                                                                 modelFields ) );
+        filteredModelFields = new HashMap<String, ModelField[]>();
+        filteredModelFields.putAll( PackageDataModelOracleUtils.filterModelFields( packageName,
+                                                                                   imports,
+                                                                                   projectModelFields ) );
 
         //Filter and rename Collection Types based on package name and imports
-        scopedCollectionTypes.clear();
-        scopedCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
-                                                                                         imports,
-                                                                                         collectionTypes ) );
+        filteredCollectionTypes = new HashMap<String, Boolean>();
+        filteredCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
+                                                                                           imports,
+                                                                                           projectCollectionTypes ) );
 
         //Filter and rename Global Types based on package name and imports
-        scopedGlobalTypes.clear();
-        scopedGlobalTypes.putAll( PackageDataModelOracleUtils.filterGlobalTypes( packageName,
-                                                                                 imports,
-                                                                                 packageGlobalTypes ) );
+        filteredGlobalTypes = new HashMap<String, String>();
+        filteredGlobalTypes.putAll( PackageDataModelOracleUtils.filterGlobalTypes( packageName,
+                                                                                   imports,
+                                                                                   packageGlobalTypes ) );
 
         //Filter and rename Event Types based on package name and imports
-        scopedEventTypes.clear();
-        scopedEventTypes.putAll( PackageDataModelOracleUtils.filterEventTypes( packageName,
-                                                                               imports,
-                                                                               eventTypes ) );
+        filteredEventTypes = new HashMap<String, Boolean>();
+        filteredEventTypes.putAll( PackageDataModelOracleUtils.filterEventTypes( packageName,
+                                                                                 imports,
+                                                                                 projectEventTypes ) );
 
         //Filter and rename Enum definitions based on package name and imports
-        scopedEnumLists.clear();
-        scopedEnumLists.putAll( packageEnumDefinitions );
-        scopedEnumLists.putAll( PackageDataModelOracleUtils.filterEnumDefinitions( packageName,
-                                                                                   imports,
-                                                                                   enumLists ) );
+        filteredEnumLists = new HashMap<String, String[]>();
+        filteredEnumLists.putAll( packageGuvnorEnumLists );
+        filteredEnumLists.putAll( PackageDataModelOracleUtils.filterEnumDefinitions( packageName,
+                                                                                     imports,
+                                                                                     projectJavaEnumLists ) );
 
         //Filter and rename based on package name and imports
-        scopedMethodInformation.clear();
-        scopedMethodInformation.putAll( PackageDataModelOracleUtils.filterMethodInformation( packageName,
-                                                                                             imports,
-                                                                                             methodInformation ) );
+        filteredMethodInformation = new HashMap<String, List<MethodInfo>>();
+        filteredMethodInformation.putAll( PackageDataModelOracleUtils.filterMethodInformation( packageName,
+                                                                                               imports,
+                                                                                               projectMethodInformation ) );
 
         //Filter and rename based on package name and imports
-        scopedFieldParametersType.clear();
-        scopedFieldParametersType.putAll( PackageDataModelOracleUtils.filterFieldParametersTypes( packageName,
-                                                                                                  imports,
-                                                                                                  fieldParametersType ) );
+        filteredFieldParametersType = new HashMap<String, String>();
+        filteredFieldParametersType.putAll( PackageDataModelOracleUtils.filterFieldParametersTypes( packageName,
+                                                                                                    imports,
+                                                                                                    projectFieldParametersType ) );
     }
 
     // ##############################################################################################
@@ -767,8 +767,8 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         this.packageName = packageName;
     }
 
-    public void addPackageEnums( final Map<String, String[]> dataEnumLists ) {
-        this.packageEnumDefinitions.putAll( dataEnumLists );
+    public void addPackageGuvnorEnums( final Map<String, String[]> dataEnumLists ) {
+        this.packageGuvnorEnumLists.putAll( dataEnumLists );
     }
 
     public void addPackageDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
