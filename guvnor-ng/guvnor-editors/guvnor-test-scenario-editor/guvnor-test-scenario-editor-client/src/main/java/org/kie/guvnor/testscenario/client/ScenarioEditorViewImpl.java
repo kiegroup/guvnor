@@ -46,6 +46,7 @@ import org.kie.guvnor.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -67,7 +68,9 @@ public class ScenarioEditorViewImpl
     private MetadataWidget metadataWidget;
 
     private MultiPageEditor multiPage;
-
+    
+    private BulkRunTestScenarioEditor bulkRunTestScenarioEditor;
+    
     private BusyIndicatorView busyIndicatorView;
     private Caller<MetadataService> metadataService;
 
@@ -75,6 +78,7 @@ public class ScenarioEditorViewImpl
     public ScenarioEditorViewImpl( final @New ImportsWidgetPresenter importsWidget,
                                    final @New MultiPageEditor multiPage,
                                    final @New MetadataWidget metadataWidget,
+                                   final @New BulkRunTestScenarioEditor bulkRunTestScenarioEditor,
                                    Caller<MetadataService> metadataService,
                                    final Event<NotificationEvent> notification,
                                    final BusyIndicatorView busyIndicatorView ) {
@@ -84,6 +88,7 @@ public class ScenarioEditorViewImpl
         this.metadataService = metadataService;
         this.notification = notification;
         this.busyIndicatorView = busyIndicatorView;
+        this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
 
         multiPage.addWidget( layout, "Test Scenario" );
 
@@ -280,7 +285,22 @@ public class ScenarioEditorViewImpl
             }
         } );
     }
+    
+    @Override
+    public void addBulkRunTestScenarioPanel( final Path path,
+                                             final boolean isReadOnly ) {
+        multiPage.addPage( new Page( bulkRunTestScenarioEditor, TestScenarioConstants.INSTANCE.TestScenarios() ) {
+            @Override
+            public void onFocus() {
+                bulkRunTestScenarioEditor.init(path, isReadOnly);
+            }
 
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+    }
+    
     @Override
     public void setScenario( String packageName,
                              Scenario scenario,

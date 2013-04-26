@@ -40,4 +40,6 @@ public interface ScenarioEditorView
     Metadata getMetadata();
 
     void resetMetadataDirty();
+    
+    void addBulkRunTestScenarioPanel( final Path path, final boolean isReadOnly );
 }

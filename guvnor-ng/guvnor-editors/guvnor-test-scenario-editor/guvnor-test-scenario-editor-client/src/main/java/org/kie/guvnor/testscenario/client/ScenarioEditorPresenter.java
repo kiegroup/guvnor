@@ -75,6 +75,9 @@ public class ScenarioEditorPresenter {
         if ( !isReadOnly ) {
             view.addMetaDataPage( path, isReadOnly );
         }
+        
+        view.addBulkRunTestScenarioPanel( path, isReadOnly );        
+
 
         service.call( new RemoteCallback<TestScenarioModelContent>() {
             @Override

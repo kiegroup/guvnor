@@ -40,7 +40,6 @@ import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.mvp.Command;
 
-@Dependent
 public class BulkRunTestScenarioEditor
         implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {
 
@@ -56,11 +55,8 @@ public class BulkRunTestScenarioEditor
         view.setPresenter(this);        
     }
     
-    @OnStart
-    public void init( /*BulkRunTestScenarioEditorView view, Caller<ScenarioTestEditorService> scenarioService, */final Path path,
-                      final boolean isReadOnly ) {
-/*        this.view = view;
-        this.scenarioService = scenarioService;*/
+    public void init(final Path path,
+                     final boolean isReadOnly ) {
         this.path = path;
         if ( isReadOnly ) {
             view.setReadOnly();
