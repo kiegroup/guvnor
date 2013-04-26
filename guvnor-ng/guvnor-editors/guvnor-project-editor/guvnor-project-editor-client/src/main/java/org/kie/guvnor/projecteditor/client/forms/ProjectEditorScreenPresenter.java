@@ -71,7 +71,6 @@ public class
     public ProjectEditorScreenPresenter( @New ProjectEditorScreenView view,
                                          @New POMEditorPanel pomPanel,
                                          @New KModuleEditorPanel kModuleEditorPanel,
-                                         @New BulkRunTestScenarioEditor runAllTestScenariosEditor,
                                          Caller<KModuleService> kModuleServiceCaller,
                                          Caller<BuildService> buildServiceCaller,
                                          Caller<MetadataService> metadataService,
@@ -85,8 +84,7 @@ public class
         this.saveOperationService = saveOperationService;
 
         view.setPresenter( this );
-        view.setPOMEditorPanel( pomPanel );
-        view.setTestScenarioPanel( runAllTestScenariosEditor );        
+        view.setPOMEditorPanel( pomPanel );   
     }
 
     @OnStart

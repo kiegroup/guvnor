@@ -255,5 +255,9 @@ public interface TestScenarioConstants
     String PleaseInputSessionName();
     
     String SessionName();
+    
+    String TestScenarios();
+   
+    String RunAllScenarios();
 
 }

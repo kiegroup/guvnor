@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.forms;
+package org.kie.guvnor.testscenario.client;
 
 import java.util.List;
 import javax.enterprise.event.Event;
@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
@@ -37,9 +37,9 @@ public class BulkRunTestScenarioEditorViewImpl
         extends ResizeComposite
         implements BulkRunTestScenarioEditorView {
 
-    private String tabTitleLabel = ProjectEditorConstants.INSTANCE.ProjectModel();
+    private String tabTitleLabel = TestScenarioConstants.INSTANCE.RunAllScenarios();
 
-    interface RunAllTestScenariosEditorViewImplBinder
+    interface BulkRunTestScenarioEditorViewImplBinder
             extends
             UiBinder<Widget, BulkRunTestScenarioEditorViewImpl> {
 
@@ -47,24 +47,24 @@ public class BulkRunTestScenarioEditorViewImpl
     
     private Presenter presenter;
     
-    private static RunAllTestScenariosEditorViewImplBinder uiBinder = GWT.create( RunAllTestScenariosEditorViewImplBinder.class );
+    private static BulkRunTestScenarioEditorViewImplBinder uiBinder = GWT.create( BulkRunTestScenarioEditorViewImplBinder.class );
 
     private final Event<NotificationEvent> notificationEvent;
 
-    @UiField(provided = true)
-    DependencyGrid dependencyGrid;
+/*    @UiField(provided = true)
+    DependencyGrid dependencyGrid;*/
 
     @Inject
-    public BulkRunTestScenarioEditorViewImpl( Event<NotificationEvent> notificationEvent,
-                                   DependencyGrid dependencyGrid ) {
-        this.dependencyGrid = dependencyGrid;
+    public BulkRunTestScenarioEditorViewImpl( Event<NotificationEvent> notificationEvent/*,
+                                   DependencyGrid dependencyGrid */) {
+        //this.dependencyGrid = dependencyGrid;
         initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;
     }
 
     @Override
     public void showSaveSuccessful( String fileName ) {
-        notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName ) ) );
+        notificationEvent.fire( new NotificationEvent( "ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName )" ) );
     }
 
     @Override
@@ -74,7 +74,7 @@ public class BulkRunTestScenarioEditorViewImpl
 
     @Override
     public void setDependencies( List<Dependency> dependencies ) {
-        dependencyGrid.fillList( dependencies );
+        //dependencyGrid.fillList( dependencies );
     }
 /*
     @Override
@@ -84,7 +84,7 @@ public class BulkRunTestScenarioEditorViewImpl
 */
     @Override
     public void setReadOnly() {
-        dependencyGrid.setReadOnly();
+        //dependencyGrid.setReadOnly();
 
     }
 

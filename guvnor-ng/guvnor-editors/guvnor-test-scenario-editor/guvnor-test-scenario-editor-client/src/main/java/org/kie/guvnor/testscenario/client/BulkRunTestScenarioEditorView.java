@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.forms;
+package org.kie.guvnor.testscenario.client;
 
 import java.util.List;
 

@@ -48,6 +48,4 @@ public interface ProjectEditorScreenView extends HasBusyIndicator,
     void setPOMMetadata( Metadata metadata );
 
     void setKModuleMetadata( Metadata metadata );
-    
-    void setTestScenarioPanel( BulkRunTestScenarioEditor runAllTestScenariosEditor );
 }

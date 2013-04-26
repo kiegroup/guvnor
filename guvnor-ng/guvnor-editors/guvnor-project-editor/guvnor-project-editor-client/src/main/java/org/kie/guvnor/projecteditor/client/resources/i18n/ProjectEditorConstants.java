@@ -128,8 +128,4 @@ public interface ProjectEditorConstants
     String NoRepositorySelectedPleaseSelectARepository();
     
     String XMLMarkIsNotAllowed();
-    
-    String TestScenarios();
-        
-    String RunAllScenarios();
 }

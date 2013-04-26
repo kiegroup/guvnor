@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.guvnor.projecteditor.client.forms;
+package org.kie.guvnor.testscenario.client;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -31,8 +31,9 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.common.BusyPopup;
@@ -47,8 +48,8 @@ public class BulkRunTestScenarioEditor
     private BulkRunTestScenarioEditorView view;
     private Path path;
 
-/*    @Inject
-    private Caller<ScenarioTestEditorService> scenarioService;*/
+    @Inject
+    private Caller<ScenarioTestEditorService> scenarioService;
 
     @PostConstruct
     public void init() {
@@ -68,7 +69,7 @@ public class BulkRunTestScenarioEditor
 
     private void setTitle( final String titleText ) {
         if ( titleText == null || titleText.isEmpty() ) {
-            view.setTitleText( ProjectEditorConstants.INSTANCE.ProjectModel() );
+            view.setTitleText( TestScenarioConstants.INSTANCE.RunAllScenarios() );
         } else {
             view.setTitleText( titleText );
         }
@@ -98,13 +99,13 @@ public class BulkRunTestScenarioEditor
         ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
-                    Window.alert("TestScenarioConstants.INSTANCE.PleaseInputSessionName()");
+                    Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
                     return;
                 }
                 
-                BusyPopup.showMessage("TestScenarioConstants.INSTANCE.BuildingAndRunningScenario()");
+                BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
 
-/*                scenarioService.call(new RemoteCallback<Void>() {
+                scenarioService.call(new RemoteCallback<Void>() {
                     @Override
                     public void callback(Void v) {
                         pop.hide();
@@ -112,7 +113,7 @@ public class BulkRunTestScenarioEditor
                     }
                 },
                         new HasBusyIndicatorDefaultErrorCallback(BulkRunTestScenarioEditor.this)
-                ).runAllScenarios(path, sessionNameTextBox.getText());  */                      
+                ).runAllScenarios(path, sessionNameTextBox.getText());                        
             }
         });
         pop.addAttribute( "", ok);

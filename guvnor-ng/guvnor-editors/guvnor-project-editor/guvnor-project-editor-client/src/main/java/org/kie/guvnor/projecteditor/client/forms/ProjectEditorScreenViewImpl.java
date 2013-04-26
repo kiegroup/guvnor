@@ -90,19 +90,6 @@ public class ProjectEditorScreenViewImpl
     }
     
     @Override
-    public void setTestScenarioPanel( BulkRunTestScenarioEditor runAllTestScenariosEditor ) {
-        addPage( new Page( runAllTestScenariosEditor, ProjectEditorConstants.INSTANCE.TestScenarios() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-    }
-    
-    @Override
     public String getEnableKieProjectMenuItemText() {
         return ProjectEditorConstants.INSTANCE.EnableKieProject();
     }
