@@ -1,5 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -24,11 +25,10 @@ import static org.junit.Assert.*;
 public class DataModelParametricTypesTest {
 
     @Test
-    @Ignore("[manstis] This should work. Asking mfusco about it.")
     public void testClassFieldInspector() throws Exception {
         final ClassFieldInspector cfi = new ClassFieldInspector( Purchase.class );
-        final Type t1 = cfi.getFieldTypes().get( "customerName" );
-        final Type t2 = cfi.getFieldTypes().get( "items" );
+        final Type t1 = cfi.getFieldTypesField().get( "customerName" ).getGenericType();
+        final Type t2 = cfi.getFieldTypesField().get( "items" ).getGenericType();
 
         assertNotNull( t1 );
         assertNotNull( t2 );
@@ -38,7 +38,6 @@ public class DataModelParametricTypesTest {
     }
 
     @Test
-    @Ignore("See testClassFieldInspector")
     public void testParametricReturnTypes() throws Exception {
         final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( Purchase.class )
@@ -59,13 +58,13 @@ public class DataModelParametricTypesTest {
 
         assertEquals( "java.util.Collection",
                       dmo.getFieldClassName( "Purchase",
-                                             "bananas" ) );
+                                             "items" ) );
         assertEquals( DataType.TYPE_COLLECTION,
                       dmo.getFieldType( "Purchase",
-                                        "bananas" ) );
+                                        "items" ) );
         assertEquals( "Product",
                       dmo.getParametricFieldType( "Purchase",
-                                                  "bananas" ) );
+                                                  "items" ) );
 
     }
 

@@ -80,6 +80,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 //If a Field cannot be found is is really a delegated property so use the Method return type
                 if ( methodSignatures.containsKey( qualifiedName ) ) {
                     final MethodSignature m = methodSignatures.get( qualifiedName );
+                    addParametricTypeForField( factType,
+                                               fieldName,
+                                               m.genericType );
+
                     final Class<?> returnType = m.returnType;
                     final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
@@ -93,15 +97,16 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                       fieldName,
                                       returnType );
 
-                    addParametricTypeForField( factType,
-                                               fieldName,
-                                               returnType );
-
                 }
             } else {
 
                 //Otherwise we can use the results of ClassFieldInspector
-                final Class<?> returnType = inspector.getFieldTypes().get( fieldName );
+                final Field field = inspector.getFieldTypesField().get( fieldName );
+                addParametricTypeForField( factType,
+                                           fieldName,
+                                           field.getGenericType() );
+
+                final Class<?> returnType = field.getType();
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
                 addField( new ModelField( fieldName,
@@ -113,10 +118,6 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 addEnumsForField( factType,
                                   fieldName,
                                   returnType );
-
-                addParametricTypeForField( factType,
-                                           fieldName,
-                                           returnType );
             }
 
         }
@@ -258,9 +259,9 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     private void addParametricTypeForField( final String className,
                                             final String fieldName,
-                                            final Class<?> fieldClazz ) {
+                                            final Type type ) {
         final String qualifiedFactFieldName = className + "#" + fieldName;
-        final String parametricType = getParametricType( fieldClazz );
+        final String parametricType = getParametricType( type );
         if ( parametricType != null ) {
             fieldParametersType.put( qualifiedFactFieldName,
                                      parametricType );

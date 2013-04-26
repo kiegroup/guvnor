@@ -3,6 +3,7 @@ package org.kie.guvnor.datamodel.backend.server.builder.projects;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.kie.guvnor.datamodel.model.ClassToGenericClassConverter;
 
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;

@@ -1,6 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.junit.Test;
@@ -111,15 +112,30 @@ public class DataModelOracleTest {
         assertEquals( TestSuperClass.class.getSimpleName(),
                       dmo.getFactTypes()[ 0 ] );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       dmo.getFieldCompletions( TestSuperClass.class.getSimpleName() ).length );
 
         assertEquals( DataType.TYPE_THIS,
                       dmo.getFieldType( TestSuperClass.class.getSimpleName(),
                                         "this" ) );
+        assertEquals( TestSuperClass.class.getSimpleName(),
+                      dmo.getFieldClassName( TestSuperClass.class.getSimpleName(),
+                                             "this" ) );
         assertEquals( DataType.TYPE_STRING,
                       dmo.getFieldType( TestSuperClass.class.getSimpleName(),
                                         "field1" ) );
+        assertEquals( String.class.getName(),
+                      dmo.getFieldClassName( TestSuperClass.class.getSimpleName(),
+                                             "field1" ) );
+        assertEquals( DataType.TYPE_COLLECTION,
+                      dmo.getFieldType( TestSuperClass.class.getSimpleName(),
+                                        "list" ) );
+        assertEquals( List.class.getName(),
+                      dmo.getFieldClassName( TestSuperClass.class.getSimpleName(),
+                                             "list" ) );
+        assertEquals( String.class.getSimpleName(),
+                      dmo.getParametricFieldType( TestSuperClass.class.getSimpleName(),
+                                                  "list" ) );
     }
 
     @Test
@@ -135,18 +151,36 @@ public class DataModelOracleTest {
         assertEquals( TestSubClass.class.getSimpleName(),
                       dmo.getFactTypes()[ 0 ] );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       dmo.getFieldCompletions( TestSubClass.class.getSimpleName() ).length );
 
         assertEquals( DataType.TYPE_THIS,
                       dmo.getFieldType( TestSubClass.class.getSimpleName(),
                                         "this" ) );
+        assertEquals( TestSubClass.class.getSimpleName(),
+                      dmo.getFieldClassName( TestSubClass.class.getSimpleName(),
+                                             "this" ) );
         assertEquals( DataType.TYPE_STRING,
                       dmo.getFieldType( TestSubClass.class.getSimpleName(),
                                         "field1" ) );
+        assertEquals( String.class.getName(),
+                      dmo.getFieldClassName( TestSubClass.class.getSimpleName(),
+                                             "field1" ) );
         assertEquals( DataType.TYPE_STRING,
                       dmo.getFieldType( TestSubClass.class.getSimpleName(),
                                         "field2" ) );
+        assertEquals( String.class.getName(),
+                      dmo.getFieldClassName( TestSubClass.class.getSimpleName(),
+                                             "field2" ) );
+        assertEquals( DataType.TYPE_COLLECTION,
+                      dmo.getFieldType( TestSubClass.class.getSimpleName(),
+                                        "list" ) );
+        assertEquals( List.class.getName(),
+                      dmo.getFieldClassName( TestSubClass.class.getSimpleName(),
+                                             "list" ) );
+        assertEquals( String.class.getSimpleName(),
+                      dmo.getParametricFieldType( TestSubClass.class.getSimpleName(),
+                                                  "list" ) );
     }
 
     @Test
@@ -162,15 +196,30 @@ public class DataModelOracleTest {
         assertEquals( TestDelegatedClass.class.getSimpleName(),
                       dmo.getFactTypes()[ 0 ] );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       dmo.getFieldCompletions( TestDelegatedClass.class.getSimpleName() ).length );
 
         assertEquals( DataType.TYPE_THIS,
                       dmo.getFieldType( TestDelegatedClass.class.getSimpleName(),
                                         "this" ) );
+        assertEquals( TestDelegatedClass.class.getSimpleName(),
+                      dmo.getFieldClassName( TestDelegatedClass.class.getSimpleName(),
+                                             "this" ) );
         assertEquals( DataType.TYPE_STRING,
                       dmo.getFieldType( TestDelegatedClass.class.getSimpleName(),
                                         "field1" ) );
+        assertEquals( String.class.getName(),
+                      dmo.getFieldClassName( TestDelegatedClass.class.getSimpleName(),
+                                             "field1" ) );
+        assertEquals( DataType.TYPE_COLLECTION,
+                      dmo.getFieldType( TestDelegatedClass.class.getSimpleName(),
+                                        "list" ) );
+        assertEquals( List.class.getName(),
+                      dmo.getFieldClassName( TestDelegatedClass.class.getSimpleName(),
+                                             "list" ) );
+        assertEquals( String.class.getSimpleName(),
+                      dmo.getParametricFieldType( TestDelegatedClass.class.getSimpleName(),
+                                                  "list" ) );
     }
 
 }

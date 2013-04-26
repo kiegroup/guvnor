@@ -1,5 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server.testclasses;
 
+import java.util.List;
+
 /**
  * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder for subclasses and delegated classes
  */
@@ -17,6 +19,10 @@ public class TestDelegatedClass {
 
     public void setField1( final String field1 ) {
         this.superClass.setField1( field1 );
+    }
+
+    public List<String> getList() {
+        return this.superClass.getList();
     }
 
 }
