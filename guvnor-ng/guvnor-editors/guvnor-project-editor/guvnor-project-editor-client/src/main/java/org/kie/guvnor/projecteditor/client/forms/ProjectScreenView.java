@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.services.metadata.model.Metadata;
 
-public interface ProjectEditorScreenView extends HasBusyIndicator,
+public interface ProjectScreenView extends HasBusyIndicator,
                                                  IsWidget {
 
     interface Presenter {
@@ -32,6 +32,8 @@ public interface ProjectEditorScreenView extends HasBusyIndicator,
         void onKModuleMetadataTabSelected();
 
     }
+
+    void selectMainTab();
 
     void setPresenter( Presenter presenter );
 

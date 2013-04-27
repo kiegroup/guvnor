@@ -25,21 +25,22 @@ import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @Ignore
-public class ProjectEditorScreenTest {
-    private ProjectEditorScreenView view;
+public class ProjectScreenTest {
+    private ProjectScreenView view;
     private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
     private ProjectEditorScreenPresenter screen;
+    private BulkRunTestScenarioEditor runAllTestScenariosEditor;
+    private ProjectScreenPresenter screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockBuildServiceCaller buildServiceCaller;
     private MockMetadataServiceCaller metadataServiceCaller;
@@ -47,17 +48,22 @@ public class ProjectEditorScreenTest {
 
     @Before
     public void setUp() throws Exception {
-        view = mock(ProjectEditorScreenView.class);
+        view = mock(ProjectScreenView.class);
         when(view.getSaveMenuItemText()).thenReturn("");
         when(view.getBuildMenuItemText()).thenReturn("Build");
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
         pomPanel = mock(POMEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
+        runAllTestScenariosEditor = mock(BulkRunTestScenarioEditor.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();
         metadataServiceCaller = new MockMetadataServiceCaller();
         saveOperationService = mock(SaveOperationService.class);
-        screen = new ProjectEditorScreenPresenter(view, pomPanel, kModuleEditorPanel, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
+        WorkbenchContext workbenchContext = mock(WorkbenchContext.class);
+
+        MockProjectServiceCaller projectServiceCaller = new MockProjectServiceCaller();
+
+        screen = new ProjectScreenPresenter(view, pomPanel, kModuleEditorPanel, runAllTestScenariosEditor, workbenchContext, projectServiceCaller, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
         screen.getMenus();
     }
 
@@ -71,8 +77,7 @@ public class ProjectEditorScreenTest {
     public void testInit() throws Exception {
         projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path path = mock(Path.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
-        screen.init(path, placeRequest);
+        screen.selectedPathChanged(new PathChangeEvent(path));
 
         verify(pomPanel).init(path, false);
         verify(kModuleEditorPanel, never()).init(any(Path.class), eq(false));
@@ -83,8 +88,7 @@ public class ProjectEditorScreenTest {
         Path pathToKModuleXML = mock(Path.class);
         projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKModuleXML);
         Path path = mock(Path.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
-        screen.init(path, placeRequest);
+        screen.selectedPathChanged(new PathChangeEvent(path));
 
         verify(pomPanel).init(path, false);
         verify(view).setKModuleEditorPanel(kModuleEditorPanel);
@@ -109,8 +113,7 @@ public class ProjectEditorScreenTest {
     public void testSave() throws Exception {
         projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path path = mock(Path.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
-        screen.init(path, placeRequest);
+        screen.selectedPathChanged(new PathChangeEvent(path));
 
         //menuBuilder.clickSave();
 
@@ -125,8 +128,7 @@ public class ProjectEditorScreenTest {
         Path pathToKProjectXML = mock(Path.class);
         projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(pathToKProjectXML);
         Path path = mock(Path.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
-        screen.init(path, placeRequest);
+        screen.selectedPathChanged(new PathChangeEvent(path));
 
         initKModuleEditorPanel();
 
@@ -144,8 +146,8 @@ public class ProjectEditorScreenTest {
     public void testBuild() throws Exception {
         projectEditorServiceCaller.setPathToRelatedKModuleFileIfAny(null);
         Path path = mock(Path.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
-        screen.init(path, placeRequest);
+
+        screen.selectedPathChanged(new PathChangeEvent(path));
 
 //        menuBuilder.click("Build");
 

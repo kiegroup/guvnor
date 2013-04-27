@@ -18,6 +18,7 @@ package org.kie.guvnor.client.perspectives;
 import org.kie.guvnor.client.resources.i18n.Constants;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
 import org.kie.guvnor.commons.ui.client.handlers.NewResourcesMenu;
+import org.kie.guvnor.commons.ui.client.menu.ToolsMenu;
 import org.kie.guvnor.inbox.client.InboxPresenter;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -56,6 +57,9 @@ public class AuthoringPerspective {
 
     @Inject
     private NewResourcesMenu newResourcesMenu;
+
+    @Inject
+    private ToolsMenu toolsMenu;
 
     @Inject
     private PlaceManager placeManager;
@@ -144,6 +148,9 @@ public class AuthoringPerspective {
                 .endMenu()
                 .newTopLevelMenu( "New" )
                     .withItems( newResourcesMenu.getMenuItems() )
+                .endMenu()
+                .newTopLevelMenu( "Tools" )
+                    .withItems( toolsMenu.getMenuItems() )
                 .endMenu().build();
     }
 
