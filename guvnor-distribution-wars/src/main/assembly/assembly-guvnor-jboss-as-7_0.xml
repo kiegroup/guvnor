@@ -32,6 +32,15 @@
     </fileSet>
   </fileSets>
   <dependencySets>
+    <!-- Add ANT dependency excluded in WAR pom that runs on Hosted Mode -->
+    <dependencySet>
+      <includes>
+        <include>org.apache.ant:ant:jar</include>
+        <include>org.apache.ant:ant-launcher:jar</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+    </dependencySet> 
     <dependencySet>
       <includes>
         <include>org.kie.guvnor:guvnor-webapp:war</include>
@@ -49,7 +58,6 @@
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/uf-temp-gwt-bootstrap-*.jar</exclude>
 
           <!-- GWT Client Related -->
           <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
@@ -74,6 +82,7 @@
           <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
           <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
+          <exclude>WEB-INF/lib/cdi-api*.jar</exclude>
           <exclude>WEB-INF/lib/javax*.jar</exclude>
           <exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>
 

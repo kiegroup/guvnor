@@ -51,6 +51,12 @@
       <type>war</type>
     </dependency>
 
+    <!-- External dependencies -->
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>
