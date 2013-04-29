@@ -16,8 +16,11 @@
 
 package org.kie.guvnor.commons.service.builder;
 
+import java.util.Set;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceChange;
 
 @Remote
 public interface BuildService {
@@ -57,5 +60,13 @@ public interface BuildService {
      * @param resource
      */
     void updateProjectResource( final Path resource );
+
+    /**
+     * Process a batch of changes to a Project's resources.
+     * @param projectRoot
+     * @param changes
+     */
+    void applyBatchResourceChanges( final Path projectRoot,
+                                    final Set<ResourceChange> changes );
 
 }

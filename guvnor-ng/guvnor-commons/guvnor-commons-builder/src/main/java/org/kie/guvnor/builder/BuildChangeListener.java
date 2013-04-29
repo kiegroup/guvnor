@@ -1,7 +1,10 @@
 package org.kie.guvnor.builder;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -19,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceChange;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
 
@@ -27,8 +32,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
  */
 @ApplicationScoped
 public class BuildChangeListener {
-
-    private static final String POM_FILE = "pom.xml";
 
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
@@ -46,14 +49,15 @@ public class BuildChangeListener {
     @Inject
     private AppConfigService appConfigService;
 
+    @Inject
+    private BuildExecutorServiceFactory executorServiceProducer;
     private ExecutorService executor;
 
     private boolean isIncrementalEnabled = false;
 
     @PostConstruct
-    private void setupExecutorService() {
-        final int cores = Runtime.getRuntime().availableProcessors();
-        executor = Executors.newFixedThreadPool( cores );
+    private void setup() {
+        executor = executorServiceProducer.getExecutorService();
         isIncrementalEnabled = isIncrementalBuildEnabled();
     }
 
@@ -216,6 +220,59 @@ public class BuildChangeListener {
                 }
             }
         } );
+    }
+
+    public void batchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
+        //Do nothing if incremental builds are disabled
+        if ( !isIncrementalEnabled ) {
+            return;
+        }
+
+        //Perform incremental build
+        PortablePreconditions.checkNotNull( "resourceBatchChangesEvent",
+                                            resourceBatchChangesEvent );
+
+        //Block changes together with their respective project as Builder operates at the Project level
+        final Set<ResourceChange> batch = resourceBatchChangesEvent.getBatch();
+        final Map<Path, Set<ResourceChange>> projectBatchChanges = new HashMap<Path, Set<ResourceChange>>();
+        for ( ResourceChange change : batch ) {
+            PortablePreconditions.checkNotNull( "path",
+                                                change.getPath() );
+            final Path resource = change.getPath();
+
+            //Incremental builds only operate on files
+            if ( Files.isRegularFile( paths.convert( resource ) ) ) {
+
+                //If resource is not within a Package it cannot be used for an incremental build
+                final Path projectPath = projectService.resolveProject( resource );
+                final Path packagePath = projectService.resolvePackage( resource );
+                if ( projectPath != null && packagePath != null ) {
+                    if ( !projectBatchChanges.containsKey( projectPath ) ) {
+                        projectBatchChanges.put( projectPath,
+                                                 new HashSet<ResourceChange>() );
+                    }
+                    final Set<ResourceChange> projectChanges = projectBatchChanges.get( projectPath );
+                    projectChanges.add( change );
+                }
+            }
+        }
+
+        //Schedule an incremental build for each Project
+        for ( final Map.Entry<Path, Set<ResourceChange>> e : projectBatchChanges.entrySet() ) {
+            executor.execute( new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        buildService.applyBatchResourceChanges( e.getKey(),
+                                                                e.getValue() );
+                    } catch ( Exception e ) {
+                        log.error( e.getMessage(),
+                                   e );
+                    }
+                }
+            } );
+        }
     }
 
 }

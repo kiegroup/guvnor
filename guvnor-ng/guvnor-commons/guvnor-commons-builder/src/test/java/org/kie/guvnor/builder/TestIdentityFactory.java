@@ -20,12 +20,14 @@ import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 
 @Singleton
+@Alternative
 public class TestIdentityFactory {
 
     private Identity identity;

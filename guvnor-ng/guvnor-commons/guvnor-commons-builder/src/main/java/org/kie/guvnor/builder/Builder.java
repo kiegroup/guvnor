@@ -18,8 +18,11 @@ package org.kie.guvnor.builder;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
@@ -34,6 +37,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
+import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
@@ -43,6 +47,8 @@ import org.kie.guvnor.services.backend.file.DotFileFilter;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.client.workbench.widgets.events.ChangeType;
+import org.uberfire.client.workbench.widgets.events.ResourceChange;
 
 public class Builder {
 
@@ -130,6 +136,9 @@ public class Builder {
     }
 
     public IncrementalBuildResults addResource( final Path resource ) {
+        PortablePreconditions.checkNotNull( "resource",
+                                            resource );
+
         //Check a full build has been performed
         if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
@@ -158,6 +167,9 @@ public class Builder {
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
+        PortablePreconditions.checkNotNull( "resource",
+                                            resource );
+
         //Check a full build has been performed
         if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
@@ -182,6 +194,61 @@ public class Builder {
 
     public IncrementalBuildResults updateResource( final Path resource ) {
         return addResource( resource );
+    }
+
+    public IncrementalBuildResults applyBatchResourceChanges( final Set<ResourceChange> changes ) {
+        PortablePreconditions.checkNotNull( "changes",
+                                            changes );
+
+        //Check a full build has been performed
+        if ( !isBuilt() ) {
+            throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
+        }
+
+        //Add all changes to KieFileSystem before executing the build
+        final List<String> changedFilesKieBuilderPaths = new ArrayList<String>();
+        for ( ResourceChange change : changes ) {
+            final ChangeType type = change.getType();
+            final Path resource = paths.convert( change.getPath() );
+
+            PortablePreconditions.checkNotNull( "type",
+                                                type );
+            PortablePreconditions.checkNotNull( "resource",
+                                                resource );
+
+            final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+            switch ( type ) {
+                case ADD:
+                case UPDATE:
+                    //Add/update resource
+                    final InputStream is = ioService.newInputStream( resource );
+                    final BufferedInputStream bis = new BufferedInputStream( is );
+                    kieFileSystem.write( destinationPath,
+                                         KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                    handles.put( destinationPath,
+                                 paths.convert( resource ) );
+                    break;
+                case DELETE:
+                    //Delete resource
+                    kieFileSystem.delete( destinationPath );
+                    break;
+            }
+        }
+
+        //Perform the Incremental build
+        final String[] kieBuilderPaths = new String[ changedFilesKieBuilderPaths.size() ];
+        changedFilesKieBuilderPaths.toArray( kieBuilderPaths );
+        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( kieBuilderPaths ).build();
+
+        //Messages from incremental build
+        final IncrementalBuildResults results = convertMessages( incrementalResults );
+
+        //Tidy-up removed message handles
+        for ( Message message : incrementalResults.getRemovedMessages() ) {
+            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        }
+
+        return results;
     }
 
     public KieModule getKieModule() {

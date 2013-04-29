@@ -16,11 +16,14 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import java.util.Set;
+
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceChange;
 
 public class MockBuildServiceCaller
         implements Caller<BuildService> {
@@ -60,6 +63,10 @@ public class MockBuildServiceCaller
             public void updateProjectResource( Path resource ) {
             }
 
+            @Override
+            public void applyBatchResourceChanges( Path projectRoot,
+                                                   Set<ResourceChange> changes ) {
+            }
         };
     }
 

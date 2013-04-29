@@ -17,6 +17,7 @@
 package org.kie.guvnor.builder;
 
 import java.io.ByteArrayInputStream;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.ResourceChange;
 
 @Service
 @ApplicationScoped
@@ -150,4 +152,18 @@ public class BuildServiceImpl
         }
     }
 
+    @Override
+    public void applyBatchResourceChanges( final Path projectRoot,
+                                           final Set<ResourceChange> changes ) {
+        final Path pathToPom = projectService.resolvePathToPom( projectRoot );
+        if ( pathToPom == null ) {
+            return;
+        }
+        final Builder builder = cache.assertBuilder( pathToPom );
+        if ( !builder.isBuilt() ) {
+            build( pathToPom );
+        }
+        final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
+        incrementalBuildResultsEvent.fire( results );
+    }
 }

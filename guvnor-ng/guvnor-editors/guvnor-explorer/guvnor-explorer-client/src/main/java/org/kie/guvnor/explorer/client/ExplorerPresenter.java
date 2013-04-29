@@ -30,6 +30,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
@@ -141,6 +142,13 @@ public class ExplorerPresenter {
 
     // Refresh when a Resource has been renamed
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
+        activePath = null;
+        //TODO Refresh only if required
+        loadItems( context.getActivePath() );
+    }
+
+    // Refresh when a batch Resource change has occurred
+    public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
         activePath = null;
         //TODO Refresh only if required
         loadItems( context.getActivePath() );

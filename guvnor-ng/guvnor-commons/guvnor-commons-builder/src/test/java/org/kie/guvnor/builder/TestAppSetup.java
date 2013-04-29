@@ -17,6 +17,7 @@
 package org.kie.guvnor.builder;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -30,6 +31,7 @@ import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 import static org.mockito.Mockito.*;
 
 @Singleton
+@Alternative
 public class TestAppSetup {
 
     private final IOService ioService = new IOServiceDotFileImpl();
