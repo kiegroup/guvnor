@@ -36,6 +36,7 @@ import org.kie.guvnor.commons.service.session.SessionService;
 import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.guvnor.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.backend.file.FileExtensionFilter;
 import org.kie.guvnor.services.backend.file.LinkedDotFileFilter;
 import org.kie.guvnor.services.backend.file.LinkedFilter;
 import org.kie.guvnor.services.backend.file.LinkedMetaInfFolderFilter;
@@ -209,10 +210,7 @@ public class ScenarioTestEditorServiceImpl
     
     @Override
     public void runAllScenarios(Path testResourcePath, String sessionName) {
-
         Path pathToPom = projectService.resolvePathToPom(testResourcePath);
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXX:" + testResourcePath);
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXX:" + testResourcePath.getFileName());
         List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
         List<Scenario> scenarios = new ArrayList<Scenario>();
         for(Path path : scenarioPaths) {
@@ -225,8 +223,7 @@ public class ScenarioTestEditorServiceImpl
                 testResultMessageEvent);
     }
     
-    public List<Path> loadScenarioPaths(final Path path) {
-
+    public List<Path> loadScenarioPaths(final Path path) {      
         // Check Path exists
         final List<Path> items = new ArrayList<Path>();
         if (!Files.exists(paths.convert(path))) {
@@ -240,13 +237,14 @@ public class ScenarioTestEditorServiceImpl
         }
 
         LinkedFilter filter =  new LinkedDotFileFilter();
-        filter.setNextFilter( new LinkedMetaInfFolderFilter() );
-        
+        LinkedFilter metaInfFolderFilter = new LinkedMetaInfFolderFilter();
+        filter.setNextFilter(metaInfFolderFilter);
+        FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(".scenario");     
+
         // Get list of immediate children
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService
-                .newDirectoryStream(pPath);
-        for (final org.kie.commons.java.nio.file.Path p : directoryStream) {
-            if (filter.accept(p)) {
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath);
+        for (final org.kie.commons.java.nio.file.Path p : directoryStream) {          
+            if (filter.accept(p) && fileExtensionFilter.accept(p)) {
                 if (Files.isRegularFile(p)) {
                     items.add(paths.convert(p));
                 } else if (Files.isDirectory(p)) {
