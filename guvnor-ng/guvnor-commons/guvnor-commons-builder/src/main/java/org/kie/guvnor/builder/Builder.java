@@ -174,6 +174,7 @@ public class Builder {
         if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
         }
+
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         kieFileSystem.delete( destinationPath );
