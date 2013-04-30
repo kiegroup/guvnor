@@ -1,6 +1,6 @@
-package p1;
+package t2p1;
 
-public class Bean2 extends p1.Bean1 {
+public class Bean2 extends t2p1.Bean1 {
 
     private String field3;
 

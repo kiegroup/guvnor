@@ -53,7 +53,7 @@ public class DataModelServiceTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/t3p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -62,9 +62,9 @@ public class DataModelServiceTests {
         assertNotNull( oracle );
         assertEquals( 2,
                       oracle.getAllFactTypes().length );
-        assertContains( "p1.Bean1",
+        assertContains( "t3p1.Bean1",
                         oracle.getAllFactTypes() );
-        assertContains( "p2.Bean2",
+        assertContains( "t3p2.Bean2",
                         oracle.getAllFactTypes() );
 
         assertEquals( 1,
@@ -82,7 +82,7 @@ public class DataModelServiceTests {
 
         assertEquals( 1,
                       oracle.getExternalFactTypes().length );
-        assertContains( "p2.Bean2",
+        assertContains( "t3p2.Bean2",
                         oracle.getExternalFactTypes() );
     }
 
@@ -94,7 +94,7 @@ public class DataModelServiceTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/t3p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -104,26 +104,26 @@ public class DataModelServiceTests {
 
         assertEquals( 2,
                       oracle.getFactTypes().length );
-        assertContains( "p1.Bean1",
+        assertContains( "t3p1.Bean1",
                         oracle.getFactTypes() );
-        assertContains( "p2.Bean2",
+        assertContains( "t3p2.Bean2",
                         oracle.getFactTypes() );
 
         assertEquals( 3,
-                      oracle.getFieldCompletions( "p1.Bean1" ).length );
+                      oracle.getFieldCompletions( "t3p1.Bean1" ).length );
         assertContains( "this",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
+                        oracle.getFieldCompletions( "t3p1.Bean1" ) );
         assertContains( "field1",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
+                        oracle.getFieldCompletions( "t3p1.Bean1" ) );
         assertContains( "field2",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
+                        oracle.getFieldCompletions( "t3p1.Bean1" ) );
 
         assertEquals( 2,
-                      oracle.getFieldCompletions( "p2.Bean2" ).length );
+                      oracle.getFieldCompletions( "t3p2.Bean2" ).length );
         assertContains( "this",
-                        oracle.getFieldCompletions( "p2.Bean2" ) );
+                        oracle.getFieldCompletions( "t3p2.Bean2" ) );
         assertContains( "field1",
-                        oracle.getFieldCompletions( "p2.Bean2" ) );
+                        oracle.getFieldCompletions( "t3p2.Bean2" ) );
     }
 
     @Test

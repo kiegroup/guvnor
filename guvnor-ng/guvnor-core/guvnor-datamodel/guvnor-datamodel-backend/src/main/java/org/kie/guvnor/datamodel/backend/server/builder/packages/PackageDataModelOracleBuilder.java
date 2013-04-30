@@ -175,6 +175,7 @@ public final class PackageDataModelOracleBuilder {
         packageOracle.addCollectionTypes( pd.getProjectCollectionTypes() );
         packageOracle.addDeclaredTypes( pd.getProjectDeclaredTypes() );
         packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
+        packageOracle.addTypeAnnotations( pd.getTypeAnnotations() );
 
         //Add Package DMO specifics
         loadEnums();

@@ -1,4 +1,4 @@
-package p2;
+package t3p2;
 
 public class Bean2 {
 

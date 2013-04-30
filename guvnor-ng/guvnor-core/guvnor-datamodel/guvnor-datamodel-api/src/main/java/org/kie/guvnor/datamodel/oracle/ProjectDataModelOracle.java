@@ -18,7 +18,9 @@ package org.kie.guvnor.datamodel.oracle;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
@@ -39,6 +41,8 @@ public interface ProjectDataModelOracle {
 
     String getSuperType( final String factType );
 
+    Set<Annotation> getTypeAnnotation( final String factType );
+
     Map<String, ModelField[]> getModelFields();
 
     String[] getConnectiveOperatorCompletions( final String factType,
@@ -48,7 +52,6 @@ public interface ProjectDataModelOracle {
                                      final String fieldName );
 
     String[] getFieldCompletions( final String factType );
-
 
     List<String> getMethodNames( final String factType );
 

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.models.commons.shared.imports.Import;
 import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.model.ModelField;
 
@@ -149,6 +151,25 @@ public class PackageDataModelOracleUtils {
             }
         }
         return scopedSuperTypes;
+    }
+
+    //Filter and rename Type Annotations based on package name and imports
+    public static Map<String, Set<Annotation>> filterTypeAnnotations( final String packageName,
+                                                                      final Imports imports,
+                                                                      final Map<String, Set<Annotation>> projectTypeAnnotations ) {
+        final Map<String, Set<Annotation>> scopedTypeAnnotations = new HashMap<String, Set<Annotation>>();
+        for ( Map.Entry<String, Set<Annotation>> e : projectTypeAnnotations.entrySet() ) {
+            final String typeAnnotationQualifiedType = e.getKey();
+            final String typeAnnotationPackageName = getPackageName( typeAnnotationQualifiedType );
+            final String typeAnnotationTypeName = getTypeName( typeAnnotationQualifiedType );
+
+            if ( typeAnnotationPackageName.equals( packageName ) || isImported( typeAnnotationQualifiedType,
+                                                                                imports ) ) {
+                scopedTypeAnnotations.put( typeAnnotationTypeName,
+                                           e.getValue() );
+            }
+        }
+        return scopedTypeAnnotations;
     }
 
     //Filter and rename Enum definitions based on package name and imports

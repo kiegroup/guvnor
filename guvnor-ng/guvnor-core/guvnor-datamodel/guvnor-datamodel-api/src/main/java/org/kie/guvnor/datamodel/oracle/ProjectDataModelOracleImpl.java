@@ -2,6 +2,7 @@ package org.kie.guvnor.datamodel.oracle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
@@ -32,14 +34,17 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     //for example given "List<String> name", key = "name" value = "String"
     protected Map<String, String> projectFieldParametersType = new HashMap<String, String>();
 
-    //FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
+    //Map {factType, isEvent} to determine which Fact Type can be treated as events.
     protected Map<String, Boolean> projectEventTypes = new HashMap<String, Boolean>();
 
-    //FactTypes {factType, isDeclaredType} to determine which Fact Type were declared in DRL.
+    //Map {factType, isDeclaredType} to determine which Fact Type were declared in DRL.
     protected Map<String, Boolean> projectDeclaredTypes = new HashMap<String, Boolean>();
 
-    //FactTypes {factType, superType} to determine the Super Type of a FactType.
+    //Map {factType, superType} to determine the Super Type of a FactType.
     protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
+
+    //Map {factType, Set<Annotation>} containing the FactType's annotations.
+    protected Map<String, Set<Annotation>> projectTypeAnnotations = new HashMap<String, Set<Annotation>>();
 
     // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     protected Map<String, String[]> projectJavaEnumLists = new HashMap<String, String[]>();
@@ -139,6 +144,19 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public String getSuperType( final String factType ) {
         return projectSuperTypes.get( factType );
+    }
+
+    /**
+     * Get the Annotations for a given FactType
+     * @param factType
+     * @return Empty set if no annotations exist for the type
+     */
+    @Override
+    public Set<Annotation> getTypeAnnotation( final String factType ) {
+        if ( !projectTypeAnnotations.containsKey( factType ) ) {
+            return Collections.EMPTY_SET;
+        }
+        return projectTypeAnnotations.get( factType );
     }
 
     // ####################################
@@ -682,6 +700,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectSuperTypes.putAll( superTypes );
     }
 
+    public void addTypeAnnotations( final Map<String, Set<Annotation>> annotations ) {
+        this.projectTypeAnnotations.putAll( annotations );
+    }
+
     public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
         this.projectJavaEnumLists.putAll( dataEnumLists );
     }
@@ -708,6 +730,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     public Map<String, String> getProjectSuperTypes() {
         return this.projectSuperTypes;
+    }
+
+    public Map<String, Set<Annotation>> getTypeAnnotations() {
+        return this.projectTypeAnnotations;
     }
 
     public Map<String, String[]> getProjectJavaEnumLists() {

@@ -52,7 +52,7 @@ public class DataModelSuperTypesTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/t2p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -72,7 +72,7 @@ public class DataModelSuperTypesTests {
         assertNull( oracle.getSuperType( "Bean1" ) );
         assertEquals( "Bean1",
                       oracle.getSuperType( "Bean2" ) );
-        assertEquals( "p2.Bean3",
+        assertEquals( "t2p2.Bean3",
                       oracle.getSuperType( "Bean4" ) );
     }
 
@@ -84,7 +84,7 @@ public class DataModelSuperTypesTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/t2p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -94,22 +94,22 @@ public class DataModelSuperTypesTests {
 
         assertEquals( 4,
                       oracle.getFactTypes().length );
-        assertContains( "p1.Bean1",
+        assertContains( "t2p1.Bean1",
                         oracle.getFactTypes() );
-        assertContains( "p1.Bean2",
+        assertContains( "t2p1.Bean2",
                         oracle.getFactTypes() );
-        assertContains( "p2.Bean3",
+        assertContains( "t2p2.Bean3",
                         oracle.getFactTypes() );
-        assertContains( "p1.Bean4",
+        assertContains( "t2p1.Bean4",
                         oracle.getFactTypes() );
 
-        assertNull( oracle.getSuperType( "p1.Bean1" ) );
-        assertEquals( "p1.Bean1",
-                      oracle.getSuperType( "p1.Bean2" ) );
-        assertEquals( "p1.Bean1",
-                      oracle.getSuperType( "p2.Bean3" ) );
-        assertEquals( "p2.Bean3",
-                      oracle.getSuperType( "p1.Bean4" ) );
+        assertNull( oracle.getSuperType( "t2p1.Bean1" ) );
+        assertEquals( "t2p1.Bean1",
+                      oracle.getSuperType( "t2p1.Bean2" ) );
+        assertEquals( "t2p1.Bean1",
+                      oracle.getSuperType( "t2p2.Bean3" ) );
+        assertEquals( "t2p2.Bean3",
+                      oracle.getSuperType( "t2p1.Bean4" ) );
     }
 
 }

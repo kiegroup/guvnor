@@ -14,6 +14,7 @@ import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.model.MethodInfo;
@@ -44,17 +45,20 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // Filtered (current package and imports) Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
     private Map<String, List<MethodInfo>> filteredMethodInformation = new HashMap<String, List<MethodInfo>>();
 
-    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
+    // Filtered (current package and imports) Map {factType, isEvent} to determine which Fact Type can be treated as events.
     private Map<String, Boolean> filteredEventTypes = new HashMap<String, Boolean>();
 
-    // Filtered (current package and imports) FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    // Filtered (current package and imports) Map {factType, isCollection} to determine which Fact Types are Collections.
     private Map<String, Boolean> filteredCollectionTypes = new HashMap<String, Boolean>();
 
-    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Types were declared in DRL.
+    // Filtered (current package and imports) Map {factType, isEvent} to determine which Fact Types were declared in DRL.
     private Map<String, Boolean> filteredDeclaredTypes = new HashMap<String, Boolean>();
 
-    //FactTypes {factType, superType} to determine the Super Type of a FactType.
+    // Filtered (current package and imports) Map {factType, superType} to determine the Super Type of a FactType.
     protected Map<String, String> filteredSuperTypes = new HashMap<String, String>();
+
+    // Filtered (current package and imports) Map {factType, Set<Annotation>} containing the FactType's annotations.
+    protected Map<String, Set<Annotation>> filteredTypeAnnotations = new HashMap<String, Set<Annotation>>();
 
     // Filtered (current package and imports) map of Globals {alias, class name}.
     private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
@@ -188,6 +192,19 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     @Override
     public String getSuperType( final String factType ) {
         return filteredSuperTypes.get( factType );
+    }
+
+    /**
+     * Get the Annotations for a given FactType
+     * @param factType
+     * @return Empty set if no annotations exist for the type
+     */
+    @Override
+    public Set<Annotation> getTypeAnnotation( final String factType ) {
+        if ( !filteredTypeAnnotations.containsKey( factType ) ) {
+            return Collections.EMPTY_SET;
+        }
+        return filteredTypeAnnotations.get( factType );
     }
 
     // ####################################
@@ -778,6 +795,12 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         filteredSuperTypes.putAll( PackageDataModelOracleUtils.filterSuperTypes( packageName,
                                                                                  imports,
                                                                                  projectSuperTypes ) );
+
+        //Filter and rename Type Annotations based on package name and imports
+        filteredTypeAnnotations = new HashMap<String, Set<Annotation>>();
+        filteredTypeAnnotations.putAll( PackageDataModelOracleUtils.filterTypeAnnotations( packageName,
+                                                                                           imports,
+                                                                                           projectTypeAnnotations ) );
 
         //Filter and rename Enum definitions based on package name and imports
         filteredEnumLists = new HashMap<String, String[]>();

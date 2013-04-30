@@ -7,7 +7,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -53,7 +52,7 @@ public class DataModelDeclaredTypesTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/t1p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -70,12 +69,12 @@ public class DataModelDeclaredTypesTests {
 
         assertEquals( 1,
                       oracle.getExternalFactTypes().length );
-        assertContains( "p2.Bean2",
+        assertContains( "t1p2.Bean2",
                         oracle.getExternalFactTypes() );
 
         assertFalse( oracle.isDeclaredType( "Bean1" ) );
         assertTrue( oracle.isDeclaredType( "DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
+        assertFalse( oracle.isDeclaredType( "t1p2.Bean2" ) );
     }
 
     @Test
@@ -86,7 +85,7 @@ public class DataModelDeclaredTypesTests {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/t1p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -96,16 +95,16 @@ public class DataModelDeclaredTypesTests {
 
         assertEquals( 3,
                       oracle.getFactTypes().length );
-        assertContains( "p1.Bean1",
+        assertContains( "t1p1.Bean1",
                         oracle.getFactTypes() );
-        assertContains( "p1.DRLBean",
+        assertContains( "t1p1.DRLBean",
                         oracle.getFactTypes() );
-        assertContains( "p2.Bean2",
+        assertContains( "t1p2.Bean2",
                         oracle.getFactTypes() );
 
-        assertFalse( oracle.isDeclaredType( "p1.Bean1" ) );
-        assertTrue( oracle.isDeclaredType( "p1.DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
+        assertFalse( oracle.isDeclaredType( "t1p1.Bean1" ) );
+        assertTrue( oracle.isDeclaredType( "t1p1.DRLBean" ) );
+        assertFalse( oracle.isDeclaredType( "t1p2.Bean2" ) );
     }
 
 }
