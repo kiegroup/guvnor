@@ -108,15 +108,17 @@ public class ProjectScreenPresenter
                 if (pathToPomXML != null && (ProjectScreenPresenter.this.pathToPomXML == null || !ProjectScreenPresenter.this.pathToPomXML.equals(pathToPomXML))) {
 
 
-                    if (ProjectScreenPresenter.this.pathToPomXML != null && pomPanel.isDirty()) {
-                            Window.alert("There are unsaved changes");
-                    } else {
+//                    if (ProjectScreenPresenter.this.pathToPomXML != null
+//                            && pomPanel.isDirty()
+//                            ) {
+//                            Window.alert("There are unsaved changes");
+//                    } else {
                         ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
                         init();
                         view.selectMainTab();
                         pomMetadata = null;
                         kmoduleMetadata = null;
-                    }
+//                    }
                 }
             }
         }).resolvePathToPom(path);
