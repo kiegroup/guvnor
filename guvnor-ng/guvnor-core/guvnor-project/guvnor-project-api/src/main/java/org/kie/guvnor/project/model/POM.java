@@ -60,5 +60,4 @@ public class POM {
         return MODEL_VERSION;
     }
 
-
 }

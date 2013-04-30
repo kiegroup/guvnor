@@ -16,10 +16,12 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.data.observer.Observer;
 import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
@@ -64,14 +66,10 @@ public class ProjectScreenPresenter
     private Menus menus;
     private Caller<ProjectService> projectService;
 
-    public ProjectScreenPresenter() {
-    }
-
     @Inject
     public ProjectScreenPresenter(@New ProjectScreenView view,
                                   @New POMEditorPanel pomPanel,
                                   @New KModuleEditorPanel kModuleEditorPanel,
-                                  @New BulkRunTestScenarioEditor runAllTestScenariosEditor,
                                   WorkbenchContext workbenchContext,
                                   Caller<ProjectService> projectService,
                                   Caller<KModuleService> kModuleServiceCaller,
@@ -89,7 +87,6 @@ public class ProjectScreenPresenter
 
         view.setPresenter(this);
         view.setPOMEditorPanel(pomPanel);
-        view.setTestScenarioPanel(runAllTestScenariosEditor);
         view.setKModuleEditorPanel(kModuleEditorPanel);
 
 
@@ -109,11 +106,17 @@ public class ProjectScreenPresenter
 
                 // TODO: Check save if there are changes -Rikkola-
                 if (pathToPomXML != null && (ProjectScreenPresenter.this.pathToPomXML == null || !ProjectScreenPresenter.this.pathToPomXML.equals(pathToPomXML))) {
-                    ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
-                    init();
-                    view.selectMainTab();
-                    pomMetadata = null;
-                    kmoduleMetadata = null;
+
+
+                    if (ProjectScreenPresenter.this.pathToPomXML != null && pomPanel.isDirty()) {
+                            Window.alert("There are unsaved changes");
+                    } else {
+                        ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
+                        init();
+                        view.selectMainTab();
+                        pomMetadata = null;
+                        kmoduleMetadata = null;
+                    }
                 }
             }
         }).resolvePathToPom(path);
@@ -135,30 +138,7 @@ public class ProjectScreenPresenter
                 .newTopLevelMenu(CommonConstants.INSTANCE.File())
                 .menus()
                 .menu(CommonConstants.INSTANCE.Save())
-                .respondsWith(new Command() {
-                    @Override
-                    public void execute() {
-                        saveOperationService.save(pathToPomXML,
-                                new CommandWithCommitMessage() {
-                                    @Override
-                                    public void execute(final String comment) {
-                                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                                        // We need to use callback here or jgit will break when we save two files at the same time.
-                                        pomPanel.save(comment,
-                                                new Command() {
-                                                    @Override
-                                                    public void execute() {
-                                                        if (kModuleEditorPanel.hasBeenInitialized()) {
-                                                            kModuleEditorPanel.save(comment,
-                                                                    kmoduleMetadata);
-                                                        }
-                                                        view.hideBusyIndicator();
-                                                    }
-                                                }, pomMetadata);
-                                    }
-                                });
-                    }
-                })
+                .respondsWith(getSaveCommand())
                 .endMenu()
                 .endMenus()
                 .endMenu()
@@ -194,6 +174,33 @@ public class ProjectScreenPresenter
 //            ));
 //        }
 
+    }
+
+    private Command getSaveCommand() {
+        return new Command() {
+            @Override
+            public void execute() {
+                saveOperationService.save(pathToPomXML,
+                        new CommandWithCommitMessage() {
+                            @Override
+                            public void execute(final String comment) {
+                                view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                                // We need to use callback here or jgit will break when we save two files at the same time.
+                                pomPanel.save(comment,
+                                        new Command() {
+                                            @Override
+                                            public void execute() {
+                                                if (kModuleEditorPanel.hasBeenInitialized()) {
+                                                    kModuleEditorPanel.save(comment,
+                                                            kmoduleMetadata);
+                                                }
+                                                view.hideBusyIndicator();
+                                            }
+                                        }, pomMetadata);
+                            }
+                        });
+            }
+        };
     }
 
     private RemoteCallback getBuildSuccessCallback() {

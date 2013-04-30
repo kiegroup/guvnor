@@ -38,8 +38,6 @@ public class ProjectScreenTest {
     private ProjectScreenView view;
     private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
-    private ProjectEditorScreenPresenter screen;
-    private BulkRunTestScenarioEditor runAllTestScenariosEditor;
     private ProjectScreenPresenter screen;
     private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private MockBuildServiceCaller buildServiceCaller;
@@ -54,7 +52,6 @@ public class ProjectScreenTest {
         when(view.getEnableKieProjectMenuItemText()).thenReturn("");
         pomPanel = mock(POMEditorPanel.class);
         kModuleEditorPanel = mock(KModuleEditorPanel.class);
-        runAllTestScenariosEditor = mock(BulkRunTestScenarioEditor.class);
         projectEditorServiceCaller = new MockProjectEditorServiceCaller();
         buildServiceCaller = new MockBuildServiceCaller();
         metadataServiceCaller = new MockMetadataServiceCaller();
@@ -63,7 +60,7 @@ public class ProjectScreenTest {
 
         MockProjectServiceCaller projectServiceCaller = new MockProjectServiceCaller();
 
-        screen = new ProjectScreenPresenter(view, pomPanel, kModuleEditorPanel, runAllTestScenariosEditor, workbenchContext, projectServiceCaller, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
+        screen = new ProjectScreenPresenter(view, pomPanel, kModuleEditorPanel, workbenchContext, projectServiceCaller, projectEditorServiceCaller, buildServiceCaller, metadataServiceCaller, saveOperationService);
         screen.getMenus();
     }
 

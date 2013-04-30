@@ -13,11 +13,15 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @WorkbenchEditor(identifier = "pomScreen", supportedTypes = {POMResourceType.class})
 public class PomEditorScreenPresenter {
 
-    private final POMEditorPanel pomEditorPanel;
-    private final FileMenuBuilder menuBuilder;
+    private POMEditorPanel pomEditorPanel;
+    private FileMenuBuilder menuBuilder;
     private Menus menus;
     private Path path;
     private boolean isReadOnly;
+
+
+    public PomEditorScreenPresenter() {
+    }
 
     @Inject
     public PomEditorScreenPresenter(POMEditorPanel pomEditorPanel,

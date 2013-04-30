@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.data.observer.Observer;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
@@ -37,6 +38,7 @@ public class POMEditorPanel
     private Path path;
     private POM model;
     private final Caller<POMService> pomServiceCaller;
+    private Observer<POM> observer;
 
     @Inject
     public POMEditorPanel( final Caller<POMService> pomServiceCaller,
@@ -63,6 +65,8 @@ public class POMEditorPanel
             @Override
             public void callback( final POM model ) {
                 POMEditorPanel.this.model = model;
+                observer = new Observer(model);
+
                 view.setGAV( model.getGav() );
                 view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
                     @Override
@@ -113,5 +117,9 @@ public class POMEditorPanel
 
     public String getTitle() {
         return view.getTitleWidget();
+    }
+
+    public boolean isDirty() {
+        return observer.isDirty(model);
     }
 }
