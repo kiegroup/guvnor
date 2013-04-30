@@ -86,6 +86,8 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.drl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && hasDSL) {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.dslr");
+        } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
+            assetPath = modulePath.resolve("src/test/resources/" + jcrAssetItem.getName() + "." + jcrAssetItem.getFormat());
         } else {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + "." + jcrAssetItem.getFormat());
         }
