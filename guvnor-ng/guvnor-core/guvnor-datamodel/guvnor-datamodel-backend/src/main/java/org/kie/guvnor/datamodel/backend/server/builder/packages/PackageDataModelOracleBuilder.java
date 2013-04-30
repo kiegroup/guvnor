@@ -174,6 +174,7 @@ public final class PackageDataModelOracleBuilder {
         packageOracle.addEventTypes( pd.getProjectEventTypes() );
         packageOracle.addCollectionTypes( pd.getProjectCollectionTypes() );
         packageOracle.addDeclaredTypes( pd.getProjectDeclaredTypes() );
+        packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
 
         //Add Package DMO specifics
         loadEnums();

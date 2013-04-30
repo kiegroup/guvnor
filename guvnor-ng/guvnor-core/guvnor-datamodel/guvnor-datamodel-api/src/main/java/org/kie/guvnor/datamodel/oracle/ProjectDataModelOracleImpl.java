@@ -38,6 +38,9 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     //FactTypes {factType, isDeclaredType} to determine which Fact Type were declared in DRL.
     protected Map<String, Boolean> projectDeclaredTypes = new HashMap<String, Boolean>();
 
+    //FactTypes {factType, superType} to determine the Super Type of a FactType.
+    protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
+
     // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     protected Map<String, String[]> projectJavaEnumLists = new HashMap<String, String[]>();
 
@@ -93,6 +96,16 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     /**
+     * Is the Fact Type known to the DataModelOracle
+     * @param factType
+     * @return
+     */
+    @Override
+    public boolean isFactTypeRecognized( final String factType ) {
+        return projectModelFields.containsKey( factType );
+    }
+
+    /**
      * Check whether a given FactType is an Event for CEP purposes
      * @param factType
      * @return
@@ -119,13 +132,13 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     /**
-     * Is the Fact Type known to the DataModelOracle
+     * Get the Super Type for a given FactType
      * @param factType
-     * @return
+     * @return null if no Super Type
      */
     @Override
-    public boolean isFactTypeRecognized( final String factType ) {
-        return projectModelFields.containsKey( factType );
+    public String getSuperType( final String factType ) {
+        return projectSuperTypes.get( factType );
     }
 
     // ####################################
@@ -665,6 +678,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectDeclaredTypes.putAll( declaredTypes );
     }
 
+    public void addSuperTypes( final Map<String, String> superTypes ) {
+        this.projectSuperTypes.putAll( superTypes );
+    }
+
     public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
         this.projectJavaEnumLists.putAll( dataEnumLists );
     }
@@ -687,6 +704,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     public Map<String, Boolean> getProjectDeclaredTypes() {
         return this.projectDeclaredTypes;
+    }
+
+    public Map<String, String> getProjectSuperTypes() {
+        return this.projectSuperTypes;
     }
 
     public Map<String, String[]> getProjectJavaEnumLists() {

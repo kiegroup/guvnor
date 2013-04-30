@@ -53,6 +53,9 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Types were declared in DRL.
     private Map<String, Boolean> filteredDeclaredTypes = new HashMap<String, Boolean>();
 
+    //FactTypes {factType, superType} to determine the Super Type of a FactType.
+    protected Map<String, String> filteredSuperTypes = new HashMap<String, String>();
+
     // Filtered (current package and imports) map of Globals {alias, class name}.
     private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
 
@@ -144,6 +147,15 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     /**
+     * Is the Fact Type known to the DataModelOracle
+     * @param factType
+     * @return
+     */
+    public boolean isFactTypeRecognized( final String factType ) {
+        return filteredModelFields.containsKey( factType );
+    }
+
+    /**
      * Check whether a given FactType is an Event for CEP purposes
      * @param factType
      * @return
@@ -169,12 +181,13 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     /**
-     * Is the Fact Type known to the DataModelOracle
+     * Get the Super Type for a given FactType
      * @param factType
-     * @return
+     * @return null if no Super Type
      */
-    public boolean isFactTypeRecognized( final String factType ) {
-        return filteredModelFields.containsKey( factType );
+    @Override
+    public String getSuperType( final String factType ) {
+        return filteredSuperTypes.get( factType );
     }
 
     // ####################################
@@ -759,6 +772,12 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         filteredDeclaredTypes.putAll( PackageDataModelOracleUtils.filterDeclaredTypes( packageName,
                                                                                        imports,
                                                                                        projectDeclaredTypes ) );
+
+        //Filter and rename Declared Types based on package name and imports
+        filteredSuperTypes = new HashMap<String, String>();
+        filteredSuperTypes.putAll( PackageDataModelOracleUtils.filterSuperTypes( packageName,
+                                                                                 imports,
+                                                                                 projectSuperTypes ) );
 
         //Filter and rename Enum definitions based on package name and imports
         filteredEnumLists = new HashMap<String, String[]>();

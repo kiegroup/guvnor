@@ -99,17 +99,56 @@ public class PackageDataModelOracleUtils {
                                                             final Map<String, Boolean> projectDeclaredTypes ) {
         final Map<String, Boolean> scopedDeclaredTypes = new HashMap<String, Boolean>();
         for ( Map.Entry<String, Boolean> e : projectDeclaredTypes.entrySet() ) {
-            final String eventQualifiedType = e.getKey();
-            final String eventPackageName = getPackageName( eventQualifiedType );
-            final String eventTypeName = getTypeName( eventQualifiedType );
+            final String typeQualifiedType = e.getKey();
+            final String typePackageName = getPackageName( typeQualifiedType );
+            final String typeTypeName = getTypeName( typeQualifiedType );
 
-            if ( eventPackageName.equals( packageName ) || isImported( eventQualifiedType,
-                                                                       imports ) ) {
-                scopedDeclaredTypes.put( eventTypeName,
+            if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
+                                                                      imports ) ) {
+                scopedDeclaredTypes.put( typeTypeName,
                                          e.getValue() );
             }
         }
         return scopedDeclaredTypes;
+    }
+
+    //Filter and rename Super Types based on package name and imports
+    public static Map<String, String> filterSuperTypes( final String packageName,
+                                                        final Imports imports,
+                                                        final Map<String, String> projectSuperTypes ) {
+        final Map<String, String> scopedSuperTypes = new HashMap<String, String>();
+        for ( Map.Entry<String, String> e : projectSuperTypes.entrySet() ) {
+            final String typeQualifiedType = e.getKey();
+            final String typePackageName = getPackageName( typeQualifiedType );
+            final String typeTypeName = getTypeName( typeQualifiedType );
+
+            final String superTypeQualifiedType = e.getValue();
+
+            if ( superTypeQualifiedType == null ) {
+                //Doesn't have a Super Type
+                if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
+                                                                          imports ) ) {
+                    scopedSuperTypes.put( typeTypeName,
+                                          superTypeQualifiedType );
+                }
+            } else {
+                //Has a Super Type
+                if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
+                                                                          imports ) ) {
+                    final String superTypePackageName = getPackageName( superTypeQualifiedType );
+                    final String superTypeTypeName = getTypeName( superTypeQualifiedType );
+                    if ( superTypePackageName.equals( packageName ) || isImported( superTypeQualifiedType,
+                                                                                   imports ) ) {
+                        scopedSuperTypes.put( typeTypeName,
+                                              superTypeTypeName );
+                    } else {
+                        scopedSuperTypes.put( typeTypeName,
+                                              superTypeQualifiedType );
+                    }
+                }
+            }
+        }
+        return scopedSuperTypes;
     }
 
     //Filter and rename Enum definitions based on package name and imports

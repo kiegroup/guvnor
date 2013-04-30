@@ -29,13 +29,17 @@ public interface ProjectDataModelOracle {
     //Fact and Field related methods
     String[] getFactTypes();
 
-    Map<String, ModelField[]> getModelFields();
+    String getFactNameFromType( final String classType );
 
     boolean isFactTypeRecognized( final String factType );
 
     boolean isFactTypeAnEvent( final String factType );
 
     boolean isDeclaredType( final String factType );
+
+    String getSuperType( final String factType );
+
+    Map<String, ModelField[]> getModelFields();
 
     String[] getConnectiveOperatorCompletions( final String factType,
                                                final String fieldName );
@@ -45,7 +49,6 @@ public interface ProjectDataModelOracle {
 
     String[] getFieldCompletions( final String factType );
 
-    String getFactNameFromType( final String classType );
 
     List<String> getMethodNames( final String factType );
 

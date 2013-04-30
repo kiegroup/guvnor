@@ -7,7 +7,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -17,12 +16,12 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
-import static org.kie.guvnor.datamodel.backend.server.DataModelOracleTestUtils.assertContains;
+import static org.kie.guvnor.datamodel.backend.server.DataModelOracleTestUtils.*;
 
 /**
  * Tests for DataModelService
  */
-public class DataModelDeclaredTypesTests {
+public class DataModelSuperTypesTests {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -46,14 +45,14 @@ public class DataModelDeclaredTypesTests {
     }
 
     @Test
-    public void testPackageDeclaredTypes() throws Exception {
+    public void testPackageSuperTypes() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
         final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -61,32 +60,31 @@ public class DataModelDeclaredTypesTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       oracle.getFactTypes().length );
         assertContains( "Bean1",
                         oracle.getFactTypes() );
-        assertContains( "DRLBean",
+        assertContains( "Bean2",
+                        oracle.getFactTypes() );
+        assertContains( "Bean4",
                         oracle.getFactTypes() );
 
-        assertEquals( 1,
-                      oracle.getExternalFactTypes().length );
-        assertContains( "p2.Bean2",
-                        oracle.getExternalFactTypes() );
-
-        assertFalse( oracle.isDeclaredType( "Bean1" ) );
-        assertTrue( oracle.isDeclaredType( "DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
+        assertNull( oracle.getSuperType( "Bean1" ) );
+        assertEquals( "Bean1",
+                      oracle.getSuperType( "Bean2" ) );
+        assertEquals( "p2.Bean3",
+                      oracle.getSuperType( "Bean4" ) );
     }
 
     @Test
-    public void testProjectDeclaredTypes() throws Exception {
+    public void testProjectSuperTypes() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
         final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -94,18 +92,24 @@ public class DataModelDeclaredTypesTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       oracle.getFactTypes().length );
         assertContains( "p1.Bean1",
                         oracle.getFactTypes() );
-        assertContains( "p1.DRLBean",
+        assertContains( "p1.Bean2",
                         oracle.getFactTypes() );
-        assertContains( "p2.Bean2",
+        assertContains( "p2.Bean3",
+                        oracle.getFactTypes() );
+        assertContains( "p1.Bean4",
                         oracle.getFactTypes() );
 
-        assertFalse( oracle.isDeclaredType( "p1.Bean1" ) );
-        assertTrue( oracle.isDeclaredType( "p1.DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
+        assertNull( oracle.getSuperType( "p1.Bean1" ) );
+        assertEquals( "p1.Bean1",
+                      oracle.getSuperType( "p1.Bean2" ) );
+        assertEquals( "p1.Bean1",
+                      oracle.getSuperType( "p2.Bean3" ) );
+        assertEquals( "p2.Bean3",
+                      oracle.getSuperType( "p1.Bean4" ) );
     }
 
 }

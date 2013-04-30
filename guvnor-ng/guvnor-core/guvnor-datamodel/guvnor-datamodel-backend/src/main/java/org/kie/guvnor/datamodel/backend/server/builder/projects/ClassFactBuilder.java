@@ -54,7 +54,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             return;
         }
 
-        final String factType = getFactType( clazz );
+        final String factType = getType( clazz );
 
         //Get all getters and setters for the class. This does not handle delegated properties
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
