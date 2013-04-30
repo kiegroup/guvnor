@@ -98,7 +98,8 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataMo
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 try {
                     pdBuilder.addClass( clazz,
-                                        typeMetaInfo.isEvent() );
+                                        typeMetaInfo.isEvent(),
+                                        typeMetaInfo.isDeclaredType() );
                 } catch ( IOException ioe ) {
                     results.addBuildMessage( makeMessage( ERROR_IO,
                                                           ioe ) );

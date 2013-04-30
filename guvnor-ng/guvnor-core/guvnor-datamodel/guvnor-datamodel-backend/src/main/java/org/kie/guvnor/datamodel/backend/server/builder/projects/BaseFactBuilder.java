@@ -21,21 +21,18 @@ public abstract class BaseFactBuilder implements FactBuilder {
     private final List<ModelField> fields = new ArrayList<ModelField>();
     private final boolean isCollection;
     private final boolean isEvent;
-
-    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
-                            final Class<?> clazz ) {
-        this( builder,
-              clazz,
-              false );
-    }
+    private final boolean isDeclaredType;
 
     public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final Class<?> clazz,
-                            final boolean isEvent ) {
+                            final boolean isEvent,
+                            final boolean isDeclaredType ) {
         this.builder = builder;
         this.factType = getFactType( clazz );
         this.isCollection = isCollectionType( clazz );
         this.isEvent = isEvent;
+        this.isDeclaredType = isDeclaredType;
+
         addField( new ModelField( DataType.TYPE_THIS,
                                   factType,
                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -44,21 +41,16 @@ public abstract class BaseFactBuilder implements FactBuilder {
     }
 
     public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
-                            final String factType ) {
-        this( builder,
-              factType,
-              false,
-              false );
-    }
-
-    public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final String factType,
                             final boolean isCollection,
-                            final boolean isEvent ) {
+                            final boolean isEvent,
+                            final boolean isDeclaredType ) {
         this.builder = builder;
         this.factType = factType;
         this.isCollection = isCollection;
         this.isEvent = isEvent;
+        this.isDeclaredType = isDeclaredType;
+
         addField( new ModelField( DataType.TYPE_THIS,
                                   factType,
                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -79,8 +71,9 @@ public abstract class BaseFactBuilder implements FactBuilder {
     @Override
     public void build( final ProjectDataModelOracleImpl oracle ) {
         oracle.addFactsAndFields( buildFactsAndFields() );
-        oracle.addCollectionType( buildCollectionTypes() );
-        oracle.addEventType( buildEventTypes() );
+        oracle.addCollectionTypes( buildCollectionTypes() );
+        oracle.addEventTypes( buildEventTypes() );
+        oracle.addDeclaredTypes( buildDeclaredTypes() );
     }
 
     public ProjectDataModelOracleBuilder getDataModelBuilder() {
@@ -108,6 +101,13 @@ public abstract class BaseFactBuilder implements FactBuilder {
         loadableEventTypes.put( factType,
                                 isEvent );
         return loadableEventTypes;
+    }
+
+    private Map<String, Boolean> buildDeclaredTypes() {
+        final Map<String, Boolean> loadableDeclaredTypes = new HashMap<String, Boolean>();
+        loadableDeclaredTypes.put( factType,
+                                   isDeclaredType );
+        return loadableDeclaredTypes;
     }
 
     protected String getFactType( final Class<?> clazz ) {

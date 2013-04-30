@@ -1,0 +1,5 @@
+package p1;
+
+declare DRLBean
+  field1 : String
+end

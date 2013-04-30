@@ -8,19 +8,14 @@ import org.kie.guvnor.datamodel.model.ModelField;
 public class SimpleFactBuilder extends BaseFactBuilder {
 
     public SimpleFactBuilder( final ProjectDataModelOracleBuilder builder,
-                              final String factType ) {
-        this( builder,
-              factType,
-              false );
-    }
-
-    public SimpleFactBuilder( final ProjectDataModelOracleBuilder builder,
                               final String factType,
-                              final boolean isEvent ) {
+                              final boolean isEvent,
+                              final boolean isDeclaredType ) {
         super( builder,
                factType,
                false,
-               isEvent );
+               isEvent,
+               isDeclaredType );
     }
 
     public SimpleFactBuilder addField( final ModelField field ) {

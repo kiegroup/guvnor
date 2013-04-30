@@ -32,18 +32,13 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Map<String, String> fieldParametersType = new HashMap<String, String>();
 
     public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
-                             final Class<?> clazz ) throws IOException {
-        this( builder,
-              clazz,
-              false );
-    }
-
-    public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz,
-                             final boolean isEvent ) throws IOException {
+                             final boolean isEvent,
+                             final boolean isDeclaredType ) throws IOException {
         super( builder,
                clazz,
-               isEvent );
+               isEvent,
+               isDeclaredType );
         loadClassFields( clazz );
     }
 

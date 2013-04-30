@@ -38,17 +38,20 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // for example given "List<String> name", key = "name" value = "String"
     private Map<String, String> filteredFieldParametersType = new HashMap<String, String>();
 
-    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
-    private Map<String, Boolean> filteredEventTypes = new HashMap<String, Boolean>();
-
     // Filtered (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     private Map<String, String[]> filteredEnumLists = new HashMap<String, String[]>();
 
     // Filtered (current package and imports) Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
     private Map<String, List<MethodInfo>> filteredMethodInformation = new HashMap<String, List<MethodInfo>>();
 
+    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
+    private Map<String, Boolean> filteredEventTypes = new HashMap<String, Boolean>();
+
     // Filtered (current package and imports) FactTypes {factType, isCollection} to determine which Fact Types are Collections.
     private Map<String, Boolean> filteredCollectionTypes = new HashMap<String, Boolean>();
+
+    // Filtered (current package and imports) FactTypes {factType, isEvent} to determine which Fact Types were declared in DRL.
+    private Map<String, Boolean> filteredDeclaredTypes = new HashMap<String, Boolean>();
 
     // Filtered (current package and imports) map of Globals {alias, class name}.
     private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
@@ -150,6 +153,19 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
             return false;
         }
         return filteredEventTypes.get( factType );
+    }
+
+    /**
+     * Check whether a given FactType was declared in DRL
+     * @param factType
+     * @return
+     */
+    @Override
+    public boolean isDeclaredType( final String factType ) {
+        if ( !filteredDeclaredTypes.containsKey( factType ) ) {
+            return false;
+        }
+        return filteredDeclaredTypes.get( factType );
     }
 
     /**
@@ -720,23 +736,29 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
                                                                                    imports,
                                                                                    projectModelFields ) );
 
-        //Filter and rename Collection Types based on package name and imports
-        filteredCollectionTypes = new HashMap<String, Boolean>();
-        filteredCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
-                                                                                           imports,
-                                                                                           projectCollectionTypes ) );
-
         //Filter and rename Global Types based on package name and imports
         filteredGlobalTypes = new HashMap<String, String>();
         filteredGlobalTypes.putAll( PackageDataModelOracleUtils.filterGlobalTypes( packageName,
                                                                                    imports,
                                                                                    packageGlobalTypes ) );
 
+        //Filter and rename Collection Types based on package name and imports
+        filteredCollectionTypes = new HashMap<String, Boolean>();
+        filteredCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
+                                                                                           imports,
+                                                                                           projectCollectionTypes ) );
+
         //Filter and rename Event Types based on package name and imports
         filteredEventTypes = new HashMap<String, Boolean>();
         filteredEventTypes.putAll( PackageDataModelOracleUtils.filterEventTypes( packageName,
                                                                                  imports,
                                                                                  projectEventTypes ) );
+
+        //Filter and rename Declared Types based on package name and imports
+        filteredDeclaredTypes = new HashMap<String, Boolean>();
+        filteredDeclaredTypes.putAll( PackageDataModelOracleUtils.filterDeclaredTypes( packageName,
+                                                                                       imports,
+                                                                                       projectDeclaredTypes ) );
 
         //Filter and rename Enum definitions based on package name and imports
         filteredEnumLists = new HashMap<String, String[]>();

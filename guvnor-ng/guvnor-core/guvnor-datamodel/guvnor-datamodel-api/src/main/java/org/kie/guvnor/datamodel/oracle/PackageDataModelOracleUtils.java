@@ -1,14 +1,14 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import org.drools.guvnor.models.commons.shared.imports.Import;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.kie.guvnor.datamodel.model.MethodInfo;
+import org.kie.guvnor.datamodel.model.ModelField;
 
 /**
  * Utilities for PackageDataModelOracle
@@ -91,6 +91,25 @@ public class PackageDataModelOracleUtils {
             }
         }
         return scopedEventTypes;
+    }
+
+    //Filter and rename Declared Types based on package name and imports
+    public static Map<String, Boolean> filterDeclaredTypes( final String packageName,
+                                                            final Imports imports,
+                                                            final Map<String, Boolean> projectDeclaredTypes ) {
+        final Map<String, Boolean> scopedDeclaredTypes = new HashMap<String, Boolean>();
+        for ( Map.Entry<String, Boolean> e : projectDeclaredTypes.entrySet() ) {
+            final String eventQualifiedType = e.getKey();
+            final String eventPackageName = getPackageName( eventQualifiedType );
+            final String eventTypeName = getTypeName( eventQualifiedType );
+
+            if ( eventPackageName.equals( packageName ) || isImported( eventQualifiedType,
+                                                                       imports ) ) {
+                scopedDeclaredTypes.put( eventTypeName,
+                                         e.getValue() );
+            }
+        }
+        return scopedDeclaredTypes;
     }
 
     //Filter and rename Enum definitions based on package name and imports

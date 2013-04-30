@@ -35,6 +35,8 @@ public interface ProjectDataModelOracle {
 
     boolean isFactTypeAnEvent( final String factType );
 
+    boolean isDeclaredType( final String factType );
+
     String[] getConnectiveOperatorCompletions( final String factType,
                                                final String fieldName );
 

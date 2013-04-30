@@ -36,9 +36,18 @@ public final class ProjectDataModelOracleBuilder {
 
     public SimpleFactBuilder addFact( final String factType,
                                       final boolean isEvent ) {
+        return addFact( factType,
+                        isEvent,
+                        false );
+    }
+
+    public SimpleFactBuilder addFact( final String factType,
+                                      final boolean isEvent,
+                                      final boolean isDeclaredType ) {
         final SimpleFactBuilder builder = new SimpleFactBuilder( this,
                                                                  factType,
-                                                                 isEvent );
+                                                                 isEvent,
+                                                                 isDeclaredType );
         factTypeBuilders.add( builder );
         return builder;
     }
@@ -50,9 +59,18 @@ public final class ProjectDataModelOracleBuilder {
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
                                                    final boolean isEvent ) throws IOException {
+        return addClass( clazz,
+                         isEvent,
+                         false );
+    }
+
+    public ProjectDataModelOracleBuilder addClass( final Class clazz,
+                                                   final boolean isEvent,
+                                                   final boolean isDeclaredType ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
                                                           clazz,
-                                                          isEvent );
+                                                          isEvent,
+                                                          isDeclaredType );
         factTypeBuilders.add( builder );
         return this;
     }

@@ -22,7 +22,7 @@ import static org.kie.guvnor.datamodel.backend.server.DataModelOracleTestUtils.a
 /**
  * Tests for DataModelService
  */
-public class DataModelServiceTests {
+public class DataModelDeclaredTypesTests {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -46,55 +46,44 @@ public class DataModelServiceTests {
     }
 
     @Test
-    public void testPackageDataModelOracle() throws Exception {
+    public void testPackageDeclaredTypes() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
         final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         final PackageDataModelOracle oracle = dataModelService.getDataModel( packagePath );
 
         assertNotNull( oracle );
-        assertEquals( 2,
+
+        assertEquals( 3,
                       oracle.getAllFactTypes().length );
         assertContains( "p1.Bean1",
                         oracle.getAllFactTypes() );
+        assertContains( "p1.DRLBean",
+                        oracle.getAllFactTypes() );
         assertContains( "p2.Bean2",
                         oracle.getAllFactTypes() );
 
-        assertEquals( 1,
-                      oracle.getFactTypes().length );
-        assertContains( "Bean1",
-                        oracle.getFactTypes() );
-        assertEquals( 3,
-                      oracle.getFieldCompletions( "Bean1" ).length );
-        assertContains( "this",
-                        oracle.getFieldCompletions( "Bean1" ) );
-        assertContains( "field1",
-                        oracle.getFieldCompletions( "Bean1" ) );
-        assertContains( "field2",
-                        oracle.getFieldCompletions( "Bean1" ) );
-
-        assertEquals( 1,
-                      oracle.getExternalFactTypes().length );
-        assertContains( "p2.Bean2",
-                        oracle.getExternalFactTypes() );
+        assertFalse( oracle.isDeclaredType( "Bean1" ) );
+        assertTrue( oracle.isDeclaredType( "DRLBean" ) );
+        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
     }
 
     @Test
-    public void testProjectDataModelOracle() throws Exception {
+    public void testProjectDeclaredTypes() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
         final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/p1" );
         final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -102,60 +91,18 @@ public class DataModelServiceTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       oracle.getFactTypes().length );
         assertContains( "p1.Bean1",
                         oracle.getFactTypes() );
+        assertContains( "p1.DRLBean",
+                        oracle.getFactTypes() );
         assertContains( "p2.Bean2",
                         oracle.getFactTypes() );
 
-        assertEquals( 3,
-                      oracle.getFieldCompletions( "p1.Bean1" ).length );
-        assertContains( "this",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
-        assertContains( "field1",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
-        assertContains( "field2",
-                        oracle.getFieldCompletions( "p1.Bean1" ) );
-
-        assertEquals( 2,
-                      oracle.getFieldCompletions( "p2.Bean2" ).length );
-        assertContains( "this",
-                        oracle.getFieldCompletions( "p2.Bean2" ) );
-        assertContains( "field1",
-                        oracle.getFieldCompletions( "p2.Bean2" ) );
-    }
-
-    @Test
-    @Ignore("See https://issues.jboss.org/browse/DROOLS-110")
-    public void testProjectDataModelOracleJavaDefaultPackage() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
-
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest2/src/main/java" );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
-
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
-
-        assertNotNull( oracle );
-
-        assertEquals( 1,
-                      oracle.getFactTypes().length );
-        assertContains( "Bean1",
-                        oracle.getFactTypes() );
-
-        assertEquals( 3,
-                      oracle.getFieldCompletions( "Bean1" ).length );
-        assertContains( "this",
-                        oracle.getFieldCompletions( "Bean1" ) );
-        assertContains( "field1",
-                        oracle.getFieldCompletions( "Bean1" ) );
-        assertContains( "field2",
-                        oracle.getFieldCompletions( "Bean1" ) );
+        assertFalse( oracle.isDeclaredType( "p1.Bean1" ) );
+        assertTrue( oracle.isDeclaredType( "p1.DRLBean" ) );
+        assertFalse( oracle.isDeclaredType( "p2.Bean2" ) );
     }
 
 }

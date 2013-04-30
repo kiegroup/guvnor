@@ -35,6 +35,9 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     //FactTypes {factType, isEvent} to determine which Fact Type can be treated as events.
     protected Map<String, Boolean> projectEventTypes = new HashMap<String, Boolean>();
 
+    //FactTypes {factType, isDeclaredType} to determine which Fact Type were declared in DRL.
+    protected Map<String, Boolean> projectDeclaredTypes = new HashMap<String, Boolean>();
+
     // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     protected Map<String, String[]> projectJavaEnumLists = new HashMap<String, String[]>();
 
@@ -100,6 +103,19 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
             return false;
         }
         return projectEventTypes.get( factType );
+    }
+
+    /**
+     * Check whether a given FactType was declared in DRL
+     * @param factType
+     * @return
+     */
+    @Override
+    public boolean isDeclaredType( final String factType ) {
+        if ( !projectDeclaredTypes.containsKey( factType ) ) {
+            return false;
+        }
+        return projectDeclaredTypes.get( factType );
     }
 
     /**
@@ -532,14 +548,14 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
                         }
 
                         enumLookupFields.put( factField,
-                                                     typeFieldBuilder.toString() );
+                                              typeFieldBuilder.toString() );
                     } else {
                         final String[] fields = predicate.split( "," );
                         for ( int i = 0; i < fields.length; i++ ) {
                             fields[ i ] = fields[ i ].trim();
                         }
                         enumLookupFields.put( factField,
-                                                     fields );
+                                              fields );
                     }
                 }
             }
@@ -641,8 +657,12 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectFieldParametersType.putAll( fieldParametersType );
     }
 
-    public void addEventType( final Map<String, Boolean> eventTypes ) {
+    public void addEventTypes( final Map<String, Boolean> eventTypes ) {
         this.projectEventTypes.putAll( eventTypes );
+    }
+
+    public void addDeclaredTypes( final Map<String, Boolean> declaredTypes ) {
+        this.projectDeclaredTypes.putAll( declaredTypes );
     }
 
     public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
@@ -653,7 +673,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectMethodInformation.putAll( methodInformation );
     }
 
-    public void addCollectionType( final Map<String, Boolean> collectionTypes ) {
+    public void addCollectionTypes( final Map<String, Boolean> collectionTypes ) {
         this.projectCollectionTypes.putAll( collectionTypes );
     }
 
@@ -663,6 +683,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     public Map<String, Boolean> getProjectEventTypes() {
         return this.projectEventTypes;
+    }
+
+    public Map<String, Boolean> getProjectDeclaredTypes() {
+        return this.projectDeclaredTypes;
     }
 
     public Map<String, String[]> getProjectJavaEnumLists() {
