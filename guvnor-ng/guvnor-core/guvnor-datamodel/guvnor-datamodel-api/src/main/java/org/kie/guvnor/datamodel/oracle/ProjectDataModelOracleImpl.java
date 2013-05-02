@@ -35,6 +35,9 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     //Map {factType, Set<Annotation>} containing the FactType's annotations.
     protected Map<String, Set<Annotation>> projectTypeAnnotations = new HashMap<String, Set<Annotation>>();
 
+    //Map {factType, Map<fieldName, Set<Annotation>>} containing the FactType's Field annotations.
+    protected Map<String, Map<String, Set<Annotation>>> projectTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+
     // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
     protected Map<String, String[]> projectJavaEnumLists = new HashMap<String, String[]>();
 
@@ -138,19 +141,37 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     /**
      * Get the Annotations for a given FactType
      * @param factType
-     * @return Empty set if no annotations exist for the type
+     * @return Empty Set if no annotations exist for the type
      */
     @Override
-    public Set<Annotation> getTypeAnnotation( final String factType ) {
+    public Set<Annotation> getTypeAnnotations( final String factType ) {
         if ( !projectTypeAnnotations.containsKey( factType ) ) {
             return Collections.EMPTY_SET;
         }
         return projectTypeAnnotations.get( factType );
     }
 
+    /**
+     * Get the Fields Annotations for a given FactType
+     * @param factType
+     * @return Empty Map if no annotations exist for the type
+     */
+    @Override
+    public Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType ) {
+        if ( !projectTypeFieldsAnnotations.containsKey( factType ) ) {
+            return Collections.EMPTY_MAP;
+        }
+        return projectTypeFieldsAnnotations.get( factType );
+    }
+
     // ####################################
     // Fact Types' Fields
     // ####################################
+
+    @Override
+    public Map<String, ModelField[]> getModelFields() {
+        return projectModelFields;
+    }
 
     @Override
     public String[] getFieldCompletions( final String factType ) {
@@ -192,6 +213,14 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     @Override
+    public String getFieldType( final String modelClassName,
+                                final String fieldName ) {
+        final ModelField field = getField( modelClassName,
+                                           fieldName );
+        return field == null ? null : field.getType();
+    }
+
+    @Override
     public String getFieldClassName( final String modelClassName,
                                      final String fieldName ) {
         final ModelField field = getField( modelClassName,
@@ -212,19 +241,6 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
             }
         }
         return null;
-    }
-
-    @Override
-    public String getFieldType( final String modelClassName,
-                                final String fieldName ) {
-        final ModelField field = getField( modelClassName,
-                                           fieldName );
-        return field == null ? null : field.getType();
-    }
-
-    @Override
-    public Map<String, ModelField[]> getModelFields() {
-        return projectModelFields;
     }
 
     // ####################################
@@ -693,6 +709,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectTypeAnnotations.putAll( annotations );
     }
 
+    public void addTypeFieldsAnnotations( final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations ) {
+        this.projectTypeFieldsAnnotations.putAll( typeFieldsAnnotations );
+    }
+
     public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
         this.projectJavaEnumLists.putAll( dataEnumLists );
     }
@@ -723,6 +743,10 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     public Map<String, Set<Annotation>> getTypeAnnotations() {
         return this.projectTypeAnnotations;
+    }
+
+    public Map<String, Map<String, Set<Annotation>>> getTypeFieldsAnnotations() {
+        return this.projectTypeFieldsAnnotations;
     }
 
     public Map<String, String[]> getProjectJavaEnumLists() {

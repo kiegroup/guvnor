@@ -1,5 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -7,7 +8,7 @@ import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModel
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
-import org.kie.guvnor.datamodel.backend.server.testclasses.annotations.Smurf;
+import org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfHouse;
 import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracleImpl;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for Fact's annotations
  */
-public class DataModelFactAnnotationsTest {
+public class DataModelFactFieldsAnnotationsTest {
 
     @Test
     public void testCorrectPackageDMOZeroAnnotationAttributes() throws Exception {
@@ -41,10 +42,10 @@ public class DataModelFactAnnotationsTest {
         assertEquals( "Product",
                       packageOracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = packageOracle.getTypeAnnotations( "Product" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldsAnnotations = packageOracle.getTypeFieldsAnnotations( "Product" );
+        assertNotNull( fieldsAnnotations );
         assertEquals( 0,
-                      annotations.size() );
+                      fieldsAnnotations.size() );
     }
 
     @Test
@@ -54,7 +55,7 @@ public class DataModelFactAnnotationsTest {
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
-                                                          Smurf.class,
+                                                          SmurfHouse.class,
                                                           false,
                                                           false );
         cb.build( oracle );
@@ -66,16 +67,22 @@ public class DataModelFactAnnotationsTest {
 
         assertEquals( 1,
                       packageOracle.getFactTypes().length );
-        assertEquals( "Smurf",
+        assertEquals( "SmurfHouse",
                       packageOracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = packageOracle.getTypeAnnotations( "Smurf" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldsAnnotations = packageOracle.getTypeFieldsAnnotations( "SmurfHouse" );
+        assertNotNull( fieldsAnnotations );
         assertEquals( 1,
-                      annotations.size() );
+                      fieldsAnnotations.size() );
 
-        final Annotation annotation = annotations.iterator().next();
-        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfDescriptor",
+        assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
+        final Set<Annotation> fieldAnnotations = fieldsAnnotations.get( "occupant" );
+        assertNotNull( fieldAnnotations );
+        assertEquals( 1,
+                      fieldAnnotations.size() );
+
+        final Annotation annotation = fieldAnnotations.iterator().next();
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
                       annotation.getAttributes().get( "colour" ) );
@@ -105,10 +112,10 @@ public class DataModelFactAnnotationsTest {
         assertEquals( 0,
                       packageOracle.getFactTypes().length );
 
-        final Set<Annotation> annotations = packageOracle.getTypeAnnotations( "Product" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldsAnnotations = packageOracle.getTypeFieldsAnnotations( "Product" );
+        assertNotNull( fieldsAnnotations );
         assertEquals( 0,
-                      annotations.size() );
+                      fieldsAnnotations.size() );
     }
 
     @Test
@@ -118,7 +125,7 @@ public class DataModelFactAnnotationsTest {
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
-                                                          Smurf.class,
+                                                          SmurfHouse.class,
                                                           false,
                                                           false );
         cb.build( oracle );
@@ -131,10 +138,10 @@ public class DataModelFactAnnotationsTest {
         assertEquals( 0,
                       packageOracle.getFactTypes().length );
 
-        final Set<Annotation> annotations = packageOracle.getTypeAnnotations( "Smurf" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldAnnotations = packageOracle.getTypeFieldsAnnotations( "SmurfHouse" );
+        assertNotNull( fieldAnnotations );
         assertEquals( 0,
-                      annotations.size() );
+                      fieldAnnotations.size() );
     }
 
     @Test
@@ -153,10 +160,10 @@ public class DataModelFactAnnotationsTest {
         assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.Product",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.Product" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldAnnotations = oracle.getTypeFieldsAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.Product" );
+        assertNotNull( fieldAnnotations );
         assertEquals( 0,
-                      annotations.size() );
+                      fieldAnnotations.size() );
     }
 
     @Test
@@ -165,23 +172,29 @@ public class DataModelFactAnnotationsTest {
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
         final ClassFactBuilder cb = new ClassFactBuilder( builder,
-                                                          Smurf.class,
+                                                          SmurfHouse.class,
                                                           false,
                                                           false );
         cb.build( oracle );
 
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.Smurf",
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfHouse",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.Smurf" );
-        assertNotNull( annotations );
+        final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getTypeFieldsAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfHouse" );
+        assertNotNull( fieldsAnnotations );
         assertEquals( 1,
-                      annotations.size() );
+                      fieldsAnnotations.size() );
 
-        final Annotation annotation = annotations.iterator().next();
-        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfDescriptor",
+        assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
+        final Set<Annotation> fieldAnnotations = fieldsAnnotations.get( "occupant" );
+        assertNotNull( fieldAnnotations );
+        assertEquals( 1,
+                      fieldAnnotations.size() );
+
+        final Annotation annotation = fieldAnnotations.iterator().next();
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
                       annotation.getAttributes().get( "colour" ) );

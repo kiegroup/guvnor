@@ -1,0 +1,5 @@
+import t5p1.Bean1
+
+declare Bean1
+@role(event)
+end
