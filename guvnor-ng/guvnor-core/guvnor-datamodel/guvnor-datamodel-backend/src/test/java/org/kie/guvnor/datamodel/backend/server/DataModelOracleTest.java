@@ -133,7 +133,7 @@ public class DataModelOracleTest {
         assertEquals( List.class.getName(),
                       dmo.getFieldClassName( TestSuperClass.class.getSimpleName(),
                                              "list" ) );
-        assertEquals( String.class.getSimpleName(),
+        assertEquals( String.class.getName(),
                       dmo.getParametricFieldType( TestSuperClass.class.getSimpleName(),
                                                   "list" ) );
     }
@@ -178,7 +178,7 @@ public class DataModelOracleTest {
         assertEquals( List.class.getName(),
                       dmo.getFieldClassName( TestSubClass.class.getSimpleName(),
                                              "list" ) );
-        assertEquals( String.class.getSimpleName(),
+        assertEquals( String.class.getName(),
                       dmo.getParametricFieldType( TestSubClass.class.getSimpleName(),
                                                   "list" ) );
     }
@@ -217,7 +217,7 @@ public class DataModelOracleTest {
         assertEquals( List.class.getName(),
                       dmo.getFieldClassName( TestDelegatedClass.class.getSimpleName(),
                                              "list" ) );
-        assertEquals( String.class.getSimpleName(),
+        assertEquals( String.class.getName(),
                       dmo.getParametricFieldType( TestDelegatedClass.class.getSimpleName(),
                                                   "list" ) );
     }

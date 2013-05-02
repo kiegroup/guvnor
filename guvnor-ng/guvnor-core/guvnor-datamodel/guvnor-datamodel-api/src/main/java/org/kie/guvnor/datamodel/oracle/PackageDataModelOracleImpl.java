@@ -763,11 +763,8 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      */
     public String getParametricFieldType( final String factType,
                                           final String fieldName ) {
-        return getParametricFieldType( factType + "#" + fieldName );
-    }
-
-    private String getParametricFieldType( String fieldName ) {
-        return filteredFieldParametersType.get( fieldName );
+        final String qualifiedFactFieldName = factType + "#" + fieldName;
+        return filteredFieldParametersType.get( qualifiedFactFieldName );
     }
 
     public void filter( final Imports imports ) {

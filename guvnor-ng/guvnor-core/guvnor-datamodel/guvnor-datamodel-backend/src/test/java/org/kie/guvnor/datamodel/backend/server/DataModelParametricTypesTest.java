@@ -38,7 +38,7 @@ public class DataModelParametricTypesTest {
     }
 
     @Test
-    public void testParametricReturnTypes() throws Exception {
+    public void testPackageDMOParametricReturnTypes() throws Exception {
         final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addClass( Purchase.class )
                 .addClass( Product.class )
@@ -65,6 +65,35 @@ public class DataModelParametricTypesTest {
         assertEquals( "Product",
                       dmo.getParametricFieldType( "Purchase",
                                                   "items" ) );
+
+    }
+
+    @Test
+    public void testProjectDMOParametricReturnTypes() throws Exception {
+        final ProjectDataModelOracle oracle = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( Purchase.class )
+                .addClass( Product.class )
+                .build();
+
+        assertNotNull( oracle );
+
+        assertEquals( 2,
+                      oracle.getFactTypes().length );
+
+        List<String> list = Arrays.asList( oracle.getFactTypes() );
+
+        assertTrue( list.contains( "org.kie.guvnor.datamodel.backend.server.testclasses.Purchase" ) );
+        assertTrue( list.contains( "org.kie.guvnor.datamodel.backend.server.testclasses.Product" ) );
+
+        assertEquals( "java.util.Collection",
+                      oracle.getFieldClassName( "org.kie.guvnor.datamodel.backend.server.testclasses.Purchase",
+                                                "items" ) );
+        assertEquals( DataType.TYPE_COLLECTION,
+                      oracle.getFieldType( "org.kie.guvnor.datamodel.backend.server.testclasses.Purchase",
+                                           "items" ) );
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.Product",
+                      oracle.getParametricFieldType( "org.kie.guvnor.datamodel.backend.server.testclasses.Purchase",
+                                                     "items" ) );
 
     }
 

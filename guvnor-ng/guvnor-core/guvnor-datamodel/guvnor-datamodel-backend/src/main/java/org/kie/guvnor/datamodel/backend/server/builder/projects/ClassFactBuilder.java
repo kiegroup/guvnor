@@ -330,13 +330,15 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private String getParametricType( final Type type ) {
         if ( type instanceof ParameterizedType ) {
             final ParameterizedType pt = (ParameterizedType) type;
-            Type goodType = null;
+            Type parameter = null;
             for ( final Type t : pt.getActualTypeArguments() ) {
-                goodType = t;
+                parameter = t;
             }
-            if ( goodType != null ) {
-                int index = goodType.toString().lastIndexOf( "." );
-                return goodType.toString().substring( index + 1 );
+            if ( parameter != null ) {
+                if ( parameter instanceof Class<?> ) {
+                    return ( (Class<?>) parameter ).getName();
+                }
+                return null;
             } else {
                 return null;
             }
