@@ -41,40 +41,42 @@ public interface ProjectDataModelOracle {
 
     String getSuperType( final String factType );
 
-    Set<Annotation> getTypeAnnotation( final String factType );
+    Set<Annotation> getTypeAnnotations( final String factType );
+
+    Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType );
 
     Map<String, ModelField[]> getModelFields();
 
-    String[] getConnectiveOperatorCompletions( final String factType,
-                                               final String fieldName );
+    String[] getFieldCompletions( final String factType );
+
+    String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
+                                  final String factType );
+
+    String getFieldType( final String variableClass,
+                         final String fieldName );
+
+    String getFieldClassName( final String factName,
+                              final String fieldName );
+
+    String getParametricFieldType( final String factType,
+                                   final String fieldName );
 
     String[] getOperatorCompletions( final String factType,
                                      final String fieldName );
 
-    String[] getFieldCompletions( final String factType );
+    String[] getConnectiveOperatorCompletions( final String factType,
+                                               final String fieldName );
 
     List<String> getMethodNames( final String factType );
 
     List<String> getMethodNames( final String factName,
                                  final int i );
 
-    String getFieldType( final String variableClass,
-                         final String fieldName );
-
     List<String> getMethodParams( final String factType,
                                   final String methodNameWithParams );
 
-    String getParametricFieldType( final String factType,
-                                   final String fieldName );
-
-    String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
-                                  final String factType );
-
     MethodInfo getMethodInfo( final String factName,
                               final String methodName );
-
-    String getFieldClassName( final String factName,
-                              final String fieldName );
 
     // Enumeration related methods
     String[] getEnumValues( final String factType,

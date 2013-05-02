@@ -1,6 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server.builder.projects;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
     private final String superType;
     private final List<ModelField> fields = new ArrayList<ModelField>();
     private final Set<org.kie.guvnor.datamodel.model.Annotation> annotations = new LinkedHashSet<org.kie.guvnor.datamodel.model.Annotation>();
+    private final Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>> fieldAnnotations = new HashMap<String, Set<org.kie.guvnor.datamodel.model.Annotation>>();
 
     private final boolean isCollection;
     private final boolean isEvent;
@@ -43,6 +45,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
         this.isEvent = isEvent;
         this.isDeclaredType = isDeclaredType;
         this.annotations.addAll( getAnnotations( clazz ) );
+        this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );
 
         addField( new ModelField( DataType.TYPE_THIS,
                                   type,
@@ -99,6 +102,36 @@ public abstract class BaseFactBuilder implements FactBuilder {
         return dmoAnnotations;
     }
 
+    private Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>> getFieldsAnnotations( final Class<?> clazz ) {
+        final Field[] fields = clazz.getDeclaredFields();
+        final Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>> fieldsAnnotations = new HashMap<String, Set<org.kie.guvnor.datamodel.model.Annotation>>();
+        for ( Field field : fields ) {
+            final String fieldName = field.getName();
+            final Set<org.kie.guvnor.datamodel.model.Annotation> fieldAnnotations = getFieldAnnotations( field );
+            if ( fieldAnnotations.size() > 0 ) {
+                fieldsAnnotations.put( fieldName,
+                                       fieldAnnotations );
+            }
+        }
+        return fieldsAnnotations;
+    }
+
+    private Set<org.kie.guvnor.datamodel.model.Annotation> getFieldAnnotations( final Field field ) {
+        final Annotation[] annotations = field.getDeclaredAnnotations();
+        final Set<org.kie.guvnor.datamodel.model.Annotation> fieldAnnotations = new LinkedHashSet<org.kie.guvnor.datamodel.model.Annotation>();
+        for ( Annotation a : annotations ) {
+            final org.kie.guvnor.datamodel.model.Annotation fieldAnnotation = new org.kie.guvnor.datamodel.model.Annotation( a.annotationType().getName() );
+            for ( Method m : a.annotationType().getDeclaredMethods() ) {
+                final String methodName = m.getName();
+                fieldAnnotation.addAttribute( methodName,
+                                              AnnotationUtils.getAnnotationAttributeValue( a,
+                                                                                           methodName ) );
+            }
+            fieldAnnotations.add( fieldAnnotation );
+        }
+        return fieldAnnotations;
+    }
+
     protected FactBuilder addField( final ModelField field ) {
         this.fields.add( field );
         return this;
@@ -117,6 +150,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
         oracle.addDeclaredTypes( buildDeclaredTypes() );
         oracle.addSuperTypes( buildSuperTypes() );
         oracle.addTypeAnnotations( buildTypeAnnotations() );
+        oracle.addTypeFieldsAnnotations( buildTypeFieldsAnnotations() );
     }
 
     public ProjectDataModelOracleBuilder getDataModelBuilder() {
@@ -165,6 +199,13 @@ public abstract class BaseFactBuilder implements FactBuilder {
         loadableTypeAnnotations.put( type,
                                      annotations );
         return loadableTypeAnnotations;
+    }
+
+    private Map<String, Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>>> buildTypeFieldsAnnotations() {
+        final Map<String, Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>>> loadableTypeFieldsAnnotations = new HashMap<String, Map<String, Set<org.kie.guvnor.datamodel.model.Annotation>>>();
+        loadableTypeFieldsAnnotations.put( type,
+                                           fieldAnnotations );
+        return loadableTypeFieldsAnnotations;
     }
 
 }

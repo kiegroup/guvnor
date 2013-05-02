@@ -60,6 +60,9 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // Filtered (current package and imports) Map {factType, Set<Annotation>} containing the FactType's annotations.
     protected Map<String, Set<Annotation>> filteredTypeAnnotations = new HashMap<String, Set<Annotation>>();
 
+    // Filtered (current package and imports) Map {factType, {fieldName, Set<Annotation>}} containing the FactType's Fields annotations.
+    protected Map<String, Map<String, Set<Annotation>>> filteredTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+
     // Filtered (current package and imports) map of Globals {alias, class name}.
     private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
 
@@ -200,11 +203,24 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
      * @return Empty set if no annotations exist for the type
      */
     @Override
-    public Set<Annotation> getTypeAnnotation( final String factType ) {
+    public Set<Annotation> getTypeAnnotations( final String factType ) {
         if ( !filteredTypeAnnotations.containsKey( factType ) ) {
             return Collections.EMPTY_SET;
         }
         return filteredTypeAnnotations.get( factType );
+    }
+
+    /**
+     * Get the Fields Annotations for a given FactType
+     * @param factType
+     * @return Empty Map if no annotations exist for the type
+     */
+    @Override
+    public Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType ) {
+        if ( !filteredTypeFieldsAnnotations.containsKey( factType ) ) {
+            return Collections.EMPTY_MAP;
+        }
+        return filteredTypeFieldsAnnotations.get( factType );
     }
 
     // ####################################
@@ -801,6 +817,12 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
         filteredTypeAnnotations.putAll( PackageDataModelOracleUtils.filterTypeAnnotations( packageName,
                                                                                            imports,
                                                                                            projectTypeAnnotations ) );
+
+        //Filter and rename Type Field Annotations based on package name and imports
+        filteredTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+        filteredTypeFieldsAnnotations.putAll( PackageDataModelOracleUtils.filterTypeFieldsAnnotations( packageName,
+                                                                                                       imports,
+                                                                                                       projectTypeFieldsAnnotations ) );
 
         //Filter and rename Enum definitions based on package name and imports
         filteredEnumLists = new HashMap<String, String[]>();

@@ -172,6 +172,25 @@ public class PackageDataModelOracleUtils {
         return scopedTypeAnnotations;
     }
 
+    //Filter and rename Type Fields Annotations based on package name and imports
+    public static Map<String, Map<String, Set<Annotation>>> filterTypeFieldsAnnotations( final String packageName,
+                                                                                         final Imports imports,
+                                                                                         final Map<String, Map<String, Set<Annotation>>> projectTypeFieldsAnnotations ) {
+        final Map<String, Map<String, Set<Annotation>>> scopedTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+        for ( Map.Entry<String, Map<String, Set<Annotation>>> e : projectTypeFieldsAnnotations.entrySet() ) {
+            final String typeAnnotationQualifiedType = e.getKey();
+            final String typeAnnotationPackageName = getPackageName( typeAnnotationQualifiedType );
+            final String typeAnnotationTypeName = getTypeName( typeAnnotationQualifiedType );
+
+            if ( typeAnnotationPackageName.equals( packageName ) || isImported( typeAnnotationQualifiedType,
+                                                                                imports ) ) {
+                scopedTypeFieldsAnnotations.put( typeAnnotationTypeName,
+                                                 e.getValue() );
+            }
+        }
+        return scopedTypeFieldsAnnotations;
+    }
+
     //Filter and rename Enum definitions based on package name and imports
     public static Map<String, String[]> filterEnumDefinitions( final String packageName,
                                                                final Imports imports,
