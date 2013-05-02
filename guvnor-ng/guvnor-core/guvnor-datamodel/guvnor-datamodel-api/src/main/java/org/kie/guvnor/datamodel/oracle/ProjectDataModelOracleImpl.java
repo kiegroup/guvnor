@@ -1,22 +1,11 @@
 package org.kie.guvnor.datamodel.oracle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.model.Annotation;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.model.ModelField;
+import org.kie.guvnor.datamodel.model.*;
+
+import java.util.*;
 
 /**
  * Default implementation of DataModelOracle
@@ -252,7 +241,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     public String getParametricFieldType( final String factType,
                                           final String fieldName ) {
         final String qualifiedFactFieldName = factType + "#" + fieldName;
-        return projectFieldParametersType.get( fieldName );
+        return projectFieldParametersType.get( qualifiedFactFieldName );
     }
 
     // ####################################
