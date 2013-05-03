@@ -41,5 +41,6 @@
 
   <inherits name="org.kie.guvnor.viewsource.GuvnorViewSourceWidget"/>
   <inherits name="org.kie.guvnor.errors.GuvnorErrorMessagesWidget"/>
+  <inherits name="org.uberfire.UberfireWidgetsCore"/>
 
 </module>

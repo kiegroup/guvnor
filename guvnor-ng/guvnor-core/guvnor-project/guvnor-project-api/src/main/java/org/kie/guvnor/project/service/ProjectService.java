@@ -18,6 +18,7 @@ package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsUpdate;
@@ -100,11 +101,13 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
      * Creates a new project to the given path.
      * @param activePath
      * @param name
+     * @param pom
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
     Path newProject( final Path activePath,
                      final String name,
+                     final POM pom,
                      final String baseURL );
 
     Path newPackage( final Path contextPath,

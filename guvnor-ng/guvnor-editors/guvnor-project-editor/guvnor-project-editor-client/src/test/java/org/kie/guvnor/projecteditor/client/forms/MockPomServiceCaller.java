@@ -52,7 +52,7 @@ public class MockPomServiceCaller
             }
 
             @Override
-            public Path create(Path projectRoot, String baseURL) {
+            public Path create(Path projectRoot, String baseURL, POM pom) {
                 // TODO Auto-generated method stub
                 return null;
             }

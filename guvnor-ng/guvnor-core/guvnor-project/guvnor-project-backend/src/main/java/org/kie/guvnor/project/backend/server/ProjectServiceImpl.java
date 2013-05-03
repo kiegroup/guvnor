@@ -28,6 +28,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.PackageConfiguration;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
@@ -350,6 +351,7 @@ public class ProjectServiceImpl
     @Override
     public Path newProject( final Path activePath,
                             final String projectName,
+                            final POM pom,
                             final String baseURL ) {
         //Projects are always created in the FS root
         final Path fsRoot = getFileSystemRoot( activePath );
@@ -359,8 +361,10 @@ public class ProjectServiceImpl
         //Set-up project structure and KModule.xml
         kModuleService.setUpKModuleStructure( projectRootPath );
 
+
+
         //Create POM.xml
-        pomService.create( projectRootPath, baseURL );
+        pomService.create( projectRootPath, baseURL, pom );
 
         //Create Project configuration
         final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),

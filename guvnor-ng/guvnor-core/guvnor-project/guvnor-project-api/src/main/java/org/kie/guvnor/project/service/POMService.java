@@ -10,6 +10,6 @@ import org.uberfire.backend.vfs.Path;
 public interface POMService extends SupportsRead<POM>,
                                     SupportsUpdate<POM> {
 
-    Path create( final Path projectRoot, final String baseURL );
+    Path create(final Path projectRoot, final String baseURL, POM pom);
 
 }

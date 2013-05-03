@@ -111,7 +111,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
     @Override
     public String getTitle() {
-        return "Guided Decision Table Wizard";
+        return "Guided Decision Table Wizard"; // TODO: i18n
     }
 
     @Override

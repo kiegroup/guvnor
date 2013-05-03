@@ -2,6 +2,7 @@ package org.kie.guvnor.commons.ui.client.menu;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.resources.i18n.ToolsMenuConstants;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
@@ -26,7 +27,7 @@ public class ToolsMenu {
     @Inject
     protected Caller<ProjectService> projectService;
 
-    private MenuItem projectScreen = MenuFactory.newSimpleItem("PE").respondsWith(
+    private MenuItem projectScreen = MenuFactory.newSimpleItem(ToolsMenuConstants.INSTANCE.ProjectEditor()).respondsWith(
             new Command() {
                 @Override
                 public void execute() {
