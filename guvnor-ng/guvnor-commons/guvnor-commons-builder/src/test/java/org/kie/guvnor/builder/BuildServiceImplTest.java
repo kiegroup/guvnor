@@ -91,6 +91,44 @@ public class BuildServiceImplTest {
     }
 
     @Test
+    public void testBuilderKProjectHasSnapshotDependency() throws Exception {
+        Paths paths = getReference( Paths.class );
+        IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
+
+/*        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1Snapshot" );
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+
+        final Builder builder = new Builder( path,
+                                             "guvnor-m2repo-dependency-example1-snapshot",
+                                             paths,
+                                             ioService,
+                                             projectService );
+
+        final BuildResults results = builder.build();
+
+        assertTrue( results.getMessages().isEmpty() );*/
+
+        URL url2 = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
+        SimpleFileSystemProvider p2 = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path2 = p2.getPath( url2.toURI() );
+
+        final Builder builder2 = new Builder( path2,
+                                             "guvnor-m2repo-dependency-example2-snapshot",
+                                             paths,
+                                             ioService,
+                                             projectService );
+
+        final BuildResults results2 = builder2.build();
+        
+        System.out.println(results2.getMessages().get(0).toString());
+
+        assertTrue( results2.getMessages().isEmpty() );
+    }
+
+    
+    @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
