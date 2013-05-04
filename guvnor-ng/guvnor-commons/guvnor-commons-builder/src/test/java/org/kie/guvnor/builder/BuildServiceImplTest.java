@@ -96,34 +96,17 @@ public class BuildServiceImplTest {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
-/*        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1Snapshot" );
+        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example1-snapshot",
-                                             paths,
-                                             ioService,
-                                             projectService );
-
-        final BuildResults results = builder.build();
-
-        assertTrue( results.getMessages().isEmpty() );*/
-
-        URL url2 = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
-        SimpleFileSystemProvider p2 = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path2 = p2.getPath( url2.toURI() );
-
-        final Builder builder2 = new Builder( path2,
+        final Builder builder2 = new Builder( path,
                                              "guvnor-m2repo-dependency-example2-snapshot",
                                              paths,
                                              ioService,
                                              projectService );
 
         final BuildResults results2 = builder2.build();
-        
-        System.out.println(results2.getMessages().get(0).toString());
-
         assertTrue( results2.getMessages().isEmpty() );
     }
 
@@ -208,12 +191,20 @@ public class BuildServiceImplTest {
                                                                                                 cc );
 
         String m2RepoURL = m2RepoService.getRepositoryURL( null );
+        
+        //Deploy a 1.0 version of guvnor-m2repo-dependency-example1-snapshot kjar
         GAV gav = new GAV( "org.kie.example",
                            "guvnor-m2repo-dependency-example1", "1.0" );
 
         InputStream is = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
         m2RepoService.deployJar( is,
                                  gav );
+        
+        //Deploy a SNAPSHOT version of guvnor-m2repo-dependency-example1-snapshot kjar
+        GAV gav2 = new GAV( "org.kie.example",
+                "guvnor-m2repo-dependency-example1-snapshot", "1.0-SNAPSHOT" );
 
+        InputStream is2 = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
+        m2RepoService.deployJar( is2, gav2 );
     }
 }
