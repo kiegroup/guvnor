@@ -81,7 +81,7 @@ public class FileDownloadServlet extends HttpServlet {
             return;
         }
 
-        File file = new File(".",
+        File file = new File(repository.getM2RepositoryRootDir(),
                 URLDecoder.decode(requestedFile, "UTF-8"));
  
         if (!file.exists()) {
