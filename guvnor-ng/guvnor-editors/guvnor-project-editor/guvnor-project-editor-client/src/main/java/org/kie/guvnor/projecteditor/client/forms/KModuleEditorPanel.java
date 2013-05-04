@@ -1,7 +1,5 @@
 package org.kie.guvnor.projecteditor.client.forms;
 
-import javax.inject.Inject;
-
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -12,6 +10,9 @@ import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
+
+import javax.inject.Inject;
 
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
@@ -25,62 +26,64 @@ public class KModuleEditorPanel
     private boolean hasBeenInitialized = false;
 
     @Inject
-    public KModuleEditorPanel( Caller<KModuleService> projectEditorServiceCaller,
-                               KBaseForm form,
-                               FormPopup namePopup,
-                               KModuleEditorPanelView view ) {
-        super( view, form, namePopup );
+    public KModuleEditorPanel(Caller<KModuleService> projectEditorServiceCaller,
+                              KBaseForm form,
+                              FormPopup namePopup,
+                              KModuleEditorPanelView view) {
+        super(view, form, namePopup);
 
         this.projectEditorServiceCaller = projectEditorServiceCaller;
         this.view = view;
     }
 
-    public void init( Path path,
-                      boolean readOnly ) {
+    public void init(Path path,
+                     boolean readOnly) {
         this.path = path;
-        if ( readOnly ) {
+        if (readOnly) {
             view.makeReadOnly();
         }
         //Busy popup is handled by ProjectEditorScreen
-        projectEditorServiceCaller.call( getModelSuccessCallback(),
-                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
+        projectEditorServiceCaller.call(getModelSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
     }
 
     private RemoteCallback<KModuleModel> getModelSuccessCallback() {
         return new RemoteCallback<KModuleModel>() {
 
             @Override
-            public void callback( final KModuleModel model ) {
+            public void callback(final KModuleModel model) {
                 KModuleEditorPanel.this.model = model;
-                setItems( model.getKBases() );
+                setItems(model.getKBases());
                 hasBeenInitialized = true;
             }
         };
     }
 
     @Override
-    protected KBaseModel createNew( String name ) {
+    protected KBaseModel createNew(String name) {
         KBaseModel model = new KBaseModel();
-        model.setName( name );
+        model.setName(name);
         return model;
     }
 
-    public void save( String commitMessage,
-                      Metadata metadata ) {
+    public void save(String commitMessage,
+                     final Command callback,
+                     Metadata metadata) {
         //Busy popup is handled by ProjectEditorScreen
-        projectEditorServiceCaller.call( getSaveSuccessCallback(),
-                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                  model,
-                                                                                                  metadata,
-                                                                                                  commitMessage );
+        projectEditorServiceCaller.call(getSaveSuccessCallback(callback),
+                new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
+                model,
+                metadata,
+                commitMessage);
     }
 
-    private RemoteCallback<Path> getSaveSuccessCallback() {
+    private RemoteCallback<Path> getSaveSuccessCallback(final Command callback) {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path path ) {
-                view.showSaveSuccessful( "kmodule.xml" );
+            public void callback(final Path path) {
+                view.showSaveSuccessful("kmodule.xml");
+                callback.execute();
             }
         };
     }

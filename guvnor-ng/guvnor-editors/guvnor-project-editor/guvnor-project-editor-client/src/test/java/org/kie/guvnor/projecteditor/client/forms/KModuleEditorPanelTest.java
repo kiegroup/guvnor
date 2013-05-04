@@ -26,6 +26,7 @@ import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.Command;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -192,7 +193,12 @@ public class KModuleEditorPanelTest {
         screenK.init(path, false);
 
         Metadata metadata = mock(Metadata.class);
-        screenK.save("my commit message", metadata);
+        screenK.save("my commit message", new Command() {
+            @Override
+            public void execute() {
+
+            }
+        }, metadata);
 
         assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
         verify(view).showSaveSuccessful("kmodule.xml");

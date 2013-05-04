@@ -29,7 +29,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
@@ -49,6 +49,7 @@ public class ProjectServiceImpl
     private static final String SOURCE_FILENAME = "src";
 
     private static final String POM_PATH = "pom.xml";
+    private static final String PROJECT_IMPORTS_PATH = "project.imports";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
 
     private static final String SOURCE_JAVA_PATH = "src/main/java";
@@ -63,7 +64,7 @@ public class ProjectServiceImpl
     private POMService pomService;
     private KModuleService kModuleService;
     private MetadataService metadataService;
-    private PackageConfigurationContentHandler packageConfigurationContentHandler;
+    private ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
@@ -81,7 +82,7 @@ public class ProjectServiceImpl
                                final POMService pomService,
                                final KModuleService kModuleService,
                                final MetadataService metadataService,
-                               final PackageConfigurationContentHandler packageConfigurationContentHandler,
+                               final ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
                                final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
                                final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
@@ -91,7 +92,7 @@ public class ProjectServiceImpl
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.metadataService = metadataService;
-        this.packageConfigurationContentHandler = packageConfigurationContentHandler;
+        this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
@@ -152,6 +153,19 @@ public class ProjectServiceImpl
             return null;
         }
         return paths.convert( pom );
+    }
+
+    @Override
+    public Path resolvePathToProjectImports(Path resource) {
+        final Path projectPath = resolveProject( resource );
+        if ( projectPath == null ) {
+            return null;
+        }
+        final org.kie.commons.java.nio.file.Path imports = paths.convert( projectPath ).resolve( PROJECT_IMPORTS_PATH );
+        if ( imports == null ) {
+            return null;
+        }
+        return paths.convert( imports );
     }
 
     @Override
@@ -371,7 +385,7 @@ public class ProjectServiceImpl
                                                       false );
         ioService.createFile( paths.convert( projectConfigPath ) );
         ioService.write( paths.convert( projectConfigPath ),
-                         packageConfigurationContentHandler.toString( new PackageConfiguration() ) );
+                         projectConfigurationContentHandler.toString( new ProjectImports() ) );
 
         //Signal creation to interested parties
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
@@ -419,18 +433,18 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public PackageConfiguration load( final Path path ) {
+    public ProjectImports load( final Path path ) {
         final String content = ioService.readAllString( paths.convert( path ) );
-        return packageConfigurationContentHandler.toModel( content );
+        return projectConfigurationContentHandler.toModel( content );
     }
 
     @Override
     public Path save( final Path resource,
-                      final PackageConfiguration packageConfiguration,
+                      final ProjectImports projectImports,
                       final Metadata metadata,
                       final String comment ) {
         ioService.write( paths.convert( resource ),
-                         packageConfigurationContentHandler.toString( packageConfiguration ),
+                         projectConfigurationContentHandler.toString(projectImports),
                          metadataService.setUpAttributes( resource,
                                                           metadata ),
                          makeCommentedOption( comment ) );

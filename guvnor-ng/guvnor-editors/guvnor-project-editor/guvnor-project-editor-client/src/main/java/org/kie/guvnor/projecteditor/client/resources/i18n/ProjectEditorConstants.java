@@ -134,4 +134,8 @@ public interface ProjectEditorConstants
     String NewProject();
 
     String PleaseSelectAnItem();
+
+    String ImportSuggestions();
+
+    String ImportSuggestionsMetadata();
 }

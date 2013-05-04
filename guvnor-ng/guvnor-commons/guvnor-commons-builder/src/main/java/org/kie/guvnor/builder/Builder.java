@@ -41,7 +41,7 @@ import org.kie.commons.validation.PortablePreconditions;
 import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.commons.service.builder.model.IncrementalBuildResults;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.backend.file.DotFileFilter;
 import org.kie.internal.builder.IncrementalResults;
@@ -120,8 +120,8 @@ public class Builder {
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final org.uberfire.backend.vfs.Path externalImportsPath = paths.convert( nioExternalImportsPath );
-            final PackageConfiguration packageConfiguration = projectService.load( externalImportsPath );
-            final Imports imports = packageConfiguration.getImports();
+            final ProjectImports projectImports = projectService.load( externalImportsPath );
+            final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
                 try {
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );

@@ -25,6 +25,12 @@ import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
+import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.KModuleService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -48,6 +54,7 @@ import javax.enterprise.inject.New;
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
+    private final ImportsWidgetPresenter importsWidgetPresenter;
     private ProjectScreenView view;
     private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
@@ -56,8 +63,10 @@ public class ProjectScreenPresenter
 
     private Path pathToPomXML;
     private Path pathToKModuleXML;
+    private Path pathToProjectImports;
     private Caller<MetadataService> metadataService;
     private Metadata kmoduleMetadata;
+    private Metadata projectImportsMetadata;
     private Metadata pomMetadata;
     private SaveOperationService saveOperationService;
 
@@ -68,6 +77,7 @@ public class ProjectScreenPresenter
     public ProjectScreenPresenter(@New ProjectScreenView view,
                                   @New POMEditorPanel pomPanel,
                                   @New KModuleEditorPanel kModuleEditorPanel,
+                                  @New ImportsWidgetPresenter importsWidgetPresenter,
                                   WorkbenchContext workbenchContext,
                                   Caller<ProjectService> projectService,
                                   Caller<KModuleService> kModuleServiceCaller,
@@ -77,6 +87,7 @@ public class ProjectScreenPresenter
         this.view = view;
         this.pomPanel = pomPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
+        this.importsWidgetPresenter = importsWidgetPresenter;
         this.kModuleServiceCaller = kModuleServiceCaller;
         this.buildServiceCaller = buildServiceCaller;
         this.metadataService = metadataService;
@@ -86,6 +97,7 @@ public class ProjectScreenPresenter
         view.setPresenter(this);
         view.setPOMEditorPanel(pomPanel);
         view.setKModuleEditorPanel(kModuleEditorPanel);
+        view.setImportsPage(importsWidgetPresenter);
 
 
         showCurrentProjectInfoIfAny(workbenchContext.getActivePath());
@@ -111,11 +123,11 @@ public class ProjectScreenPresenter
 //                            ) {
 //                            Window.alert("There are unsaved changes");
 //                    } else {
-                        ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
-                        init();
-                        view.selectMainTab();
-                        pomMetadata = null;
-                        kmoduleMetadata = null;
+                    ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
+                    init();
+                    view.selectMainTab();
+                    pomMetadata = null;
+                    kmoduleMetadata = null;
 //                    }
                 }
             }
@@ -192,6 +204,12 @@ public class ProjectScreenPresenter
                                             public void execute() {
                                                 if (kModuleEditorPanel.hasBeenInitialized()) {
                                                     kModuleEditorPanel.save(comment,
+                                                            new Command() {
+                                                                @Override
+                                                                public void execute() {
+                                                                    importsWidgetPresenter.save(comment, projectImportsMetadata);
+                                                                }
+                                                            },
                                                             kmoduleMetadata);
                                                 }
                                                 view.hideBusyIndicator();
@@ -290,6 +308,44 @@ public class ProjectScreenPresenter
                 kmoduleMetadata = metadata;
                 view.hideBusyIndicator();
                 view.setKModuleMetadata(metadata);
+            }
+        };
+    }
+
+    @Override
+    public void onImportsPageSelected() {
+        if (!importsWidgetPresenter.hasBeenInitialized()) {
+
+            projectService.call(new RemoteCallback<Path>() {
+                @Override
+                public void callback(Path path) {
+
+                    pathToProjectImports = path;
+
+                    importsWidgetPresenter.init(pathToProjectImports, false);
+
+                }
+            }).resolvePathToProjectImports(pathToPomXML);
+        }
+    }
+
+    @Override
+    public void onImportsMetadataTabSelected() {
+        if (projectImportsMetadata == null) {
+            view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+            metadataService.call(getProjectImportsMetadataSuccessCallback(),
+                    new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(pathToProjectImports);
+        }
+    }
+
+    private RemoteCallback<Metadata> getProjectImportsMetadataSuccessCallback() {
+        return new RemoteCallback<Metadata>() {
+
+            @Override
+            public void callback(final Metadata metadata) {
+                projectImportsMetadata = metadata;
+                view.hideBusyIndicator();
+                view.setProjectImportsMetadata(metadata);
             }
         };
     }

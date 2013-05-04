@@ -43,5 +43,6 @@
   <inherits name="org.kie.workbench.widgets.errors.KieWorkbenchErrorMessagesWidget"/>
 
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
+  <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
 </module>

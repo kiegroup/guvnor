@@ -19,6 +19,8 @@ package org.kie.guvnor.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.BusyPopup;
@@ -36,6 +38,9 @@ public class ProjectScreenViewImpl
 
     @Inject
     private MetadataWidget kModuleMetaDataPanel;
+
+    @Inject
+    private MetadataWidget importsPageMetadata;
 
     @Override
     public void selectMainTab() {
@@ -95,6 +100,30 @@ public class ProjectScreenViewImpl
     }
 
     @Override
+    public void setImportsPage(ImportsWidgetPresenter importsWidgetPresenter) {
+        addPage(new Page(importsWidgetPresenter, ProjectEditorConstants.INSTANCE.ImportSuggestions()) {
+            @Override
+            public void onFocus() {
+                presenter.onImportsPageSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        });
+        addPage(new Page(this.importsPageMetadata, ProjectEditorConstants.INSTANCE.ImportSuggestionsMetadata()) {
+            @Override
+            public void onFocus() {
+                presenter.onImportsMetadataTabSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        });
+    }
+
+    @Override
     public String getEnableKieProjectMenuItemText() {
         return ProjectEditorConstants.INSTANCE.EnableKieProject();
     }
@@ -117,6 +146,11 @@ public class ProjectScreenViewImpl
     @Override
     public void setKModuleMetadata(Metadata metadata) {
         kModuleMetaDataPanel.setContent(metadata, false);
+    }
+
+    @Override
+    public void setProjectImportsMetadata(Metadata metadata) {
+        importsPageMetadata.setContent(metadata, false);
     }
 
     @Override

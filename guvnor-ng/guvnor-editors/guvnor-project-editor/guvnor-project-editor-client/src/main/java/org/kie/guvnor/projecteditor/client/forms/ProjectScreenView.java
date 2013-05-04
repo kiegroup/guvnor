@@ -18,6 +18,8 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
+import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
+import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.services.metadata.model.Metadata;
 
 public interface ProjectScreenView extends HasBusyIndicator,
@@ -31,8 +33,11 @@ public interface ProjectScreenView extends HasBusyIndicator,
 
         void onKModuleMetadataTabSelected();
 
-    }
+        void onImportsPageSelected();
 
+        void onImportsMetadataTabSelected();
+
+    }
     void selectMainTab();
 
     void setPresenter( Presenter presenter );
@@ -43,6 +48,8 @@ public interface ProjectScreenView extends HasBusyIndicator,
 
     void setKModuleEditorPanel( KModuleEditorPanel kModuleEditorPanel );
 
+    void setImportsPage(ImportsWidgetPresenter importsWidgetPresenter);
+
     String getSaveMenuItemText();
 
     String getBuildMenuItemText();
@@ -50,4 +57,6 @@ public interface ProjectScreenView extends HasBusyIndicator,
     void setPOMMetadata( Metadata metadata );
 
     void setKModuleMetadata( Metadata metadata );
+
+    void setProjectImportsMetadata(Metadata metadata);
 }

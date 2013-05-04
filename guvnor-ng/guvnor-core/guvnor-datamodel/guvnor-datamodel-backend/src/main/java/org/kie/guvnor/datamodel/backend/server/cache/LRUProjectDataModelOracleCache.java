@@ -20,7 +20,7 @@ import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.cache.LRUCache;
@@ -111,8 +111,8 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataMo
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( projectPath ).resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
-            final PackageConfiguration packageConfiguration = projectService.load( externalImportsPath );
-            final Imports imports = packageConfiguration.getImports();
+            final ProjectImports projectImports = projectService.load( externalImportsPath );
+            final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
                 try {
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );

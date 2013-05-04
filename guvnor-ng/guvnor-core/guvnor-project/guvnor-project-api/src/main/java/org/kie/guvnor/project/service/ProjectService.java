@@ -19,7 +19,7 @@ package org.kie.guvnor.project.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.services.file.SupportsRead;
 import org.kie.guvnor.services.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
@@ -28,8 +28,8 @@ import org.uberfire.backend.vfs.Path;
  *
  */
 @Remote
-public interface ProjectService extends SupportsRead<PackageConfiguration>,
-                                        SupportsUpdate<PackageConfiguration> {
+public interface ProjectService extends SupportsRead<ProjectImports>,
+                                        SupportsUpdate<ProjectImports> {
 
     public static final String DEFAULT_PKG = "defaultpkg";
 
@@ -78,10 +78,17 @@ public interface ProjectService extends SupportsRead<PackageConfiguration>,
 
     /**
      * Path for the project pom.xml that the given resource belongs to.
-     * @param Path to resourceresource
+     * @param Path to resource
      * @return Path to pom.xml for the given resource
      */
     Path resolvePathToPom( Path resource );
+
+    /**
+     * Path for the project project.imports that the given resource belongs to.
+     * @param Path to resource
+     * @return path to project.imports for the given resource
+     */
+    Path resolvePathToProjectImports( Path resource );
 
     /**
      * Return true if the file is the Project's pom.xml file
