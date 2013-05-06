@@ -16,7 +16,7 @@
 
   <filter-mapping>
     <filter-name>UberFire Security Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/org.kie.guvnor.GuvnorShowcase/*</url-pattern>
   </filter-mapping>
 
   <servlet>
