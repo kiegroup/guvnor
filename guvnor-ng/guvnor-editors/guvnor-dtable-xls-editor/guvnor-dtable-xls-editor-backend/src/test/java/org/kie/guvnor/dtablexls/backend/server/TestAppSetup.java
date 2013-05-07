@@ -26,13 +26,12 @@ import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
-
 @Singleton
 public class TestAppSetup {
 
-    private final IOService         ioService         = new IOServiceDotFileImpl();
+    private final IOService ioService = new IOServiceDotFileImpl();
     private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
-    
+
     @PostConstruct
     public void onStartup() {
     }

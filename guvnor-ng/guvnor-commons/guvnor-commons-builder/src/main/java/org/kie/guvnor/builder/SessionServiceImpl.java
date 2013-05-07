@@ -2,10 +2,10 @@ package org.kie.guvnor.builder;
 
 import javax.inject.Inject;
 
+import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.guvnor.commons.service.session.SessionService;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.services.exceptions.GenericPortableException;
 import org.uberfire.backend.vfs.Path;
 

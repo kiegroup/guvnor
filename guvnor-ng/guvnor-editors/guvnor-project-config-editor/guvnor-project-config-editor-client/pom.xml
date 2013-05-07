@@ -59,7 +59,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-client</artifactId>
     </dependency>
 

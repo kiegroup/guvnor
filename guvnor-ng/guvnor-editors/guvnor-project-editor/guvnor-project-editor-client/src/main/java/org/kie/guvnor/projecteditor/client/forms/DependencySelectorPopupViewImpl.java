@@ -6,9 +6,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.m2repo.client.editor.PagedJarTable;
-import org.kie.guvnor.m2repo.model.JarListPageRow;
-import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.guvnor.m2repo.client.editor.PagedJarTable;
+import org.guvnor.m2repo.model.JarListPageRow;
+import org.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.client.common.Popup;
 
 import javax.inject.Inject;

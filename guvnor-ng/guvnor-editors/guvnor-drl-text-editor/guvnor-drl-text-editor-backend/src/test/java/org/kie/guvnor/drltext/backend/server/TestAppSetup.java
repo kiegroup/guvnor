@@ -16,22 +16,18 @@
 
 package org.kie.guvnor.drltext.backend.server;
 
-
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 
 @Singleton
 public class TestAppSetup {
 
-    private final IOService         ioService         = new IOServiceDotFileImpl();
+    private final IOService ioService = new IOServiceDotFileImpl();
 
     @PostConstruct
     public void onStartup() {
@@ -42,7 +38,5 @@ public class TestAppSetup {
     public IOService ioService() {
         return ioService;
     }
-
-
 
 }

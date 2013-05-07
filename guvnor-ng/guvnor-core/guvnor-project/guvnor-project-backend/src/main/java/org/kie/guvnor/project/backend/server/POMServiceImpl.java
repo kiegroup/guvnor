@@ -8,11 +8,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.POMService;

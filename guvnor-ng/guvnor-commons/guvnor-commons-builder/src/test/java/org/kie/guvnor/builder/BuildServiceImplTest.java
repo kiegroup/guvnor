@@ -23,13 +23,13 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.core.rule.TypeMetaInfo;
+import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.commons.service.builder.model.BuildResults;
-import org.kie.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.scanner.KieModuleMetaData;

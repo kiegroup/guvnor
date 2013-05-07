@@ -2,7 +2,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.m2repo.service.M2RepoService;
+import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.model.GAV;
 
 import javax.inject.Inject;

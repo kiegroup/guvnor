@@ -21,9 +21,9 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.service.KModuleService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.DefaultSystemRepository;
