@@ -97,7 +97,7 @@ public class NewProjectWizard
 
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         String url = GWT.getModuleBaseURL();
-        String baseURL = url.substring(0, url.indexOf("org.kie.guvnor.GuvnorShowcase"));
+        String baseURL = url.substring(0, url.indexOf("org.drools.workbench.DroolsWorkbench"));
         projectServiceCaller.call(getSuccessCallback(),
                 new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).newProject(contextPath, projectName, pom, baseURL);
     }

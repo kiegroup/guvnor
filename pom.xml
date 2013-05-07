@@ -20,25 +20,8 @@
 
   <modules>
     <module>guvnor-ng</module>
-    <module>guvnor-examples</module>
-  <!--  <module>guvnor-jcr2vfs-migration</module> -->
+    <module>drools-wb</module>
+    <module>kie-wb-common</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-docs</module>
-        <!--todo: needs update those projects before enable than again-->
-        <module>guvnor-distribution-wars</module>        
-        <module>guvnor-distribution</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
