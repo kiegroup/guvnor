@@ -1,4 +1,4 @@
-import org.kie.test.Bean;
+import org.kie.test.repodependencyexample1snapshot.Bean;
 
 rule Test
 
