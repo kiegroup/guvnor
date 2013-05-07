@@ -16,7 +16,7 @@
 package org.kie.guvnor.query.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.commons.data.tables.PageRequest;
+import org.uberfire.client.tables.PageRequest;
 
 /**
  * A Query request.

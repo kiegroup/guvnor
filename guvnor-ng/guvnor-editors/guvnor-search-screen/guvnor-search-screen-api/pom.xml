@@ -15,9 +15,10 @@
   <description>Query Screen API</description>
 
   <dependencies>
+
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-services-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
     </dependency>
 
     <dependency>

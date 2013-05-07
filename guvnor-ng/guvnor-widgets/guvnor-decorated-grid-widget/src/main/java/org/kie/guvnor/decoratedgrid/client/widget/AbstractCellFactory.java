@@ -15,10 +15,12 @@
  */
 package org.kie.guvnor.decoratedgrid.client.widget;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.guvnor.services.config.ApplicationPreferences;
-import org.kie.guvnor.commons.ui.client.tables.CheckboxCellImpl;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
@@ -31,10 +33,8 @@ import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericIntegerEditC
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericLongEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupNumericShortEditCell;
 import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupTextEditCell;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
+import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.uberfire.client.common.CheckboxCellImpl;
 
 /**
  * A Factory to provide the Cells.

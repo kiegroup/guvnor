@@ -27,6 +27,5 @@
   <source path='observer'/>
   <source path='imports'/>
   <source path='workingset'/>
-  <source path='tables'/>
-  
+
 </module>

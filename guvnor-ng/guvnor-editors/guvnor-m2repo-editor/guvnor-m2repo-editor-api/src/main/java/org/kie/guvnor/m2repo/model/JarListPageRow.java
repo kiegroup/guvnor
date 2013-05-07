@@ -16,10 +16,10 @@
 
 package org.kie.guvnor.m2repo.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.commons.data.tables.AbstractPageRow;
-
 import java.util.Date;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.client.tables.AbstractPageRow;
 
 /**
  * A single row of a paged data

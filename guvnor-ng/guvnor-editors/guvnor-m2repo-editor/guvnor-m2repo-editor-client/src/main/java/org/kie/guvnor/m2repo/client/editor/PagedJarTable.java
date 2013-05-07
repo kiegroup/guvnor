@@ -1,5 +1,7 @@
 package org.kie.guvnor.m2repo.client.editor;
 
+import java.util.Date;
+
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
@@ -17,17 +19,15 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.data.tables.PageRequest;
-import org.kie.guvnor.commons.data.tables.PageResponse;
-import org.kie.guvnor.commons.ui.client.tables.AbstractPagedTable;
-import org.kie.guvnor.commons.ui.client.tables.ColumnPicker;
-import org.kie.guvnor.commons.ui.client.tables.SelectionColumn;
-import org.kie.guvnor.commons.ui.client.tables.SortableHeader;
-import org.kie.guvnor.commons.ui.client.tables.SortableHeaderGroup;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
-
-import java.util.Date;
+import org.uberfire.client.tables.AbstractPagedTable;
+import org.uberfire.client.tables.ColumnPicker;
+import org.uberfire.client.tables.PageRequest;
+import org.uberfire.client.tables.PageResponse;
+import org.uberfire.client.tables.SelectionColumn;
+import org.uberfire.client.tables.SortableHeader;
+import org.uberfire.client.tables.SortableHeaderGroup;
 
 public class PagedJarTable
         extends AbstractPagedTable<JarListPageRow> {

@@ -45,7 +45,6 @@
     <module>guvnor-globals-editor</module>
     <module>guvnor-project-config-editor</module>
     <module>guvnor-test-scenario-editor</module>
-    <module>guvnor-inbox</module>
     <module>guvnor-dtable-xls-editor</module>
     <module>guvnor-scorecard-xls-editor</module>
     <module>guvnor-search-screen</module>

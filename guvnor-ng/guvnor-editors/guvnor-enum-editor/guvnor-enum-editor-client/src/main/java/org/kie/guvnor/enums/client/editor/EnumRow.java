@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.enums.client.editor;
 
-import org.kie.guvnor.commons.data.tables.AbstractPageRow;
+import org.uberfire.client.tables.AbstractPageRow;
 
 public class EnumRow extends AbstractPageRow {
 

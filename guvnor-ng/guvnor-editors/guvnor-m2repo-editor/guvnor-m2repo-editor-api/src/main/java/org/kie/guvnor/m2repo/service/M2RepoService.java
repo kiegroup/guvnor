@@ -17,10 +17,10 @@
 package org.kie.guvnor.m2repo.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.data.tables.PageRequest;
-import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.project.model.GAV;
+import org.uberfire.client.tables.PageRequest;
+import org.uberfire.client.tables.PageResponse;
 
 @Remote
 public interface M2RepoService {

@@ -45,8 +45,8 @@ import org.drools.guvnor.models.commons.shared.auditlog.AuditLog;
 import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
 import org.kie.guvnor.commons.security.AppRoles;
 import org.kie.guvnor.commons.ui.client.popups.footers.ModalFooterOKButton;
-import org.kie.guvnor.commons.ui.client.tables.GuvnorSimplePager;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
+import org.uberfire.client.tables.UberfireSimplePager;
 import org.uberfire.security.Identity;
 
 /**
@@ -152,7 +152,7 @@ public class AuditLogViewImpl extends Modal
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
 
-        GuvnorSimplePager gsp = new GuvnorSimplePager();
+        UberfireSimplePager gsp = new UberfireSimplePager();
         gsp.setDisplay( events );
 
         events.setPageSize( 4 );

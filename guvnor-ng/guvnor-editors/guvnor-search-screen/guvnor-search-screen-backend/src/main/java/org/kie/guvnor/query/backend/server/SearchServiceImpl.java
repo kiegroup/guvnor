@@ -19,7 +19,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreView;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.query.model.QueryMetadataPageRequest;
 import org.kie.guvnor.query.model.SearchPageRow;
 import org.kie.guvnor.query.model.SearchTermPageRequest;
@@ -29,6 +28,7 @@ import org.kie.kieora.search.DateRange;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.client.tables.PageResponse;
 import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
 @Service

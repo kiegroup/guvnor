@@ -18,12 +18,12 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:cellview='urn:import:com.google.gwt.user.cellview.client'
-             xmlns:guvnor-pager='urn:import:org.kie.guvnor.commons.ui.client.tables'>
+             xmlns:uf='urn:import:org.uberfire.client.tables'>
 
   <gwt:VerticalPanel>
     <gwt:ToggleButton ui:field="columnPickerButton"/>
     <cellview:CellTable ui:field="cellTable"/>
-    <guvnor-pager:GuvnorSimplePager ui:field="pager"/>
+    <uf:UberfireSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

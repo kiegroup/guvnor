@@ -3,8 +3,8 @@ package org.kie.guvnor.query.model;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.commons.data.tables.AbstractPathPageRow;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.tables.AbstractPathPageRow;
 
 /**
  *

@@ -16,8 +16,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-services-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 
     <dependency>

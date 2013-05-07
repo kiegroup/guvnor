@@ -28,12 +28,12 @@ import javax.inject.Inject;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.guvnor.commons.data.tables.PageRequest;
-import org.kie.guvnor.commons.data.tables.PageResponse;
 import org.kie.guvnor.m2repo.model.JarListPageRow;
 import org.kie.guvnor.m2repo.service.M2RepoService;
 import org.kie.guvnor.project.backend.server.POMContentHandler;
 import org.kie.guvnor.project.model.GAV;
+import org.uberfire.client.tables.PageRequest;
+import org.uberfire.client.tables.PageResponse;
 
 @Service
 @ApplicationScoped
