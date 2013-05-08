@@ -26,6 +26,8 @@ import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessag
 import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
+import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
@@ -35,8 +37,6 @@ import org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.guvnor.dtablexls.client.widgets.ConversionMessageWidget;
 import org.kie.guvnor.dtablexls.client.widgets.PopupListWidget;
 import org.kie.guvnor.dtablexls.service.DecisionTableXLSService;
-import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnClose;

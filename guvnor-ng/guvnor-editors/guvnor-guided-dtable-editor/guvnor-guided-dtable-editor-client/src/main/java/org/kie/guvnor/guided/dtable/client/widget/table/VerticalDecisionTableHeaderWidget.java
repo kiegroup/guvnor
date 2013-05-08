@@ -71,17 +71,17 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
-import org.kie.guvnor.services.config.ApplicationPreferences;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
-import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.SortConfiguration;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SortDataEvent;
 import org.kie.guvnor.guided.dtable.client.resources.i18n.Constants;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
+import org.kie.guvnor.services.config.ApplicationPreferences;
 
 /**
  * Header for a Vertical Decision Table

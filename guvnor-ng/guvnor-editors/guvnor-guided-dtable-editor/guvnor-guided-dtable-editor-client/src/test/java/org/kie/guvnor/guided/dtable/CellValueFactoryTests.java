@@ -33,6 +33,7 @@ import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
@@ -40,7 +41,6 @@ import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
 import org.kie.guvnor.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.kie.guvnor.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
 import org.kie.guvnor.services.config.ApplicationPreferences;

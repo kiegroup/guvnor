@@ -23,12 +23,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
+import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
-import org.kie.guvnor.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.guvnor.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.guvnor.scorecardxls.service.ScoreCardXLSService;

@@ -33,7 +33,7 @@
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
 
-  <inherits name="org.kie.guvnor.errors.GuvnorErrorMessagesWidget"/>
+  <inherits name="org.kie.workbench.widgets.errors.KieWorkbenchErrorMessagesWidget"/>
 
 
 </module>

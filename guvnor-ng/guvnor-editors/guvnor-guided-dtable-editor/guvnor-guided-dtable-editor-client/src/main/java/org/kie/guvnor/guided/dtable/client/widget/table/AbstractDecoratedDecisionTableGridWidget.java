@@ -15,25 +15,13 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractMergableGridWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.guvnor.decoratedgrid.client.widget.events.DeleteColumnEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.InsertColumnEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetModelEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertDecisionTableColumnEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
@@ -50,9 +38,21 @@ import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLAction
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractMergableGridWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.InsertColumnEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertDecisionTableColumnEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 
 /**
  * A Decorated Grid for Decision Tables

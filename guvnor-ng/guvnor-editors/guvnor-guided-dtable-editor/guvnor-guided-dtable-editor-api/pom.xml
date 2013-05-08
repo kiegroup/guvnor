@@ -44,8 +44,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-decorated-grid-widget</artifactId>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-decorated-grid-widget</artifactId>
     </dependency>
 
     <dependency>

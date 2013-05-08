@@ -16,8 +16,8 @@
 package org.kie.guvnor.guided.dtable.client.widget.table.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetModelEvent;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 
 /**
  * An event to set the underlying Guided Decision Table model in the table

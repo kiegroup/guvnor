@@ -20,7 +20,7 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.guvnor.guided.template.client.editor.events.SetTemplateDataEvent;
 
 /**

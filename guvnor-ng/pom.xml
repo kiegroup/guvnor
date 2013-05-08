@@ -35,7 +35,6 @@
   <modules>
     <module>guvnor-commons</module>
     <module>guvnor-core</module>
-    <module>guvnor-widgets</module>
     <module>guvnor-editors</module>
   </modules>
 

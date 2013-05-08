@@ -25,20 +25,16 @@ import org.drools.guvnor.models.testscenarios.shared.*;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
-import org.kie.guvnor.commons.ui.client.widget.PercentageBar;
-import org.kie.guvnor.errors.client.resources.ImageResources;
+import org.kie.workbench.widgets.errors.client.resources.ImageResources;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.AuditEventsImages;
-import org.kie.guvnor.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.guvnor.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {

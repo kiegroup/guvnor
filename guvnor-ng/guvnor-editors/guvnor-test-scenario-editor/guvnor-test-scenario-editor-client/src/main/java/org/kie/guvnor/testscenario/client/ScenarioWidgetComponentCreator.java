@@ -15,20 +15,31 @@
  */
 package org.kie.guvnor.testscenario.client;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.models.testscenarios.shared.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
+import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
+import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.kie.workbench.widgets.metadata.client.resources.ImageResources;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.metadata.client.resources.ImageResources;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
-
-import java.util.List;
 
 public class ScenarioWidgetComponentCreator {
 

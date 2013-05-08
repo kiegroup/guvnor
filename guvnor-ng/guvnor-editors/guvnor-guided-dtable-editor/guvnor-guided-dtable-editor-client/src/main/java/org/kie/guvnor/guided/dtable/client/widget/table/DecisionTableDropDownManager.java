@@ -15,14 +15,16 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwt.cell.client.Cell.Context;
 import org.drools.guvnor.models.commons.shared.rule.IAction;
 import org.drools.guvnor.models.commons.shared.rule.IPattern;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -35,15 +37,13 @@ import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.template.client.editor.RuleModelPeerVariableVisitor;
 import org.kie.guvnor.guided.template.client.editor.RuleModelPeerVariableVisitor.ValueHolder;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A utility class to get the values of all Constraints\Actions in the scope of

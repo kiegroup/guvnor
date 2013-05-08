@@ -23,8 +23,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-metadata-widget</artifactId>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-metadata-widget</artifactId>
     </dependency>
 
     <dependency>

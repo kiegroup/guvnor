@@ -24,11 +24,11 @@ import java.util.List;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
 import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 import org.kie.guvnor.datamodel.model.DateConverter;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A Factory to create CellValues applicable to given columns.

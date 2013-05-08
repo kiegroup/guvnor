@@ -15,7 +15,7 @@
  */
 package org.kie.guvnor.guided.template.client.resources.css;
 
-import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
+import org.kie.workbench.widgets.decoratedgrid.client.resources.GridResources;
 
 /**
  * CSS for Guided Template Editor

@@ -16,17 +16,7 @@
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
-import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
-import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.kie.guvnor.decoratedgrid.client.widget.cells.PopupTextEditCell;
-import org.kie.guvnor.decoratedgrid.client.widget.cells.RowNumberCell;
-import org.kie.guvnor.guided.dtable.client.widget.table.cells.AnalysisCell;
-import org.kie.guvnor.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
-import org.kie.guvnor.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -45,6 +35,16 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellFactory;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.RowNumberCell;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.guvnor.guided.dtable.client.widget.table.cells.AnalysisCell;
+import org.kie.guvnor.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
+import org.kie.guvnor.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
 

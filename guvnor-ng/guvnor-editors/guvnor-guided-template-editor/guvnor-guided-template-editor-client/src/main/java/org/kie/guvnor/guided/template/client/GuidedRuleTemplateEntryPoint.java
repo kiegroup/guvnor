@@ -17,7 +17,6 @@ package org.kie.guvnor.guided.template.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.kie.guvnor.decoratedgrid.client.resources.GridResources;
 import org.kie.guvnor.guided.template.client.resources.GuidedTemplateEditorResources;
 
 @EntryPoint

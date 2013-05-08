@@ -16,20 +16,25 @@
 
 package org.kie.guvnor.testscenario.client;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.kie.workbench.widgets.metadata.client.resources.Images;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
-import org.kie.guvnor.metadata.client.resources.Images;
 import org.kie.guvnor.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.uberfire.client.common.FormStylePopup;
-
-import java.util.List;
 
 public class ConfigWidget extends Composite {
 

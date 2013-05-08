@@ -17,7 +17,7 @@ package org.kie.guvnor.guided.template.client.editor.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetModelEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 
 /**
  * An event to set the underlying Template Data in the table

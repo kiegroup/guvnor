@@ -30,8 +30,8 @@
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
-  <inherits name="org.kie.guvnor.metadata.GuvnorMetadataWidget"/>
-
   <inherits name='org.kie.guvnor.workitems.WorkItemsEditorAPI'/>
+
+  <inherits name="org.kie.workbench.widgets.metadata.KieWorkbenchMetadataWidget"/>
 
 </module>

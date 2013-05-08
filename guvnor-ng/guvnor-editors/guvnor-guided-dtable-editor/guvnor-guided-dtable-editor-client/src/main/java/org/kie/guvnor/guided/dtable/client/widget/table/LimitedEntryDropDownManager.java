@@ -15,8 +15,11 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.decoratedgrid.client.widget.DropDownDataValueMapProvider;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -26,11 +29,8 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.DropDownDataValueMapProvider;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * Specific implementation for Limited Entry Decision Table definition (i.e. for

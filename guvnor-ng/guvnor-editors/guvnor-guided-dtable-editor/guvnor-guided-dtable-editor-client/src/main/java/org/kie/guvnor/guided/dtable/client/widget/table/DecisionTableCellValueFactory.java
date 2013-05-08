@@ -15,12 +15,13 @@
  */
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue;
-import org.kie.guvnor.decoratedgrid.client.widget.CellValue.CellState;
-import org.kie.guvnor.decoratedgrid.client.widget.data.DynamicDataRow;
 import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
 import org.drools.guvnor.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
@@ -29,13 +30,12 @@ import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.guvnor.models.guided.dtable.shared.model.RowNumberCol52;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue.CellState;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.guided.rule.client.editor.RuleAttributeWidget;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * A Factory to create CellValues applicable to given columns.

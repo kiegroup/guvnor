@@ -43,14 +43,14 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.SortConfiguration;
-import org.kie.guvnor.decoratedgrid.client.widget.SortDirection;
-import org.kie.guvnor.decoratedgrid.client.widget.events.ColumnResizeEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SortDataEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.SortConfiguration;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.SortDirection;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SortDataEvent;
 import org.kie.guvnor.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 
 /**

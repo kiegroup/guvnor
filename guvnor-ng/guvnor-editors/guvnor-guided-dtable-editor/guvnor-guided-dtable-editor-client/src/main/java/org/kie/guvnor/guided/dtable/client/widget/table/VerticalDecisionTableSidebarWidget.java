@@ -16,14 +16,14 @@
 package org.kie.guvnor.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
-import org.kie.guvnor.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
-import org.kie.guvnor.decoratedgrid.client.widget.CopyPasteContextMenu;
-import org.kie.guvnor.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.guvnor.decoratedgrid.client.widget.data.RowMapper;
-import org.kie.guvnor.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CopyPasteContextMenu;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.RowMapper;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.guvnor.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 
 /**
  * A "sidebar" for a vertical Decision Table
