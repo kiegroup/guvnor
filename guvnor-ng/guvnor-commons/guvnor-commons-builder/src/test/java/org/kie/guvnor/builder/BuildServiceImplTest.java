@@ -136,7 +136,7 @@ public class BuildServiceImplTest {
         assertEquals( 1,
                       metaData.getPackages().size() );
         final String packageName = metaData.getPackages().iterator().next();
-        assertEquals( "org.kie.test",
+        assertEquals( "org.kie.test.repodependencyexample1",
                       packageName );
 
         //Check classes
