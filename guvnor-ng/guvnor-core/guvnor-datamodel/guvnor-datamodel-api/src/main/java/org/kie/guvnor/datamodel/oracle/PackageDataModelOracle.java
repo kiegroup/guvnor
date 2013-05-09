@@ -18,8 +18,8 @@ package org.kie.guvnor.datamodel.oracle;
 
 import java.util.List;
 
-import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 
 public interface PackageDataModelOracle extends ProjectDataModelOracle {

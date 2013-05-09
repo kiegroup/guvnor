@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.drools.guvnor.models.commons.shared.oracle.OperatorsOracle;
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
+import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.model.DropDownData;

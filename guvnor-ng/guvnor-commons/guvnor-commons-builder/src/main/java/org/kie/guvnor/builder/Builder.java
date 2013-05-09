@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.models.commons.shared.imports.Import;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

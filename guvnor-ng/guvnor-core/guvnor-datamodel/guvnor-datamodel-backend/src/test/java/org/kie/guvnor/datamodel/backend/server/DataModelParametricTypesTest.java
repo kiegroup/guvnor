@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;

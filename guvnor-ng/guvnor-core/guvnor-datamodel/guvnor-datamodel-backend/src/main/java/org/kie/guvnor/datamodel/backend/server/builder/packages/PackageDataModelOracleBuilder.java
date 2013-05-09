@@ -10,7 +10,7 @@ import java.util.Map;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLMappingParseException;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
+import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.kie.commons.data.Pair;
 import org.kie.guvnor.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;

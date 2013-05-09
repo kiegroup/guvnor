@@ -16,7 +16,7 @@
 package org.kie.guvnor.commons.ui.client.workitems;
 
 
-import org.drools.guvnor.models.commons.shared.workitems.PortableListParameterDefinition;
+import org.drools.workbench.models.commons.shared.workitems.PortableListParameterDefinition;
 
 /**
  * A Widget to display a Work Item List parameter

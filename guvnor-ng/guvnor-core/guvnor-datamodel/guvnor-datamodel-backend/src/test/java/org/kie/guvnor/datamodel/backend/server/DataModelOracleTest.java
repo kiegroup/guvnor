@@ -3,7 +3,7 @@ package org.kie.guvnor.datamodel.backend.server;
 import java.io.IOException;
 import java.util.List;
 
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.junit.Test;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
