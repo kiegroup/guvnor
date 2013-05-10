@@ -78,6 +78,7 @@ public class GuvnorM2Repository {
         if (!releasesRepository.exists()) {
             releasesRepository.mkdirs();
         }
+        Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
     }
 
     protected String getM2RepositoryRootDir() {
