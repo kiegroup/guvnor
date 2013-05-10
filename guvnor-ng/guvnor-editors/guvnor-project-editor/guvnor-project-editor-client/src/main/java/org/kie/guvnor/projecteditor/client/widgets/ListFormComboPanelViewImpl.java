@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -52,7 +53,7 @@ public class ListFormComboPanelViewImpl
     Label listTitle;
 
     @UiField
-    ListBox kSessionsList;
+    ListBox list;
 
     @UiField
     SimplePanel kSessionForm;
@@ -85,14 +86,14 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void addItem(String fullName) {
-        kSessionsList.addItem(fullName);
+        list.addItem(fullName);
     }
 
     @Override
     public void remove(String fullName) {
-        for (int i = 0; i < kSessionsList.getItemCount(); i++) {
-            if (kSessionsList.getItemText(i).equals(fullName)) {
-                kSessionsList.removeItem(i);
+        for (int i = 0; i < list.getItemCount(); i++) {
+            if (list.getItemText(i).equals(fullName)) {
+                list.removeItem(i);
                 break;
             }
         }
@@ -100,7 +101,7 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void clearList() {
-        kSessionsList.clear();
+        list.clear();
     }
 
     @Override
@@ -112,9 +113,9 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void setSelected(String fullName) {
-        for (int i = 0; i < kSessionsList.getItemCount(); i++) {
-            if (kSessionsList.getItemText(i).equals(fullName)) {
-                kSessionsList.setSelectedIndex(i);
+        for (int i = 0; i < list.getItemCount(); i++) {
+            if (list.getItemText(i).equals(fullName)) {
+                list.setSelectedIndex(i);
                 break;
             }
         }
@@ -122,12 +123,13 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void showPleaseSelectAnItem() {
-        ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.PleaseSelectAKSession());
+        ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.PleaseSelectAnItem());
     }
 
-    @UiHandler("kSessionsList")
+    @UiHandler("list")
     public void handleChange(ChangeEvent event) {
-        presenter.onSelect(kSessionsList.getValue(kSessionsList.getSelectedIndex()));
+        String value = list.getValue(list.getSelectedIndex());
+        presenter.onSelect(value);
     }
 
     @UiHandler("addButton")

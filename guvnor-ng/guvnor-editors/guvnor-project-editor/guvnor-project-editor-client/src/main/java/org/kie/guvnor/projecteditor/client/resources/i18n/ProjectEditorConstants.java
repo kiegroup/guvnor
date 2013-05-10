@@ -132,4 +132,6 @@ public interface ProjectEditorConstants
     String ProjectScreen();
 
     String NewProject();
+
+    String PleaseSelectAnItem();
 }

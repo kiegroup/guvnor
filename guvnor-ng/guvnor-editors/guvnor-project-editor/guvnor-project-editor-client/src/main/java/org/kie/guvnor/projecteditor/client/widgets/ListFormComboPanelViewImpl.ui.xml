@@ -34,7 +34,7 @@
     </div>
     <div>
       <div style='float:left;'>
-        <gwt:ListBox ui:field="kSessionsList" visibleItemCount="15" width="280px"/>
+        <gwt:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
       </div>
       <div style='float:left; padding-left:20px;'>
         <gwt:SimplePanel ui:field="kSessionForm"/>

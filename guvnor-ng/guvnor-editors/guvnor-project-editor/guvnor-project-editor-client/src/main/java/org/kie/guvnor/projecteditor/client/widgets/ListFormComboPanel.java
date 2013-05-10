@@ -101,14 +101,13 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
                 view.remove(selectedItemName);
                 view.addItem(name);
 
-                selectedItemName = name;
-
                 setSelected(model);
             }
         });
     }
 
     private void setSelected(T model) {
+        selectedItemName = model.getName();
         view.setSelected(model.getName());
         form.setModel(model);
     }
