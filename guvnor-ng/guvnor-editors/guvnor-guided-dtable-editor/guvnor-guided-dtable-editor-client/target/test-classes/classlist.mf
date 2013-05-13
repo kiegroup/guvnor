@@ -1,0 +1,3 @@
+org.kie.guvnor.guided.dtable.JVMDateConverter
+org.kie.guvnor.guided.dtable.client.wizard.pages.RowExpanderTests
+org.kie.guvnor.guided.dtable.CellValueFactoryTests

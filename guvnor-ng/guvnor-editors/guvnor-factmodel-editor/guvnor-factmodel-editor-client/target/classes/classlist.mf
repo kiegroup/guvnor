@@ -1,0 +1,17 @@
+org.kie.guvnor.factmodel.client.editor.FactEditorPopup
+org.kie.guvnor.factmodel.client.editor.AnnotationEditor
+org.kie.guvnor.factmodel.client.editor.FactModelsEditorPresenter
+org.kie.guvnor.factmodel.client.type.FactModelResourceType
+org.kie.guvnor.factmodel.client.editor.FactModelEditor
+org.kie.guvnor.factmodel.client.handlers.NewFactModelHandler
+org.kie.guvnor.factmodel.client.resources.images.ImageResources
+org.kie.guvnor.factmodel.client.editor.FieldEditorPopup
+org.kie.guvnor.factmodel.client.resources.i18n.Constants
+org.kie.guvnor.factmodel.client.editor.FactModelsEditorViewImpl
+org.kie.guvnor.factmodel.client.editor.FactFieldEditor
+org.kie.guvnor.factmodel.client.editor.ModelNameHelper
+org.kie.guvnor.factmodel.client.editor.FactFieldsEditor
+org.kie.guvnor.factmodel.client.editor.FactModelsEditorView
+org.kie.guvnor.factmodel.client.editor.AnnotationEditorPopup
+org.kie.guvnor.factmodel.client.editor.NoSpaceKeyPressHandler
+org.kie.guvnor.factmodel.client.editor.FactModelsEditorPresenterActivity

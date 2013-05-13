@@ -23,7 +23,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.projectconfigscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.guvnor.projectconfigscreen.client.type.ProjectImportsResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;

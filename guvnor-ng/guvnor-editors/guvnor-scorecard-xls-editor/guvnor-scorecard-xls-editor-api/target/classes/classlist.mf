@@ -1,0 +1,2 @@
+org.kie.guvnor.scorecardxls.service.ScoreCardXLSService
+org.kie.guvnor.scorecardxls.type.ScoreCardXLSResourceTypeDefinition

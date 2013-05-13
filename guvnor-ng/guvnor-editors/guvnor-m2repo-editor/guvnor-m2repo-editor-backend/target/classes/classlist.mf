@@ -1,0 +1,6 @@
+org.kie.guvnor.m2repo.backend.server.FileDownloadServlet
+org.kie.guvnor.m2repo.backend.server.ExtendedM2RepoService
+org.kie.guvnor.m2repo.backend.server.FormData
+org.kie.guvnor.m2repo.backend.server.GuvnorM2Repository
+org.kie.guvnor.m2repo.backend.server.FileServlet
+org.kie.guvnor.m2repo.backend.server.M2RepoServiceImpl

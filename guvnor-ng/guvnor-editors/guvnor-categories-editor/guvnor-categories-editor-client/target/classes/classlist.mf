@@ -1,0 +1,9 @@
+org.kie.guvnor.categories.client.CategoriesEditorView
+org.kie.guvnor.categories.client.CategoriesEditorPresenterActivity
+org.kie.guvnor.categories.client.CategoriesEditorViewImpl
+org.kie.guvnor.categories.client.resources.Images
+org.kie.guvnor.categories.client.resources.i18n.Constants
+org.kie.guvnor.categories.client.CategoriesEditorPresenter
+org.kie.guvnor.categories.client.type.CategoryDefinitionResourceType
+org.kie.guvnor.categories.client.widget.CategoryTreeEditorWidget
+org.kie.guvnor.categories.client.resources.ImageResources

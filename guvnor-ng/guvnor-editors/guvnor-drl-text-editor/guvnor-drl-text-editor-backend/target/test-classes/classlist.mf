@@ -1,0 +1,3 @@
+org.kie.guvnor.drltext.backend.server.TestIdentityFactory
+org.kie.guvnor.drltext.backend.server.DRLTextEditorServiceImplTest
+org.kie.guvnor.drltext.backend.server.TestAppSetup

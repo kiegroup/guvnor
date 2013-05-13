@@ -1,0 +1,3 @@
+org.kie.guvnor.drltext.service.DRLTextEditorService
+org.kie.guvnor.drltext.model.DrlModelContent
+org.kie.guvnor.drltext.type.DRLResourceTypeDefinition

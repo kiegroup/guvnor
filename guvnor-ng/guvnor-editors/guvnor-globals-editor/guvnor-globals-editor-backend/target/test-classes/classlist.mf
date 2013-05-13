@@ -1,0 +1,2 @@
+org.kie.guvnor.globals.backend.server.util.GlobalsPersistenceTest
+org.kie.guvnor.globals.backend.server.util.GlobalsParserTest

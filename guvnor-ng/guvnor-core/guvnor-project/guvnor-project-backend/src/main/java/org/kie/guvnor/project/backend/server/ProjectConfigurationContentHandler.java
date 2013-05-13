@@ -2,7 +2,7 @@ package org.kie.guvnor.project.backend.server;
 
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.workbench.models.commons.shared.imports.Import;
 import org.kie.guvnor.project.model.ProjectImports;
 
 import javax.enterprise.context.Dependent;

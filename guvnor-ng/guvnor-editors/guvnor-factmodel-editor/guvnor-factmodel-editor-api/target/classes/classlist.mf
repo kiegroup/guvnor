@@ -1,0 +1,7 @@
+org.kie.guvnor.factmodel.type.FactModelResourceTypeDefinition
+org.kie.guvnor.factmodel.model.FactModels
+org.kie.guvnor.factmodel.model.FactModelContent
+org.kie.guvnor.factmodel.model.FieldMetaModel
+org.kie.guvnor.factmodel.model.AnnotationMetaModel
+org.kie.guvnor.factmodel.service.FactModelService
+org.kie.guvnor.factmodel.model.FactMetaModel

@@ -1,0 +1,11 @@
+org.kie.guvnor.guided.scorecard.client.widget.CustomEditTextCell
+org.kie.guvnor.guided.scorecard.client.resources.i18n.Constants
+org.kie.guvnor.guided.scorecard.client.widget.DynamicSelectionCell
+org.kie.guvnor.guided.scorecard.client.type.GuidedScoreCardResourceType
+org.kie.guvnor.guided.scorecard.client.handlers.NewGuidedScoreCardHandler
+org.kie.guvnor.guided.scorecard.client.widget.GuidedScoreCardEditor
+org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditorPresenterActivity
+org.kie.guvnor.guided.scorecard.client.resources.images.ImageResources
+org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditorViewImpl
+org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditorView
+org.kie.guvnor.guided.scorecard.client.editor.GuidedScoreCardEditorPresenter

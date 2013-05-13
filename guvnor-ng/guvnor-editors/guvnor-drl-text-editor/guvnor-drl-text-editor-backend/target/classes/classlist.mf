@@ -1,0 +1,1 @@
+org.kie.guvnor.drltext.backend.server.DRLTextEditorServiceImpl

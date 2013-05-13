@@ -1,0 +1,14 @@
+org.kie.guvnor.dtablexls.client.editor.DecisionTableXLSEditorView
+org.kie.guvnor.dtablexls.client.resources.css.StylesCss
+org.kie.guvnor.dtablexls.client.type.DecisionTableXLSResourceType
+org.kie.guvnor.dtablexls.client.DecisionTableXLSEntryPoint
+org.kie.guvnor.dtablexls.client.editor.URLHelper
+org.kie.guvnor.dtablexls.client.widgets.ConversionMessageWidget
+org.kie.guvnor.dtablexls.client.editor.DecisionTableXLSEditorPresenterActivity
+org.kie.guvnor.dtablexls.client.resources.images.ImageResources
+org.kie.guvnor.dtablexls.client.editor.DecisionTableXLSEditorPresenter
+org.kie.guvnor.dtablexls.client.widgets.PopupListWidget
+org.kie.guvnor.dtablexls.client.editor.DecisionTableXLSEditorViewImpl
+org.kie.guvnor.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants
+org.kie.guvnor.dtablexls.client.resources.Resources
+org.kie.guvnor.dtablexls.client.handlers.NewDecisionTableXLSHandler

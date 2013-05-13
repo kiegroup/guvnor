@@ -19,8 +19,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.guvnor.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.client.common.BusyPopup;

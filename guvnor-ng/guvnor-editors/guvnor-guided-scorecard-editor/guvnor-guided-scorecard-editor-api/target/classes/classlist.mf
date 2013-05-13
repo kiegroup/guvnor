@@ -1,0 +1,3 @@
+org.kie.guvnor.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition
+org.kie.guvnor.guided.scorecard.service.GuidedScoreCardEditorService
+org.kie.guvnor.guided.scorecard.model.ScoreCardModelContent

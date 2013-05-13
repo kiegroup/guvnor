@@ -1,0 +1,4 @@
+org.kie.guvnor.guided.rule.backend.server.GuidedRuleDRLSourceService
+org.kie.guvnor.guided.rule.backend.server.EnumDropdownServiceImpl
+org.kie.guvnor.guided.rule.backend.server.GuidedRuleEditorServiceImpl
+org.kie.guvnor.guided.rule.backend.server.GuidedRuleDSLRSourceService

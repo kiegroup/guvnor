@@ -1,0 +1,2 @@
+org.kie.guvnor.dsltext.service.DSLTextEditorService
+org.kie.guvnor.dsltext.type.DSLResourceTypeDefinition

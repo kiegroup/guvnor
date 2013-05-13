@@ -1,0 +1,13 @@
+org.kie.guvnor.drltext.client.editor.DRLEditorPresenter
+org.kie.guvnor.drltext.client.resources.Resources
+org.kie.guvnor.drltext.client.widget.RuleContentWidget
+org.kie.guvnor.drltext.client.resources.i18n.DRLTextEditorConstants
+org.kie.guvnor.drltext.client.editor.DRLEditorViewImpl
+org.kie.guvnor.drltext.client.type.DRLResourceType
+org.kie.guvnor.drltext.client.handlers.NewDrlTextHandler
+org.kie.guvnor.drltext.client.editor.DRLEditorView
+org.kie.guvnor.drltext.client.DRLEditorEntryPoint
+org.kie.guvnor.drltext.client.resources.images.ImageResources
+org.kie.guvnor.drltext.client.editor.DRLEditorPresenterActivity
+org.kie.guvnor.drltext.client.resources.css.StylesCss
+org.kie.guvnor.drltext.client.widget.FactTypeBrowserWidget

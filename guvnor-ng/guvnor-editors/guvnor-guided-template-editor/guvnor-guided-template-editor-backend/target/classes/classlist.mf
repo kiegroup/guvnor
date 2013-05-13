@@ -1,0 +1,2 @@
+org.kie.guvnor.guided.template.server.GuidedRuleTemplateEditorServiceImpl
+org.kie.guvnor.guided.template.server.GuidedRuleTemplateSourceService

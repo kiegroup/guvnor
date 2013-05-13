@@ -1,0 +1,4 @@
+org.kie.guvnor.workitems.backend.server.WorkItemsEditorServiceImpl
+org.kie.guvnor.workitems.backend.server.ResourceWorkDefinitionsLoader
+org.kie.guvnor.workitems.backend.server.WorkDefinitionsParser
+org.kie.guvnor.workitems.backend.server.ConfigWorkDefinitionsLoader

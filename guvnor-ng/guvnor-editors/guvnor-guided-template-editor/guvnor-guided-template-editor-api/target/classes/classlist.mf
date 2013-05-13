@@ -1,0 +1,3 @@
+org.kie.guvnor.guided.template.service.GuidedRuleTemplateEditorService
+org.kie.guvnor.guided.template.type.GuidedRuleTemplateResourceTypeDefinition
+org.kie.guvnor.guided.template.model.GuidedTemplateEditorContent

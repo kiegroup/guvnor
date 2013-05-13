@@ -1,0 +1,4 @@
+org.kie.guvnor.enums.type.EnumResourceTypeDefinition
+org.kie.guvnor.enums.service.EnumService
+org.kie.guvnor.enums.model.EnumModel
+org.kie.guvnor.enums.model.EnumModelContent

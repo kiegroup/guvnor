@@ -1,6 +1,6 @@
 package org.kie.guvnor.project.backend.server;
 
-import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.workbench.models.commons.shared.imports.Import;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.guvnor.project.model.ProjectImports;

@@ -1,0 +1,6 @@
+org.kie.guvnor.testscenario.model.TestResultMessage
+org.kie.guvnor.testscenario.model.TestScenarioModelContent
+org.kie.guvnor.testscenario.model.Failure
+org.kie.guvnor.testscenario.model.Success
+org.kie.guvnor.testscenario.service.ScenarioTestEditorService
+org.kie.guvnor.testscenario.type.TestScenarioResourceTypeDefinition

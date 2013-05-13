@@ -1,0 +1,4 @@
+org.kie.guvnor.workitems.model.WorkItemsModelContent
+org.kie.guvnor.workitems.service.WorkItemsEditorService
+org.kie.guvnor.workitems.type.WorkItemsTypeDefinition
+org.kie.guvnor.workitems.model.WorkItemDefinitionElements
