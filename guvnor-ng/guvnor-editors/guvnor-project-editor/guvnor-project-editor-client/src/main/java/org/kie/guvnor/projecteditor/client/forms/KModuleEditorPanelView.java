@@ -16,7 +16,7 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
+import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;
 
 public interface KModuleEditorPanelView extends HasBusyIndicator,

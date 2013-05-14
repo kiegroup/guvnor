@@ -31,7 +31,6 @@
   <modules>
     <module>guvnor-commons-data</module>
     <module>guvnor-commons-services-api</module>
-    <module>guvnor-commons-ui</module>
     <module>guvnor-commons-security</module>
     <module>guvnor-commons-builder</module>
   </modules>

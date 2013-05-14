@@ -18,8 +18,8 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
-import org.kie.guvnor.commons.ui.client.popups.text.PopupSetFieldCommand;
+import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
+import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.projecteditor.client.widgets.ListFormComboPanelView;

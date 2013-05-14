@@ -2,7 +2,7 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
+import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.guvnor.projecteditor.client.type.POMResourceType;
 import org.uberfire.backend.vfs.Path;
