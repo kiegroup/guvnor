@@ -31,7 +31,6 @@
   <modules>
     <module>guvnor-project-editor</module>
     <module>guvnor-project-config-editor</module>
-    <module>guvnor-search-screen</module>
   </modules>
 
 </project>
