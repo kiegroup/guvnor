@@ -29,7 +29,6 @@
   <name>Guvnor Editors</name>
 
   <modules>
-    <module>guvnor-explorer</module>
     <module>guvnor-project-editor</module>
     <module>guvnor-project-config-editor</module>
     <module>guvnor-search-screen</module>
