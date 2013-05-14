@@ -1,2 +1,0 @@
-org.kie.guvnor.guided.dtable.backend.server.GuidedDecisionTableEditorServiceImpl
-org.kie.guvnor.guided.dtable.backend.server.GuidedDecisionTableSourceService

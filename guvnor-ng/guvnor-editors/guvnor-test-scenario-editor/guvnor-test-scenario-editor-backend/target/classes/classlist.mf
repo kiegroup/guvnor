@@ -1,3 +1,0 @@
-org.kie.guvnor.testscenario.backend.server.CustomJUnitRunNotifier
-org.kie.guvnor.testscenario.backend.server.ScenarioRunnerWrapper
-org.kie.guvnor.testscenario.backend.server.ScenarioTestEditorServiceImpl

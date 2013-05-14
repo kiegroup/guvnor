@@ -1,3 +1,0 @@
-org.kie.guvnor.factmodel.backend.server.util.FactModelPersistence
-org.kie.guvnor.factmodel.backend.server.FactModelSourceService
-org.kie.guvnor.factmodel.backend.server.FactModelServiceImpl

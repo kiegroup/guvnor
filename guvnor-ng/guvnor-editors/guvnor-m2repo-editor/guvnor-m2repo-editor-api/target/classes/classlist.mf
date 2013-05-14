@@ -1,3 +1,0 @@
-org.kie.guvnor.m2repo.service.M2RepoService
-org.kie.guvnor.m2repo.model.HTMLFileManagerFields
-org.kie.guvnor.m2repo.model.JarListPageRow

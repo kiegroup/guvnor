@@ -1,1 +1,0 @@
-org.kie.guvnor.m2repo.backend.server.M2RepositoryTest

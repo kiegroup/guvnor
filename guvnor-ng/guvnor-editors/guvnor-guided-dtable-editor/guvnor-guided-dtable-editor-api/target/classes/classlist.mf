@@ -1,4 +1,0 @@
-org.kie.guvnor.guided.dtable.model.GuidedDecisionTableEditorContent
-org.kie.guvnor.guided.dtable.type.GuidedDTableResourceTypeDefinition
-org.kie.guvnor.guided.dtable.model.GuidedDecisionTableUtils
-org.kie.guvnor.guided.dtable.service.GuidedDecisionTableEditorService

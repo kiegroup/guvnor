@@ -1,4 +1,0 @@
-org.kie.guvnor.dtablexls.backend.server.TestAppSetup
-org.kie.guvnor.dtablexls.backend.server.TestIdentityFactory
-org.kie.guvnor.dtablexls.backend.server.DRLTextEditorServiceImplTest
-org.kie.guvnor.dtablexls.backend.server.conversion.DecisionTableXLSToDecisionTableGuidedConverterTests

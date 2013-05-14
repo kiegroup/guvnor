@@ -1,8 +1,0 @@
-org.kie.guvnor.defaulteditor.client.resources.images.ImageResources
-org.kie.guvnor.defaulteditor.client.resources.css.StylesCss
-org.kie.guvnor.defaulteditor.client.editor.GuvnorTextEditorPresenterActivity
-org.kie.guvnor.defaulteditor.client.resources.Resources
-org.kie.guvnor.defaulteditor.client.resources.i18n.GuvnorDefaultEditorConstants
-org.kie.guvnor.defaulteditor.client.editor.GuvnorDefaultEditorPresenter
-org.kie.guvnor.defaulteditor.client.editor.GuvnorTextEditorPresenter
-org.kie.guvnor.defaulteditor.client.editor.GuvnorDefaultEditorPresenterActivity

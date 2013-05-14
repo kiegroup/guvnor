@@ -1,5 +1,0 @@
-org.kie.guvnor.guided.rule.service.EnumDropdownService
-org.kie.guvnor.guided.rule.model.GuidedEditorContent
-org.kie.guvnor.guided.rule.service.GuidedRuleEditorService
-org.kie.guvnor.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition
-org.kie.guvnor.guided.rule.type.GuidedRuleDRLResourceTypeDefinition

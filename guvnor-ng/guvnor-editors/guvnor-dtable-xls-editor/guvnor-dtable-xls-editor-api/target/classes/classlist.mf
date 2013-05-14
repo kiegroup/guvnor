@@ -1,3 +1,0 @@
-org.kie.guvnor.dtablexls.service.DecisionTableXLSConversionService
-org.kie.guvnor.dtablexls.service.DecisionTableXLSService
-org.kie.guvnor.dtablexls.type.DecisionTableXLSResourceTypeDefinition

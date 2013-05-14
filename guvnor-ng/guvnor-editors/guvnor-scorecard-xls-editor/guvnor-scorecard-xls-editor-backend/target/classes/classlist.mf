@@ -1,3 +1,0 @@
-org.kie.guvnor.scorecardxls.backend.server.ScoreCardXLSFileServlet
-org.kie.guvnor.scorecardxls.backend.server.ScoreCardXLSServiceImpl
-org.kie.guvnor.scorecardxls.backend.server.ExtendedScoreCardXLSService
