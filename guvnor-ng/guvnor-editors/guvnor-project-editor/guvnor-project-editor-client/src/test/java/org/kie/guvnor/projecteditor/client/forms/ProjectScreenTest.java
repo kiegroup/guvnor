@@ -22,8 +22,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;

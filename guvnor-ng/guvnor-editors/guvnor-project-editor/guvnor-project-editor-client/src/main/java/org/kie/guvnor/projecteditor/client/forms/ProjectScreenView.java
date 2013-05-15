@@ -18,7 +18,6 @@ package org.kie.guvnor.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.services.metadata.model.Metadata;
 

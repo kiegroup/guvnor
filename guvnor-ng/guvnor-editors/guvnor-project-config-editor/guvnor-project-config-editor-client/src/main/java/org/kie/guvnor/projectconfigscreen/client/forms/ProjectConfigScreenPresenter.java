@@ -29,10 +29,10 @@ import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
 import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.projectconfigscreen.client.resources.i18n.ProjectConfigScreenConstants;
-import org.kie.guvnor.projectconfigscreen.client.type.ProjectConfigResourceType;
+import org.kie.guvnor.projectconfigscreen.client.type.ProjectImportsResourceType;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
 import org.kie.guvnor.services.version.events.RestoreEvent;
@@ -50,7 +50,7 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectConfigResourceType.class })
+@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectImportsResourceType.class })
 public class ProjectConfigScreenPresenter
         implements ProjectConfigScreenView.Presenter {
 
@@ -58,7 +58,7 @@ public class ProjectConfigScreenPresenter
 
     private Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
-    private PackageConfiguration packageConfiguration;
+    private ProjectImports packageConfiguration;
 
     private Event<NotificationEvent> notification;
 
@@ -127,11 +127,11 @@ public class ProjectConfigScreenPresenter
                               new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
     }
 
-    private RemoteCallback<PackageConfiguration> getModelSuccessCallback() {
-        return new RemoteCallback<PackageConfiguration>() {
+    private RemoteCallback<ProjectImports> getModelSuccessCallback() {
+        return new RemoteCallback<ProjectImports>() {
 
             @Override
-            public void callback( final PackageConfiguration response ) {
+            public void callback( final ProjectImports response ) {
                 ProjectConfigScreenPresenter.this.packageConfiguration = response;
                 view.setImports( path,
                                  packageConfiguration.getImports() );

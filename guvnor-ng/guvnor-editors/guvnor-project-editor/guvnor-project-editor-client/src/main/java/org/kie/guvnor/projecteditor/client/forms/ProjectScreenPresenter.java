@@ -25,10 +25,6 @@ import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.KModuleService;

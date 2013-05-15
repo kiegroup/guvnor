@@ -3,7 +3,7 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 import com.google.gwt.user.client.Window;
 import org.kie.workbench.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.guvnor.services.metadata.model.Metadata;

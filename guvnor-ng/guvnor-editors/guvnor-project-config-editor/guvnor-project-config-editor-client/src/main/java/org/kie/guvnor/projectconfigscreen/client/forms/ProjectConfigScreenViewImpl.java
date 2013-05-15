@@ -62,8 +62,7 @@ public class ProjectConfigScreenViewImpl
     @Override
     public void setImports( final Path path,
                             final Imports imports ) {
-        importsWidget.setContent( imports,
-                                  false );
+        importsWidget.init( path, false );
     }
 
     @Override
