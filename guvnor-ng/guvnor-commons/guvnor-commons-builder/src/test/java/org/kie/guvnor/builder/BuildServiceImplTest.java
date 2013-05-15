@@ -29,9 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.guvnor.commons.service.builder.model.BuildResults;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.services.shared.builder.model.BuildResults;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 

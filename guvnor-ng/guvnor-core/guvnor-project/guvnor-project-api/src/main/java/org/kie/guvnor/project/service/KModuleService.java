@@ -18,8 +18,8 @@ package org.kie.guvnor.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.project.model.KModuleModel;
-import org.kie.guvnor.services.file.SupportsRead;
-import org.kie.guvnor.services.file.SupportsUpdate;
+import org.kie.workbench.services.shared.file.SupportsRead;
+import org.kie.workbench.services.shared.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

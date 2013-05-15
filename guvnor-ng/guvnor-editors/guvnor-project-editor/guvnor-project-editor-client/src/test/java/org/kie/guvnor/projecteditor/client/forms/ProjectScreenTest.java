@@ -16,22 +16,23 @@
 
 package org.kie.guvnor.projecteditor.client.forms;
 
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @Ignore

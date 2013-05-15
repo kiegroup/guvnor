@@ -16,6 +16,8 @@
 
 package org.kie.guvnor.projecteditor.client.messages;
 
+import javax.inject.Inject;
+
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -33,12 +35,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.kie.guvnor.commons.service.builder.model.BuildMessage;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.services.shared.builder.model.BuildMessage;
 import org.uberfire.client.mvp.PlaceManager;
-
-import javax.inject.Inject;
 
 public class ProblemsScreenViewImpl
         extends Composite

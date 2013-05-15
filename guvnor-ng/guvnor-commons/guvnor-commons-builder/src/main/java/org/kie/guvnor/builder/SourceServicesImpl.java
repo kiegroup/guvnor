@@ -18,8 +18,8 @@ package org.kie.guvnor.builder;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.backend.SourceService;
-import org.kie.guvnor.commons.service.backend.SourceServices;
+import org.kie.workbench.services.backend.SourceService;
+import org.kie.workbench.services.backend.SourceServices;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;

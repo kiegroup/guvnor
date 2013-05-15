@@ -32,6 +32,5 @@
     <module>guvnor-project</module>
     <module>guvnor-datamodel</module>
     <module>guvnor-workingset</module>
-    <module>guvnor-core-services</module>
   </modules>
 </project>

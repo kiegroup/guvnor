@@ -33,8 +33,8 @@
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name='org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenAPI'/>
+  <inherits name='org.kie.workbench.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name='org.kie.guvnor.project.GuvnorProjectAPI'/>
-  <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
 
   <inherits name="org.kie.workbench.widgets.common.KieWorkbenchWidgetsCommon"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>

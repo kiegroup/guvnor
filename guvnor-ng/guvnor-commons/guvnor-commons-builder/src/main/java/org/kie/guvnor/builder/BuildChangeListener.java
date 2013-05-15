@@ -13,9 +13,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.commons.service.builder.BuildService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.config.AppConfigService;
+import org.kie.workbench.services.shared.builder.BuildService;
+import org.kie.workbench.services.shared.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
