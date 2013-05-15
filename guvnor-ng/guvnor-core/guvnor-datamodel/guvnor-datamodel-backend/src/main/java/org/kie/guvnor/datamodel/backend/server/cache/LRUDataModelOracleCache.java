@@ -18,11 +18,11 @@ import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.workbench.services.backend.cache.LRUCache;
-import org.kie.guvnor.services.backend.file.FileDiscoveryService;
-import org.kie.guvnor.services.backend.file.FileExtensionFilter;
-import org.kie.workbench.services.shared.builder.model.BuildMessage;
-import org.kie.workbench.services.shared.builder.model.IncrementalBuildResults;
+import org.kie.workbench.common.services.backend.cache.LRUCache;
+import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
+import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
+import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
+import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

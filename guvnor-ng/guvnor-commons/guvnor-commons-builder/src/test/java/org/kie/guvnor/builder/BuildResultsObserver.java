@@ -3,8 +3,8 @@ package org.kie.guvnor.builder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.kie.workbench.services.shared.builder.model.BuildResults;
-import org.kie.workbench.services.shared.builder.model.IncrementalBuildResults;
+import org.kie.workbench.common.services.shared.builder.model.BuildResults;
+import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 
 /**
  * Test Observer for Build events

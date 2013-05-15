@@ -30,7 +30,6 @@
 
   <modules>
     <module>guvnor-commons-data</module>
-    <module>guvnor-commons-security</module>
     <module>guvnor-commons-builder</module>
   </modules>
 </project>

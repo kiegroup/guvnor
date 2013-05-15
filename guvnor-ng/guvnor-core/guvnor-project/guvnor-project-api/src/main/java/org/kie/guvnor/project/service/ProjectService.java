@@ -20,8 +20,8 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.ProjectImports;
-import org.kie.workbench.services.shared.file.SupportsRead;
-import org.kie.workbench.services.shared.file.SupportsUpdate;
+import org.kie.workbench.common.services.shared.file.SupportsRead;
+import org.kie.workbench.common.services.shared.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 /**

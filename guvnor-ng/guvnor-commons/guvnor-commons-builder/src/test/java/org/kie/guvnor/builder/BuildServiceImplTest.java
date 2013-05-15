@@ -31,7 +31,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.workbench.services.shared.builder.model.BuildResults;
+import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 

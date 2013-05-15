@@ -3,12 +3,12 @@ package org.kie.guvnor.projectconfigscreen.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
-import org.kie.workbench.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
+import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;

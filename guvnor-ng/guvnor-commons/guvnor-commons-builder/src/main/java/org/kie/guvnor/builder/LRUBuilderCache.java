@@ -11,7 +11,7 @@ import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.workbench.services.backend.cache.LRUCache;
+import org.kie.workbench.common.services.backend.cache.LRUCache;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

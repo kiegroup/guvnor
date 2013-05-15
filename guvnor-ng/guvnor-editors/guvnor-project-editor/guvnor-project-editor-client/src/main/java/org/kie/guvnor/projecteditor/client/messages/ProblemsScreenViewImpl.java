@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import org.kie.guvnor.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.guvnor.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.services.shared.builder.model.BuildMessage;
+import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.uberfire.client.mvp.PlaceManager;
 
 public class ProblemsScreenViewImpl

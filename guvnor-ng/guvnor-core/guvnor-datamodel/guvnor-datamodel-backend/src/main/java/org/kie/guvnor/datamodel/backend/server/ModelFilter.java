@@ -1,7 +1,7 @@
 package org.kie.guvnor.datamodel.backend.server;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.services.backend.file.DotFileFilter;
+import org.kie.workbench.common.services.backend.file.DotFileFilter;
 
 /**
  * A filter to ensure only Model related resources are included
