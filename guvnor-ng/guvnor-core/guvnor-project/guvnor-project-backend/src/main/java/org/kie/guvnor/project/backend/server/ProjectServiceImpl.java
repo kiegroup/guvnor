@@ -26,7 +26,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.workbench.common.services.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.ProjectImports;

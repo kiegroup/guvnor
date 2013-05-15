@@ -33,7 +33,6 @@
   <description>Guvnor NG Modules</description>
 
   <modules>
-    <module>guvnor-commons</module>
     <module>guvnor-core</module>
     <module>guvnor-editors</module>
   </modules>

@@ -17,13 +17,13 @@
 package org.kie.guvnor.workingset.client;
 
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.data.events.OnWorkingSetApplied;
-import org.kie.guvnor.commons.data.events.OnWorkingSetDisabled;
-import org.kie.guvnor.commons.data.factconstraints.ConstraintConfiguration;
-import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
-import org.kie.guvnor.commons.data.factconstraints.helper.CustomFormsContainer;
-import org.kie.guvnor.commons.data.workingset.WorkingSetConfigData;
-import org.kie.guvnor.commons.data.workingset.WorkingSetSettings;
+import org.kie.workbench.common.services.data.events.OnWorkingSetApplied;
+import org.kie.workbench.common.services.data.events.OnWorkingSetDisabled;
+import org.kie.workbench.common.services.data.factconstraints.ConstraintConfiguration;
+import org.kie.workbench.common.services.data.factconstraints.customform.CustomFormConfiguration;
+import org.kie.workbench.common.services.data.factconstraints.helper.CustomFormsContainer;
+import org.kie.workbench.common.services.data.workingset.WorkingSetConfigData;
+import org.kie.workbench.common.services.data.workingset.WorkingSetSettings;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 

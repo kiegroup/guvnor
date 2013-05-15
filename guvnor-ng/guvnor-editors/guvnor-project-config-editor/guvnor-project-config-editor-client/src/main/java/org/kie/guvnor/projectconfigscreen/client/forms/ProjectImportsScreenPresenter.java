@@ -41,7 +41,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
+@WorkbenchEditor(identifier = "projectImportsScreen", supportedTypes = {ProjectImportsResourceType.class})
 public class ProjectImportsScreenPresenter
         implements ProjectImportsScreenView.Presenter {
 
