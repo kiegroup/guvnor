@@ -15,27 +15,28 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-datamodel</artifactId>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-services</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-datamodel-backend</artifactId>
+  <artifactId>kie-wb-common-builder</artifactId>
   <packaging>jar</packaging>
 
-  <name>Guvnor Data Model Backend</name>
-  <description>Guvnor Data Model Backend</description>
+  <name>Kie Workbench - Builder</name>
+  <description>Compiler for Kie Modules</description>
 
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-datamodel-api</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -44,18 +45,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-builder</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-ci</artifactId>
+      <artifactId>kie-api</artifactId>
     </dependency>
 
     <dependency>
@@ -69,18 +65,23 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
     </dependency>
 
     <!-- Weld Modules. For tests only -->
@@ -98,10 +99,30 @@
 
     <dependency>
       <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-fs</artifactId>
+      <artifactId>kie-nio2-jgit</artifactId>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>.niogit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
 
 </project>
