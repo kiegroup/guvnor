@@ -16,25 +16,30 @@
 
 package org.kie.guvnor.projectconfigscreen.client.forms;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.New;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.projectconfigscreen.client.resources.i18n.ProjectConfigScreenConstants;
+import org.kie.guvnor.projectconfigscreen.client.type.ProjectImportsResourceType;
+import org.kie.workbench.services.shared.metadata.MetadataService;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.guvnor.projectconfigscreen.client.resources.i18n.ProjectConfigScreenConstants;
-import org.kie.guvnor.projectconfigscreen.client.type.ProjectImportsResourceType;
-import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.Menus;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
 public class ProjectImportsScreenPresenter
