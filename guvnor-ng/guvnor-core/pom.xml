@@ -31,6 +31,6 @@
   <modules>
     <module>guvnor-project</module>
     <module>guvnor-datamodel</module>
-    <module>guvnor-workingset</module>
   </modules>
+  
 </project>

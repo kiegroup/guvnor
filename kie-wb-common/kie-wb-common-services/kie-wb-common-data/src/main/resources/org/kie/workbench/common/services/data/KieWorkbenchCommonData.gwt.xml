@@ -22,10 +22,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <source path='events'/>
-  <source path='factconstraints'/>
   <source path='observer'/>
-  <source path='imports'/>
-  <source path='workingset'/>
+  <source path='util'/>
 
 </module>
