@@ -34,7 +34,6 @@
 
   <modules>
     <module>guvnor-core</module>
-    <module>guvnor-editors</module>
   </modules>
 
   <build>
