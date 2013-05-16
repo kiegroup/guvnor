@@ -19,14 +19,16 @@ public class ProjectConfigScreenViewImpl
         extends MultiPageEditorView
         implements ProjectConfigScreenView {
 
-    private final ImportsWidgetPresenter importsWidget;
+    private ImportsWidgetPresenter importsWidget;
 
     private MetadataWidget metadataWidget;
 
     private Presenter presenter;
+    
+    public ProjectConfigScreenViewImpl(){}
 
     @Inject
-    public ProjectConfigScreenViewImpl( final ImportsWidgetPresenter importsWidget,
+    public ProjectConfigScreenViewImpl( ImportsWidgetPresenter importsWidget,
                                         final MetadataWidget metadataWidget ) {
         this.importsWidget = importsWidget;
         this.metadataWidget = metadataWidget;
