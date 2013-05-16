@@ -49,7 +49,7 @@ import org.uberfire.client.workbench.widgets.menu.Menus;
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
-    private final ImportsWidgetPresenter importsWidgetPresenter;
+    private ImportsWidgetPresenter importsWidgetPresenter;
     private ProjectScreenView view;
     private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
