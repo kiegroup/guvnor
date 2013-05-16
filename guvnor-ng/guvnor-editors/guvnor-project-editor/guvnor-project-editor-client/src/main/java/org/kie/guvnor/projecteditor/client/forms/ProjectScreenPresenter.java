@@ -68,6 +68,11 @@ public class ProjectScreenPresenter
     private Menus menus;
     private Caller<ProjectService> projectService;
 
+    public ProjectScreenPresenter(){
+
+    }
+
+
     @Inject
     public ProjectScreenPresenter(@New ProjectScreenView view,
                                   @New POMEditorPanel pomPanel,
