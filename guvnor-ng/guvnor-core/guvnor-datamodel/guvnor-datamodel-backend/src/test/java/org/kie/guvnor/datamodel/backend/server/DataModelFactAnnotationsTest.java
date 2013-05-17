@@ -4,10 +4,12 @@ import java.lang.annotation.ElementType;
 import java.util.Set;
 
 import org.junit.Test;
+import org.kie.api.definition.type.Role;
 import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.guvnor.datamodel.backend.server.testclasses.Product;
+import org.kie.guvnor.datamodel.backend.server.testclasses.annotations.RoleSmurf;
 import org.kie.guvnor.datamodel.backend.server.testclasses.annotations.Smurf;
 import org.kie.guvnor.datamodel.model.Annotation;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
@@ -82,10 +84,42 @@ public class DataModelFactAnnotationsTest {
                       annotation.getAttributes().get( "colour" ) );
         assertEquals( "M",
                       annotation.getAttributes().get( "gender" ) );
-        assertEquals( "Brains",
-                      annotation.getAttributes().get( "description" ) );
-        assertEquals(ElementType.TYPE.name(),
-                      annotation.getAttributes().get( "classEnum" ) );
+        assertEquals("Brains",
+                annotation.getAttributes().get("description"));
+    }
+
+    @Test
+    public void testCorrectPackageDMOAnnotationAttributes2() throws Exception {
+        //Build ProjectDMO
+        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
+                RoleSmurf.class,
+                false,
+                false );
+        cb.build( oracle );
+
+        //Build PackageDMO
+        final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations" );
+        packageBuilder.setProjectOracle( oracle );
+        final PackageDataModelOracle packageOracle = packageBuilder.build();
+
+        assertEquals( 1,
+                packageOracle.getFactTypes().length );
+        assertEquals( "RoleSmurf",
+                packageOracle.getFactTypes()[ 0 ] );
+
+        final Set<Annotation> annotations = packageOracle.getTypeAnnotations( "RoleSmurf" );
+        assertNotNull( annotations );
+        assertEquals( 1,
+                annotations.size() );
+
+        final Annotation annotation = annotations.iterator().next();
+        assertEquals( "org.kie.api.definition.type.Role",
+                annotation.getQualifiedTypeName() );
+        assertEquals(Role.Type.EVENT.name(),
+                annotation.getAttributes().get( "value" ) );
     }
 
     @Test
@@ -192,6 +226,34 @@ public class DataModelFactAnnotationsTest {
                       annotation.getAttributes().get( "gender" ) );
         assertEquals( "Brains",
                       annotation.getAttributes().get( "description" ) );
+    }
+
+    @Test
+    public void testProjectDMOAnnotationAttributes2() throws Exception {
+        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( builder,
+                RoleSmurf.class,
+                false,
+                false );
+        cb.build( oracle );
+
+        assertEquals( 1,
+                oracle.getFactTypes().length );
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.RoleSmurf",
+                oracle.getFactTypes()[ 0 ] );
+
+        final Set<Annotation> annotations = oracle.getTypeAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.RoleSmurf" );
+        assertNotNull( annotations );
+        assertEquals( 1,
+                annotations.size() );
+
+        final Annotation annotation = annotations.iterator().next();
+        assertEquals( "org.kie.api.definition.type.Role",
+                annotation.getQualifiedTypeName() );
+        assertEquals(Role.Type.EVENT.name(),
+                annotation.getAttributes().get( "value" ) );
     }
 
 }

@@ -14,6 +14,4 @@ public @interface SmurfDescriptor {
     String colour() default "blue";
 
     String description();
-
-    ElementType classEnum();
 }
