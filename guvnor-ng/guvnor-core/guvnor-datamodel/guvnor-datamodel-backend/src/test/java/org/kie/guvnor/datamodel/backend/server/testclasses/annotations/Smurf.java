@@ -1,6 +1,8 @@
 package org.kie.guvnor.datamodel.backend.server.testclasses.annotations;
 
-@SmurfDescriptor(gender = "M", description = "Brains")
+import java.lang.annotation.ElementType;
+
+@SmurfDescriptor(gender = "M", description = "Brains", classEnum = ElementType.TYPE)
 public class Smurf {
 
 }

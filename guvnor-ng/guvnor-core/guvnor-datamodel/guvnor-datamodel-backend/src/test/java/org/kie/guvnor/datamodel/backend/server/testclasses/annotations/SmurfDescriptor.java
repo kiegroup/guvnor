@@ -15,4 +15,5 @@ public @interface SmurfDescriptor {
 
     String description();
 
+    ElementType classEnum();
 }

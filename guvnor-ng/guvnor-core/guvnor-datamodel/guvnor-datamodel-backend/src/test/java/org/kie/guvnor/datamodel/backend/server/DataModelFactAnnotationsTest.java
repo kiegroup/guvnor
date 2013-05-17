@@ -1,5 +1,6 @@
 package org.kie.guvnor.datamodel.backend.server;
 
+import java.lang.annotation.ElementType;
 import java.util.Set;
 
 import org.junit.Test;
@@ -83,6 +84,8 @@ public class DataModelFactAnnotationsTest {
                       annotation.getAttributes().get( "gender" ) );
         assertEquals( "Brains",
                       annotation.getAttributes().get( "description" ) );
+        assertEquals(ElementType.TYPE.name(),
+                      annotation.getAttributes().get( "classEnum" ) );
     }
 
     @Test
