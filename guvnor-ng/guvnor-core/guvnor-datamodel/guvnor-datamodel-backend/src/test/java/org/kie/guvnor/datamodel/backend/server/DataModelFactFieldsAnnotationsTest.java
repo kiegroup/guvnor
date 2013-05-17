@@ -72,16 +72,16 @@ public class DataModelFactFieldsAnnotationsTest {
 
         final Map<String, Set<Annotation>> fieldsAnnotations = packageOracle.getTypeFieldsAnnotations( "SmurfHouse" );
         assertNotNull( fieldsAnnotations );
-        assertEquals( 1,
+        assertEquals( 2,
                       fieldsAnnotations.size() );
 
         assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
-        final Set<Annotation> fieldAnnotations = fieldsAnnotations.get( "occupant" );
-        assertNotNull( fieldAnnotations );
+        final Set<Annotation> occupantAnnotations = fieldsAnnotations.get( "occupant" );
+        assertNotNull( occupantAnnotations );
         assertEquals( 1,
-                      fieldAnnotations.size() );
+                occupantAnnotations.size() );
 
-        final Annotation annotation = fieldAnnotations.iterator().next();
+        final Annotation annotation = occupantAnnotations.iterator().next();
         assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
@@ -90,8 +90,18 @@ public class DataModelFactFieldsAnnotationsTest {
                       annotation.getAttributes().get( "gender" ) );
         assertEquals( "Brains",
                       annotation.getAttributes().get( "description" ) );
+
+        assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
+        final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
+        assertNotNull( posOccupantAnnotations );
+        assertEquals( 1,
+                posOccupantAnnotations.size() );
+
+        final Annotation annotation2 = posOccupantAnnotations.iterator().next();
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldPositionDescriptor",
+                annotation2.getQualifiedTypeName() );
         assertEquals( Integer.toString(1),
-                      annotation.getAttributes().get( "position" ) );
+                annotation2.getAttributes().get( "value" ) );
     }
 
     @Test
@@ -186,16 +196,16 @@ public class DataModelFactFieldsAnnotationsTest {
 
         final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getTypeFieldsAnnotations( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfHouse" );
         assertNotNull( fieldsAnnotations );
-        assertEquals( 1,
+        assertEquals( 2,
                       fieldsAnnotations.size() );
 
         assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
-        final Set<Annotation> fieldAnnotations = fieldsAnnotations.get( "occupant" );
-        assertNotNull( fieldAnnotations );
+        final Set<Annotation> occupantAnnotations = fieldsAnnotations.get( "occupant" );
+        assertNotNull( occupantAnnotations );
         assertEquals( 1,
-                      fieldAnnotations.size() );
+                occupantAnnotations.size() );
 
-        final Annotation annotation = fieldAnnotations.iterator().next();
+        final Annotation annotation = occupantAnnotations.iterator().next();
         assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
@@ -204,6 +214,18 @@ public class DataModelFactFieldsAnnotationsTest {
                       annotation.getAttributes().get( "gender" ) );
         assertEquals( "Brains",
                       annotation.getAttributes().get( "description" ) );
+
+        assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
+        final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
+        assertNotNull( posOccupantAnnotations );
+        assertEquals( 1,
+                posOccupantAnnotations.size() );
+
+        final Annotation annotation2 = posOccupantAnnotations.iterator().next();
+        assertEquals( "org.kie.guvnor.datamodel.backend.server.testclasses.annotations.SmurfFieldPositionDescriptor",
+                annotation2.getQualifiedTypeName() );
+        assertEquals( Integer.toString(1),
+                annotation2.getAttributes().get( "value" ) );
     }
 
 }
