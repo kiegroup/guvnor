@@ -90,6 +90,8 @@ public class DataModelFactFieldsAnnotationsTest {
                       annotation.getAttributes().get( "gender" ) );
         assertEquals( "Brains",
                       annotation.getAttributes().get( "description" ) );
+        assertEquals( Integer.toString(1),
+                      annotation.getAttributes().get( "position" ) );
     }
 
     @Test

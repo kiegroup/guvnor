@@ -15,4 +15,5 @@ public @interface SmurfFieldDescriptor {
 
     String description();
 
+    int position();
 }
