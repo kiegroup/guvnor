@@ -30,7 +30,6 @@
 
   <modules>
     <module>guvnor-project</module>
-    <module>guvnor-datamodel</module>
   </modules>
   
 </project>

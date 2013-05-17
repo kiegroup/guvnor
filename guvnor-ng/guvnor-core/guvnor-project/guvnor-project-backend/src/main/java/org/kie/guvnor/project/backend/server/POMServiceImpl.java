@@ -12,7 +12,7 @@ import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.model.Repository;
 import org.kie.guvnor.project.service.POMService;
