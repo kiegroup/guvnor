@@ -19,7 +19,7 @@ package org.guvnor.m2repo.backend.server;
 import java.io.InputStream;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 public interface ExtendedM2RepoService extends M2RepoService {
 

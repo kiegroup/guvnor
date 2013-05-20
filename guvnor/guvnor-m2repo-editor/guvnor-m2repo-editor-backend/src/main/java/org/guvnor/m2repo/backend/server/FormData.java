@@ -17,7 +17,7 @@
 package org.guvnor.m2repo.backend.server;
 
 import org.apache.commons.fileupload.FileItem;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 public class FormData {
     private FileItem file;

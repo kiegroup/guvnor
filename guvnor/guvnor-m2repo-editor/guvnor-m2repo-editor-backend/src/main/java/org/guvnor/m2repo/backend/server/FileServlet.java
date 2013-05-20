@@ -39,7 +39,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).

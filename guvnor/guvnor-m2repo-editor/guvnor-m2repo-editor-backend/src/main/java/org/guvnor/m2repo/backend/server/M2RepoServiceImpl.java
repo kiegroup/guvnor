@@ -30,8 +30,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.backend.server.POMContentHandler;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.backend.server.POMContentHandler;
+import org.kie.workbench.common.services.project.service.model.GAV;
 import org.uberfire.client.tables.PageRequest;
 import org.uberfire.client.tables.PageResponse;
 

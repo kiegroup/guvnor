@@ -20,7 +20,6 @@
 
   <modules>
     <module>kie-wb-common</module>
-    <module>guvnor-ng</module>
     <module>guvnor</module>
     <module>drools-wb</module>
   </modules>
