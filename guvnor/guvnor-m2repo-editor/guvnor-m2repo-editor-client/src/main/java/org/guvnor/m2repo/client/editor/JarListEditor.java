@@ -153,7 +153,7 @@ public class JarListEditor
 
     public static String getGuvnorM2RepoBaseURL() {
         String url = GWT.getModuleBaseURL();
-        String baseURL = url.substring(0, url.indexOf("org.kie.guvnor.GuvnorShowcase"));
+        String baseURL = url.substring(0, url.indexOf("org.drools.workbench.DroolsWorkbench"));
         return baseURL + "maven2/";
     }
 
