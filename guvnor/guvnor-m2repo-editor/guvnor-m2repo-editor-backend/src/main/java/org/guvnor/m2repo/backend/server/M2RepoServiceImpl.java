@@ -125,7 +125,7 @@ public class M2RepoServiceImpl implements M2RepoService,
      */
     @Override
     public String getRepositoryURL( String baseURL ) {
-        if ( baseURL == null ) {
+        if ( baseURL == null || baseURL.isEmpty()) {
             return repository.getRepositoryURL();
         } else {
             if ( baseURL.endsWith( "/" ) ) {
