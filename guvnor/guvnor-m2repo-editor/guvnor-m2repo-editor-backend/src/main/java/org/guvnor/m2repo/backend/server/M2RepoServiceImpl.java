@@ -102,7 +102,9 @@ public class M2RepoServiceImpl implements M2RepoService,
             if ( i >= pageRequest.getStartRowIndex() ) {
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName( file.getName() );
-                jarListPageRow.setPath( file.getPath() );
+                //stripe the prefix of "repository"
+                String jarPath = file.getPath().substring(GuvnorM2Repository.M2_REPO_ROOT.length()+1);
+                jarListPageRow.setPath( jarPath );
                 jarListPageRow.setLastModified( new Date( file.lastModified() ) );
                 tradeRatePageRowList.add( jarListPageRow );
             }
