@@ -16,6 +16,7 @@
 
 package org.guvnor.m2repo.client.editor;
 
+import java.util.Set;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -31,12 +32,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-
-import java.util.Set;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
@@ -48,6 +47,7 @@ public class JarListEditor
     interface JarListPagedTableBinder
             extends
             UiBinder<Widget, JarListEditor> {
+
     }
 
     @UiField()
@@ -62,99 +62,97 @@ public class JarListEditor
     @UiField(provided = true)
     public PagedJarTable pagedJarTable;
 
-    private static JarListPagedTableBinder uiBinder = GWT.create(JarListPagedTableBinder.class);
+    private static JarListPagedTableBinder uiBinder = GWT.create( JarListPagedTableBinder.class );
 
     protected MultiSelectionModel<JarListPageRow> selectionModel;
 
     private Caller<M2RepoService> m2RepoService;
 
-
-    public JarListEditor(Caller<M2RepoService> repoService) {
-        this(repoService, null);
+    public JarListEditor( Caller<M2RepoService> repoService ) {
+        this( repoService, null );
 
     }
 
-    public JarListEditor(Caller<M2RepoService> repoService, final String searchFilter) {
+    public JarListEditor( Caller<M2RepoService> repoService,
+                          final String searchFilter ) {
         this.m2RepoService = repoService;
-        pagedJarTable = new PagedJarTable(repoService, searchFilter);
+        pagedJarTable = new PagedJarTable( repoService, searchFilter );
 
-
-        Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(new ButtonCell()) {
-            public String getValue(JarListPageRow row) {
+        Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+            public String getValue( JarListPageRow row ) {
                 return "Download";
             }
         };
 
-        downloadColumn.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
-            public void update(int index,
-                               JarListPageRow row,
-                               String value) {
-                Window.open(getFileDownloadURL(row.getPath()),
-                        "downloading",
-                        "resizable=no,scrollbars=yes,status=no");
+        downloadColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            public void update( int index,
+                                JarListPageRow row,
+                                String value ) {
+                Window.open( getFileDownloadURL( row.getPath() ),
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
-        });
+        } );
 
-        pagedJarTable.addColumn(downloadColumn, new TextHeader("Download"));
+        pagedJarTable.addColumn( downloadColumn, new TextHeader( "Download" ) );
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-
     @UiHandler("deleteSelectedJarButton")
-    void deleteSelectedJar(ClickEvent e) {
-        if (getSelectedJars() == null) {
-            Window.alert("Please Select A Jar To Delete");
+    void deleteSelectedJar( ClickEvent e ) {
+        if ( getSelectedJars() == null ) {
+            Window.alert( "Please Select A Jar To Delete" );
             return;
         }
-        if (!Window.confirm("AreYouSureYouWantToDeleteTheseItems")) {
+        if ( !Window.confirm( "AreYouSureYouWantToDeleteTheseItems" ) ) {
             return;
         }
-        m2RepoService.call(new RemoteCallback<Void>() {
+        m2RepoService.call( new RemoteCallback<Void>() {
             @Override
-            public void callback(Void v) {
-                Window.alert("Deleted successfully");
+            public void callback( Void v ) {
+                Window.alert( "Deleted successfully" );
                 pagedJarTable.refresh();
             }
-        }).deleteJar(getSelectedJars());
+        } ).deleteJar( getSelectedJars() );
     }
 
     public String[] getSelectedJars() {
         Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
 
         // Compatibility with existing API
-        if (selectedRows.size() == 0) {
+        if ( selectedRows.size() == 0 ) {
             return null;
         }
 
         // Create the array of paths
-        String[] paths = new String[selectedRows.size()];
+        String[] paths = new String[ selectedRows.size() ];
         int rowCount = 0;
-        for (JarListPageRow row : selectedRows) {
-            paths[rowCount++] = row.getPath();
+        for ( JarListPageRow row : selectedRows ) {
+            paths[ rowCount++ ] = row.getPath();
         }
         return paths;
     }
 
     @UiHandler("refreshButton")
-    void refresh(ClickEvent e) {
+    void refresh( ClickEvent e ) {
         pagedJarTable.refresh();
     }
 
     @UiHandler("auditButton")
-    void viewAuditLog(ClickEvent e) {
+    void viewAuditLog( ClickEvent e ) {
 
     }
 
-    String getFileDownloadURL(String path) {
+    String getFileDownloadURL( String path ) {
         String url = getGuvnorM2RepoBaseURL() + path;
         return url;
     }
 
     public static String getGuvnorM2RepoBaseURL() {
-        String url = GWT.getModuleBaseURL();
-        String baseURL = url.substring(0, url.indexOf("org.drools.workbench.DroolsWorkbench"));
-        return baseURL + "maven2/";
+        final String url = GWT.getModuleBaseURL();
+        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
+        return baseUrl + "maven2/";
     }
 
 }
