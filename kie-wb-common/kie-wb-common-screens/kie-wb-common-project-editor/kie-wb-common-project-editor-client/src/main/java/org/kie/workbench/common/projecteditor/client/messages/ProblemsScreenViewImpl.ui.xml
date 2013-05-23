@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2013 JBoss Inc
+  ~ Copyright 2012 JBoss Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -24,13 +24,7 @@
   <ui:with field="i18n" type="org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:VerticalPanel ui:field="panel" width="100%">
-    <gwt:HTML ui:field="successPanel"/>
-    <gwt:HorizontalPanel>
-      <cellview:DataGrid ui:field='dataGrid'/>
-      <gwt:Label ui:field='explanationLabel' width="100%"/>
-    </gwt:HorizontalPanel>
-  </gwt:VerticalPanel>
-
-
+  <gwt:HorizontalPanel ui:field="panel" width="100%">
+    <cellview:DataGrid ui:field='dataGrid' width="100%"/>
+  </gwt:HorizontalPanel>
 </ui:UiBinder>

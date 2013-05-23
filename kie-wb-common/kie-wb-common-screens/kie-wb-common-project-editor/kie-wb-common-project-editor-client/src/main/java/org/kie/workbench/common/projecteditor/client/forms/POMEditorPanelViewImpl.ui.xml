@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2013 JBoss Inc
+  ~ Copyright 2012 JBoss Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,22 +15,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
+             xmlns:guvnor='urn:import:org.kie.workbench.common.projecteditor.client.forms'>
 
   <ui:with field="i18n" type="org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:VerticalPanel ui:field="panel" width="100%">
-    <gwt:HTML ui:field="successPanel"/>
-    <gwt:HorizontalPanel>
-      <cellview:DataGrid ui:field='dataGrid'/>
-      <gwt:Label ui:field='explanationLabel' width="100%"/>
-    </gwt:HorizontalPanel>
-  </gwt:VerticalPanel>
-
-
+  <gwt:DockLayoutPanel unit="PX" height="100%" width="100%">
+    <gwt:north size="100">
+      <guvnor:GAVEditor ui:field="gavEditor"/>
+    </gwt:north>
+    <gwt:center>
+      <guvnor:DependencyGrid ui:field="dependencyGrid"/>
+    </gwt:center>
+  </gwt:DockLayoutPanel>
 </ui:UiBinder>
