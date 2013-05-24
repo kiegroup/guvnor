@@ -78,7 +78,7 @@ public class GuvnorM2Repository {
         if (!releasesRepository.exists()) {
             releasesRepository.mkdirs();
         }
-        Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
+Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
     }
 
     protected String getM2RepositoryRootDir() {
@@ -116,7 +116,7 @@ public class GuvnorM2Repository {
         }
 
         //Prepare pom file
-        String pom = loadPOMFromJar(jarFile.getPath());
+        String pom = loadPOMFromJarInternal(new File(jarFile.getPath()));
         if(pom == null) {
             pom =  generatePOM(gav);
             jarFile = appendPOMToJar(pom, jarFile.getPath(), gav);
@@ -154,7 +154,7 @@ public class GuvnorM2Repository {
                 .setRepository(getGuvnorM2Repository());
 
         try {
-            Aether.DEFUALT_AETHER.getSystem().deploy(Aether.DEFUALT_AETHER.getSession(), deployRequest);
+Aether.DEFUALT_AETHER.getSystem().deploy(Aether.DEFUALT_AETHER.getSession(), deployRequest);
         } catch (DeploymentException e) {
             throw new RuntimeException(e);
         }
@@ -174,7 +174,7 @@ public class GuvnorM2Repository {
 
     public boolean deleteFile(String[] fullPaths) {
         for (String fullPath : fullPaths) {
-            final File file = new File(fullPath);
+            final File file = new File(M2_REPO_ROOT, fullPath);
             if (file.exists()) {
                 file.delete();
             }
@@ -214,7 +214,7 @@ public class GuvnorM2Repository {
 
     public InputStream loadFile(String path) {
         try {
-            return new FileInputStream(new File(path));
+            return new FileInputStream(new File(M2_REPO_ROOT, path));
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -223,12 +223,18 @@ public class GuvnorM2Repository {
     }
 
     public String getFileName(String path) {
-        return (new File(path)).getName();
+        return (new File(M2_REPO_ROOT, path)).getName();
     }
 
     public static String loadPOMFromJar(String jarPath) {
+        File zip = new File(M2_REPO_ROOT, jarPath);
+
+        return  loadPOMFromJarInternal(zip);
+    }
+
+    public static String loadPOMFromJarInternal(File file) {
         try {
-            ZipFile zip = new ZipFile(new File(jarPath));
+            ZipFile zip = new ZipFile(file);
 
             for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry)e.nextElement();
@@ -410,3 +416,5 @@ public class GuvnorM2Repository {
         return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.properties";
     }
 }
+
+
