@@ -98,7 +98,7 @@ public class SecurityServiceImpl
     public UserSecurityContext getCurrentUser() {
         tryAutoLoginAsGuest();
         final String userName = identity.isLoggedIn() ? credentials.getUsername() : null;
-        final boolean isAdministrator = getUserCapabilities().contains( Capability.SHOW_ADMIN );
+        final boolean isAdministrator = userName == null ? false : getUserCapabilities().contains( Capability.SHOW_ADMIN );
         return new UserSecurityContext( userName,
                                         isAdministrator );
     }
