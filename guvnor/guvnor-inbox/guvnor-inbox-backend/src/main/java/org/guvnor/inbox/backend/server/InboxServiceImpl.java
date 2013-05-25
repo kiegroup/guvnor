@@ -33,8 +33,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.UserServicesImpl;
-import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
+import org.uberfire.workbench.events.ResourceOpenedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.client.tables.PageResponse;
 import org.uberfire.security.Identity;
 

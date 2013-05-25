@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.kie.commons.io.FileSystemType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.guvnor.inbox.backend.server.InboxServiceImpl.InboxEntry;
 import org.guvnor.inbox.service.InboxService;
+
+import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
@@ -54,14 +57,14 @@ public class MailboxService {
     private InboxService inboxService;
 
     @Inject
-    @Named("ioSystemStrategy")
-    private IOService ioSystemService;
+    @Named("ioStrategy")
+    private IOService ioService;
 
     private org.kie.commons.java.nio.file.Path bootstrapRoot = null;
 
     @PostConstruct
     public void setup() {
-        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems().iterator();
+        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
         if ( fsIterator.hasNext() ) {
             final FileSystem bootstrap = fsIterator.next();
             final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = bootstrap.getRootDirectories().iterator();

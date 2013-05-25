@@ -26,18 +26,18 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.context.WorkbenchContext;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * A Perspective to show Guvnor's M2_REPO related screens

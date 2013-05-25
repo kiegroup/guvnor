@@ -25,7 +25,7 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
