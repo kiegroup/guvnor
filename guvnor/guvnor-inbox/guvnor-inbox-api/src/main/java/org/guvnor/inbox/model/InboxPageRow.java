@@ -19,7 +19,7 @@ package org.guvnor.inbox.model;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.client.tables.AbstractPageRow;
+import org.uberfire.paging.AbstractPageRow;
 
 /**
  * A single row of a paged data
@@ -28,7 +28,7 @@ import org.uberfire.client.tables.AbstractPageRow;
 public class InboxPageRow extends AbstractPageRow {
 
     private String note;
-    private Date   timestamp;
+    private Date timestamp;
 
     private String format;
     // ************************************************************************
@@ -43,11 +43,11 @@ public class InboxPageRow extends AbstractPageRow {
         return timestamp;
     }
 
-    public void setNote(String note) {
+    public void setNote( String note ) {
         this.note = note;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp( Date timestamp ) {
         this.timestamp = timestamp;
     }
 
@@ -55,7 +55,7 @@ public class InboxPageRow extends AbstractPageRow {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat( String format ) {
         this.format = format;
     }
 

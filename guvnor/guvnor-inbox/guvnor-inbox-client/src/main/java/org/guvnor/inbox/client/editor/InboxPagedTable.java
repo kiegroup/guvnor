@@ -40,10 +40,10 @@ import org.uberfire.client.tables.AbstractPagedTable;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.ComparableImageResource;
 import org.uberfire.client.tables.ComparableImageResourceCell;
-import org.uberfire.client.tables.PageResponse;
 import org.uberfire.client.tables.SelectionColumn;
 import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;
+import org.uberfire.paging.PageResponse;
 
 /**
  * Widget with a table of inbox entries results.
@@ -53,17 +53,19 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
     interface Binder
             extends
             UiBinder<Widget, InboxPagedTable> {
+
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
-    private ColumnPicker<InboxPageRow> columnPicker = new ColumnPicker<InboxPageRow>(cellTable);
+    private ColumnPicker<InboxPageRow> columnPicker = new ColumnPicker<InboxPageRow>( cellTable );
 
     private SelectionColumn<InboxPageRow> selectionColumn;
     private MultiSelectionModel<InboxPageRow> selectionModel;
     private static final int PAGE_SIZE = 10;
- 
-    public InboxPagedTable(final Caller<InboxService> inboxService, final String inboxName ) {
+
+    public InboxPagedTable( final Caller<InboxService> inboxService,
+                            final String inboxName ) {
         super( PAGE_SIZE );
 
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
@@ -72,16 +74,16 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
                 request.setInboxName( inboxName );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
-                
-                inboxService.call(new RemoteCallback<PageResponse<InboxPageRow>>() {
+
+                inboxService.call( new RemoteCallback<PageResponse<InboxPageRow>>() {
                     @Override
-                    public void callback(final PageResponse<InboxPageRow> response) {
-                        updateRowCount(response.getTotalRowSize(),
-                                response.isTotalRowSizeExact());
-                        updateRowData(response.getStartRowIndex(),
-                                response.getPageRowList());
+                    public void callback( final PageResponse<InboxPageRow> response ) {
+                        updateRowCount( response.getTotalRowSize(),
+                                        response.isTotalRowSizeExact() );
+                        updateRowData( response.getStartRowIndex(),
+                                       response.getPageRowList() );
                     }
-                }).loadInbox(request);
+                } ).loadInbox( request );
                 
 /*                repositoryService.loadInbox( request,
                         new GenericCallback<PageResponse<InboxPageRow>>() {
@@ -110,11 +112,11 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
             }
         };
         columnPicker.addColumn( formatColumn,
-                new SortableHeader<InboxPageRow, ComparableImageResource>(
-                        sortableHeaderGroup,
-                        "Format",
-                        formatColumn ),
-                true );
+                                new SortableHeader<InboxPageRow, ComparableImageResource>(
+                                        sortableHeaderGroup,
+                                        "Format",
+                                        formatColumn ),
+                                true );
 
         TextColumn<InboxPageRow> noteColumn = new TextColumn<InboxPageRow>() {
             public String getValue( InboxPageRow row ) {
@@ -122,14 +124,14 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
             }
         };
         columnPicker.addColumn( noteColumn,
-                new SortableHeader<InboxPageRow, String>(
-                        sortableHeaderGroup,
-                        "Name",
-                        noteColumn ),
-                true );
+                                new SortableHeader<InboxPageRow, String>(
+                                        sortableHeaderGroup,
+                                        "Name",
+                                        noteColumn ),
+                                true );
 
         Column<InboxPageRow, Date> dateColumn = new Column<InboxPageRow, Date>( new
-                DateCell(
+                                                                                        DateCell(
                 DateTimeFormat.getFormat(
                         DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             public Date getValue( InboxPageRow row ) {
@@ -137,22 +139,23 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
             }
         };
         columnPicker.addColumn( dateColumn,
-                new SortableHeader<InboxPageRow, Date>(
-                        sortableHeaderGroup,
-                        "Created Date",
-                        dateColumn ),
-                true );
+                                new SortableHeader<InboxPageRow, Date>(
+                                        sortableHeaderGroup,
+                                        "Created Date",
+                                        dateColumn ),
+                                true );
 
     }
 
-    public void addColumn(Column<InboxPageRow, String> column, TextHeader textHeader) {
-        columnPicker.addColumn(column,
-                textHeader,
-                true);
+    public void addColumn( Column<InboxPageRow, String> column,
+                           TextHeader textHeader ) {
+        columnPicker.addColumn( column,
+                                textHeader,
+                                true );
     }
-    
+
     @Override
     protected Widget makeWidget() {
-        return uiBinder.createAndBindUi(this);
+        return uiBinder.createAndBindUi( this );
     }
 }

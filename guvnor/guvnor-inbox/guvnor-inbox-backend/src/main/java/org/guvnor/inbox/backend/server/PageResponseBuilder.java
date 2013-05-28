@@ -17,63 +17,64 @@ package org.guvnor.inbox.backend.server;
 
 import java.util.List;
 
-import org.uberfire.client.tables.AbstractPageRow;
-import org.uberfire.client.tables.PageResponse;
+import org.uberfire.paging.AbstractPageRow;
+import org.uberfire.paging.PageResponse;
 
 public class PageResponseBuilder<T extends AbstractPageRow> {
+
     private final PageResponse<T> pageResponse = new PageResponse<T>();
 
-    public PageResponseBuilder<T> withStartRowIndex(int startRowIndex) {
-        pageResponse.setStartRowIndex(startRowIndex);
+    public PageResponseBuilder<T> withStartRowIndex( int startRowIndex ) {
+        pageResponse.setStartRowIndex( startRowIndex );
         return this;
     }
 
-    public PageResponseBuilder<T> withPageRowList(final List<T> assetPageRowList) {
-        pageResponse.setPageRowList(assetPageRowList);
+    public PageResponseBuilder<T> withPageRowList( final List<T> assetPageRowList ) {
+        pageResponse.setPageRowList( assetPageRowList );
         return this;
     }
 
-    public PageResponseBuilder<T> withLastPage(final boolean isLastPage) {
-        pageResponse.setLastPage(isLastPage);
+    public PageResponseBuilder<T> withLastPage( final boolean isLastPage ) {
+        pageResponse.setLastPage( isLastPage );
         return this;
     }
 
-    public PageResponseBuilder<T> withTotalRowSize(final int totalRowSize) {
-        pageResponse.setTotalRowSize(totalRowSize);
+    public PageResponseBuilder<T> withTotalRowSize( final int totalRowSize ) {
+        pageResponse.setTotalRowSize( totalRowSize );
         return this;
     }
 
-    public PageResponseBuilder<T> withTotalRowSizeHelper(final int totalRowCount) {
-        fixTotalRowSize(totalRowCount);
+    public PageResponseBuilder<T> withTotalRowSizeHelper( final int totalRowCount ) {
+        fixTotalRowSize( totalRowCount );
         return this;
     }
 
     public PageResponseBuilder<T> withTotalRowSizeExact() {
-        pageResponse.setTotalRowSizeExact(true);
+        pageResponse.setTotalRowSizeExact( true );
         return this;
     }
 
-    public void fixTotalRowSize(long totalRowsCount) {
+    public void fixTotalRowSize( long totalRowsCount ) {
 
         // CellTable only handles integer row counts
-        if (totalRowsCount > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The totalRowSize (" + totalRowsCount + ") is too big.");
+        if ( totalRowsCount > Integer.MAX_VALUE ) {
+            throw new IllegalStateException( "The totalRowSize (" + totalRowsCount + ") is too big." );
         }
 
         // Unable to ascertain size of whole data-set
-        if (totalRowsCount == -1) {
+        if ( totalRowsCount == -1 ) {
 
             // Last page, we can be derive absolute size
-            if (pageResponse.isLastPage()) {
-                pageResponse.setTotalRowSize(pageResponse.getStartRowIndex() + pageResponse.getPageRowList().size());
-                pageResponse.setTotalRowSizeExact(true);
+            if ( pageResponse.isLastPage() ) {
+                pageResponse.setTotalRowSize( pageResponse.getStartRowIndex() + pageResponse.getPageRowList().size() );
+                pageResponse.setTotalRowSizeExact( true );
             } else {
-                pageResponse.setTotalRowSize(-1);
-                pageResponse.setTotalRowSizeExact(false);
+                pageResponse.setTotalRowSize( -1 );
+                pageResponse.setTotalRowSizeExact( false );
             }
         } else {
-            pageResponse.setTotalRowSize((int) totalRowsCount);
-            pageResponse.setTotalRowSizeExact(true);
+            pageResponse.setTotalRowSize( (int) totalRowsCount );
+            pageResponse.setTotalRowSizeExact( true );
         }
     }
 
@@ -81,8 +82,8 @@ public class PageResponseBuilder<T extends AbstractPageRow> {
         return pageResponse;
     }
 
-    public PageResponse<T> buildWithTotalRowCount(final long totalRowCount) {
-        fixTotalRowSize(totalRowCount);
+    public PageResponse<T> buildWithTotalRowCount( final long totalRowCount ) {
+        fixTotalRowSize( totalRowCount );
         return pageResponse;
     }
 

@@ -27,13 +27,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.jboss.errai.bus.server.annotations.Service;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.project.backend.server.POMContentHandler;
 import org.kie.workbench.common.services.project.service.model.GAV;
-import org.uberfire.client.tables.PageRequest;
-import org.uberfire.client.tables.PageResponse;
+import org.uberfire.paging.PageRequest;
+import org.uberfire.paging.PageResponse;
 
 @Service
 @ApplicationScoped
@@ -103,7 +103,7 @@ public class M2RepoServiceImpl implements M2RepoService,
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName( file.getName() );
                 //stripe the prefix of "repository"
-                String jarPath = file.getPath().substring(GuvnorM2Repository.M2_REPO_ROOT.length()+1);
+                String jarPath = file.getPath().substring( GuvnorM2Repository.M2_REPO_ROOT.length() + 1 );
                 jarListPageRow.setPath( jarPath );
                 jarListPageRow.setLastModified( new Date( file.lastModified() ) );
                 tradeRatePageRowList.add( jarListPageRow );
@@ -127,7 +127,7 @@ public class M2RepoServiceImpl implements M2RepoService,
      */
     @Override
     public String getRepositoryURL( String baseURL ) {
-        if ( baseURL == null || baseURL.isEmpty()) {
+        if ( baseURL == null || baseURL.isEmpty() ) {
             return repository.getRepositoryURL();
         } else {
             if ( baseURL.endsWith( "/" ) ) {

@@ -19,7 +19,7 @@ package org.guvnor.m2repo.model;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.client.tables.AbstractPageRow;
+import org.uberfire.paging.AbstractPageRow;
 
 /**
  * A single row of a paged data
@@ -44,7 +44,7 @@ public class JarListPageRow extends AbstractPageRow {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath( String path ) {
         this.path = path;
     }
 

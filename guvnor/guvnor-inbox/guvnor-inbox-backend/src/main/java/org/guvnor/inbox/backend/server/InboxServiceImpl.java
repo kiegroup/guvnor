@@ -33,10 +33,10 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.UserServicesImpl;
+import org.uberfire.paging.PageResponse;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.client.tables.PageResponse;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -45,10 +45,10 @@ public class InboxServiceImpl
 
     static final int MAX_RECENT_EDITED = 200;
 
-    public static final  String RECENT_EDITED_ID = "recentEdited";
-    public static final  String RECENT_VIEWED_ID = "recentViewed";
-    public static final  String INCOMING_ID      = "incoming";
-    private static final String INBOX            = "inbox";
+    public static final String RECENT_EDITED_ID = "recentEdited";
+    public static final String RECENT_VIEWED_ID = "recentViewed";
+    public static final String INCOMING_ID = "incoming";
+    private static final String INBOX = "inbox";
 
     @Inject
     @Named("ioStrategy")
@@ -289,7 +289,7 @@ public class InboxServiceImpl
 
         public String itemPath;
         public String note;
-        public long   timestamp;
+        public long timestamp;
     }
 
 }

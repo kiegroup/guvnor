@@ -16,7 +16,7 @@
 package org.guvnor.inbox.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.client.tables.PageRequest;
+import org.uberfire.paging.PageRequest;
 
 /**
  * A Query request.
@@ -30,9 +30,9 @@ public class InboxPageRequest extends PageRequest {
     public InboxPageRequest() {
     }
 
-    public InboxPageRequest(String inboxName,
-                            int startRowIndex,
-                            Integer pageSize) {
+    public InboxPageRequest( String inboxName,
+                             int startRowIndex,
+                             Integer pageSize ) {
         super( startRowIndex,
                pageSize );
         validateInboxName( inboxName );
@@ -47,12 +47,12 @@ public class InboxPageRequest extends PageRequest {
         return inboxName;
     }
 
-    public void setInboxName(String inboxName) {
+    public void setInboxName( String inboxName ) {
         validateInboxName( inboxName );
         this.inboxName = inboxName;
     }
 
-    private void validateInboxName(String inboxName) {
+    private void validateInboxName( String inboxName ) {
         // An enum would have been nice but existing inbox handling "generally"
         // uses these constants extensively throughout existing code
 /*        if ( !inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID )

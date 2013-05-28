@@ -19,13 +19,14 @@ package org.guvnor.inbox.service;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.client.tables.PageResponse;
+import org.uberfire.paging.PageResponse;
 
 @Remote
 public interface InboxService {
+
     /**
      * Load the data for a given inbox for the currently logged in user.
      */
-    public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request);
+    public PageResponse<InboxPageRow> loadInbox( InboxPageRequest request );
 
 }
