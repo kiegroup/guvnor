@@ -1,6 +1,7 @@
 /target
 /local
 /repository
+/derby.log
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
