@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.workbench.client.resources.i18n;
+package org.kie.workbench.common.screens.home.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 /**
- * This uses GWT to provide client side compile time resolving of locales. See:
- * http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-
- * toolkit-doc-1-5&t=DevGuideInternationalization (for more information).
- * <p/>
- * Each method name matches up with a key in HomeConstants.properties (the
- * properties file can still be used on the server). To use this, use
- * <code>GWT.create(HomeConstants.class)</code>.
+ * i18n constants for the Home Page
  */
-public interface Constants
+public interface HomeConstants
         extends
         Messages {
 
-    Constants INSTANCE = GWT.create( Constants.class );
+    HomeConstants INSTANCE = GWT.create(HomeConstants.class);
 
-    String SignOut();
+    String homePerspectiveName();
 
-    String WelcomeUser();
-
-    String newItem();
+    String homeName();
 
 }

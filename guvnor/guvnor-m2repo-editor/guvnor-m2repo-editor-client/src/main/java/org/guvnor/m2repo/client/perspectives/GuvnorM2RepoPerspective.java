@@ -43,7 +43,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  * A Perspective to show Guvnor's M2_REPO related screens
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "GuvnorM2RepoPerspective", isDefault = false)
+@WorkbenchPerspective(identifier = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective", isDefault = false)
 public class GuvnorM2RepoPerspective {
 
     @Inject
