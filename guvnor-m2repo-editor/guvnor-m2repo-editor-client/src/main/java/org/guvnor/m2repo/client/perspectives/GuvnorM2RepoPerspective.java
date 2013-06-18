@@ -19,14 +19,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -49,18 +46,11 @@ public class GuvnorM2RepoPerspective {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    protected WorkbenchContext context;
+    private Menus menus;
 
-    @Inject
-    private IOCBeanManager iocBeanManager;
-
-    @Inject
-    private NewResourcePresenter newResourcePresenter;
+    private ToolBar toolBar;
 
     private PerspectiveDefinition perspective;
-    private Menus menus;
-    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
