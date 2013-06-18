@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
+
+import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -44,10 +46,9 @@ public class JarListEditor
         extends Composite {
 
     // UI
-    interface JarListPagedTableBinder
+    interface JarListEditorBinder
             extends
             UiBinder<Widget, JarListEditor> {
-
     }
 
     @UiField()
@@ -62,7 +63,7 @@ public class JarListEditor
     @UiField(provided = true)
     public PagedJarTable pagedJarTable;
 
-    private static JarListPagedTableBinder uiBinder = GWT.create( JarListPagedTableBinder.class );
+    private static JarListEditorBinder uiBinder = GWT.create( JarListEditorBinder.class );
 
     protected MultiSelectionModel<JarListPageRow> selectionModel;
 
@@ -105,7 +106,7 @@ public class JarListEditor
             Window.alert( "Please Select A Jar To Delete" );
             return;
         }
-        if ( !Window.confirm( "AreYouSureYouWantToDeleteTheseItems" ) ) {
+        if ( !Window.confirm( Constants.INSTANCE.AreYouSureYouWantToDeleteTheseItems() ) ) {
             return;
         }
         m2RepoService.call( new RemoteCallback<Void>() {
@@ -119,7 +120,6 @@ public class JarListEditor
 
     public String[] getSelectedJars() {
         Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
-
         // Compatibility with existing API
         if ( selectedRows.size() == 0 ) {
             return null;
@@ -141,7 +141,6 @@ public class JarListEditor
 
     @UiHandler("auditButton")
     void viewAuditLog( ClickEvent e ) {
-
     }
 
     String getFileDownloadURL( String path ) {
