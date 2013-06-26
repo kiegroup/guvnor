@@ -35,6 +35,7 @@
   <modules>
     <module>guvnor-inbox</module>
     <module>guvnor-m2repo-editor</module>
+    <module>kie-wb-common</module>
   </modules>
 
   <repositories>

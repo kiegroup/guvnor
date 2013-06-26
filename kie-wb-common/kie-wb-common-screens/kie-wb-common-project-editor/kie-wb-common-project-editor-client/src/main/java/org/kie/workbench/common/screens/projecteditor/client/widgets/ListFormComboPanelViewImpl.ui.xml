@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+
+  <ui:with field="i18n"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+
+
+  <bootstrap:Container>
+    <bootstrap:Column size="4">
+      <bootstrap:ButtonGroup>
+        <bootstrap:Button ui:field="addButton">
+          <ui:text from="{i18n.Add}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="renameButton">
+          <ui:text from="{i18n.Rename}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="deleteButton">
+          <ui:text from="{i18n.Delete}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="makeDefaultButton">
+          <ui:text from="{i18n.MakeDefault}"/>
+        </bootstrap:Button>
+      </bootstrap:ButtonGroup>
+      <bootstrap:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
+    </bootstrap:Column>
+    <bootstrap:Column size="2">
+      <gwt:SimplePanel ui:field="kSessionForm"/>
+    </bootstrap:Column>
+  </bootstrap:Container>
+
+</ui:UiBinder>
