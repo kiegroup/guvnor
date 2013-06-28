@@ -18,7 +18,7 @@ package org.guvnor.m2repo.service;
 
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.project.service.model.GAV;
+import org.guvnor.common.services.project.model.GAV;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 

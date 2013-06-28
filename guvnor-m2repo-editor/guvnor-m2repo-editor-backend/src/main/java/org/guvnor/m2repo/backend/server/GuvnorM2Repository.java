@@ -24,7 +24,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
-import org.kie.workbench.common.services.project.service.model.GAV;
+import org.guvnor.common.services.project.model.GAV;
 import org.kie.scanner.Aether;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.deployment.DeployRequest;

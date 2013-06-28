@@ -23,7 +23,7 @@ import java.util.Collection;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.workbench.common.services.project.service.model.GAV;
+import org.guvnor.common.services.project.model.GAV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

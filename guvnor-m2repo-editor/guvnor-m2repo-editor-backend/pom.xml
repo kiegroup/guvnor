@@ -21,8 +21,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-project-backend</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -34,17 +34,17 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
-        
+
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
@@ -53,7 +53,7 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
-    
+
     <!-- The version of commons-io in droolsjbpm-build-bootstrap pom is way too old-->
     <dependency>
       <groupId>commons-io</groupId>
@@ -62,13 +62,13 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-    </dependency>        
+    </dependency>
 
-     <dependency>
+    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-    </dependency>   
-    
+    </dependency>
+
     <!-- External dependencies -->
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -107,7 +107,6 @@
       <artifactId>wagon-ahc</artifactId>
     </dependency>
 
-     
   </dependencies>
 
 </project>

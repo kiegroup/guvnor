@@ -33,6 +33,11 @@
   <description>Guvnor - Generic Management framework</description>
 
   <modules>
+    <module>guvnor-services-api</module>
+    <module>guvnor-services-backend</module>
+    <module>guvnor-project</module>
+    <module>guvnor-workingset-api</module>
+    <module>guvnor-workingset-client</module>
     <module>guvnor-inbox</module>
     <module>guvnor-m2repo-editor</module>
   </modules>
