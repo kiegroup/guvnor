@@ -24,10 +24,8 @@ import javax.inject.Singleton;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.guvnor.common.services.project.service.KModuleService;
 import org.uberfire.backend.repositories.Repository;
 
-import static org.mockito.Mockito.*;
 import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
 @Singleton
@@ -50,11 +48,6 @@ public class TestAppSetup {
     @Named("system")
     public Repository systemRepository() {
         return SYSTEM_REPO;
-    }
-
-    @Produces
-    public KModuleService makeKModuleService() {
-        return mock( KModuleService.class );
     }
 
 }

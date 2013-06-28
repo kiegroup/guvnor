@@ -22,10 +22,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.guvnor.common.services.project.service.KModuleService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.guvnor.common.services.project.service.KModuleService;
 import org.uberfire.backend.repositories.Repository;
 
 import static org.mockito.Mockito.*;
@@ -53,12 +51,6 @@ public class TestAppSetup {
     @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );
-    }
-
-    @Produces
-    @Alternative
-    public KModuleService kModuleService() {
-        return mock( KModuleService.class );
     }
 
 }
