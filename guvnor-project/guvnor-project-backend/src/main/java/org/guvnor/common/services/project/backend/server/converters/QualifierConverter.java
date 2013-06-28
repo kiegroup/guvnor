@@ -22,7 +22,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.QualifierModel;
-import org.guvnor.common.services.project.model.QualifierModel;
 
 import java.util.Map;
 

@@ -23,8 +23,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.QualifierModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-import org.guvnor.common.services.project.model.QualifierModel;
-import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 public class WorkItemHandelerConverter
         extends AbstractXStreamConverter {

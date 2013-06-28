@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.builder.service;
+package org.guvnor.common.services.project.builder.service;
 
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.guvnor.common.services.project.model.Project;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 

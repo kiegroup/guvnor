@@ -1,4 +1,4 @@
-package org.guvnor.common.services.builder.events;
+package org.guvnor.common.services.project.builder.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;

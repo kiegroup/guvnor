@@ -23,6 +23,9 @@
 
   <inherits name='org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon'/>
 
+  <source path='builder'/>
+  <source path='context'/>
+  <source path='events'/>
   <source path='model'/>
   <source path='service'/>
 

@@ -27,8 +27,6 @@ import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.project.model.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

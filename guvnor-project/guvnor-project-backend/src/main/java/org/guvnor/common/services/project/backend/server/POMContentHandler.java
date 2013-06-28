@@ -24,8 +24,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.POM;
 
 import javax.enterprise.context.Dependent;
 import java.io.IOException;

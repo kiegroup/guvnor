@@ -23,8 +23,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.core.rule.TypeMetaInfo;
-import org.guvnor.common.services.builder.model.BuildMessage;
-import org.guvnor.common.services.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;

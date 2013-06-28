@@ -33,7 +33,7 @@ import org.uberfire.workbench.events.RepositoryChangeEvent;
  * A specialized implementation that also has Project and Package scope
  */
 @ApplicationScoped
-public class KieWorkbenchContext {
+public class ProjectContext {
 
     private Group activeGroup;
     private Repository activeRepository;

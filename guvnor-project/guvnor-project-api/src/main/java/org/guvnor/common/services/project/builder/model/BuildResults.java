@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.builder.model;
+package org.guvnor.common.services.project.builder.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,26 +23,13 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class IncrementalBuildResults {
+public class BuildResults {
 
-    private ArrayList<BuildMessage> addedMessages = new ArrayList<BuildMessage>();
-    private ArrayList<BuildMessage> removedMessages = new ArrayList<BuildMessage>();
+    private ArrayList<BuildMessage> messages = new ArrayList<BuildMessage>();
     private String artifactID;
 
-    public List<BuildMessage> getAddedMessages() {
-        return Collections.unmodifiableList( addedMessages );
-    }
-
-    public List<BuildMessage> getRemovedMessages() {
-        return Collections.unmodifiableList( removedMessages );
-    }
-
-    public void addAddedMessage( final BuildMessage message ) {
-        this.addedMessages.add( message );
-    }
-
-    public void addRemovedMessage( final BuildMessage message ) {
-        this.removedMessages.add( message );
+    public List<BuildMessage> getMessages() {
+        return Collections.unmodifiableList( messages );
     }
 
     public String getArtifactID() {
@@ -51,5 +38,9 @@ public class IncrementalBuildResults {
 
     public void setArtifactID( String artifactID ) {
         this.artifactID = artifactID;
+    }
+
+    public void addBuildMessage( final BuildMessage message ) {
+        this.messages.add( message );
     }
 }

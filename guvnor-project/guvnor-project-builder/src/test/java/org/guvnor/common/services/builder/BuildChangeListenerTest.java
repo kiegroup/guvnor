@@ -24,8 +24,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.guvnor.common.services.builder.model.BuildResults;
-import org.guvnor.common.services.builder.model.IncrementalBuildResults;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.project.service.POMService;

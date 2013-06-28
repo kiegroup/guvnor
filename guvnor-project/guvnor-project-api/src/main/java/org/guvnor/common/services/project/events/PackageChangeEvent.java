@@ -22,7 +22,7 @@ import org.guvnor.common.services.project.model.Package;
  */
 public class PackageChangeEvent {
 
-    private final Package pkg;
+    private final org.guvnor.common.services.project.model.Package pkg;
 
     public PackageChangeEvent() {
         pkg = null;

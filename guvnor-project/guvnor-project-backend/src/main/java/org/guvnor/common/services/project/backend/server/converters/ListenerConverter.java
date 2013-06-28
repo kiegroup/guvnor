@@ -23,7 +23,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.QualifierModel;
 import org.guvnor.common.services.project.model.ListenerModel;
-import org.guvnor.common.services.project.model.QualifierModel;
 
 public class ListenerConverter
         extends AbstractXStreamConverter {

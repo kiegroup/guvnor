@@ -3,9 +3,8 @@ package org.guvnor.common.services.builder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.guvnor.common.services.builder.model.BuildResults;
-import org.guvnor.common.services.builder.model.BuildResults;
-import org.guvnor.common.services.builder.model.IncrementalBuildResults;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 
 /**
  * Test Observer for Build events

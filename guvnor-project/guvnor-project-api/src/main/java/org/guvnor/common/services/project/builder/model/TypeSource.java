@@ -1,4 +1,4 @@
-package org.guvnor.common.services.builder.model;
+package org.guvnor.common.services.project.builder.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 

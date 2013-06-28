@@ -25,10 +25,6 @@ import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-import org.guvnor.common.services.project.model.ClockTypeOption;
-import org.guvnor.common.services.project.model.KSessionModel;
-import org.guvnor.common.services.project.model.ListenerModel;
-import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 import java.util.List;
 

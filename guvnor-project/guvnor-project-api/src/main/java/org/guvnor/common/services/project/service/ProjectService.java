@@ -50,7 +50,7 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @param resource
      * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
-    Package resolvePackage( final Path resource );
+    org.guvnor.common.services.project.model.Package resolvePackage( final Path resource );
 
     /**
      * Return true if the file is the Project's pom.xml file
