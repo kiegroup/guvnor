@@ -252,7 +252,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
             final String fileName = sourcePath.getFileName();
 
             response.setContentType( "application/x-download" );
-            response.setHeader( "Content-Disposition", "attachment; filename=" + fileName + ";" );
+            response.setHeader( "Content-Disposition", "attachment; filename=\"" + fileName + "\";" );
             response.setContentLength( output.size() );
             response.getOutputStream().write( output.toByteArray() );
             response.getOutputStream().flush();
