@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
@@ -45,6 +46,11 @@ import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 
 import static org.drools.guvnor.server.jaxrs.Translator.*;
 
@@ -661,6 +667,14 @@ public class PackageResource extends Resource {
             ai.getModule().updateBinaryUpToDate(false);
             ai.updateValid(assetValidator.validate(ai));
             ai.checkin("update binary");
+            ContentHandler handler = ContentManager.getHandler(ai.getFormat());
+            if (handler instanceof ICanHasAttachment) {
+                try {
+                    ((ICanHasAttachment) handler).onAttachmentAdded(ai);
+                } catch (IOException ex) {
+                    Logger.getLogger(PackageResource.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             rulesRepository.save();
             return toAssetEntryAbdera(ai, uriInfo);
         } catch (RuntimeException e) {
