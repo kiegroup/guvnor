@@ -93,6 +93,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-jgit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-backend</artifactId>
       <scope>test</scope>
