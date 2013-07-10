@@ -16,7 +16,9 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -38,6 +40,11 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.config.ConfigGroup;
+import org.uberfire.backend.server.config.ConfigItem;
+import org.uberfire.backend.server.config.ConfigType;
+import org.uberfire.backend.server.config.ConfigurationFactory;
+import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -70,6 +77,9 @@ public class ProjectServiceImpl
     private MetadataService metadataService;
     private ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
+    private ConfigurationService configurationService;
+    private ConfigurationFactory configurationFactory;
+
     private Event<ResourceAddedEvent> resourceAddedEvent;
     private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
 
@@ -86,6 +96,8 @@ public class ProjectServiceImpl
                                final KModuleService kModuleService,
                                final MetadataService metadataService,
                                final ProjectConfigurationContentHandler projectConfigurationContentHandler,
+                               final ConfigurationService configurationService,
+                               final ConfigurationFactory configurationFactory,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
                                final Event<ResourceBatchChangesEvent> resourceBatchChangesEvent,
                                final Identity identity ) {
@@ -95,6 +107,8 @@ public class ProjectServiceImpl
         this.kModuleService = kModuleService;
         this.metadataService = metadataService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
+        this.configurationService = configurationService;
+        this.configurationFactory = configurationFactory;
         this.resourceAddedEvent = resourceAddedEvent;
         this.resourceBatchChangesEvent = resourceBatchChangesEvent;
         this.identity = identity;
@@ -145,17 +159,30 @@ public class ProjectServiceImpl
 
     private Project makeProject( final org.kie.commons.java.nio.file.Path nioProjectRootPath ) {
         final Path projectRootPath = paths.convert( nioProjectRootPath );
+        final String projectName = projectRootPath.getFileName();
         final Path pomXMLPath = paths.convert( nioProjectRootPath.resolve( POM_PATH ),
                                                false );
         final Path kmoduleXMLPath = paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ),
                                                    false );
         final Path importsXMLPath = paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ),
                                                    false );
-        return new Project( projectRootPath,
-                            pomXMLPath,
-                            kmoduleXMLPath,
-                            importsXMLPath,
-                            projectRootPath.getFileName() );
+        final Project project = new Project( projectRootPath,
+                                             pomXMLPath,
+                                             kmoduleXMLPath,
+                                             importsXMLPath,
+                                             projectName );
+
+        //Copy in Security Roles required to access this resource
+        final ConfigGroup projectConfiguration = findProjectConfig( projectRootPath );
+        if ( projectConfiguration != null ) {
+            ConfigItem<List<String>> roles = projectConfiguration.getConfigItem( "security:roles" );
+            if ( roles != null ) {
+                for ( String role : roles.getValue() ) {
+                    project.getRoles().add( role );
+                }
+            }
+        }
+        return project;
     }
 
     @Override
@@ -301,9 +328,9 @@ public class ProjectServiceImpl
                          projectConfigurationContentHandler.toString( new ProjectImports() ) );
 
         //Raise an event for the new project
-        final Project project = resolveProject( projectRootPath );
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
+        final Project project = resolveProject( projectRootPath );
         return project;
     }
 
@@ -397,6 +424,59 @@ public class ProjectServiceImpl
                                                         commitMessage,
                                                         when );
         return co;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public void addRole( final Project project,
+                         final String role ) {
+        final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
+
+        if ( thisProjectConfig == null ) {
+            final ConfigGroup projectGroupConfig = new ConfigGroup();
+            projectGroupConfig.setName( project.getProjectName() );
+            projectGroupConfig.setType( ConfigType.PROJECT );
+            configurationService.addConfiguration( projectGroupConfig );
+        }
+
+        if ( thisProjectConfig != null ) {
+            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
+            roles.getValue().add( role );
+
+            configurationService.updateConfiguration( thisProjectConfig );
+
+        } else {
+            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public void removeRole( final Project project,
+                            final String role ) {
+        final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
+
+        if ( thisProjectConfig != null ) {
+            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
+            roles.getValue().remove( role );
+
+            configurationService.updateConfiguration( thisProjectConfig );
+
+        } else {
+            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
+        }
+    }
+
+    protected ConfigGroup findProjectConfig( final Path projectRoot ) {
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.PROJECT );
+        if ( groups != null ) {
+            for ( ConfigGroup groupConfig : groups ) {
+                if ( groupConfig.getName().equals( projectRoot.toURI() ) ) {
+                    return groupConfig;
+                }
+            }
+        }
+        return null;
     }
 
 }

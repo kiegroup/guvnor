@@ -88,4 +88,20 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
     Package newPackage( final Package pkg,
                         final String packageName );
 
+    /**
+     * Add a role to a project; limiting access to users with the role
+     * @param project The Project
+     * @param role The required role
+     */
+    void addRole( final Project project,
+                  final String role );
+
+    /**
+     * Remove a role from a project
+     * @param project The Project
+     * @param role The role
+     */
+    void removeRole( final Project project,
+                     final String role );
+
 }

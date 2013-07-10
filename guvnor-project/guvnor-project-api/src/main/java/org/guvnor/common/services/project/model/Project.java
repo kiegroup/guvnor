@@ -15,7 +15,7 @@
  */
 package org.guvnor.common.services.project.model;
 
-import java.lang.Object;import java.lang.Override;import java.lang.String;import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -34,7 +34,7 @@ public class Project implements RuntimeResource {
     private Path pomXMLPath;
     private Path kmoduleXMLPath;
     private Path importsPath;
-    private String title;
+    private String projectName;
 
     private Collection<String> roles = new ArrayList<String>();
 
@@ -46,7 +46,7 @@ public class Project implements RuntimeResource {
                     final Path pomXMLPath,
                     final Path kmoduleXMLPath,
                     final Path importsPath,
-                    final String title ) {
+                    final String projectName ) {
         this.rootPath = PortablePreconditions.checkNotNull( "rootPath",
                                                             rootPath );
         this.pomXMLPath = PortablePreconditions.checkNotNull( "pomXMLPath",
@@ -55,8 +55,8 @@ public class Project implements RuntimeResource {
                                                                   kmoduleXMLPath );
         this.importsPath = PortablePreconditions.checkNotNull( "importsPath",
                                                                importsPath );
-        this.title = PortablePreconditions.checkNotNull( "title",
-                                                         title );
+        this.projectName = PortablePreconditions.checkNotNull( "projectName",
+                                                               projectName );
     }
 
     public Path getRootPath() {
@@ -75,8 +75,8 @@ public class Project implements RuntimeResource {
         return this.importsPath;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getProjectName() {
+        return this.projectName;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class Project implements RuntimeResource {
         if ( !importsPath.equals( project.importsPath ) ) {
             return false;
         }
-        if ( !title.equals( project.title ) ) {
+        if ( !projectName.equals( project.projectName ) ) {
             return false;
         }
 
@@ -130,7 +130,7 @@ public class Project implements RuntimeResource {
         result = 31 * result + pomXMLPath.hashCode();
         result = 31 * result + kmoduleXMLPath.hashCode();
         result = 31 * result + importsPath.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + projectName.hashCode();
         return result;
     }
 
