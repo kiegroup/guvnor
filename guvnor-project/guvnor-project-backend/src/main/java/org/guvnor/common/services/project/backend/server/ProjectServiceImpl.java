@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -430,13 +431,15 @@ public class ProjectServiceImpl
     @Override
     public void addRole( final Project project,
                          final String role ) {
-        final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
+        ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
         if ( thisProjectConfig == null ) {
-            final ConfigGroup projectGroupConfig = new ConfigGroup();
-            projectGroupConfig.setName( project.getProjectName() );
-            projectGroupConfig.setType( ConfigType.PROJECT );
-            configurationService.addConfiguration( projectGroupConfig );
+            thisProjectConfig = configurationFactory.newConfigGroup( ConfigType.PROJECT,
+                                                                     project.getRootPath().toURI(),
+                                                                     "Project '" + project.getProjectName() + "' configuration" );
+            thisProjectConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                                 new ArrayList<String>() ) );
+            configurationService.addConfiguration( thisProjectConfig );
         }
 
         if ( thisProjectConfig != null ) {
