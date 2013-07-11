@@ -76,11 +76,12 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void build( final Project project ) {
+    public BuildResults build( final Project project ) {
         try {
             final BuildResults results = doBuild( project );
             buildResultsEvent.fire( results );
-
+            
+            return results;
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
@@ -88,7 +89,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void buildAndDeploy( final Project project ) {
+    public DeployResult buildAndDeploy( final Project project ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
@@ -102,14 +103,17 @@ public class BuildServiceImpl
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,
                                          pom.getGav() );
-                deployResultEvent.fire(
-                        new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() ) );
+                
+                DeployResult deployResult = new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() );                
+                deployResultEvent.fire(deployResult);
+                return deployResult;
             }
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-
+        
+        return null;
     }
 
     private BuildResults doBuild( final Project project ) {

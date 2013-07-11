@@ -18,6 +18,8 @@ package org.guvnor.common.services.project.builder.service;
 
 import java.util.Set;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -30,13 +32,13 @@ public interface BuildService {
      * Full build without deployment
      * @param project
      */
-    void build( final Project project );
+	BuildResults build( final Project project );
 
     /**
      * Full build with deployment
      * @param project
      */
-    void buildAndDeploy( final Project project );
+	DeployResult buildAndDeploy( final Project project );
 
     /**
      * Add a Package resource to the build.
