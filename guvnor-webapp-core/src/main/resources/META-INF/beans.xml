@@ -9,4 +9,7 @@
         http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
 
+    <weld:scan>
+        <weld:exclude name="org.drools.guvnor.client.**"/>
+    </weld:scan>
 </beans>
