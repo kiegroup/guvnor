@@ -30,14 +30,16 @@ import org.jboss.weld.environment.servlet.Listener;
  */
 public class SafeWeldListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
 
-    private Boolean onJBoss7 = null;
+    private Boolean onJEE6Server = null;
     private ServletContextListener servletContextListener;
     private HttpSessionListener httpSessionListener;
     private ServletRequestListener servletRequestListener;
 
-    private void checkOnJBoss(String serverInfo) {
-        onJBoss7 = serverInfo.startsWith("JBoss Web/7.");
-        if (!onJBoss7) {
+    private void checkOnJEE6Server(String serverInfo) {
+        onJEE6Server = (serverInfo.startsWith("JBoss Web/7.")) ||
+                       (serverInfo.startsWith("WebLogic") && serverInfo.contains("WebLogic Server 12.")) || //WebLogic 12
+                       (serverInfo.startsWith("IBM WebSphere Application Server/8.")); //WebSphere 8.5
+        if (!onJEE6Server) {
             // Note that weldListener is not a global variable to avoid a ClassNotFoundException on JBoss 7
             Listener weldListener = new Listener();
             servletContextListener = weldListener;
@@ -47,43 +49,43 @@ public class SafeWeldListener implements ServletContextListener, HttpSessionList
     }
 
     public void contextInitialized(ServletContextEvent sce) {
-        checkOnJBoss(sce.getServletContext().getServerInfo());
-        if (onJBoss7) {
+        checkOnJEE6Server(sce.getServletContext().getServerInfo());
+        if (onJEE6Server) {
             return;
         }
         servletContextListener.contextInitialized(sce);
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-        if (onJBoss7) {
+        if (onJEE6Server) {
             return;
         }
         servletContextListener.contextDestroyed(sce);
     }
 
     public void sessionCreated(HttpSessionEvent se) {
-        if (onJBoss7) {
+        if (onJEE6Server) {
             return;
         }
         httpSessionListener.sessionCreated(se);
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
-        if (onJBoss7) {
+        if (onJEE6Server) {
             return;
         }
         httpSessionListener.sessionDestroyed(event);
     }
 
     public void requestDestroyed(ServletRequestEvent event) {
-        if (onJBoss7) {
+        if (onJEE6Server) {
             return;
         }
         servletRequestListener.requestDestroyed(event);
     }
 
     public void requestInitialized(ServletRequestEvent event) {
-        if (onJBoss7) {
+        if (onJEE6Server) {
             return;
         }
         servletRequestListener.requestInitialized(event);

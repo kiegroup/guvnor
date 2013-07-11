@@ -16,9 +16,13 @@
 
 package org.drools.guvnor.server.repository;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.annotation.PostConstruct;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,6 +51,24 @@ public class GuvnorBootstrapConfiguration {
 
     private Map<String, String> properties = new HashMap<String, String>();
 
+    public GuvnorBootstrapConfiguration() {
+    	//not all app servers can load properties from the beans.xml. Workaround using a properties file
+    	Properties props = new Properties();
+    	try {
+    		URL res = getClass().getResource("/guvnor-bootstrap.properties");
+    		if (res != null) {
+    			props.load(res.openStream());
+    		}
+    	} catch (IOException e) {
+    		log.error("Problem reading properties file");
+    	}
+    	Map<String, String> map = new HashMap<String, String>();
+    	for (Map.Entry<Object, Object> entry : props.entrySet()) {
+    		map.put(entry.getKey().toString(), entry.getValue().toString());
+    	}
+		setProperties(map);
+	}
+    
     public Map<String, String> getProperties() {
         return properties;
     }

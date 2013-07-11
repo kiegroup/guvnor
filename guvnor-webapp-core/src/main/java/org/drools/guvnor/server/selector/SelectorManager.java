@@ -108,7 +108,14 @@ public class SelectorManager {
     }
 
     private AssetSelector loadSelectorImplementation(String val) throws Exception {
-        return (AssetSelector) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
+        //WebLogic 12 deployment does this call before initializing the WAR
+        Class<?> assetEditorClass = null;
+        try {
+            assetEditorClass = Thread.currentThread().getContextClassLoader().loadClass( val );
+        } catch (ClassNotFoundException e) {
+            assetEditorClass = getClass().getClassLoader().loadClass( val );
+        }
+        return (AssetSelector) assetEditorClass.newInstance();
     }
 
     private AssetSelector loadRuleSelector(String val) {
