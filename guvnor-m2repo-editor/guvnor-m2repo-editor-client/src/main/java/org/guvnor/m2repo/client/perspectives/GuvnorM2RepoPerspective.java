@@ -22,11 +22,11 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
@@ -34,7 +34,6 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * A Perspective to show Guvnor's M2_REPO related screens
@@ -47,8 +46,6 @@ public class GuvnorM2RepoPerspective {
     private PlaceManager placeManager;
 
     private Menus menus;
-
-    private ToolBar toolBar;
 
     private PerspectiveDefinition perspective;
 
@@ -68,25 +65,13 @@ public class GuvnorM2RepoPerspective {
         return this.menus;
     }
 
-    @WorkbenchToolBar
-    public ToolBar getToolBar() {
-        return this.toolBar;
-    }
-
     private void buildPerspective() {
-/*        final PlaceRequest place1 = new DefaultPlaceRequest( "FileExplorer" );
-        place1.addParameter( "instance",
-                             "1" );*/
-/*        final PlaceRequest place2 = new DefaultPlaceRequest( "M2RepoEditor" );
-        place2.addParameter( "instance",
-                             "2" );*/
-
-        this.perspective = new PerspectiveDefinitionImpl();
+        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
         this.perspective.setName( "Guvnor M2 Repository Explorer" );
 
         this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinitionImpl();
+        final PanelDefinition west = new PanelDefinitionImpl( PanelType.MULTI_LIST );
         west.setWidth( 300 );
         west.setMinWidth( 200 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
