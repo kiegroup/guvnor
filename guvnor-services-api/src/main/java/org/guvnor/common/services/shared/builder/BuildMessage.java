@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.builder.model;
+package org.guvnor.common.services.shared.builder;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;

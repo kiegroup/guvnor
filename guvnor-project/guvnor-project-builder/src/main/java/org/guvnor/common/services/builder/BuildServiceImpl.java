@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.shared.builder.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;

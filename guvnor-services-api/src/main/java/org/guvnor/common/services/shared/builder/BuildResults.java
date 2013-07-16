@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.builder.model;
+package org.guvnor.common.services.shared.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;

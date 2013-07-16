@@ -18,15 +18,17 @@ package org.guvnor.common.services.builder;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.core.rule.TypeMetaInfo;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.shared.builder.BuildResults;
+import org.guvnor.common.services.shared.validation.ValidationService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
@@ -64,7 +66,8 @@ public class BuildServiceImplTest {
                                              "guvnor-m2repo-dependency-example1",
                                              paths,
                                              ioService,
-                                             projectService );
+                                             projectService,
+                                             new ArrayList<ValidationService>() );
 
         final BuildResults results = builder.build();
 
@@ -86,7 +89,8 @@ public class BuildServiceImplTest {
                                              "guvnor-m2repo-dependency-example2",
                                              paths,
                                              ioService,
-                                             projectService );
+                                             projectService,
+                                             new ArrayList<ValidationService>() );
 
         final BuildResults results = builder.build();
 
@@ -115,7 +119,8 @@ public class BuildServiceImplTest {
                                              "guvnor-m2repo-dependency-example2-snapshot",
                                              paths,
                                              ioService,
-                                             projectService );
+                                             projectService,
+                                             new ArrayList<ValidationService>() );
 
         final BuildResults results = builder.build();
 
@@ -144,7 +149,8 @@ public class BuildServiceImplTest {
                                              "guvnor-m2repo-dependency-example2-metadata",
                                              paths,
                                              ioService,
-                                             projectService );
+                                             projectService,
+                                             new ArrayList<ValidationService>() );
 
         final BuildResults results = builder.build();
 
@@ -195,7 +201,8 @@ public class BuildServiceImplTest {
                                              "example-with-excel",
                                              paths,
                                              ioService,
-                                             projectService );
+                                             projectService,
+                                             new ArrayList<ValidationService>() );
 
         final BuildResults results = builder.build();
 
