@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

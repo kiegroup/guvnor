@@ -15,8 +15,14 @@
  */
 package org.guvnor.common.services.builder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -26,6 +32,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.validation.ValidationService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
@@ -50,6 +57,20 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     @Named("ioStrategy")
     private IOService ioService;
 
+    @Inject
+    @Any
+    private Instance<ValidationService> anyValidators;
+
+    private final List<ValidationService> validators = new ArrayList<ValidationService>();
+
+    @PostConstruct
+    public void setupValidators() {
+        final Iterator<ValidationService> itr = anyValidators.iterator();
+        while ( itr.hasNext() ) {
+            validators.add( itr.next() );
+        }
+    }
+
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
@@ -71,7 +92,8 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
                                    gav.getGav().getArtifactId(),
                                    paths,
                                    ioService,
-                                   projectService );
+                                   projectService,
+                                   validators );
             setEntry( project,
                       builder );
         }
