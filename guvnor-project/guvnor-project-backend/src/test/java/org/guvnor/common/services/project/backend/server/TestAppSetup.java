@@ -20,6 +20,7 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
 
 import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.commons.io.IOService;
@@ -51,6 +52,12 @@ public class TestAppSetup {
     @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );
+    }
+
+    @Produces
+    @Named("uf")
+    public ServletContext servletContext() {
+        return mock(ServletContext.class);
     }
 
 }
