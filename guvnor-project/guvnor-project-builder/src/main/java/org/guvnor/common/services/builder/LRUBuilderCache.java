@@ -32,7 +32,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.validation.ValidationService;
+import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
@@ -59,13 +59,13 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     @Inject
     @Any
-    private Instance<ValidationService> anyValidators;
+    private Instance<BuildValidationHelper> anyValidators;
 
-    private final List<ValidationService> validators = new ArrayList<ValidationService>();
+    private final List<BuildValidationHelper> validators = new ArrayList<BuildValidationHelper>();
 
     @PostConstruct
     public void setupValidators() {
-        final Iterator<ValidationService> itr = anyValidators.iterator();
+        final Iterator<BuildValidationHelper> itr = anyValidators.iterator();
         while ( itr.hasNext() ) {
             validators.add( itr.next() );
         }

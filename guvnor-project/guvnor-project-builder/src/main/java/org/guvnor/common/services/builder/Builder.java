@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.model.TypeSource;
@@ -35,14 +36,13 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.builder.BuildResults;
-import org.guvnor.common.services.shared.validation.ValidationService;
+import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
@@ -70,16 +70,18 @@ public class Builder {
     private final String artifactId;
     private final IOService ioService;
     private final ProjectService projectService;
-    private final List<ValidationService> validators;
 
     private final String projectPrefix;
 
     private Map<String, org.uberfire.backend.vfs.Path> handles = new HashMap<String, org.uberfire.backend.vfs.Path>();
 
-    private final Map<Path, ValidationService> nonKieResourceValidators = new HashMap<Path, ValidationService>();
-    private final Map<Path, List<BuildMessage>> nonKieResourceValidatorMessages = new HashMap<Path, List<BuildMessage>>();
+    private final List<BuildValidationHelper> buildValidationHelpers;
+    private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
+    private final Map<Path, List<BuildMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<BuildMessage>>();
 
     private final DirectoryStream.Filter<Path> javaResourceFilter = new JavaFileFilter();
+    private final DirectoryStream.Filter<Path> dotFileFilter = new DotFileFilter();
+
     private Set<String> javaResources = new HashSet<String>();
 
     private KieContainer kieContainer;
@@ -89,13 +91,13 @@ public class Builder {
                     final Paths paths,
                     final IOService ioService,
                     final ProjectService projectService,
-                    final List<ValidationService> validators ) {
+                    final List<BuildValidationHelper> buildValidationHelpers ) {
         this.moduleDirectory = moduleDirectory;
         this.artifactId = artifactId;
         this.paths = paths;
         this.ioService = ioService;
         this.projectService = projectService;
-        this.validators = validators;
+        this.buildValidationHelpers = buildValidationHelpers;
 
         projectPrefix = moduleDirectory.toUri().toString();
         kieServices = KieServices.Factory.get();
@@ -112,16 +114,16 @@ public class Builder {
         final BuildResults results = convertMessages( kieResults );
 
         //Validate paths that are not handled by Kie
-        for ( Map.Entry<Path, ValidationService> e : nonKieResourceValidators.entrySet() ) {
+        for ( Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet() ) {
             final Path resource = e.getKey();
-            final ValidationService validator = e.getValue();
+            final BuildValidationHelper validator = e.getValue();
             final List<BuildMessage> messages = validator.validate( paths.convert( resource ) );
             if ( messages != null ) {
                 for ( BuildMessage message : messages ) {
                     results.addBuildMessage( message );
                 }
-                nonKieResourceValidatorMessages.put( resource,
-                                                     messages );
+                nonKieResourceValidationHelperMessages.put( resource,
+                                                            messages );
             }
         }
 
@@ -167,44 +169,39 @@ public class Builder {
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         final InputStream is = ioService.newInputStream( resource );
         final BufferedInputStream bis = new BufferedInputStream( is );
-        IncrementalBuildResults results = new IncrementalBuildResults();
+        kieFileSystem.write( destinationPath,
+                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+        addJavaClass( resource );
+        handles.put( destinationPath,
+                     paths.convert( resource ) );
 
-        if ( isResourceTypeSupportedByKie( resource ) ) {
-            //Resource Type is known to KIE and hence is handled by CompositeKnowledgeBuilder
-            kieFileSystem.write( destinationPath,
-                                 KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
-            addJavaClass( resource );
-            handles.put( destinationPath,
-                         paths.convert( resource ) );
+        //Incremental build
+        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+        final IncrementalBuildResults results = convertMessages( incrementalResults );
 
-            //Incremental build
-            final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
-            results = convertMessages( incrementalResults );
+        //Tidy-up removed message handles
+        for ( Message message : incrementalResults.getRemovedMessages() ) {
+            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        }
 
-            //Tidy-up removed message handles
-            for ( Message message : incrementalResults.getRemovedMessages() ) {
-                handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        //Resource Type might require "external" validation (i.e. it's not covered by Kie)
+        final BuildValidationHelper validator = getBuildValidationHelper( resource );
+        if ( validator != null ) {
+            final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
+            for ( BuildMessage message : addedMessages ) {
+                results.addAddedMessage( message );
             }
+            nonKieResourceValidationHelpers.put( resource,
+                                                 validator );
 
-        } else {
-            //Resource Type is unknown to KIE. Lookup a validation service to handle.
-            final ValidationService validator = getValidationService( resource );
-            if ( validator != null ) {
-                final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
-                for ( BuildMessage message : addedMessages ) {
-                    results.addAddedMessage( message );
-                }
-                nonKieResourceValidators.put( resource,
-                                              validator );
-                nonKieResourceValidatorMessages.put( resource,
-                                                     addedMessages );
-            }
-            final List<BuildMessage> removedMessages = nonKieResourceValidatorMessages.remove( resource );
+            final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
             if ( removedMessages != null ) {
                 for ( BuildMessage message : removedMessages ) {
                     results.addRemovedMessage( message );
                 }
             }
+            nonKieResourceValidationHelperMessages.put( resource,
+                                                        addedMessages );
         }
 
         return results;
@@ -226,26 +223,23 @@ public class Builder {
 
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
-        IncrementalBuildResults results = new IncrementalBuildResults();
+        kieFileSystem.delete( destinationPath );
+        removeJavaClass( resource );
 
-        if ( isResourceTypeSupportedByKie( resource ) ) {
-            //Resource Type is known to KIE and hence is handled by CompositeKnowledgeBuilder
-            kieFileSystem.delete( destinationPath );
-            removeJavaClass( resource );
+        //Incremental build
+        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+        final IncrementalBuildResults results = convertMessages( incrementalResults );
 
-            //Incremental build
-            final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
-            results = convertMessages( incrementalResults );
+        //Tidy-up removed message handles
+        for ( Message message : incrementalResults.getRemovedMessages() ) {
+            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+        }
 
-            //Tidy-up removed message handles
-            for ( Message message : incrementalResults.getRemovedMessages() ) {
-                handles.remove( RESOURCE_PATH + "/" + message.getPath() );
-            }
-
-        } else {
-            //Resource Type is unknown to KIE. Lookup a validation service to handle.
-            nonKieResourceValidators.remove( resource );
-            final List<BuildMessage> removedMessages = nonKieResourceValidatorMessages.remove( resource );
+        //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+        final BuildValidationHelper validator = getBuildValidationHelper( resource );
+        if ( validator != null ) {
+            nonKieResourceValidationHelpers.remove( resource );
+            final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
             if ( removedMessages != null ) {
                 for ( BuildMessage message : removedMessages ) {
                     results.addRemovedMessage( message );
@@ -287,54 +281,48 @@ public class Builder {
             PortablePreconditions.checkNotNull( "resource",
                                                 resource );
 
+            final BuildValidationHelper validator = getBuildValidationHelper( resource );
             final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
             changedFilesKieBuilderPaths.add( destinationPath );
             switch ( type ) {
                 case ADD:
                 case UPDATE:
-                    if ( isResourceTypeSupportedByKie( resource ) ) {
-                        //Resource Type is known to KIE and hence is handled by CompositeKnowledgeBuilder
-                        final InputStream is = ioService.newInputStream( resource );
-                        final BufferedInputStream bis = new BufferedInputStream( is );
-                        kieFileSystem.write( destinationPath,
-                                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
-                        addJavaClass( resource );
-                        handles.put( destinationPath,
-                                     change.getPath() );
+                    final InputStream is = ioService.newInputStream( resource );
+                    final BufferedInputStream bis = new BufferedInputStream( is );
+                    kieFileSystem.write( destinationPath,
+                                         KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                    addJavaClass( resource );
+                    handles.put( destinationPath,
+                                 change.getPath() );
 
-                    } else {
-                        //Resource Type is unknown to KIE. Lookup a validation service to handle.
-                        ValidationService validator = getValidationService( resource );
-                        if ( validator != null ) {
-                            final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
-                            for ( BuildMessage message : addedMessages ) {
-                                nonKieResourceValidatorAddedMessages.add( message );
-                            }
-                            nonKieResourceValidators.put( resource,
-                                                          validator );
-                            nonKieResourceValidatorMessages.put( resource,
-                                                                 addedMessages );
+                    //Resource Type might require "external" validation (i.e. it's not covered by Kie)
+                    if ( validator != null ) {
+                        final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
+                        for ( BuildMessage message : addedMessages ) {
+                            nonKieResourceValidatorAddedMessages.add( message );
                         }
-                        final List<BuildMessage> removedMessages = nonKieResourceValidatorMessages.remove( resource );
+                        nonKieResourceValidationHelpers.put( resource,
+                                                             validator );
+
+                        final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
                         if ( removedMessages != null ) {
                             for ( BuildMessage message : removedMessages ) {
                                 nonKieResourceValidatorRemovedMessages.add( message );
                             }
                         }
+                        nonKieResourceValidationHelperMessages.put( resource,
+                                                                    addedMessages );
                     }
 
                     break;
                 case DELETE:
-                    if ( isResourceTypeSupportedByKie( resource ) ) {
-                        //Resource Type is known to KIE and hence is handled by CompositeKnowledgeBuilder
-                        kieFileSystem.delete( destinationPath );
-                        removeJavaClass( resource );
-                        break;
+                    kieFileSystem.delete( destinationPath );
+                    removeJavaClass( resource );
 
-                    } else {
-                        //Resource Type is unknown to KIE. Lookup a validation service to handle.
-                        nonKieResourceValidators.remove( resource );
-                        final List<BuildMessage> removedMessages = nonKieResourceValidatorMessages.remove( resource );
+                    //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+                    if ( validator != null ) {
+                        nonKieResourceValidationHelpers.remove( resource );
+                        final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
                         if ( removedMessages != null ) {
                             for ( BuildMessage message : removedMessages ) {
                                 nonKieResourceValidatorRemovedMessages.add( message );
@@ -393,12 +381,13 @@ public class Builder {
                 visitPaths( Files.newDirectoryStream( path ) );
 
             } else {
+                //Don't process dotFiles
+                if ( dotFileFilter.accept( path ) ) {
 
-                final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
-                final InputStream is = ioService.newInputStream( path );
-                final BufferedInputStream bis = new BufferedInputStream( is );
-                if ( isResourceTypeSupportedByKie( path ) ) {
-                    //Resource Type is known to KIE and hence is handled by CompositeKnowledgeBuilder
+                    final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
+                    final InputStream is = ioService.newInputStream( path );
+                    final BufferedInputStream bis = new BufferedInputStream( is );
+
                     kieFileSystem.write( destinationPath,
                                          KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
 
@@ -406,12 +395,12 @@ public class Builder {
                     addJavaClass( path );
                     handles.put( destinationPath,
                                  paths.convert( path ) );
-                } else {
-                    //Resource Type is unknown to KIE. Lookup a validation service to handle.
-                    final ValidationService validator = getValidationService( path );
+
+                    //Resource Type might require "external" validation (i.e. it's not covered by Kie)
+                    final BuildValidationHelper validator = getBuildValidationHelper( path );
                     if ( validator != null ) {
-                        nonKieResourceValidators.put( path,
-                                                      validator );
+                        nonKieResourceValidationHelpers.put( path,
+                                                             validator );
                     }
                 }
             }
@@ -528,13 +517,8 @@ public class Builder {
         return TypeSource.JAVA_DEPENDENCY;
     }
 
-    private boolean isResourceTypeSupportedByKie( final Path resource ) {
-        final ResourceType resourceType = ResourceType.determineResourceType( resource.getFileName().toString() );
-        return resourceType != null;
-    }
-
-    private ValidationService getValidationService( final Path resource ) {
-        for ( ValidationService validator : validators ) {
+    private BuildValidationHelper getBuildValidationHelper( final Path resource ) {
+        for ( BuildValidationHelper validator : buildValidationHelpers ) {
             if ( validator.accepts( paths.convert( resource ) ) ) {
                 return validator;
             }

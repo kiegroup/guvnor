@@ -28,7 +28,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.builder.BuildResults;
-import org.guvnor.common.services.shared.validation.ValidationService;
+import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
@@ -67,7 +67,7 @@ public class BuildServiceImplTest {
                                              paths,
                                              ioService,
                                              projectService,
-                                             new ArrayList<ValidationService>() );
+                                             new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
 
@@ -90,7 +90,7 @@ public class BuildServiceImplTest {
                                              paths,
                                              ioService,
                                              projectService,
-                                             new ArrayList<ValidationService>() );
+                                             new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
 
@@ -120,7 +120,7 @@ public class BuildServiceImplTest {
                                              paths,
                                              ioService,
                                              projectService,
-                                             new ArrayList<ValidationService>() );
+                                             new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
 
@@ -150,7 +150,7 @@ public class BuildServiceImplTest {
                                              paths,
                                              ioService,
                                              projectService,
-                                             new ArrayList<ValidationService>() );
+                                             new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
 
@@ -202,7 +202,7 @@ public class BuildServiceImplTest {
                                              paths,
                                              ioService,
                                              projectService,
-                                             new ArrayList<ValidationService>() );
+                                             new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
 
