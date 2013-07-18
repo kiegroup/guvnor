@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.shared.builder.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -32,6 +31,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildResults;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
@@ -135,9 +135,10 @@ public class BuildServiceImpl
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
                 build( project );
+            } else {
+                final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
+                incrementalBuildResultsEvent.fire( results );
             }
-            final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
-            incrementalBuildResultsEvent.fire( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -154,9 +155,10 @@ public class BuildServiceImpl
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
                 build( project );
+            } else {
+                final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
+                incrementalBuildResultsEvent.fire( results );
             }
-            final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
-            incrementalBuildResultsEvent.fire( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -173,9 +175,10 @@ public class BuildServiceImpl
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
                 build( project );
+            } else {
+                final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
+                incrementalBuildResultsEvent.fire( results );
             }
-            final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
-            incrementalBuildResultsEvent.fire( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -209,9 +212,10 @@ public class BuildServiceImpl
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
                 build( project );
+            } else {
+                final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
+                incrementalBuildResultsEvent.fire( results );
             }
-            final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
-            incrementalBuildResultsEvent.fire( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
