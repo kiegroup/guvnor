@@ -24,8 +24,11 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.guvnor.common.services.shared.builder.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildResults;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +59,8 @@ public class BuildChangeListenerTest {
     private ConfigurationService configurationService;
     private ConfigurationFactory configurationFactory;
     private BuildResultsObserver buildResultsObserver;
+    private BuildService buildService;
+    private ProjectService projectService;
 
     @Before
     public void setUp() throws Exception {
@@ -90,6 +95,20 @@ public class BuildChangeListenerTest {
         buildResultsObserver = (BuildResultsObserver) beanManager.getReference( buildResultsObserverBean,
                                                                                 BuildResultsObserver.class,
                                                                                 cc4 );
+
+        //Instantiate BuildService
+        final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
+        final CreationalContext cc5 = beanManager.createCreationalContext( buildServiceBean );
+        buildService = (BuildService) beanManager.getReference( buildServiceBean,
+                                                                BuildService.class,
+                                                                cc5 );
+
+        //Instantiate ProjectService
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final CreationalContext cc6 = beanManager.createCreationalContext( projectServiceBean );
+        projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+                                                                    ProjectService.class,
+                                                                    cc6 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
@@ -128,6 +147,11 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
+        //Force full build before attempting incremental changes
+        final Project project = projectService.resolveProject( resourcePath );
+        buildService.build( project );
+
+        //Perform incremental build
         final ResourceAddedEvent event = new ResourceAddedEvent( resourcePath );
         buildChangeListener.addResource( event );
 
@@ -156,6 +180,11 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
+        //Force full build before attempting incremental changes
+        final Project project = projectService.resolveProject( resourcePath );
+        buildService.build( project );
+
+        //Perform incremental build
         final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath );
         buildChangeListener.updateResource( event );
 
@@ -184,6 +213,11 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
+        //Force full build before attempting incremental changes
+        final Project project = projectService.resolveProject( resourcePath );
+        buildService.build( project );
+
+        //Perform incremental build
         final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath );
         buildChangeListener.deleteResource( event );
 
@@ -228,6 +262,11 @@ public class BuildChangeListenerTest {
         batch.add( new ResourceChange( ChangeType.DELETE,
                                        resourcePath3 ) );
 
+        //Force full build before attempting incremental changes
+        final Project project = projectService.resolveProject( resourcePath1 );
+        buildService.build( project );
+
+        //Perform incremental build
         final ResourceBatchChangesEvent event = new ResourceBatchChangesEvent( batch );
         buildChangeListener.batchResourceChanges( event );
 
