@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.common.services.shared.builder;
+
+package org.guvnor.common.services.project.validation;
 
 import java.util.List;
 
-import org.uberfire.backend.vfs.Path;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 
 /**
- * Helper to provide validation of assets that are not validated by KIE, or need additional validation
+ * Validation Service
  */
-public interface BuildValidationHelper {
+public interface ValidationService<T> {
 
     /**
-     * Does this helper support the specified path
-     * @param path
+     * Validate the content
+     * @param content
      * @return
      */
-    boolean accepts( final Path path );
+    List<BuildMessage> validate( final T content );
 
-    /**
-     * Validate the content at the specified Path
-     * @param path
-     * @return
-     */
-    List<BuildMessage> validate( final Path path );
+    boolean isValid( final T content );
 
 }

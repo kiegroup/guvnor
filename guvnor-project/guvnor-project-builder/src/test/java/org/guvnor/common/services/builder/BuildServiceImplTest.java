@@ -24,11 +24,11 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.core.rule.TypeMetaInfo;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
-import org.guvnor.common.services.shared.builder.BuildResults;
-import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example1",
+                                             new GAV(),
                                              paths,
                                              ioService,
                                              projectService,
@@ -86,7 +86,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2",
+                                             new GAV(),
                                              paths,
                                              ioService,
                                              projectService,
@@ -116,7 +116,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2-snapshot",
+                                             new GAV(),
                                              paths,
                                              ioService,
                                              projectService,
@@ -146,7 +146,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2-metadata",
+                                             new GAV(),
                                              paths,
                                              ioService,
                                              projectService,
@@ -198,7 +198,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "example-with-excel",
+                                             new GAV(),
                                              paths,
                                              ioService,
                                              projectService,

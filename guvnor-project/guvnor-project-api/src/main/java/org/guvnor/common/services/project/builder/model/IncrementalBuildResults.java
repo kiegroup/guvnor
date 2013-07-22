@@ -20,15 +20,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class IncrementalBuildResults {
 
+    private GAV gav;
     private ArrayList<BuildMessage> addedMessages = new ArrayList<BuildMessage>();
     private ArrayList<BuildMessage> removedMessages = new ArrayList<BuildMessage>();
-    private String artifactID;
+
+    public IncrementalBuildResults() {
+        //Marshalling
+    }
+
+    public IncrementalBuildResults( final GAV gav ) {
+        this.gav = gav;
+    }
+
+    public GAV getGAV() {
+        return gav;
+    }
 
     public List<BuildMessage> getAddedMessages() {
         return Collections.unmodifiableList( addedMessages );
@@ -46,11 +58,4 @@ public class IncrementalBuildResults {
         this.removedMessages.add( message );
     }
 
-    public String getArtifactID() {
-        return artifactID;
-    }
-
-    public void setArtifactID( String artifactID ) {
-        this.artifactID = artifactID;
-    }
 }

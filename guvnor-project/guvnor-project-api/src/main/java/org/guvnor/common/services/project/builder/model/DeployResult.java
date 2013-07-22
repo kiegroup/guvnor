@@ -1,56 +1,36 @@
 package org.guvnor.common.services.project.builder.model;
 
-import org.guvnor.common.services.shared.builder.BuildResults;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DeployResult {
 
-    private String groupId;
-    private String artifactId;
-    private String version;
+    private GAV gav;
+    private List<BuildMessage> messages = new ArrayList<BuildMessage>();
 
-    private BuildResults buildResults;
     public DeployResult() {
-
+        //Marshalling
     }
 
-    public DeployResult(String groupId, String artifactId, String version) {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
+    public DeployResult( final GAV gav ) {
+        this.gav = gav;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public GAV getGAV() {
+        return gav;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public List<BuildMessage> getMessages() {
+        return Collections.unmodifiableList( messages );
     }
 
-    public String getArtifactId() {
-        return artifactId;
+    public void setBuildMessages( final List<BuildMessage> messages ) {
+        this.messages = messages;
     }
 
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-	public BuildResults getBuildResults() {
-		return buildResults;
-	}
-
-	public void setBuildResults(BuildResults buildResults) {
-		this.buildResults = buildResults;
-	}    
-    
 }

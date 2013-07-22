@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.shared.builder.BuildResults;
+import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
