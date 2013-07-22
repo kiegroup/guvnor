@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.shared.builder;
+package org.guvnor.common.services.project.builder.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
@@ -28,7 +28,6 @@ public class BuildMessage {
     private int line;
     private int column;
     private String text;
-    private String artifactID;
 
     public void setId( long id ) {
         this.id = id;
@@ -52,10 +51,6 @@ public class BuildMessage {
 
     public void setText( final String text ) {
         this.text = text;
-    }
-
-    public void setArtifactID( final String artifactId ) {
-        this.artifactID = artifactId;
     }
 
     public long getId() {
@@ -82,10 +77,6 @@ public class BuildMessage {
         return text;
     }
 
-    public String getArtifactID() {
-        return artifactID;
-    }
-
     /**
      * Check whether two Messages are equivalent. Property "id" is not used in the comparison as
      * it is inconsistent for identical error messages generated in a different sequence during
@@ -106,9 +97,6 @@ public class BuildMessage {
             return false;
         }
         if ( line != that.line ) {
-            return false;
-        }
-        if ( artifactID != null ? !artifactID.equals( that.artifactID ) : that.artifactID != null ) {
             return false;
         }
         if ( level != that.level ) {
@@ -136,7 +124,6 @@ public class BuildMessage {
         result = 31 * result + line;
         result = 31 * result + column;
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
-        result = 31 * result + ( artifactID != null ? artifactID.hashCode() : 0 );
         return result;
     }
 

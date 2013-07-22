@@ -28,11 +28,11 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
@@ -87,9 +87,9 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         Builder builder = getEntry( project );
         if ( builder == null ) {
             final Path pathToPom = project.getPomXMLPath();
-            final POM gav = pomService.load( pathToPom );
+            final POM pom = pomService.load( pathToPom );
             builder = new Builder( paths.convert( project.getRootPath() ),
-                                   gav.getGav().getArtifactId(),
+                                   pom.getGav(),
                                    paths,
                                    ioService,
                                    projectService,

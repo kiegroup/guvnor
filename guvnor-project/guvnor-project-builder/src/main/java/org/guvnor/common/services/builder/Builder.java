@@ -29,14 +29,15 @@ import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.model.TypeSource;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
-import org.guvnor.common.services.shared.builder.BuildResults;
-import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -67,7 +68,7 @@ public class Builder {
     private final KieFileSystem kieFileSystem;
     private final Path moduleDirectory;
     private final Paths paths;
-    private final String artifactId;
+    private final GAV gav;
     private final IOService ioService;
     private final ProjectService projectService;
 
@@ -87,13 +88,13 @@ public class Builder {
     private KieContainer kieContainer;
 
     public Builder( final Path moduleDirectory,
-                    final String artifactId,
+                    final GAV gav,
                     final Paths paths,
                     final IOService ioService,
                     final ProjectService projectService,
                     final List<BuildValidationHelper> buildValidationHelpers ) {
         this.moduleDirectory = moduleDirectory;
-        this.artifactId = artifactId;
+        this.gav = gav;
         this.paths = paths;
         this.ioService = ioService;
         this.projectService = projectService;
@@ -158,7 +159,7 @@ public class Builder {
 
         //Only files can be processed
         if ( !Files.isRegularFile( resource ) ) {
-            return new IncrementalBuildResults();
+            return new IncrementalBuildResults( gav );
         }
 
         //Check a full build has been performed
@@ -213,7 +214,7 @@ public class Builder {
 
         //Only files can be processed
         if ( !Files.isRegularFile( resource ) ) {
-            return new IncrementalBuildResults();
+            return new IncrementalBuildResults( gav );
         }
 
         //Check a full build has been performed
@@ -408,8 +409,7 @@ public class Builder {
     }
 
     private BuildResults convertMessages( final Results kieBuildResults ) {
-        final BuildResults results = new BuildResults();
-        results.setArtifactID( artifactId );
+        final BuildResults results = new BuildResults( gav );
 
         for ( final Message message : kieBuildResults.getMessages() ) {
             results.addBuildMessage( convertMessage( message ) );
@@ -419,8 +419,7 @@ public class Builder {
     }
 
     private IncrementalBuildResults convertMessages( final IncrementalResults kieIncrementalResults ) {
-        final IncrementalBuildResults results = new IncrementalBuildResults();
-        results.setArtifactID( artifactId );
+        final IncrementalBuildResults results = new IncrementalBuildResults( gav );
 
         for ( final Message message : kieIncrementalResults.getAddedMessages() ) {
             results.addAddedMessage( convertMessage( message ) );
@@ -447,7 +446,6 @@ public class Builder {
         }
 
         m.setId( message.getId() );
-        m.setArtifactID( artifactId );
         m.setLine( message.getLine() );
         if ( message.getPath() != null && !message.getPath().isEmpty() ) {
             m.setPath( handles.get( RESOURCE_PATH + "/" + message.getPath() ) );

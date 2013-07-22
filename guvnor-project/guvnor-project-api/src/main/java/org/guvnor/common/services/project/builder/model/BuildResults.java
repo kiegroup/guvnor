@@ -14,33 +14,39 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.shared.builder;
+package org.guvnor.common.services.project.builder.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class BuildResults {
 
+    private GAV gav;
     private ArrayList<BuildMessage> messages = new ArrayList<BuildMessage>();
-    private String artifactID;
+
+    public BuildResults() {
+        //Marshalling
+    }
+
+    public BuildResults( final GAV gav ) {
+        this.gav = gav;
+    }
+
+    public GAV getGAV() {
+        return gav;
+    }
 
     public List<BuildMessage> getMessages() {
         return Collections.unmodifiableList( messages );
     }
 
-    public String getArtifactID() {
-        return artifactID;
-    }
-
-    public void setArtifactID( String artifactID ) {
-        this.artifactID = artifactID;
-    }
-
     public void addBuildMessage( final BuildMessage message ) {
         this.messages.add( message );
     }
+
 }

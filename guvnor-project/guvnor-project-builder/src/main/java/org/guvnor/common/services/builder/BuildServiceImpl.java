@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -31,7 +32,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildResults;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
@@ -80,7 +80,7 @@ public class BuildServiceImpl
         try {
             final BuildResults results = doBuild( project );
             buildResultsEvent.fire( results );
-            
+
             return results;
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -96,22 +96,22 @@ public class BuildServiceImpl
             buildResultsEvent.fire( results );
 
             //Deploy, if no errors
+            final POM pom = pomService.load( project.getPomXMLPath() );
             if ( results.getMessages().isEmpty() ) {
                 final Builder builder = cache.assertBuilder( project );
-                final POM pom = pomService.load( project.getPomXMLPath() );
                 final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,
                                          pom.getGav() );
-                
-                DeployResult deployResult = new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() );     
-                deployResult.setBuildResults(results);  
-                deployResultEvent.fire(deployResult);
+
+                DeployResult deployResult = new DeployResult( pom.getGav() );
+                deployResultEvent.fire( deployResult );
+
                 return deployResult;
             } else {
-                DeployResult deployResult = new DeployResult();                
-                deployResult.setBuildResults(results);
-                deployResultEvent.fire(deployResult);
+                DeployResult deployResult = new DeployResult( pom.getGav() );
+                deployResult.setBuildMessages( results.getMessages() );
+                deployResultEvent.fire( deployResult );
                 return deployResult;
             }
         } catch ( Exception e ) {
