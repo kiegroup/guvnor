@@ -9,6 +9,7 @@ public class DeployResult {
     private String artifactId;
     private String version;
 
+    private BuildResults buildResults;
     public DeployResult() {
 
     }
@@ -42,4 +43,13 @@ public class DeployResult {
     public void setVersion(String version) {
         this.version = version;
     }
+
+	public BuildResults getBuildResults() {
+		return buildResults;
+	}
+
+	public void setBuildResults(BuildResults buildResults) {
+		this.buildResults = buildResults;
+	}    
+    
 }

@@ -107,13 +107,15 @@ public class BuildServiceImpl
                 DeployResult deployResult = new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() );                
                 deployResultEvent.fire(deployResult);
                 return deployResult;
+            } else {
+                DeployResult deployResult = new DeployResult();                
+                deployResult.setBuildResults(results);
+                deployResultEvent.fire(deployResult);
+                return deployResult;
             }
-
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-        
-        return null;
     }
 
     private BuildResults doBuild( final Project project ) {
