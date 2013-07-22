@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.validation;
+package org.guvnor.common.services.shared.validation;
 
 import java.util.List;
 
-import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 
 /**
  * Validation Service
@@ -30,7 +30,7 @@ public interface ValidationService<T> {
      * @param content
      * @return
      */
-    List<BuildMessage> validate( final T content );
+    List<ValidationMessage> validate( final T content );
 
     boolean isValid( final T content );
 
