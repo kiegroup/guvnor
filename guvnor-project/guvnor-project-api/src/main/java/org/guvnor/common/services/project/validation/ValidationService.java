@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.shared.validation;
+package org.guvnor.common.services.project.validation;
 
 import java.util.List;
 
