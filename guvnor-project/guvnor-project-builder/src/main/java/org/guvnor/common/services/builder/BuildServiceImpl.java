@@ -105,6 +105,7 @@ public class BuildServiceImpl
                                          pom.getGav() );
 
                 DeployResult deployResult = new DeployResult( pom.getGav() );
+                deployResult.setBuildMessages( results.getMessages() );
                 deployResultEvent.fire( deployResult );
 
                 return deployResult;
