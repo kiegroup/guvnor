@@ -19,6 +19,7 @@ package org.guvnor.common.services.shared.validation;
 import java.util.List;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Validation Service
@@ -30,8 +31,7 @@ public interface ValidationService<T> {
      * @param content
      * @return
      */
-    List<ValidationMessage> validate( final T content );
-
-    boolean isValid( final T content );
+    List<ValidationMessage> validate( final Path path,
+                                      final T content );
 
 }
