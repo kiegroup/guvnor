@@ -363,14 +363,23 @@ public class Builder {
     }
 
     public KieModule getKieModule() {
+        //Kie classes are only available once built
+        if ( !isBuilt() ) {
+            build();
+        }
         return kieBuilder.getKieModule();
     }
 
     public KieModule getKieModuleIgnoringErrors() {
+        //Kie classes are only available once built
+        if ( !isBuilt() ) {
+            build();
+        }
         return ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors();
     }
 
     public KieContainer getKieContainer() {
+        //Kie classes are only available once built
         if ( !isBuilt() ) {
             build();
         }
