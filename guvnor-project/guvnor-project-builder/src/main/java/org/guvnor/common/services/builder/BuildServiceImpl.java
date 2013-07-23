@@ -104,7 +104,8 @@ public class BuildServiceImpl
                 m2RepoService.deployJar( input,
                                          pom.getGav() );
                 
-                DeployResult deployResult = new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() );                
+                DeployResult deployResult = new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() );     
+                deployResult.setBuildResults(results);  
                 deployResultEvent.fire(deployResult);
                 return deployResult;
             } else {
