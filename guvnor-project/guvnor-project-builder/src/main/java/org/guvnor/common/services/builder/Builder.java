@@ -31,13 +31,14 @@ import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -78,7 +79,7 @@ public class Builder {
 
     private final List<BuildValidationHelper> buildValidationHelpers;
     private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
-    private final Map<Path, List<BuildMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<BuildMessage>>();
+    private final Map<Path, List<ValidationMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<ValidationMessage>>();
 
     private final DirectoryStream.Filter<Path> javaResourceFilter = new JavaFileFilter();
     private final DirectoryStream.Filter<Path> dotFileFilter = new DotFileFilter();
@@ -118,13 +119,13 @@ public class Builder {
         for ( Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet() ) {
             final Path resource = e.getKey();
             final BuildValidationHelper validator = e.getValue();
-            final List<BuildMessage> messages = validator.validate( paths.convert( resource ) );
-            if ( messages != null ) {
-                for ( BuildMessage message : messages ) {
-                    results.addBuildMessage( message );
+            final List<ValidationMessage> validationMessages = validator.validate( paths.convert( resource ) );
+            if ( !( validationMessages == null || validationMessages.isEmpty() ) ) {
+                for ( ValidationMessage validationMessage : validationMessages ) {
+                    results.addBuildMessage( convertValidationMessage( validationMessage ) );
                 }
                 nonKieResourceValidationHelperMessages.put( resource,
-                                                            messages );
+                                                            validationMessages );
             }
         }
 
@@ -188,21 +189,23 @@ public class Builder {
         //Resource Type might require "external" validation (i.e. it's not covered by Kie)
         final BuildValidationHelper validator = getBuildValidationHelper( resource );
         if ( validator != null ) {
-            final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
-            for ( BuildMessage message : addedMessages ) {
-                results.addAddedMessage( message );
-            }
             nonKieResourceValidationHelpers.put( resource,
                                                  validator );
+            final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
+            if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
+                for ( ValidationMessage validationMessage : addedValidationMessages ) {
+                    results.addAddedMessage( convertValidationMessage( validationMessage ) );
+                }
+            }
 
-            final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
-            if ( removedMessages != null ) {
-                for ( BuildMessage message : removedMessages ) {
-                    results.addRemovedMessage( message );
+            final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+            if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                    results.addRemovedMessage( convertValidationMessage( validationMessage ) );
                 }
             }
             nonKieResourceValidationHelperMessages.put( resource,
-                                                        addedMessages );
+                                                        addedValidationMessages );
         }
 
         return results;
@@ -240,10 +243,10 @@ public class Builder {
         final BuildValidationHelper validator = getBuildValidationHelper( resource );
         if ( validator != null ) {
             nonKieResourceValidationHelpers.remove( resource );
-            final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
-            if ( removedMessages != null ) {
-                for ( BuildMessage message : removedMessages ) {
-                    results.addRemovedMessage( message );
+            final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+            if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                    results.addRemovedMessage( convertValidationMessage( validationMessage ) );
                 }
             }
         }
@@ -266,8 +269,8 @@ public class Builder {
 
         //Add all changes to KieFileSystem before executing the build
         final List<String> changedFilesKieBuilderPaths = new ArrayList<String>();
-        final List<BuildMessage> nonKieResourceValidatorAddedMessages = new ArrayList<BuildMessage>();
-        final List<BuildMessage> nonKieResourceValidatorRemovedMessages = new ArrayList<BuildMessage>();
+        final List<ValidationMessage> nonKieResourceValidatorAddedMessages = new ArrayList<ValidationMessage>();
+        final List<ValidationMessage> nonKieResourceValidatorRemovedMessages = new ArrayList<ValidationMessage>();
         for ( ResourceChange change : changes ) {
             final ChangeType type = change.getType();
             final Path resource = paths.convert( change.getPath() );
@@ -298,21 +301,23 @@ public class Builder {
 
                     //Resource Type might require "external" validation (i.e. it's not covered by Kie)
                     if ( validator != null ) {
-                        final List<BuildMessage> addedMessages = validator.validate( paths.convert( resource ) );
-                        for ( BuildMessage message : addedMessages ) {
-                            nonKieResourceValidatorAddedMessages.add( message );
-                        }
                         nonKieResourceValidationHelpers.put( resource,
                                                              validator );
+                        final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
+                        if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
+                            for ( ValidationMessage validationMessage : addedValidationMessages ) {
+                                nonKieResourceValidatorAddedMessages.add( validationMessage );
+                            }
+                        }
 
-                        final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
-                        if ( removedMessages != null ) {
-                            for ( BuildMessage message : removedMessages ) {
-                                nonKieResourceValidatorRemovedMessages.add( message );
+                        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+                        if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                            for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                                nonKieResourceValidatorRemovedMessages.add( validationMessage );
                             }
                         }
                         nonKieResourceValidationHelperMessages.put( resource,
-                                                                    addedMessages );
+                                                                    addedValidationMessages );
                     }
 
                     break;
@@ -323,10 +328,10 @@ public class Builder {
                     //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
                     if ( validator != null ) {
                         nonKieResourceValidationHelpers.remove( resource );
-                        final List<BuildMessage> removedMessages = nonKieResourceValidationHelperMessages.remove( resource );
-                        if ( removedMessages != null ) {
-                            for ( BuildMessage message : removedMessages ) {
-                                nonKieResourceValidatorRemovedMessages.add( message );
+                        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+                        if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                            for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                                nonKieResourceValidatorRemovedMessages.add( validationMessage );
                             }
                         }
                     }
@@ -342,11 +347,11 @@ public class Builder {
         final IncrementalBuildResults results = convertMessages( incrementalResults );
 
         //Copy in BuildMessages for non-KIE resources
-        for ( BuildMessage addedMessage : nonKieResourceValidatorAddedMessages ) {
-            results.addAddedMessage( addedMessage );
+        for ( ValidationMessage addedValidationMessage : nonKieResourceValidatorAddedMessages ) {
+            results.addAddedMessage( convertValidationMessage( addedValidationMessage ) );
         }
-        for ( BuildMessage removedMessage : nonKieResourceValidatorRemovedMessages ) {
-            results.addRemovedMessage( removedMessage );
+        for ( ValidationMessage removedValidationMessage : nonKieResourceValidatorRemovedMessages ) {
+            results.addRemovedMessage( convertValidationMessage( removedValidationMessage ) );
         }
 
         //Tidy-up removed message handles
@@ -452,6 +457,28 @@ public class Builder {
         }
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );
+        return m;
+    }
+
+    private BuildMessage convertValidationMessage( final ValidationMessage message ) {
+        final BuildMessage m = new BuildMessage();
+        switch ( message.getLevel() ) {
+            case ERROR:
+                m.setLevel( BuildMessage.Level.ERROR );
+                break;
+            case WARNING:
+                m.setLevel( BuildMessage.Level.WARNING );
+                break;
+            case INFO:
+                m.setLevel( BuildMessage.Level.INFO );
+                break;
+        }
+
+        m.setId( message.getId() );
+        m.setLine( message.getLine() );
+        m.setColumn( message.getColumn() );
+        m.setText( message.getText() );
+        m.setPath( message.getPath() );
         return m;
     }
 

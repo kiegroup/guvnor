@@ -17,7 +17,7 @@ package org.guvnor.common.services.project.builder.service;
 
 import java.util.List;
 
-import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -37,6 +37,6 @@ public interface BuildValidationHelper {
      * @param path
      * @return
      */
-    List<BuildMessage> validate( final Path path );
+    List<ValidationMessage> validate( final Path path );
 
 }
