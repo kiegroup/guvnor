@@ -26,7 +26,6 @@ import org.guvnor.common.services.backend.file.KModuleFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.validation.GenericValidator;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -43,8 +42,6 @@ import org.uberfire.backend.vfs.Path;
  * Validator capable of validating generic Kie assets (i.e those that are handled by KieBuilder)
  */
 public class DefaultGenericKieValidator implements GenericValidator {
-
-    private final static String RESOURCE_PATH = "src/main/resources";
 
     @Inject
     private Paths paths;
