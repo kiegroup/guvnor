@@ -17,12 +17,14 @@
 package org.guvnor.common.services.shared.validation.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class ValidationMessage {
 
     private long id;
     private Level level;
+    private Path path;
     private int line;
     private int column;
     private String text;
@@ -33,6 +35,10 @@ public class ValidationMessage {
 
     public void setLevel( final Level level ) {
         this.level = level;
+    }
+
+    public void setPath( final Path path ) {
+        this.path = path;
     }
 
     public void setLine( final int line ) {
@@ -53,6 +59,10 @@ public class ValidationMessage {
 
     public Level getLevel() {
         return level;
+    }
+
+    public Path getPath() {
+        return path;
     }
 
     public int getLine() {
@@ -92,6 +102,9 @@ public class ValidationMessage {
         if ( level != that.level ) {
             return false;
         }
+        if ( path != null ? !path.equals( that.path ) : that.path != null ) {
+            return false;
+        }
         if ( text != null ? !text.equals( that.text ) : that.text != null ) {
             return false;
         }
@@ -107,6 +120,7 @@ public class ValidationMessage {
     @Override
     public int hashCode() {
         int result = level != null ? level.hashCode() : 0;
+        result = 31 * result + ( path != null ? path.hashCode() : 0 );
         result = 31 * result + line;
         result = 31 * result + column;
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
