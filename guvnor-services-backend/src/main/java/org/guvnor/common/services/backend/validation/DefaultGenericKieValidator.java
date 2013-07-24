@@ -102,7 +102,8 @@ public class DefaultGenericKieValidator implements GenericValidator {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( projectPrefix,
                             kieFileSystem,
-                            Files.newDirectoryStream( path ) );
+                            Files.newDirectoryStream( path ),
+                            supportingFileFilters );
 
             } else {
                 if ( acceptPath( path,
