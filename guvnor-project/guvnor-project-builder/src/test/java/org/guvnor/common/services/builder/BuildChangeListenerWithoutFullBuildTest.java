@@ -26,9 +26,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
-import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +45,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.junit.Assert.*;
 
-public class BuildChangeListenerTest {
+public class BuildChangeListenerWithoutFullBuildTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -59,8 +56,6 @@ public class BuildChangeListenerTest {
     private ConfigurationService configurationService;
     private ConfigurationFactory configurationFactory;
     private BuildResultsObserver buildResultsObserver;
-    private BuildService buildService;
-    private ProjectService projectService;
 
     @Before
     public void setUp() throws Exception {
@@ -95,20 +90,6 @@ public class BuildChangeListenerTest {
         buildResultsObserver = (BuildResultsObserver) beanManager.getReference( buildResultsObserverBean,
                                                                                 BuildResultsObserver.class,
                                                                                 cc4 );
-
-        //Instantiate BuildService
-        final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
-        final CreationalContext cc5 = beanManager.createCreationalContext( buildServiceBean );
-        buildService = (BuildService) beanManager.getReference( buildServiceBean,
-                                                                BuildService.class,
-                                                                cc5 );
-
-        //Instantiate ProjectService
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc6 = beanManager.createCreationalContext( projectServiceBean );
-        projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                    ProjectService.class,
-                                                                    cc6 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
@@ -147,23 +128,17 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
-        //Force full build before attempting incremental changes
-        final Project project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
+        //Perform incremental build (Without a full Build first)
+        final ResourceAddedEvent event = new ResourceAddedEvent( resourcePath );
+        buildChangeListener.addResource( event );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults );
         assertEquals( 0,
                       buildResults.getMessages().size() );
 
-        //Perform incremental build
-        final ResourceAddedEvent event = new ResourceAddedEvent( resourcePath );
-        buildChangeListener.addResource( event );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
+        assertNull( incrementalBuildResults );
     }
 
     @Test
@@ -178,23 +153,17 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
-        //Force full build before attempting incremental changes
-        final Project project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
+        //Perform incremental build (Without a full Build first)
+        final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath );
+        buildChangeListener.updateResource( event );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults );
         assertEquals( 0,
                       buildResults.getMessages().size() );
 
-        //Perform incremental build
-        final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath );
-        buildChangeListener.updateResource( event );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
+        assertNull( incrementalBuildResults );
     }
 
     @Test
@@ -209,23 +178,17 @@ public class BuildChangeListenerTest {
         final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
-        //Force full build before attempting incremental changes
-        final Project project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
+        //Perform incremental build (Without a full Build first)
+        final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath );
+        buildChangeListener.deleteResource( event );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults );
         assertEquals( 0,
                       buildResults.getMessages().size() );
 
-        //Perform incremental build
-        final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath );
-        buildChangeListener.deleteResource( event );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
+        assertNull( incrementalBuildResults );
     }
 
     @Test
@@ -256,23 +219,17 @@ public class BuildChangeListenerTest {
         batch.add( new ResourceChange( ChangeType.DELETE,
                                        resourcePath3 ) );
 
-        //Force full build before attempting incremental changes
-        final Project project = projectService.resolveProject( resourcePath1 );
-        final BuildResults buildResults = buildService.build( project );
+        //Perform incremental build (Without a full Build first)
+        final ResourceBatchChangesEvent event = new ResourceBatchChangesEvent( batch );
+        buildChangeListener.batchResourceChanges( event );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults );
         assertEquals( 0,
                       buildResults.getMessages().size() );
 
-        //Perform incremental build
-        final ResourceBatchChangesEvent event = new ResourceBatchChangesEvent( batch );
-        buildChangeListener.batchResourceChanges( event );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
+        assertNull( incrementalBuildResults );
     }
 
 }

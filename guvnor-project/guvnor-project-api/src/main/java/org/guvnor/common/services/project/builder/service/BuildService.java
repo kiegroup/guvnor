@@ -18,9 +18,10 @@ package org.guvnor.common.services.project.builder.service;
 
 import java.util.Set;
 
-import org.guvnor.common.services.project.builder.model.DeployResult;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.DeployResult;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
@@ -32,44 +33,45 @@ public interface BuildService {
      * Full build without deployment
      * @param project
      */
-	BuildResults build( final Project project );
+    BuildResults build( final Project project );
 
     /**
      * Full build with deployment
      * @param project
      */
-	DeployResult buildAndDeploy( final Project project );
+    DeployResult buildAndDeploy( final Project project );
+
+    /**
+     * Check whether a Project has been built
+     * @param project
+     * @return
+     */
+    boolean isBuilt( final Project project );
 
     /**
      * Add a Package resource to the build.
      * @param resource
      */
-    void addPackageResource( final Path resource );
+    IncrementalBuildResults addPackageResource( final Path resource );
 
     /**
      * Remove a Package resource from the build.
      * @param resource
      */
-    void deletePackageResource( final Path resource );
+    IncrementalBuildResults deletePackageResource( final Path resource );
 
     /**
      * Update an existing Package resource in the build.
      * @param resource
      */
-    void updatePackageResource( final Path resource );
-
-    /**
-     * Update an existing Project resource in the build.
-     * @param resource
-     */
-    void updateProjectResource( final Path resource );
+    IncrementalBuildResults updatePackageResource( final Path resource );
 
     /**
      * Process a batch of changes to a Project's resources.
      * @param project
      * @param changes
      */
-    void applyBatchResourceChanges( final Project project,
-                                    final Set<ResourceChange> changes );
+    IncrementalBuildResults applyBatchResourceChanges( final Project project,
+                                                       final Set<ResourceChange> changes );
 
 }

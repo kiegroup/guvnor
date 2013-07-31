@@ -44,8 +44,6 @@ public class BuildServiceImpl
         implements BuildService {
 
     private Paths paths;
-    private Event<BuildResults> buildResultsEvent;
-    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
     private ProjectService projectService;
@@ -60,16 +58,12 @@ public class BuildServiceImpl
     public BuildServiceImpl( final Paths paths,
                              final POMService pomService,
                              final ExtendedM2RepoService m2RepoService,
-                             final Event<BuildResults> buildResultsEvent,
-                             final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final ProjectService projectService,
                              final LRUBuilderCache cache,
                              final Event<DeployResult> deployResultEvent ) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
-        this.buildResultsEvent = buildResultsEvent;
-        this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
         this.projectService = projectService;
         this.cache = cache;
         this.deployResultEvent = deployResultEvent;
@@ -79,13 +73,11 @@ public class BuildServiceImpl
     public BuildResults build( final Project project ) {
         try {
             final BuildResults results = doBuild( project );
-            buildResultsEvent.fire( results );
-
             return results;
+
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-
     }
 
     @Override
@@ -93,7 +85,6 @@ public class BuildServiceImpl
         try {
             //Build
             final BuildResults results = doBuild( project );
-            buildResultsEvent.fire( results );
 
             //Deploy, if no errors
             final POM pom = pomService.load( project.getPomXMLPath() );
@@ -115,6 +106,7 @@ public class BuildServiceImpl
                 deployResultEvent.fire( deployResult );
                 return deployResult;
             }
+
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
@@ -127,19 +119,27 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void addPackageResource( final Path resource ) {
+    public boolean isBuilt( final Project project ) {
+        final Builder builder = cache.assertBuilder( project );
+        return builder.isBuilt();
+    }
+
+    @Override
+    public IncrementalBuildResults addPackageResource( final Path resource ) {
         try {
+            IncrementalBuildResults results = new IncrementalBuildResults();
             final Project project = projectService.resolveProject( resource );
             if ( project == null ) {
-                return;
+                return results;
             }
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
-                build( project );
+                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
-                incrementalBuildResultsEvent.fire( results );
+                results = builder.addResource( paths.convert( resource ) );
             }
+
+            return results;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -147,19 +147,21 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void deletePackageResource( final Path resource ) {
+    public IncrementalBuildResults deletePackageResource( final Path resource ) {
         try {
+            IncrementalBuildResults results = new IncrementalBuildResults();
             final Project project = projectService.resolveProject( resource );
             if ( project == null ) {
-                return;
+                return results;
             }
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
-                build( project );
+                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
-                incrementalBuildResultsEvent.fire( results );
+                results = builder.deleteResource( paths.convert( resource ) );
             }
+
+            return results;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -167,19 +169,21 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void updatePackageResource( final Path resource ) {
+    public IncrementalBuildResults updatePackageResource( final Path resource ) {
         try {
+            IncrementalBuildResults results = new IncrementalBuildResults();
             final Project project = projectService.resolveProject( resource );
             if ( project == null ) {
-                return;
+                return results;
             }
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
-                build( project );
+                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
-                incrementalBuildResultsEvent.fire( results );
+                results = builder.updateResource( paths.convert( resource ) );
             }
+
+            return results;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -187,39 +191,25 @@ public class BuildServiceImpl
     }
 
     @Override
-    public void updateProjectResource( final Path resource ) {
+    public IncrementalBuildResults applyBatchResourceChanges( final Project project,
+                                                              final Set<ResourceChange> changes ) {
+        IncrementalBuildResults results = new IncrementalBuildResults();
         try {
-            final Project project = projectService.resolveProject( resource );
             if ( project == null ) {
-                return;
+                return results;
             }
             final Builder builder = cache.assertBuilder( project );
             if ( !builder.isBuilt() ) {
-                build( project );
-            }
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
-    }
-
-    @Override
-    public void applyBatchResourceChanges( final Project project,
-                                           final Set<ResourceChange> changes ) {
-        try {
-            if ( project == null ) {
-                return;
-            }
-            final Builder builder = cache.assertBuilder( project );
-            if ( !builder.isBuilt() ) {
-                build( project );
+                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
-                incrementalBuildResultsEvent.fire( results );
+                results = builder.applyBatchResourceChanges( changes );
             }
+
+            return results;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
+
 }

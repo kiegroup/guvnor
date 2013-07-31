@@ -24,9 +24,12 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -64,6 +67,12 @@ public class BuildChangeListener {
 
     @Inject
     private AppConfigService appConfigService;
+
+    @Inject
+    private Event<BuildResults> buildResultsEvent;
+
+    @Inject
+    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
 
     @Inject
     private BuildExecutorServiceFactory executorServiceProducer;
@@ -125,7 +134,17 @@ public class BuildChangeListener {
             public void run() {
                 try {
                     log.info( "Incremental build request being processed: " + resource.toURI() + " (added)." );
-                    buildService.addPackageResource( resource );
+                    final Project project = projectService.resolveProject( resource );
+
+                    //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
+                    if ( buildService.isBuilt( project ) ) {
+                        final IncrementalBuildResults results = buildService.addPackageResource( resource );
+                        incrementalBuildResultsEvent.fire( results );
+                    } else {
+                        final BuildResults results = buildService.build( project );
+                        buildResultsEvent.fire( results );
+                    }
+
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
                                e );
@@ -159,7 +178,17 @@ public class BuildChangeListener {
             public void run() {
                 try {
                     log.info( "Incremental build request being processed: " + resource.toURI() + " (deleted)." );
-                    buildService.deletePackageResource( resource );
+                    final Project project = projectService.resolveProject( resource );
+
+                    //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
+                    if ( buildService.isBuilt( project ) ) {
+                        final IncrementalBuildResults results = buildService.deletePackageResource( resource );
+                        incrementalBuildResultsEvent.fire( results );
+                    } else {
+                        final BuildResults results = buildService.build( project );
+                        buildResultsEvent.fire( results );
+                    }
+
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
                                e );
@@ -190,21 +219,23 @@ public class BuildChangeListener {
         final boolean isPomFile = projectService.isPom( resource );
         final boolean isKModuleFile = projectService.isKModule( resource );
         if ( isPomFile || isKModuleFile ) {
-            scheduleProjectResourceUpdate( resource );
+            scheduleProjectResourceUpdate( project );
         } else {
             schedulePackageResourceUpdate( resource );
         }
     }
 
-    //Schedule an incremental build for a project resource
-    private void scheduleProjectResourceUpdate( final Path resource ) {
+    //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
+    private void scheduleProjectResourceUpdate( final Project project ) {
         executor.execute( new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
-                    buildService.updateProjectResource( resource );
+                    log.info( "Incremental build request being processed: " + project.getRootPath() + " (updated)." );
+                    final BuildResults results = buildService.build( project );
+                    buildResultsEvent.fire( results );
+
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
                                e );
@@ -221,7 +252,17 @@ public class BuildChangeListener {
             public void run() {
                 try {
                     log.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
-                    buildService.updatePackageResource( resource );
+                    final Project project = projectService.resolveProject( resource );
+
+                    //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
+                    if ( buildService.isBuilt( project ) ) {
+                        final IncrementalBuildResults results = buildService.updatePackageResource( resource );
+                        incrementalBuildResultsEvent.fire( results );
+                    } else {
+                        final BuildResults results = buildService.build( project );
+                        buildResultsEvent.fire( results );
+                    }
+
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
                                e );
@@ -271,8 +312,19 @@ public class BuildChangeListener {
                 public void run() {
                     try {
                         log.info( "Batch incremental build request being processed." );
-                        buildService.applyBatchResourceChanges( e.getKey(),
-                                                                e.getValue() );
+                        final Project project = e.getKey();
+                        final Set<ResourceChange> changes = e.getValue();
+
+                        //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
+                        if ( buildService.isBuilt( project ) ) {
+                            final IncrementalBuildResults results = buildService.applyBatchResourceChanges( project,
+                                                                                                            changes );
+                            incrementalBuildResultsEvent.fire( results );
+                        } else {
+                            final BuildResults results = buildService.build( project );
+                            buildResultsEvent.fire( results );
+                        }
+
                     } catch ( Exception e ) {
                         log.error( e.getMessage(),
                                    e );
