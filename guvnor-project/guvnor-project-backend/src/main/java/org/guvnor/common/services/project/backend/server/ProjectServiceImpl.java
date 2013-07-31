@@ -25,6 +25,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.events.NewPackageEvent;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -49,10 +52,6 @@ import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ChangeType;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
-import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped
@@ -81,8 +80,8 @@ public class ProjectServiceImpl
     private ConfigurationService configurationService;
     private ConfigurationFactory configurationFactory;
 
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-    private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
+    private Event<NewProjectEvent> newProjectEvent;
+    private Event<NewPackageEvent> newPackageEvent;
 
     private Identity identity;
 
@@ -99,8 +98,8 @@ public class ProjectServiceImpl
                                final ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                final ConfigurationService configurationService,
                                final ConfigurationFactory configurationFactory,
-                               final Event<ResourceAddedEvent> resourceAddedEvent,
-                               final Event<ResourceBatchChangesEvent> resourceBatchChangesEvent,
+                               final Event<NewProjectEvent> newProjectEvent,
+                               final Event<NewPackageEvent> newPackageEvent,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
@@ -110,8 +109,8 @@ public class ProjectServiceImpl
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.configurationService = configurationService;
         this.configurationFactory = configurationFactory;
-        this.resourceAddedEvent = resourceAddedEvent;
-        this.resourceBatchChangesEvent = resourceBatchChangesEvent;
+        this.newProjectEvent = newProjectEvent;
+        this.newPackageEvent = newPackageEvent;
         this.identity = identity;
     }
 
@@ -123,39 +122,43 @@ public class ProjectServiceImpl
 
     @Override
     public Project resolveProject( final Path resource ) {
+        try {
+            //Null resource paths cannot resolve to a Project
+            if ( resource == null ) {
+                return null;
+            }
 
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return null;
-        }
+            //Check if resource is the project root
+            org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
 
-        //Check if resource is the project root
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-
-        //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-        if ( Files.isRegularFile( path ) ) {
+            //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
+            if ( Files.isRegularFile( path ) ) {
+                path = path.getParent();
+            }
+            if ( hasPom( path ) && hasKModule( path ) ) {
+                return makeProject( path );
+            }
+            while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
+                path = path.getParent();
+            }
+            if ( path.getNameCount() == 0 ) {
+                return null;
+            }
             path = path.getParent();
-        }
-        if ( hasPom( path ) && hasKModule( path ) ) {
+            if ( path.getNameCount() == 0 || path == null ) {
+                return null;
+            }
+            if ( !hasPom( path ) ) {
+                return null;
+            }
+            if ( !hasKModule( path ) ) {
+                return null;
+            }
             return makeProject( path );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
-            path = path.getParent();
-        }
-        if ( path.getNameCount() == 0 ) {
-            return null;
-        }
-        path = path.getParent();
-        if ( path.getNameCount() == 0 || path == null ) {
-            return null;
-        }
-        if ( !hasPom( path ) ) {
-            return null;
-        }
-        if ( !hasKModule( path ) ) {
-            return null;
-        }
-        return makeProject( path );
     }
 
     private Project makeProject( final org.kie.commons.java.nio.file.Path nioProjectRootPath ) {
@@ -188,24 +191,29 @@ public class ProjectServiceImpl
 
     @Override
     public Package resolvePackage( final Path resource ) {
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return null;
-        }
+        try {
+            //Null resource paths cannot resolve to a Project
+            if ( resource == null ) {
+                return null;
+            }
 
-        //If Path is not within a Project we cannot resolve a package
-        final Project project = resolveProject( resource );
-        if ( project == null ) {
-            return null;
-        }
+            //If Path is not within a Project we cannot resolve a package
+            final Project project = resolveProject( resource );
+            if ( project == null ) {
+                return null;
+            }
 
-        //pom.xml and kmodule.xml are not inside packages
-        if ( isPom( resource ) || isKModule( resource ) ) {
-            return null;
-        }
+            //pom.xml and kmodule.xml are not inside packages
+            if ( isPom( resource ) || isKModule( resource ) ) {
+                return null;
+            }
 
-        return makePackage( project,
-                            resource );
+            return makePackage( project,
+                                resource );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private Package makePackage( final Project project,
@@ -277,30 +285,40 @@ public class ProjectServiceImpl
 
     @Override
     public boolean isPom( final Path resource ) {
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return false;
-        }
+        try {
+            //Null resource paths cannot resolve to a Project
+            if ( resource == null ) {
+                return false;
+            }
 
-        //Check if path equals pom.xml
-        final Project project = resolveProject( resource );
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( project.getPomXMLPath() );
-        return path.startsWith( pomFilePath );
+            //Check if path equals pom.xml
+            final Project project = resolveProject( resource );
+            final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+            final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( project.getPomXMLPath() );
+            return path.startsWith( pomFilePath );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public boolean isKModule( final Path resource ) {
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return false;
-        }
+        try {
+            //Null resource paths cannot resolve to a Project
+            if ( resource == null ) {
+                return false;
+            }
 
-        //Check if path equals kmodule.xml
-        final Project project = resolveProject( resource );
-        final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( project.getKModuleXMLPath() );
-        return path.startsWith( kmoduleFilePath );
+            //Check if path equals kmodule.xml
+            final Project project = resolveProject( resource );
+            final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+            final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( project.getKModuleXMLPath() );
+            return path.startsWith( kmoduleFilePath );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -308,36 +326,79 @@ public class ProjectServiceImpl
                                final String projectName,
                                final POM pom,
                                final String baseUrl ) {
-        //Projects are always created in the FS root
-        final Path fsRoot = repository.getRoot();
-        final Path projectRootPath = paths.convert( paths.convert( fsRoot ).resolve( projectName ),
-                                                    false );
+        try {
+            //Projects are always created in the FS root
+            final Path fsRoot = repository.getRoot();
+            final Path projectRootPath = paths.convert( paths.convert( fsRoot ).resolve( projectName ),
+                                                        false );
 
-        //Set-up project structure and KModule.xml
-        kModuleService.setUpKModuleStructure( projectRootPath );
+            //Set-up project structure and KModule.xml
+            kModuleService.setUpKModuleStructure( projectRootPath );
 
-        //Create POM.xml
-        pomService.create( projectRootPath,
-                           baseUrl,
-                           pom );
+            //Create POM.xml
+            pomService.create( projectRootPath,
+                               baseUrl,
+                               pom );
 
-        //Create Project configuration
-        final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
-                                                      false );
-        ioService.createFile( paths.convert( projectConfigPath ) );
-        ioService.write( paths.convert( projectConfigPath ),
-                         projectConfigurationContentHandler.toString( new ProjectImports() ) );
+            //Create Project configuration
+            final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ),
+                                                          false );
+            ioService.createFile( paths.convert( projectConfigPath ) );
+            ioService.write( paths.convert( projectConfigPath ),
+                             projectConfigurationContentHandler.toString( new ProjectImports() ) );
 
-        //Raise an event for the new project
-        resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
+            //Raise an event for the new project
+            final Project project = resolveProject( projectRootPath );
+            newProjectEvent.fire( new NewProjectEvent( project ) );
 
-        final Project project = resolveProject( projectRootPath );
-        return project;
+            //Create a default workspace based on the GAV
+            final String defaultWorkspacePath = pom.getGav().getGroupId() + "/" + pom.getGav().getArtifactId();
+            final Path defaultPackagePath = paths.convert( paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ),
+                                                           false );
+            final Package defaultPackage = resolvePackage( defaultPackagePath );
+            final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
+                                                                  defaultWorkspacePath );
+
+            //Raise an event for the new project's default workspace
+            newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
+
+            //Return new project
+            return project;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Package newPackage( final Package parentPackage,
                                final String packageName ) {
+        try {
+            //Make new Package
+            final Package newPackage = doNewPackage( parentPackage,
+                                                     packageName );
+
+            //Raise an event for the new package
+            newPackageEvent.fire( new NewPackageEvent( newPackage ) );
+
+            //Return the new package
+            return newPackage;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    private Package doNewPackage( final Package parentPackage,
+                                  final String packageName ) {
+        //If the package name contains separators, create sub-folders
+        String newPackageName = packageName;
+        if ( newPackageName.contains( "." ) ) {
+            newPackageName = newPackageName.replace( ".",
+                                                     "/" );
+        }
+
+        //Return new package
         final Path mainSrcPath = parentPackage.getPackageMainSrcPath();
         final Path testSrcPath = parentPackage.getPackageTestSrcPath();
         final Path mainResourcesPath = parentPackage.getPackageMainResourcesPath();
@@ -345,42 +406,30 @@ public class ProjectServiceImpl
 
         Path pkgPath = null;
 
-        final ResourceBatchChangesEvent batchChangesEvent = new ResourceBatchChangesEvent();
-
-        final org.kie.commons.java.nio.file.Path nioMainSrcPackagePath = paths.convert( mainSrcPath ).resolve( packageName );
+        final org.kie.commons.java.nio.file.Path nioMainSrcPackagePath = paths.convert( mainSrcPath ).resolve( newPackageName );
         if ( !Files.exists( nioMainSrcPackagePath ) ) {
             pkgPath = paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
-            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
-                                                                  pkgPath ) );
         }
-        final org.kie.commons.java.nio.file.Path nioTestSrcPackagePath = paths.convert( testSrcPath ).resolve( packageName );
+        final org.kie.commons.java.nio.file.Path nioTestSrcPackagePath = paths.convert( testSrcPath ).resolve( newPackageName );
         if ( !Files.exists( nioTestSrcPackagePath ) ) {
             pkgPath = paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
-            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
-                                                                  pkgPath ) );
         }
-        final org.kie.commons.java.nio.file.Path nioMainResourcesPackagePath = paths.convert( mainResourcesPath ).resolve( packageName );
+        final org.kie.commons.java.nio.file.Path nioMainResourcesPackagePath = paths.convert( mainResourcesPath ).resolve( newPackageName );
         if ( !Files.exists( nioMainResourcesPackagePath ) ) {
             pkgPath = paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
-            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
-                                                                  pkgPath ) );
         }
-        final org.kie.commons.java.nio.file.Path nioTestResourcesPackagePath = paths.convert( testResourcesPath ).resolve( packageName );
+        final org.kie.commons.java.nio.file.Path nioTestResourcesPackagePath = paths.convert( testResourcesPath ).resolve( newPackageName );
         if ( !Files.exists( nioTestResourcesPackagePath ) ) {
             pkgPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
-            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
-                                                                  pkgPath ) );
         }
 
         //pkgPath should not be null at this stage or something has gone wrong!
         PortablePreconditions.checkNotNull( "pkgPath",
                                             pkgPath );
 
-        //Raise an event for the new package
-        final Package pkg = resolvePackage( pkgPath );
-        resourceBatchChangesEvent.fire( batchChangesEvent );
-
-        return pkg;
+        //Return new package
+        final Package newPackage = resolvePackage( pkgPath );
+        return newPackage;
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {
@@ -404,17 +453,22 @@ public class ProjectServiceImpl
                       final ProjectImports projectImports,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         projectConfigurationContentHandler.toString( projectImports ),
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             projectConfigurationContentHandler.toString( projectImports ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
-        //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
-        //in POMService.save to avoid duplicating events (and re-construction of DMO).
+            //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
+            //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+            //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
