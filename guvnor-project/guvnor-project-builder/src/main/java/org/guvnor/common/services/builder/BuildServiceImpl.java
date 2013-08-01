@@ -81,7 +81,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public DeployResult buildAndDeploy( final Project project ) {
+    public BuildResults buildAndDeploy( final Project project ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
@@ -99,13 +99,13 @@ public class BuildServiceImpl
                 deployResult.setBuildMessages( results.getMessages() );
                 deployResultEvent.fire( deployResult );
 
-                return deployResult;
             } else {
                 DeployResult deployResult = new DeployResult( pom.getGav() );
                 deployResult.setBuildMessages( results.getMessages() );
                 deployResultEvent.fire( deployResult );
-                return deployResult;
             }
+
+            return results;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
