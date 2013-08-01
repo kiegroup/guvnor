@@ -129,12 +129,6 @@ public class Builder {
             }
         }
 
-        if ( !results.getMessages().isEmpty() ) {
-            return results;
-        }
-
-        kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
-
         //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
@@ -149,6 +143,11 @@ public class Builder {
                                                           cnfe ) );
                 }
             }
+        }
+
+        //It's impossible to retrieve a KieContainer if the KieModule contains errors
+        if ( results.getMessages().isEmpty() ) {
+            kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
         }
 
         return results;

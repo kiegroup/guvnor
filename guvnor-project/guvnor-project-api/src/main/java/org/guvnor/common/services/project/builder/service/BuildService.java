@@ -19,7 +19,6 @@ package org.guvnor.common.services.project.builder.service;
 import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -39,7 +38,7 @@ public interface BuildService {
      * Full build with deployment
      * @param project
      */
-    DeployResult buildAndDeploy( final Project project );
+    BuildResults buildAndDeploy( final Project project );
 
     /**
      * Check whether a Project has been built
