@@ -19,9 +19,9 @@ package org.guvnor.inbox.client;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.guvnor.inbox.service.InboxService;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -57,8 +57,8 @@ public class InboxPresenter {
     public void init() {
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest place  ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest place  ) {
         this.inboxName = place.getParameter( "inboxname", INCOMING_ID );
         view.setContent(inboxName);
     }

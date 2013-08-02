@@ -20,9 +20,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -53,8 +53,8 @@ public class M2RepoEditorPresenter {
     public void init() {
     }
 
-    @OnStart
-    public void onStart( final Path path ) {
+    @OnStartup
+    public void onStartup( final Path path ) {
         this.path = path;
     }
 
