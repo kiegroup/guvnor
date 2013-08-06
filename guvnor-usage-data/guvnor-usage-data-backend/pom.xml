@@ -57,20 +57,5 @@
 			<artifactId>uberfire-backend-server</artifactId>
 		</dependency>
 
-		<!-- The version of commons-io in droolsjbpm-build-bootstrap pom is way too old -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>

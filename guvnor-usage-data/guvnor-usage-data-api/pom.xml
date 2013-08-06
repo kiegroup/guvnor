@@ -36,17 +36,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.kie</groupId>
-			<artifactId>kie-api</artifactId>
-		</dependency>
-
-		<!-- TODO Ver si se usan todas las dependencias -->
-		<dependency>
-			<groupId>org.kie.commons</groupId>
-			<artifactId>kie-commons-validation</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-bus</artifactId>
 		</dependency>
