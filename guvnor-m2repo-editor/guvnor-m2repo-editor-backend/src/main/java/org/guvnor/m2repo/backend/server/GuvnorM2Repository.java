@@ -32,6 +32,8 @@ import org.sonatype.aether.deployment.DeploymentException;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.SubArtifact;
+import org.sonatype.aether.installation.InstallRequest;
+import org.sonatype.aether.installation.InstallationException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -78,7 +80,7 @@ public class GuvnorM2Repository {
         if (!releasesRepository.exists()) {
             releasesRepository.mkdirs();
         }
-Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
+        Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
     }
 
     protected String getM2RepositoryRootDir() {
@@ -147,6 +149,19 @@ Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
         Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
         pomArtifact = pomArtifact.setFile( pomfile );
 
+
+        // install into local repository as it's preferred when loading kjars into KieContainer
+        try {
+            InstallRequest installRequest = new InstallRequest();
+            installRequest
+                    .addArtifact( jarArtifact )
+                    .addArtifact( pomArtifact );
+
+            Aether.DEFUALT_AETHER.getSystem().install(Aether.DEFUALT_AETHER.getSession(), installRequest);
+        } catch (InstallationException e) {
+            throw new RuntimeException(e);
+        }
+
         DeployRequest deployRequest = new DeployRequest();
         deployRequest
                 .addArtifact( jarArtifact )
@@ -154,7 +169,7 @@ Aether.DEFUALT_AETHER.getRepositories().add(getGuvnorM2Repository());
                 .setRepository(getGuvnorM2Repository());
 
         try {
-Aether.DEFUALT_AETHER.getSystem().deploy(Aether.DEFUALT_AETHER.getSession(), deployRequest);
+            Aether.DEFUALT_AETHER.getSystem().deploy(Aether.DEFUALT_AETHER.getSession(), deployRequest);
         } catch (DeploymentException e) {
             throw new RuntimeException(e);
         }
