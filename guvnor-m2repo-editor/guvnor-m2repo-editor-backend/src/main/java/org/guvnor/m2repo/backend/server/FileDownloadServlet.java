@@ -35,9 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
- */
 //TODO: Basic authentication
 public class FileDownloadServlet extends HttpServlet {
 
@@ -51,10 +48,7 @@ public class FileDownloadServlet extends HttpServlet {
     
     @Inject
     private GuvnorM2Repository repository;
-    /**
-     * Posting accepts content of various types -
-     * may be an attachement for an asset, or perhaps a repository import to process.
-     */
+
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {

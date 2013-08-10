@@ -38,6 +38,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.m2repo.exception.InvalidValueException;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.common.services.project.model.GAV;
 
@@ -54,6 +56,7 @@ public class FileServlet extends HttpServlet {
 
     @Inject
     private GuvnorM2Repository repository;
+    private final static String NO_VALID_POM = "NO VALID POM";
 
     /**
      * Posting accepts content of various types -
@@ -161,6 +164,7 @@ public class FileServlet extends HttpServlet {
                     String artifactId = model.getArtifactId();
                     String version = model.getVersion();
 
+
                     if ( groupId == null ) {
                         groupId = model.getParent().getGroupId();
                     }
@@ -168,9 +172,14 @@ public class FileServlet extends HttpServlet {
                         version = model.getParent().getVersion();
                     }
 
-                    gav = new GAV( groupId, artifactId, version );
+                    if (isNullOrEmpty(groupId) || isNullOrEmpty(artifactId) || isNullOrEmpty(version)) {
+                        return NO_VALID_POM;
+                    } else {
+                        gav = new GAV(groupId, artifactId, version);
+                    }
+
                 } else {
-                    return "NO VALID POM";
+                    return NO_VALID_POM;
                 }
             }
 
@@ -179,10 +188,14 @@ public class FileServlet extends HttpServlet {
 
             return "OK";
         } catch ( XmlPullParserException e ) {
+            throw ExceptionUtilities.handleException(e);
         } catch ( IOException ioe ) {
+            throw ExceptionUtilities.handleException( ioe );
         }
+    }
 
-        return "INTERNAL ERROR";
+    private boolean isNullOrEmpty(String groupId) {
+        return groupId == null || groupId.isEmpty();
     }
 
     /**
