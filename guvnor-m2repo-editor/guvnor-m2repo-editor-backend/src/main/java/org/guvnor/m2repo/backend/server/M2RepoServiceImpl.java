@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.backend.server.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -79,11 +80,10 @@ public class M2RepoServiceImpl implements M2RepoService,
         try {
             return pomContentHandler.toModel( repository.loadPOMFromJar( path ) ).getGav();
         } catch ( IOException e ) {
-            e.printStackTrace();  //TODO Needs to be logged -Rikkola-
+            throw ExceptionUtilities.handleException(e);
         } catch ( XmlPullParserException e ) {
-            e.printStackTrace();  //TODO Needs to be logged -Rikkola-
+            throw ExceptionUtilities.handleException( e );
         }
-        return new GAV();
     }
 
     @Override
