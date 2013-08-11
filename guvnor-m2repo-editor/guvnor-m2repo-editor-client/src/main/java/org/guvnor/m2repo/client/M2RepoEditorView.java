@@ -128,7 +128,7 @@ public class M2RepoEditorView
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        FileUpload up = new FileUpload();
+        final FileUpload up = new FileUpload();
         //up.setWidth("100px");
         up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
 
@@ -155,6 +155,8 @@ public class M2RepoEditorView
                     resultsP.clear();
                     JarListEditor table = new JarListEditor( m2RepoService );
                     resultsP.add( table );
+                    
+                    up.getElement().setPropertyString("value", "");
 
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
