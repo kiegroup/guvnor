@@ -16,7 +16,6 @@
 
 package org.guvnor.m2repo.client.editor;
 
-import java.util.Set;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -31,7 +30,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.MultiSelectionModel;
 
 import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -64,8 +62,6 @@ public class JarListEditor
     public PagedJarTable pagedJarTable;
 
     private static JarListEditorBinder uiBinder = GWT.create( JarListEditorBinder.class );
-
-    protected MultiSelectionModel<JarListPageRow> selectionModel;
 
     private Caller<M2RepoService> m2RepoService;
 
@@ -102,7 +98,7 @@ public class JarListEditor
 
     @UiHandler("deleteSelectedJarButton")
     void deleteSelectedJar( ClickEvent e ) {
-        if ( getSelectedJars() == null ) {
+        if ( pagedJarTable.getSelectedJars() == null ) {
             Window.alert( "Please Select A Jar To Delete" );
             return;
         }
@@ -115,23 +111,7 @@ public class JarListEditor
                 Window.alert( "Deleted successfully" );
                 pagedJarTable.refresh();
             }
-        } ).deleteJar( getSelectedJars() );
-    }
-
-    public String[] getSelectedJars() {
-        Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
-        // Compatibility with existing API
-        if ( selectedRows.size() == 0 ) {
-            return null;
-        }
-
-        // Create the array of paths
-        String[] paths = new String[ selectedRows.size() ];
-        int rowCount = 0;
-        for ( JarListPageRow row : selectedRows ) {
-            paths[ rowCount++ ] = row.getPath();
-        }
-        return paths;
+        } ).deleteJar( pagedJarTable.getSelectedJars() );
     }
 
     @UiHandler("refreshButton")

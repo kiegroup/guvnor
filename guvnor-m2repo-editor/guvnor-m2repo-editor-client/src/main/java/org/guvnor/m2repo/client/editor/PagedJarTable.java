@@ -1,6 +1,7 @@
 package org.guvnor.m2repo.client.editor;
 
 import java.util.Date;
+import java.util.Set;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.cell.client.ButtonCell;
@@ -111,7 +112,23 @@ public class PagedJarTable
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
                                                true );
     }
+    
+    public String[] getSelectedJars() {
+        Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
+        // Compatibility with existing API
+        if ( selectedRows.size() == 0 ) {
+            return null;
+        }
 
+        // Create the array of paths
+        String[] paths = new String[ selectedRows.size() ];
+        int rowCount = 0;
+        for ( JarListPageRow row : selectedRows ) {
+            paths[ rowCount++ ] = row.getPath();
+        }
+        return paths;
+    }
+    
     @Override
     protected void addAncillaryColumns( ColumnPicker<JarListPageRow> columnPicker,
                                         SortableHeaderGroup<JarListPageRow> sortableHeaderGroup ) {
