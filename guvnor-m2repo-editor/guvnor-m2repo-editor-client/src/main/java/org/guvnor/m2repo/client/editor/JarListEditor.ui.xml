@@ -23,7 +23,7 @@
     <gwt:HorizontalPanel>
       <gwt:Button ui:field="refreshButton" text='Refresh'/>
       <gwt:Button ui:field="deleteSelectedJarButton" text='Delete selected jar'/>
-      <gwt:Button ui:field="auditButton" text='ViewAuditLog'/>
+<!--       <gwt:Button ui:field="auditButton" text='ViewAuditLog'/> -->
     </gwt:HorizontalPanel>
     <editor:PagedJarTable ui:field="pagedJarTable"/>
   </gwt:VerticalPanel>

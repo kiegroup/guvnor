@@ -55,8 +55,8 @@ public class JarListEditor
     @UiField()
     protected Button refreshButton;
 
-    @UiField()
-    protected Button auditButton;
+/*    @UiField()
+    protected Button auditButton;*/
 
     @UiField(provided = true)
     public PagedJarTable pagedJarTable;
@@ -119,9 +119,9 @@ public class JarListEditor
         pagedJarTable.refresh();
     }
 
-    @UiHandler("auditButton")
+/*    @UiHandler("auditButton")
     void viewAuditLog( ClickEvent e ) {
-    }
+    }*/
 
     String getFileDownloadURL( String path ) {
         String url = getGuvnorM2RepoBaseURL() + path;
