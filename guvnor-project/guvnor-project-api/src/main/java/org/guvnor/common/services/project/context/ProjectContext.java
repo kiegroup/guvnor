@@ -22,10 +22,10 @@ import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 
@@ -35,14 +35,14 @@ import org.uberfire.workbench.events.RepositoryChangeEvent;
 @ApplicationScoped
 public class ProjectContext {
 
-    private Group activeGroup;
+    private OrganizationalUnit activeOrganizationalUnit;
     private Repository activeRepository;
     private Project activeProject;
     private Package activePackage;
 
-    public void setActiveGroup( @Observes final GroupChangeEvent event ) {
-        final Group activeGroup = event.getGroup();
-        setActiveGroup( activeGroup );
+    public void setActiveGroup( @Observes final OrganizationalUnitChangeEvent event ) {
+        final OrganizationalUnit activeOrganizationalUnit = event.getOrganizationalUnit();
+        setActiveOrganizationalUnit( activeOrganizationalUnit );
         activeRepository = null;
         activeProject = null;
         activePackage = null;
@@ -70,12 +70,12 @@ public class ProjectContext {
         final Path activePath = event.getPath();
     }
 
-    public void setActiveGroup( final Group activeGroup ) {
-        this.activeGroup = activeGroup;
+    public void setActiveOrganizationalUnit( final OrganizationalUnit activeOrganizationalUnit) {
+        this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
-    public Group getActiveGroup() {
-        return this.activeGroup;
+    public OrganizationalUnit getActiveOrganizationalUnit() {
+        return this.activeOrganizationalUnit;
     }
 
     public void setActiveRepository( final Repository activeRepository ) {
