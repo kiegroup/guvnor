@@ -19,21 +19,23 @@ package org.guvnor.common.services.builder;
 import java.io.ByteArrayInputStream;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
@@ -43,12 +45,14 @@ import org.uberfire.workbench.events.ResourceChange;
 public class BuildServiceImpl
         implements BuildService {
 
+    private static final Logger logger = LoggerFactory.getLogger(BuildServiceImpl.class);
+
     private Paths paths;
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
     private ProjectService projectService;
     private LRUBuilderCache cache;
-    private Event<DeployResult> deployResultEvent;
+    private Instance<PostBuildHandler> handlers;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -60,13 +64,13 @@ public class BuildServiceImpl
                              final ExtendedM2RepoService m2RepoService,
                              final ProjectService projectService,
                              final LRUBuilderCache cache,
-                             final Event<DeployResult> deployResultEvent ) {
+                             final Instance<PostBuildHandler> handlers) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.projectService = projectService;
         this.cache = cache;
-        this.deployResultEvent = deployResultEvent;
+        this.handlers = handlers;
     }
 
     @Override
@@ -95,14 +99,13 @@ public class BuildServiceImpl
                 m2RepoService.deployJar( input,
                                          pom.getGav() );
 
-                DeployResult deployResult = new DeployResult( pom.getGav() );
-                deployResult.setBuildMessages( results.getMessages() );
-                deployResultEvent.fire( deployResult );
-
-            } else {
-                DeployResult deployResult = new DeployResult( pom.getGav() );
-                deployResult.setBuildMessages( results.getMessages() );
-                deployResultEvent.fire( deployResult );
+                for (PostBuildHandler handler : handlers) {
+                    try {
+                        handler.process(results);
+                    } catch (Exception e) {
+                        logger.warn("PostBuildHandler {} failed due to {}", handler, e.getMessage());
+                    }
+                }
             }
 
             return results;
