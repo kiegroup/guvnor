@@ -17,6 +17,7 @@
 package org.guvnor.common.services.builder;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
@@ -98,11 +100,13 @@ public class BuildServiceImpl
                 DeployResult deployResult = new DeployResult( pom.getGav() );
                 deployResult.setBuildMessages( results.getMessages() );
                 deployResultEvent.fire( deployResult );
-
-            } else {
-                DeployResult deployResult = new DeployResult( pom.getGav() );
-                deployResult.setBuildMessages( results.getMessages() );
-                deployResultEvent.fire( deployResult );
+                // add deploy messages if any
+                List<BuildMessage> deployMessages = deployResult.getDeployMessages();
+                if (!deployMessages.isEmpty()) {
+                    for (BuildMessage message : deployMessages) {
+                        results.addBuildMessage(message);
+                    }
+                }
             }
 
             return results;
