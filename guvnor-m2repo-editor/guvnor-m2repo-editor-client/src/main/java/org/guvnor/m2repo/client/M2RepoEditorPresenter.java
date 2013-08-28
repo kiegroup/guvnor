@@ -17,7 +17,7 @@
 package org.guvnor.m2repo.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.lifecycle.OnClose;
