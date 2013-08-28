@@ -12,6 +12,7 @@ public class DeployResult {
 
     private GAV gav;
     private List<BuildMessage> messages = new ArrayList<BuildMessage>();
+    private List<BuildMessage> deployMessages = new ArrayList<BuildMessage>();
 
     public DeployResult() {
         //Marshalling
@@ -31,6 +32,14 @@ public class DeployResult {
 
     public void setBuildMessages( final List<BuildMessage> messages ) {
         this.messages = messages;
+    }
+
+    public List<BuildMessage> getDeployMessages() {
+        return Collections.unmodifiableList( deployMessages );
+    }
+
+    public void addDeployMessage( final BuildMessage message ) {
+        this.deployMessages.add( message );
     }
 
 }
