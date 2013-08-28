@@ -26,14 +26,15 @@ public class KSessionModel
         implements HasListFormComboPanelProperties {
 
     private String name;
-    private String type;
+    private String type = "stateless";
     private ClockTypeOption clockType = ClockTypeOption.REALTIME;
-    private boolean theDefault;
+    private boolean theDefault = false;
     private String scope;
     private List<ListenerModel> listenerModels = new ArrayList<ListenerModel>();
     private List<WorkItemHandlerModel> workItemHandelerModels = new ArrayList<WorkItemHandlerModel>();
     private ListenerModel listener;
     private WorkItemHandlerModel workItemHandlerModel;
+    private KSessionLogger logger;
 
     public String getName() {
         return name;
@@ -100,5 +101,13 @@ public class KSessionModel
 
     public void addWorkItemHandelerModel(WorkItemHandlerModel workItemHandlerModel) {
         this.workItemHandlerModel = workItemHandlerModel;
+    }
+
+    public void setLogger(KSessionLogger logger) {
+        this.logger = logger;
+    }
+
+    public KSessionLogger getLogger() {
+        return logger;
     }
 }
