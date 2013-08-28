@@ -34,8 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
 
 /**
  * Widget with a table of jar list in Guvnor M2_REPO

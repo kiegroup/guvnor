@@ -31,7 +31,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetApplied;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.guvnor.common.services.workingset.client.factconstraints.helper.CustomFormsContainer;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetDisabled;
 import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
 import org.guvnor.common.services.workingset.client.model.WorkingSetConfigData;

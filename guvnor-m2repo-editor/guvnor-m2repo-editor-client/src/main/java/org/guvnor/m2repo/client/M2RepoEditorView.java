@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.m2repo.client.editor.JarListEditor;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
 

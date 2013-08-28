@@ -21,7 +21,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;

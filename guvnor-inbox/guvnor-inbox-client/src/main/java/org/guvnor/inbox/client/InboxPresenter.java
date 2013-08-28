@@ -17,7 +17,7 @@
 package org.guvnor.inbox.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.guvnor.inbox.service.InboxService;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnSave;
