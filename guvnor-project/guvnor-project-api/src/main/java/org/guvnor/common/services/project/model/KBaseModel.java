@@ -14,13 +14,13 @@ public class KBaseModel
     private String name;
     private AssertBehaviorOption equalsBehavior = AssertBehaviorOption.IDENTITY;
     private EventProcessingOption eventProcessingMode = EventProcessingOption.STREAM;
-    private Map<String, KSessionModel> statefulSessions = new HashMap<String, KSessionModel>();
-    private Map<String, KSessionModel> statelessSessions = new HashMap<String, KSessionModel>();
+    private List<KSessionModel> kSessions = new ArrayList<KSessionModel>();
     private List<String> includes = new ArrayList<String>();
 
     private boolean theDefault;
     private String scope;
     private List<String> packages=new ArrayList<String>();
+    private DeclarativeAgendaOption declarativeAgenda;
 
     public String getName() {
         return name;
@@ -46,12 +46,8 @@ public class KBaseModel
         return eventProcessingMode;
     }
 
-    public Map<String, KSessionModel> getStatefulSessions() {
-        return statefulSessions;
-    }
-
-    public Map<String, KSessionModel> getStatelessSessions() {
-        return statelessSessions;
+    public List<KSessionModel> getKSessions() {
+        return kSessions;
     }
 
     public List<String> getIncludes() {
@@ -84,5 +80,13 @@ public class KBaseModel
 
     public void addPackage(String pkg) {
         packages.add(pkg);
+    }
+
+    public void setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda) {
+        this.declarativeAgenda = declarativeAgenda;
+    }
+
+    public DeclarativeAgendaOption getDeclarativeAgenda() {
+        return declarativeAgenda;
     }
 }

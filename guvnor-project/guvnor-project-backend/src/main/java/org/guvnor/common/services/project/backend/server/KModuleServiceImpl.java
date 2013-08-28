@@ -126,6 +126,7 @@ public class KModuleServiceImpl
             return path;
 
         } catch ( Exception e ) {
+            e.printStackTrace();
             throw ExceptionUtilities.handleException( e );
         }
     }

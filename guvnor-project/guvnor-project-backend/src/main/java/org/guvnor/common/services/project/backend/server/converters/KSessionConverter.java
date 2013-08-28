@@ -22,6 +22,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.ClockTypeOption;
+import org.guvnor.common.services.project.model.ConsoleLogger;
+import org.guvnor.common.services.project.model.FileLogger;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
@@ -48,6 +50,12 @@ public class KSessionConverter
         }
 
         writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandelerModels());
+
+//        if (kSession.getLogger() instanceof ConsoleLogger) {
+//            writeObject(writer, context, "consoleLogger", kSession.getLogger());
+//        } else if (kSession.getLogger() instanceof FileLogger) {
+//            writeObject(writer, context, "fileLogger", kSession.getLogger());
+//        }
 
         if (!kSession.getListenerModels().isEmpty()) {
             writer.startNode("listeners");
@@ -103,6 +111,11 @@ public class KSessionConverter
                         kSession.addWorkItemHandelerModel(wih);
                     }
                 }
+//                else if ("consoleLogger".equals(name)){
+//                    kSession.setLogger(readObject(reader, context, ConsoleLogger.class));
+//                } else if ("fileLogger".equals(name)){
+//                    kSession.setLogger(readObject(reader, context, FileLogger.class));
+//                }
             }
         });
 

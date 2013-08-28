@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.AssertBehaviorOption;
+import org.guvnor.common.services.project.model.DeclarativeAgendaOption;
 import org.guvnor.common.services.project.model.EventProcessingOption;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KSessionModel;
@@ -45,6 +46,9 @@ public class KBaseConverter
         }
         if (kBase.getEqualsBehavior() != null) {
             writer.addAttribute("equalsBehavior", kBase.getEqualsBehavior().toString());
+        }
+        if (kBase.getDeclarativeAgenda() != null) {
+            writer.addAttribute("declarativeAgenda", kBase.getDeclarativeAgenda().toString());
         }
 
 
@@ -80,12 +84,7 @@ public class KBaseConverter
             writer.addAttribute("includes", sb.toString());
         }
 
-        Map<String, KSessionModel> join = new HashMap<String, KSessionModel>();
-        setTypes("stateful", kBase.getStatefulSessions());
-        setTypes("stateless", kBase.getStatelessSessions());
-        join.putAll(kBase.getStatefulSessions());
-        join.putAll(kBase.getStatelessSessions());
-        for (KSessionModel kSessionModel : join.values()) {
+        for (KSessionModel kSessionModel : kBase.getKSessions()) {
             writeObject(writer, context, "ksession", kSessionModel);
         }
     }
@@ -108,6 +107,10 @@ public class KBaseConverter
         String equalsBehavior = reader.getAttribute("equalsBehavior");
         if (equalsBehavior != null) {
             kBase.setEqualsBehavior(AssertBehaviorOption.determineAssertBehaviorMode(equalsBehavior));
+        }
+        String declarativeAgenda = reader.getAttribute("declarativeAgenda");
+        if (declarativeAgenda != null) {
+            kBase.setDeclarativeAgenda(DeclarativeAgendaOption.determineDeclarativeAgendaMode(declarativeAgenda));
         }
 
         String scope = reader.getAttribute("scope");
@@ -133,11 +136,7 @@ public class KBaseConverter
             public void onNode(HierarchicalStreamReader reader, String name, String value) {
                 if ("ksession".equals(name)) {
                     KSessionModel kSession = readObject(reader, context, KSessionModel.class);
-                    if (kSession.getType().equals("stateless")) {
-                        kBase.getStatelessSessions().put(kSession.getName(), kSession);
-                    } else {
-                        kBase.getStatefulSessions().put(kSession.getName(), kSession);
-                    }
+                    kBase.getKSessions().add(kSession);
 
                 } else if ("includes".equals(name)) {
                     for (String include : readList(reader)) {
