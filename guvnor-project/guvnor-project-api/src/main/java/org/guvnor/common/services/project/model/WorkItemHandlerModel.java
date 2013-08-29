@@ -21,34 +21,22 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class WorkItemHandlerModel {
 
-    private String type;
-
-    private QualifierModel qualifierModel;
-    private KSessionModel KSession;
+    private String type = "";
+    private String name = "";
 
     public String getType() {
         return type;
-    }
-
-    public QualifierModel getQualifierModel() {
-        return qualifierModel;
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public QualifierModel newQualifierModel(String qualifierType) {
-        QualifierModel qualifier = new QualifierModel(type);
-        this.qualifierModel = qualifier;
-        return qualifierModel;
+    public String getName() {
+        return name;
     }
 
-    public void setQualifierModel(QualifierModel qualifierModel) {
-        this.qualifierModel = qualifierModel;
-    }
-
-    public void setKSession(KSessionModel KSession) {
-        this.KSession = KSession;
+    public void setName(String name) {
+        this.name = name;
     }
 }

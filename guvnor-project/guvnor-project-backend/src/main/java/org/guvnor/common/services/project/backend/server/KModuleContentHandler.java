@@ -24,7 +24,7 @@ import org.guvnor.common.services.project.backend.server.converters.KModuleConve
 import org.guvnor.common.services.project.backend.server.converters.KSessionConverter;
 import org.guvnor.common.services.project.backend.server.converters.ListenerConverter;
 import org.guvnor.common.services.project.backend.server.converters.QualifierConverter;
-import org.guvnor.common.services.project.backend.server.converters.WorkItemHandelerConverter;
+import org.guvnor.common.services.project.backend.server.converters.WorkItemHandlerConverter;
 import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KModuleModel;
@@ -52,7 +52,7 @@ public class KModuleContentHandler {
         xStream.registerConverter(new ClockTypeConverter());
         xStream.registerConverter(new ListenerConverter());
         xStream.registerConverter(new QualifierConverter());
-        xStream.registerConverter(new WorkItemHandelerConverter());
+        xStream.registerConverter(new WorkItemHandlerConverter());
 
         xStream.alias("kmodule", KModuleModel.class);
         xStream.alias("kbase", KBaseModel.class);

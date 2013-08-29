@@ -16,10 +16,10 @@
 
 package org.guvnor.common.services.project.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class KSessionModel
@@ -31,8 +31,7 @@ public class KSessionModel
     private boolean theDefault = false;
     private String scope;
     private List<WorkItemHandlerModel> workItemHandelerModels = new ArrayList<WorkItemHandlerModel>();
-    private ListenerModel listener;
-    private WorkItemHandlerModel workItemHandlerModel;
+    private List<ListenerModel> listeners=new ArrayList<ListenerModel>();
     private KSessionLogger logger;
 
     public String getName() {
@@ -80,23 +79,19 @@ public class KSessionModel
         this.scope = scope;
     }
 
-    public void setListenerModel(ListenerModel listener) {
-        this.listener = listener;
-    }
-
-    public ListenerModel getListenerModel() {
-        return listener;
-    }
-
-    public void addWorkItemHandelerModel(WorkItemHandlerModel workItemHandlerModel) {
-        this.workItemHandlerModel = workItemHandlerModel;
-    }
-
     public void setLogger(KSessionLogger logger) {
         this.logger = logger;
     }
 
     public KSessionLogger getLogger() {
         return logger;
+    }
+
+    public List<ListenerModel> getListeners() {
+        return listeners;
+    }
+
+    public void setListeners(List<ListenerModel> listeners) {
+        this.listeners = listeners;
     }
 }
