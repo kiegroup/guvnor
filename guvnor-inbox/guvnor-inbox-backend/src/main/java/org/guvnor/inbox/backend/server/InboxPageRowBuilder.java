@@ -15,14 +15,21 @@
  */
 package org.guvnor.inbox.backend.server;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
+import org.kie.commons.io.IOService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
@@ -35,7 +42,15 @@ public class InboxPageRowBuilder
     private InboxPageRequest     pageRequest;
     private Iterator<InboxServiceImpl.InboxEntry> iterator;
     private Identity identity;
+    
+    @Inject
+    private Paths paths;
 
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    
     public List<InboxPageRow> build() {
         validate();
         int skipped = 0;
@@ -62,8 +77,7 @@ public class InboxPageRowBuilder
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
-            //TODO: Get FileSystem
-            Path path = PathFactory.newPath(null, inboxEntry.note, inboxEntry.itemPath);
+            Path path = convertPath(inboxEntry.itemPath);
             tr.setPath(path);
             tr.setTimestamp( new Date( inboxEntry.timestamp ) );
             tr.setFrom( inboxEntry.from );
@@ -74,7 +88,7 @@ public class InboxPageRowBuilder
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
-            Path path = PathFactory.newPath(null, inboxEntry.note, inboxEntry.itemPath);
+            Path path = convertPath(inboxEntry.itemPath);
             tr.setPath(path);
             tr.setTimestamp( new Date( inboxEntry.timestamp ) );
             row = tr;
@@ -82,6 +96,17 @@ public class InboxPageRowBuilder
         return row;
     }
 
+	protected Path convertPath(final String fullPath) {
+		try {
+			final org.kie.commons.java.nio.file.Path path = ioService
+					.get(new URI(fullPath));
+			return paths.convert(path, false);
+		} catch (URISyntaxException e) {
+			//Ignore
+		}
+		return null;
+	}
+    
     public void validate() {
         if ( pageRequest == null ) {
             throw new IllegalArgumentException( "PageRequest cannot be null" );
