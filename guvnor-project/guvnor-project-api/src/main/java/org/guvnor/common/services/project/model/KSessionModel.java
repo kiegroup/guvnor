@@ -30,7 +30,6 @@ public class KSessionModel
     private ClockTypeOption clockType = ClockTypeOption.REALTIME;
     private boolean theDefault = false;
     private String scope;
-    private List<ListenerModel> listenerModels = new ArrayList<ListenerModel>();
     private List<WorkItemHandlerModel> workItemHandelerModels = new ArrayList<WorkItemHandlerModel>();
     private ListenerModel listener;
     private WorkItemHandlerModel workItemHandlerModel;
@@ -73,20 +72,6 @@ public class KSessionModel
         return scope;
     }
 
-    public List<ListenerModel> getListenerModels() {
-        return listenerModels;
-    }
-
-    public List<ListenerModel> getListenerModels(ListenerModel.Kind kind) {
-        List<ListenerModel> listeners = new ArrayList<ListenerModel>();
-        for (ListenerModel listener : getListenerModels()) {
-            if (listener.getKind() == kind) {
-                listeners.add(listener);
-            }
-        }
-        return listeners;
-    }
-
     public List<WorkItemHandlerModel> getWorkItemHandelerModels() {
         return workItemHandelerModels;
     }
@@ -95,8 +80,12 @@ public class KSessionModel
         this.scope = scope;
     }
 
-    public void addListenerModel(ListenerModel listener) {
+    public void setListenerModel(ListenerModel listener) {
         this.listener = listener;
+    }
+
+    public ListenerModel getListenerModel() {
+        return listener;
     }
 
     public void addWorkItemHandelerModel(WorkItemHandlerModel workItemHandlerModel) {

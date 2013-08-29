@@ -51,19 +51,12 @@ public class ListenerModel {
 
     }
 
-    private Kind kind;
+    private Kind kind = Kind.WORKING_MEMORY_EVENT_LISTENER;
 
     private String type;
 
-    private QualifierModel qualifierModel;
-    private KSessionModel kSession;
-
     public void setKind(Kind kind) {
         this.kind = kind;
-    }
-
-    public void setKSession(KSessionModel kSession) {
-        this.kSession = kSession;
     }
 
     public Kind getKind() {
@@ -74,21 +67,7 @@ public class ListenerModel {
         return type;
     }
 
-    public QualifierModel getQualifierModel() {
-        return qualifierModel;
-    }
-
     public void setType(String type) {
         this.type = type;
-    }
-
-    public QualifierModel newQualifierModel(String qualifierType) {
-        QualifierModel qualifier = new QualifierModel(type);
-        this.qualifierModel = qualifier;
-        return qualifier;
-    }
-
-    public void setQualifierModel(QualifierModel qualifierModel) {
-        this.qualifierModel = qualifierModel;
     }
 }

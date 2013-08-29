@@ -21,7 +21,6 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.guvnor.common.services.project.model.QualifierModel;
 import org.guvnor.common.services.project.model.ListenerModel;
 
 public class ListenerConverter
@@ -35,35 +34,13 @@ public class ListenerConverter
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         ListenerModel listener = (ListenerModel) value;
         writer.addAttribute("type", listener.getType());
-        QualifierModel qualifier = (QualifierModel) listener.getQualifierModel();
-        if (qualifier != null) {
-            if (qualifier.isSimple()) {
-                writer.addAttribute("qualifier", qualifier.getType());
-            } else {
-                writeObject(writer, context, "qualifier", qualifier);
-            }
-        }
     }
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
         final ListenerModel listener = new ListenerModel();
         listener.setType(reader.getAttribute("type"));
-        String qualifierType = reader.getAttribute("qualifier");
-        if (qualifierType != null) {
-            listener.newQualifierModel(qualifierType);
-        }
-
-        readNodes(reader, new AbstractXStreamConverter.NodeReader() {
-            public void onNode(HierarchicalStreamReader reader,
-                               String name,
-                               String value) {
-                if ("qualifier".equals(name)) {
-                    QualifierModel qualifier = readObject(reader, context, QualifierModel.class);
-                    listener.setQualifierModel(qualifier);
-                }
-            }
-        });
+        listener.setKind(ListenerModel.Kind.fromString(reader.getNodeName()));
         return listener;
     }
 }
