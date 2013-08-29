@@ -46,14 +46,11 @@ public class InboxEditor
             UiBinder<Widget, InboxEditor> {
     }
 
-    @UiField()
-    protected Button deleteSelectedButton;
+/*    @UiField()
+    protected Button deleteSelectedButton;*/
 
     @UiField()
     protected Button refreshButton;
-
-    @UiField()
-    protected Button openSelectedButton;
 
     @UiField(provided = true)
     public InboxPagedTable inboxPagedTable;
@@ -96,10 +93,10 @@ public class InboxEditor
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-
+/*
     @UiHandler("deleteSelectedButton")
     void deleteSelected(ClickEvent e) {
-/*        if (getSelectedJars() == null) {
+        if (getSelectedJars() == null) {
             Window.alert("Please Select A Jar To Delete");
             return;
         }
@@ -112,8 +109,8 @@ public class InboxEditor
                 Window.alert("Deleted successfully");
                 pagedJarTable.refresh();
             }
-        }).deleteJar(getSelectedJars());*/
-    }
+        }).deleteJar(getSelectedJars());
+    }*/
 
     public String[] getSelected() {
 /*        Set<InboxPageRow> selectedRows = selectionModel.getSelectedSet();
@@ -136,10 +133,5 @@ public class InboxEditor
     @UiHandler("refreshButton")
     void refresh(ClickEvent e) {
         inboxPagedTable.refresh();
-    }
-
-    @UiHandler("openSelectedButton")
-    void openSelected(ClickEvent e) {
-
     }
 }

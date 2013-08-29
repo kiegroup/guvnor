@@ -18,7 +18,9 @@ package org.guvnor.inbox.client.editor;
 
 import java.util.Date;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -118,16 +120,16 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
                                         formatColumn ),
                                 true );
 
-        TextColumn<InboxPageRow> noteColumn = new TextColumn<InboxPageRow>() {
+        TextColumn<InboxPageRow> nameColumn = new TextColumn<InboxPageRow>() {
             public String getValue( InboxPageRow row ) {
                 return row.getNote();
             }
         };
-        columnPicker.addColumn( noteColumn,
+        columnPicker.addColumn( nameColumn,
                                 new SortableHeader<InboxPageRow, String>(
                                         sortableHeaderGroup,
                                         "Name",
-                                        noteColumn ),
+                                        nameColumn ),
                                 true );
 
         Column<InboxPageRow, Date> dateColumn = new Column<InboxPageRow, Date>( new
