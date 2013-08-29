@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.KModuleFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
 import org.guvnor.common.services.project.model.Project;
@@ -52,6 +53,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
     @Inject
     private ProjectService projectService;
 
+    private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> dotFileFilter = new DotFileFilter();
     private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> pomFileFilter = new PomFileFilter();
     private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> kmoduleFileFilter = new KModuleFileFilter();
 
@@ -121,7 +123,9 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
     private boolean acceptPath( final org.kie.commons.java.nio.file.Path path,
                                 final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>... supportingFileFilters ) {
-        if ( pomFileFilter.accept( path ) ) {
+        if ( dotFileFilter.accept( path ) ) {
+            return false;
+        } else if ( pomFileFilter.accept( path ) ) {
             return true;
         } else if ( kmoduleFileFilter.accept( path ) ) {
             return true;

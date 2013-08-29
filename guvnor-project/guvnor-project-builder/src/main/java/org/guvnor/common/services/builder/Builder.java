@@ -396,7 +396,7 @@ public class Builder {
 
             } else {
                 //Don't process dotFiles
-                if ( dotFileFilter.accept( path ) ) {
+                if ( !dotFileFilter.accept( path ) ) {
 
                     final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
                     final InputStream is = ioService.newInputStream( path );
