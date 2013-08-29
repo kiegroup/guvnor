@@ -21,8 +21,8 @@ public class FileExtensionFilter extends DotFileFilter {
     @Override
     public boolean accept( final org.kie.commons.java.nio.file.Path path ) {
         boolean accept = super.accept( path );
-        if ( !accept ) {
-            return accept;
+        if ( accept ) {
+            return false;
         }
         if ( !Files.isRegularFile( path ) ) {
             return false;
