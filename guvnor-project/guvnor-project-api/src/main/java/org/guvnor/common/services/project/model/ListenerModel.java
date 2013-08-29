@@ -53,7 +53,7 @@ public class ListenerModel {
 
     private Kind kind = Kind.WORKING_MEMORY_EVENT_LISTENER;
 
-    private String type;
+    private String type = "";
 
     public void setKind(Kind kind) {
         this.kind = kind;

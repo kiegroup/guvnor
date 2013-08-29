@@ -24,44 +24,24 @@ import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.QualifierModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
-public class WorkItemHandelerConverter
+public class WorkItemHandlerConverter
         extends AbstractXStreamConverter {
 
-    public WorkItemHandelerConverter() {
+    public WorkItemHandlerConverter() {
         super(WorkItemHandlerModel.class);
     }
 
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         WorkItemHandlerModel wih = (WorkItemHandlerModel) value;
         writer.addAttribute("type", wih.getType());
-        QualifierModel qualifier = wih.getQualifierModel();
-        if (qualifier != null) {
-            if (qualifier.isSimple()) {
-                writer.addAttribute("qualifier", qualifier.getType());
-            } else {
-                writeObject(writer, context, "qualifier", qualifier);
-            }
-        }
+        writer.addAttribute("name", wih.getName());
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
         final WorkItemHandlerModel wih = new WorkItemHandlerModel();
         wih.setType(reader.getAttribute("type"));
-        String qualifierType = reader.getAttribute("qualifier");
-        if (qualifierType != null) {
-            wih.newQualifierModel(qualifierType);
-        }
+        wih.setName(reader.getAttribute("name"));
 
-        readNodes( reader, new AbstractXStreamConverter.NodeReader() {
-            public void onNode(HierarchicalStreamReader reader,
-                               String name,
-                               String value) {
-                if ( "qualifier".equals( name ) ) {
-                    QualifierModel qualifier = readObject(reader, context, QualifierModel.class);
-                    wih.setQualifierModel(qualifier);
-                }
-            }
-        } );
         return wih;
     }
 }

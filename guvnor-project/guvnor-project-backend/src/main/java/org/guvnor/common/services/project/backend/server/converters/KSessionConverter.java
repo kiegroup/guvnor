@@ -16,8 +16,6 @@
 
 package org.guvnor.common.services.project.backend.server.converters;
 
-import java.util.List;
-
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -55,11 +53,13 @@ public class KSessionConverter
 //            writeObject(writer, context, "fileLogger", kSession.getLogger());
 //        }
 
-        if (kSession.getListenerModel() != null) {
+        if (!kSession.getListeners().isEmpty()) {
             writer.startNode("listeners");
 
-            writeObject(writer, context, kSession.getListenerModel().getKind().toString(), kSession.getListenerModel());
+            for (ListenerModel listener : kSession.getListeners()) {
+                writeObject(writer, context, listener.getKind().toString(), listener);
 
+            }
             writer.endNode();
         }
     }
@@ -89,14 +89,11 @@ public class KSessionConverter
                 if ("listeners".equals(name)) {
                     while (reader.hasMoreChildren()) {
                         reader.moveDown();
-                        kSession.setListenerModel(readObject(reader, context, ListenerModel.class));
+                        kSession.getListeners().add(readObject(reader, context, ListenerModel.class));
                         reader.moveUp();
                     }
                 } else if ("workItemHandlers".equals(name)) {
-                    List<WorkItemHandlerModel> wihs = readObjectList(reader, context, WorkItemHandlerModel.class);
-                    for (WorkItemHandlerModel wih : wihs) {
-                        kSession.addWorkItemHandelerModel(wih);
-                    }
+                    kSession.getWorkItemHandelerModels().addAll(readObjectList(reader, context, WorkItemHandlerModel.class));
                 }
 //                else if ("consoleLogger".equals(name)){
 //                    kSession.setLogger(readObject(reader, context, ConsoleLogger.class));
