@@ -17,6 +17,9 @@
 package org.guvnor.inbox.client.editor;
 
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -31,6 +34,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.workbench.events.PathChangeEvent;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 
@@ -59,8 +66,11 @@ public class InboxEditor
 
     protected MultiSelectionModel<InboxPageRow> selectionModel;
 
-    //private Caller<M2RepoService> m2RepoService;
-
+    @Inject
+    private PlaceManager placeManager;
+    
+    @Inject
+    private Event<PathChangeEvent> pathChangeEvent;
 
     public InboxEditor(Caller<InboxService> inboxService) {
         this(inboxService, null);
@@ -68,7 +78,6 @@ public class InboxEditor
     }
 
     public InboxEditor(Caller<InboxService> inboxService, final String inboxName) {
-        //this.m2RepoService = repoService;
         inboxPagedTable = new InboxPagedTable(inboxService, inboxName);
 
 
@@ -82,9 +91,12 @@ public class InboxEditor
             public void update(int index,
                                InboxPageRow row,
                                String value) {
-/*                Window.open(getFileDownloadURL(row.getPath()),
-                        "downloading",
-                        "resizable=no,scrollbars=yes,status=no");*/
+            	final Path path = row.getPath();
+                if ( path == null ) {
+                    return;
+                }
+                pathChangeEvent.fire( new PathChangeEvent( path ) );
+                placeManager.goTo( path );
             }
         });
 

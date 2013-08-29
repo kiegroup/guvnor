@@ -86,16 +86,6 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
                                        response.getPageRowList() );
                     }
                 } ).loadInbox( request );
-                
-/*                repositoryService.loadInbox( request,
-                        new GenericCallback<PageResponse<InboxPageRow>>() {
-                            public void onSuccess( PageResponse<InboxPageRow> response ) {
-                                updateRowCount( response.getTotalRowSize(),
-                                        response.isTotalRowSizeExact() );
-                                updateRowData( response.getStartRowIndex(),
-                                        response.getPageRowList() );
-                            }
-                        } );*/
             }
         } );
     }

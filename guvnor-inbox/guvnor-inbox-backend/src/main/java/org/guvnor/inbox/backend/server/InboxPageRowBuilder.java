@@ -23,6 +23,8 @@ import java.util.List;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
 
@@ -60,7 +62,9 @@ public class InboxPageRowBuilder
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
-            //tr.setName( inboxEntry.note );
+            //TODO: Get FileSystem
+            Path path = PathFactory.newPath(null, inboxEntry.note, inboxEntry.itemPath);
+            tr.setPath(path);
             tr.setTimestamp( new Date( inboxEntry.timestamp ) );
             tr.setFrom( inboxEntry.from );
             row = tr;
@@ -70,7 +74,8 @@ public class InboxPageRowBuilder
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
-            //tr.setName( inboxEntry.note );
+            Path path = PathFactory.newPath(null, inboxEntry.note, inboxEntry.itemPath);
+            tr.setPath(path);
             tr.setTimestamp( new Date( inboxEntry.timestamp ) );
             row = tr;
         }
