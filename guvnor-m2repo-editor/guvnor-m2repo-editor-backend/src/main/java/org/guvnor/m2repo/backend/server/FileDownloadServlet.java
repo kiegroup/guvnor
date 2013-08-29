@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-//TODO: Basic authentication
 public class FileDownloadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 510l;
@@ -65,7 +64,7 @@ public class FileDownloadServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
         serveResource(request, response, true);
     }
-
+    
     private void serveResource(HttpServletRequest request,
             HttpServletResponse response, boolean content) throws IOException {
         String requestedFile = request.getPathInfo();
@@ -74,9 +73,20 @@ public class FileDownloadServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+        
+        requestedFile = URLDecoder.decode(requestedFile, "UTF-8");        
+        File mavenRootDir = new File(repository.getM2RepositoryRootDir());
 
-        File file = new File(repository.getM2RepositoryRootDir(),
-                URLDecoder.decode(requestedFile, "UTF-8"));
+        //File traversal check:
+        final String canonicalDirPath = mavenRootDir.getCanonicalPath() + File.separator;
+        final String canonicalEntryPath = new File(mavenRootDir, requestedFile).getCanonicalPath();
+        if (!canonicalEntryPath.startsWith(canonicalDirPath)) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        requestedFile = canonicalEntryPath.substring(canonicalDirPath.length());        
+        File file = new File(mavenRootDir, requestedFile);
  
         if (!file.exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
