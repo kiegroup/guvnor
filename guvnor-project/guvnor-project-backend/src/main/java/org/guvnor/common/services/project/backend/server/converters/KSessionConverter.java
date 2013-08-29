@@ -16,19 +16,17 @@
 
 package org.guvnor.common.services.project.backend.server.converters;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.guvnor.common.services.project.model.ClockTypeOption;
-import org.guvnor.common.services.project.model.ConsoleLogger;
-import org.guvnor.common.services.project.model.FileLogger;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-
-import java.util.List;
 
 public class KSessionConverter
         extends AbstractXStreamConverter {
@@ -57,17 +55,11 @@ public class KSessionConverter
 //            writeObject(writer, context, "fileLogger", kSession.getLogger());
 //        }
 
-        if (!kSession.getListenerModels().isEmpty()) {
+        if (kSession.getListenerModel() != null) {
             writer.startNode("listeners");
-            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
-                writeObject(writer, context, listener.getKind().toString(), listener);
-            }
-            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
-                writeObject(writer, context, listener.getKind().toString(), listener);
-            }
-            for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.PROCESS_EVENT_LISTENER)) {
-                writeObject(writer, context, listener.getKind().toString(), listener);
-            }
+
+            writeObject(writer, context, kSession.getListenerModel().getKind().toString(), kSession.getListenerModel());
+
             writer.endNode();
         }
     }
@@ -82,7 +74,7 @@ public class KSessionConverter
 
         String clockType = reader.getAttribute("clockType");
         if (clockType != null) {
-            kSession.setClockType( ClockTypeOption.get( clockType ));
+            kSession.setClockType(ClockTypeOption.get(clockType));
         }
 
         String scope = reader.getAttribute("scope");
@@ -92,22 +84,17 @@ public class KSessionConverter
 
         readNodes(reader, new AbstractXStreamConverter.NodeReader() {
             public void onNode(HierarchicalStreamReader reader,
-                               String name,
-                               String value) {
+                    String name,
+                    String value) {
                 if ("listeners".equals(name)) {
                     while (reader.hasMoreChildren()) {
                         reader.moveDown();
-                        String nodeName = reader.getNodeName();
-                        ListenerModel listener = readObject(reader, context, ListenerModel.class);
-                        listener.setKSession(kSession);
-                        listener.setKind(ListenerModel.Kind.fromString(nodeName));
-                        kSession.addListenerModel(listener);
+                        kSession.setListenerModel(readObject(reader, context, ListenerModel.class));
                         reader.moveUp();
                     }
                 } else if ("workItemHandlers".equals(name)) {
                     List<WorkItemHandlerModel> wihs = readObjectList(reader, context, WorkItemHandlerModel.class);
                     for (WorkItemHandlerModel wih : wihs) {
-                        wih.setKSession(kSession);
                         kSession.addWorkItemHandelerModel(wih);
                     }
                 }
