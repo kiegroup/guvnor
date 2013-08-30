@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,10 +32,9 @@ import org.guvnor.inbox.model.InboxPageRow;
 import org.kie.commons.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.security.Identity;
 
-
+@Dependent
 public class InboxPageRowBuilder
     implements
     PageRowBuilder<InboxPageRequest, Iterator<InboxServiceImpl.InboxEntry>> {
@@ -100,6 +100,7 @@ public class InboxPageRowBuilder
 		try {
 			final org.kie.commons.java.nio.file.Path path = ioService
 					.get(new URI(fullPath));
+
 			return paths.convert(path, false);
 		} catch (URISyntaxException e) {
 			//Ignore

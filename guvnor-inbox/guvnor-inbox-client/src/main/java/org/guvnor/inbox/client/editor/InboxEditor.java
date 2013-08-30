@@ -29,6 +29,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,18 +67,13 @@ public class InboxEditor
 
     protected MultiSelectionModel<InboxPageRow> selectionModel;
 
-    @Inject
-    private PlaceManager placeManager;
-    
-    @Inject
-    private Event<PathChangeEvent> pathChangeEvent;
 
-    public InboxEditor(Caller<InboxService> inboxService) {
-        this(inboxService, null);
+    public InboxEditor(Caller<InboxService> inboxService, PlaceManager placeManager, Event<PathChangeEvent> pathChangeEvent) {
+        this(inboxService, null, placeManager, pathChangeEvent);
 
     }
 
-    public InboxEditor(Caller<InboxService> inboxService, final String inboxName) {
+    public InboxEditor(Caller<InboxService> inboxService, final String inboxName, final PlaceManager placeManager, final Event<PathChangeEvent> pathChangeEvent) {
         inboxPagedTable = new InboxPagedTable(inboxService, inboxName);
 
 
@@ -91,7 +87,7 @@ public class InboxEditor
             public void update(int index,
                                InboxPageRow row,
                                String value) {
-            	final Path path = row.getPath();
+           	final Path path = row.getPath();
                 if ( path == null ) {
                     return;
                 }

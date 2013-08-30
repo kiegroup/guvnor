@@ -63,6 +63,9 @@ public class InboxServiceImpl
 
     @Inject
     MailboxService mailboxService;
+    
+    @Inject
+    InboxPageRowBuilder inboxPageRowBuilder;
 
     public PageResponse<InboxPageRow> loadInbox( InboxPageRequest request ) {
         if ( request == null ) {
@@ -77,7 +80,7 @@ public class InboxServiceImpl
 
         List<InboxEntry> entries = loadEntries( inboxName );
         Iterator<InboxEntry> iterator = entries.iterator();
-        List<InboxPageRow> rowList = new InboxPageRowBuilder()
+        List<InboxPageRow> rowList = inboxPageRowBuilder
                 .withPageRequest( request )
                 .withIdentity( identity )
                 .withContent( iterator )

@@ -18,9 +18,12 @@ package org.guvnor.inbox.client;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.workbench.events.PathChangeEvent;
 import org.guvnor.inbox.client.editor.InboxEditor;
 import org.guvnor.inbox.service.InboxService;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 
@@ -33,9 +36,15 @@ public class InboxView
 /*    @Inject*/
     private Caller<InboxService> inboxService;
     
+    private PlaceManager placeManager;
+    
+    private Event<PathChangeEvent> pathChangeEvent;
+    
     @Inject
-    public InboxView(Caller<InboxService> s) {
+    public InboxView(Caller<InboxService> s, PlaceManager placeManager, Event<PathChangeEvent> pathChangeEvent) {
         this.inboxService = s;
+        this.placeManager = placeManager;
+        this.pathChangeEvent = pathChangeEvent;
 
         layout = new VerticalPanel();
         layout.setWidth( "100%" );
@@ -45,7 +54,7 @@ public class InboxView
     
     @Override
     public void setContent( final String inboxName ) {
-        InboxEditor table = new InboxEditor(inboxService, inboxName);    
+        InboxEditor table = new InboxEditor(inboxService, inboxName, placeManager, pathChangeEvent);    
         layout.add(table);
     }
 
