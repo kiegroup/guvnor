@@ -25,7 +25,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
@@ -352,7 +354,13 @@ public class ProjectServiceImpl
             newProjectEvent.fire( new NewProjectEvent( project ) );
 
             //Create a default workspace based on the GAV
-            final String defaultWorkspacePath = pom.getGav().getGroupId() + "/" + pom.getGav().getArtifactId();
+            final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getGroupId().split( "\\.",
+                                                                                                                                       -1 ) );
+            final String legalJavaArtifactId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getArtifactId().split( "\\.",
+                                                                                                                                             -1 ) );
+            final String defaultWorkspacePath = StringUtils.join( legalJavaGroupId,
+                                                                  "/" ) + "/" + StringUtils.join( legalJavaArtifactId,
+                                                                                                  "/" );
             final Path defaultPackagePath = paths.convert( paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ),
                                                            false );
             final Package defaultPackage = resolvePackage( defaultPackagePath );
@@ -392,7 +400,7 @@ public class ProjectServiceImpl
     private Package doNewPackage( final Package parentPackage,
                                   final String packageName ) {
         //If the package name contains separators, create sub-folders
-        String newPackageName = packageName;
+        String newPackageName = packageName.toLowerCase();
         if ( newPackageName.contains( "." ) ) {
             newPackageName = newPackageName.replace( ".",
                                                      "/" );
