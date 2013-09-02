@@ -73,6 +73,11 @@
       <artifactId>maven-model</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+
     <!-- Weld Modules. For tests only -->
     <dependency>
       <groupId>org.jboss.weld</groupId>
