@@ -1,3 +1,4 @@
+package org.guvnor.common.services.project.backend.server;
 /*
  * Copyright 2012 JBoss Inc
  *
@@ -14,7 +15,10 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.backend.server;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import javax.enterprise.context.Dependent;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -25,33 +29,31 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 
-import javax.enterprise.context.Dependent;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 @Dependent
 public class POMContentHandler {
 
-
     public POMContentHandler() {
-        // Weld needs this for proxying.       
+        // Weld needs this for proxying.
     }
 
-    public String toString(POM gavModel)
+    public String toString(POM pomModel)
             throws IOException {
+        return toString(pomModel,new Model());
+    }
 
-        Model model = new Model();
-        model.setGroupId(gavModel.getGav().getGroupId());
-        model.setArtifactId(gavModel.getGav().getArtifactId());
-        model.setVersion(gavModel.getGav().getVersion());
-        model.setModelVersion(gavModel.getModelVersion());
+    private String toString(POM pom, Model model)
+            throws IOException {
+        model.setGroupId(pom.getGav().getGroupId());
+        model.setArtifactId(pom.getGav().getArtifactId());
+        model.setVersion(pom.getGav().getVersion());
+        model.setModelVersion(pom.getModelVersion());
 
-        for ( org.guvnor.common.services.project.model.Repository repository : gavModel.getRepositories()) {
+        for (org.guvnor.common.services.project.model.Repository repository : pom.getRepositories()) {
             model.addRepository(fromClientModelToPom(repository));
         }
 
-        for ( org.guvnor.common.services.project.model.Dependency dependency : gavModel.getDependencies()) {
+        for (org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies()) {
             model.addDependency(fromClientModelToPom(dependency));
         }
 
@@ -61,7 +63,19 @@ public class POMContentHandler {
         return stringWriter.toString();
     }
 
-    private Repository fromClientModelToPom( org.guvnor.common.services.project.model.Repository from) {
+    /**
+     * @param gavModel The model that is saved
+     * @param originalPomAsText The original pom in text form, since the guvnor POM model does not cover all the pom.xml features.
+     * @return pom.xml for saving, The original pom.xml with the fields edited in gavModel replaced.
+     * @throws IOException
+     */
+    public String toString(POM gavModel, String originalPomAsText)
+            throws IOException, XmlPullParserException {
+
+        return toString(gavModel, new MavenXpp3Reader().read(new StringReader(originalPomAsText)));
+    }
+
+    private Repository fromClientModelToPom(org.guvnor.common.services.project.model.Repository from) {
         Repository to = new Repository();
         to.setId(from.getId());
         to.setName(from.getName());
@@ -73,7 +87,6 @@ public class POMContentHandler {
     public POM toModel(String pomAsString)
             throws IOException, XmlPullParserException {
         Model model = new MavenXpp3Reader().read(new StringReader(pomAsString));
-
 
         POM gavModel = new POM(
                 new GAV(
@@ -113,7 +126,7 @@ public class POMContentHandler {
         return dependency;
     }
 
-    private Dependency fromClientModelToPom( org.guvnor.common.services.project.model.Dependency from) {
+    private Dependency fromClientModelToPom(org.guvnor.common.services.project.model.Dependency from) {
         Dependency dependency = new Dependency();
 
         dependency.setArtifactId(from.getArtifactId());
@@ -122,4 +135,5 @@ public class POMContentHandler {
 
         return dependency;
     }
+
 }
