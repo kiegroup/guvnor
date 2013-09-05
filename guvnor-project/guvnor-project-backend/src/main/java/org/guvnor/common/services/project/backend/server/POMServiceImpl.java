@@ -78,7 +78,7 @@ public class POMServiceImpl
 
             ioService.createFile( pathToPOMXML );
             ioService.write( pathToPOMXML,
-                             pomContentHandler.toString( pomModel ) );
+                             pomContentHandler.toString(pomModel) );
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
@@ -92,14 +92,17 @@ public class POMServiceImpl
     @Override
     public POM load( final Path path ) {
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-            final String content = ioService.readAllString( nioPath );
 
-            return pomContentHandler.toModel( content );
+            return pomContentHandler.toModel( loadPomXMLString(path) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private String loadPomXMLString(Path path) {
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        return ioService.readAllString( nioPath );
     }
 
     @Override
@@ -108,13 +111,14 @@ public class POMServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         try {
+
             if ( metadata == null ) {
-                ioService.write( paths.convert( path ),
-                                 pomContentHandler.toString( content ),
+                ioService.write( paths.convert(path),
+                                 pomContentHandler.toString( content, loadPomXMLString(path) ),
                                  makeCommentedOption( comment ) );
             } else {
                 ioService.write( paths.convert( path ),
-                                 pomContentHandler.toString( content ),
+                                 pomContentHandler.toString( content, loadPomXMLString(path) ),
                                  metadataService.setUpAttributes( path,
                                                                   metadata ),
                                  makeCommentedOption( comment ) );
