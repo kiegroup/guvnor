@@ -18,6 +18,9 @@ package org.guvnor.common.services.project.backend.server;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.apache.maven.model.Dependency;
@@ -50,12 +53,18 @@ public class POMContentHandler {
         model.setModelVersion(pom.getModelVersion());
 
         for (org.guvnor.common.services.project.model.Repository repository : pom.getRepositories()) {
-            model.addRepository(fromClientModelToPom(repository));
+        	for(org.apache.maven.model.Repository repo : model.getRepositories()) {
+        		if(!repo.getUrl().equals(repository.getUrl())) {
+                    model.addRepository(fromClientModelToPom(repository));        			
+        		}
+        	}
         }
 
+        List<org.apache.maven.model.Dependency> dependencies = new ArrayList<org.apache.maven.model.Dependency>();
         for (org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies()) {
-            model.addDependency(fromClientModelToPom(dependency));
+        	dependencies.add(fromClientModelToPom(dependency));
         }
+        model.setDependencies(dependencies);
 
         StringWriter stringWriter = new StringWriter();
         new MavenXpp3Writer().write(stringWriter, model);
