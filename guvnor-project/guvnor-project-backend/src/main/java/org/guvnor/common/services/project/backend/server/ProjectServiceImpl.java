@@ -36,6 +36,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -44,7 +45,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -431,9 +431,10 @@ public class ProjectServiceImpl
             pkgPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
         }
 
-        //pkgPath should not be null at this stage or something has gone wrong!
-        PortablePreconditions.checkNotNull( "pkgPath",
-                                            pkgPath );
+        //If pkgPath is null the package already existed in src/main/java, scr/main/resources, src/test/java and src/test/resources
+        if ( pkgPath == null ) {
+            throw new PackageAlreadyExistsException( packageName );
+        }
 
         //Return new package
         final Package newPackage = resolvePackage( pkgPath );
