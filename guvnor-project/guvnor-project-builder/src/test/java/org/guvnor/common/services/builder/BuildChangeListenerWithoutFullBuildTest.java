@@ -17,6 +17,7 @@
 package org.guvnor.common.services.builder;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,9 @@ import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.security.Role;
+import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -154,7 +158,7 @@ public class BuildChangeListenerWithoutFullBuildTest {
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Perform incremental build (Without a full Build first)
-        final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath );
+        final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath, new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) );
         buildChangeListener.updateResource( event );
 
         final BuildResults buildResults = buildResultsObserver.getBuildResults();
@@ -179,7 +183,7 @@ public class BuildChangeListenerWithoutFullBuildTest {
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Perform incremental build (Without a full Build first)
-        final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath );
+        final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath, new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) );
         buildChangeListener.deleteResource( event );
 
         final BuildResults buildResults = buildResultsObserver.getBuildResults();
@@ -213,11 +217,14 @@ public class BuildChangeListenerWithoutFullBuildTest {
 
         final Set<ResourceChange> batch = new HashSet<ResourceChange>();
         batch.add( new ResourceChange( ChangeType.ADD,
-                                       resourcePath1 ) );
+                                       resourcePath1,
+                                       new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
         batch.add( new ResourceChange( ChangeType.UPDATE,
-                                       resourcePath2 ) );
+                                       resourcePath2,
+                                       new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
         batch.add( new ResourceChange( ChangeType.DELETE,
-                                       resourcePath3 ) );
+                                       resourcePath3,
+                                       new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
 
         //Perform incremental build (Without a full Build first)
         final ResourceBatchChangesEvent event = new ResourceBatchChangesEvent( batch );

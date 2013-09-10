@@ -71,7 +71,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
         final KieServices kieServices = KieServices.Factory.get();
         final KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-        final String projectPrefix = project.getRootPath().toURI().toString();
+        final String projectPrefix = project.getRootPath().toURI();
 
         //Add Java Model files
         final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( project.getRootPath() );
@@ -82,7 +82,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
                     supportingFileFilters );
 
         //Add resource to be validated
-        final String destinationPath = resourcePath.toURI().toString().substring( projectPrefix.length() + 1 );
+        final String destinationPath = resourcePath.toURI().substring( projectPrefix.length() + 1 );
         final BufferedInputStream bis = new BufferedInputStream( resource );
 
         kieFileSystem.write( destinationPath,

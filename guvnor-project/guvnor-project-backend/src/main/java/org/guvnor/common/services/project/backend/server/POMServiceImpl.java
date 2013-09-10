@@ -19,6 +19,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
@@ -38,6 +39,8 @@ public class POMServiceImpl
 
     private Identity identity;
 
+    private SessionInfo sessionInfo;
+
     public POMServiceImpl() {
         // For Weld
     }
@@ -50,7 +53,8 @@ public class POMServiceImpl
                            final MetadataService metadataService,
                            final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
                            final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
-                           final Identity identity ) {
+                           final Identity identity,
+                           final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.paths = paths;
         this.pomContentHandler = pomContentHandler;
@@ -59,6 +63,7 @@ public class POMServiceImpl
         this.resourceUpdatedEvent = resourceUpdatedEvent;
         this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.identity = identity;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -132,7 +137,7 @@ public class POMServiceImpl
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path, sessionInfo ) );
 
             return path;
 
