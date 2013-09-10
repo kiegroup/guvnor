@@ -18,16 +18,10 @@ package org.guvnor.common.services.project.context;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.guvnor.common.services.project.events.PackageChangeEvent;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 /**
  * A specialized implementation that also has Project and Package scope
@@ -40,37 +34,14 @@ public class ProjectContext {
     private Project activeProject;
     private Package activePackage;
 
-    public void setActiveGroup( @Observes final OrganizationalUnitChangeEvent event ) {
-        final OrganizationalUnit activeOrganizationalUnit = event.getOrganizationalUnit();
-        setActiveOrganizationalUnit( activeOrganizationalUnit );
-        activeRepository = null;
-        activeProject = null;
-        activePackage = null;
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        this.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
+        this.setActiveRepository( event.getRepository() );
+        this.setActiveProject( event.getProject() );
+        this.setActivePackage( event.getPackage() );
     }
 
-    public void setActiveRepository( @Observes final RepositoryChangeEvent event ) {
-        final Repository activeRepository = event.getRepository();
-        setActiveRepository( activeRepository );
-        activeProject = null;
-        activePackage = null;
-    }
-
-    public void setActiveProject( @Observes final ProjectChangeEvent event ) {
-        final Project activeProject = event.getProject();
-        setActiveProject( activeProject );
-        activePackage = null;
-    }
-
-    public void setActivePackage( @Observes final PackageChangeEvent event ) {
-        final Package activePackage = event.getPackage();
-        setActivePackage( activePackage );
-    }
-
-    public void setActivePath( @Observes final PathChangeEvent event ) {
-        final Path activePath = event.getPath();
-    }
-
-    public void setActiveOrganizationalUnit( final OrganizationalUnit activeOrganizationalUnit) {
+    public void setActiveOrganizationalUnit( final OrganizationalUnit activeOrganizationalUnit ) {
         this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
