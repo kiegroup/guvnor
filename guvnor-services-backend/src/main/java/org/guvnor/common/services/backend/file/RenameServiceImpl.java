@@ -11,7 +11,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 
@@ -29,6 +29,9 @@ public class RenameServiceImpl implements RenameService {
     private Identity identity;
 
     @Inject
+    private SessionInfo sessionInfo;
+
+    @Inject
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
 
     @Override
@@ -38,21 +41,22 @@ public class RenameServiceImpl implements RenameService {
         try {
             System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
 
-            String originalFileName = path.getFileName().substring( path.getFileName().lastIndexOf( "/" ) + 1 );
-            final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
-            final String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName + extension;
-            final String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName + extension;
-            final Path targetPath = PathFactory.newPath( path.getFileSystem(),
-                                                         targetName,
-                                                         targetURI );
+            final org.kie.commons.java.nio.file.Path _path = paths.convert( path );
 
-            ioService.move( paths.convert( path ),
-                            paths.convert( targetPath ),
+            String originalFileName = _path.getFileName().toString();
+            final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+            final org.kie.commons.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
+
+            ioService.move( _path,
+                            _target,
                             new CommentedOption( identity.getName(), comment ) );
 
+            final Path target = paths.convert( _target );
             resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                 targetPath ) );
-            return targetPath;
+                                                                 target,
+                                                                 sessionInfo ) );
+
+            return target;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

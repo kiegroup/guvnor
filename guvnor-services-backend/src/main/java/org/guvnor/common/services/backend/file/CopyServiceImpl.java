@@ -12,6 +12,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 
@@ -27,6 +28,9 @@ public class CopyServiceImpl implements CopyService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @Inject
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
@@ -51,7 +55,8 @@ public class CopyServiceImpl implements CopyService {
                             new CommentedOption( identity.getName(), comment ) );
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                               targetPath ) );
+                                                               targetPath,
+                                                               sessionInfo ) );
 
             return targetPath;
 

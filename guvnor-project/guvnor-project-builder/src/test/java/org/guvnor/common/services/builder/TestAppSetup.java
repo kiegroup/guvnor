@@ -18,6 +18,7 @@ package org.guvnor.common.services.builder;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,6 +28,7 @@ import javax.servlet.ServletContext;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.mock;
 import static org.uberfire.backend.server.repositories.SystemRepository.*;
@@ -59,4 +61,9 @@ public class TestAppSetup {
         return mock(ServletContext.class);
     }
 
+    @Produces
+    @Default
+    public SessionInfo sessionInfo() {
+        return mock( SessionInfo.class );
+    }
 }

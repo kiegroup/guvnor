@@ -10,6 +10,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 
@@ -27,6 +28,9 @@ public class DeleteServiceImpl implements DeleteService {
     private Identity identity;
 
     @Inject
+    private SessionInfo sessionInfo;
+
+    @Inject
     private Event<ResourceDeletedEvent> resourceDeletedEvent;
 
     @Override
@@ -37,7 +41,7 @@ public class DeleteServiceImpl implements DeleteService {
 
             ioService.delete( paths.convert( path ) );
 
-            resourceDeletedEvent.fire( new ResourceDeletedEvent( path ) );
+            resourceDeletedEvent.fire( new ResourceDeletedEvent( path, sessionInfo ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
