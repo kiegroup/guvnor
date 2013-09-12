@@ -27,6 +27,8 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 
+import java.util.Set;
+
 /**
  *
  */
@@ -51,6 +53,13 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
     org.guvnor.common.services.project.model.Package resolvePackage( final Path resource );
+
+    /**
+     *  Given a Project resolves the calculation of all the packages for this project.
+     * @param project
+     * @return Collection containing all the packages for the project.
+     */
+    Set<Package> resolvePackages( final Project project );
 
     /**
      * Return true if the file is the Project's pom.xml file
