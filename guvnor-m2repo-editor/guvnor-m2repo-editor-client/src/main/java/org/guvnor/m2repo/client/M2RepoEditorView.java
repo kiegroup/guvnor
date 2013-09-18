@@ -38,6 +38,8 @@ import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
+
 import org.uberfire.client.common.FormStyleLayout;
 
 public class M2RepoEditorView
@@ -164,7 +166,7 @@ public class M2RepoEditorView
                     hiddenFieldsPanel.setVisible( true );
                 } else {
                     BusyPopup.close();
-                    Window.alert( "Upload failed:" + event.getResults() );
+                    ErrorPopup.showMessage( "Upload failed:" + event.getResults() );
 
                     hiddenFieldsPanel.setVisible( false );
                     hiddenArtifactIdField.setText( null );
