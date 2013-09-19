@@ -91,8 +91,8 @@ public class POMContentHandler {
         POM gavModel = new POM(
                 new GAV(
                         (model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId()),
-                        (model.getGroupId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),
-                        (model.getGroupId() == null ? model.getParent().getVersion() : model.getVersion())
+                        (model.getArtifactId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),
+                        (model.getVersion() == null ? model.getParent().getVersion() : model.getVersion())
                 )
         );
 
