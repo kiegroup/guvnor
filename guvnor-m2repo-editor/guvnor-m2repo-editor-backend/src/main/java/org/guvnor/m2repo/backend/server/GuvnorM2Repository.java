@@ -24,8 +24,11 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
+import org.drools.core.io.impl.ReaderInputStream;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.scanner.Aether;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.deployment.DeployRequest;
 import org.sonatype.aether.deployment.DeploymentException;
@@ -57,6 +60,8 @@ import java.util.zip.ZipOutputStream;
 
 @ApplicationScoped
 public class GuvnorM2Repository {
+
+    private static final Logger log = LoggerFactory.getLogger(GuvnorM2Repository.class);
 
     public static final String M2_REPO_ROOT = "repository";
     public static final String REPO_ID_SNAPSHOTS = "snapshots";
@@ -231,8 +236,7 @@ public class GuvnorM2Repository {
         try {
             return new FileInputStream(new File(M2_REPO_ROOT, path));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -266,39 +270,38 @@ public class GuvnorM2Repository {
                 }
             }
         } catch (ZipException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         return null;
     }
 
+    public static InputStream loadPOMStreamFromJar(InputStream jarInputStream) throws IOException {
+        ZipInputStream zis = new ZipInputStream(jarInputStream);
+        ZipEntry entry;
+
+        while ((entry = zis.getNextEntry()) != null) {
+            if (entry.getName().startsWith("META-INF/maven") && entry.getName().endsWith("pom.xml")) {
+                return new ReaderInputStream(new InputStreamReader(zis, "UTF-8"));
+            }
+        }
+
+        throw new FileNotFoundException("Could not find pom.xml from the jar.");
+    }
+
     public static String loadPOMFromJar(InputStream jarInputStream) {
         try {
-            ZipInputStream zis = new ZipInputStream(jarInputStream);
-            ZipEntry entry;
 
-            while ((entry = zis.getNextEntry()) != null)  {
-                //System.out.println("entry: " + entry.getName() + ", " + entry.getSize());
-                        // consume all the data from this entry
-                if(entry.getName().startsWith("META-INF/maven") &&  entry.getName().endsWith("pom.xml")) {
-                    InputStreamReader isr = new InputStreamReader(zis, "UTF-8");
-                    StringBuilder sb = new StringBuilder();
-                    for (int c = isr.read(); c != -1; c = isr.read()) {
-                        sb.append((char)c);
-                    }
-                    return sb.toString();
-                }
+            InputStream is = loadPOMStreamFromJar(jarInputStream);
+            StringBuilder sb = new StringBuilder();
+            for (int c = is.read(); c != -1; c = is.read()) {
+                sb.append((char) c);
             }
-        } catch (ZipException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return sb.toString();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         return null;
@@ -318,7 +321,6 @@ public class GuvnorM2Repository {
             Enumeration<? extends ZipEntry> entries = war.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry e = entries.nextElement();
-                // System.out.println("copy: " + e.getName());
                 append.putNextEntry(e);
                 if (!e.isDirectory()) {
                     IOUtil.copy(war.getInputStream(e), append);
@@ -328,7 +330,6 @@ public class GuvnorM2Repository {
 
             // append pom.
             ZipEntry e = new ZipEntry(getPomXmlPath(gav));
-            // System.out.println("append: " + e.getName());
             append.putNextEntry(e);
             append.write(pom.getBytes());
             append.closeEntry();
@@ -336,12 +337,10 @@ public class GuvnorM2Repository {
             // close
             war.close();
             append.close();
-        } catch (ZipException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (ZipException e) {
+            log.error(e.getMessage());
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
 
         //originalJarFile.delete();
@@ -399,8 +398,7 @@ public class GuvnorM2Repository {
         try {
             new MavenXpp3Writer().write(stringWriter, model);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         return stringWriter.toString();

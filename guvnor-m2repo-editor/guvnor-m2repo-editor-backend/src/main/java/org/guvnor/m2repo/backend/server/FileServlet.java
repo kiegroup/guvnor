@@ -37,11 +37,17 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.drools.compiler.kproject.xml.MinimalPomParser;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.m2repo.exception.InvalidValueException;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.common.services.project.model.GAV;
+
+import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -74,7 +80,7 @@ public class FileServlet extends HttpServlet {
             return;
         }
 
-        response.getWriter().write( "NO-SCRIPT-DATA" );
+        response.getWriter().write("NO-SCRIPT-DATA");
     }
 
     private String processUpload( FormData uploadItem ) throws IOException {
@@ -111,13 +117,10 @@ public class FileServlet extends HttpServlet {
                 }
 
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.GROUP_ID ) ) {
-                    System.out.println( "GROUP_ID:" + item.getString() );
                     emptyGAV.setGroupId( item.getString() );
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
-                    System.out.println( "ARTIFACT_ID:" + item.getString() );
                     emptyGAV.setArtifactId( item.getString() );
                 } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION_ID ) ) {
-                    System.out.println( "VERSION_ID:" + item.getString() );
                     emptyGAV.setVersion( item.getString() );
                 }
             }
@@ -144,7 +147,6 @@ public class FileServlet extends HttpServlet {
 
     public String uploadFile( FormData uploadItem ) throws IOException {
         InputStream fileData = uploadItem.getFile().getInputStream();
-        String fileName = uploadItem.getFile().getName();
         GAV gav = uploadItem.getGav();
 
         try {
@@ -154,23 +156,16 @@ public class FileServlet extends HttpServlet {
                 }
 
                 fileData.mark( fileData.available() ); // is available() safe?
-                String pom = GuvnorM2Repository.loadPOMFromJar( fileData );
-                fileData.reset();
 
-                if ( pom != null ) {
-                    Model model = new MavenXpp3Reader().read( new StringReader( pom ) );
+                PomModel pomModel = MinimalPomParser.parse(
+                        "pom.xml",
+                        new StringInputStream(GuvnorM2Repository.loadPOMFromJar(fileData)));
 
-                    String groupId = model.getGroupId();
-                    String artifactId = model.getArtifactId();
-                    String version = model.getVersion();
+                if ( pomModel != null ) {
 
-
-                    if ( groupId == null ) {
-                        groupId = model.getParent().getGroupId();
-                    }
-                    if ( version == null ) {
-                        version = model.getParent().getVersion();
-                    }
+                    String groupId = pomModel.getReleaseId().getGroupId();
+                    String artifactId = pomModel.getReleaseId().getArtifactId();
+                    String version = pomModel.getReleaseId().getVersion();
 
                     if (isNullOrEmpty(groupId) || isNullOrEmpty(artifactId) || isNullOrEmpty(version)) {
                         return NO_VALID_POM;
@@ -183,12 +178,11 @@ public class FileServlet extends HttpServlet {
                 }
             }
 
+            fileData.reset();
             m2RepoService.deployJar( fileData, gav );
             uploadItem.getFile().getInputStream().close();
 
             return "OK";
-        } catch ( XmlPullParserException e ) {
-            throw ExceptionUtilities.handleException(e);
         } catch ( IOException ioe ) {
             throw ExceptionUtilities.handleException( ioe );
         }
