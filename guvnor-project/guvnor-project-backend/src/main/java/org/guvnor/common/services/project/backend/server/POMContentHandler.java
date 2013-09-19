@@ -28,7 +28,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-
+import org.kie.scanner.embedder.MavenProjectLoader;
 
 @Dependent
 public class POMContentHandler {
@@ -90,9 +90,10 @@ public class POMContentHandler {
 
         POM gavModel = new POM(
                 new GAV(
-                        model.getGroupId(),
-                        model.getArtifactId(),
-                        model.getVersion())
+                        (model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId()),
+                        (model.getGroupId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),
+                        (model.getGroupId() == null ? model.getParent().getVersion() : model.getVersion())
+                )
         );
 
         for (Repository repository : model.getRepositories()) {
