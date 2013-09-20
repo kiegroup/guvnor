@@ -36,6 +36,9 @@ import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.services.security.AppRoles;
+import org.uberfire.security.Identity;
 
 /**
  * Widget with a table of jar list in Guvnor M2_REPO
@@ -65,6 +68,8 @@ public class JarListEditor
 
     private Caller<M2RepoService> m2RepoService;
 
+    private final Identity identity;
+    
     public JarListEditor( Caller<M2RepoService> repoService ) {
         this( repoService, null );
 
@@ -74,24 +79,29 @@ public class JarListEditor
                           final String searchFilter ) {
         this.m2RepoService = repoService;
         pagedJarTable = new PagedJarTable( repoService, searchFilter );
+        identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
 
-        Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
-            public String getValue( JarListPageRow row ) {
-                return "Download";
-            }
-        };
+        //If the current user is not an Administrator do not include the download button
+		if (identity.hasRole(AppRoles.ADMIN)) {
+			Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(
+					new ButtonCell()) {
+				public String getValue(JarListPageRow row) {
+					return "Download";
+				}
+			};
 
-        downloadColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-            public void update( int index,
-                                JarListPageRow row,
-                                String value ) {
-                Window.open( getFileDownloadURL( row.getPath() ),
-                             "downloading",
-                             "resizable=no,scrollbars=yes,status=no" );
-            }
-        } );
+			downloadColumn
+					.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
+						public void update(int index, JarListPageRow row,
+								String value) {
+							Window.open(getFileDownloadURL(row.getPath()),
+									"downloading",
+									"resizable=no,scrollbars=yes,status=no");
+						}
+					});
 
-        pagedJarTable.addColumn( downloadColumn, new TextHeader( "Download" ) );
+			pagedJarTable.addColumn(downloadColumn, new TextHeader("Download"));
+		}
 
         initWidget( uiBinder.createAndBindUi( this ) );
     }
