@@ -1,3 +1,5 @@
+package org.kie.workbench.common.services.builder.tests.excel;
+
 public class Policy {
 
     private String type;
