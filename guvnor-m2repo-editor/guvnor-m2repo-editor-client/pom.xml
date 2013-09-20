@@ -44,7 +44,12 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-security</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
