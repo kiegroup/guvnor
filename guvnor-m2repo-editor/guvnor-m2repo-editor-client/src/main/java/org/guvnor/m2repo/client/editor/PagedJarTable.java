@@ -8,20 +8,29 @@ import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+
+import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.services.security.AppRoles;
 import org.uberfire.client.tables.AbstractPagedTable;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.SelectionColumn;
@@ -29,6 +38,7 @@ import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
+import org.uberfire.security.Identity;
 
 public class PagedJarTable
         extends AbstractPagedTable<JarListPageRow> {
@@ -48,6 +58,14 @@ public class PagedJarTable
     private MultiSelectionModel<JarListPageRow> selectionModel;
     private static final int PAGE_SIZE = 10;
 
+    @UiField()
+    protected Button deleteSelectedJarButton;
+
+    @UiField()
+    protected Button refreshButton;
+    
+    private final Identity identity;
+    
     public PagedJarTable( final Caller<M2RepoService> m2RepoService ) {
         this( m2RepoService, null );
     }
@@ -57,6 +75,31 @@ public class PagedJarTable
         super( PAGE_SIZE );
         this.m2RepoService = m2RepoService;
 
+        identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
+
+        //If the current user is not an Administrator do not include the download button
+		if (identity.hasRole(AppRoles.ADMIN)) {
+			Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(
+					new ButtonCell()) {
+				public String getValue(JarListPageRow row) {
+					return "Download";
+				}
+			};
+
+			downloadColumn
+					.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
+						public void update(int index, JarListPageRow row,
+								String value) {
+							Window.open(getFileDownloadURL(row.getPath()),
+									"downloading",
+									"resizable=no,scrollbars=yes,status=no");
+						}
+					});
+
+			addColumn(downloadColumn, new TextHeader("Download"));
+		}
+
+		
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged( HasData<JarListPageRow> display ) {
                 PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
@@ -204,4 +247,43 @@ public class PagedJarTable
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
+    
+    @UiHandler("deleteSelectedJarButton")
+    void deleteSelectedJar( ClickEvent e ) {
+        if ( getSelectedJars() == null ) {
+            Window.alert( "Please Select A Jar To Delete" );
+            return;
+        }
+        if ( !Window.confirm( Constants.INSTANCE.AreYouSureYouWantToDeleteTheseItems() ) ) {
+            return;
+        }
+        m2RepoService.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void v ) {
+                Window.alert( "Deleted successfully" );
+                refresh();
+            }
+        } ).deleteJar( getSelectedJars() );
+    }
+
+    @UiHandler("refreshButton")
+    void refresh( ClickEvent e ) {
+        refresh();
+    }
+
+/*    @UiHandler("auditButton")
+    void viewAuditLog( ClickEvent e ) {
+    }*/
+
+    String getFileDownloadURL( String path ) {
+        String url = getGuvnorM2RepoBaseURL() + path;
+        return url;
+    }
+
+    public static String getGuvnorM2RepoBaseURL() {
+        final String url = GWT.getModuleBaseURL();
+        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
+        return baseUrl + "maven2/";
+    }
+
 }
