@@ -64,6 +64,7 @@ public class GuvnorM2Repository {
     private static final Logger log = LoggerFactory.getLogger(GuvnorM2Repository.class);
 
     public static final String M2_REPO_ROOT = "repository";
+    public static String M2_REPO_DIR;
     public static final String REPO_ID_SNAPSHOTS = "snapshots";
     public static final String REPO_ID_RELEASES = "releases";
     private static final int BUFFER_SIZE = 1024;
@@ -77,6 +78,14 @@ public class GuvnorM2Repository {
     }
 
     private void setM2Repos() {
+        final String meReposDir = System.getProperty( "org.guvnor.m2repo.dir" );
+
+        if ( meReposDir == null || meReposDir.trim().isEmpty() ) {
+        	M2_REPO_DIR = M2_REPO_ROOT;
+        } else {
+        	M2_REPO_DIR = meReposDir.trim();
+        }
+        
         snapshotsRepository = new File(getM2RepositoryRootDir() + File.separator + REPO_ID_SNAPSHOTS);
         if (!snapshotsRepository.exists()) {
             snapshotsRepository.mkdirs();
@@ -89,10 +98,10 @@ public class GuvnorM2Repository {
     }
 
     protected String getM2RepositoryRootDir() {
-        if (!M2_REPO_ROOT.endsWith(File.separator)) {
-            return M2_REPO_ROOT + File.separator;
+        if (!M2_REPO_DIR.endsWith(File.separator)) {
+            return M2_REPO_DIR + File.separator;
         } else {
-            return M2_REPO_ROOT;
+            return M2_REPO_DIR;
         }
     }
 
@@ -181,7 +190,7 @@ public class GuvnorM2Repository {
     }
 
     private RemoteRepository getGuvnorM2Repository() {
-        File m2RepoDir = new File( M2_REPO_ROOT );
+        File m2RepoDir = new File( M2_REPO_DIR );
         if (!m2RepoDir.exists()) {
             return null;
         }
@@ -194,7 +203,7 @@ public class GuvnorM2Repository {
 
     public boolean deleteFile(String[] fullPaths) {
         for (String fullPath : fullPaths) {
-            final File file = new File(M2_REPO_ROOT, fullPath);
+            final File file = new File(M2_REPO_DIR, fullPath);
             if (file.exists()) {
                 file.delete();
             }
@@ -224,7 +233,7 @@ public class GuvnorM2Repository {
             wildcard = "*" + filters + "*.jar";
         }
         Collection<File> files = FileUtils.listFiles(
-                new File(M2_REPO_ROOT),
+                new File(M2_REPO_DIR),
                 new WildcardFileFilter(wildcard, IOCase.INSENSITIVE),
                 DirectoryFileFilter.DIRECTORY
               );
@@ -234,7 +243,7 @@ public class GuvnorM2Repository {
 
     public InputStream loadFile(String path) {
         try {
-            return new FileInputStream(new File(M2_REPO_ROOT, path));
+            return new FileInputStream(new File(M2_REPO_DIR, path));
         } catch (FileNotFoundException e) {
             log.error(e.getMessage());
         }
@@ -242,11 +251,11 @@ public class GuvnorM2Repository {
     }
 
     public String getFileName(String path) {
-        return (new File(M2_REPO_ROOT, path)).getName();
+        return (new File(M2_REPO_DIR, path)).getName();
     }
 
     public static String loadPOMFromJar(String jarPath) {
-        File zip = new File(M2_REPO_ROOT, jarPath);
+        File zip = new File(M2_REPO_DIR, jarPath);
 
         return  loadPOMFromJarInternal(zip);
     }
