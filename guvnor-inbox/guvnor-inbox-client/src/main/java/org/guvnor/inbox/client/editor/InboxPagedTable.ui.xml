@@ -21,7 +21,10 @@
              xmlns:uf='urn:import:org.uberfire.client.tables'>
 
   <gwt:VerticalPanel>
-    <gwt:ToggleButton ui:field="columnPickerButton"/>
+    <gwt:HorizontalPanel>
+      <gwt:Button ui:field="refreshButton" text='Refresh'/>
+      <gwt:ToggleButton ui:field="columnPickerButton"/>
+    </gwt:HorizontalPanel>      
     <b:CellTable ui:field="cellTable"/>
     <uf:UberfireSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>

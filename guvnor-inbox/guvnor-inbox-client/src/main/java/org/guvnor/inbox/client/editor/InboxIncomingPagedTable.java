@@ -16,23 +16,28 @@
 
 package org.guvnor.inbox.client.editor;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;
+import org.uberfire.workbench.events.PathChangeEvent;
 
 /**
  * Widget with a table of inbox entries results.
  */
 public class InboxIncomingPagedTable extends InboxPagedTable implements IsInboxIncomingPagedTable {
 
-    public InboxIncomingPagedTable(final Caller<InboxService> inboxService, final String inboxName ) {
-        super( inboxService, inboxName );
+    public InboxIncomingPagedTable(final Caller<InboxService> inboxService, final String inboxName, final PlaceManager placeManager, 
+            final Event<PathChangeEvent> pathChangeEvent ) {
+        super( inboxService, inboxName, placeManager, pathChangeEvent );
     }
 
     @Override

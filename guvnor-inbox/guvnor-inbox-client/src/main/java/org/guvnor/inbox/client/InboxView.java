@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.PathChangeEvent;
-import org.guvnor.inbox.client.editor.InboxEditor;
+import org.guvnor.inbox.client.editor.InboxPagedTable;
 import org.guvnor.inbox.service.InboxService;
 
 import javax.enterprise.event.Event;
@@ -54,7 +54,7 @@ public class InboxView
     
     @Override
     public void setContent( final String inboxName ) {
-        InboxEditor table = new InboxEditor(inboxService, inboxName, placeManager, pathChangeEvent);    
+    	InboxPagedTable table = new InboxPagedTable(inboxService, inboxName, placeManager, pathChangeEvent);    
         layout.add(table);
     }
 
