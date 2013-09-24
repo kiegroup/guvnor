@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.guvnor.m2repo.client.editor.JarListEditor;
+import org.guvnor.m2repo.client.editor.PagedJarTable;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -94,10 +94,10 @@ public class M2RepoEditorView
             public void onClick( ClickEvent arg0 ) {
                 resultsP.clear();
                 if ( searchTextBox.getText() == null || searchTextBox.getText().equals( "" ) ) {
-                    JarListEditor table = new JarListEditor( m2RepoService );
+                	PagedJarTable table = new PagedJarTable( m2RepoService );
                     resultsP.add( table );
                 } else {
-                    JarListEditor table = new JarListEditor( m2RepoService, searchTextBox.getText() );
+                	PagedJarTable table = new PagedJarTable( m2RepoService, searchTextBox.getText() );
                     resultsP.add( table );
                 }
             }
@@ -118,7 +118,7 @@ public class M2RepoEditorView
         container.add( resultsP );
 
         resultsP.clear();
-        JarListEditor table = new JarListEditor( m2RepoService );
+        PagedJarTable table = new PagedJarTable( m2RepoService );
         resultsP.add( table );
 
         layout.add( container );
@@ -155,7 +155,7 @@ public class M2RepoEditorView
                     hiddenVersionIdField.setText( null );
 
                     resultsP.clear();
-                    JarListEditor table = new JarListEditor( m2RepoService );
+                    PagedJarTable table = new PagedJarTable( m2RepoService );
                     resultsP.add( table );
                     
                     up.getElement().setPropertyString("value", "");
