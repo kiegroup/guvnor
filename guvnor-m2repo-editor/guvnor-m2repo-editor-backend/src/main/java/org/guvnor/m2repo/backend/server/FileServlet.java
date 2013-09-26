@@ -157,9 +157,9 @@ public class FileServlet extends HttpServlet {
 
                 fileData.mark( fileData.available() ); // is available() safe?
 
-                PomModel pomModel = MinimalPomParser.parse(
-                        "pom.xml",
-                        new StringInputStream(GuvnorM2Repository.loadPOMFromJar(fileData)));
+                String pomContent = GuvnorM2Repository.loadPOMFromJar(fileData);
+                PomModel pomModel = null;
+                if ( pomContent != null ) pomModel = MinimalPomParser.parse("pom.xml", new StringInputStream(pomContent));
 
                 if ( pomModel != null ) {
 
