@@ -16,7 +16,12 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -24,8 +29,8 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
+import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
@@ -52,6 +57,7 @@ import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
 @Service
@@ -87,6 +93,7 @@ public class ProjectServiceImpl
     private Event<NewPackageEvent> newPackageEvent;
 
     private Identity identity;
+    private SessionInfo sessionInfo;
 
     public ProjectServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -103,7 +110,8 @@ public class ProjectServiceImpl
                                final ConfigurationFactory configurationFactory,
                                final Event<NewProjectEvent> newProjectEvent,
                                final Event<NewPackageEvent> newPackageEvent,
-                               final Identity identity ) {
+                               final Identity identity,
+                               final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.paths = paths;
         this.pomService = pomService;
@@ -115,6 +123,7 @@ public class ProjectServiceImpl
         this.newProjectEvent = newProjectEvent;
         this.newPackageEvent = newPackageEvent;
         this.identity = identity;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -233,7 +242,7 @@ public class ProjectServiceImpl
         for ( String src : sourcePaths ) {
             final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
             packageNames.addAll( getPackageNames( nioProjectRootPath,
-                    nioPackageRootSrcPath ) );
+                                                  nioPackageRootSrcPath ) );
         }
 
         //Construct Package objects for each package name
@@ -242,7 +251,7 @@ public class ProjectServiceImpl
             for ( String src : sourcePaths ) {
                 final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
                 if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
-                    packages.add( resolvePackage( paths.convert(nioPackagePath, false) ) );
+                    packages.add( resolvePackage( paths.convert( nioPackagePath, false ) ) );
                     resolvedPackages.add( packagePathSuffix );
                 }
             }
@@ -258,14 +267,14 @@ public class ProjectServiceImpl
             return packageNames;
         }
         packageNames.add( getPackagePathSuffix( nioProjectRootPath,
-                nioPackageSrcPath ) );
+                                                nioPackageSrcPath ) );
         final LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
         final DirectoryStream<org.kie.commons.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
-                metaDataFileFilter );
+                                                                                                                          metaDataFileFilter );
         for ( org.kie.commons.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
             if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
                 packageNames.addAll( getPackageNames( nioProjectRootPath,
-                        nioChildPackageSrcPath ) );
+                                                      nioChildPackageSrcPath ) );
             }
         }
         return packageNames;
@@ -562,7 +571,8 @@ public class ProjectServiceImpl
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

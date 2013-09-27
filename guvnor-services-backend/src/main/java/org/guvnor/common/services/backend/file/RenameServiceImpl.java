@@ -1,6 +1,5 @@
 package org.guvnor.common.services.backend.file;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,7 +12,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceRenamedEvent;
 
 @Service
 public class RenameServiceImpl implements RenameService {
@@ -31,9 +29,6 @@ public class RenameServiceImpl implements RenameService {
     @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
-    private Event<ResourceRenamedEvent> resourceRenamedEvent;
-
     @Override
     public Path rename( final Path path,
                         final String newName,
@@ -49,14 +44,9 @@ public class RenameServiceImpl implements RenameService {
 
             ioService.move( _path,
                             _target,
-                            new CommentedOption( identity.getName(), comment ) );
+                            new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
 
-            final Path target = paths.convert( _target );
-            resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                                 target,
-                                                                 sessionInfo ) );
-
-            return target;
+            return paths.convert( _target );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

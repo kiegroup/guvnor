@@ -31,6 +31,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
 @Service
@@ -43,6 +44,7 @@ public class KModuleServiceImpl
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
     private Identity identity;
+    private SessionInfo sessionInfo;
 
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
@@ -53,12 +55,14 @@ public class KModuleServiceImpl
                                final Paths paths,
                                final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
-                               final Identity identity ) {
+                               final Identity identity,
+                               final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.paths = paths;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
         this.identity = identity;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -134,7 +138,8 @@ public class KModuleServiceImpl
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

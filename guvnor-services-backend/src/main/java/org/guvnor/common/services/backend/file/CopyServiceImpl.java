@@ -52,7 +52,7 @@ public class CopyServiceImpl implements CopyService {
 
             ioService.copy( paths.convert( path ),
                             paths.convert( targetPath ),
-                            new CommentedOption( identity.getName(), comment ) );
+                            new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
                                                                targetPath,
