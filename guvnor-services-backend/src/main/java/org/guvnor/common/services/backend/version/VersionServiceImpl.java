@@ -32,6 +32,7 @@ import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
 import static org.kie.commons.java.nio.file.StandardCopyOption.*;
@@ -49,6 +50,9 @@ public class VersionServiceImpl implements VersionService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
@@ -76,7 +80,7 @@ public class VersionServiceImpl implements VersionService {
 
             final org.kie.commons.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-            return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( identity.getName(), comment ) ) );
+            return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
 import static org.junit.Assert.*;
@@ -52,7 +53,8 @@ public class KModuleServiceImplTest {
                                               paths,
                                               mock( MetadataService.class ),
                                               kProjectContentHandler,
-                                              mock( Identity.class ) );
+                                              mock( Identity.class ),
+                                              mock( SessionInfo.class ));
     }
 
     private void setUpWrite() {

@@ -164,7 +164,7 @@ public class InboxServiceImpl
     public void recordUserEditEvent( @Observes final ResourceUpdatedEvent event ) {
         PortablePreconditions.checkNotNull( "event", event );
         final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
-        recordUserEditEvent( resourcePath.toURI(), resourcePath.getFileName().toString() );
+        recordUserEditEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getName() );
     }
 
     /**
@@ -172,11 +172,12 @@ public class InboxServiceImpl
      */
     //@Override
     public synchronized void recordUserEditEvent( String itemPath,
-                                                  String itemName ) {
-        addToRecentEdited( itemPath, itemName );
+                                                  String itemName,
+                                                  String userName ) {
+        addToRecentEdited( itemPath, itemName, userName );
 
         //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
-        addToIncoming( itemPath, itemName, identity.getName(), MailboxService.MAIL_MAN );
+        addToIncoming( itemPath, itemName, userName, MailboxService.MAIL_MAN );
         mailboxService.processOutgoing();
         mailboxService.wakeUp();
     }
@@ -186,12 +187,13 @@ public class InboxServiceImpl
      * adds to the list...
      */
     public void addToRecentEdited( String itemPath,
-                                   String note ) {
+                                   String note,
+                                   String userName ) {
         addToInbox( RECENT_EDITED_ID,
                     itemPath,
                     note,
-                    identity.getName(),
-                    identity.getName() );
+                    userName,
+                    userName );
     }
 
     public void addToRecentOpened( String itemPath,
