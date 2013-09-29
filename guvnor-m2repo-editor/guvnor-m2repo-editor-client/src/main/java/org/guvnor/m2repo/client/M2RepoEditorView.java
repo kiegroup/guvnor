@@ -17,6 +17,8 @@ package org.guvnor.m2repo.client;
 
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.Form.SubmitHandler;
 import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -137,13 +139,23 @@ public class M2RepoEditorView
         Button ok = new Button( "upload" );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                showUploadingBusy();
-                submitUpload();
+                showUploadingBusy();        		
+                form.submit();
             }
         } );
 
-        //form.add(fields);
-
+        form.addSubmitHandler(new SubmitHandler() {
+			@Override
+			public void onSubmit(SubmitEvent event) {
+				String fileName = up.getFilename();
+				if(fileName == null || "".equals(fileName)) {
+					BusyPopup.close();
+					Window.alert("Please selete a file to upload");
+			        event.cancel();
+				}      				
+			}            		
+    	});
+        
         form.addSubmitCompleteHandler( new WellForm.SubmitCompleteHandler() {
             public void onSubmitComplete( final WellForm.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
@@ -205,10 +217,6 @@ public class M2RepoEditorView
         form.add( allFields );
 
         return form;
-    }
-
-    protected void submitUpload() {
-        form.submit();
     }
 
     protected void showUploadingBusy() {
