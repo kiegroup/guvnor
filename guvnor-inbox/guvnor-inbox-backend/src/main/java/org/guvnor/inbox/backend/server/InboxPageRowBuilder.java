@@ -25,13 +25,12 @@ import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.uberfire.security.Identity;
 
-
 public class InboxPageRowBuilder
-    implements
-    PageRowBuilder<InboxPageRequest, Iterator<InboxServiceImpl.InboxEntry>> {
+        implements
+        PageRowBuilder<InboxPageRequest, Iterator<InboxEntry>> {
 
-    private InboxPageRequest     pageRequest;
-    private Iterator<InboxServiceImpl.InboxEntry> iterator;
+    private InboxPageRequest pageRequest;
+    private Iterator<InboxEntry> iterator;
     private Identity identity;
 
     public List<InboxPageRow> build() {
@@ -40,8 +39,8 @@ public class InboxPageRowBuilder
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
         List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
-        while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            InboxServiceImpl.InboxEntry ie = iterator.next();
+        while ( iterator.hasNext() && ( pageSize == null || rowList.size() < pageSize ) ) {
+            InboxEntry ie = iterator.next();
 
             if ( skipped >= startRowIndex ) {
                 rowList.add( createInboxPageRow( ie,
@@ -52,26 +51,26 @@ public class InboxPageRowBuilder
         return rowList;
     }
 
-    private InboxPageRow createInboxPageRow(InboxServiceImpl.InboxEntry inboxEntry,
-                                            InboxPageRequest request) {
+    private InboxPageRow createInboxPageRow( InboxEntry inboxEntry,
+                                             InboxPageRequest request ) {
         InboxPageRow row = null;
         if ( request.getInboxName().equals( InboxServiceImpl.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( inboxEntry.note );
+            tr.setNote( inboxEntry.getNote() );
             //tr.setName( inboxEntry.note );
-            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
-            tr.setFrom( inboxEntry.from );
+            tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
+            tr.setFrom( inboxEntry.getFrom() );
             row = tr;
 
         } else {
             InboxPageRow tr = new InboxPageRow();
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( inboxEntry.note );
+            tr.setNote( inboxEntry.getNote() );
             //tr.setName( inboxEntry.note );
-            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
+            tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             row = tr;
         }
         return row;
@@ -88,17 +87,17 @@ public class InboxPageRowBuilder
 
     }
 
-    public InboxPageRowBuilder withPageRequest(InboxPageRequest pageRequest) {
+    public InboxPageRowBuilder withPageRequest( InboxPageRequest pageRequest ) {
         this.pageRequest = pageRequest;
         return this;
     }
 
-    public InboxPageRowBuilder withIdentity(Identity identity) {
+    public InboxPageRowBuilder withIdentity( Identity identity ) {
         this.identity = identity;
         return this;
     }
 
-    public InboxPageRowBuilder withContent(Iterator<InboxServiceImpl.InboxEntry> iterator) {
+    public InboxPageRowBuilder withContent( Iterator<InboxEntry> iterator ) {
         this.iterator = iterator;
         return this;
     }

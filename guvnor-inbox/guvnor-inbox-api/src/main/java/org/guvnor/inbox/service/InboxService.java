@@ -24,6 +24,10 @@ import org.uberfire.paging.PageResponse;
 @Remote
 public interface InboxService {
 
+    static final String RECENT_EDITED_ID = "recentEdited";
+    static final String RECENT_VIEWED_ID = "recentViewed";
+    static final String INCOMING_ID = "incoming";
+
     /**
      * Load the data for a given inbox for the currently logged in user.
      */

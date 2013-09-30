@@ -23,11 +23,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import org.kie.commons.io.FileSystemType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -36,10 +31,10 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
-import org.guvnor.inbox.backend.server.InboxServiceImpl.InboxEntry;
-import org.guvnor.inbox.service.InboxService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
@@ -54,7 +49,7 @@ public class MailboxService {
     public static final String MAIL_MAN = "mailman";
 
     @Inject
-    private InboxService inboxService;
+    private InboxBackend inboxBackend;
 
     @Inject
     @Named("ioStrategy")
@@ -120,7 +115,7 @@ public class MailboxService {
     void processOutgoing() {
         executor.execute( new Runnable() {
             public void run() {
-                final List<InboxEntry> es = ( (InboxServiceImpl) inboxService ).loadIncoming( MAIL_MAN );
+                final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
                 log.debug( "Outgoing messages size " + es.size() );
                 //wipe out inbox for mailman here...
 
@@ -133,11 +128,11 @@ public class MailboxService {
                         return;
                     }
 
-                    Set<String> recentEdited = makeSetOf( ( (InboxServiceImpl) inboxService ).loadRecentEdited( toUser ) );
+                    final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
                     for ( InboxEntry e : es ) {
                         //the user who edited the item wont receive a message in inbox.
-                        if ( !e.from.equals( toUser ) && recentEdited.contains( e.itemPath ) ) {
-                            ( (InboxServiceImpl) inboxService ).addToIncoming( e.itemPath, e.note, e.from, toUser );
+                        if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
+                            inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
                         }
                     }
                 }
@@ -147,9 +142,9 @@ public class MailboxService {
     }
 
     private Set<String> makeSetOf( List<InboxEntry> inboxEntries ) {
-        Set<String> entries = new HashSet<String>();
+        final Set<String> entries = new HashSet<String>();
         for ( InboxEntry e : inboxEntries ) {
-            entries.add( e.itemPath );
+            entries.add( e.getItemPath() );
         }
         return entries;
     }
