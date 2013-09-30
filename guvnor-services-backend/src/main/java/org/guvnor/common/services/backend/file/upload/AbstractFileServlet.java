@@ -49,28 +49,34 @@ public abstract class AbstractFileServlet extends HttpServlet {
     /**
      * Load resource
      * @param path
+     * @param request
      * @return
      */
-    protected abstract InputStream doLoad( final Path path );
+    protected abstract InputStream doLoad( final Path path,
+                                           final HttpServletRequest request );
 
     /**
      * Create a new resource
      * @param path
      * @param data
+     * @param request
      * @param comment
      */
     protected abstract void doCreate( final Path path,
                                       final InputStream data,
+                                      final HttpServletRequest request,
                                       final String comment );
 
     /**
      * Update a resource
      * @param path
      * @param data
+     * @param request
      * @param comment
      */
     protected abstract void doUpdate( final Path path,
                                       final InputStream data,
+                                      final HttpServletRequest request,
                                       final String comment );
 
     /**
@@ -99,7 +105,8 @@ public abstract class AbstractFileServlet extends HttpServlet {
         final FormData item = getFormData( request );
 
         if ( item.getFile() != null ) {
-            response.getWriter().write( processUpload( item ) );
+            response.getWriter().write( processUpload( item,
+                                                       request ) );
             return;
         }
 
@@ -176,19 +183,22 @@ public abstract class AbstractFileServlet extends HttpServlet {
         }
     }
 
-    private String processUpload( final FormData item ) throws IOException {
+    private String processUpload( final FormData item,
+                                  final HttpServletRequest request ) throws IOException {
 
         // If the file it doesn't exist.
         if ( "".equals( item.getFile().getName() ) ) {
             throw new IOException( "No file selected." );
         }
 
-        final String processResult = uploadFile( item );
+        final String processResult = uploadFile( item,
+                                                 request );
 
         return processResult;
     }
 
-    private String uploadFile( final FormData item ) throws IOException {
+    private String uploadFile( final FormData item,
+                               final HttpServletRequest request ) throws IOException {
         final InputStream fileData = item.getFile().getInputStream();
         final org.uberfire.backend.vfs.Path targetPath = item.getTargetPath();
 
@@ -197,11 +207,13 @@ public abstract class AbstractFileServlet extends HttpServlet {
                 case CREATE:
                     doCreate( targetPath,
                               fileData,
+                              request,
                               "Uploaded " + getTimestamp() );
                     break;
                 case UPDATE:
                     doUpdate( targetPath,
                               fileData,
+                              request,
                               "Uploaded " + getTimestamp() );
             }
         } finally {
@@ -227,26 +239,29 @@ public abstract class AbstractFileServlet extends HttpServlet {
     /**
      * doGet acting like a dispatcher.
      */
-    protected void doGet( final HttpServletRequest req,
-                          final HttpServletResponse res ) throws ServletException, IOException {
+    protected void doGet( final HttpServletRequest request,
+                          final HttpServletResponse response ) throws ServletException, IOException {
 
-        final String path = req.getParameter( FileManagerFields.FORM_FIELD_PATH );
+        final String path = request.getParameter( FileManagerFields.FORM_FIELD_PATH );
 
         if ( path != null ) {
             processAttachmentDownload( path,
-                                       res );
+                                       request,
+                                       response );
         } else {
-            res.sendError( HttpServletResponse.SC_BAD_REQUEST );
+            response.sendError( HttpServletResponse.SC_BAD_REQUEST );
         }
     }
 
     protected void processAttachmentDownload( final String path,
+                                              final HttpServletRequest request,
                                               final HttpServletResponse response ) throws IOException {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try {
             final Path sourcePath = convertPath( path );
-            IOUtils.copy( doLoad( sourcePath ),
+            IOUtils.copy( doLoad( sourcePath,
+                                  request ),
                           output );
             // String fileName = m2RepoService.getJarName(path);
             final String fileName = sourcePath.getFileName();
