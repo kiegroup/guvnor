@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,15 +32,14 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
 
-@Dependent
 public class InboxPageRowBuilder
-    implements
-    PageRowBuilder<InboxPageRequest, Iterator<InboxServiceImpl.InboxEntry>> {
+        implements
+        PageRowBuilder<InboxPageRequest, Iterator<InboxEntry>> {
 
-    private InboxPageRequest     pageRequest;
-    private Iterator<InboxServiceImpl.InboxEntry> iterator;
+    private InboxPageRequest pageRequest;
+    private Iterator<InboxEntry> iterator;
     private Identity identity;
-    
+
     @Inject
     private Paths paths;
 
@@ -50,15 +47,14 @@ public class InboxPageRowBuilder
     @Named("ioStrategy")
     private IOService ioService;
 
-    
     public List<InboxPageRow> build() {
         validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
         List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
-        while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            InboxServiceImpl.InboxEntry ie = iterator.next();
+        while ( iterator.hasNext() && ( pageSize == null || rowList.size() < pageSize ) ) {
+            InboxEntry ie = iterator.next();
 
             if ( skipped >= startRowIndex ) {
                 rowList.add( createInboxPageRow( ie,
@@ -69,45 +65,46 @@ public class InboxPageRowBuilder
         return rowList;
     }
 
-    private InboxPageRow createInboxPageRow(InboxServiceImpl.InboxEntry inboxEntry,
-                                            InboxPageRequest request) {
+    private InboxPageRow createInboxPageRow( InboxEntry inboxEntry,
+                                             InboxPageRequest request ) {
         InboxPageRow row = null;
         if ( request.getInboxName().equals( InboxServiceImpl.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( inboxEntry.note );
-            Path path = convertPath(inboxEntry.itemPath);
-            tr.setPath(path);
-            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
-            tr.setFrom( inboxEntry.from );
+
+            tr.setNote( inboxEntry.getNote() );
+            Path path = convertPath( inboxEntry.getItemPath() );
+            tr.setPath( path );
+            tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
+            tr.setFrom( inboxEntry.getFrom() );
             row = tr;
 
         } else {
             InboxPageRow tr = new InboxPageRow();
             //tr.setUuid( inboxEntry.assetUUID );
             //tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( inboxEntry.note );
-            Path path = convertPath(inboxEntry.itemPath);
-            tr.setPath(path);
-            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
+            tr.setNote( inboxEntry.getNote() );
+            Path path = convertPath( inboxEntry.getItemPath() );
+            tr.setPath( path );
+            tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             row = tr;
         }
         return row;
     }
 
-	protected Path convertPath(final String fullPath) {
-		try {
-			final org.kie.commons.java.nio.file.Path path = ioService
-					.get(new URI(fullPath));
+    protected Path convertPath( final String fullPath ) {
+        try {
+            final org.kie.commons.java.nio.file.Path path = ioService
+                    .get( new URI( fullPath ) );
 
-			return paths.convert(path, false);
-		} catch (URISyntaxException e) {
-			//Ignore
-		}
-		return null;
-	}
-    
+            return paths.convert( path, false );
+        } catch ( URISyntaxException e ) {
+            //Ignore
+        }
+        return null;
+    }
+
     public void validate() {
         if ( pageRequest == null ) {
             throw new IllegalArgumentException( "PageRequest cannot be null" );
@@ -119,17 +116,17 @@ public class InboxPageRowBuilder
 
     }
 
-    public InboxPageRowBuilder withPageRequest(InboxPageRequest pageRequest) {
+    public InboxPageRowBuilder withPageRequest( InboxPageRequest pageRequest ) {
         this.pageRequest = pageRequest;
         return this;
     }
 
-    public InboxPageRowBuilder withIdentity(Identity identity) {
+    public InboxPageRowBuilder withIdentity( Identity identity ) {
         this.identity = identity;
         return this;
     }
 
-    public InboxPageRowBuilder withContent(Iterator<InboxServiceImpl.InboxEntry> iterator) {
+    public InboxPageRowBuilder withContent( Iterator<InboxEntry> iterator ) {
         this.iterator = iterator;
         return this;
     }
