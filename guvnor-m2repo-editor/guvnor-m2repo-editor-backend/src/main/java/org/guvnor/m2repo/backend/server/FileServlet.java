@@ -20,7 +20,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
@@ -35,19 +34,11 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.filters.StringInputStream;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.m2repo.exception.InvalidValueException;
-import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.common.services.project.model.GAV;
-
-import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
+import org.guvnor.m2repo.model.HTMLFileManagerFields;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -159,7 +150,7 @@ public class FileServlet extends HttpServlet {
 
                 String pomContent = GuvnorM2Repository.loadPOMFromJar(fileData);
                 PomModel pomModel = null;
-                if ( pomContent != null ) pomModel = MinimalPomParser.parse("pom.xml", new StringInputStream(pomContent));
+                if ( pomContent != null ) pomModel = PomModel.Parser.parse("pom.xml", new StringInputStream(pomContent));
 
                 if ( pomModel != null ) {
 
