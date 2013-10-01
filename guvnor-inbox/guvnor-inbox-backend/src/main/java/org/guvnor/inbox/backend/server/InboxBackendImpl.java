@@ -26,6 +26,7 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
+import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
@@ -46,7 +47,7 @@ public class InboxBackendImpl implements InboxBackend {
     private IOService ioService;
 
     @Inject
-    private org.uberfire.backend.server.UserServicesImpl userServices;
+    private UserServicesBackendImpl userServicesBackend;
 
     @Inject
     private MailboxService mailboxService;
@@ -64,7 +65,7 @@ public class InboxBackendImpl implements InboxBackend {
     @Override
     public List<InboxEntry> readEntries( String userName,
                                          String boxName ) {
-        Path path = userServices.buildPath( userName, INBOX, boxName );
+        Path path = userServicesBackend.buildPath( userName, INBOX, boxName );
 
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
@@ -111,7 +112,7 @@ public class InboxBackendImpl implements InboxBackend {
         addToRecentOpened( itemPath, itemName, userName );
         List<InboxEntry> unreadIncoming = removeAnyExisting( itemPath,
                                                              loadIncoming( userName ) );
-        writeEntries( INCOMING_ID, unreadIncoming );
+        writeEntries( userName, INCOMING_ID, unreadIncoming );
     }
 
     /**
@@ -173,7 +174,7 @@ public class InboxBackendImpl implements InboxBackend {
                                          userFrom ) );
         }
 
-        writeEntries( boxName, entries );
+        writeEntries( userName, boxName, entries );
     }
 
     private List<InboxEntry> removeAnyExisting( final String itemPath,
@@ -189,9 +190,10 @@ public class InboxBackendImpl implements InboxBackend {
         return inboxEntries;
     }
 
-    private void writeEntries( final String boxName,
+    private void writeEntries( final String userName,
+                               final String boxName,
                                final List<InboxEntry> entries ) {
-        Path path = userServices.buildPath( INBOX, boxName );
+        final Path path = userServicesBackend.buildPath( userName, INBOX, boxName );
 
         String entry = getXStream().toXML( entries );
 
