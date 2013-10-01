@@ -23,14 +23,12 @@ import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
-
 import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.services.security.AppRoles;
 import org.uberfire.client.tables.AbstractPagedTable;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.SelectionColumn;
@@ -39,6 +37,8 @@ import org.uberfire.client.tables.SortableHeaderGroup;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.security.Identity;
+
+import static org.guvnor.m2repo.security.AppRole.*;
 
 public class PagedJarTable
         extends AbstractPagedTable<JarListPageRow> {
@@ -63,9 +63,9 @@ public class PagedJarTable
 
     @UiField()
     protected Button refreshButton;
-    
+
     private final Identity identity;
-    
+
     public PagedJarTable( final Caller<M2RepoService> m2RepoService ) {
         this( m2RepoService, null );
     }
@@ -78,28 +78,28 @@ public class PagedJarTable
         identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
 
         //If the current user is not an Administrator do not include the download button
-		if (identity.hasRole(AppRoles.ADMIN)) {
-			Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(
-					new ButtonCell()) {
-				public String getValue(JarListPageRow row) {
-					return "Download";
-				}
-			};
+        if ( identity.hasRole( ADMIN ) ) {
+            Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(
+                    new ButtonCell() ) {
+                public String getValue( JarListPageRow row ) {
+                    return "Download";
+                }
+            };
 
-			downloadColumn
-					.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
-						public void update(int index, JarListPageRow row,
-								String value) {
-							Window.open(getFileDownloadURL(row.getPath()),
-									"downloading",
-									"resizable=no,scrollbars=yes,status=no");
-						}
-					});
+            downloadColumn
+                    .setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+                        public void update( int index,
+                                            JarListPageRow row,
+                                            String value ) {
+                            Window.open( getFileDownloadURL( row.getPath() ),
+                                         "downloading",
+                                         "resizable=no,scrollbars=yes,status=no" );
+                        }
+                    } );
 
-			addColumn(downloadColumn, new TextHeader("Download"));
-		}
+            addColumn( downloadColumn, new TextHeader( "Download" ) );
+        }
 
-		
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged( HasData<JarListPageRow> display ) {
                 PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
@@ -155,7 +155,7 @@ public class PagedJarTable
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
                                                true );
     }
-    
+
     public String[] getSelectedJars() {
         Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
         // Compatibility with existing API
@@ -171,7 +171,7 @@ public class PagedJarTable
         }
         return paths;
     }
-    
+
     @Override
     protected void addAncillaryColumns( ColumnPicker<JarListPageRow> columnPicker,
                                         SortableHeaderGroup<JarListPageRow> sortableHeaderGroup ) {
@@ -247,7 +247,7 @@ public class PagedJarTable
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
-    
+
     @UiHandler("deleteSelectedJarButton")
     void deleteSelectedJar( ClickEvent e ) {
         if ( getSelectedJars() == null ) {
