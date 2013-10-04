@@ -66,7 +66,12 @@ import org.drools.util.CompositeClassLoader;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
 
+import org.drools.compiler.DrlParser;
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.server.util.DroolsHeader;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
 
 public class TestScenarioServiceImplementation
         implements TestScenarioService {
@@ -157,12 +162,30 @@ public class TestScenarioServiceImplementation
         try {
             AuditLogReporter logger = new AuditLogReporter(workingMemory);
             CompositeClassLoader classLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
+            StringBuilder buf = new StringBuilder();
+            AssetItemIterator it = item.listAssetsByFormat(AssetFormats.DRL_MODEL);
+            while (it.hasNext()) {
+                AssetItem as = it.next();
+                buf.append(as.getContent());
+                buf.append('\n');
+            }
+
+            String droolsHeader = DroolsHeader.getDroolsHeader(item);
+            DrlParser parser = new DrlParser();
+            PackageDescr pkgItem =null;
+            try {
+                pkgItem = parser.parse( droolsHeader + "\n" + buf.toString() );
+            } catch ( final DroolsParserException e1 ) {
+                throw new IllegalStateException( "Serious error, unable to validate package." );
+            }  
+            List<ImportDescr> imports= new ArrayList<ImportDescr>( pkgItem.getImports() );
             new ScenarioRunner(
                     new ClassTypeResolver(
                             getAllImports(aPackage),
                             classLoader),
                     classLoader,
-                    workingMemory
+                    workingMemory,
+                    imports
             ).run(scenario);
 
             return new SingleScenarioResult(
