@@ -1,13 +1,6 @@
 package org.guvnor.common.services.project.backend.server;
 
-import java.util.Date;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.project.service.POMService;
@@ -22,6 +15,11 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
+
 @Service
 @ApplicationScoped
 public class POMServiceImpl
@@ -32,8 +30,6 @@ public class POMServiceImpl
     private POMContentHandler pomContentHandler;
     private M2RepoService m2RepoService;
     private MetadataService metadataService;
-
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     private Identity identity;
 
@@ -49,7 +45,6 @@ public class POMServiceImpl
                            final POMContentHandler pomContentHandler,
                            final M2RepoService m2RepoService,
                            final MetadataService metadataService,
-                           final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
                            final Identity identity,
                            final SessionInfo sessionInfo ) {
         this.ioService = ioService;
@@ -57,7 +52,6 @@ public class POMServiceImpl
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
-        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
     }
@@ -79,7 +73,7 @@ public class POMServiceImpl
 
             ioService.createFile( pathToPOMXML );
             ioService.write( pathToPOMXML,
-                             pomContentHandler.toString( pomModel ) );
+                    pomContentHandler.toString( pomModel ) );
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
@@ -115,22 +109,23 @@ public class POMServiceImpl
 
             if ( metadata == null ) {
                 ioService.write( paths.convert( path ),
-                                 pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                                 makeCommentedOption( comment ) );
+                        pomContentHandler.toString( content, loadPomXMLString( path ) ),
+                        makeCommentedOption( comment ) );
             } else {
                 ioService.write( paths.convert( path ),
-                                 pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                                 metadataService.setUpAttributes( path,
-                                                                  metadata ),
-                                 makeCommentedOption( comment ) );
+                        pomContentHandler.toString( content, loadPomXMLString( path ) ),
+                        metadataService.setUpAttributes( path,
+                                metadata ),
+                        makeCommentedOption( comment ) );
             }
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
             //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
             //to avoid duplicating events (and re-construction of DMO).
 
+            //@wmedvede now the InvalidateDMOProjectCacheEvent will be fired in the DataModelResourceChangeObserver
             //Invalidate Project-level DMO cache as POM has changed.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );
+            //invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );
 
             return path;
 
@@ -143,10 +138,10 @@ public class POMServiceImpl
         final String name = identity.getName();
         final Date when = new Date();
         return new CommentedOption( sessionInfo.getId(),
-                                    name,
-                                    null,
-                                    commitMessage,
-                                    when );
+                name,
+                null,
+                commitMessage,
+                when );
     }
 
 }
