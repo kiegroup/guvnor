@@ -25,6 +25,9 @@ import org.mvel2.MVEL;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import org.drools.lang.descr.ImportDescr;
+
+
 
 /**
  * This actually runs the test scenarios.
@@ -51,14 +54,35 @@ public class ScenarioRunner {
      * @param classLoader  This is used by MVEL to instantiate classes in expressions, in
      *                     particular enum field values. See EnumFieldPopulator and
      *                     FactFieldValueVerifier
+     * @param workingMemory
+     * @param imports
      */
     public ScenarioRunner(final TypeResolver typeResolver,
                           final ClassLoader classLoader,
-                          final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
+                          final InternalWorkingMemory workingMemory,
+                          List<ImportDescr> imports) throws ClassNotFoundException {
+     
 
+       this(typeResolver,classLoader,workingMemory);
+
+        for ( ImportDescr importDescr : imports ) {
+            String className = importDescr.getTarget();
+            try {
+                addImport( className ,typeResolver);
+
+            } catch ( WildCardException e ) {
+                //Was already catched in the suggestion engine
+            }
+        }
+        
+    }
+        
+        
+    public ScenarioRunner(final TypeResolver typeResolver,
+                          final ClassLoader classLoader,
+                          final InternalWorkingMemory workingMemory) throws ClassNotFoundException {
         Map<String, Object> populatedData = new HashMap<String, Object>();
         Map<String, Object> globalData = new HashMap<String, Object>();
-
         this.workingMemoryWrapper = new TestScenarioWorkingMemoryWrapper(workingMemory,
                 typeResolver,
                 classLoader,
@@ -153,5 +177,20 @@ public class ScenarioRunner {
         }
 
         factPopulator.populate();
+    }
+    private void addImport(String className, TypeResolver resolver) throws ScenarioRunner.WildCardException {
+        if (isWildCardImport(className)) {
+            throw new ScenarioRunner.WildCardException();
+        } else {
+            resolver.addImport(className);
+        }
+    }
+
+    private boolean isWildCardImport(String className) {
+        return className.endsWith("*");
+    }
+
+    @SuppressWarnings("serial")
+    private static class WildCardException extends Exception {
     }
 }
