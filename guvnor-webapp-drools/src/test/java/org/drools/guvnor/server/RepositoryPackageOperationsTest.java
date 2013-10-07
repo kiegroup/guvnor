@@ -12,6 +12,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.VersionedAssetItemIterator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -290,8 +291,16 @@ public class RepositoryPackageOperationsTest {
 
         ModuleItem packageItem = mock(ModuleItem.class);
         when(packageItem.getFormat()).thenReturn("package");
+        when(packageItem.getName()).thenReturn(packageName);
+
         AssetItemIterator assetIterator = mock(AssetItemIterator.class);
+        AssetItemIterator assetIterator2 = mock(AssetItemIterator.class);
+        AssetItemIterator assetIterator3 = mock(VersionedAssetItemIterator.class);
+
         when(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)).thenReturn(assetIterator);
+        when(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat( AssetFormats.MODEL )).thenReturn( assetIterator2 );
+        when(packageItem.getAssets()).thenReturn( assetIterator3 );
+
         when(this.rulesRepository.containsSnapshot(packageName,
                 snapshotName)).thenReturn(true);
         when(this.rulesRepository.loadModuleSnapshot(packageName,
@@ -316,8 +325,19 @@ public class RepositoryPackageOperationsTest {
         final String comment = "comment";
 
         ModuleItem packageItem = mock(ModuleItem.class);
-        when(this.rulesRepository.loadModuleSnapshot(packageName,
-                snapshotName)).thenReturn(packageItem);
+        when(packageItem.getFormat()).thenReturn("package");
+        when(packageItem.getName()).thenReturn(packageName);
+
+        AssetItemIterator assetIterator = mock(AssetItemIterator.class);
+        AssetItemIterator assetIterator2 = mock(AssetItemIterator.class);
+        AssetItemIterator assetIterator3 = mock(VersionedAssetItemIterator.class);
+
+        when(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)).thenReturn(assetIterator);
+        when(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat( AssetFormats.MODEL )).thenReturn( assetIterator2 );
+        when(packageItem.getAssets()).thenReturn( assetIterator3 );
+
+        when( this.rulesRepository.loadModuleSnapshot( packageName,
+                                                       snapshotName ) ).thenReturn(packageItem);
         this.repositoryPackageOperations.createModuleSnapshot(packageName,
                 snapshotName,
                 false,
