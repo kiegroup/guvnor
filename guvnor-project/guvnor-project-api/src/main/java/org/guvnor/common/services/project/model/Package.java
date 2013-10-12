@@ -16,8 +16,9 @@
 package org.guvnor.common.services.project.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
+
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * An item representing a Package within a Project
@@ -32,6 +33,7 @@ public class Package {
     private Path packageTestResourcesPath;
     private String packageName;
     private String caption;
+    private String relativeCaption;
 
     public Package() {
         //For Errai-marshalling
@@ -43,17 +45,17 @@ public class Package {
                     final Path packageMainResourcesPath,
                     final Path packageTestResourcesPath,
                     final String packageName,
-                    final String caption ) {
-        this.projectRootPath = PortablePreconditions.checkNotNull( "projectRootPath",
-                                                                   projectRootPath );
+                    final String caption,
+                    final String relativeCaption ) {
+        this.projectRootPath = checkNotNull( "projectRootPath",
+                                             projectRootPath );
         this.packageMainSrcPath = packageMainSrcPath;
         this.packageTestSrcPath = packageTestSrcPath;
         this.packageMainResourcesPath = packageMainResourcesPath;
         this.packageTestResourcesPath = packageTestResourcesPath;
-        this.packageName = PortablePreconditions.checkNotNull( "packageName",
-                                                               packageName );
-        this.caption = PortablePreconditions.checkNotNull( "caption",
-                                                           caption );
+        this.packageName = checkNotNull( "packageName", packageName );
+        this.caption = checkNotNull( "caption", caption );
+        this.relativeCaption = checkNotNull( "relativeCaption", relativeCaption );
     }
 
     public Path getProjectRootPath() {
@@ -82,6 +84,10 @@ public class Package {
 
     public String getCaption() {
         return this.caption;
+    }
+
+    public String getRelativeCaption() {
+        return relativeCaption;
     }
 
     @Override

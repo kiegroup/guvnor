@@ -242,7 +242,10 @@ public class ProjectServiceImpl
         for ( String src : sourcePaths ) {
             final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
             packageNames.addAll( getPackageNames( nioProjectRootPath,
-                                                  nioPackageRootSrcPath ) );
+                                                  nioPackageRootSrcPath,
+                                                  true,
+                                                  true,
+                                                  true ) );
         }
 
         //Construct Package objects for each package name
@@ -260,23 +263,145 @@ public class ProjectServiceImpl
         return packages;
     }
 
+    @Override
+    public Set<Package> resolvePackages( final Package pkg ) {
+        final Set<Package> packages = new HashSet<Package>();
+        final Set<String> packageNames = new HashSet<String>();
+        if ( pkg == null ) {
+            return packages;
+        }
+
+        //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
+        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
+
+        final Path projectRoot = pkg.getProjectRootPath();
+        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
+
+        for ( String src : sourcePaths ) {
+            final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src ).resolve( resolvePkgName( pkg.getCaption() ) );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath,
+                                                  false,
+                                                  true,
+                                                  false ) );
+        }
+
+        //Construct Package objects for each package name
+        final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    packages.add( resolvePackage( paths.convert( nioPackagePath, false ) ) );
+                    resolvedPackages.add( packagePathSuffix );
+                }
+            }
+        }
+
+        return packages;
+    }
+
+    @Override
+    public Package resolveDefaultPackage( final Project project ) {
+        final Set<String> packageNames = new HashSet<String>();
+        if ( project == null ) {
+            return null;
+        }
+        //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
+        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
+        final Path projectRoot = project.getRootPath();
+        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
+        for ( String src : sourcePaths ) {
+            final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath,
+                                                  true,
+                                                  true,
+                                                  false ) );
+        }
+
+        //Construct Package objects for each package name
+        final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    return resolvePackage( paths.convert( nioPackagePath, false ) );
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Package resolveParentPackage( final Package pkg ) {
+        final Set<String> packageNames = new HashSet<String>();
+
+        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( pkg.getProjectRootPath() );
+        packageNames.addAll( getPackageNames( nioProjectRootPath, paths.convert( pkg.getPackageMainSrcPath() ).getParent(), true, false, false ) );
+
+        //Construct Package objects for each package name
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                if ( packagePathSuffix == null ) {
+                    return null;
+                }
+                final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) ) {
+                    return resolvePackage( paths.convert( nioPackagePath, false ) );
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String resolvePkgName( final String caption ) {
+        if ( caption.equals( "<default>" ) ) {
+            return "";
+        }
+        return caption;
+    }
+
     private Set<String> getPackageNames( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
-                                         final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
+                                         final org.kie.commons.java.nio.file.Path nioPackageSrcPath,
+                                         final boolean includeDefault,
+                                         final boolean includeChild,
+                                         final boolean recursive ) {
         final Set<String> packageNames = new HashSet<String>();
         if ( !Files.exists( nioPackageSrcPath ) ) {
             return packageNames;
         }
-        packageNames.add( getPackagePathSuffix( nioProjectRootPath,
-                                                nioPackageSrcPath ) );
+        if ( includeDefault || recursive ) {
+            packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                    nioPackageSrcPath ) );
+
+        }
+
+        if ( !includeChild ) {
+            return packageNames;
+        }
+
         final LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
         final DirectoryStream<org.kie.commons.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
                                                                                                                           metaDataFileFilter );
         for ( org.kie.commons.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
             if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
-                packageNames.addAll( getPackageNames( nioProjectRootPath,
-                                                      nioChildPackageSrcPath ) );
+                if ( recursive ) {
+                    packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                          nioChildPackageSrcPath,
+                                                          includeDefault,
+                                                          includeChild,
+                                                          recursive ) );
+                } else {
+                    packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                            nioChildPackageSrcPath ) );
+                }
+
             }
         }
+
         return packageNames;
     }
 
@@ -359,18 +484,26 @@ public class ProjectServiceImpl
         final Path testResourcesPath = paths.convert( nioTestResourcesPath.resolve( packagePath ),
                                                       includeAttributes );
 
+        final String displayName = getPackageDisplayName( packageName );
+
         final Package pkg = new Package( project.getRootPath(),
                                          mainSrcPath,
                                          testSrcPath,
                                          mainResourcesPath,
                                          testResourcesPath,
                                          packageName,
-                                         getPackageDisplayName( packageName ) );
+                                         displayName,
+                                         getPackageRelativeCaption( displayName, resource.getFileName() ) );
         return pkg;
     }
 
     private String getPackageDisplayName( final String packageName ) {
         return packageName.isEmpty() ? "<default>" : packageName;
+    }
+
+    private String getPackageRelativeCaption( final String displayName,
+                                              final String relativeName ) {
+        return displayName.equals( "<default>" ) ? "<default>" : relativeName;
     }
 
     @Override
