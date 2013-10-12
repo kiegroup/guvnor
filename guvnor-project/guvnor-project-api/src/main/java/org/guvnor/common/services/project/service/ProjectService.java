@@ -16,6 +16,8 @@
 
 package org.guvnor.common.services.project.service;
 
+import java.util.Set;
+
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -26,8 +28,6 @@ import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
-
-import java.util.Set;
 
 /**
  *
@@ -55,11 +55,17 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
     org.guvnor.common.services.project.model.Package resolvePackage( final Path resource );
 
     /**
-     *  Given a Project resolves the calculation of all the packages for this project.
+     * Given a Project resolves the calculation of all the packages for this project.
      * @param project
      * @return Collection containing all the packages for the project.
      */
     Set<Package> resolvePackages( final Project project );
+
+    Set<Package> resolvePackages( final Package pkg );
+
+    Package resolveDefaultPackage( final Project project );
+
+    Package resolveParentPackage( final Package pkg );
 
     /**
      * Return true if the file is the Project's pom.xml file
