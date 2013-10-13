@@ -17,7 +17,7 @@
 package org.guvnor.common.services.shared.version.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 import java.util.Date;
 

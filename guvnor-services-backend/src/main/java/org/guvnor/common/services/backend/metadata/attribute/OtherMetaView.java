@@ -23,18 +23,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.kie.commons.data.Pair;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.base.AbstractBasicFileAttributeView;
-import org.kie.commons.java.nio.base.AbstractPath;
-import org.kie.commons.java.nio.base.NeedsPreloadedAttrs;
-import org.kie.commons.java.nio.base.NotImplementedException;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
+import org.uberfire.java.nio.base.AbstractPath;
+import org.uberfire.java.nio.base.NeedsPreloadedAttrs;
+import org.uberfire.java.nio.base.NotImplementedException;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.kie.commons.data.Pair.*;
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.data.Pair.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class OtherMetaView
         extends AbstractBasicFileAttributeView<AbstractPath>

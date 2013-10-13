@@ -26,16 +26,16 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.model.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
-import static org.kie.commons.java.nio.file.StandardCopyOption.*;
+import static org.uberfire.java.nio.file.StandardCopyOption.*;
 
 @Service
 @ApplicationScoped
@@ -76,9 +76,9 @@ public class VersionServiceImpl implements VersionService {
     public Path restore( final Path _path,
                          final String comment ) {
         try {
-            final org.kie.commons.java.nio.file.Path path = paths.convert( _path );
+            final org.uberfire.java.nio.file.Path path = paths.convert( _path );
 
-            final org.kie.commons.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
+            final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
             return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) ) );
 

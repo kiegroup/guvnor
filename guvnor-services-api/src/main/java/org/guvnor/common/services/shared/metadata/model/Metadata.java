@@ -17,7 +17,7 @@
 package org.guvnor.common.services.shared.metadata.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;

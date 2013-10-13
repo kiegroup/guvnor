@@ -33,8 +33,8 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

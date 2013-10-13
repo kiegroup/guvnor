@@ -33,9 +33,9 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -53,16 +53,16 @@ public class DefaultGenericKieValidator implements GenericValidator {
     @Inject
     private ProjectService projectService;
 
-    private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> dotFileFilter = new DotFileFilter();
-    private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> pomFileFilter = new PomFileFilter();
-    private final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> kmoduleFileFilter = new KModuleFileFilter();
+    private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> dotFileFilter = new DotFileFilter();
+    private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> pomFileFilter = new PomFileFilter();
+    private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> kmoduleFileFilter = new KModuleFileFilter();
 
     public DefaultGenericKieValidator() {
     }
 
     public List<ValidationMessage> validate( final Path resourcePath,
                                              final InputStream resource,
-                                             final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>... supportingFileFilters ) {
+                                             final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
 
         final Project project = projectService.resolveProject( resourcePath );
         if ( project == null ) {
@@ -74,8 +74,8 @@ public class DefaultGenericKieValidator implements GenericValidator {
         final String projectPrefix = project.getRootPath().toURI();
 
         //Add Java Model files
-        final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( project.getRootPath() );
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( nioProjectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRoot = paths.convert( project.getRootPath() );
+        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( nioProjectRoot );
         visitPaths( projectPrefix,
                     kieFileSystem,
                     directoryStream,
@@ -98,9 +98,9 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
     private void visitPaths( final String projectPrefix,
                              final KieFileSystem kieFileSystem,
-                             final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream,
-                             final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>... supportingFileFilters ) {
-        for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
+                             final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream,
+                             final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
+        for ( final org.uberfire.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( projectPrefix,
                             kieFileSystem,
@@ -121,8 +121,8 @@ public class DefaultGenericKieValidator implements GenericValidator {
         }
     }
 
-    private boolean acceptPath( final org.kie.commons.java.nio.file.Path path,
-                                final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>... supportingFileFilters ) {
+    private boolean acceptPath( final org.uberfire.java.nio.file.Path path,
+                                final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
         if ( dotFileFilter.accept( path ) ) {
             return false;
         } else if ( pomFileFilter.accept( path ) ) {
@@ -130,7 +130,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
         } else if ( kmoduleFileFilter.accept( path ) ) {
             return true;
         }
-        for ( DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter : supportingFileFilters ) {
+        for ( DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter : supportingFileFilters ) {
             if ( filter.accept( path ) ) {
                 return true;
             }

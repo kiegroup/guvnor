@@ -18,16 +18,16 @@ package org.guvnor.common.services.backend.config.attribute;
 
 import java.util.Map;
 
-import org.kie.commons.data.Pair;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.base.AbstractBasicFileAttributeView;
-import org.kie.commons.java.nio.base.AbstractPath;
-import org.kie.commons.java.nio.base.NeedsPreloadedAttrs;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributeView;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
+import org.uberfire.java.nio.base.AbstractPath;
+import org.uberfire.java.nio.base.NeedsPreloadedAttrs;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.kie.commons.data.Pair.*;
+import static org.uberfire.commons.data.Pair.*;
 
 /**
  *

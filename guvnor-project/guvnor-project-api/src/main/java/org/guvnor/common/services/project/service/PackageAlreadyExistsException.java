@@ -16,7 +16,7 @@
 package org.guvnor.common.services.project.service;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.java.nio.file.FileSystemException;
+import org.uberfire.java.nio.file.FileSystemException;
 
 /**
  * Exception for when a new package request fails; due to it already existing. FileAlreadyExistsException cannot

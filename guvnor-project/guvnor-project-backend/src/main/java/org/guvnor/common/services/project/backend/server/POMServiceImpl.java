@@ -8,8 +8,8 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -60,7 +60,7 @@ public class POMServiceImpl
     public Path create( final Path projectRoot,
                         final String baseURL,
                         final POM pomModel ) {
-        org.kie.commons.java.nio.file.Path pathToPOMXML = null;
+        org.uberfire.java.nio.file.Path pathToPOMXML = null;
         try {
             final Repository repository = new Repository();
             repository.setId( "guvnor-m2-repo" );
@@ -68,7 +68,7 @@ public class POMServiceImpl
             repository.setUrl( m2RepoService.getRepositoryURL( baseURL ) );
             pomModel.addRepository( repository );
 
-            final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+            final org.uberfire.java.nio.file.Path nioRoot = paths.convert( projectRoot );
             pathToPOMXML = nioRoot.resolve( "pom.xml" );
 
             ioService.createFile( pathToPOMXML );
@@ -96,7 +96,7 @@ public class POMServiceImpl
     }
 
     private String loadPomXMLString( Path path ) {
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
         return ioService.readAllString( nioPath );
     }
 

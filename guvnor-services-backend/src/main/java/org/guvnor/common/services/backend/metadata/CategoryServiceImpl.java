@@ -9,7 +9,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
+import org.uberfire.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoriesService {
     @Override
     public Categories getCategoriesFromResource( final Path resource ) {
         try {
-            final org.kie.commons.java.nio.file.Path categoriesPath = paths.convert( resource ).getRoot().resolve( "categories.xml" );
+            final org.uberfire.java.nio.file.Path categoriesPath = paths.convert( resource ).getRoot().resolve( "categories.xml" );
 
             return getContent( paths.convert( categoriesPath ) );
 

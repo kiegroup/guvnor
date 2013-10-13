@@ -19,7 +19,7 @@ package org.guvnor.common.services.backend.metadata.attribute;
 import java.util.List;
 
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 /**
  *

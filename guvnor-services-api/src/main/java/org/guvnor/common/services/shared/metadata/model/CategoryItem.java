@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
-import static org.kie.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @Portable
 public class CategoryItem {

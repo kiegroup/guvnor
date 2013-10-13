@@ -12,7 +12,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.backend.server.util.Paths;
 
 import static org.junit.Assert.*;

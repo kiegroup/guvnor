@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 /**
  *

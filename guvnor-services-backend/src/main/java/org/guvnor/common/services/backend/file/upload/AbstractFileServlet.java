@@ -155,7 +155,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
                 throw new IllegalArgumentException( "FORM_FIELD_OPERATION is null. Cannot process upload." );
             }
 
-            org.kie.commons.java.nio.file.Path path;
+            org.uberfire.java.nio.file.Path path;
             switch ( operation ) {
                 case CREATE:
                     if ( fileName == null ) {
@@ -179,7 +179,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
             return data;
 
         } catch ( Exception e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+            throw new org.uberfire.java.nio.IOException( e.getMessage() );
         }
     }
 
@@ -273,7 +273,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
             response.getOutputStream().flush();
 
         } catch ( Exception e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+            throw new org.uberfire.java.nio.IOException( e.getMessage() );
         }
     }
 

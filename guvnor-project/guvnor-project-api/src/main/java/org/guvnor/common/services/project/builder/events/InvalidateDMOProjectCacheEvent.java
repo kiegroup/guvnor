@@ -2,7 +2,7 @@ package org.guvnor.common.services.project.builder.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
