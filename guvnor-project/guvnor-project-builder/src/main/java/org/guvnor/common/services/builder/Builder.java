@@ -46,11 +46,11 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
@@ -105,7 +105,7 @@ public class Builder {
         kieServices = KieServices.Factory.get();
         kieFileSystem = kieServices.newKieFileSystem();
 
-        DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
+        DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( moduleDirectory );
         visitPaths( directoryStream );
     }
 
@@ -130,7 +130,7 @@ public class Builder {
         }
 
         //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
-        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final org.uberfire.backend.vfs.Path externalImportsPath = paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );
@@ -389,8 +389,8 @@ public class Builder {
         return kieBuilder != null;
     }
 
-    private void visitPaths( final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream ) {
-        for ( final org.kie.commons.java.nio.file.Path path : directoryStream ) {
+    private void visitPaths( final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream ) {
+        for ( final org.uberfire.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( Files.newDirectoryStream( path ) );
 

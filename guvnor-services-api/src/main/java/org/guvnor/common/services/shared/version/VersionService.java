@@ -17,7 +17,7 @@
 package org.guvnor.common.services.shared.version;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A simple LRU cache keyed on Paths

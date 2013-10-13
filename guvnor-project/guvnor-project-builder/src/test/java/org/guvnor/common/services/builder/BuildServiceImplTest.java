@@ -34,8 +34,8 @@ import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
@@ -60,7 +60,7 @@ public class BuildServiceImplTest {
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
                                              new GAV(),
@@ -83,7 +83,7 @@ public class BuildServiceImplTest {
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
                                              new GAV(),
@@ -113,7 +113,7 @@ public class BuildServiceImplTest {
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
                                              new GAV(),
@@ -143,7 +143,7 @@ public class BuildServiceImplTest {
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
                                              new GAV(),
@@ -195,7 +195,7 @@ public class BuildServiceImplTest {
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
                                              new GAV(),

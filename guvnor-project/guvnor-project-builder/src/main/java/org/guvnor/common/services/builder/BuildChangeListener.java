@@ -35,7 +35,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;

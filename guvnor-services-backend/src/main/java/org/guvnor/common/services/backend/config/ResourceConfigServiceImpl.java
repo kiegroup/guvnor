@@ -23,9 +23,9 @@ import org.guvnor.common.services.backend.config.attribute.ConfigAttributes;
 import org.guvnor.common.services.backend.config.attribute.ConfigAttributesUtil;
 import org.guvnor.common.services.shared.config.ResourceConfigService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 @Service
 @ApplicationScoped

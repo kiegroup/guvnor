@@ -1,7 +1,7 @@
 package org.guvnor.common.services.backend.file;
 
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Filter only accepting files with the given file extension
@@ -19,7 +19,7 @@ public class FileExtensionFilter extends DotFileFilter {
     }
 
     @Override
-    public boolean accept( final org.kie.commons.java.nio.file.Path path ) {
+    public boolean accept( final org.uberfire.java.nio.file.Path path ) {
         boolean accept = super.accept( path );
         if ( accept ) {
             return false;

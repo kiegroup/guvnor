@@ -38,7 +38,7 @@ import org.guvnor.common.services.workingset.client.model.WorkingSetConfigData;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.uberfire.backend.vfs.Path;
 
-//import org.kie.commons.data.Pair;
+//import org.uberfire.commons.data.Pair;
 
 @ApplicationScoped
 public class WorkingSetManager {

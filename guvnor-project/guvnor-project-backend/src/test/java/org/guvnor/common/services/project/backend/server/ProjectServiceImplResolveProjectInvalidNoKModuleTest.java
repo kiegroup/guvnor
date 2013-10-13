@@ -26,7 +26,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -76,7 +76,7 @@ public class ProjectServiceImplResolveProjectInvalidNoKModuleTest {
                                                                                          cc );
 
         final URL testUrl = this.getClass().getResource( "/" );
-        final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
+        final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
 
         //Test a non-Project Path resolves to null
@@ -94,7 +94,7 @@ public class ProjectServiceImplResolveProjectInvalidNoKModuleTest {
                                                                                          cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule" );
-        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
         //Test a non-Project Path resolves to null
@@ -112,11 +112,11 @@ public class ProjectServiceImplResolveProjectInvalidNoKModuleTest {
                                                                                          cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule" );
-        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule/src" );
-        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
@@ -134,11 +134,11 @@ public class ProjectServiceImplResolveProjectInvalidNoKModuleTest {
                                                                                          cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule" );
-        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule/src/main/java/org/kie/test/Bean.java" );
-        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
@@ -156,11 +156,11 @@ public class ProjectServiceImplResolveProjectInvalidNoKModuleTest {
                                                                                          cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule" );
-        final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoKModule/src/main/resources/rule1.drl" );
-        final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null

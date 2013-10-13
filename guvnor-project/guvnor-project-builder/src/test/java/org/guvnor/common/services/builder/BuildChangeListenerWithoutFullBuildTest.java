@@ -30,7 +30,7 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
@@ -130,7 +130,7 @@ public class BuildChangeListenerWithoutFullBuildTest {
                 cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Perform incremental build (Without a full Build first)
@@ -155,7 +155,7 @@ public class BuildChangeListenerWithoutFullBuildTest {
                 cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Perform incremental build (Without a full Build first)
@@ -180,7 +180,7 @@ public class BuildChangeListenerWithoutFullBuildTest {
                 cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Perform incremental build (Without a full Build first)
@@ -205,15 +205,15 @@ public class BuildChangeListenerWithoutFullBuildTest {
                 cc );
 
         final URL resourceUrl1 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath1 = fs.getPath( resourceUrl1.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath1 = fs.getPath( resourceUrl1.toURI() );
         final Path resourcePath1 = paths.convert( nioResourcePath1 );
 
         final URL resourceUrl2 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath2 = fs.getPath( resourceUrl2.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath2 = fs.getPath( resourceUrl2.toURI() );
         final Path resourcePath2 = paths.convert( nioResourcePath2 );
 
         final URL resourceUrl3 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
-        final org.kie.commons.java.nio.file.Path nioResourcePath3 = fs.getPath( resourceUrl3.toURI() );
+        final org.uberfire.java.nio.file.Path nioResourcePath3 = fs.getPath( resourceUrl3.toURI() );
         final Path resourcePath3 = paths.convert( nioResourcePath3 );
 
         final Set<ResourceChange> batch = new HashSet<ResourceChange>();

@@ -1,6 +1,6 @@
 package org.guvnor.common.services.backend.file;
 
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * A Filter to exclude "META-INF" folder from users

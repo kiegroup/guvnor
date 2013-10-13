@@ -27,8 +27,8 @@ import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -69,14 +69,14 @@ public class KModuleServiceImpl
     public Path setUpKModuleStructure( final Path projectRoot ) {
         try {
             // Create project structure
-            final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+            final org.uberfire.java.nio.file.Path nioRoot = paths.convert( projectRoot );
 
             ioService.createDirectory( nioRoot.resolve( "src/main/java" ) );
             ioService.createDirectory( nioRoot.resolve( "src/main/resources" ) );
             ioService.createDirectory( nioRoot.resolve( "src/test/java" ) );
             ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
 
-            final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            final org.uberfire.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
             ioService.createFile( pathToKModuleXML );
             ioService.write( pathToKModuleXML,
                              moduleContentHandler.toString( new KModuleModel() ) );
@@ -93,7 +93,7 @@ public class KModuleServiceImpl
     @Override
     public KModuleModel load( final Path path ) {
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
             final String content = ioService.readAllString( nioPath );
 
             return moduleContentHandler.toModel( content );

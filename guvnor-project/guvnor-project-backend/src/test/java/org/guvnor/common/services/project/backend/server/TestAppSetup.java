@@ -24,8 +24,8 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.rpc.SessionInfo;
 

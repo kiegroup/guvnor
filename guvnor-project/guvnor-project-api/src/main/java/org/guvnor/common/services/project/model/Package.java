@@ -18,7 +18,7 @@ package org.guvnor.common.services.project.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An item representing a Package within a Project

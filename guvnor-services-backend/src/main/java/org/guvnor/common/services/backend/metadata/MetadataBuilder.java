@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 /**
  *

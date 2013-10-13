@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of FileDiscoveryService
@@ -18,7 +18,7 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
 
     @Override
     public Collection<Path> discoverFiles( final Path pathToSearch,
-                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter,
+                                           final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter,
                                            final boolean recursive ) {
         PortablePreconditions.checkNotNull( "pathToSearch",
                                             pathToSearch );
@@ -59,7 +59,7 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
 
     @Override
     public Collection<Path> discoverFiles( final Path pathToSearch,
-                                           final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter ) {
+                                           final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter ) {
         return discoverFiles( pathToSearch,
                               filter,
                               false );

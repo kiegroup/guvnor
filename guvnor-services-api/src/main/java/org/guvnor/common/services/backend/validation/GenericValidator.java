@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.commons.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -39,6 +39,6 @@ public interface GenericValidator {
      */
     List<ValidationMessage> validate( final Path resourcePath,
                                       final InputStream resource,
-                                      final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>... supportingFileFilters );
+                                      final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters );
 
 }

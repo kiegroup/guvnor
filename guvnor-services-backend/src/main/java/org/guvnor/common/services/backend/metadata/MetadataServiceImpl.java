@@ -37,19 +37,19 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.version.model.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.attribute.DublinCoreAttributes;
-import org.kie.commons.io.attribute.DublinCoreAttributesUtil;
-import org.kie.commons.io.attribute.DublinCoreView;
-import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.commons.java.nio.base.version.VersionRecord;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.io.IOService;
+import org.uberfire.io.attribute.DublinCoreAttributes;
+import org.uberfire.io.attribute.DublinCoreAttributesUtil;
+import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import static java.util.Collections.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
@@ -65,7 +65,7 @@ public class MetadataServiceImpl implements MetadataService {
     @Override
     public Metadata getMetadata( final Path resource ) {
         try {
-            final org.kie.commons.java.nio.file.Path path = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path path = paths.convert( resource );
 
             final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
             final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );

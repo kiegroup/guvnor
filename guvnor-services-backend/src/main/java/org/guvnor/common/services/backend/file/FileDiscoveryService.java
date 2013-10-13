@@ -2,8 +2,8 @@ package org.guvnor.common.services.backend.file;
 
 import java.util.Collection;
 
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * Service to discover files in a given Path
@@ -18,7 +18,7 @@ public interface FileDiscoveryService {
      * @return
      */
     Collection<Path> discoverFiles( final Path pathToSearch,
-                                    final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter,
+                                    final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter,
                                     final boolean recursive );
 
     /**
@@ -28,6 +28,6 @@ public interface FileDiscoveryService {
      * @return
      */
     Collection<Path> discoverFiles( final Path pathToSearch,
-                                    final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> filter );
+                                    final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter );
 
 }
