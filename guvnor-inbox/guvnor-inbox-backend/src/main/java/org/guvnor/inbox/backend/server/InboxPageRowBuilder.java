@@ -27,9 +27,9 @@ import javax.inject.Named;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
-import org.kie.commons.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.security.Identity;
 
 public class InboxPageRowBuilder
@@ -95,7 +95,7 @@ public class InboxPageRowBuilder
 
     protected Path convertPath( final String fullPath ) {
         try {
-            final org.kie.commons.java.nio.file.Path path = ioService
+            final org.uberfire.java.nio.file.Path path = ioService
                     .get( new URI( fullPath ) );
 
             return paths.convert( path, false );
