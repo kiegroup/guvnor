@@ -17,6 +17,7 @@
 package org.guvnor.m2repo.backend.server;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.apache.tools.ant.filters.StringInputStream;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
@@ -150,7 +150,9 @@ public class FileServlet extends HttpServlet {
 
                 String pomContent = GuvnorM2Repository.loadPOMFromJar(fileData);
                 PomModel pomModel = null;
-                if ( pomContent != null ) pomModel = PomModel.Parser.parse("pom.xml", new StringInputStream(pomContent));
+                if ( pomContent != null ) {
+                    pomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomContent.getBytes()));
+                }
 
                 if ( pomModel != null ) {
 
