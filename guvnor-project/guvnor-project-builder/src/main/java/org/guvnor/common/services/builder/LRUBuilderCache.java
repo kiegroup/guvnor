@@ -33,10 +33,10 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.uberfire.io.IOService;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
 
 /**
  * A simple LRU cache for Builders
@@ -74,8 +74,7 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
-        final Path resourcePath = event.getResourcePath();
-        final Project project = projectService.resolveProject( resourcePath );
+        final Project project = event.getProject();
 
         //If resource was not within a Project there's nothing to invalidate
         if ( project != null ) {

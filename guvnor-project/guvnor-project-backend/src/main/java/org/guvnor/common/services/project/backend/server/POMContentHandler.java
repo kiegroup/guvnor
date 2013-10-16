@@ -49,10 +49,12 @@ public class POMContentHandler {
         model.setVersion(pom.getGav().getVersion());
         model.setModelVersion(pom.getModelVersion());
 
+        model.getRepositories().clear();
         for (org.guvnor.common.services.project.model.Repository repository : pom.getRepositories()) {
             model.addRepository(fromClientModelToPom(repository));
         }
 
+        model.getDependencies().clear();
         for (org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies()) {
             model.addDependency(fromClientModelToPom(dependency));
         }
