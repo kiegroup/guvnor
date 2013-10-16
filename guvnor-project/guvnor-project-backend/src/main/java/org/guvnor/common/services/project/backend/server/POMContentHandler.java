@@ -20,7 +20,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 
 import org.apache.maven.model.Dependency;
@@ -31,7 +30,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-import org.kie.scanner.embedder.MavenProjectLoader;
 
 @Dependent
 public class POMContentHandler {
@@ -40,34 +38,31 @@ public class POMContentHandler {
         // Weld needs this for proxying.
     }
 
-    public String toString(POM pomModel)
+    public String toString( POM pomModel )
             throws IOException {
-        return toString(pomModel,new Model());
+        return toString( pomModel, new Model() );
     }
 
-    private String toString(POM pom, Model model)
+    private String toString( POM pom,
+                             Model model )
             throws IOException {
-        model.setGroupId(pom.getGav().getGroupId());
-        model.setArtifactId(pom.getGav().getArtifactId());
-        model.setVersion(pom.getGav().getVersion());
-        model.setModelVersion(pom.getModelVersion());
+        model.setGroupId( pom.getGav().getGroupId() );
+        model.setArtifactId( pom.getGav().getArtifactId() );
+        model.setVersion( pom.getGav().getVersion() );
+        model.setModelVersion( pom.getModelVersion() );
 
-        for (org.guvnor.common.services.project.model.Repository repository : pom.getRepositories()) {
-        	for(org.apache.maven.model.Repository repo : model.getRepositories()) {
-        		if(!repo.getUrl().equals(repository.getUrl())) {
-                    model.addRepository(fromClientModelToPom(repository));        			
-        		}
-        	}
+        model.getRepositories().clear();
+        for ( org.guvnor.common.services.project.model.Repository repository : pom.getRepositories() ) {
+            model.addRepository( fromClientModelToPom( repository ) );
         }
 
-        List<org.apache.maven.model.Dependency> dependencies = new ArrayList<org.apache.maven.model.Dependency>();
-        for (org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies()) {
-        	dependencies.add(fromClientModelToPom(dependency));
+        model.getDependencies().clear();
+        for ( org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies() ) {
+            model.addDependency( fromClientModelToPom( dependency ) );
         }
-        model.setDependencies(dependencies);
 
         StringWriter stringWriter = new StringWriter();
-        new MavenXpp3Writer().write(stringWriter, model);
+        new MavenXpp3Writer().write( stringWriter, model );
 
         return stringWriter.toString();
     }
@@ -78,70 +73,71 @@ public class POMContentHandler {
      * @return pom.xml for saving, The original pom.xml with the fields edited in gavModel replaced.
      * @throws IOException
      */
-    public String toString(POM gavModel, String originalPomAsText)
+    public String toString( POM gavModel,
+                            String originalPomAsText )
             throws IOException, XmlPullParserException {
 
-        return toString(gavModel, new MavenXpp3Reader().read(new StringReader(originalPomAsText)));
+        return toString( gavModel, new MavenXpp3Reader().read( new StringReader( originalPomAsText ) ) );
     }
 
-    private Repository fromClientModelToPom(org.guvnor.common.services.project.model.Repository from) {
+    private Repository fromClientModelToPom( org.guvnor.common.services.project.model.Repository from ) {
         Repository to = new Repository();
-        to.setId(from.getId());
-        to.setName(from.getName());
-        to.setUrl(from.getUrl());
+        to.setId( from.getId() );
+        to.setName( from.getName() );
+        to.setUrl( from.getUrl() );
 
         return to;
     }
 
-    public POM toModel(String pomAsString)
+    public POM toModel( String pomAsString )
             throws IOException, XmlPullParserException {
-        Model model = new MavenXpp3Reader().read(new StringReader(pomAsString));
+        Model model = new MavenXpp3Reader().read( new StringReader( pomAsString ) );
 
         POM gavModel = new POM(
                 new GAV(
-                        (model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId()),
-                        (model.getArtifactId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),
-                        (model.getVersion() == null ? model.getParent().getVersion() : model.getVersion())
+                        ( model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId() ),
+                        ( model.getArtifactId() == null ? model.getParent().getArtifactId() : model.getArtifactId() ),
+                        ( model.getVersion() == null ? model.getParent().getVersion() : model.getVersion() )
                 )
         );
 
-        for (Repository repository : model.getRepositories()) {
-            gavModel.addRepository(fromPomModelToClientModel(repository));
+        for ( Repository repository : model.getRepositories() ) {
+            gavModel.addRepository( fromPomModelToClientModel( repository ) );
         }
 
-        for (Dependency dependency : model.getDependencies()) {
-            gavModel.getDependencies().add(fromPomModelToClientModel(dependency));
+        for ( Dependency dependency : model.getDependencies() ) {
+            gavModel.getDependencies().add( fromPomModelToClientModel( dependency ) );
         }
 
         return gavModel;
     }
 
-    private org.guvnor.common.services.project.model.Repository fromPomModelToClientModel(Repository from) {
+    private org.guvnor.common.services.project.model.Repository fromPomModelToClientModel( Repository from ) {
         org.guvnor.common.services.project.model.Repository to = new org.guvnor.common.services.project.model.Repository();
 
-        to.setId(from.getId());
-        to.setName(from.getName());
-        to.setUrl(from.getUrl());
+        to.setId( from.getId() );
+        to.setName( from.getName() );
+        to.setUrl( from.getUrl() );
 
         return to;
     }
 
-    private org.guvnor.common.services.project.model.Dependency fromPomModelToClientModel(Dependency from) {
+    private org.guvnor.common.services.project.model.Dependency fromPomModelToClientModel( Dependency from ) {
         org.guvnor.common.services.project.model.Dependency dependency = new org.guvnor.common.services.project.model.Dependency();
 
-        dependency.setArtifactId(from.getArtifactId());
-        dependency.setGroupId(from.getGroupId());
-        dependency.setVersion(from.getVersion());
+        dependency.setArtifactId( from.getArtifactId() );
+        dependency.setGroupId( from.getGroupId() );
+        dependency.setVersion( from.getVersion() );
 
         return dependency;
     }
 
-    private Dependency fromClientModelToPom(org.guvnor.common.services.project.model.Dependency from) {
+    private Dependency fromClientModelToPom( org.guvnor.common.services.project.model.Dependency from ) {
         Dependency dependency = new Dependency();
 
-        dependency.setArtifactId(from.getArtifactId());
-        dependency.setGroupId(from.getGroupId());
-        dependency.setVersion(from.getVersion());
+        dependency.setArtifactId( from.getArtifactId() );
+        dependency.setGroupId( from.getGroupId() );
+        dependency.setVersion( from.getVersion() );
 
         return dependency;
     }

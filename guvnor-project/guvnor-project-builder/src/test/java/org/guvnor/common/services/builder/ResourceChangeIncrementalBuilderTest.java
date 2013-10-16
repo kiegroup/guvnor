@@ -33,26 +33,22 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.security.Role;
 import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.workbench.events.ChangeType;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.junit.Assert.*;
 
-public class BuildChangeListenerTest {
+public class ResourceChangeIncrementalBuilderTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -76,43 +72,43 @@ public class BuildChangeListenerTest {
         final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext cc1 = beanManager.createCreationalContext( pathsBean );
         paths = (Paths) beanManager.getReference( pathsBean,
-                Paths.class,
-                cc1 );
+                                                  Paths.class,
+                                                  cc1 );
 
         //Instantiate ConfigurationService
         final Bean configurationServiceBean = (Bean) beanManager.getBeans( ConfigurationService.class ).iterator().next();
         final CreationalContext cc2 = beanManager.createCreationalContext( configurationServiceBean );
         configurationService = (ConfigurationService) beanManager.getReference( configurationServiceBean,
-                ConfigurationService.class,
-                cc2 );
+                                                                                ConfigurationService.class,
+                                                                                cc2 );
 
         //Instantiate ConfigurationFactory
         final Bean configurationFactoryBean = (Bean) beanManager.getBeans( ConfigurationFactory.class ).iterator().next();
         final CreationalContext cc3 = beanManager.createCreationalContext( configurationFactoryBean );
         configurationFactory = (ConfigurationFactory) beanManager.getReference( configurationFactoryBean,
-                ConfigurationFactory.class,
-                cc3 );
+                                                                                ConfigurationFactory.class,
+                                                                                cc3 );
 
         //Instantiate BuildResultsObserver
         final Bean buildResultsObserverBean = (Bean) beanManager.getBeans( BuildResultsObserver.class ).iterator().next();
         final CreationalContext cc4 = beanManager.createCreationalContext( buildResultsObserverBean );
         buildResultsObserver = (BuildResultsObserver) beanManager.getReference( buildResultsObserverBean,
-                BuildResultsObserver.class,
-                cc4 );
+                                                                                BuildResultsObserver.class,
+                                                                                cc4 );
 
         //Instantiate BuildService
         final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
         final CreationalContext cc5 = beanManager.createCreationalContext( buildServiceBean );
         buildService = (BuildService) beanManager.getReference( buildServiceBean,
-                BuildService.class,
-                cc5 );
+                                                                BuildService.class,
+                                                                cc5 );
 
         //Instantiate ProjectService
         final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext cc6 = beanManager.createCreationalContext( projectServiceBean );
         projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                ProjectService.class,
-                cc6 );
+                                                                    ProjectService.class,
+                                                                    cc6 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
@@ -132,20 +128,20 @@ public class BuildChangeListenerTest {
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                GLOBAL_SETTINGS,
-                "" );
+                                                                       GLOBAL_SETTINGS,
+                                                                       "" );
         group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                "true" ) );
+                                                                 "true" ) );
         return group;
     }
 
     @Test
     public void testResourceAdded() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( BuildChangeListener.class ).iterator().next();
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final BuildChangeListener buildChangeListener = (BuildChangeListener) beanManager.getReference( buildChangeListenerBean,
-                BuildChangeListener.class,
-                cc );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
@@ -156,27 +152,26 @@ public class BuildChangeListenerTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                buildResults.getMessages().size() );
+                      buildResults.getMessages().size() );
 
         //Perform incremental build
-        final ResourceAddedEvent event = new ResourceAddedEvent( resourcePath , new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) );
-        buildChangeListener.addResource( event );
+        buildChangeListener.addResource( resourcePath );
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
-                incrementalBuildResults.getAddedMessages().size() );
+                      incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
-                incrementalBuildResults.getRemovedMessages().size() );
+                      incrementalBuildResults.getRemovedMessages().size() );
     }
 
     @Test
     public void testResourceUpdated() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( BuildChangeListener.class ).iterator().next();
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final BuildChangeListener buildChangeListener = (BuildChangeListener) beanManager.getReference( buildChangeListenerBean,
-                BuildChangeListener.class,
-                cc );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
@@ -187,27 +182,26 @@ public class BuildChangeListenerTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                buildResults.getMessages().size() );
+                      buildResults.getMessages().size() );
 
         //Perform incremental build
-        final ResourceUpdatedEvent event = new ResourceUpdatedEvent( resourcePath, new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) );
-        buildChangeListener.updateResource( event );
+        buildChangeListener.updateResource( resourcePath );
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
-                incrementalBuildResults.getAddedMessages().size() );
+                      incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
-                incrementalBuildResults.getRemovedMessages().size() );
+                      incrementalBuildResults.getRemovedMessages().size() );
     }
 
     @Test
     public void testResourceDeleted() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( BuildChangeListener.class ).iterator().next();
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final BuildChangeListener buildChangeListener = (BuildChangeListener) beanManager.getReference( buildChangeListenerBean,
-                BuildChangeListener.class,
-                cc );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
 
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
@@ -218,27 +212,26 @@ public class BuildChangeListenerTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                buildResults.getMessages().size() );
+                      buildResults.getMessages().size() );
 
         //Perform incremental build
-        final ResourceDeletedEvent event = new ResourceDeletedEvent( resourcePath, new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) );
-        buildChangeListener.deleteResource( event );
+        buildChangeListener.deleteResource( resourcePath );
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
-                incrementalBuildResults.getAddedMessages().size() );
+                      incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
-                incrementalBuildResults.getRemovedMessages().size() );
+                      incrementalBuildResults.getRemovedMessages().size() );
     }
 
     @Test
     public void testBatchResourceChanges() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( BuildChangeListener.class ).iterator().next();
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final BuildChangeListener buildChangeListener = (BuildChangeListener) beanManager.getReference( buildChangeListenerBean,
-                BuildChangeListener.class,
-                cc );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
 
         final URL resourceUrl1 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath1 = fs.getPath( resourceUrl1.toURI() );
@@ -254,32 +247,37 @@ public class BuildChangeListenerTest {
 
         final Set<ResourceChange> batch = new HashSet<ResourceChange>();
         batch.add( new ResourceChange( ChangeType.ADD,
-                resourcePath1,
-                new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
+                                       resourcePath1,
+                                       new SessionInfoImpl( "id",
+                                                            new IdentityImpl( "user",
+                                                                              Collections.<Role>emptyList() ) ) ) );
         batch.add( new ResourceChange( ChangeType.UPDATE,
-                resourcePath2,
-                new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
+                                       resourcePath2,
+                                       new SessionInfoImpl( "id",
+                                                            new IdentityImpl( "user",
+                                                                              Collections.<Role>emptyList() ) ) ) );
         batch.add( new ResourceChange( ChangeType.DELETE,
-                resourcePath3,
-                new SessionInfoImpl( "id", new IdentityImpl( "user", Collections.<Role>emptyList() ) ) ) );
+                                       resourcePath3,
+                                       new SessionInfoImpl( "id",
+                                                            new IdentityImpl( "user",
+                                                                              Collections.<Role>emptyList() ) ) ) );
 
         //Force full build before attempting incremental changes
         final Project project = projectService.resolveProject( resourcePath1 );
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                buildResults.getMessages().size() );
+                      buildResults.getMessages().size() );
 
         //Perform incremental build
-        final ResourceBatchChangesEvent event = new ResourceBatchChangesEvent( batch );
-        buildChangeListener.batchResourceChanges( event );
+        buildChangeListener.batchResourceChanges( batch );
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
-                incrementalBuildResults.getAddedMessages().size() );
+                      incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
-                incrementalBuildResults.getRemovedMessages().size() );
+                      incrementalBuildResults.getRemovedMessages().size() );
     }
 
 }

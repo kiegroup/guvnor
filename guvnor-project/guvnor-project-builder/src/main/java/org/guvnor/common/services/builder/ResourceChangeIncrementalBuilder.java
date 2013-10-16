@@ -25,7 +25,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -35,26 +34,22 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.workbench.events.ResourceChange;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 /**
  * Listener for changes to project resources to handle incremental builds
  */
 @ApplicationScoped
-public class BuildChangeListener {
+public class ResourceChangeIncrementalBuilder {
 
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
-    private static final Logger log = LoggerFactory.getLogger( BuildChangeListener.class );
+    private static final Logger log = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
 
     @Inject
     private Paths paths;
@@ -109,16 +104,12 @@ public class BuildChangeListener {
         }
     }
 
-    public void addResource( @Observes final ResourceAddedEvent resourceAddedEvent ) {
+    public void addResource( final Path resource ) {
         //Do nothing if incremental builds are disabled
         if ( !isIncrementalEnabled ) {
             return;
         }
 
-        //Perform incremental build
-        PortablePreconditions.checkNotNull( "resourceAddedEvent",
-                                            resourceAddedEvent );
-        final Path resource = resourceAddedEvent.getPath();
         log.info( "Incremental build request received for: " + resource.toURI() + " (added)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
@@ -153,16 +144,12 @@ public class BuildChangeListener {
         } );
     }
 
-    public void deleteResource( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
+    public void deleteResource( final Path resource ) {
         //Do nothing if incremental builds are disabled
         if ( !isIncrementalEnabled ) {
             return;
         }
 
-        //Perform incremental build
-        PortablePreconditions.checkNotNull( "resourceDeletedEvent",
-                                            resourceDeletedEvent );
-        final Path resource = resourceDeletedEvent.getPath();
         log.info( "Incremental build request received for: " + resource.toURI() + " (deleted)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
@@ -197,16 +184,12 @@ public class BuildChangeListener {
         } );
     }
 
-    public void updateResource( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
+    public void updateResource( final Path resource ) {
         //Do nothing if incremental builds are disabled
         if ( !isIncrementalEnabled ) {
             return;
         }
 
-        //Perform incremental build
-        PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
-                                            resourceUpdatedEvent );
-        final Path resource = resourceUpdatedEvent.getPath();
         log.info( "Incremental build request received for: " + resource.toURI() + " (updated)." );
 
         //If resource is not within a Project it cannot be used for an incremental build
@@ -271,19 +254,15 @@ public class BuildChangeListener {
         } );
     }
 
-    public void batchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
+    public void batchResourceChanges( final Set<ResourceChange> batch ) {
         //Do nothing if incremental builds are disabled
         if ( !isIncrementalEnabled ) {
             return;
         }
 
-        //Perform incremental build
-        PortablePreconditions.checkNotNull( "resourceBatchChangesEvent",
-                                            resourceBatchChangesEvent );
         log.info( "Batch incremental build request received." );
 
         //Block changes together with their respective project as Builder operates at the Project level
-        final Set<ResourceChange> batch = resourceBatchChangesEvent.getBatch();
         final Map<Project, Set<ResourceChange>> projectBatchChanges = new HashMap<Project, Set<ResourceChange>>();
         for ( ResourceChange change : batch ) {
             PortablePreconditions.checkNotNull( "path",
