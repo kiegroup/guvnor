@@ -46,15 +46,15 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -213,11 +213,7 @@ public class Builder {
     public IncrementalBuildResults deleteResource( final Path resource ) {
         PortablePreconditions.checkNotNull( "resource",
                                             resource );
-
-        //Only files can be processed
-        if ( !Files.isRegularFile( resource ) ) {
-            return new IncrementalBuildResults( gav );
-        }
+        //The file has already been deleted so we can't check if the Path is a file or folder :(
 
         //Check a full build has been performed
         if ( !isBuilt() ) {
@@ -274,11 +270,6 @@ public class Builder {
             final ChangeType type = change.getType();
             final Path resource = paths.convert( change.getPath() );
 
-            //Only files can be processed
-            if ( !Files.isRegularFile( resource ) ) {
-                continue;
-            }
-
             PortablePreconditions.checkNotNull( "type",
                                                 type );
             PortablePreconditions.checkNotNull( "resource",
@@ -290,6 +281,11 @@ public class Builder {
             switch ( type ) {
                 case ADD:
                 case UPDATE:
+                    //Only files can be processed
+                    if ( !Files.isRegularFile( resource ) ) {
+                        continue;
+                    }
+
                     final InputStream is = ioService.newInputStream( resource );
                     final BufferedInputStream bis = new BufferedInputStream( is );
                     kieFileSystem.write( destinationPath,
@@ -321,6 +317,7 @@ public class Builder {
 
                     break;
                 case DELETE:
+                    //The file has already been deleted so we can't check if the Path is a file or folder :(
                     kieFileSystem.delete( destinationPath );
                     removeJavaClass( resource );
 
@@ -550,9 +547,11 @@ public class Builder {
         return TypeSource.JAVA_DEPENDENCY;
     }
 
-    private BuildValidationHelper getBuildValidationHelper( final Path resource ) {
+    private BuildValidationHelper getBuildValidationHelper( final Path nioResource ) {
         for ( BuildValidationHelper validator : buildValidationHelpers ) {
-            if ( validator.accepts( paths.convert( resource ) ) ) {
+            final org.uberfire.backend.vfs.Path resource = paths.convert( nioResource,
+                                                                          false );
+            if ( validator.accepts( resource ) ) {
                 return validator;
             }
         }
