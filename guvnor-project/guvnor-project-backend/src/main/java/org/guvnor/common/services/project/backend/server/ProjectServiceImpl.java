@@ -45,10 +45,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -57,6 +53,10 @@ import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -361,7 +361,7 @@ public class ProjectServiceImpl
         if ( caption.equals( "<default>" ) ) {
             return "";
         }
-        return caption;
+        return caption.replaceAll( "\\.", "/" );
     }
 
     private Set<String> getPackageNames( final org.uberfire.java.nio.file.Path nioProjectRootPath,
@@ -385,7 +385,7 @@ public class ProjectServiceImpl
 
         final LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
         final DirectoryStream<org.uberfire.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
-                                                                                                                          metaDataFileFilter );
+                                                                                                                       metaDataFileFilter );
         for ( org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
             if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
                 if ( recursive ) {

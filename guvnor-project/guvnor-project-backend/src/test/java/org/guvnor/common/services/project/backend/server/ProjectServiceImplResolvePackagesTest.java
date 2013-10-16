@@ -110,6 +110,11 @@ public class ProjectServiceImplResolvePackagesTest {
         assertEquals( defaultPkg, projectService.resolveParentPackage( rootPkg ) );
 
         assertNull( projectService.resolveParentPackage( defaultPkg ) );
+
+        {
+            Set<Package> packages = projectService.resolvePackages( kiePkg );
+            assertEquals( 1, packages.size() );
+        }
     }
 
 }
