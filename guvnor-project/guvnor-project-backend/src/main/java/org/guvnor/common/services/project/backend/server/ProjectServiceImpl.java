@@ -70,6 +70,7 @@ public class ProjectServiceImpl
     private static final String POM_PATH = "pom.xml";
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
+    private static final String PROJECT_CATEGORIES_PATH ="categories.xml";
 
     private static final String MAIN_SRC_PATH = "src/main/java";
     private static final String TEST_SRC_PATH = "src/test/java";
