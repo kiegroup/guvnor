@@ -22,6 +22,7 @@ import java.util.Collections;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
