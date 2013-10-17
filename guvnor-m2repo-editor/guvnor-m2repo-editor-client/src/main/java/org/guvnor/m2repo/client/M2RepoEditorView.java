@@ -17,8 +17,7 @@ package org.guvnor.m2repo.client;
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.Form.SubmitHandler;
+import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,9 +39,8 @@ import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
-
 import org.uberfire.client.common.FormStyleLayout;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class M2RepoEditorView
         extends Composite
@@ -50,15 +48,14 @@ public class M2RepoEditorView
 
     private VerticalPanel layout;
     private WellForm form;
-    //private FormStyleLayout       emptyGAVPanel = new FormStyleLayout();
-    private TextBox hiddenGroupIdField = new TextBox();
-    private TextBox hiddenArtifactIdField = new TextBox();
-    private TextBox hiddenVersionIdField = new TextBox();
 
-    FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
-    final SimplePanel resultsP = new SimplePanel();
+    private final TextBox hiddenGroupIdField = new TextBox();
+    private final TextBox hiddenArtifactIdField = new TextBox();
+    private final TextBox hiddenVersionIdField = new TextBox();
 
-    /*    @Inject*/
+    private final FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
+    private final SimplePanel resultsP = new SimplePanel();
+
     private Caller<M2RepoService> m2RepoService;
 
     @Inject
@@ -78,7 +75,8 @@ public class M2RepoEditorView
 
         FormStyleLayout ts = new FormStyleLayout();
 
-        ts.addAttribute( "Upload new Jar:", doUploadForm() );
+        ts.addAttribute( "Upload new Jar:",
+                         doUploadForm() );
 
         final TextBox searchTextBox = new TextBox();
         //tx.setWidth("100px");
@@ -96,10 +94,10 @@ public class M2RepoEditorView
             public void onClick( ClickEvent arg0 ) {
                 resultsP.clear();
                 if ( searchTextBox.getText() == null || searchTextBox.getText().equals( "" ) ) {
-                	PagedJarTable table = new PagedJarTable( m2RepoService );
+                    PagedJarTable table = new PagedJarTable( m2RepoService );
                     resultsP.add( table );
                 } else {
-                	PagedJarTable table = new PagedJarTable( m2RepoService, searchTextBox.getText() );
+                    PagedJarTable table = new PagedJarTable( m2RepoService, searchTextBox.getText() );
                     resultsP.add( table );
                 }
             }
@@ -139,25 +137,25 @@ public class M2RepoEditorView
         Button ok = new Button( "upload" );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                showUploadingBusy();        		
+                showUploadingBusy();
                 form.submit();
             }
         } );
 
-        form.addSubmitHandler(new SubmitHandler() {
-			@Override
-			public void onSubmit(SubmitEvent event) {
-				String fileName = up.getFilename();
-				if(fileName == null || "".equals(fileName)) {
-					BusyPopup.close();
-					Window.alert("Please selete a file to upload");
-			        event.cancel();
-				}      				
-			}            		
-    	});
-        
-        form.addSubmitCompleteHandler( new WellForm.SubmitCompleteHandler() {
-            public void onSubmitComplete( final WellForm.SubmitCompleteEvent event ) {
+        form.addSubmitHandler( new Form.SubmitHandler() {
+            @Override
+            public void onSubmit( final Form.SubmitEvent event ) {
+                String fileName = up.getFilename();
+                if ( fileName == null || "".equals( fileName ) ) {
+                    BusyPopup.close();
+                    Window.alert( "Please selete a file to upload" );
+                    event.cancel();
+                }
+            }
+        } );
+
+        form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
+            public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
                     Window.alert( "Uploaded successfully" );
@@ -169,8 +167,8 @@ public class M2RepoEditorView
                     resultsP.clear();
                     PagedJarTable table = new PagedJarTable( m2RepoService );
                     resultsP.add( table );
-                    
-                    up.getElement().setPropertyString("value", "");
+
+                    up.getElement().setPropertyString( "value", "" );
 
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
