@@ -27,6 +27,8 @@ public class POM {
     private static final String MODEL_VERSION = "4.0.0";
 
     private GAV gav;
+    private String name;
+    private String description;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
     private List<Repository> repositories = new ArrayList<Repository>();
@@ -35,8 +37,15 @@ public class POM {
         this.gav = new GAV();
     }
 
+    // Kept this for backwards compatibility
     public POM(GAV gav) {
+        this(null, null, gav);
+    }
+
+    public POM(String name, String description, GAV gav) {
         super();
+        this.name = name;
+        this.description = description;
         this.gav = gav;
     }
 
@@ -60,4 +69,19 @@ public class POM {
         return MODEL_VERSION;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription( String description ) {
+        this.description = description;
+    }
 }

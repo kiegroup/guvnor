@@ -44,6 +44,8 @@ public class POMContentHandler {
 
     private String toString(POM pom, Model model)
             throws IOException {
+        model.setName(pom.getName());
+        model.setDescription(pom.getDescription());
         model.setGroupId(pom.getGav().getGroupId());
         model.setArtifactId(pom.getGav().getArtifactId());
         model.setVersion(pom.getGav().getVersion());
@@ -91,6 +93,8 @@ public class POMContentHandler {
         Model model = new MavenXpp3Reader().read(new StringReader(pomAsString));
 
         POM gavModel = new POM(
+                model.getName(),
+                model.getDescription(),
                 new GAV(
                         (model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId()),
                         (model.getArtifactId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),
