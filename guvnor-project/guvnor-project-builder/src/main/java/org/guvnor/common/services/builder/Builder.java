@@ -19,6 +19,7 @@ package org.guvnor.common.services.builder;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,13 +51,14 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceChangeType;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class Builder {
 
@@ -154,8 +156,8 @@ public class Builder {
     }
 
     public IncrementalBuildResults addResource( final Path resource ) {
-        PortablePreconditions.checkNotNull( "resource",
-                                            resource );
+        checkNotNull( "resource",
+                      resource );
 
         //Only files can be processed
         if ( !Files.isRegularFile( resource ) ) {
@@ -211,8 +213,8 @@ public class Builder {
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
-        PortablePreconditions.checkNotNull( "resource",
-                                            resource );
+        checkNotNull( "resource",
+                      resource );
         //The file has already been deleted so we can't check if the Path is a file or folder :(
 
         //Check a full build has been performed
@@ -253,9 +255,8 @@ public class Builder {
         return addResource( resource );
     }
 
-    public IncrementalBuildResults applyBatchResourceChanges( final Set<ResourceChange> changes ) {
-        PortablePreconditions.checkNotNull( "changes",
-                                            changes );
+    public IncrementalBuildResults applyBatchResourceChanges( final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes ) {
+        checkNotNull( "changes", changes );
 
         //Check a full build has been performed
         if ( !isBuilt() ) {
@@ -266,71 +267,72 @@ public class Builder {
         final List<String> changedFilesKieBuilderPaths = new ArrayList<String>();
         final List<ValidationMessage> nonKieResourceValidatorAddedMessages = new ArrayList<ValidationMessage>();
         final List<ValidationMessage> nonKieResourceValidatorRemovedMessages = new ArrayList<ValidationMessage>();
-        for ( ResourceChange change : changes ) {
-            final ChangeType type = change.getType();
-            final Path resource = paths.convert( change.getPath() );
 
-            PortablePreconditions.checkNotNull( "type",
-                                                type );
-            PortablePreconditions.checkNotNull( "resource",
-                                                resource );
+        for ( final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> pathCollectionEntry : changes.entrySet() ) {
+            for ( final ResourceChange change : pathCollectionEntry.getValue() ) {
+                final ResourceChangeType type = change.getType();
+                final Path resource = paths.convert( pathCollectionEntry.getKey() );
 
-            final BuildValidationHelper validator = getBuildValidationHelper( resource );
-            final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
-            changedFilesKieBuilderPaths.add( destinationPath );
-            switch ( type ) {
-                case ADD:
-                case UPDATE:
-                    //Only files can be processed
-                    if ( !Files.isRegularFile( resource ) ) {
-                        continue;
-                    }
+                checkNotNull( "type", type );
+                checkNotNull( "resource", resource );
 
-                    final InputStream is = ioService.newInputStream( resource );
-                    final BufferedInputStream bis = new BufferedInputStream( is );
-                    kieFileSystem.write( destinationPath,
-                                         KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
-                    addJavaClass( resource );
-                    handles.put( destinationPath,
-                                 change.getPath() );
-
-                    //Resource Type might require "external" validation (i.e. it's not covered by Kie)
-                    if ( validator != null ) {
-                        nonKieResourceValidationHelpers.put( resource,
-                                                             validator );
-                        final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
-                        if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
-                            for ( ValidationMessage validationMessage : addedValidationMessages ) {
-                                nonKieResourceValidatorAddedMessages.add( validationMessage );
-                            }
+                final BuildValidationHelper validator = getBuildValidationHelper( resource );
+                final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+                changedFilesKieBuilderPaths.add( destinationPath );
+                switch ( type ) {
+                    case ADD:
+                    case UPDATE:
+                        //Only files can be processed
+                        if ( !Files.isRegularFile( resource ) ) {
+                            continue;
                         }
 
-                        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
-                        if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
-                            for ( ValidationMessage validationMessage : removedValidationMessages ) {
-                                nonKieResourceValidatorRemovedMessages.add( validationMessage );
+                        final InputStream is = ioService.newInputStream( resource );
+                        final BufferedInputStream bis = new BufferedInputStream( is );
+                        kieFileSystem.write( destinationPath,
+                                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                        addJavaClass( resource );
+                        handles.put( destinationPath,
+                                     pathCollectionEntry.getKey() );
+
+                        //Resource Type might require "external" validation (i.e. it's not covered by Kie)
+                        if ( validator != null ) {
+                            nonKieResourceValidationHelpers.put( resource,
+                                                                 validator );
+                            final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
+                            if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
+                                for ( ValidationMessage validationMessage : addedValidationMessages ) {
+                                    nonKieResourceValidatorAddedMessages.add( validationMessage );
+                                }
+                            }
+
+                            final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+                            if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                                for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                                    nonKieResourceValidatorRemovedMessages.add( validationMessage );
+                                }
+                            }
+                            nonKieResourceValidationHelperMessages.put( resource,
+                                                                        addedValidationMessages );
+                        }
+
+                        break;
+                    case DELETE:
+                        //The file has already been deleted so we can't check if the Path is a file or folder :(
+                        kieFileSystem.delete( destinationPath );
+                        removeJavaClass( resource );
+
+                        //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+                        if ( validator != null ) {
+                            nonKieResourceValidationHelpers.remove( resource );
+                            final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
+                            if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
+                                for ( ValidationMessage validationMessage : removedValidationMessages ) {
+                                    nonKieResourceValidatorRemovedMessages.add( validationMessage );
+                                }
                             }
                         }
-                        nonKieResourceValidationHelperMessages.put( resource,
-                                                                    addedValidationMessages );
-                    }
-
-                    break;
-                case DELETE:
-                    //The file has already been deleted so we can't check if the Path is a file or folder :(
-                    kieFileSystem.delete( destinationPath );
-                    removeJavaClass( resource );
-
-                    //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
-                    if ( validator != null ) {
-                        nonKieResourceValidationHelpers.remove( resource );
-                        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
-                        if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
-                            for ( ValidationMessage validationMessage : removedValidationMessages ) {
-                                nonKieResourceValidatorRemovedMessages.add( validationMessage );
-                            }
-                        }
-                    }
+                }
             }
         }
 

@@ -17,7 +17,8 @@
 package org.guvnor.common.services.builder;
 
 import java.io.ByteArrayInputStream;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ import org.uberfire.workbench.events.ResourceChange;
 public class BuildServiceImpl
         implements BuildService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BuildServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger( BuildServiceImpl.class );
 
     private Paths paths;
     private POMService pomService;
@@ -64,7 +65,7 @@ public class BuildServiceImpl
                              final ExtendedM2RepoService m2RepoService,
                              final ProjectService projectService,
                              final LRUBuilderCache cache,
-                             final Instance<PostBuildHandler> handlers) {
+                             final Instance<PostBuildHandler> handlers ) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
@@ -99,11 +100,11 @@ public class BuildServiceImpl
                 m2RepoService.deployJar( input,
                                          pom.getGav() );
 
-                for (PostBuildHandler handler : handlers) {
+                for ( PostBuildHandler handler : handlers ) {
                     try {
-                        handler.process(results);
-                    } catch (Exception e) {
-                        logger.warn("PostBuildHandler {} failed due to {}", handler, e.getMessage());
+                        handler.process( results );
+                    } catch ( Exception e ) {
+                        logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage() );
                     }
                 }
             }
@@ -195,7 +196,7 @@ public class BuildServiceImpl
 
     @Override
     public IncrementalBuildResults applyBatchResourceChanges( final Project project,
-                                                              final Set<ResourceChange> changes ) {
+                                                              final Map<Path, Collection<ResourceChange>> changes ) {
         IncrementalBuildResults results = new IncrementalBuildResults();
         try {
             if ( project == null ) {

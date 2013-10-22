@@ -16,7 +16,8 @@
 
 package org.guvnor.common.services.project.builder.service;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
@@ -71,6 +72,6 @@ public interface BuildService {
      * @param changes
      */
     IncrementalBuildResults applyBatchResourceChanges( final Project project,
-                                                       final Set<ResourceChange> changes );
+                                                       final Map<Path, Collection<ResourceChange>> changes );
 
 }
