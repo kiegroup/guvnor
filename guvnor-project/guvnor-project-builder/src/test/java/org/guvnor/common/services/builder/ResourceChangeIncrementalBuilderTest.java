@@ -17,10 +17,11 @@
 package org.guvnor.common.services.builder;
 
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -40,11 +41,9 @@ import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.Role;
-import org.uberfire.security.impl.IdentityImpl;
-import org.uberfire.workbench.events.ChangeType;
+import org.uberfire.workbench.events.ResourceAdded;
 import org.uberfire.workbench.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceUpdated;
 
 import static org.junit.Assert.*;
 
@@ -245,22 +244,34 @@ public class ResourceChangeIncrementalBuilderTest {
         final org.uberfire.java.nio.file.Path nioResourcePath3 = fs.getPath( resourceUrl3.toURI() );
         final Path resourcePath3 = paths.convert( nioResourcePath3 );
 
-        final Set<ResourceChange> batch = new HashSet<ResourceChange>();
-        batch.add( new ResourceChange( ChangeType.ADD,
-                                       resourcePath1,
-                                       new SessionInfoImpl( "id",
-                                                            new IdentityImpl( "user",
-                                                                              Collections.<Role>emptyList() ) ) ) );
-        batch.add( new ResourceChange( ChangeType.UPDATE,
-                                       resourcePath2,
-                                       new SessionInfoImpl( "id",
-                                                            new IdentityImpl( "user",
-                                                                              Collections.<Role>emptyList() ) ) ) );
-        batch.add( new ResourceChange( ChangeType.DELETE,
-                                       resourcePath3,
-                                       new SessionInfoImpl( "id",
-                                                            new IdentityImpl( "user",
-                                                                              Collections.<Role>emptyList() ) ) ) );
+//        final Set<ResourceChange> batch = new HashSet<ResourceChange>();
+//        batch.add( new ResourceChange( ChangeType.ADD,
+//                                       resourcePath1,
+//                                       new SessionInfoImpl( "id",
+//                                                            new IdentityImpl( "user",
+//                                                                              Collections.<Role>emptyList() ) ) ) );
+//        batch.add( new ResourceChange( ChangeType.UPDATE,
+//                                       resourcePath2,
+//                                       new SessionInfoImpl( "id",
+//                                                            new IdentityImpl( "user",
+//                                                                              Collections.<Role>emptyList() ) ) ) );
+//        batch.add( new ResourceChange( ChangeType.DELETE,
+//                                       resourcePath3,
+//                                       new SessionInfoImpl( "id",
+//                                                            new IdentityImpl( "user",
+//                                                                              Collections.<Role>emptyList() ) ) ) );
+        final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
+        batch.put( resourcePath1, new ArrayList<ResourceChange>(  ) {{
+            add( new ResourceAdded() );
+        }} );
+
+        batch.put( resourcePath2, new ArrayList<ResourceChange>(  ) {{
+            add( new ResourceUpdated() );
+        }} );
+
+        batch.put( resourcePath3, new ArrayList<ResourceChange>(  ) {{
+            add( new ResourceUpdated() );
+        }} );
 
         //Force full build before attempting incremental changes
         final Project project = projectService.resolveProject( resourcePath1 );

@@ -15,9 +15,9 @@
  */
 package org.guvnor.common.services.builder;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceChangeType;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
@@ -59,26 +59,26 @@ public class ResourceChangeObserver {
     public void processResourceAdd( @Observes final ResourceAddedEvent resourceAddedEvent ) {
         processResourceChange( resourceAddedEvent.getSessionInfo(),
                                resourceAddedEvent.getPath(),
-                               ChangeType.ADD );
+                               ResourceChangeType.ADD );
         incrementalBuilder.addResource( resourceAddedEvent.getPath() );
     }
 
     public void processResourceDelete( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
         processResourceChange( resourceDeletedEvent.getSessionInfo(),
                                resourceDeletedEvent.getPath(),
-                               ChangeType.DELETE );
+                               ResourceChangeType.DELETE );
         incrementalBuilder.deleteResource( resourceDeletedEvent.getPath() );
     }
 
     public void processResourceUpdate( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
         processResourceChange( resourceUpdatedEvent.getSessionInfo(),
                                resourceUpdatedEvent.getPath(),
-                               ChangeType.UPDATE );
+                               ResourceChangeType.UPDATE );
         incrementalBuilder.updateResource( resourceUpdatedEvent.getPath() );
     }
 
     public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        final Set<ResourceChange> batchChanges = resourceBatchChangesEvent.getBatch();
+        final Map<Path, Collection<ResourceChange>> batchChanges = resourceBatchChangesEvent.getBatch();
         final Map<String, Boolean> notifiedProjects = new HashMap<String, Boolean>();
 
         if ( batchChanges == null ) {
@@ -87,18 +87,20 @@ public class ResourceChangeObserver {
         }
 
         //All the changes must be processed, we don't have warranties that all the changes belongs to the same project.
-        for ( ResourceChange change : batchChanges ) {
-            processResourceChange( change.getSessionInfo(),
-                                   change.getPath(),
-                                   change.getType(),
-                                   notifiedProjects );
+        for ( final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : batchChanges.entrySet() ) {
+            for ( ResourceChange change : pathCollectionEntry.getValue() ) {
+                processResourceChange( resourceBatchChangesEvent.getSessionInfo(),
+                                       pathCollectionEntry.getKey(),
+                                       change.getType(),
+                                       notifiedProjects );
+            }
         }
         incrementalBuilder.batchResourceChanges( resourceBatchChangesEvent.getBatch() );
     }
 
     private void processResourceChange( final SessionInfo sessionInfo,
                                         final Path path,
-                                        final ChangeType changeType ) {
+                                        final ResourceChangeType changeType ) {
         processResourceChange( sessionInfo,
                                path,
                                changeType,
@@ -107,7 +109,7 @@ public class ResourceChangeObserver {
 
     private void processResourceChange( final SessionInfo sessionInfo,
                                         final Path path,
-                                        final ChangeType changeType,
+                                        final ResourceChangeType changeType,
                                         final Map<String, Boolean> notifiedProjects ) {
         //Only process Project resources
         final Project project = projectService.resolveProject( path );

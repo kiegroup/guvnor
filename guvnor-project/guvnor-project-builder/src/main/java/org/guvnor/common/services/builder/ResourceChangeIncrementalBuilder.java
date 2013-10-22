@@ -15,10 +15,10 @@
  */
 package org.guvnor.common.services.builder;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.workbench.events.ResourceChange;
 
 /**
@@ -254,7 +253,7 @@ public class ResourceChangeIncrementalBuilder {
         } );
     }
 
-    public void batchResourceChanges( final Set<ResourceChange> batch ) {
+    public void batchResourceChanges( final Map<Path, Collection<ResourceChange>> batch ) {
         //Do nothing if incremental builds are disabled
         if ( !isIncrementalEnabled ) {
             return;
@@ -263,28 +262,32 @@ public class ResourceChangeIncrementalBuilder {
         log.info( "Batch incremental build request received." );
 
         //Block changes together with their respective project as Builder operates at the Project level
-        final Map<Project, Set<ResourceChange>> projectBatchChanges = new HashMap<Project, Set<ResourceChange>>();
-        for ( ResourceChange change : batch ) {
-            PortablePreconditions.checkNotNull( "path",
-                                                change.getPath() );
-            final Path resource = change.getPath();
+        final Map<Project, Map<Path, Collection<ResourceChange>>> projectBatchChanges = new HashMap<Project, Map<Path, Collection<ResourceChange>>>();
 
-            //If resource is not within a Package it cannot be used for an incremental build
-            final Project project = projectService.resolveProject( resource );
-            final Package pkg = projectService.resolvePackage( resource );
-            if ( project != null && pkg != null ) {
-                if ( !projectBatchChanges.containsKey( project ) ) {
-                    projectBatchChanges.put( project,
-                                             new HashSet<ResourceChange>() );
+        for ( Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : batch.entrySet() ) {
+            for ( final ResourceChange change : pathCollectionEntry.getValue() ) {
+                final Path resource = pathCollectionEntry.getKey();
+
+                //If resource is not within a Package it cannot be used for an incremental build
+                final Project project = projectService.resolveProject( resource );
+                final Package pkg = projectService.resolvePackage( resource );
+                if ( project != null && pkg != null ) {
+                    if ( !projectBatchChanges.containsKey( project ) ) {
+                        projectBatchChanges.put( project,
+                                                 new HashMap<Path, Collection<ResourceChange>>() );
+                    }
+                    final Map<Path, Collection<ResourceChange>> projectChanges = projectBatchChanges.get( project );
+                    if ( !projectChanges.containsKey( pathCollectionEntry.getKey() ) ) {
+                        projectChanges.put( pathCollectionEntry.getKey(), new ArrayList<ResourceChange>() );
+                    }
+                    projectChanges.get( pathCollectionEntry.getKey() ).add( change );
+                    log.info( "- Batch content: " + pathCollectionEntry.getKey().toURI() + " (" + change.getType().toString() + ")." );
                 }
-                final Set<ResourceChange> projectChanges = projectBatchChanges.get( project );
-                projectChanges.add( change );
-                log.info( "- Batch content: " + change.getPath().toURI() + " (" + change.getType().toString() + ")." );
             }
         }
 
         //Schedule an incremental build for each Project
-        for ( final Map.Entry<Project, Set<ResourceChange>> e : projectBatchChanges.entrySet() ) {
+        for ( final Map.Entry<Project, Map<Path, Collection<ResourceChange>>> e : projectBatchChanges.entrySet() ) {
             executor.execute( new Runnable() {
 
                 @Override
@@ -292,7 +295,7 @@ public class ResourceChangeIncrementalBuilder {
                     try {
                         log.info( "Batch incremental build request being processed." );
                         final Project project = e.getKey();
-                        final Set<ResourceChange> changes = e.getValue();
+                        final Map<Path, Collection<ResourceChange>> changes = e.getValue();
 
                         //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
                         if ( buildService.isBuilt( project ) ) {
