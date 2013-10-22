@@ -45,10 +45,13 @@ import org.junit.runner.RunWith;
 import org.picketlink.idm.impl.api.PasswordCredential;
 
 import javax.inject.Inject;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 @RunWith(Arquillian.class)
@@ -57,13 +60,17 @@ public abstract class GuvnorIntegrationTest {
     public static final String ADMIN_USERNAME = "admin";
 
     @Deployment
-    public static WebArchive createDeployment() {
+    public static WebArchive createDeployment() throws Exception {
         WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
                 .importBuildOutput().importTestBuildOutput()
                 .as(WebArchive.class);
         addTestDependencies(webArchive);
 
-        File explodedWarFile = new File("target/guvnor-webapp-drools-5.5.1-SNAPSHOT");
+        Properties testProps = new Properties();
+        testProps.load(GuvnorIntegrationTest.class.getResourceAsStream("/test.properties"));
+        String version = testProps.getProperty("project.version");
+        
+        File explodedWarFile = new File("target/guvnor-webapp-drools-" + version );
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
