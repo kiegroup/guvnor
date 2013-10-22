@@ -26,6 +26,16 @@
   </properties>
 
   <build>
+  
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+        </testResource>
+        <testResource>
+            <directory>src/test/filtered-resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler -->
