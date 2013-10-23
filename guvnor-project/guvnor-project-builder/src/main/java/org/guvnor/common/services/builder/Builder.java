@@ -17,7 +17,9 @@
 package org.guvnor.common.services.builder;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.rule.TypeMetaInfo;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
@@ -65,6 +68,12 @@ public class Builder {
     private final static String RESOURCE_PATH = "src/main/resources";
 
     private final static String ERROR_CLASS_NOT_FOUND = "Class not found";
+
+    //TODO internationalize error messages?.
+    private final static String ERROR_EXTERNAL_CLASS_VERIFICATON = "An error was found during external classes check.\n" +
+                                "The external class {0} did not pass the verification. \n" +
+                                "Please check the external .jar files configured as dependencies for this project.\n" +
+                                "The low level error is: ";
 
     private KieBuilder kieBuilder;
     private final KieServices kieServices;
@@ -147,6 +156,25 @@ public class Builder {
             }
         }
 
+        //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
+        // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
+        // X references another external class Y, Y is also accessible by the class loader.
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
+        for ( final String packageName : kieModuleMetaData.getPackages() ) {
+            for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
+                final Class clazz = kieModuleMetaData.getClass( packageName, className );
+                final TypeSource typeSource = getClassSource( kieModuleMetaData, clazz );
+                if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
+                    try {
+                        verifyExternalClass( clazz );
+                    } catch ( Throwable e ) {
+                        results.addBuildMessage( makeMessage(
+                                MessageFormat.format(ERROR_EXTERNAL_CLASS_VERIFICATON, clazz.getName()), e));
+                    }
+                }
+            }
+        }
+
         //It's impossible to retrieve a KieContainer if the KieModule contains errors
         if ( results.getMessages().isEmpty() ) {
             kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
@@ -155,9 +183,18 @@ public class Builder {
         return results;
     }
 
+    private void verifyExternalClass(Class clazz) {
+        //don't recommended to instantiate the class doing clazz.newInstance().
+        clazz.getDeclaredConstructors();
+        clazz.getDeclaredFields();
+        clazz.getDeclaredMethods();
+        clazz.getDeclaredClasses();
+        clazz.getDeclaredAnnotations();
+    }
+
     public IncrementalBuildResults addResource( final Path resource ) {
-        checkNotNull( "resource",
-                      resource );
+        checkNotNull("resource",
+                resource);
 
         //Only files can be processed
         if ( !Files.isRegularFile( resource ) ) {
@@ -213,8 +250,8 @@ public class Builder {
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
-        checkNotNull( "resource",
-                      resource );
+        checkNotNull("resource",
+                resource);
         //The file has already been deleted so we can't check if the Path is a file or folder :(
 
         //Check a full build has been performed
@@ -256,7 +293,7 @@ public class Builder {
     }
 
     public IncrementalBuildResults applyBatchResourceChanges( final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes ) {
-        checkNotNull( "changes", changes );
+        checkNotNull("changes", changes);
 
         //Check a full build has been performed
         if ( !isBuilt() ) {
@@ -490,7 +527,7 @@ public class Builder {
     }
 
     private BuildMessage makeMessage( final String prefix,
-                                      final Exception e ) {
+                                      final Throwable e ) {
         final BuildMessage buildMessage = new BuildMessage();
         buildMessage.setLevel( BuildMessage.Level.ERROR );
         buildMessage.setText( prefix + ": " + e.getMessage() );
