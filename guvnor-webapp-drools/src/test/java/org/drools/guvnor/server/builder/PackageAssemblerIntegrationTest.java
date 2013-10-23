@@ -826,14 +826,17 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
         Package bin = binPkgs[0];
         assertNotNull( bin );
+        Package bin2 = binPkgs[1];
+        assertNotNull( bin2 );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
         rb.addPackage( bin );
+        rb.addPackage( bin2 );
 
         WorkingMemory wm = rb.newStatefulSession();
 
@@ -938,10 +941,10 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        Package bin = binPkgs[0];
+        Package bin = binPkgs[1];
 
         assertEquals( 2,
                       bin.getRules().length );
@@ -989,7 +992,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
         Package pk = binPkgs[0];
@@ -1007,10 +1010,10 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        pk = binPkgs[0];
+        pk = binPkgs[1];
         assertNotNull( pk );
 
         assertEquals( 2,
@@ -1041,10 +1044,10 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        pk = binPkgs[0];
+        pk = binPkgs[1];
         assertNotNull( pk );
 
         assertEquals( 2,
@@ -1108,10 +1111,10 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        Package pk = binPkgs[0];
+        Package pk = binPkgs[1];
         assertNotNull( pk );
 
         assertEquals( 2,
@@ -1125,7 +1128,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
         pk = binPkgs[0];
@@ -1151,7 +1154,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
         binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
         pk = binPkgs[0];
@@ -1209,7 +1212,7 @@ public class PackageAssemblerIntegrationTest extends GuvnorIntegrationTest {
             Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( asm.getCompiledBinary() );
 
             assertNotNull( binPkgs );
-            assertEquals( 1,
+            assertEquals( 2,
                           binPkgs.length );
 
             Package bin = binPkgs[0];

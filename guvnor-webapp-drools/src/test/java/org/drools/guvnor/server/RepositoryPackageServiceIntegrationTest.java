@@ -1085,10 +1085,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        Package binPkg = binPkgs[0];
+        Package binPkg = binPkgs[1];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
@@ -1195,10 +1195,10 @@ public class RepositoryPackageServiceIntegrationTest extends GuvnorIntegrationTe
         Package[] binPkgs = (Package[]) DroolsStreamUtils.streamIn( binPackage );
 
         assertNotNull( binPkgs );
-        assertEquals( 1,
+        assertEquals( 2,
                       binPkgs.length );
 
-        Package binPkg = binPkgs[0];
+        Package binPkg = binPkgs[1];
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
