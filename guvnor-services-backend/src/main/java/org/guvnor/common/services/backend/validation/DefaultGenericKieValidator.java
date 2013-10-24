@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.KModuleFileFilter;
@@ -45,9 +46,7 @@ import org.uberfire.backend.vfs.Path;
 public class DefaultGenericKieValidator implements GenericValidator {
 
     @Inject
-    private Paths paths;
-
-    @Inject
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -74,7 +73,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
         final String projectPrefix = project.getRootPath().toURI();
 
         //Add Java Model files
-        final org.uberfire.java.nio.file.Path nioProjectRoot = paths.convert( project.getRootPath() );
+        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( project.getRootPath() );
         final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( nioProjectRoot );
         visitPaths( projectPrefix,
                     kieFileSystem,

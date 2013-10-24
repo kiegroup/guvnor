@@ -71,15 +71,14 @@ public class Builder {
 
     //TODO internationalize error messages?.
     private final static String ERROR_EXTERNAL_CLASS_VERIFICATON = "An error was found during external classes check.\n" +
-                                "The external class {0} did not pass the verification. \n" +
-                                "Please check the external .jar files configured as dependencies for this project.\n" +
-                                "The low level error is: ";
+            "The external class {0} did not pass the verification. \n" +
+            "Please check the external .jar files configured as dependencies for this project.\n" +
+            "The low level error is: ";
 
     private KieBuilder kieBuilder;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
     private final Path moduleDirectory;
-    private final Paths paths;
     private final GAV gav;
     private final IOService ioService;
     private final ProjectService projectService;
@@ -101,13 +100,11 @@ public class Builder {
 
     public Builder( final Path moduleDirectory,
                     final GAV gav,
-                    final Paths paths,
                     final IOService ioService,
                     final ProjectService projectService,
                     final List<BuildValidationHelper> buildValidationHelpers ) {
         this.moduleDirectory = moduleDirectory;
         this.gav = gav;
-        this.paths = paths;
         this.ioService = ioService;
         this.projectService = projectService;
         this.buildValidationHelpers = buildValidationHelpers;
@@ -130,7 +127,7 @@ public class Builder {
         for ( Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet() ) {
             final Path resource = e.getKey();
             final BuildValidationHelper validator = e.getValue();
-            final List<ValidationMessage> validationMessages = validator.validate( paths.convert( resource ) );
+            final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( resource ) );
             if ( !( validationMessages == null || validationMessages.isEmpty() ) ) {
                 for ( ValidationMessage validationMessage : validationMessages ) {
                     results.addBuildMessage( convertValidationMessage( validationMessage ) );
@@ -143,7 +140,7 @@ public class Builder {
         //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
         final org.uberfire.java.nio.file.Path nioExternalImportsPath = moduleDirectory.resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
-            final org.uberfire.backend.vfs.Path externalImportsPath = paths.convert( nioExternalImportsPath );
+            final org.uberfire.backend.vfs.Path externalImportsPath = Paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );
             final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
@@ -169,7 +166,7 @@ public class Builder {
                         verifyExternalClass( clazz );
                     } catch ( Throwable e ) {
                         results.addBuildMessage( makeMessage(
-                                MessageFormat.format(ERROR_EXTERNAL_CLASS_VERIFICATON, clazz.getName()), e));
+                                MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON, clazz.getName() ), e ) );
                     }
                 }
             }
@@ -183,7 +180,7 @@ public class Builder {
         return results;
     }
 
-    private void verifyExternalClass(Class clazz) {
+    private void verifyExternalClass( Class clazz ) {
         //don't recommended to instantiate the class doing clazz.newInstance().
         clazz.getDeclaredConstructors();
         clazz.getDeclaredFields();
@@ -193,8 +190,8 @@ public class Builder {
     }
 
     public IncrementalBuildResults addResource( final Path resource ) {
-        checkNotNull("resource",
-                resource);
+        checkNotNull( "resource",
+                      resource );
 
         //Only files can be processed
         if ( !Files.isRegularFile( resource ) ) {
@@ -213,7 +210,7 @@ public class Builder {
                              KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
         addJavaClass( resource );
         handles.put( destinationPath,
-                     paths.convert( resource ) );
+                     Paths.convert( resource ) );
 
         //Incremental build
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
@@ -229,7 +226,7 @@ public class Builder {
         if ( validator != null ) {
             nonKieResourceValidationHelpers.put( resource,
                                                  validator );
-            final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
+            final List<ValidationMessage> addedValidationMessages = validator.validate( Paths.convert( resource ) );
             if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
                 for ( ValidationMessage validationMessage : addedValidationMessages ) {
                     results.addAddedMessage( convertValidationMessage( validationMessage ) );
@@ -250,8 +247,8 @@ public class Builder {
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
-        checkNotNull("resource",
-                resource);
+        checkNotNull( "resource",
+                      resource );
         //The file has already been deleted so we can't check if the Path is a file or folder :(
 
         //Check a full build has been performed
@@ -293,7 +290,7 @@ public class Builder {
     }
 
     public IncrementalBuildResults applyBatchResourceChanges( final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes ) {
-        checkNotNull("changes", changes);
+        checkNotNull( "changes", changes );
 
         //Check a full build has been performed
         if ( !isBuilt() ) {
@@ -308,7 +305,7 @@ public class Builder {
         for ( final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> pathCollectionEntry : changes.entrySet() ) {
             for ( final ResourceChange change : pathCollectionEntry.getValue() ) {
                 final ResourceChangeType type = change.getType();
-                final Path resource = paths.convert( pathCollectionEntry.getKey() );
+                final Path resource = Paths.convert( pathCollectionEntry.getKey() );
 
                 checkNotNull( "type", type );
                 checkNotNull( "resource", resource );
@@ -336,7 +333,7 @@ public class Builder {
                         if ( validator != null ) {
                             nonKieResourceValidationHelpers.put( resource,
                                                                  validator );
-                            final List<ValidationMessage> addedValidationMessages = validator.validate( paths.convert( resource ) );
+                            final List<ValidationMessage> addedValidationMessages = validator.validate( Paths.convert( resource ) );
                             if ( !( addedValidationMessages == null || addedValidationMessages.isEmpty() ) ) {
                                 for ( ValidationMessage validationMessage : addedValidationMessages ) {
                                     nonKieResourceValidatorAddedMessages.add( validationMessage );
@@ -444,7 +441,7 @@ public class Builder {
                     //Java classes are handled by KIE so we can safely post-process them here
                     addJavaClass( path );
                     handles.put( destinationPath,
-                                 paths.convert( path ) );
+                                 Paths.convert( path ) );
 
                     //Resource Type might require "external" validation (i.e. it's not covered by Kie)
                     final BuildValidationHelper validator = getBuildValidationHelper( path );
@@ -555,8 +552,7 @@ public class Builder {
     }
 
     private String getFullyQualifiedClassName( final Path path ) {
-        final Package pkg = projectService.resolvePackage( paths.convert( path,
-                                                                          false ) );
+        final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
         final String packageName = pkg.getPackageName();
         if ( packageName == null ) {
             return null;
@@ -588,8 +584,7 @@ public class Builder {
 
     private BuildValidationHelper getBuildValidationHelper( final Path nioResource ) {
         for ( BuildValidationHelper validator : buildValidationHelpers ) {
-            final org.uberfire.backend.vfs.Path resource = paths.convert( nioResource,
-                                                                          false );
+            final org.uberfire.backend.vfs.Path resource = Paths.convert( nioResource );
             if ( validator.accepts( resource ) ) {
                 return validator;
             }

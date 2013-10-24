@@ -6,10 +6,10 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -19,9 +19,6 @@ public class DeleteServiceImpl implements DeleteService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private Paths paths;
 
     @Inject
     private Identity identity;
@@ -35,7 +32,7 @@ public class DeleteServiceImpl implements DeleteService {
         try {
             System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
 
-            ioService.delete( paths.convert( path ),
+            ioService.delete( Paths.convert( path ),
                               new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
 
         } catch ( final Exception e ) {

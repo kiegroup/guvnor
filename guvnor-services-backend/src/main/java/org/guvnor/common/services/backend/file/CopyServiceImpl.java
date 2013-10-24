@@ -24,9 +24,6 @@ public class CopyServiceImpl implements CopyService {
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -50,8 +47,8 @@ public class CopyServiceImpl implements CopyService {
                                                          targetName,
                                                          targetURI );
 
-            ioService.copy( paths.convert( path ),
-                            paths.convert( targetPath ),
+            ioService.copy( Paths.convert( path ),
+                            Paths.convert( targetPath ),
                             new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,

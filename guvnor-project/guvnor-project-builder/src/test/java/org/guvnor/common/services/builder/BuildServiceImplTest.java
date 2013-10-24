@@ -54,7 +54,6 @@ public class BuildServiceImplTest {
 
     @Test
     public void testBuilderSimpleKProject() throws Exception {
-        Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
@@ -64,7 +63,6 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              new GAV(),
-                                             paths,
                                              ioService,
                                              projectService,
                                              new ArrayList<BuildValidationHelper>() );
@@ -77,7 +75,6 @@ public class BuildServiceImplTest {
     @Test
     @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependency() throws Exception {
-        Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
@@ -87,7 +84,6 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              new GAV(),
-                                             paths,
                                              ioService,
                                              projectService,
                                              new ArrayList<BuildValidationHelper>() );
@@ -107,7 +103,6 @@ public class BuildServiceImplTest {
     @Test
     @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-        Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
@@ -117,7 +112,6 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              new GAV(),
-                                             paths,
                                              ioService,
                                              projectService,
                                              new ArrayList<BuildValidationHelper>() );
@@ -137,7 +131,6 @@ public class BuildServiceImplTest {
     @Test
     @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
-        Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
@@ -147,7 +140,6 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              new GAV(),
-                                             paths,
                                              ioService,
                                              projectService,
                                              new ArrayList<BuildValidationHelper>() );
@@ -189,7 +181,6 @@ public class BuildServiceImplTest {
 
     @Test
     public void testKProjectContainsXLS() throws Exception {
-        Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
@@ -199,7 +190,6 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              new GAV(),
-                                             paths,
                                              ioService,
                                              projectService,
                                              new ArrayList<BuildValidationHelper>() );

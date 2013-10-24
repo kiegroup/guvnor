@@ -40,7 +40,6 @@ public class KModuleServiceImpl
         implements KModuleService {
 
     private IOService ioService;
-    private Paths paths;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
     private Identity identity;
@@ -52,13 +51,11 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final Paths paths,
                                final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
                                final Identity identity,
                                final SessionInfo sessionInfo ) {
         this.ioService = ioService;
-        this.paths = paths;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
         this.identity = identity;
@@ -69,7 +66,7 @@ public class KModuleServiceImpl
     public Path setUpKModuleStructure( final Path projectRoot ) {
         try {
             // Create project structure
-            final org.uberfire.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+            final org.uberfire.java.nio.file.Path nioRoot = Paths.convert( projectRoot );
 
             ioService.createDirectory( nioRoot.resolve( "src/main/java" ) );
             ioService.createDirectory( nioRoot.resolve( "src/main/resources" ) );
@@ -83,7 +80,7 @@ public class KModuleServiceImpl
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
-            return paths.convert( pathToKModuleXML );
+            return Paths.convert( pathToKModuleXML );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -93,7 +90,7 @@ public class KModuleServiceImpl
     @Override
     public KModuleModel load( final Path path ) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
             final String content = ioService.readAllString( nioPath );
 
             return moduleContentHandler.toModel( content );
@@ -111,12 +108,12 @@ public class KModuleServiceImpl
         try {
             if ( metadata == null ) {
                 ioService.write(
-                        paths.convert( path ),
+                        Paths.convert( path ),
                         moduleContentHandler.toString( content ),
                         makeCommentedOption( comment ) );
             } else {
                 ioService.write(
-                        paths.convert( path ),
+                        Paths.convert( path ),
                         moduleContentHandler.toString( content ),
                         metadataService.setUpAttributes( path,
                                                          metadata ),

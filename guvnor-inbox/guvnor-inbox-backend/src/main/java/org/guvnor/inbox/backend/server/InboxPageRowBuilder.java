@@ -41,9 +41,6 @@ public class InboxPageRowBuilder
     private Identity identity;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -98,7 +95,7 @@ public class InboxPageRowBuilder
             final org.uberfire.java.nio.file.Path path = ioService
                     .get( new URI( fullPath ) );
 
-            return paths.convert( path, false );
+            return Paths.convert( path );
         } catch ( URISyntaxException e ) {
             //Ignore
         }

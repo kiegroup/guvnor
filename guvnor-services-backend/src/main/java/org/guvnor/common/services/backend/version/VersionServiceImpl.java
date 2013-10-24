@@ -46,9 +46,6 @@ public class VersionServiceImpl implements VersionService {
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -57,7 +54,7 @@ public class VersionServiceImpl implements VersionService {
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
         try {
-            final List<VersionRecord> records = ioService.getFileAttributeView( paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
+            final List<VersionRecord> records = ioService.getFileAttributeView( Paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
 
             final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
 
@@ -76,11 +73,11 @@ public class VersionServiceImpl implements VersionService {
     public Path restore( final Path _path,
                          final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path path = paths.convert( _path );
+            final org.uberfire.java.nio.file.Path path = Paths.convert( _path );
 
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-            return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) ) );
+            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

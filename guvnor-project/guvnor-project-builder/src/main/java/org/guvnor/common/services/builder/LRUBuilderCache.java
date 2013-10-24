@@ -45,9 +45,6 @@ import org.uberfire.io.IOService;
 public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private POMService pomService;
 
     @Inject
@@ -87,9 +84,8 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         if ( builder == null ) {
             final Path pathToPom = project.getPomXMLPath();
             final POM pom = pomService.load( pathToPom );
-            builder = new Builder( paths.convert( project.getRootPath() ),
+            builder = new Builder( Paths.convert( project.getRootPath() ),
                                    pom.getGav(),
-                                   paths,
                                    ioService,
                                    projectService,
                                    validators );
