@@ -36,7 +36,6 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -49,9 +48,6 @@ public class ResourceChangeIncrementalBuilder {
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
     private static final Logger log = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
-
-    @Inject
-    private Paths paths;
 
     @Inject
     private ProjectService projectService;

@@ -49,15 +49,9 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
-
-    @Produces
     @Named("uf")
     public ServletContext servletContext() {
-        return mock(ServletContext.class);
+        return mock( ServletContext.class );
     }
 
     @Produces

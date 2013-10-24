@@ -26,7 +26,6 @@ public class POMServiceImpl
         implements POMService {
 
     private IOService ioService;
-    private Paths paths;
     private POMContentHandler pomContentHandler;
     private M2RepoService m2RepoService;
     private MetadataService metadataService;
@@ -41,14 +40,12 @@ public class POMServiceImpl
 
     @Inject
     public POMServiceImpl( final @Named("ioStrategy") IOService ioService,
-                           final Paths paths,
                            final POMContentHandler pomContentHandler,
                            final M2RepoService m2RepoService,
                            final MetadataService metadataService,
                            final Identity identity,
                            final SessionInfo sessionInfo ) {
         this.ioService = ioService;
-        this.paths = paths;
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
@@ -68,7 +65,7 @@ public class POMServiceImpl
             repository.setUrl( m2RepoService.getRepositoryURL( baseURL ) );
             pomModel.addRepository( repository );
 
-            final org.uberfire.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+            final org.uberfire.java.nio.file.Path nioRoot = Paths.convert( projectRoot );
             pathToPOMXML = nioRoot.resolve( "pom.xml" );
 
             ioService.createFile( pathToPOMXML );
@@ -77,7 +74,7 @@ public class POMServiceImpl
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
-            return paths.convert( pathToPOMXML );
+            return Paths.convert( pathToPOMXML );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -96,7 +93,7 @@ public class POMServiceImpl
     }
 
     private String loadPomXMLString( Path path ) {
-        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
         return ioService.readAllString( nioPath );
     }
 
@@ -108,11 +105,11 @@ public class POMServiceImpl
         try {
 
             if ( metadata == null ) {
-                ioService.write( paths.convert( path ),
+                ioService.write( Paths.convert( path ),
                         pomContentHandler.toString( content, loadPomXMLString( path ) ),
                         makeCommentedOption( comment ) );
             } else {
-                ioService.write( paths.convert( path ),
+                ioService.write( Paths.convert( path ),
                         pomContentHandler.toString( content, loadPomXMLString( path ) ),
                         metadataService.setUpAttributes( path,
                                 metadata ),

@@ -70,7 +70,7 @@ public class ProjectServiceImpl
     private static final String POM_PATH = "pom.xml";
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
-    private static final String PROJECT_CATEGORIES_PATH ="categories.xml";
+    private static final String PROJECT_CATEGORIES_PATH = "categories.xml";
 
     private static final String MAIN_SRC_PATH = "src/main/java";
     private static final String TEST_SRC_PATH = "src/test/java";
@@ -80,7 +80,6 @@ public class ProjectServiceImpl
     private static String[] sourcePaths = { MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH };
 
     private IOService ioService;
-    private Paths paths;
 
     private POMService pomService;
     private KModuleService kModuleService;
@@ -102,7 +101,6 @@ public class ProjectServiceImpl
 
     @Inject
     public ProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final Paths paths,
                                final POMService pomService,
                                final KModuleService kModuleService,
                                final MetadataService metadataService,
@@ -114,7 +112,6 @@ public class ProjectServiceImpl
                                final Identity identity,
                                final SessionInfo sessionInfo ) {
         this.ioService = ioService;
-        this.paths = paths;
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.metadataService = metadataService;
@@ -142,7 +139,7 @@ public class ProjectServiceImpl
             }
 
             //Check if resource is the project root
-            org.uberfire.java.nio.file.Path path = paths.convert( resource ).normalize();
+            org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
 
             //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
             if ( Files.isRegularFile( path ) ) {
@@ -175,14 +172,11 @@ public class ProjectServiceImpl
     }
 
     private Project makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
-        final Path projectRootPath = paths.convert( nioProjectRootPath );
+        final Path projectRootPath = Paths.convert( nioProjectRootPath );
         final String projectName = projectRootPath.getFileName();
-        final Path pomXMLPath = paths.convert( nioProjectRootPath.resolve( POM_PATH ),
-                                               false );
-        final Path kmoduleXMLPath = paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ),
-                                                   false );
-        final Path importsXMLPath = paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ),
-                                                   false );
+        final Path pomXMLPath = Paths.convert( nioProjectRootPath.resolve( POM_PATH ) );
+        final Path kmoduleXMLPath = Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) );
+        final Path importsXMLPath = Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) );
         final Project project = new Project( projectRootPath,
                                              pomXMLPath,
                                              kmoduleXMLPath,
@@ -239,7 +233,7 @@ public class ProjectServiceImpl
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
         for ( String src : sourcePaths ) {
             final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
             packageNames.addAll( getPackageNames( nioProjectRootPath,
@@ -255,7 +249,7 @@ public class ProjectServiceImpl
             for ( String src : sourcePaths ) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
                 if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
-                    packages.add( resolvePackage( paths.convert( nioPackagePath, false ) ) );
+                    packages.add( resolvePackage( Paths.convert( nioPackagePath ) ) );
                     resolvedPackages.add( packagePathSuffix );
                 }
             }
@@ -276,7 +270,7 @@ public class ProjectServiceImpl
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
 
         final Path projectRoot = pkg.getProjectRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
 
         for ( String src : sourcePaths ) {
             final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src ).resolve( resolvePkgName( pkg.getCaption() ) );
@@ -293,7 +287,7 @@ public class ProjectServiceImpl
             for ( String src : sourcePaths ) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
                 if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
-                    packages.add( resolvePackage( paths.convert( nioPackagePath, false ) ) );
+                    packages.add( resolvePackage( Paths.convert( nioPackagePath ) ) );
                     resolvedPackages.add( packagePathSuffix );
                 }
             }
@@ -311,7 +305,7 @@ public class ProjectServiceImpl
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
         for ( String src : sourcePaths ) {
             final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
             packageNames.addAll( getPackageNames( nioProjectRootPath,
@@ -327,7 +321,7 @@ public class ProjectServiceImpl
             for ( String src : sourcePaths ) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
                 if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
-                    return resolvePackage( paths.convert( nioPackagePath, false ) );
+                    return resolvePackage( Paths.convert( nioPackagePath ) );
                 }
             }
         }
@@ -339,8 +333,8 @@ public class ProjectServiceImpl
     public Package resolveParentPackage( final Package pkg ) {
         final Set<String> packageNames = new HashSet<String>();
 
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = paths.convert( pkg.getProjectRootPath() );
-        packageNames.addAll( getPackageNames( nioProjectRootPath, paths.convert( pkg.getPackageMainSrcPath() ).getParent(), true, false, false ) );
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( pkg.getProjectRootPath() );
+        packageNames.addAll( getPackageNames( nioProjectRootPath, Paths.convert( pkg.getPackageMainSrcPath() ).getParent(), true, false, false ) );
 
         //Construct Package objects for each package name
         for ( String packagePathSuffix : packageNames ) {
@@ -350,7 +344,7 @@ public class ProjectServiceImpl
                 }
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
                 if ( Files.exists( nioPackagePath ) ) {
-                    return resolvePackage( paths.convert( nioPackagePath, false ) );
+                    return resolvePackage( Paths.convert( nioPackagePath ) );
                 }
             }
         }
@@ -435,13 +429,13 @@ public class ProjectServiceImpl
     private Package makePackage( final Project project,
                                  final Path resource ) {
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( projectRoot );
         final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRoot.resolve( MAIN_SRC_PATH );
         final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRoot.resolve( TEST_SRC_PATH );
         final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRoot.resolve( MAIN_RESOURCES_PATH );
         final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRoot.resolve( TEST_RESOURCES_PATH );
 
-        org.uberfire.java.nio.file.Path nioResource = paths.convert( resource );
+        org.uberfire.java.nio.file.Path nioResource = Paths.convert( resource );
 
         if ( Files.isRegularFile( nioResource ) ) {
             nioResource = nioResource.getParent();
@@ -472,18 +466,10 @@ public class ProjectServiceImpl
             return null;
         }
 
-        boolean includeAttributes = Files.exists( nioMainSrcPath.resolve( packagePath ) );
-        final Path mainSrcPath = paths.convert( nioMainSrcPath.resolve( packagePath ),
-                                                includeAttributes );
-        includeAttributes = Files.exists( nioTestSrcPath.resolve( packagePath ) );
-        final Path testSrcPath = paths.convert( nioTestSrcPath.resolve( packagePath ),
-                                                includeAttributes );
-        includeAttributes = Files.exists( nioMainResourcesPath.resolve( packagePath ) );
-        final Path mainResourcesPath = paths.convert( nioMainResourcesPath.resolve( packagePath ),
-                                                      includeAttributes );
-        includeAttributes = Files.exists( nioTestResourcesPath.resolve( packagePath ) );
-        final Path testResourcesPath = paths.convert( nioTestResourcesPath.resolve( packagePath ),
-                                                      includeAttributes );
+        final Path mainSrcPath = Paths.convert( nioMainSrcPath.resolve( packagePath ) );
+        final Path testSrcPath = Paths.convert( nioTestSrcPath.resolve( packagePath ) );
+        final Path mainResourcesPath = Paths.convert( nioMainResourcesPath.resolve( packagePath ) );
+        final Path testResourcesPath = Paths.convert( nioTestResourcesPath.resolve( packagePath ) );
 
         final String displayName = getPackageDisplayName( packageName );
 
@@ -517,8 +503,8 @@ public class ProjectServiceImpl
 
             //Check if path equals pom.xml
             final Project project = resolveProject( resource );
-            final org.uberfire.java.nio.file.Path path = paths.convert( resource ).normalize();
-            final org.uberfire.java.nio.file.Path pomFilePath = paths.convert( project.getPomXMLPath() );
+            final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
+            final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert( project.getPomXMLPath() );
             return path.startsWith( pomFilePath );
 
         } catch ( Exception e ) {
@@ -536,8 +522,8 @@ public class ProjectServiceImpl
 
             //Check if path equals kmodule.xml
             final Project project = resolveProject( resource );
-            final org.uberfire.java.nio.file.Path path = paths.convert( resource ).normalize();
-            final org.uberfire.java.nio.file.Path kmoduleFilePath = paths.convert( project.getKModuleXMLPath() );
+            final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
+            final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert( project.getKModuleXMLPath() );
             return path.startsWith( kmoduleFilePath );
 
         } catch ( Exception e ) {
@@ -553,8 +539,7 @@ public class ProjectServiceImpl
         try {
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
-            final Path projectRootPath = paths.convert( paths.convert( fsRoot ).resolve( projectName ),
-                                                        false );
+            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
@@ -565,10 +550,9 @@ public class ProjectServiceImpl
                                pom );
 
             //Create Project configuration
-            final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ),
-                                                          false );
-            ioService.createFile( paths.convert( projectConfigPath ) );
-            ioService.write( paths.convert( projectConfigPath ),
+            final Path projectConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
+            ioService.createFile( Paths.convert( projectConfigPath ) );
+            ioService.write( Paths.convert( projectConfigPath ),
                              projectConfigurationContentHandler.toString( new ProjectImports() ) );
 
             //Raise an event for the new project
@@ -583,8 +567,7 @@ public class ProjectServiceImpl
             final String defaultWorkspacePath = StringUtils.join( legalJavaGroupId,
                                                                   "/" ) + "/" + StringUtils.join( legalJavaArtifactId,
                                                                                                   "/" );
-            final Path defaultPackagePath = paths.convert( paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ),
-                                                           false );
+            final Path defaultPackagePath = Paths.convert( Paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ) );
             final Package defaultPackage = resolvePackage( defaultPackagePath );
             final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
                                                                   defaultWorkspacePath );
@@ -636,21 +619,21 @@ public class ProjectServiceImpl
 
         Path pkgPath = null;
 
-        final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = paths.convert( mainSrcPath ).resolve( newPackageName );
+        final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
         if ( !Files.exists( nioMainSrcPackagePath ) ) {
-            pkgPath = paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
+            pkgPath = Paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
         }
-        final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = paths.convert( testSrcPath ).resolve( newPackageName );
+        final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = Paths.convert( testSrcPath ).resolve( newPackageName );
         if ( !Files.exists( nioTestSrcPackagePath ) ) {
-            pkgPath = paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
+            pkgPath = Paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
         }
-        final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = paths.convert( mainResourcesPath ).resolve( newPackageName );
+        final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = Paths.convert( mainResourcesPath ).resolve( newPackageName );
         if ( !Files.exists( nioMainResourcesPackagePath ) ) {
-            pkgPath = paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
+            pkgPath = Paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
         }
-        final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = paths.convert( testResourcesPath ).resolve( newPackageName );
+        final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = Paths.convert( testResourcesPath ).resolve( newPackageName );
         if ( !Files.exists( nioTestResourcesPackagePath ) ) {
-            pkgPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
+            pkgPath = Paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
         }
 
         //If pkgPath is null the package already existed in src/main/java, scr/main/resources, src/test/java and src/test/resources
@@ -675,7 +658,7 @@ public class ProjectServiceImpl
 
     @Override
     public ProjectImports load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        final String content = ioService.readAllString( Paths.convert( path ) );
         return projectConfigurationContentHandler.toModel( content );
     }
 
@@ -685,7 +668,7 @@ public class ProjectServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         try {
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              projectConfigurationContentHandler.toString( projectImports ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),

@@ -37,6 +37,8 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.version.model.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreAttributes;
 import org.uberfire.io.attribute.DublinCoreAttributesUtil;
@@ -45,8 +47,6 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 
 import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -59,13 +59,10 @@ public class MetadataServiceImpl implements MetadataService {
     @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
-    private Paths paths;
-
     @Override
     public Metadata getMetadata( final Path resource ) {
         try {
-            final org.uberfire.java.nio.file.Path path = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path path = Paths.convert( resource );
 
             final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
             final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );
@@ -73,7 +70,7 @@ public class MetadataServiceImpl implements MetadataService {
             final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
 
             return MetadataBuilder.newMetadata()
-                    .withPath( paths.convert( path.toRealPath() ) )
+                    .withPath( Paths.convert( path.toRealPath() ) )
                     .withCheckinComment( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).comment() : null )
                     .withLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : null )
                     .withCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : null )
@@ -357,7 +354,7 @@ public class MetadataServiceImpl implements MetadataService {
         try {
             Map<String, Object> attributes;
             try {
-                attributes = ioService.readAttributes( paths.convert( path ) );
+                attributes = ioService.readAttributes( Paths.convert( path ) );
             } catch ( final NoSuchFileException ex ) {
                 attributes = new HashMap<String, Object>();
             }

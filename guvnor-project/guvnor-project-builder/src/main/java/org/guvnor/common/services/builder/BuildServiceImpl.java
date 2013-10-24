@@ -48,7 +48,6 @@ public class BuildServiceImpl
 
     private static final Logger logger = LoggerFactory.getLogger( BuildServiceImpl.class );
 
-    private Paths paths;
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
     private ProjectService projectService;
@@ -60,13 +59,11 @@ public class BuildServiceImpl
     }
 
     @Inject
-    public BuildServiceImpl( final Paths paths,
-                             final POMService pomService,
+    public BuildServiceImpl( final POMService pomService,
                              final ExtendedM2RepoService m2RepoService,
                              final ProjectService projectService,
                              final LRUBuilderCache cache,
                              final Instance<PostBuildHandler> handlers ) {
-        this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.projectService = projectService;
@@ -140,7 +137,7 @@ public class BuildServiceImpl
             if ( !builder.isBuilt() ) {
                 throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                results = builder.addResource( paths.convert( resource ) );
+                results = builder.addResource( Paths.convert( resource ) );
             }
 
             return results;
@@ -162,7 +159,7 @@ public class BuildServiceImpl
             if ( !builder.isBuilt() ) {
                 throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                results = builder.deleteResource( paths.convert( resource ) );
+                results = builder.deleteResource( Paths.convert( resource ) );
             }
 
             return results;
@@ -184,7 +181,7 @@ public class BuildServiceImpl
             if ( !builder.isBuilt() ) {
                 throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
             } else {
-                results = builder.updateResource( paths.convert( resource ) );
+                results = builder.updateResource( Paths.convert( resource ) );
             }
 
             return results;
