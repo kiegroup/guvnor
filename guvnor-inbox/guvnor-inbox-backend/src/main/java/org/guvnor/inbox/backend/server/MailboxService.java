@@ -29,10 +29,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 
 import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
@@ -52,20 +53,16 @@ public class MailboxService {
     private InboxBackend inboxBackend;
 
     @Inject
-    @Named("ioStrategy")
+    @Named("configIO")
     private IOService ioService;
 
-    private org.uberfire.java.nio.file.Path bootstrapRoot = null;
+    private FileSystem bootstrapFS = null;
 
     @PostConstruct
     public void setup() {
         final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
         if ( fsIterator.hasNext() ) {
-            final FileSystem bootstrap = fsIterator.next();
-            final Iterator<org.uberfire.java.nio.file.Path> rootIterator = bootstrap.getRootDirectories().iterator();
-            if ( rootIterator.hasNext() ) {
-                this.bootstrapRoot = rootIterator.next();
-            }
+            bootstrapFS = fsIterator.next();
         }
 
         executor = Executors.newSingleThreadExecutor();
@@ -150,17 +147,17 @@ public class MailboxService {
     }
 
     public String[] listUsers() {
-        //TODO: a temporary hack to retrieve user list. Please refactor later.
-        List<String> userList = new ArrayList<String>();
-        org.uberfire.java.nio.file.Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/" );
-        final Iterator<org.uberfire.java.nio.file.Path> userIterator = userRoot.iterator();
-        if ( userIterator.hasNext() ) {
-            org.uberfire.java.nio.file.Path userDir = userIterator.next();
-            userList.add( userDir.getFileName().toString() );
+        //TODO: a temporary hack to retrieve user list. Root dirs are branches and every user has it's own branch
+        final List<String> userList = new ArrayList<String>();
+
+        for ( final Path path : bootstrapFS.getRootDirectories() ) {
+            final String value = path.toUri().getUserInfo();
+            if ( value.endsWith( "-uf-user" ) ) {
+                userList.add( value.substring( 0, value.indexOf( "-uf-user" ) ) );
+            }
         }
 
-        String[] result = new String[ userList.size() ];
-        return userList.toArray( result );
+        return userList.toArray( new String[ userList.size() ] );
     }
 
 }
