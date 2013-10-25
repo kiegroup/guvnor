@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
+import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
@@ -43,7 +43,7 @@ public class InboxBackendImpl implements InboxBackend {
     private static final String INBOX = "inbox";
 
     @Inject
-    @Named("ioStrategy")
+    @Named("configIO")
     private IOService ioService;
 
     @Inject
