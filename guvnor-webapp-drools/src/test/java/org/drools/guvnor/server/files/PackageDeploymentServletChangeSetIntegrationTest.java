@@ -157,8 +157,11 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
 
             kagent.applyChangeSet(res);
             kbase = kagent.getKnowledgeBase();
-            Thread.sleep(1000);
-            assertEquals(2, kbase.getKnowledgePackages().iterator().next().getRules().size());
+            Thread.sleep( 1000 );
+            java.util.Iterator<KnowledgePackage> iter = kbase.getKnowledgePackages().iterator();
+                // skip org.drools system package
+                iter.next();
+            assertEquals(2, iter.next().getRules().size());
             System.out.println("BUGZILLA 733008 total rules: " + kbase.getKnowledgePackages().iterator().next().getRules().size());
             for (Rule r : kbase.getKnowledgePackages().iterator().next().getRules()) {
                 System.out.println(r.getName());
@@ -183,7 +186,10 @@ public class PackageDeploymentServletChangeSetIntegrationTest extends GuvnorInte
             // detect the change
             Thread.sleep(6000);
             kbase = kagent.getKnowledgeBase();
-            assertEquals(1, kbase.getKnowledgePackages().iterator().next().getRules().size());
+            java.util.Iterator<KnowledgePackage> iter2 = kbase.getKnowledgePackages().iterator();
+            // skip org.drools system package
+            iter2.next();
+            assertEquals(1, iter2.next().getRules().size());
 
         } finally {
             kagent.dispose();
