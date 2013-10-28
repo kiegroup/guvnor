@@ -481,7 +481,8 @@ public class RepositoryModuleOperations {
                             categoryOperator,
                             category,
                             enableCategorySelector,
-                            customSelector );
+                            customSelector,
+                            true );
         ModuleItem p = rulesRepository.loadModule(moduleName);
         if (checkIsBinaryUpToDate && !p.isBinaryUpToDate()) {
          throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
@@ -555,7 +556,8 @@ public class RepositoryModuleOperations {
                             categoryOperator,
                             category,
                             enableCategorySelector,
-                            customSelectorName ) );
+                            customSelectorName,
+                            false ) );
         } catch (NoClassDefFoundError e) {
             throw new DetailedSerializationException( "Unable to find a class that was needed when building the module  [" + e.getMessage() + "]",
                     "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
@@ -586,7 +588,15 @@ public class RepositoryModuleOperations {
         return BuilderResult.emptyResult();
     }
 
-    private ModuleAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
+    private ModuleAssemblerConfiguration createConfiguration(String buildMode,
+                                                             String statusOperator,
+                                                             String statusDescriptionValue,
+                                                             boolean enableStatusSelector,
+                                                             String categoryOperator,
+                                                             String category,
+                                                             boolean enableCategorySelector,
+                                                             String selectorConfigName,
+                                                             boolean includeArchivedItems ) {
         ModuleAssemblerConfiguration moduleAssemblerConfiguration = new ModuleAssemblerConfiguration();
         moduleAssemblerConfiguration.setBuildMode( buildMode );
         moduleAssemblerConfiguration.setStatusOperator(statusOperator);
@@ -596,6 +606,7 @@ public class RepositoryModuleOperations {
         moduleAssemblerConfiguration.setCategoryValue( category );
         moduleAssemblerConfiguration.setEnableCategorySelector( enableCategorySelector );
         moduleAssemblerConfiguration.setCustomSelectorConfigName( selectorConfigName );
+        moduleAssemblerConfiguration.setIncludeArchivedItems( includeArchivedItems );
         return moduleAssemblerConfiguration;
     }
 
@@ -624,7 +635,8 @@ public class RepositoryModuleOperations {
                         null,
                         null,
                         false,
-                        null ) );
+                        null,
+                        false ) );
     }
 
     protected String buildModuleSource(String moduleUUID) throws SerializationException {

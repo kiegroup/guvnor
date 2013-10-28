@@ -45,15 +45,16 @@ import java.util.List;
  */
 public class PackageAssembler extends PackageAssemblerBase {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(PackageAssembler.class);
+    private static final LoggingHelper log = LoggingHelper.getLogger( PackageAssembler.class );
 
     private ModuleAssemblerConfiguration configuration;
     private AssetSelector selector;
- 
-    public void init(ModuleItem moduleItem, ModuleAssemblerConfiguration moduleAssemblerConfiguration) {
+
+    public void init( ModuleItem moduleItem,
+                      ModuleAssemblerConfiguration moduleAssemblerConfiguration ) {
         this.moduleItem = moduleItem;
-        
-        if(moduleAssemblerConfiguration == null) {
+
+        if ( moduleAssemblerConfiguration == null ) {
             this.configuration = new ModuleAssemblerConfiguration();
         } else {
             this.configuration = moduleAssemblerConfiguration;
@@ -61,13 +62,13 @@ public class PackageAssembler extends PackageAssemblerBase {
         createBuilder();
         src = new StringBuilder();
     }
-    
+
     public void compile() {
-        if (setUpPackage()) {
+        if ( setUpPackage() ) {
             buildPackage();
         }
-        
-        if (!hasErrors() ) {
+
+        if ( !hasErrors() ) {
             //TODO {manstis} Does this actually do anything useful?
             //            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
             //                new RuleBaseConfiguration(getClassLoaders())
@@ -75,9 +76,9 @@ public class PackageAssembler extends PackageAssemblerBase {
             //            ruleBase.addPackage(builder.getPackage());
 
             byte[] compiledPackageByte = getCompiledBinary();
-            moduleItem.updateCompiledBinary(new ByteArrayInputStream(compiledPackageByte));
-            moduleItem.updateBinaryUpToDate(true);
-            moduleItem.getRulesRepository().save();         
+            moduleItem.updateCompiledBinary( new ByteArrayInputStream( compiledPackageByte ) );
+            moduleItem.updateBinaryUpToDate( true );
+            moduleItem.getRulesRepository().save();
         }
 
     }
@@ -86,67 +87,74 @@ public class PackageAssembler extends PackageAssemblerBase {
     //    Collection<ClassLoader> loaders = getBuilder().getRootClassLoader().getClassLoaders();
     //    return loaders.toArray( new ClassLoader[loaders.size()] );
     //}
-    
+
     /**
      * This will build the package - preparePackage would have been called first.
      * This will always prioritise DRL before other assets.
      */
     private void buildPackage() {
-        if (setUpSelector()) {
+        if ( setUpSelector() ) {
             loadAssets();
         }
     }
 
     private void loadAssets() {
-        StringBuilder includedAssets = new StringBuilder("Following assets have been included in package build: ");
+        StringBuilder includedAssets = new StringBuilder( "Following assets have been included in package build: " );
 
-        loadDRLAssets(includedAssets);
-        loadAllButDRLAssets(includedAssets);
+        loadDRLAssets( includedAssets );
+        loadAllButDRLAssets( includedAssets );
 
-        log.info(includedAssets.toString());
+        log.info( includedAssets.toString() );
     }
 
-    private void loadAllButDRLAssets(StringBuilder includedAssets) {
+    private void loadAllButDRLAssets( StringBuilder includedAssets ) {
         Iterator<AssetItem> iterator = getAllAssets();
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             AssetItem asset = iterator.next();
-            if (!asset.getFormat().equals(AssetFormats.DRL) && assetCanBeAdded(asset)) {
-                addAsset(includedAssets, asset);
+            if ( !asset.getFormat().equals( AssetFormats.DRL ) && assetCanBeAdded( asset ) ) {
+                addAsset( includedAssets, asset );
             }
         }
     }
 
-    private void loadDRLAssets(StringBuilder includedAssets) {
-        Iterator<AssetItem> drlAssetItemIterator = getAssetItemIterator(AssetFormats.DRL);
-        while (drlAssetItemIterator.hasNext()) {
+    private void loadDRLAssets( StringBuilder includedAssets ) {
+        Iterator<AssetItem> drlAssetItemIterator = getAssetItemIterator( AssetFormats.DRL );
+        while ( drlAssetItemIterator.hasNext() ) {
             AssetItem asset = drlAssetItemIterator.next();
-            if (assetCanBeAdded(asset)) {
-                addAsset(includedAssets, asset);
+            if ( assetCanBeAdded( asset ) ) {
+                addAsset( includedAssets, asset );
             }
         }
     }
 
-    private void addAsset(StringBuilder includedAssets, AssetItem asset) {
-        buildAsset(asset);
-        includedAssets.append(asset.getName()).append(", ");
+    private void addAsset( StringBuilder includedAssets,
+                           AssetItem asset ) {
+        buildAsset( asset );
+        includedAssets.append( asset.getName() ).append( ", " );
     }
 
-    private boolean assetCanBeAdded(AssetItem asset) {
-        return !asset.isArchived() && (selector.isAssetAllowed(asset));
+    private boolean assetCanBeAdded( AssetItem asset ) {
+        if ( !selector.isAssetAllowed( asset ) ) {
+            return false;
+        }
+        if ( configuration.getIncludeArchivedItems() ) {
+            return true;
+        }
+        return !asset.isArchived();
     }
 
     private boolean setUpSelector() {
-        if (SelectorManager.CUSTOM_SELECTOR.equals(configuration.getBuildMode())) {
-            selector = SelectorManager.getInstance().getSelector(configuration.getCustomSelectorConfigName());
-        } else if (SelectorManager.BUILT_IN_SELECTOR.equals(configuration.getBuildMode())) {
+        if ( SelectorManager.CUSTOM_SELECTOR.equals( configuration.getBuildMode() ) ) {
+            selector = SelectorManager.getInstance().getSelector( configuration.getCustomSelectorConfigName() );
+        } else if ( SelectorManager.BUILT_IN_SELECTOR.equals( configuration.getBuildMode() ) ) {
             selector = setUpBuiltInSelector();
         } else {
             //return the NilSelector, i.e., allows everything
-            selector = SelectorManager.getInstance().getSelector(null);
+            selector = SelectorManager.getInstance().getSelector( null );
         }
 
-        if (selector == null) {
-            errorLogger.addError(moduleItem, "The selector named " + configuration.getCustomSelectorConfigName() + " is not available.");
+        if ( selector == null ) {
+            errorLogger.addError( moduleItem, "The selector named " + configuration.getCustomSelectorConfigName() + " is not available." );
             return false;
         } else {
             return true;
@@ -154,26 +162,25 @@ public class PackageAssembler extends PackageAssemblerBase {
     }
 
     private AssetSelector setUpBuiltInSelector() {
-        BuiltInSelector builtInSelector = (BuiltInSelector) SelectorManager.getInstance().getSelector(SelectorManager.BUILT_IN_SELECTOR);
-        builtInSelector.setStatusOperator(configuration.getStatusOperator());
-        builtInSelector.setStatus(configuration.getStatusDescriptionValue());
-        builtInSelector.setEnableStatusSelector(configuration.isEnableStatusSelector());
-        builtInSelector.setCategory(configuration.getCategoryValue());
-        builtInSelector.setCategoryOperator(configuration.getCategoryOperator());
-        builtInSelector.setEnableCategorySelector(configuration.isEnableCategorySelector());
+        BuiltInSelector builtInSelector = (BuiltInSelector) SelectorManager.getInstance().getSelector( SelectorManager.BUILT_IN_SELECTOR );
+        builtInSelector.setStatusOperator( configuration.getStatusOperator() );
+        builtInSelector.setStatus( configuration.getStatusDescriptionValue() );
+        builtInSelector.setEnableStatusSelector( configuration.isEnableStatusSelector() );
+        builtInSelector.setCategory( configuration.getCategoryValue() );
+        builtInSelector.setCategoryOperator( configuration.getCategoryOperator() );
+        builtInSelector.setEnableCategorySelector( configuration.isEnableCategorySelector() );
         return builtInSelector;
     }
 
     /**
      * This will return true if there is an error in the package configuration
      * or functions.
-     *
      * @return
      */
     public boolean isModuleConfigurationInError() {
-        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isModuleItem();
+        return errorLogger.hasErrors() && this.errorLogger.getErrors().get( 0 ).isModuleItem();
     }
-    
+
     public byte[] getCompiledBinary() {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutput out;
@@ -181,30 +188,30 @@ public class PackageAssembler extends PackageAssemblerBase {
             out = new DroolsObjectOutputStream( bout );
             out.writeObject( getBinaryPackage() );
             out.flush();
-            out.close();       
-        } catch (IOException e) {
+            out.close();
+        } catch ( IOException e ) {
             e.printStackTrace();
             log.error( "An error occurred building the module [" + moduleItem.getName() + "]: " + e.getMessage() );
             throw new RulesRepositoryException( "An error occurred building the module.",
-                    e );
+                                                e );
         }
         return bout.toByteArray();
     }
-    
+
     /**
      * I've got a package people !
      */
     private Package[] getBinaryPackage() {
-        if (this.hasErrors()) {
-            throw new IllegalStateException("There is no package available, as there were errors.");
+        if ( this.hasErrors() ) {
+            throw new IllegalStateException( "There is no package available, as there were errors." );
         }
         return builder.getPackages();
     }
-    
+
     public BRMSPackageBuilder getBuilder() {
         return builder;
     }
-    
+
     public String getCompiledSource() {
         src = new StringBuilder();
 
@@ -215,34 +222,35 @@ public class PackageAssembler extends PackageAssemblerBase {
 
         return src.toString();
     }
-    
+
     private void loadRuleAssets() {
         Iterator<AssetItem> assetItemIterator = getAllAssets();
-        while (assetItemIterator.hasNext()) {
-            addRuleAsset(assetItemIterator.next());
+        while ( assetItemIterator.hasNext() ) {
+            addRuleAsset( assetItemIterator.next() );
         }
     }
 
-    private void addRuleAsset(AssetItem asset) {
-        if (!asset.isArchived() && !asset.getDisabled()) {
-            ContentHandler handler = ContentManager.getHandler(asset.getFormat());
-            if (handler.isRuleAsset()) {
+    private void addRuleAsset( AssetItem asset ) {
+        if ( !asset.isArchived() && !asset.getDisabled() ) {
+            ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
+            if ( handler.isRuleAsset() ) {
                 IRuleAsset ruleAsset = (IRuleAsset) handler;
-                ruleAsset.assembleDRL(builder,
-                        asset,
-                        src);
+                ruleAsset.assembleDRL( builder,
+                                       asset,
+                                       src );
             }
-            src.append("\n\n");
+            src.append( "\n\n" );
         }
     }
+
     public List<AssetItem> getAllNotToIncludeAssets() {
         setUpSelector();
         List<AssetItem> notIncluded = new ArrayList<AssetItem>();
         Iterator<AssetItem> iterator = getAllAssets();
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             AssetItem asset = iterator.next();
-            if (!assetCanBeAdded(asset)) {
-                notIncluded.add(asset);
+            if ( !assetCanBeAdded( asset ) ) {
+                notIncluded.add( asset );
             }
         }
         return notIncluded;

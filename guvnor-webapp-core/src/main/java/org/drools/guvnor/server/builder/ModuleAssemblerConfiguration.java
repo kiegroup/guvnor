@@ -26,12 +26,13 @@ public class ModuleAssemblerConfiguration {
     private String categoryValue;
     private boolean enableCategorySelector = false;
     private String customSelectorConfigName;
+    private boolean includeArchivedItems = false;
 
     public String getBuildMode() {
         return buildMode;
     }
 
-    public void setBuildMode(String buildMode) {
+    public void setBuildMode( String buildMode ) {
         this.buildMode = buildMode;
     }
 
@@ -39,7 +40,7 @@ public class ModuleAssemblerConfiguration {
         return statusOperator;
     }
 
-    public void setStatusOperator(String statusOperator) {
+    public void setStatusOperator( String statusOperator ) {
         this.statusOperator = statusOperator;
     }
 
@@ -47,7 +48,7 @@ public class ModuleAssemblerConfiguration {
         return statusDescriptionValue;
     }
 
-    public void setStatusDescriptionValue(String statusDescriptionValue) {
+    public void setStatusDescriptionValue( String statusDescriptionValue ) {
         this.statusDescriptionValue = statusDescriptionValue;
     }
 
@@ -55,7 +56,7 @@ public class ModuleAssemblerConfiguration {
         return enableStatusSelector;
     }
 
-    public void setEnableStatusSelector(boolean enableStatusSelector) {
+    public void setEnableStatusSelector( boolean enableStatusSelector ) {
         this.enableStatusSelector = enableStatusSelector;
     }
 
@@ -63,7 +64,7 @@ public class ModuleAssemblerConfiguration {
         return categoryOperator;
     }
 
-    public void setCategoryOperator(String categoryOperator) {
+    public void setCategoryOperator( String categoryOperator ) {
         this.categoryOperator = categoryOperator;
     }
 
@@ -71,7 +72,7 @@ public class ModuleAssemblerConfiguration {
         return categoryValue;
     }
 
-    public void setCategoryValue(String categoryValue) {
+    public void setCategoryValue( String categoryValue ) {
         this.categoryValue = categoryValue;
     }
 
@@ -79,7 +80,7 @@ public class ModuleAssemblerConfiguration {
         return enableCategorySelector;
     }
 
-    public void setEnableCategorySelector(boolean enableCategorySelector) {
+    public void setEnableCategorySelector( boolean enableCategorySelector ) {
         this.enableCategorySelector = enableCategorySelector;
     }
 
@@ -87,7 +88,16 @@ public class ModuleAssemblerConfiguration {
         return customSelectorConfigName;
     }
 
-    public void setCustomSelectorConfigName(String customSelectorConfigName) {
+    public void setCustomSelectorConfigName( String customSelectorConfigName ) {
         this.customSelectorConfigName = customSelectorConfigName;
     }
+
+    public boolean getIncludeArchivedItems() {
+        return includeArchivedItems;
+    }
+
+    public void setIncludeArchivedItems( boolean includeArchivedItems ) {
+        this.includeArchivedItems = includeArchivedItems;
+    }
+
 }
