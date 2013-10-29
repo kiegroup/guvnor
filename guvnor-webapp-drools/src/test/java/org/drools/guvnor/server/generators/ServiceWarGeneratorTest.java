@@ -106,8 +106,8 @@ public class ServiceWarGeneratorTest {
 //    private static final ServiceConfig  = null;//new ServiceConfig("70", "ws", resources, models, null);
 
     private static final Set<String> LIBS = new HashSet<String>() {{
-        add("log4j-1.2.16.jar");
-        add("jdom-1.0.jar");
+        add("slf4j-api-1.6.4.jar");
+        add("antlr-runtime-3.3.jar");
     }};
 
     private static final String MODEL_NAME = "org/drools/guvnor/server/jarWithSourceFiles.jar";
@@ -256,8 +256,8 @@ public class ServiceWarGeneratorTest {
         }};
 
         final Collection<MavenArtifact> dependencies = new ArrayList<MavenArtifact>() {{
-            add(new MavenArtifact("log4j:log4j:jar:1.2.16:compile"));
-            add(new MavenArtifact("jdom:jdom:jar:1.0:compile"));
+            add(new MavenArtifact("org.slf4j:slf4j-api:jar:1.6.4:compile"));
+            add(new MavenArtifact("org.antlr:antlr-runtime:jar:3.3:compile"));
         }};
 
         buildCache(repositories, dependencies);
