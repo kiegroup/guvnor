@@ -66,11 +66,6 @@ public class M2RepoServiceImpl implements M2RepoService,
     }
 
     @Override
-    public void deleteJar( String[] path ) {
-        repository.deleteFile( path );
-    }
-
-    @Override
     public String loadPOMStringFromJar( String path ) {
         return repository.loadPOMFromJar( path );
     }
@@ -80,7 +75,7 @@ public class M2RepoServiceImpl implements M2RepoService,
         try {
             return pomContentHandler.toModel( repository.loadPOMFromJar( path ) ).getGav();
         } catch ( IOException e ) {
-            throw ExceptionUtilities.handleException(e);
+            throw ExceptionUtilities.handleException( e );
         } catch ( XmlPullParserException e ) {
             throw ExceptionUtilities.handleException( e );
         }

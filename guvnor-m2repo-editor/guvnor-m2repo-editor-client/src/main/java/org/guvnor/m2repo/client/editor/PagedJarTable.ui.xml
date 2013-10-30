@@ -23,7 +23,6 @@
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
       <gwt:Button ui:field="refreshButton" text='Refresh'/>
-      <gwt:Button ui:field="deleteSelectedJarButton" text='Delete selected jar'/>      
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/>

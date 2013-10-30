@@ -201,16 +201,6 @@ public class GuvnorM2Repository {
         return null;
     }
 
-    public boolean deleteFile(String[] fullPaths) {
-        for (String fullPath : fullPaths) {
-            final File file = new File(M2_REPO_DIR, fullPath);
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-        return true;
-    }
-
     /**
      * Finds files within the repository with the given filters.
      *

@@ -1,7 +1,6 @@
 package org.guvnor.m2repo.client.editor;
 
 import java.util.Date;
-import java.util.Set;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.cell.client.ButtonCell;
@@ -21,9 +20,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
-import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -31,7 +28,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.tables.AbstractPagedTable;
 import org.uberfire.client.tables.ColumnPicker;
-import org.uberfire.client.tables.SelectionColumn;
 import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;
 import org.uberfire.paging.PageRequest;
@@ -54,12 +50,7 @@ public class PagedJarTable
     private final Caller<M2RepoService> m2RepoService;
     private ColumnPicker<JarListPageRow> columnPicker = new ColumnPicker<JarListPageRow>( cellTable );
 
-    private SelectionColumn<JarListPageRow> selectionColumn;
-    private MultiSelectionModel<JarListPageRow> selectionModel;
     private static final int PAGE_SIZE = 10;
-
-    @UiField()
-    protected Button deleteSelectedJarButton;
 
     @UiField()
     protected Button refreshButton;
@@ -127,9 +118,6 @@ public class PagedJarTable
         };
 
         cellTable = new CellTable<JarListPageRow>( providesKey );
-        selectionModel = new MultiSelectionModel<JarListPageRow>( providesKey );
-        cellTable.setSelectionModel( selectionModel );
-        selectionColumn = SelectionColumn.createAndAddSelectionColumn( cellTable );
 
         columnPicker = new ColumnPicker<JarListPageRow>( cellTable );
         SortableHeaderGroup<JarListPageRow> sortableHeaderGroup = new SortableHeaderGroup<JarListPageRow>( cellTable );
@@ -142,34 +130,13 @@ public class PagedJarTable
         columnPickerButton = columnPicker.createToggleButton();
     }
 
-    public void hideSelectionColumn() {
-        cellTable.removeColumn( selectionColumn );
-    }
-
     public void hideColumnPicker() {
         columnPickerButton.setVisible( false );
     }
 
     public void refresh() {
-        selectionModel.clear();
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
                                                true );
-    }
-
-    public String[] getSelectedJars() {
-        Set<JarListPageRow> selectedRows = selectionModel.getSelectedSet();
-        // Compatibility with existing API
-        if ( selectedRows.size() == 0 ) {
-            return null;
-        }
-
-        // Create the array of paths
-        String[] paths = new String[ selectedRows.size() ];
-        int rowCount = 0;
-        for ( JarListPageRow row : selectedRows ) {
-            paths[ rowCount++ ] = row.getPath();
-        }
-        return paths;
     }
 
     @Override
@@ -248,32 +215,10 @@ public class PagedJarTable
         return uiBinder.createAndBindUi( this );
     }
 
-    @UiHandler("deleteSelectedJarButton")
-    void deleteSelectedJar( ClickEvent e ) {
-        if ( getSelectedJars() == null ) {
-            Window.alert( "Please Select A Jar To Delete" );
-            return;
-        }
-        if ( !Window.confirm( Constants.INSTANCE.AreYouSureYouWantToDeleteTheseItems() ) ) {
-            return;
-        }
-        m2RepoService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( Void v ) {
-                Window.alert( "Deleted successfully" );
-                refresh();
-            }
-        } ).deleteJar( getSelectedJars() );
-    }
-
     @UiHandler("refreshButton")
     void refresh( ClickEvent e ) {
         refresh();
     }
-
-/*    @UiHandler("auditButton")
-    void viewAuditLog( ClickEvent e ) {
-    }*/
 
     String getFileDownloadURL( String path ) {
         String url = getGuvnorM2RepoBaseURL() + path;
