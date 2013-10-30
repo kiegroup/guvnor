@@ -78,6 +78,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -109,6 +111,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -143,6 +147,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -165,6 +171,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -187,6 +195,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -209,6 +219,8 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
+            logger.error( e.getMessage(),
+                          e );
             throw ExceptionUtilities.handleException( e );
         }
     }

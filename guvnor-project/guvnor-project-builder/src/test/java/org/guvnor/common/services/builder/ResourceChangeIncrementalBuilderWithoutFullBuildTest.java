@@ -51,7 +51,7 @@ import org.uberfire.workbench.events.ResourceUpdated;
 
 import static org.junit.Assert.*;
 
-public class BuildChangeListenerWithoutFullBuildTest {
+public class ResourceChangeIncrementalBuilderWithoutFullBuildTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -172,6 +172,54 @@ public class BuildChangeListenerWithoutFullBuildTest {
     }
 
     @Test
+    public void testNonPackageResourceUpdated() throws Exception {
+        //This tests changes to a resource that is neither pom.xml nor kmodule.xml nor within a Package
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
+
+        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/project.imports" );
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
+        final Path resourcePath = paths.convert( nioResourcePath );
+
+        //Perform incremental build (Without a full Build first)
+        buildChangeListener.updateResource( resourcePath );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
+        assertNull( buildResults );
+
+        final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
+        assertNull( incrementalBuildResults );
+    }
+
+    @Test
+    public void testPomResourceUpdated() throws Exception {
+        //This tests changes pom.xml
+        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
+        final ResourceChangeIncrementalBuilder buildChangeListener = (ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
+                                                                                                                                  ResourceChangeIncrementalBuilder.class,
+                                                                                                                                  cc );
+
+        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/pom.xml" );
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
+        final Path resourcePath = paths.convert( nioResourcePath );
+
+        //Perform incremental build (Without a full Build first)
+        buildChangeListener.updateResource( resourcePath );
+
+        final BuildResults buildResults = buildResultsObserver.getBuildResults();
+        assertNotNull( buildResults );
+        assertEquals( 0,
+                      buildResults.getMessages().size() );
+
+        final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
+        assertNull( incrementalBuildResults );
+    }
+
+    @Test
     public void testResourceDeleted() throws Exception {
         final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( ResourceChangeIncrementalBuilder.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
@@ -216,15 +264,15 @@ public class BuildChangeListenerWithoutFullBuildTest {
         final Path resourcePath3 = paths.convert( nioResourcePath3 );
 
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
-        batch.put( resourcePath1, new ArrayList<ResourceChange>(  ) {{
+        batch.put( resourcePath1, new ArrayList<ResourceChange>() {{
             add( new ResourceAdded() );
         }} );
 
-        batch.put( resourcePath2, new ArrayList<ResourceChange>(  ) {{
+        batch.put( resourcePath2, new ArrayList<ResourceChange>() {{
             add( new ResourceUpdated() );
         }} );
 
-        batch.put( resourcePath3, new ArrayList<ResourceChange>(  ) {{
+        batch.put( resourcePath3, new ArrayList<ResourceChange>() {{
             add( new ResourceUpdated() );
         }} );
 
