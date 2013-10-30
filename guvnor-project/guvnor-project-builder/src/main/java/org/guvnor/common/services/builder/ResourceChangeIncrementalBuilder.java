@@ -47,7 +47,7 @@ public class ResourceChangeIncrementalBuilder {
 
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
-    private static final Logger log = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
+    private static final Logger logger = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
 
     @Inject
     private ProjectService projectService;
@@ -90,7 +90,7 @@ public class ResourceChangeIncrementalBuilder {
                 executor.shutdownNow();
                 if ( !executor.awaitTermination( 10,
                                                  TimeUnit.SECONDS ) ) {
-                    log.error( "executor did not terminate" );
+                    logger.error( "executor did not terminate" );
                 }
             }
         } catch ( InterruptedException e ) {
@@ -105,7 +105,7 @@ public class ResourceChangeIncrementalBuilder {
             return;
         }
 
-        log.info( "Incremental build request received for: " + resource.toURI() + " (added)." );
+        logger.info( "Incremental build request received for: " + resource.toURI() + " (added)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
         final Package pkg = projectService.resolvePackage( resource );
@@ -119,7 +119,7 @@ public class ResourceChangeIncrementalBuilder {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + " (added)." );
+                    logger.info( "Incremental build request being processed: " + resource.toURI() + " (added)." );
                     final Project project = projectService.resolveProject( resource );
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
@@ -132,8 +132,8 @@ public class ResourceChangeIncrementalBuilder {
                     }
 
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
+                    logger.error( e.getMessage(),
+                                  e );
                 }
             }
         } );
@@ -145,7 +145,7 @@ public class ResourceChangeIncrementalBuilder {
             return;
         }
 
-        log.info( "Incremental build request received for: " + resource.toURI() + " (deleted)." );
+        logger.info( "Incremental build request received for: " + resource.toURI() + " (deleted)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
         final Package pkg = projectService.resolvePackage( resource );
@@ -159,7 +159,7 @@ public class ResourceChangeIncrementalBuilder {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + " (deleted)." );
+                    logger.info( "Incremental build request being processed: " + resource.toURI() + " (deleted)." );
                     final Project project = projectService.resolveProject( resource );
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
@@ -172,8 +172,8 @@ public class ResourceChangeIncrementalBuilder {
                     }
 
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
+                    logger.error( e.getMessage(),
+                                  e );
                 }
             }
         } );
@@ -185,38 +185,38 @@ public class ResourceChangeIncrementalBuilder {
             return;
         }
 
-        log.info( "Incremental build request received for: " + resource.toURI() + " (updated)." );
-
-        //If resource is not within a Project it cannot be used for an incremental build
-        final Project project = projectService.resolveProject( resource );
-        if ( project == null ) {
-            return;
-        }
+        logger.info( "Incremental build request received for: " + resource.toURI() + " (updated)." );
 
         //The pom.xml or kmodule.xml cannot be processed incrementally
         final boolean isPomFile = projectService.isPom( resource );
         final boolean isKModuleFile = projectService.isKModule( resource );
         if ( isPomFile || isKModuleFile ) {
-            scheduleProjectResourceUpdate( project );
+            scheduleProjectResourceUpdate( resource );
         } else {
+            //If resource is not within a Package it cannot be used for an incremental build
+            final Package pkg = projectService.resolvePackage( resource );
+            if ( pkg == null ) {
+                return;
+            }
             schedulePackageResourceUpdate( resource );
         }
     }
 
     //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
-    private void scheduleProjectResourceUpdate( final Project project ) {
+    private void scheduleProjectResourceUpdate( final Path resource ) {
+        final Project project = projectService.resolveProject( resource );
         executor.execute( new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + project.getRootPath() + " (updated)." );
+                    logger.info( "Incremental build request being processed: " + project.getRootPath() + " (updated)." );
                     final BuildResults results = buildService.build( project );
                     buildResultsEvent.fire( results );
 
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
+                    logger.error( e.getMessage(),
+                                  e );
                 }
             }
         } );
@@ -229,7 +229,7 @@ public class ResourceChangeIncrementalBuilder {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
+                    logger.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
                     final Project project = projectService.resolveProject( resource );
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
@@ -242,8 +242,8 @@ public class ResourceChangeIncrementalBuilder {
                     }
 
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
+                    logger.error( e.getMessage(),
+                                  e );
                 }
             }
         } );
@@ -255,7 +255,7 @@ public class ResourceChangeIncrementalBuilder {
             return;
         }
 
-        log.info( "Batch incremental build request received." );
+        logger.info( "Batch incremental build request received." );
 
         //Block changes together with their respective project as Builder operates at the Project level
         final Map<Project, Map<Path, Collection<ResourceChange>>> projectBatchChanges = new HashMap<Project, Map<Path, Collection<ResourceChange>>>();
@@ -277,7 +277,7 @@ public class ResourceChangeIncrementalBuilder {
                         projectChanges.put( pathCollectionEntry.getKey(), new ArrayList<ResourceChange>() );
                     }
                     projectChanges.get( pathCollectionEntry.getKey() ).add( change );
-                    log.info( "- Batch content: " + pathCollectionEntry.getKey().toURI() + " (" + change.getType().toString() + ")." );
+                    logger.info( "- Batch content: " + pathCollectionEntry.getKey().toURI() + " (" + change.getType().toString() + ")." );
                 }
             }
         }
@@ -289,7 +289,7 @@ public class ResourceChangeIncrementalBuilder {
                 @Override
                 public void run() {
                     try {
-                        log.info( "Batch incremental build request being processed." );
+                        logger.info( "Batch incremental build request being processed." );
                         final Project project = e.getKey();
                         final Map<Path, Collection<ResourceChange>> changes = e.getValue();
 
@@ -304,8 +304,8 @@ public class ResourceChangeIncrementalBuilder {
                         }
 
                     } catch ( Exception e ) {
-                        log.error( e.getMessage(),
-                                   e );
+                        logger.error( e.getMessage(),
+                                      e );
                     }
                 }
             } );
