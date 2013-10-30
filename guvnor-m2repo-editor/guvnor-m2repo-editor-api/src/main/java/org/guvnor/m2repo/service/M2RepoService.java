@@ -16,9 +16,9 @@
 
 package org.guvnor.m2repo.service;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.guvnor.common.services.project.model.GAV;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 
@@ -26,8 +26,6 @@ import org.uberfire.paging.PageResponse;
 public interface M2RepoService {
 
     public String getJarName( String path );
-
-    public void deleteJar( String[] path );
 
     public String loadPOMStringFromJar( String path );
 
