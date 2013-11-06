@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -49,9 +50,9 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 510l;
 
-    private static final String RFC822DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z";
+    private static final String RFC1123DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'z";
     private static final Locale HEADER_LOCALE = Locale.US;
-
+    private static final TimeZone GMTTIMEZONE = TimeZone.getTimeZone("GMT");
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
@@ -71,7 +72,8 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                           HttpServletResponse response) throws ServletException,
             IOException {
         if (request.getMethod().equals("HEAD")) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(RFC822DATEFORMAT, HEADER_LOCALE);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(RFC1123DATEFORMAT, HEADER_LOCALE);
+            dateFormat.setTimeZone(GMTTIMEZONE);
             PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
             FileManagerUtils fm = getFileManager();
             long mod = fm.getLastModified(helper.getPackageName(),
