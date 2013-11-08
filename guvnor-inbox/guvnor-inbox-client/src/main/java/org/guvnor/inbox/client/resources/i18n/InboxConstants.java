@@ -22,12 +22,20 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * Explorer I18N constants
  */
-public interface Constants
+public interface InboxConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final InboxConstants INSTANCE = GWT.create( InboxConstants.class );
 
-    public String explorerTitle();
+    public String open();
+
+    public String from();
+
+    public String format();
+
+    public String name();
+
+    public String createdDate();
 
 }

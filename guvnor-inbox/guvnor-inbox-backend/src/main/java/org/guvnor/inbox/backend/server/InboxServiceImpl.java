@@ -38,7 +38,10 @@ public class InboxServiceImpl
     private Identity identity;
 
     @Inject
-    private InboxBackend backend;
+    private InboxBackend inboxBackend;
+
+    @Inject
+    private InboxPageRowBuilder inboxPageRowBuilder;
 
     public PageResponse<InboxPageRow> loadInbox( InboxPageRequest request ) {
         if ( request == null ) {
@@ -49,22 +52,25 @@ public class InboxServiceImpl
         }
 
         String inboxName = request.getInboxName();
+        PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
 
         List<InboxEntry> entries = loadEntries( inboxName );
         Iterator<InboxEntry> iterator = entries.iterator();
-        final List<InboxPageRow> rowList = new InboxPageRowBuilder()
+        List<InboxPageRow> rowList = inboxPageRowBuilder
                 .withPageRequest( request )
                 .withIdentity( identity )
                 .withContent( iterator )
                 .build();
 
-        return new PageResponseBuilder<InboxPageRow>()
+        response = new PageResponseBuilder<InboxPageRow>()
                 .withStartRowIndex( request.getStartRowIndex() )
                 .withTotalRowSize( entries.size() )
                 .withTotalRowSizeExact()
                 .withPageRowList( rowList )
                 .withLastPage( !iterator.hasNext() )
                 .build();
+
+        return response;
     }
 
     private List<InboxEntry> loadEntries( final String inboxName ) {
@@ -81,15 +87,18 @@ public class InboxServiceImpl
     }
 
     private List<InboxEntry> loadRecentEdited() {
-        return backend.readEntries( identity.getName(), RECENT_EDITED_ID );
+        return inboxBackend.readEntries( identity.getName(),
+                                         RECENT_EDITED_ID );
     }
 
     private List<InboxEntry> loadRecentOpened() {
-        return backend.readEntries( identity.getName(), RECENT_VIEWED_ID );
+        return inboxBackend.readEntries( identity.getName(),
+                                         RECENT_VIEWED_ID );
     }
 
     private List<InboxEntry> loadIncoming() {
-        return backend.readEntries( identity.getName(), INCOMING_ID );
+        return inboxBackend.readEntries( identity.getName(),
+                                         INCOMING_ID );
     }
 
 }

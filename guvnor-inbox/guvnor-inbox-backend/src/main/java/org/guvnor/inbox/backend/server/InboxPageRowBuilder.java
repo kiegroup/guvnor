@@ -36,13 +36,13 @@ public class InboxPageRowBuilder
         implements
         PageRowBuilder<InboxPageRequest, Iterator<InboxEntry>> {
 
-    private InboxPageRequest pageRequest;
-    private Iterator<InboxEntry> iterator;
-    private Identity identity;
-
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    private InboxPageRequest pageRequest;
+    private Iterator<InboxEntry> iterator;
+    private Identity identity;
 
     public List<InboxPageRow> build() {
         validate();
@@ -67,39 +67,30 @@ public class InboxPageRowBuilder
         InboxPageRow row = null;
         if ( request.getInboxName().equals( InboxServiceImpl.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
-            //tr.setUuid( inboxEntry.assetUUID );
-            //tr.setFormat( AssetFormats.BUSINESS_RULE );
-
             tr.setNote( inboxEntry.getNote() );
-            Path path = convertPath( inboxEntry.getItemPath() );
-            tr.setPath( path );
+            tr.setPath( makePath( inboxEntry.getItemPath() ) );
             tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             tr.setFrom( inboxEntry.getFrom() );
             row = tr;
 
         } else {
             InboxPageRow tr = new InboxPageRow();
-            //tr.setUuid( inboxEntry.assetUUID );
-            //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.getNote() );
-            Path path = convertPath( inboxEntry.getItemPath() );
-            tr.setPath( path );
+            tr.setPath( makePath( inboxEntry.getItemPath() ) );
             tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             row = tr;
         }
         return row;
     }
 
-    protected Path convertPath( final String fullPath ) {
+    private Path makePath( final String fullPath ) {
         try {
-            final org.uberfire.java.nio.file.Path path = ioService
-                    .get( new URI( fullPath ) );
-
+            final org.uberfire.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
             return Paths.convert( path );
+
         } catch ( URISyntaxException e ) {
-            //Ignore
+            return null;
         }
-        return null;
     }
 
     public void validate() {

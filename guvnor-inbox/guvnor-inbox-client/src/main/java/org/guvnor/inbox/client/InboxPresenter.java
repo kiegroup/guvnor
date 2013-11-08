@@ -16,33 +16,38 @@
 
 package org.guvnor.inbox.client;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
+import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 @Dependent
 @WorkbenchScreen(identifier = "Inbox")
 public class InboxPresenter {
-    
+
     public static final String RECENT_EDITED_ID = "recentEdited";
     public static final String RECENT_VIEWED_ID = "recentViewed";
     public static final String INCOMING_ID = "incoming";
-    
+
     public interface View
             extends
             IsWidget {
-        void setContent( final String inboxName );
+
+        void init( final String inboxName,
+                   final Caller<InboxService> inboxService,
+                   final InboxPresenter presenter );
+
     }
 
     @Inject
@@ -51,20 +56,18 @@ public class InboxPresenter {
     private String inboxName = INCOMING_ID;
 
     @Inject
-    private Caller<InboxService> m2RepoService;
-    
-    @PostConstruct
-    public void init() {
-    }
+    private PlaceManager placeManager;
+
+    @Inject
+    private Caller<InboxService> inboxService;
 
     @OnStartup
-    public void onStartup( final PlaceRequest place  ) {
-        this.inboxName = place.getParameter( "inboxname", INCOMING_ID );
-        view.setContent(inboxName);
-    }
-
-    @OnSave
-    public void onSave() {
+    public void onStartup( final PlaceRequest place ) {
+        this.inboxName = place.getParameter( "inboxname",
+                                             INCOMING_ID );
+        view.init( inboxName,
+                   inboxService,
+                   this );
     }
 
     @WorkbenchPartView
@@ -72,22 +75,25 @@ public class InboxPresenter {
         return view;
     }
 
-    @OnClose
-    public void onClose() {
-    }
-
     @WorkbenchPartTitle
     public String getTitle() {
         //TODO: this does not work. 
-        if(INCOMING_ID.equals(inboxName)) {
+        if ( INCOMING_ID.equals( inboxName ) ) {
             return "Incoming Changes";
-        } else if(RECENT_EDITED_ID.equals(inboxName)) {
+        } else if ( RECENT_EDITED_ID.equals( inboxName ) ) {
             return "Recently Edited";
-        } else if(RECENT_VIEWED_ID.equals(inboxName)) {
+        } else if ( RECENT_VIEWED_ID.equals( inboxName ) ) {
             return "Recently Opened";
         }
-        
+
         return "Incoming Changes";
+    }
+
+    public void open( final InboxPageRow row ) {
+        final Path path = row.getPath();
+        if ( path != null ) {
+            placeManager.goTo( new PathPlaceRequest( path ) );
+        }
     }
 
 }

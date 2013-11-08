@@ -15,47 +15,36 @@
  */
 package org.guvnor.inbox.client;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.guvnor.inbox.client.editor.InboxPagedTable;
-import org.guvnor.inbox.service.InboxService;
-
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.guvnor.inbox.client.editor.InboxEditor;
+import org.guvnor.inbox.service.InboxService;
+import org.jboss.errai.common.client.api.Caller;
 
 public class InboxView
         extends Composite
         implements InboxPresenter.View {
 
-    private VerticalPanel       layout;
-    
-/*    @Inject*/
-    private Caller<InboxService> inboxService;
-    
-    private PlaceManager placeManager;
-    
-    private Event<PathChangeEvent> pathChangeEvent;
-    
-    @Inject
-    public InboxView(Caller<InboxService> s, PlaceManager placeManager, Event<PathChangeEvent> pathChangeEvent) {
-        this.inboxService = s;
-        this.placeManager = placeManager;
-        this.pathChangeEvent = pathChangeEvent;
+    private VerticalPanel layout;
 
+    @Inject
+    public InboxView() {
         layout = new VerticalPanel();
         layout.setWidth( "100%" );
         initWidget( layout );
         setWidth( "100%" );
     }
-    
+
     @Override
-    public void setContent( final String inboxName ) {
-    	InboxPagedTable table = new InboxPagedTable(inboxService, inboxName, placeManager, pathChangeEvent);    
-        layout.add(table);
+    public void init( final String inboxName,
+                      final Caller<InboxService> inboxService,
+                      final InboxPresenter presenter ) {
+        final InboxEditor table = new InboxEditor( inboxName,
+                                                   inboxService,
+                                                   presenter );
+        layout.add( table );
     }
 
- }
+}
