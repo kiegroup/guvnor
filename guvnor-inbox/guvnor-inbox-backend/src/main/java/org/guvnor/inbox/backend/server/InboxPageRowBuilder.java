@@ -15,19 +15,30 @@
  */
 package org.guvnor.inbox.backend.server;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.security.Identity;
 
 public class InboxPageRowBuilder
         implements
         PageRowBuilder<InboxPageRequest, Iterator<InboxEntry>> {
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     private InboxPageRequest pageRequest;
     private Iterator<InboxEntry> iterator;
@@ -56,24 +67,30 @@ public class InboxPageRowBuilder
         InboxPageRow row = null;
         if ( request.getInboxName().equals( InboxServiceImpl.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
-            //tr.setUuid( inboxEntry.assetUUID );
-            //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.getNote() );
-            //tr.setName( inboxEntry.note );
+            tr.setPath( makePath( inboxEntry.getItemPath() ) );
             tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             tr.setFrom( inboxEntry.getFrom() );
             row = tr;
 
         } else {
             InboxPageRow tr = new InboxPageRow();
-            //tr.setUuid( inboxEntry.assetUUID );
-            //tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.getNote() );
-            //tr.setName( inboxEntry.note );
+            tr.setPath( makePath( inboxEntry.getItemPath() ) );
             tr.setTimestamp( new Date( inboxEntry.getTimestamp() ) );
             row = tr;
         }
         return row;
+    }
+
+    private Path makePath( final String fullPath ) {
+        try {
+            final org.uberfire.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
+            return Paths.convert( path );
+
+        } catch ( URISyntaxException e ) {
+            return null;
+        }
     }
 
     public void validate() {

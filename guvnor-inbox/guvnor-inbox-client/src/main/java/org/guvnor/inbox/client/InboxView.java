@@ -15,38 +15,36 @@
  */
 package org.guvnor.inbox.client;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.jboss.errai.common.client.api.Caller;
-import org.guvnor.inbox.client.editor.InboxEditor;
-import org.guvnor.inbox.service.InboxService;
-
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.guvnor.inbox.client.editor.InboxEditor;
+import org.guvnor.inbox.service.InboxService;
+import org.jboss.errai.common.client.api.Caller;
 
 public class InboxView
         extends Composite
         implements InboxPresenter.View {
 
-    private VerticalPanel       layout;
-    
-/*    @Inject*/
-    private Caller<InboxService> inboxService;
-    
-    @Inject
-    public InboxView(Caller<InboxService> s) {
-        this.inboxService = s;
+    private VerticalPanel layout;
 
+    @Inject
+    public InboxView() {
         layout = new VerticalPanel();
         layout.setWidth( "100%" );
         initWidget( layout );
         setWidth( "100%" );
     }
-    
+
     @Override
-    public void setContent( final String inboxName ) {
-        InboxEditor table = new InboxEditor(inboxService, inboxName);    
-        layout.add(table);
+    public void init( final String inboxName,
+                      final Caller<InboxService> inboxService,
+                      final InboxPresenter presenter ) {
+        final InboxEditor table = new InboxEditor( inboxName,
+                                                   inboxService,
+                                                   presenter );
+        layout.add( table );
     }
 
- }
+}

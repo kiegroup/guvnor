@@ -22,8 +22,6 @@
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
       <gwt:Button ui:field="refreshButton" text='Refresh'/>
-      <gwt:Button ui:field="openSelectedButton" text='Open selected'/>
-      <gwt:Button ui:field="deleteSelectedButton" text='Delete selected'/>
     </gwt:HorizontalPanel>
     <editor:InboxPagedTable ui:field="inboxPagedTable"/>
   </gwt:VerticalPanel>

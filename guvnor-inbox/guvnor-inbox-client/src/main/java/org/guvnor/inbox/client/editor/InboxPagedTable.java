@@ -30,12 +30,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+import org.guvnor.inbox.client.resources.i18n.InboxConstants;
 import org.guvnor.inbox.client.resources.images.ImageResources;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.tables.AbstractPagedTable;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.ComparableImageResource;
@@ -84,16 +85,7 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
                                        response.getPageRowList() );
                     }
                 } ).loadInbox( request );
-                
-/*                repositoryService.loadInbox( request,
-                        new GenericCallback<PageResponse<InboxPageRow>>() {
-                            public void onSuccess( PageResponse<InboxPageRow> response ) {
-                                updateRowCount( response.getTotalRowSize(),
-                                        response.isTotalRowSizeExact() );
-                                updateRowData( response.getStartRowIndex(),
-                                        response.getPageRowList() );
-                            }
-                        } );*/
+
             }
         } );
     }
@@ -114,7 +106,7 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
         columnPicker.addColumn( formatColumn,
                                 new SortableHeader<InboxPageRow, ComparableImageResource>(
                                         sortableHeaderGroup,
-                                        "Format",
+                                        InboxConstants.INSTANCE.format(),
                                         formatColumn ),
                                 true );
 
@@ -126,7 +118,7 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
         columnPicker.addColumn( noteColumn,
                                 new SortableHeader<InboxPageRow, String>(
                                         sortableHeaderGroup,
-                                        "Name",
+                                        InboxConstants.INSTANCE.name(),
                                         noteColumn ),
                                 true );
 
@@ -141,7 +133,7 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
         columnPicker.addColumn( dateColumn,
                                 new SortableHeader<InboxPageRow, Date>(
                                         sortableHeaderGroup,
-                                        "Created Date",
+                                        InboxConstants.INSTANCE.createdDate(),
                                         dateColumn ),
                                 true );
 

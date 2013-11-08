@@ -19,6 +19,7 @@ package org.guvnor.inbox.model;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.AbstractPageRow;
 
 /**
@@ -29,8 +30,9 @@ public class InboxPageRow extends AbstractPageRow {
 
     private String note;
     private Date timestamp;
-
     private String format;
+    private Path path;
+
     // ************************************************************************
     // Getters and setters
     // ************************************************************************
@@ -39,15 +41,15 @@ public class InboxPageRow extends AbstractPageRow {
         return note;
     }
 
+    public void setNote( final String note ) {
+        this.note = note;
+    }
+
     public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setNote( String note ) {
-        this.note = note;
-    }
-
-    public void setTimestamp( Date timestamp ) {
+    public void setTimestamp( final Date timestamp ) {
         this.timestamp = timestamp;
     }
 
@@ -55,8 +57,16 @@ public class InboxPageRow extends AbstractPageRow {
         return format;
     }
 
-    public void setFormat( String format ) {
+    public void setFormat( final String format ) {
         this.format = format;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath( final Path path ) {
+        this.path = path;
     }
 
 }

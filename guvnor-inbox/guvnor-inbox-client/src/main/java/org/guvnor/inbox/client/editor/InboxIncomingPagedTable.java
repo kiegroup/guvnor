@@ -18,6 +18,7 @@ package org.guvnor.inbox.client.editor;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import org.guvnor.inbox.client.resources.i18n.InboxConstants;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
@@ -31,29 +32,30 @@ import org.uberfire.client.tables.SortableHeaderGroup;
  */
 public class InboxIncomingPagedTable extends InboxPagedTable implements IsInboxIncomingPagedTable {
 
-    public InboxIncomingPagedTable(final Caller<InboxService> inboxService, final String inboxName ) {
+    public InboxIncomingPagedTable( final Caller<InboxService> inboxService,
+                                    final String inboxName ) {
         super( inboxService, inboxName );
     }
 
     @Override
-    protected void addAncillaryColumns(ColumnPicker<InboxPageRow> columnPicker,
-                                       SortableHeaderGroup<InboxPageRow> sortableHeaderGroup) {
+    protected void addAncillaryColumns( ColumnPicker<InboxPageRow> columnPicker,
+                                        SortableHeaderGroup<InboxPageRow> sortableHeaderGroup ) {
 
         // Include general "Inbox" columns
-        super.addAncillaryColumns(columnPicker,
-                sortableHeaderGroup);
+        super.addAncillaryColumns( columnPicker,
+                                   sortableHeaderGroup );
 
         Column<InboxPageRow, String> fromColumn = new TextColumn<InboxPageRow>() {
-            public String getValue(InboxPageRow row) {
-                return ((InboxIncomingPageRow) row).getFrom();
+            public String getValue( InboxPageRow row ) {
+                return ( (InboxIncomingPageRow) row ).getFrom();
             }
         };
-        columnPicker.addColumn(fromColumn,
-                new SortableHeader<InboxPageRow, String>(
-                        sortableHeaderGroup,
-                        "From",
-                        fromColumn),
-                true);
+        columnPicker.addColumn( fromColumn,
+                                new SortableHeader<InboxPageRow, String>(
+                                        sortableHeaderGroup,
+                                        InboxConstants.INSTANCE.from(),
+                                        fromColumn ),
+                                true );
     }
 
 }
