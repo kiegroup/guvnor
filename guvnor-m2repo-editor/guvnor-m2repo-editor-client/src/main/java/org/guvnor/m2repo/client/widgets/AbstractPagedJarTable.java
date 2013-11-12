@@ -1,4 +1,4 @@
-package org.guvnor.m2repo.client.editor;
+package org.guvnor.m2repo.client.widgets;
 
 import java.util.Date;
 
@@ -15,12 +15,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
+import org.guvnor.m2repo.client.editor.JarDetailEditor;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -34,66 +34,43 @@ import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.security.Identity;
 
-import static org.guvnor.m2repo.security.AppRole.*;
-
-public class PagedJarTable
+public abstract class AbstractPagedJarTable
         extends AbstractPagedTable<JarListPageRow> {
+
+    private static final int PAGE_SIZE = 10;
 
     interface Binder
             extends
-            UiBinder<Widget, PagedJarTable> {
+            UiBinder<Widget, AbstractPagedJarTable> {
 
     }
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    private final Caller<M2RepoService> m2RepoService;
-    private ColumnPicker<JarListPageRow> columnPicker = new ColumnPicker<JarListPageRow>( cellTable );
+    protected Caller<M2RepoService> m2RepoService;
 
-    private static final int PAGE_SIZE = 10;
+    protected ColumnPicker<JarListPageRow> columnPicker;
 
     @UiField()
     protected Button refreshButton;
 
-    private final Identity identity;
+    protected Identity identity;
 
-    public PagedJarTable( final Caller<M2RepoService> m2RepoService ) {
-        this( m2RepoService, null );
+    public AbstractPagedJarTable( final Caller<M2RepoService> m2RepoService ) {
+        this( m2RepoService,
+              null );
     }
 
-    public PagedJarTable( final Caller<M2RepoService> m2RepoService,
-                          final String searchFilter ) {
+    public AbstractPagedJarTable( final Caller<M2RepoService> m2RepoService,
+                                  final String searchFilter ) {
         super( PAGE_SIZE );
         this.m2RepoService = m2RepoService;
-
-        identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
-
-        //If the current user is not an Administrator do not include the download button
-        if ( identity.hasRole( ADMIN ) ) {
-            Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(
-                    new ButtonCell() ) {
-                public String getValue( JarListPageRow row ) {
-                    return "Download";
-                }
-            };
-
-            downloadColumn
-                    .setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-                        public void update( int index,
-                                            JarListPageRow row,
-                                            String value ) {
-                            Window.open( getFileDownloadURL( row.getPath() ),
-                                         "downloading",
-                                         "resizable=no,scrollbars=yes,status=no" );
-                        }
-                    } );
-
-            addColumn( downloadColumn, new TextHeader( "Download" ) );
-        }
+        this.identity = IOC.getBeanManager().lookupBean( Identity.class ).getInstance();
 
         setDataProvider( new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged( HasData<JarListPageRow> display ) {
-                PageRequest request = new PageRequest( pager.getPageStart(), pageSize );
+                PageRequest request = new PageRequest( pager.getPageStart(),
+                                                       pageSize );
 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
@@ -106,11 +83,15 @@ public class PagedJarTable
                 } ).listJars( request, searchFilter );
             }
         } );
+
+        // Add any additional columns
+        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup = new SortableHeaderGroup<JarListPageRow>( cellTable );
+        addAncillaryColumns( columnPicker,
+                             sortableHeaderGroup );
     }
 
     @Override
     protected void doCellTable() {
-
         ProvidesKey<JarListPageRow> providesKey = new ProvidesKey<JarListPageRow>() {
             public Object getKey( JarListPageRow row ) {
                 return row.getPath();
@@ -118,32 +99,18 @@ public class PagedJarTable
         };
 
         cellTable = new CellTable<JarListPageRow>( providesKey );
-
         columnPicker = new ColumnPicker<JarListPageRow>( cellTable );
-        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup = new SortableHeaderGroup<JarListPageRow>( cellTable );
-
-        // Add any additional columns
-        addAncillaryColumns( columnPicker,
-                             sortableHeaderGroup );
-
-        cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
-    }
-
-    public void hideColumnPicker() {
         columnPickerButton.setVisible( false );
-    }
-
-    public void refresh() {
-        cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
-                                               true );
+        columnPickerButton.setEnabled( false );
+        cellTable.setWidth( "100%" );
     }
 
     @Override
-    protected void addAncillaryColumns( ColumnPicker<JarListPageRow> columnPicker,
-                                        SortableHeaderGroup<JarListPageRow> sortableHeaderGroup ) {
+    protected void addAncillaryColumns( final ColumnPicker<JarListPageRow> columnPicker,
+                                        final SortableHeaderGroup<JarListPageRow> sortableHeaderGroup ) {
 
-        TextColumn<JarListPageRow> nameColumn = new TextColumn<JarListPageRow>() {
+        final TextColumn<JarListPageRow> nameColumn = new TextColumn<JarListPageRow>() {
             public String getValue( JarListPageRow row ) {
                 return row.getName();
             }
@@ -155,7 +122,7 @@ public class PagedJarTable
                                         nameColumn ),
                                 true );
 
-        TextColumn<JarListPageRow> pathColumn = new TextColumn<JarListPageRow>() {
+        final TextColumn<JarListPageRow> pathColumn = new TextColumn<JarListPageRow>() {
             public String getValue( JarListPageRow row ) {
                 return row.getPath();
             }
@@ -167,7 +134,7 @@ public class PagedJarTable
                                         pathColumn ),
                                 true );
 
-        Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+        final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             public Date getValue( JarListPageRow row ) {
                 return row.getLastModified();
             }
@@ -179,7 +146,7 @@ public class PagedJarTable
                                 true );
 
         // Add "View kjar detail" button column
-        Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
             public String getValue( JarListPageRow row ) {
                 return "Open";
             }
@@ -203,32 +170,21 @@ public class PagedJarTable
                                 true );
     }
 
-    public void addColumn( Column<JarListPageRow, String> column,
-                           TextHeader textHeader ) {
-        columnPicker.addColumn( column,
-                                textHeader,
-                                true );
-    }
-
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
 
+    public void addColumn( final Column<JarListPageRow, String> column,
+                           final TextHeader textHeader ) {
+        columnPicker.addColumn( column,
+                                textHeader,
+                                true );
+    }
+
     @UiHandler("refreshButton")
     void refresh( ClickEvent e ) {
         refresh();
-    }
-
-    String getFileDownloadURL( String path ) {
-        String url = getGuvnorM2RepoBaseURL() + path;
-        return url;
-    }
-
-    public static String getGuvnorM2RepoBaseURL() {
-        final String url = GWT.getModuleBaseURL();
-        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
-        return baseUrl + "maven2/";
     }
 
 }
