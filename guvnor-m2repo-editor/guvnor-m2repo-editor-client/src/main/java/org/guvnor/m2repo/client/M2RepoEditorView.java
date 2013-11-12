@@ -34,7 +34,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.guvnor.m2repo.client.editor.PagedJarTable;
+import org.guvnor.m2repo.client.editor.MavenRepositoryPagedJarTable;
+import org.guvnor.m2repo.client.widgets.AbstractPagedJarTable;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -94,10 +95,11 @@ public class M2RepoEditorView
             public void onClick( ClickEvent arg0 ) {
                 resultsP.clear();
                 if ( searchTextBox.getText() == null || searchTextBox.getText().equals( "" ) ) {
-                    PagedJarTable table = new PagedJarTable( m2RepoService );
+                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
                     resultsP.add( table );
                 } else {
-                    PagedJarTable table = new PagedJarTable( m2RepoService, searchTextBox.getText() );
+                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService,
+                                                                                    searchTextBox.getText() );
                     resultsP.add( table );
                 }
             }
@@ -118,7 +120,7 @@ public class M2RepoEditorView
         container.add( resultsP );
 
         resultsP.clear();
-        PagedJarTable table = new PagedJarTable( m2RepoService );
+        AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
         resultsP.add( table );
 
         layout.add( container );
@@ -165,7 +167,7 @@ public class M2RepoEditorView
                     hiddenVersionIdField.setText( null );
 
                     resultsP.clear();
-                    PagedJarTable table = new PagedJarTable( m2RepoService );
+                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
                     resultsP.add( table );
 
                     up.getElement().setPropertyString( "value", "" );
