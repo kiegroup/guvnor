@@ -18,12 +18,14 @@ package org.drools.guvnor.client.rpc;
 
 import java.io.Serializable;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * This class contains all the parameters passed in the invocation of the
  * standalone editor. 
  * This object is used to pass those parameters from server to client side.
  */
-public class StandaloneEditorInvocationParameters implements Serializable {
+public class StandaloneEditorInvocationParameters implements IsSerializable {
     
     static final long serialVersionUID = 530L;
     
