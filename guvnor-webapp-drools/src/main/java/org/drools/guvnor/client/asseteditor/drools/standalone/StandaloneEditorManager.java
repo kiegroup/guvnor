@@ -120,7 +120,7 @@ public class StandaloneEditorManager {
                                 public void execute() {
                                     afterSaveAllCallbackFunction();
                                 }
-                            });
+                            },assets);
                         } else {
                             editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
                                 //"Cancel" button command
