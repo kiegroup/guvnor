@@ -157,6 +157,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         List<FieldConstraint> sortedConst = sortConstraints( pattern.getFieldConstraints() );
         pattern.setFieldConstraints( sortedConst );
+        
         drawConstraints( sortedConst,
                          pattern );
 
@@ -701,23 +702,37 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             String fieldName;
             String factType;
-
+            String fieldType;
             //Connectives Operators are handled in class Connectives
             if ( c instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) c;
                 factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
+                //Window.alert("sfexp.getFactType():"+sfexp.getFactType());
+                //Window.alert("sfexp.getFieldType():"+sfexp.getFieldType());
                 if ( factType == null ) {
+                	//Window.alert("sfexp.getExpressionLeftSide().getPreviousGenericType() is null");
                     factType = sfexp.getExpressionLeftSide().getGenericType();
+                	//factType = sfexp.getFieldType();
+                   // fieldType = sfexp.getFieldType();
+                	
                 }
+                //factType = sfexp.getExpressionLeftSide().getGenericType();
                 fieldName = sfexp.getExpressionLeftSide().getFieldName();
-
+                
             } else {
+            	//Window.alert("! c instanceof SingleFieldConstraintEBLeftSide");
                 factType = c.getFactType();
+                //factType = c.getFieldType();
+                //Window.alert("c.getFieldType():"+c.getFieldType());
+                //Window.alert("c.getFactType():"+c.getFactType());
+                
                 fieldName = c.getFieldName();
             }
-
+            fieldType = c.getFieldType();
+            
+            //Window.alert("factType: "  + factType + " field Name" + fieldName + " fieldType " + c.getFieldType());
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
-                                                                                      fieldName );
+                                                                                      fieldName, fieldType );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
                                                                c );
 
