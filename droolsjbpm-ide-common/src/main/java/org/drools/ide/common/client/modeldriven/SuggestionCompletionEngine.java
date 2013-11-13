@@ -51,6 +51,12 @@ public class SuggestionCompletionEngine
     public static final String                      TYPE_NUMERIC_INTEGER     = "Integer";
     public static final String                      TYPE_NUMERIC_LONG        = "Long";
     public static final String                      TYPE_NUMERIC_SHORT       = "Short";
+    public static final String                      TYPE_NUMERIC_PRE_BYTE    = "byte";
+    public static final String                      TYPE_NUMERIC_PRE_DOUBLE  = "double";
+    public static final String                      TYPE_NUMERIC_PRE_FLOAT   = "float";
+    public static final String                      TYPE_NUMERIC_PRE_INTEGER = "int";
+    public static final String                      TYPE_NUMERIC_PRE_LONG    = "long";
+    public static final String                      TYPE_NUMERIC_PRE_SHORT   = "short";
     public static final String                      TYPE_BOOLEAN             = "Boolean";
     public static final String                      TYPE_DATE                = "Date";
     public static final String                      TYPE_OBJECT              = "Object";                                                                                                                                                      // for all other unknown
@@ -270,9 +276,37 @@ public class SuggestionCompletionEngine
                                     factType );
     }
 
+	public String[] getOperatorCompletions(final String factType,
+			final String fieldName, String fieldType) {
+		if (fieldType == null || "".equals(fieldType)) {
+			fieldType = getFieldType(factType, fieldName);
+		}
+		if (fieldType == null) {
+			return STANDARD_OPERATORS;
+		} else if (fieldName.equals(TYPE_THIS)) {
+			if (this.isFactTypeAnEvent(factType)) {
+				return joinArrays(STANDARD_OPERATORS, SIMPLE_CEP_OPERATORS,
+						COMPLEX_CEP_OPERATORS);
+			} else {
+				return STANDARD_OPERATORS;
+			}
+		} else if (fieldType.equals(TYPE_STRING)) {
+			return joinArrays(STRING_OPERATORS, EXPLICIT_LIST_OPERATORS);
+		} else if (SuggestionCompletionEngine.isNumeric(fieldType)) {
+			return joinArrays(COMPARABLE_OPERATORS, EXPLICIT_LIST_OPERATORS);
+		} else if (fieldType.equals(TYPE_DATE)) {
+			return joinArrays(COMPARABLE_OPERATORS, EXPLICIT_LIST_OPERATORS,
+					SIMPLE_CEP_OPERATORS);
+		} else if (fieldType.equals(TYPE_COMPARABLE)) {
+			return COMPARABLE_OPERATORS;
+		} else if (fieldType.equals(TYPE_COLLECTION)) {
+			return COLLECTION_OPERATORS;
+		} else {
+			return STANDARD_OPERATORS;
+		}
+	}
     public String[] getOperatorCompletions(final String factType,
                                            final String fieldName) {
-
         String fieldType = getFieldType( factType,
                                          fieldName );
 
@@ -322,7 +356,19 @@ public class SuggestionCompletionEngine
             return true;
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_SHORT ) ) {
             return true;
-        }
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_BYTE ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_DOUBLE ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_FLOAT ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_INTEGER ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_LONG ) ) {
+            return true;
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC_PRE_SHORT ) ) {
+            return true;
+        } 
         return false;
     }
 
