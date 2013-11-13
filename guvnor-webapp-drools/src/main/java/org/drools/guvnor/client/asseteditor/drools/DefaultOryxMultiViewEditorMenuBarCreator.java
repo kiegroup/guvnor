@@ -27,7 +27,6 @@ public class DefaultOryxMultiViewEditorMenuBarCreator implements MultiViewEditor
                         if (cmd != null){
                             cmd.execute();
                         }
-                        
                         //persist the asset
                         editor.checkin(false);
                         
