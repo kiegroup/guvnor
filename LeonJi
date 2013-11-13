@@ -1,0 +1,17 @@
+If the type from pojo model is not flat, there are problems for user to use the properties. 
+ie. A model User has a property friend and friend has a property monthly income, user needs to edit rules like : 
+when
+	exist User with 
+  		friend
+  			monthly income  >  3000
+then
+	do some action
+	
+It is ok when the user create this rule, but when user closes it and reopens it, the great than operator and the number 3000 will be ignored by guvnor
+
+The same problem occures for the "expression editor"
+
+The problem is due to the code for figuring out what type the properties is. 
+When it failed to get the information, it will be set to default, which does not have the ablity of comparation. Thus no comparation operators are available and the data will also be missing.
+
+ 
