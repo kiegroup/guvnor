@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +61,7 @@ public class ResourceChangeIncrementalBuilderTest {
     private BuildResultsObserver buildResultsObserver;
     private BuildService buildService;
     private ProjectService projectService;
+    private RuleNamesService ruleNamesService;
 
     @Before
     public void setUp() throws Exception {
@@ -108,6 +110,13 @@ public class ResourceChangeIncrementalBuilderTest {
         projectService = (ProjectService) beanManager.getReference( projectServiceBean,
                                                                     ProjectService.class,
                                                                     cc6 );
+
+        //Instantiate ProjectService
+        final Bean ruleNamesServiceBean = (Bean) beanManager.getBeans( RuleNamesService.class ).iterator().next();
+        final CreationalContext cc7 = beanManager.createCreationalContext( ruleNamesServiceBean );
+        ruleNamesService = (RuleNamesService) beanManager.getReference( ruleNamesServiceBean,
+                                                                    RuleNamesService.class,
+                                                                    cc7 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
@@ -192,6 +201,9 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
                       incrementalBuildResults.getRemovedMessages().size() );
+
+        List<String> ruleNames = ruleNamesService.getRuleNames();
+        Map<String, Collection<String>> ruleNamesMap = ruleNamesService.getRuleNamesMap();
     }
 
     @Test
