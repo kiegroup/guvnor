@@ -157,6 +157,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         List<FieldConstraint> sortedConst = sortConstraints( pattern.getFieldConstraints() );
         pattern.setFieldConstraints( sortedConst );
+        
         drawConstraints( sortedConst,
                          pattern );
 
@@ -698,26 +699,25 @@ public class FactPatternWidget extends RuleModellerWidget {
                                     final int row,
                                     final int col) {
         if ( !this.readOnly ) {
-
             String fieldName;
             String factType;
-
+            String fieldType;
             //Connectives Operators are handled in class Connectives
             if ( c instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) c;
                 factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
                 if ( factType == null ) {
-                    factType = sfexp.getExpressionLeftSide().getGenericType();
+                	factType = sfexp.getExpressionLeftSide().getGenericType();
                 }
                 fieldName = sfexp.getExpressionLeftSide().getFieldName();
-
             } else {
                 factType = c.getFactType();
                 fieldName = c.getFieldName();
             }
-
+            fieldType = c.getFieldType();
+            
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
-                                                                                      fieldName );
+                                                                                      fieldName, fieldType );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
                                                                c );
 
