@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
+
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -42,6 +44,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.rulenames.RuleNameUpdateEvent;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -87,6 +90,7 @@ public class Builder {
 
     private Map<String, org.uberfire.backend.vfs.Path> handles = new HashMap<String, org.uberfire.backend.vfs.Path>();
 
+    private final Event<RuleNameUpdateEvent> ruleNameUpdateEvent;
     private final List<BuildValidationHelper> buildValidationHelpers;
     private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
     private final Map<Path, List<ValidationMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<ValidationMessage>>();
@@ -102,11 +106,13 @@ public class Builder {
                     final GAV gav,
                     final IOService ioService,
                     final ProjectService projectService,
+                    final Event<RuleNameUpdateEvent> ruleNameUpdateEvent,
                     final List<BuildValidationHelper> buildValidationHelpers ) {
         this.moduleDirectory = moduleDirectory;
         this.gav = gav;
         this.ioService = ioService;
         this.projectService = projectService;
+        this.ruleNameUpdateEvent = ruleNameUpdateEvent;
         this.buildValidationHelpers = buildValidationHelpers;
 
         projectPrefix = moduleDirectory.toUri().toString();
@@ -156,7 +162,7 @@ public class Builder {
         //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
         // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
         // X references another external class Y, Y is also accessible by the class loader.
-        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
+        final KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
                 final Class clazz = kieModuleMetaData.getClass( packageName, className );
@@ -178,6 +184,10 @@ public class Builder {
         }
 
         return results;
+    }
+
+    private KieModuleMetaData getKieModuleMetaData() {
+        return KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
     }
 
     private void verifyExternalClass( Class clazz ) {
@@ -243,7 +253,18 @@ public class Builder {
                                                         addedValidationMessages );
         }
 
+        fireRuleNameUpdateEvent();
+
         return results;
+    }
+
+    private void fireRuleNameUpdateEvent() {
+        KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
+        HashMap<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
+        for (String packageName : kieModuleMetaData.getPackages()) {
+            ruleNames.put(packageName, kieModuleMetaData.getRuleNamesInPackage(packageName));
+        }
+        ruleNameUpdateEvent.fire(new RuleNameUpdateEvent(ruleNames));
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {

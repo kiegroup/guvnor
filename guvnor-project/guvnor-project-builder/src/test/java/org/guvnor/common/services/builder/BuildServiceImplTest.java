@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -29,6 +30,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.rulenames.RuleNameUpdateEvent;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
@@ -40,15 +42,18 @@ import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class BuildServiceImplTest {
 
     private BeanManager beanManager;
+    private Event ruleNameUpdateEvent;
 
     @Before
     public void setUp() throws Exception {
         StartMain startMain = new StartMain( new String[ 0 ] );
         beanManager = startMain.go().getBeanManager();
+
         setUpGuvnorM2Repo();
     }
 
@@ -61,10 +66,12 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
+        ruleNameUpdateEvent = mock(Event.class);
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
                                              projectService,
+                                             ruleNameUpdateEvent,
                                              new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
@@ -86,6 +93,7 @@ public class BuildServiceImplTest {
                                              new GAV(),
                                              ioService,
                                              projectService,
+                                             ruleNameUpdateEvent,
                                              new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
@@ -114,6 +122,7 @@ public class BuildServiceImplTest {
                                              new GAV(),
                                              ioService,
                                              projectService,
+                                             ruleNameUpdateEvent,
                                              new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
@@ -142,6 +151,7 @@ public class BuildServiceImplTest {
                                              new GAV(),
                                              ioService,
                                              projectService,
+                                             ruleNameUpdateEvent,
                                              new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
@@ -192,6 +202,7 @@ public class BuildServiceImplTest {
                                              new GAV(),
                                              ioService,
                                              projectService,
+                                             ruleNameUpdateEvent,
                                              new ArrayList<BuildValidationHelper>() );
 
         final BuildResults results = builder.build();
