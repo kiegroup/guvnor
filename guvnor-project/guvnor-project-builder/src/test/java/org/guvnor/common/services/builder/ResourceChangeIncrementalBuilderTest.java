@@ -171,6 +171,10 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
                       incrementalBuildResults.getRemovedMessages().size() );
+
+        assertEquals("Updated", ruleNamesService.getRuleNames().get(0));
+        assertEquals("Deleted", ruleNamesService.getRuleNames().get(1));
+        assertEquals("Added", ruleNamesService.getRuleNames().get(2));
     }
 
     @Test
@@ -202,8 +206,9 @@ public class ResourceChangeIncrementalBuilderTest {
         assertEquals( 0,
                       incrementalBuildResults.getRemovedMessages().size() );
 
-        List<String> ruleNames = ruleNamesService.getRuleNames();
-        Map<String, Collection<String>> ruleNamesMap = ruleNamesService.getRuleNamesMap();
+        assertEquals("Updated", ruleNamesService.getRuleNames().get(0));
+        assertEquals("Deleted", ruleNamesService.getRuleNames().get(1));
+        assertEquals("Added", ruleNamesService.getRuleNames().get(2));
     }
 
     @Test
@@ -231,6 +236,7 @@ public class ResourceChangeIncrementalBuilderTest {
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNull( incrementalBuildResults );
+
     }
 
     @Test
@@ -293,6 +299,10 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getAddedMessages().size() );
         assertEquals( 0,
                       incrementalBuildResults.getRemovedMessages().size() );
+
+        assertEquals("Updated", ruleNamesService.getRuleNames().get(0));
+        assertEquals("Deleted", ruleNamesService.getRuleNames().get(1));
+        assertEquals("Added", ruleNamesService.getRuleNames().get(2));
     }
 
     @Test

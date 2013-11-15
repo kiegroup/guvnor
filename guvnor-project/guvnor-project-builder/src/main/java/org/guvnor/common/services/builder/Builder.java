@@ -78,6 +78,8 @@ public class Builder {
             "Please check the external .jar files configured as dependencies for this project.\n" +
             "The low level error is: ";
 
+    private final static String DEFAULTPKG = "defaultpkg";
+
     private KieBuilder kieBuilder;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
@@ -262,8 +264,14 @@ public class Builder {
         KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
         HashMap<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
         for (String packageName : kieModuleMetaData.getPackages()) {
+            if (packageName.isEmpty()) {
+                packageName = DEFAULTPKG;
+            }
             ruleNames.put(packageName, kieModuleMetaData.getRuleNamesInPackage(packageName));
         }
+
+        ruleNames.put(DEFAULTPKG, kieModuleMetaData.getRuleNamesInPackage(DEFAULTPKG));
+
         ruleNameUpdateEvent.fire(new RuleNameUpdateEvent(ruleNames));
     }
 
@@ -302,6 +310,8 @@ public class Builder {
                 }
             }
         }
+
+        fireRuleNameUpdateEvent();
 
         return results;
     }
