@@ -25,14 +25,14 @@ import org.uberfire.paging.PageResponse;
 @Remote
 public interface M2RepoService {
 
-    public String getJarName( String path );
+    String getJarName( String path );
 
-    public String loadPOMStringFromJar( String path );
+    String loadPOMStringFromJar( String path );
 
-    public GAV loadGAVFromJar( String path );
+    GAV loadGAVFromJar( String path );
 
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest,
-                                                  String filters );
+    PageResponse<JarListPageRow> listJars( PageRequest pageRequest,
+                                           String filters );
 
-    public String getRepositoryURL( String baseURL );
+    String getRepositoryURL( String baseURL );
 }

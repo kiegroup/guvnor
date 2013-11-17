@@ -16,12 +16,12 @@
 
 package org.guvnor.m2repo.client.editor;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Form;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import org.guvnor.m2repo.client.resources.ImageResources;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.uberfire.client.common.FormStylePopup;

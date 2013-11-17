@@ -16,65 +16,46 @@
 
 package org.guvnor.m2repo.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.Caller;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.guvnor.m2repo.client.editor.MavenRepositoryPagedJarTable;
+import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
+import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
 @WorkbenchScreen(identifier = "M2RepoEditor")
 public class M2RepoEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-    }
-
     @Inject
-    private View view;
-
-    private Path path;
-
-    @Inject
-    private Caller<M2RepoService> m2RepoService;
-    
-    @PostConstruct
-    public void init() {
-    }
+    private MavenRepositoryPagedJarTable view;
 
     @OnStartup
-    public void onStartup( final Path path ) {
-        this.path = path;
-    }
-
-    @OnSave
-    public void onSave() {
+    public void onStartup() {
+        view.refresh();
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget() {
+    public MavenRepositoryPagedJarTable getWidget() {
         return view;
-    }
-
-    @OnClose
-    public void onClose() {
-        this.path = null;
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guvnor M2 REPOSITORY";
+        return "M2 Repository Content";
+    }
+
+    public void refreshEvent( @Observes final M2RepoRefreshEvent event ) {
+        view.refresh();
+    }
+
+    public void searchEvent( @Observes final M2RepoSearchEvent event ) {
+        view.search( event.getFilter() );
     }
 
 }

@@ -1,42 +1,48 @@
 package org.guvnor.m2repo.client.editor;
 
-import com.google.gwt.cell.client.ButtonCell;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.github.gwtbootstrap.client.ui.ButtonCell;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Window;
-import org.guvnor.m2repo.client.widgets.AbstractPagedJarTable;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
+import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.client.tables.ColumnPicker;
-import org.uberfire.client.tables.SortableHeaderGroup;
+import org.uberfire.security.Identity;
 
 import static org.guvnor.m2repo.security.AppRole.*;
 
+@Dependent
 public class MavenRepositoryPagedJarTable
-        extends AbstractPagedJarTable {
+        extends Composite
+        implements RequiresResize {
 
-    public MavenRepositoryPagedJarTable( final Caller<M2RepoService> m2RepoService ) {
-        super( m2RepoService );
-    }
+    @Inject
+    private ArtifactListPresenter presenter;
 
-    public MavenRepositoryPagedJarTable( final Caller<M2RepoService> m2RepoService,
-                                         final String searchFilter ) {
-        super( m2RepoService,
-               searchFilter );
-    }
+    @Inject
+    protected Identity identity;
 
     @Override
-    protected void addAncillaryColumns( final ColumnPicker<JarListPageRow> columnPicker,
-                                        final SortableHeaderGroup<JarListPageRow> sortableHeaderGroup ) {
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
+    public void onResize() {
+        if ( ( getParent().getOffsetHeight() - 120 ) > 0 ) {
+            presenter.getView().setContentHeight( getParent().getOffsetHeight() - 120 + "px" );
+        }
+    }
 
+    @PostConstruct
+    public void init() {
         //If the current user is not an Administrator do not include the download button
         if ( identity.hasRole( ADMIN ) ) {
-            final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+            final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() {{
+                setSize( ButtonSize.MINI );
+            }} ) {
                 public String getValue( JarListPageRow row ) {
                     return "Download";
                 }
@@ -52,10 +58,10 @@ public class MavenRepositoryPagedJarTable
                 }
             } );
 
-            addColumn( downloadColumn,
-                       new TextHeader( "Download" ) );
+            presenter.getView().addColumn( downloadColumn, null, "Download" );
         }
 
+        initWidget( presenter.getView().asWidget() );
     }
 
     private String getFileDownloadURL( final String path ) {
@@ -69,4 +75,11 @@ public class MavenRepositoryPagedJarTable
         return baseUrl + "maven2/";
     }
 
+    public void search( String filter ) {
+        presenter.search( filter );
+    }
+
+    public void refresh() {
+        presenter.refresh();
+    }
 }
