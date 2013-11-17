@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,41 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.m2repo.client;
 
+package org.guvnor.m2repo.client.upload;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Form;
+import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.ModalFooter;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.guvnor.m2repo.client.editor.MavenRepositoryPagedJarTable;
-import org.guvnor.m2repo.client.widgets.AbstractPagedJarTable;
+import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.FileUpload;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 
-public class M2RepoEditorView
-        extends Composite
-        implements M2RepoEditorPresenter.View {
+@Dependent
+public class UploadForm
+        extends PopupPanel {
 
-    private VerticalPanel layout;
+    @Inject
+    private Event<M2RepoSearchEvent> searchEvent;
+
+    private Modal popup = new Modal();
     private WellForm form;
 
     private final TextBox hiddenGroupIdField = new TextBox();
@@ -55,75 +58,28 @@ public class M2RepoEditorView
     private final TextBox hiddenVersionIdField = new TextBox();
 
     private final FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
-    private final SimplePanel resultsP = new SimplePanel();
 
-    private Caller<M2RepoService> m2RepoService;
-
-    @Inject
-    public M2RepoEditorView( Caller<M2RepoService> s ) {
-        this.m2RepoService = s;
-
-        layout = new VerticalPanel();
-        doSearch();
-        layout.setWidth( "100%" );
-        initWidget( layout );
-        setWidth( "100%" );
+    @PostConstruct
+    public void init() {
+        popup.add( new ModalFooter( new Button( "Cancel" ) {{
+            addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    hide();
+                }
+            } );
+        }} ) );
+        popup.setTitle( "Artifact Upload" );
+        popup.add( doUploadForm() );
     }
 
-    private void doSearch() {
-        VerticalPanel container = new VerticalPanel();
-        VerticalPanel criteria = new VerticalPanel();
+    public void hide() {
+        popup.hide();
+        super.hide();
+    }
 
-        FormStyleLayout ts = new FormStyleLayout();
-
-        ts.addAttribute( "Upload new Jar:",
-                         doUploadForm() );
-
-        final TextBox searchTextBox = new TextBox();
-        //tx.setWidth("100px");
-        ts.addAttribute( "Find items with a name matching:", searchTextBox );
-
-        Button go = new Button();
-        go.setText( "Search" );
-        ts.addAttribute( "",
-                         go );
-
-        ts.setWidth( "100%" );
-
-        final ClickHandler cl = new ClickHandler() {
-
-            public void onClick( ClickEvent arg0 ) {
-                resultsP.clear();
-                if ( searchTextBox.getText() == null || searchTextBox.getText().equals( "" ) ) {
-                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
-                    resultsP.add( table );
-                } else {
-                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService,
-                                                                                    searchTextBox.getText() );
-                    resultsP.add( table );
-                }
-            }
-
-        };
-
-        go.addClickHandler( cl );
-        searchTextBox.addKeyPressHandler( new KeyPressHandler() {
-            public void onKeyPress( KeyPressEvent event ) {
-                if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
-                    cl.onClick( null );
-                }
-            }
-        } );
-
-        criteria.add( ts );
-        container.add( criteria );
-        container.add( resultsP );
-
-        resultsP.clear();
-        AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
-        resultsP.add( table );
-
-        layout.add( container );
+    public void show() {
+        popup.show();
     }
 
     public WellForm doUploadForm() {
@@ -132,17 +88,14 @@ public class M2RepoEditorView
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        final FileUpload up = new FileUpload();
-        //up.setWidth("100px");
-        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
-
-        Button ok = new Button( "upload" );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+        final FileUpload up = new FileUpload( new Command() {
+            @Override
+            public void execute() {
                 showUploadingBusy();
                 form.submit();
             }
         } );
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
 
         form.addSubmitHandler( new Form.SubmitHandler() {
             @Override
@@ -150,7 +103,7 @@ public class M2RepoEditorView
                 String fileName = up.getFilename();
                 if ( fileName == null || "".equals( fileName ) ) {
                     BusyPopup.close();
-                    Window.alert( "Please selete a file to upload" );
+                    Window.alert( "Please select a file to upload" );
                     event.cancel();
                 }
             }
@@ -166,16 +119,15 @@ public class M2RepoEditorView
                     hiddenGroupIdField.setText( null );
                     hiddenVersionIdField.setText( null );
 
-                    resultsP.clear();
-                    AbstractPagedJarTable table = new MavenRepositoryPagedJarTable( m2RepoService );
-                    resultsP.add( table );
+                    searchEvent.fire( new M2RepoSearchEvent() );
 
                     up.getElement().setPropertyString( "value", "" );
-
+                    hide();
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
                     Window.alert( "The Jar does not contain a valid POM file. Please specify GAV info manually." );
                     hiddenFieldsPanel.setVisible( true );
+
                 } else {
                     BusyPopup.close();
                     ErrorPopup.showMessage( "Upload failed:" + event.getResults() );
@@ -184,14 +136,13 @@ public class M2RepoEditorView
                     hiddenArtifactIdField.setText( null );
                     hiddenGroupIdField.setText( null );
                     hiddenVersionIdField.setText( null );
+                    hide();
                 }
-
             }
         } );
 
         HorizontalPanel fields = new HorizontalPanel();
         fields.add( up );
-        fields.add( ok );
 
         hiddenGroupIdField.setName( HTMLFileManagerFields.GROUP_ID );
         hiddenGroupIdField.setText( null );
@@ -222,4 +173,5 @@ public class M2RepoEditorView
     protected void showUploadingBusy() {
         // LoadingPopup.showMessage( "Uploading...");
     }
+
 }
