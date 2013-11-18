@@ -22,14 +22,14 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.guvnor.m2repo.client.resources.ImageResources;
+import org.guvnor.m2repo.client.resources.images.M2RepoEditorImageResources;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.uberfire.client.common.FormStylePopup;
 
 public class GAVEditor extends FormStylePopup {
 
     public GAVEditor( final Form form ) {
-        super( ImageResources.INSTANCE.modelLarge(),
+        super( M2RepoEditorImageResources.INSTANCE.modelLarge(),
                "GAV Editor" );
 
         TextBox groupIDTextBox = new TextBox();

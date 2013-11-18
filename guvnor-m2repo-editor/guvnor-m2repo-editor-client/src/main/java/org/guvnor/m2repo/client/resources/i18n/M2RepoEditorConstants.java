@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * EnumEditor I18N constants
  */
-public interface Constants
+public interface M2RepoEditorConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final M2RepoEditorConstants INSTANCE = GWT.create( M2RepoEditorConstants.class );
 
     String OK();
 
@@ -87,4 +87,7 @@ public interface Constants
     String DecimalNumber();
     
     String AreYouSureYouWantToDeleteTheseItems();
+
+    String JarDetails();
+
 }

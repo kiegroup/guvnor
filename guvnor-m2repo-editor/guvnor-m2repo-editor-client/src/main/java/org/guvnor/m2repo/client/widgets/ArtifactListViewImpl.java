@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.m2repo.client.editor.JarDetailEditor;
+import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -171,14 +171,15 @@ public class ArtifactListViewImpl
                     m2RepoService.call( new RemoteCallback<String>() {
                         @Override
                         public void callback( final String response ) {
-                            JarDetailEditor editor = new JarDetailEditor( response );
-                            editor.setSize( "800px", "600px" );
-                            editor.show();
+                            JarDetailPopup popup = new JarDetailPopup( response );
+                            popup.show();
                         }
                     } ).loadPOMStringFromJar( row.getPath() );
                 }
             } );
-            cellTable.addColumn( openColumn, new ResizableHeader( "Open", cellTable, openColumn ) );
+            cellTable.addColumn( openColumn, new ResizableHeader( "Open",
+                                                                  cellTable,
+                                                                  openColumn ) );
         }
     }
 
