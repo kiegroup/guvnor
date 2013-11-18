@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.guvnor.m2repo.client.resources;
+package org.guvnor.m2repo.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface M2RepoEditorImageResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final M2RepoEditorImageResources INSTANCE = GWT.create( M2RepoEditorImageResources.class );
 
-    @Source("images/edit.gif")
+    @Source("edit.gif")
     ImageResource edit();
 
-    @Source("images/shuffle_up.gif")
+    @Source("shuffle_up.gif")
     ImageResource shuffleUp();
 
-    @Source("images/shuffle_down.gif")
+    @Source("shuffle_down.gif")
     ImageResource shuffleDown();
     
-    @Source("images/model_large.png")
+    @Source("model_large.png")
     ImageResource modelLarge();
 }
