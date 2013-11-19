@@ -48,6 +48,7 @@ public class HumanReadable {
         operatorDisplayMap.put(">=", constants.greaterThanOrEqualTo());
         operatorDisplayMap.put("|| ==", constants.orEqualTo());
         operatorDisplayMap.put("|| !=", constants.orNotEqualTo());
+        operatorDisplayMap.put("&& ==", constants.andEqualTo());
         operatorDisplayMap.put("&& !=", constants.andNotEqualTo());
         operatorDisplayMap.put("&& >", constants.andGreaterThan());
         operatorDisplayMap.put("&& <", constants.andLessThan());

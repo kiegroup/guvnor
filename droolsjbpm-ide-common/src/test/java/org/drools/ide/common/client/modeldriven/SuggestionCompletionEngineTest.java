@@ -416,34 +416,36 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getConnectiveOperatorCompletions( "Vehicle",
                                                   "make" );
-        assertEquals( 13,
+        assertEquals( 14,
                       c.length );
         assertEquals( "|| ==",
                       c[0] );
         assertEquals( "|| !=",
                       c[1] );
-        assertEquals( "&& !=",
+        assertEquals( "&& ==",
                       c[2] );
-        assertEquals( "&& >",
+        assertEquals( "&& !=",
                       c[3] );
-        assertEquals( "&& <",
+        assertEquals( "&& >",
                       c[4] );
-        assertEquals( "|| >",
+        assertEquals( "&& <",
                       c[5] );
-        assertEquals( "|| <",
+        assertEquals( "|| >",
                       c[6] );
-        assertEquals( "&& >=",
+        assertEquals( "|| <",
                       c[7] );
-        assertEquals( "&& <=",
+        assertEquals( "&& >=",
                       c[8] );
-        assertEquals( "|| <=",
+        assertEquals( "&& <=",
                       c[9] );
-        assertEquals( "|| >=",
+        assertEquals( "|| <=",
                       c[10] );
-        assertEquals( "&& matches",
+        assertEquals( "|| >=",
                       c[11] );
-        assertEquals( "|| matches",
+        assertEquals( "&& matches",
                       c[12] );
+        assertEquals( "|| matches",
+                      c[13] );
 
         c = com.getGlobalVariables();
         assertEquals( 2,

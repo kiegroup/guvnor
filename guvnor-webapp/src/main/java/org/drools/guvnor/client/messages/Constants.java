@@ -747,6 +747,8 @@ public interface Constants
 
     String orNotEqualTo();
 
+    String andEqualTo();
+
     String andNotEqualTo();
 
     String andGreaterThan();
