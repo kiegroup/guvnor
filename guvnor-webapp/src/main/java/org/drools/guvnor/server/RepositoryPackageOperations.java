@@ -48,6 +48,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
@@ -75,7 +76,9 @@ import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -97,7 +100,7 @@ public class RepositoryPackageOperations {
     private static final LoggingHelper log = LoggingHelper
             .getLogger( RepositoryPackageOperations.class );
 
-    public void setRulesRepository(RulesRepository repository) {
+    public void setRulesRepository( RulesRepository repository ) {
         this.repository = repository;
     }
 
@@ -105,28 +108,28 @@ public class RepositoryPackageOperations {
         return repository;
     }
 
-    protected PackageConfigData[] listPackages(boolean archive,
-                                               String workspace,
-                                               RepositoryFilter filter) {
+    protected PackageConfigData[] listPackages( boolean archive,
+                                                String workspace,
+                                                RepositoryFilter filter ) {
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
         PackageIterator pkgs = getRulesRepository().listPackages();
         handleIteratePackages( archive,
-                workspace,
-                filter,
-                result,
-                pkgs );
+                               workspace,
+                               filter,
+                               result,
+                               pkgs );
 
         sortPackages( result );
-        return result.toArray( new PackageConfigData[result.size()] );
+        return result.toArray( new PackageConfigData[ result.size() ] );
     }
 
-    private void handleIteratePackages(boolean archive,
-                                       String workspace,
-                                       RepositoryFilter filter,
-                                       List<PackageConfigData> result,
-                                       PackageIterator pkgs) {
+    private void handleIteratePackages( boolean archive,
+                                        String workspace,
+                                        RepositoryFilter filter,
+                                        List<PackageConfigData> result,
+                                        PackageIterator pkgs ) {
         pkgs.setArchivedIterator( archive );
-        while (pkgs.hasNext()) {
+        while ( pkgs.hasNext() ) {
             PackageItem packageItem = pkgs.next();
 
             PackageConfigData data = new PackageConfigData();
@@ -135,67 +138,67 @@ public class RepositoryPackageOperations {
             data.setArchived( packageItem.isArchived() );
             data.setWorkspaces( packageItem.getWorkspaces() );
             handleIsPackagesListed( archive,
-                    workspace,
-                    filter,
-                    result,
-                    data );
+                                    workspace,
+                                    filter,
+                                    result,
+                                    data );
 
             data.subPackages = listSubPackages( packageItem,
-                    archive,
-                    null,
-                    filter );
+                                                archive,
+                                                null,
+                                                filter );
 
         }
     }
 
-    private PackageConfigData[] listSubPackages(PackageItem parentPkg,
-                                                boolean archive,
-                                                String workspace,
-                                                RepositoryFilter filter) {
+    private PackageConfigData[] listSubPackages( PackageItem parentPkg,
+                                                 boolean archive,
+                                                 String workspace,
+                                                 RepositoryFilter filter ) {
         List<PackageConfigData> children = new LinkedList<PackageConfigData>();
 
         handleIteratePackages( archive,
-                workspace,
-                filter,
-                children,
-                parentPkg.listSubPackages() );
+                               workspace,
+                               filter,
+                               children,
+                               parentPkg.listSubPackages() );
 
         sortPackages( children );
-        return children.toArray( new PackageConfigData[children.size()] );
+        return children.toArray( new PackageConfigData[ children.size() ] );
     }
 
-    void sortPackages(List<PackageConfigData> result) {
+    void sortPackages( List<PackageConfigData> result ) {
         Collections.sort( result,
-                new Comparator<PackageConfigData>() {
+                          new Comparator<PackageConfigData>() {
 
-                    public int compare(final PackageConfigData d1,
-                                       final PackageConfigData d2) {
-                        return d1.getName().compareTo( d2.getName() );
-                    }
+                              public int compare( final PackageConfigData d1,
+                                                  final PackageConfigData d2 ) {
+                                  return d1.getName().compareTo( d2.getName() );
+                              }
 
-                } );
+                          } );
     }
 
-    private void handleIsPackagesListed(boolean archive,
-                                        String workspace,
-                                        RepositoryFilter filter,
-                                        List<PackageConfigData> result,
-                                        PackageConfigData data) {
-        if ( !archive && (filter == null || filter.accept( data,
-                RoleType.PACKAGE_READONLY.getName() )) && (workspace == null || isWorkspace( workspace,
-                data.getWorkspaces() )) ) {
+    private void handleIsPackagesListed( boolean archive,
+                                         String workspace,
+                                         RepositoryFilter filter,
+                                         List<PackageConfigData> result,
+                                         PackageConfigData data ) {
+        if ( !archive && ( filter == null || filter.accept( data,
+                                                            RoleType.PACKAGE_READONLY.getName() ) ) && ( workspace == null || isWorkspace( workspace,
+                                                                                                                                           data.getWorkspaces() ) ) ) {
             result.add( data );
-        } else if ( archive && data.isArchived() && (filter == null || filter.accept( data,
-                RoleType.PACKAGE_READONLY.getName() )) && (workspace == null || isWorkspace( workspace,
-                data.getWorkspaces() )) ) {
+        } else if ( archive && data.isArchived() && ( filter == null || filter.accept( data,
+                                                                                       RoleType.PACKAGE_READONLY.getName() ) ) && ( workspace == null || isWorkspace( workspace,
+                                                                                                                                                                      data.getWorkspaces() ) ) ) {
             result.add( data );
         }
     }
 
-    private boolean isWorkspace(String workspace,
-                                String[] workspaces) {
+    private boolean isWorkspace( String workspace,
+                                 String[] workspaces ) {
 
-        for (String w : workspaces) {
+        for ( String w : workspaces ) {
             if ( w.equals( workspace ) ) {
                 return true;
             }
@@ -215,8 +218,8 @@ public class RepositoryPackageOperations {
         return data;
     }
 
-    protected String copyPackage(String sourcePackageName,
-                                 String destPackageName) throws SerializationException {
+    protected String copyPackage( String sourcePackageName,
+                                  String destPackageName ) throws SerializationException {
 
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
@@ -227,7 +230,7 @@ public class RepositoryPackageOperations {
             fixProcessPackageNames( newPackageUUID );
 
             return newPackageUUID;
-            
+
         } catch ( RulesRepositoryException e ) {
             log.error( "Unable to copy package.",
                        e );
@@ -236,9 +239,9 @@ public class RepositoryPackageOperations {
     }
 
     //Ensure all Processes (RuleFlow, BPMN, BPMN2) have their package name updated to that of the containing Guvnor package
-    private void fixProcessPackageNames(final String moduleUUID) {
+    private void fixProcessPackageNames( final String moduleUUID ) {
         final PackageItem newPackage = getRulesRepository().loadPackageByUUID( moduleUUID );
-        final AssetItemIterator assetIterator = newPackage.listAssetsByFormat( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
+        final AssetItemIterator assetIterator = newPackage.listAssetsByFormat( new String[]{ AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS } );
 
         while ( assetIterator.hasNext() ) {
             final AssetItem asset = assetIterator.next();
@@ -255,23 +258,23 @@ public class RepositoryPackageOperations {
             }
         }
     }
-    
-    protected void removePackage(String uuid) {
+
+    protected void removePackage( String uuid ) {
 
         try {
             PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
             log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
             item.remove();
             getRulesRepository().save();
-        } catch (RulesRepositoryException e) {
+        } catch ( RulesRepositoryException e ) {
             log.error( "Unable to remove package.",
-                    e );
+                       e );
             throw e;
         }
     }
 
-    protected String renamePackage(String uuid,
-                                   String newName) {
+    protected String renamePackage( String uuid,
+                                    String newName ) {
         log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
 
         getRulesRepository().renamePackage( uuid,
@@ -282,64 +285,108 @@ public class RepositoryPackageOperations {
         return uuid;
     }
 
-    protected byte[] exportPackages(String packageName) {
+    protected byte[] exportPackages( String packageName ) {
         log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
 
         try {
             return getRulesRepository().dumpPackageFromRepositoryXml( packageName );
-        } catch (PathNotFoundException e) {
+        } catch ( PathNotFoundException e ) {
             throw new RulesRepositoryException( e );
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             throw new RulesRepositoryException( e );
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
 
     // TODO: Not working. GUVNOR-475
-    protected void importPackages(byte[] byteArray,
-                                  boolean importAsNew) {
+    protected void importPackages( byte[] byteArray,
+                                   boolean importAsNew ) {
         getRulesRepository().importPackageToRepository( byteArray,
-                importAsNew );
+                                                        importAsNew );
     }
 
-    protected String createPackage(String name, String description,
-            String format) throws RulesRepositoryException {
+    protected String createPackage( String name,
+                                    String description,
+                                    String format ) throws RulesRepositoryException {
 
-        log.info("USER: " + getCurrentUserName() + " CREATING package [" + name
-                + "]");
-        PackageItem item = getRulesRepository().createPackage(name,
-                description, format);
+        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name
+                          + "]" );
+        PackageItem item = getRulesRepository().createPackage( name,
+                                                               description, format );
+
+        //Add package.admin role to new package if user already has package.admin role on the parent package
+        final String flag = System.getProperty( "guvnor.package.admin.subpackage.access" );
+        if ( flag != null && Boolean.parseBoolean( flag ) ) {
+            final PermissionManager permissionManager = new PermissionManager( getRulesRepository() );
+            final Map<String, List<String>> permissions = permissionManager.retrieveUserPermissions( getCurrentUserName() );
+            final List<String> packagePermissions = permissions.get( RoleType.PACKAGE_ADMIN.getName() );
+            if ( hasParentPackageAccess( name,
+                                         packagePermissions ) ) {
+                final String leafPackagePermission = "package=" + name;
+                packagePermissions.add( leafPackagePermission );
+                permissionManager.updateUserPermissions( getCurrentUserName(),
+                                                         permissions );
+            }
+        }
 
         return item.getUUID();
     }
-    
-    protected String createPackage(String name,
-                                   String description,
-                                   String format,
-                                   String[] workspace) throws RulesRepositoryException {
+
+    //User could have package.admin role on any parent package; for example:-
+    // - package.admin:package=p0 and p0.sub0 is being created
+    // - package.admin:package=p0 and p0.sub0.sub1 is being created
+    // - package.admin:package=p0.sub0 and p0.sub0.sub1 is being created
+    // - package.admin:package=p0.sub0 and p0.sub0.sub1.sub3 is being created
+    private boolean hasParentPackageAccess( final String packageName,
+                                            final List<String> packagePermissions ) {
+        if ( packagePermissions == null || packagePermissions.isEmpty() ) {
+            return false;
+        }
+        final String[] packageNameComponents = packageName.split( "\\." );
+        final List<String> parentPackageNames = new ArrayList<String>();
+        String basePackageName = "";
+        for ( String packageNameComponent : packageNameComponents ) {
+            final String parentPackageName = basePackageName.isEmpty() ? packageNameComponent : basePackageName + "." + packageNameComponent;
+            parentPackageNames.add( parentPackageName );
+            basePackageName = parentPackageName;
+        }
+        for ( String parentPackageName : parentPackageNames ) {
+            for ( String packagePermission : packagePermissions ) {
+                if ( packagePermission.equals( "package=" + parentPackageName ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected String createPackage( String name,
+                                    String description,
+                                    String format,
+                                    String[] workspace ) throws RulesRepositoryException {
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
         PackageItem item = getRulesRepository().createPackage( name,
-                description,
-                format,
-                workspace,
-                "Initial");
+                                                               description,
+                                                               format,
+                                                               workspace,
+                                                               "Initial" );
 
         return item.getUUID();
     }
-    
-    protected String createSubPackage(String name,
-                                      String description,
-                                      String parentNode) throws SerializationException {
+
+    protected String createSubPackage( String name,
+                                       String description,
+                                       String parentNode ) throws SerializationException {
         log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
         PackageItem item = getRulesRepository().createSubPackage( name,
-                description,
-                parentNode );
+                                                                  description,
+                                                                  parentNode );
         return item.getUUID();
     }
 
-    protected PackageConfigData loadPackageConfig(PackageItem packageItem) {
+    protected PackageConfigData loadPackageConfig( PackageItem packageItem ) {
         PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( packageItem );
         if ( data.isSnapshot() ) {
             data.setSnapshotName( packageItem.getSnapshotName() );
@@ -347,37 +394,37 @@ public class RepositoryPackageOperations {
         return data;
     }
 
-    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
+    public ValidatedResponse validatePackageConfiguration( PackageConfigData data ) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.getName() + "]" );
 
         RuleBaseCache.getInstance().remove( data.getUuid() );
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( getRulesRepository().loadPackage( data.getName() ),
-                data.getHeader() );
+                                    data.getHeader() );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
-    public void savePackage(PackageConfigData data) throws SerializationException {
+    public void savePackage( PackageConfigData data ) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.getName() + "]" );
 
         PackageItem item = getRulesRepository().loadPackage( data.getName() );
 
         // If package is being unarchived.
-        boolean unarchived = (!data.isArchived() && item.isArchived());
+        boolean unarchived = ( !data.isArchived() && item.isArchived() );
         Calendar packageLastModified = item.getLastModified();
 
         DroolsHeader.updateDroolsHeader( data.getHeader(),
-                item );
+                                         item );
         updateCategoryRules( data,
-                item );
+                             item );
 
         item.updateExternalURI( data.getExternalURI() );
         item.updateDescription( data.getDescription() );
         item.archiveItem( data.isArchived() );
         item.updateBinaryUpToDate( false );
-        if(!data.getFormat().equals("")) {
-            item.updateFormat(data.getFormat());
+        if ( !data.getFormat().equals( "" ) ) {
+            item.updateFormat( data.getFormat() );
         }
         RuleBaseCache.getInstance().remove( data.getUuid() );
         item.checkin( data.getDescription() );
@@ -385,11 +432,11 @@ public class RepositoryPackageOperations {
         // If package is archived, archive all the assets under it
         if ( data.isArchived() ) {
             handleArchivedForSavePackage( data,
-                    item );
+                                          item );
         } else if ( unarchived ) {
             handleUnarchivedForSavePackage( data,
-                    item,
-                    packageLastModified );
+                                            item,
+                                            packageLastModified );
         }
     }
 
@@ -397,18 +444,18 @@ public class RepositoryPackageOperations {
         return new BRMSSuggestionCompletionLoader();
     }
 
-    void updateCategoryRules(PackageConfigData data,
-                             PackageItem item) {
+    void updateCategoryRules( PackageConfigData data,
+                              PackageItem item ) {
         KeyValueTO keyValueTO = convertMapToCsv( data.getCatRules() );
         item.updateCategoryRules( keyValueTO.getKeys(),
-                keyValueTO.getValues() );
+                                  keyValueTO.getValues() );
     }
 
     // HashMap DOES NOT guarantee order in different iterations!
-    private static KeyValueTO convertMapToCsv(final Map map) {
+    private static KeyValueTO convertMapToCsv( final Map map ) {
         StringBuilder keysBuilder = new StringBuilder();
         StringBuilder valuesBuilder = new StringBuilder();
-        for (Object o : map.entrySet()) {
+        for ( Object o : map.entrySet() ) {
             Map.Entry entry = (Map.Entry) o;
             if ( keysBuilder.length() > 0 ) {
                 keysBuilder.append( "," );
@@ -422,15 +469,16 @@ public class RepositoryPackageOperations {
             valuesBuilder.append( entry.getValue() );
         }
         return new KeyValueTO( keysBuilder.toString(),
-                valuesBuilder.toString() );
+                               valuesBuilder.toString() );
     }
 
     private static class KeyValueTO {
+
         private final String keys;
         private final String values;
 
-        public KeyValueTO(final String keys,
-                          final String values) {
+        public KeyValueTO( final String keys,
+                           final String values ) {
             this.keys = keys;
             this.values = values;
         }
@@ -444,9 +492,9 @@ public class RepositoryPackageOperations {
         }
     }
 
-    void handleArchivedForSavePackage(PackageConfigData data,
-                                      PackageItem item) {
-        for (Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+    void handleArchivedForSavePackage( PackageConfigData data,
+                                       PackageItem item ) {
+        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
             AssetItem assetItem = iter.next();
             if ( !assetItem.isArchived() ) {
                 assetItem.archiveItem( true );
@@ -455,10 +503,10 @@ public class RepositoryPackageOperations {
         }
     }
 
-    void handleUnarchivedForSavePackage(PackageConfigData data,
-                                        PackageItem item,
-                                        Calendar packageLastModified) {
-        for (Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+    void handleUnarchivedForSavePackage( PackageConfigData data,
+                                         PackageItem item,
+                                         Calendar packageLastModified ) {
+        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
             AssetItem assetItem = iter.next();
             // Unarchive the assets archived after the package
             // ( == at the same time that the package was archived)
@@ -469,14 +517,16 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
+    private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse( BRMSSuggestionCompletionLoader loader ) {
         ValidatedResponse res = new ValidatedResponse();
         if ( loader.hasErrors() ) {
             res.hasErrors = true;
             String err = "";
-            for (Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
+            for ( Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
                 err += (String) iter.next();
-                if ( iter.hasNext() ) err += "\n";
+                if ( iter.hasNext() ) {
+                    err += "\n";
+                }
             }
             res.errorHeader = "Package validation errors";
             res.errorMessage = err;
@@ -484,41 +534,41 @@ public class RepositoryPackageOperations {
         return res;
     }
 
-    public void createPackageSnapshot(String packageName,
-                                         String snapshotName,
-                                         boolean replaceExisting,
-                                         String comment) throws SerializationException {
+    public void createPackageSnapshot( String packageName,
+                                       String snapshotName,
+                                       boolean replaceExisting,
+                                       String comment ) throws SerializationException {
 
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
-        PackageItem p = repository.loadPackage(packageName);
-        if (!p.isBinaryUpToDate()) {
-        	throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
+        PackageItem p = repository.loadPackage( packageName );
+        if ( !p.isBinaryUpToDate() ) {
+            throw new SerializationException( "Your package has not been built since last change. Please build the package first, then try \"Create snapshot for deployment\" again" );
         }
         if ( replaceExisting ) {
-            if (getRulesRepository().containsSnapshot(packageName, snapshotName)) {
+            if ( getRulesRepository().containsSnapshot( packageName, snapshotName ) ) {
                 getRulesRepository().removePackageSnapshot( packageName,
-                        snapshotName );
+                                                            snapshotName );
             }
         }
 
         getRulesRepository().createPackageSnapshot( packageName,
-                snapshotName );
+                                                    snapshotName );
         PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
-                snapshotName );
+                                                                     snapshotName );
         item.updateCheckinComment( comment );
         getRulesRepository().save();
 
     }
 
-    protected void copyOrRemoveSnapshot(String packageName,
-                                        String snapshotName,
-                                        boolean delete,
-                                        String newSnapshotName) throws SerializationException {
+    protected void copyOrRemoveSnapshot( String packageName,
+                                         String snapshotName,
+                                         boolean delete,
+                                         String newSnapshotName ) throws SerializationException {
 
         if ( delete ) {
             log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
             getRulesRepository().removePackageSnapshot( packageName,
-                    snapshotName );
+                                                        snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
                 throw new SerializationException( "Need to have a new snapshot name." );
@@ -526,53 +576,53 @@ public class RepositoryPackageOperations {
             log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
             getRulesRepository().copyPackageSnapshot( packageName,
-                    snapshotName,
-                    newSnapshotName );
+                                                      snapshotName,
+                                                      newSnapshotName );
         }
 
     }
 
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force,
-                                      String buildMode,
-                                      String statusOperator,
-                                      String statusDescriptionValue,
-                                      boolean enableStatusSelector,
-                                      String categoryOperator,
-                                      String category,
-                                      boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializationException {
+    public BuilderResult buildPackage( String packageUUID,
+                                       boolean force,
+                                       String buildMode,
+                                       String statusOperator,
+                                       String statusDescriptionValue,
+                                       boolean enableStatusSelector,
+                                       String categoryOperator,
+                                       String category,
+                                       boolean enableCategorySelector,
+                                       String customSelectorName ) throws SerializationException {
 
         PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
         try {
             return buildPackage( item,
-                    force,
-                    createConfiguration( buildMode,
-                            statusOperator,
-                            statusDescriptionValue,
-                            enableStatusSelector,
-                            categoryOperator,
-                            category,
-                            enableCategorySelector,
-                            customSelectorName ) );
-        } catch (NoClassDefFoundError e) {
+                                 force,
+                                 createConfiguration( buildMode,
+                                                      statusOperator,
+                                                      statusDescriptionValue,
+                                                      enableStatusSelector,
+                                                      categoryOperator,
+                                                      category,
+                                                      enableCategorySelector,
+                                                      customSelectorName ) );
+        } catch ( NoClassDefFoundError e ) {
             throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
-                    "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
-        } catch (UnsupportedClassVersionError e) {
+                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
+        } catch ( UnsupportedClassVersionError e ) {
             throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
-                    "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
+                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
         }
     }
 
-    private BuilderResult buildPackage(PackageItem item,
-                                       boolean force,
-                                       PackageAssemblerConfiguration packageAssemblerConfiguration) throws DetailedSerializationException {
+    private BuilderResult buildPackage( PackageItem item,
+                                        boolean force,
+                                        PackageAssemblerConfiguration packageAssemblerConfiguration ) throws DetailedSerializationException {
         if ( !force && item.isBinaryUpToDate() ) {
             // we can just return all OK if its up to date.
             return BuilderResult.emptyResult();
         }
         PackageAssembler packageAssembler = new PackageAssembler( item,
-                packageAssemblerConfiguration );
+                                                                  packageAssemblerConfiguration );
 
         packageAssembler.compile();
 
@@ -588,8 +638,8 @@ public class RepositoryPackageOperations {
         return BuilderResult.emptyResult();
     }
 
-    private void updatePackageBinaries(PackageItem item,
-                                       PackageAssembler packageAssembler) throws DetailedSerializationException {
+    private void updatePackageBinaries( PackageItem item,
+                                        PackageAssembler packageAssembler ) throws DetailedSerializationException {
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutput out = new DroolsObjectOutputStream( bout );
@@ -617,7 +667,14 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private PackageAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
+    private PackageAssemblerConfiguration createConfiguration( String buildMode,
+                                                               String statusOperator,
+                                                               String statusDescriptionValue,
+                                                               boolean enableStatusSelector,
+                                                               String categoryOperator,
+                                                               String category,
+                                                               boolean enableCategorySelector,
+                                                               String selectorConfigName ) {
         PackageAssemblerConfiguration packageAssemblerConfiguration = new PackageAssemblerConfiguration();
         packageAssemblerConfiguration.setBuildMode( buildMode );
         packageAssemblerConfiguration.setStatusOperator( statusOperator );
@@ -630,38 +687,38 @@ public class RepositoryPackageOperations {
         return packageAssemblerConfiguration;
     }
 
-    private ClassLoader[] getClassLoaders(PackageAssembler packageAssembler) {
+    private ClassLoader[] getClassLoaders( PackageAssembler packageAssembler ) {
         Collection<ClassLoader> loaders = packageAssembler.getBuilder().getRootClassLoader().getClassLoaders();
-        return loaders.toArray( new ClassLoader[loaders.size()] );
+        return loaders.toArray( new ClassLoader[ loaders.size() ] );
     }
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
 
-    protected BuilderResult buildPackage(PackageItem item,
-                                         boolean force) throws DetailedSerializationException {
+    protected BuilderResult buildPackage( PackageItem item,
+                                          boolean force ) throws DetailedSerializationException {
         return buildPackage( item,
-                force,
-                createConfiguration(
-                        null,
-                        null,
-                        null,
-                        false,
-                        null,
-                        null,
-                        false,
-                        null ) );
+                             force,
+                             createConfiguration(
+                                     null,
+                                     null,
+                                     null,
+                                     false,
+                                     null,
+                                     null,
+                                     false,
+                                     null ) );
     }
 
-    protected String buildPackageSource(String packageUUID) throws SerializationException {
+    protected String buildPackageSource( String packageUUID ) throws SerializationException {
 
         PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
         PackageDRLAssembler asm = new PackageDRLAssembler( item );
         return asm.getDRL();
     }
 
-    protected String[] listRulesInPackage(String packageName) throws SerializationException {
+    protected String[] listRulesInPackage( String packageName ) throws SerializationException {
         // load package
         PackageItem item = getRulesRepository().loadPackage( packageName );
 
@@ -672,44 +729,44 @@ public class RepositoryPackageOperations {
 
             String drl = assembler.getDRL();
             if ( drl == null || "".equals( drl ) ) {
-                return new String[0];
+                return new String[ 0 ];
             } else {
                 parseRulesToPackageList( assembler,
-                        result );
+                                         result );
             }
 
-            return result.toArray( new String[result.size()] );
-        } catch (DroolsParserException e) {
+            return result.toArray( new String[ result.size() ] );
+        } catch ( DroolsParserException e ) {
             log.error( "Unable to list rules in package",
-                    e );
-            return new String[0];
+                       e );
+            return new String[ 0 ];
         }
     }
 
-    protected String[] listImagesInPackage(String packageName) throws SerializationException {
+    protected String[] listImagesInPackage( String packageName ) throws SerializationException {
         // load package
         PackageItem item = getRulesRepository().loadPackage( packageName );
         List<String> retList = new ArrayList<String>();
         Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
+        while ( iter.hasNext() ) {
             AssetItem pitem = iter.next();
             if ( pitem.getFormat().equalsIgnoreCase( "png" ) || pitem.getFormat().equalsIgnoreCase( "gif" ) || pitem.getFormat().equalsIgnoreCase( "jpg" ) ) {
                 retList.add( pitem.getName() );
             }
         }
-        return (String[]) retList.toArray( new String[]{} );
+        return (String[]) retList.toArray( new String[]{ } );
     }
 
-    PackageDRLAssembler createPackageDRLAssembler(final PackageItem packageItem) {
+    PackageDRLAssembler createPackageDRLAssembler( final PackageItem packageItem ) {
         return new PackageDRLAssembler( packageItem );
     }
 
-    void parseRulesToPackageList(PackageDRLAssembler asm,
-                                 List<String> result) throws DroolsParserException {
+    void parseRulesToPackageList( PackageDRLAssembler asm,
+                                  List<String> result ) throws DroolsParserException {
         int count = 0;
         StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(),
-                "\n\r" );
-        while (stringTokenizer.hasMoreTokens()) {
+                                                               "\n\r" );
+        while ( stringTokenizer.hasMoreTokens() ) {
             String line = stringTokenizer.nextToken().trim();
             if ( line.startsWith( "rule " ) ) {
                 String name = getRuleName( line );
@@ -726,20 +783,20 @@ public class RepositoryPackageOperations {
     /**
      * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
      */
-    protected SnapshotDiffs compareSnapshots(String packageName,
-                                             String firstSnapshotName,
-                                             String secondSnapshotName) {
+    protected SnapshotDiffs compareSnapshots( String packageName,
+                                              String firstSnapshotName,
+                                              String secondSnapshotName ) {
         SnapshotDiffs diffs = new SnapshotDiffs();
         List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
 
         PackageItem leftPackage = getRulesRepository().loadPackageSnapshot( packageName,
-                firstSnapshotName );
+                                                                            firstSnapshotName );
         PackageItem rightPackage = getRulesRepository().loadPackageSnapshot( packageName,
-                secondSnapshotName );
+                                                                             secondSnapshotName );
 
         // Older one has to be on the left.
         if ( isRightOlderThanLeft( leftPackage,
-                rightPackage ) ) {
+                                   rightPackage ) ) {
             PackageItem temp = leftPackage;
             leftPackage = rightPackage;
             rightPackage = temp;
@@ -752,10 +809,10 @@ public class RepositoryPackageOperations {
         }
 
         Iterator<AssetItem> leftExistingIter = leftPackage.getAssets();
-        while (leftExistingIter.hasNext()) {
+        while ( leftExistingIter.hasNext() ) {
             AssetItem left = leftExistingIter.next();
             if ( isPackageItemDeleted( rightPackage,
-                    left ) ) {
+                                       left ) ) {
                 SnapshotDiff diff = new SnapshotDiff();
 
                 diff.name = left.getName();
@@ -767,7 +824,7 @@ public class RepositoryPackageOperations {
         }
 
         Iterator<AssetItem> rightExistingIter = rightPackage.getAssets();
-        while (rightExistingIter.hasNext()) {
+        while ( rightExistingIter.hasNext() ) {
             AssetItem right = rightExistingIter.next();
             AssetItem left = null;
             if ( right != null && leftPackage.containsAsset( right.getName() ) ) {
@@ -786,7 +843,7 @@ public class RepositoryPackageOperations {
 
                 list.add( diff );
             } else if ( isAssetArchivedOrRestored( right,
-                    left ) ) { // Has the asset
+                                                   left ) ) { // Has the asset
                 // been archived
                 // or restored
                 SnapshotDiff diff = new SnapshotDiff();
@@ -803,7 +860,7 @@ public class RepositoryPackageOperations {
 
                 list.add( diff );
             } else if ( isAssetItemUpdated( right,
-                    left ) ) { // Has the asset been
+                                            left ) ) { // Has the asset been
                 // updated
                 SnapshotDiff diff = new SnapshotDiff();
 
@@ -816,40 +873,40 @@ public class RepositoryPackageOperations {
             }
         }
 
-        diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
+        diffs.diffs = list.toArray( new SnapshotDiff[ list.size() ] );
         return diffs;
     }
 
-    private boolean isAssetArchivedOrRestored(AssetItem right,
-                                              AssetItem left) {
+    private boolean isAssetArchivedOrRestored( AssetItem right,
+                                               AssetItem left ) {
         return right.isArchived() != left.isArchived();
     }
 
-    private boolean isAssetItemUpdated(AssetItem right,
-                                       AssetItem left) {
+    private boolean isAssetItemUpdated( AssetItem right,
+                                        AssetItem left ) {
         return right.getLastModified().compareTo( left.getLastModified() ) != 0;
     }
 
-    private boolean isPackageItemDeleted(PackageItem rightPackage,
-                                         AssetItem left) {
+    private boolean isPackageItemDeleted( PackageItem rightPackage,
+                                          AssetItem left ) {
         return !rightPackage.containsAsset( left.getName() );
     }
 
-    private boolean isRightOlderThanLeft(PackageItem leftPackage,
-                                         PackageItem rightPackage) {
+    private boolean isRightOlderThanLeft( PackageItem leftPackage,
+                                          PackageItem rightPackage ) {
         return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
     }
 
-    protected SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
+    protected SnapshotComparisonPageResponse compareSnapshots( SnapshotComparisonPageRequest request ) {
 
         SnapshotComparisonPageResponse response = new SnapshotComparisonPageResponse();
 
         // Do query (bit of a cheat really!)
         long start = System.currentTimeMillis();
         SnapshotDiffs diffs = compareSnapshots( request.getPackageName(),
-                request.getFirstSnapshotName(),
-                request.getSecondSnapshotName() );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+                                                request.getFirstSnapshotName(),
+                                                request.getSecondSnapshotName() );
+        log.debug( "Search time: " + ( System.currentTimeMillis() - start ) );
 
         // Populate response
         response.setLeftSnapshotName( diffs.leftName );
@@ -864,7 +921,7 @@ public class RepositoryPackageOperations {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( diffs.diffs.length );
         response.setTotalRowSizeExact( true );
-        response.setLastPage( (request.getStartRowIndex() + rowList.size() == diffs.diffs.length) );
+        response.setLastPage( ( request.getStartRowIndex() + rowList.size() == diffs.diffs.length ) );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('" + request.getSecondSnapshotName() + "') in package ('" + request.getPackageName() + "') in " + methodDuration + " ms." );
