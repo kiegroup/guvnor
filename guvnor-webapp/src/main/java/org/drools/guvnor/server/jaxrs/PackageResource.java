@@ -61,6 +61,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageHistoryIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
+import org.drools.repository.SortableColumnsMetaData;
 import org.jboss.seam.annotations.Name;
 
 import com.google.gwt.user.client.rpc.SerializationException;

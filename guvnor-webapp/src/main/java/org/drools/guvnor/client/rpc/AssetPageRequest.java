@@ -22,37 +22,39 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A request for AssetItem paged data used from the Knowledge Bases Browser
- * 
  * @see AssetPageResponse
  */
 public class AssetPageRequest extends PageRequest
         implements
-    IsSerializable {
+        IsSerializable {
 
     // Filter properties: null properties are ignored for filtering
-    private String       packageUuid        = null;
-    private List<String> formatInList       = null;
-    private Boolean      formatIsRegistered = null;
+    private String packageUuid = null;
+    private List<String> formatInList = null;
+    private Boolean formatIsRegistered = null;
+    private SortableColumnsMetaData sortMetaData = null;
 
     // For GWT serialisation
     public AssetPageRequest() {
     }
 
-    public AssetPageRequest(String packageUuid,
-                            List<String> formatInList,
-                            Boolean formatIsRegistered,
-                            int startRowIndex,
-                            Integer pageSize) {
+    public AssetPageRequest( String packageUuid,
+                             List<String> formatInList,
+                             Boolean formatIsRegistered,
+                             int startRowIndex,
+                             Integer pageSize,
+                             SortableColumnsMetaData sortMetaData ) {
         super( startRowIndex,
                pageSize );
         this.packageUuid = packageUuid;
         this.formatInList = formatInList;
         this.formatIsRegistered = formatIsRegistered;
+        this.sortMetaData = sortMetaData;
     }
 
-    public AssetPageRequest(String packageUuid,
-                            List<String> formatInList,
-                            Boolean formatIsRegistered) {
+    public AssetPageRequest( String packageUuid,
+                             List<String> formatInList,
+                             Boolean formatIsRegistered ) {
         super( 0,
                null );
         this.packageUuid = packageUuid;
@@ -76,15 +78,19 @@ public class AssetPageRequest extends PageRequest
         return packageUuid;
     }
 
-    public void setFormatInList(List<String> formatInList) {
+    public SortableColumnsMetaData getSortMetaData() {
+        return sortMetaData;
+    }
+
+    public void setFormatInList( List<String> formatInList ) {
         this.formatInList = formatInList;
     }
 
-    public void setFormatIsRegistered(Boolean formatIsRegistered) {
+    public void setFormatIsRegistered( Boolean formatIsRegistered ) {
         this.formatIsRegistered = formatIsRegistered;
     }
 
-    public void setPackageUuid(String packageUuid) {
+    public void setPackageUuid( String packageUuid ) {
         this.packageUuid = packageUuid;
     }
 

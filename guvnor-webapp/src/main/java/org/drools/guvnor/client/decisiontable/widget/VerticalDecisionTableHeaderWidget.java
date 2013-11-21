@@ -24,7 +24,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
-import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.guvnor.client.widgets.tables.sorting.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;

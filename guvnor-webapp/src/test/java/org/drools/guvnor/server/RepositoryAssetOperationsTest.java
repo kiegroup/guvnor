@@ -31,6 +31,7 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.client.rpc.SortableColumnsMetaData;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.repository.AssetHistoryIterator;
@@ -78,7 +79,7 @@ public class RepositoryAssetOperationsTest {
 
     @Test
     public void testLoadAssetHistoryAndHistoryDoesNotExistsAndNullIsReturned()
-                                                                              throws SerializationException {
+            throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepository( rulesRepository );
@@ -100,7 +101,7 @@ public class RepositoryAssetOperationsTest {
 
     @Test
     public void testLoadAssetHistoryAndHistoryExists()
-                                                      throws SerializationException {
+            throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepository( rulesRepository );
@@ -134,7 +135,7 @@ public class RepositoryAssetOperationsTest {
     }
 
     private AssetItem initializeAssetItemHistoryMockForLoadAssetHistory(
-                                                                        AssetHistoryIterator assetHistoryIterator) {
+            AssetHistoryIterator assetHistoryIterator ) {
         AssetItem historicalAssetItem = mock( AssetItem.class );
         when( assetHistoryIterator.next() ).thenReturn( historicalAssetItem );
         return historicalAssetItem;
@@ -162,7 +163,7 @@ public class RepositoryAssetOperationsTest {
 
     @Test
     public void testLoadArchivedAssetsReturnLessThanIsAvailable()
-                                                                 throws SerializationException {
+            throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
 
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
@@ -184,11 +185,11 @@ public class RepositoryAssetOperationsTest {
     }
 
     private void initializeAssetItemMockForLoadArchivedAssets(
-                                                              RulesRepository rulesRepository,
-                                                              AssetItemIterator assetItemIterator) {
+            RulesRepository rulesRepository,
+            AssetItemIterator assetItemIterator ) {
         AssetItem assetItem = mock( AssetItem.class );
         when( assetItem.getLastModified() ).thenReturn(
-                                                        GregorianCalendar.getInstance() );
+                GregorianCalendar.getInstance() );
         when( assetItemIterator.next() ).thenReturn( assetItem );
         when( rulesRepository.findArchivedAssets() )
                 .thenReturn( assetItemIterator );
@@ -196,7 +197,7 @@ public class RepositoryAssetOperationsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindAssetPageFormatInListAndFormatIsRegisteredIsNotSupported()
-                                                                                  throws SerializationException {
+            throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepository( rulesRepository );
@@ -204,7 +205,8 @@ public class RepositoryAssetOperationsTest {
                                                                   Arrays.asList( "formatInList" ),
                                                                   true,
                                                                   0,
-                                                                  10 );
+                                                                  10,
+                                                                  new SortableColumnsMetaData() );
         repositoryAssetOperations.findAssetPage( assetPageRequest );
     }
 
@@ -217,7 +219,8 @@ public class RepositoryAssetOperationsTest {
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
                                                                   1,
-                                                                  2 );
+                                                                  2,
+                                                                  new SortableColumnsMetaData() );
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
@@ -231,7 +234,7 @@ public class RepositoryAssetOperationsTest {
         assertEquals( pageResponse.getStartRowIndex(),
                       1 );
         verify( packageItem ).listAssetsByFormat(
-                                                  assetPageRequest.getFormatInList() );
+                assetPageRequest.getFormatInList() );
     }
 
     @Test
@@ -243,7 +246,8 @@ public class RepositoryAssetOperationsTest {
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
                                                                   1,
-                                                                  10 );
+                                                                  10,
+                                                                  new SortableColumnsMetaData() );
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
                 .thenReturn( packageItem );
@@ -280,7 +284,8 @@ public class RepositoryAssetOperationsTest {
                                                                   null,
                                                                   false,
                                                                   1,
-                                                                  10 );
+                                                                  10,
+                                                                  new SortableColumnsMetaData() );
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
                 .thenReturn( packageItem );
@@ -314,14 +319,13 @@ public class RepositoryAssetOperationsTest {
     private String[] registeredFormats() {
         AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
         List<AssetEditorConfiguration> rfs = parser.getAssetEditors();
-        String[] registeredFormats = new String[rfs.size()];
+        String[] registeredFormats = new String[ rfs.size() ];
         for ( int i = 0; i < rfs.size(); i++ ) {
-            registeredFormats[i] = rfs.get( i ).getFormat();
+            registeredFormats[ i ] = rfs.get( i ).getFormat();
         }
         return registeredFormats;
     }
 
-    
     @Test(expected = IllegalArgumentException.class)
     public void testGetAssetCountFormatInListAndFormatIsRegisteredIsNotSupported() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
@@ -347,7 +351,7 @@ public class RepositoryAssetOperationsTest {
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
         when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) ).thenReturn( assetItemIterator );
         when( assetItemIterator.getSize() ).thenReturn( 0l );
-        
+
         long count = repositoryAssetOperations.getAssetCount( assetPageRequest );
 
         assertEquals( 0,

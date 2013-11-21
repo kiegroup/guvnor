@@ -136,7 +136,6 @@ public class PermissionsPagedTablePresenter implements Presenter {
         };
         view.setOpenSelectedCommand(openSelectedCommand);
         
-        
         AsyncDataProvider<PermissionsPageRow> dataProvider = new AsyncDataProvider<PermissionsPageRow>() {
             protected void onRangeChanged(HasData<PermissionsPageRow> display) {
                 PageRequest request = new PageRequest();

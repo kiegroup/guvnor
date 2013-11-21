@@ -18,14 +18,6 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.AssetEditorPlace;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
@@ -44,6 +36,15 @@ import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeader;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeaderGroup;
 
 /**
  * Widget with a table of Snapshot comparison entries.
@@ -54,41 +55,41 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
 
     // UI
     interface SnapshotComparisonPagedTableBinder
-        extends
-        UiBinder<Widget, SnapshotComparisonPagedTable> {
+            extends
+            UiBinder<Widget, SnapshotComparisonPagedTable> {
+
     }
 
     private static SnapshotComparisonPagedTableBinder uiBinder = GWT.create( SnapshotComparisonPagedTableBinder.class );
 
     @UiField()
-    protected Button                                  openSelectedButton;
+    protected Button openSelectedButton;
 
     public MultiSelectionModel<SnapshotComparisonPageRow> getSelectionModel() {
         return this.selectionModel;
     }
 
     // Other stuff
-    private static final int                                  PAGE_SIZE = 10;
-    protected MultiSelectionModel<SnapshotComparisonPageRow>  selectionModel;
-    private SortableHeader<SnapshotComparisonPageRow, String> lhsSnapshotHeader;
-    private SortableHeader<SnapshotComparisonPageRow, String> rhsSnapshotHeader;
+    private static final int PAGE_SIZE = 10;
+    protected MultiSelectionModel<SnapshotComparisonPageRow> selectionModel;
+    private SimpleSortableHeader<SnapshotComparisonPageRow, String> lhsSnapshotHeader;
+    private SimpleSortableHeader<SnapshotComparisonPageRow, String> rhsSnapshotHeader;
 
     /**
      * Constructor
-     * 
      * @param packageName
      * @param firstSnapshotName
      * @param secondSnapshotName
      */
-    public SnapshotComparisonPagedTable(final String packageName,
-                                        final String firstSnapshotName,
-                                        final String secondSnapshotName,
-                                        ClientFactory clientFactory) {
+    public SnapshotComparisonPagedTable( final String packageName,
+                                         final String firstSnapshotName,
+                                         final String secondSnapshotName,
+                                         ClientFactory clientFactory ) {
         super( PAGE_SIZE );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<SnapshotComparisonPageRow>() {
-            protected void onRangeChanged(HasData<SnapshotComparisonPageRow> display) {
+            protected void onRangeChanged( HasData<SnapshotComparisonPageRow> display ) {
                 SnapshotComparisonPageRequest request = new SnapshotComparisonPageRequest();
                 request.setPageSize( pageSize );
                 request.setStartRowIndex( pager.getPageStart() );
@@ -96,18 +97,16 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
                 request.setFirstSnapshotName( firstSnapshotName );
                 request.setSecondSnapshotName( secondSnapshotName );
                 packageService.compareSnapshots( request,
-                                                             new GenericCallback<SnapshotComparisonPageResponse>() {
-                                                                 public void onSuccess(SnapshotComparisonPageResponse response) {
-                                                                     updateRowCount( response.getTotalRowSize(),
-                                                                                     response.isTotalRowSizeExact() );
-                                                                     updateRowData( response.getStartRowIndex(),
-                                                                                    response.getPageRowList() );
-                                                                     lhsSnapshotHeader.setValue( constants.Older0(
-                                                                                                                response.getLeftSnapshotName() ) );
-                                                                     rhsSnapshotHeader.setValue( constants.Newer0(
-                                                                                                                response.getRightSnapshotName() ) );
-                                                                 }
-                                                             } );
+                                                 new GenericCallback<SnapshotComparisonPageResponse>() {
+                                                     public void onSuccess( SnapshotComparisonPageResponse response ) {
+                                                         updateRowCount( response.getTotalRowSize(),
+                                                                         response.isTotalRowSizeExact() );
+                                                         updateRowData( response.getStartRowIndex(),
+                                                                        response.getPageRowList() );
+                                                         lhsSnapshotHeader.setValue( constants.Older0( response.getLeftSnapshotName() ) );
+                                                         rhsSnapshotHeader.setValue( constants.Newer0( response.getRightSnapshotName() ) );
+                                                     }
+                                                 } );
             }
         } );
     }
@@ -116,7 +115,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     protected void doCellTable() {
 
         ProvidesKey<SnapshotComparisonPageRow> providesKey = new ProvidesKey<SnapshotComparisonPageRow>() {
-            public Object getKey(SnapshotComparisonPageRow row) {
+            public Object getKey( SnapshotComparisonPageRow row ) {
                 return row.getDiff().leftUuid;
             }
         };
@@ -127,18 +126,17 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         SelectionColumn.createAndAddSelectionColumn( cellTable );
 
         ColumnPicker<SnapshotComparisonPageRow> columnPicker = new ColumnPicker<SnapshotComparisonPageRow>( cellTable );
-        SortableHeaderGroup<SnapshotComparisonPageRow> sortableHeaderGroup = new SortableHeaderGroup<SnapshotComparisonPageRow>( cellTable );
+        SimpleSortableHeaderGroup<SnapshotComparisonPageRow> sortableHeaderGroup = new SimpleSortableHeaderGroup<SnapshotComparisonPageRow>( cellTable );
 
         final TextColumn<SnapshotComparisonPageRow> uuidNumberColumn = new TextColumn<SnapshotComparisonPageRow>() {
-            public String getValue(SnapshotComparisonPageRow row) {
+            public String getValue( SnapshotComparisonPageRow row ) {
                 return row.getDiff().rightUuid;
             }
         };
         columnPicker.addColumn( uuidNumberColumn,
-                                new SortableHeader<SnapshotComparisonPageRow, String>(
-                                                                                       sortableHeaderGroup,
-                                                                                       constants.uuid(),
-                                                                                       uuidNumberColumn ),
+                                new SimpleSortableHeader<SnapshotComparisonPageRow, String>( sortableHeaderGroup,
+                                                                                             constants.uuid(),
+                                                                                             uuidNumberColumn ),
                                 false );
 
         // Add any additional columns
@@ -147,15 +145,15 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
 
         // Add "Open" button column
         Column<SnapshotComparisonPageRow, String> openColumn = new Column<SnapshotComparisonPageRow, String>( new ButtonCell() ) {
-            public String getValue(SnapshotComparisonPageRow row) {
+            public String getValue( SnapshotComparisonPageRow row ) {
                 return constants.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<SnapshotComparisonPageRow, String>() {
-            public void update(int index,
-                               SnapshotComparisonPageRow row,
-                               String value) {
-                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getDiff().rightUuid ));
+            public void update( int index,
+                                SnapshotComparisonPageRow row,
+                                String value ) {
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getDiff().rightUuid ) );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -167,45 +165,42 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     }
 
     @Override
-    protected void addAncillaryColumns(ColumnPicker<SnapshotComparisonPageRow> columnPicker,
-                                       SortableHeaderGroup<SnapshotComparisonPageRow> sortableHeaderGroup) {
+    protected void addAncillaryColumns( ColumnPicker<SnapshotComparisonPageRow> columnPicker,
+                                        AbstractSortableHeaderGroup<SnapshotComparisonPageRow> sortableHeaderGroup ) {
 
         Column<SnapshotComparisonPageRow, String> lhsSnapshotColumn = new Column<SnapshotComparisonPageRow, String>( new TextCell() ) {
-            public String getValue(SnapshotComparisonPageRow row) {
+            public String getValue( SnapshotComparisonPageRow row ) {
                 return row.getDiff().name;
             }
         };
         // Header text is set in call-back from Repository service
-        this.lhsSnapshotHeader = new SortableHeader<SnapshotComparisonPageRow, String>(
-                                                                                        sortableHeaderGroup,
-                                                                                        "",
-                                                                                        lhsSnapshotColumn );
+        this.lhsSnapshotHeader = new SimpleSortableHeader<SnapshotComparisonPageRow, String>( sortableHeaderGroup,
+                                                                                              "",
+                                                                                              lhsSnapshotColumn );
         columnPicker.addColumn( lhsSnapshotColumn,
                                 this.lhsSnapshotHeader,
                                 true );
 
         Column<SnapshotComparisonPageRow, String> comparisonTypeColumn = new Column<SnapshotComparisonPageRow, String>( new SnapshotComparisonTypeCell() ) {
-            public String getValue(SnapshotComparisonPageRow row) {
+            public String getValue( SnapshotComparisonPageRow row ) {
                 return row.getDiff().diffType;
             }
         };
         columnPicker.addColumn( comparisonTypeColumn,
-                                new SortableHeader<SnapshotComparisonPageRow, String>(
-                                                                                       sortableHeaderGroup,
-                                                                                       constants.Type(),
-                                                                                       comparisonTypeColumn ),
+                                new SimpleSortableHeader<SnapshotComparisonPageRow, String>( sortableHeaderGroup,
+                                                                                             constants.Type(),
+                                                                                             comparisonTypeColumn ),
                                 true );
 
         Column<SnapshotComparisonPageRow, String> rhsSnapshotColumn = new Column<SnapshotComparisonPageRow, String>( new TextCell() ) {
-            public String getValue(SnapshotComparisonPageRow row) {
+            public String getValue( SnapshotComparisonPageRow row ) {
                 return row.getDiff().name;
             }
         };
         // Header text is set in call-back from Repository service
-        this.rhsSnapshotHeader = new SortableHeader<SnapshotComparisonPageRow, String>(
-                                                                                        sortableHeaderGroup,
-                                                                                        "",
-                                                                                        rhsSnapshotColumn );
+        this.rhsSnapshotHeader = new SimpleSortableHeader<SnapshotComparisonPageRow, String>( sortableHeaderGroup,
+                                                                                              "",
+                                                                                              rhsSnapshotColumn );
         columnPicker.addColumn( rhsSnapshotColumn,
                                 this.rhsSnapshotHeader,
                                 true );
@@ -218,15 +213,15 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     }
 
     @UiHandler("openSelectedButton")
-    void openSelected(ClickEvent e) {
+    void openSelected( ClickEvent e ) {
         Set<SnapshotComparisonPageRow> selectedSet = selectionModel.getSelectedSet();
         for ( SnapshotComparisonPageRow selected : selectedSet ) {
-            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getDiff().rightUuid ));
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getDiff().rightUuid ) );
         }
     }
 
     @UiHandler("refreshButton")
-    void refresh(ClickEvent e) {
+    void refresh( ClickEvent e ) {
         refresh();
     }
 

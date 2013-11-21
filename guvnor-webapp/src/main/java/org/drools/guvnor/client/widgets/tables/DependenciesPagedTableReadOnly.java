@@ -24,6 +24,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.drools.guvnor.client.widgets.tables.sorting.SortableHeaderGroup;
 
 /**
  * Widget with a table of Dependencies entries.

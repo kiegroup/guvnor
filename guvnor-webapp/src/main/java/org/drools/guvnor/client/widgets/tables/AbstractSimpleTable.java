@@ -18,9 +18,6 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.List;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.AbstractPageRow;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiField;
@@ -34,23 +31,26 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.AbstractPageRow;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
  * to allow columns to be hidden from view. Columns can also be sorted.
  */
 public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Composite
-    implements
-    HasData<T> {
+        implements
+        HasData<T> {
 
     // Usual suspects
     protected static final Constants constants = GWT.create( Constants.class );
 
     @UiField(provided = true)
-    protected ToggleButton           columnPickerButton;
+    protected ToggleButton columnPickerButton;
 
     @UiField(provided = true)
-    protected CellTable<T>           cellTable;
+    protected CellTable<T> cellTable;
 
     public AbstractSimpleTable() {
         doCellTable();
@@ -67,48 +67,48 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
 
     /**
      * Override to add additional columns to the table
-     * 
      * @param columnPicker
      * @param sortableHeaderGroup
      */
-    protected abstract void addAncillaryColumns(ColumnPicker<T> columnPicker,
-                                                SortableHeaderGroup<T> sortableHeaderGroup);
+    protected abstract void addAncillaryColumns( ColumnPicker<T> columnPicker,
+                                                 AbstractSortableHeaderGroup<T> sortableHeaderGroup );
 
     /**
      * Set up table with zero columns. Additional columns can be appended by
      * overriding <code>addAncillaryColumns()</code>
      */
-    protected void doCellTable() {
+    protected abstract void doCellTable();
 
-        cellTable = new CellTable<T>();
-
-        ColumnPicker<T> columnPicker = new ColumnPicker<T>( cellTable );
-        SortableHeaderGroup<T> sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
-
-        // Add any additional columns
-        addAncillaryColumns( columnPicker,
-                             sortableHeaderGroup );
-
-        cellTable.setWidth( "100%" );
-        columnPickerButton = columnPicker.createToggleButton();
-    }
+//    {
+//
+//        cellTable = new CellTable<T>();
+//
+//        ColumnPicker<T> columnPicker = new ColumnPicker<T>( cellTable );
+////        sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
+////
+////        // Add any additional columns
+////        addAncillaryColumns( columnPicker,
+////                             sortableHeaderGroup );
+//
+//        cellTable.setWidth( "100%" );
+//        columnPickerButton = columnPicker.createToggleButton();
+//    }
 
     /**
      * Instantiate the Widget for this Composite
-     * 
      * @return
      */
     protected abstract Widget makeWidget();
 
-    public HandlerRegistration addCellPreviewHandler(Handler<T> handler) {
+    public HandlerRegistration addCellPreviewHandler( Handler<T> handler ) {
         return cellTable.addCellPreviewHandler( handler );
     }
 
-    public HandlerRegistration addRangeChangeHandler(RangeChangeEvent.Handler handler) {
+    public HandlerRegistration addRangeChangeHandler( RangeChangeEvent.Handler handler ) {
         return cellTable.addRangeChangeHandler( handler );
     }
 
-    public HandlerRegistration addRowCountChangeHandler(RowCountChangeEvent.Handler handler) {
+    public HandlerRegistration addRowCountChangeHandler( RowCountChangeEvent.Handler handler ) {
         return cellTable.addRowCountChangeHandler( handler );
     }
 
@@ -124,31 +124,31 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
         return cellTable.isRowCountExact();
     }
 
-    public void setRowCount(int count) {
+    public void setRowCount( int count ) {
         cellTable.setRowCount( count );
     }
 
-    public void setRowCount(int count,
-                            boolean isExact) {
+    public void setRowCount( int count,
+                             boolean isExact ) {
         cellTable.setRowCount( count,
                                isExact );
     }
 
-    public void setVisibleRange(int start,
-                                int length) {
+    public void setVisibleRange( int start,
+                                 int length ) {
         cellTable.setVisibleRange( start,
                                    length );
     }
 
-    public void setVisibleRange(Range range) {
+    public void setVisibleRange( Range range ) {
         cellTable.setVisibleRange( range );
     }
 
-    public SelectionModel< ? super T> getSelectionModel() {
+    public SelectionModel<? super T> getSelectionModel() {
         return cellTable.getSelectionModel();
     }
 
-    public T getVisibleItem(int indexOnPage) {
+    public T getVisibleItem( int indexOnPage ) {
         return cellTable.getVisibleItem( indexOnPage );
     }
 
@@ -160,28 +160,27 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
         return cellTable.getVisibleItems();
     }
 
-    public void setRowData(int start,
-                           List< ? extends T> values) {
+    public void setRowData( int start,
+                            List<? extends T> values ) {
         cellTable.setRowData( start,
                               values );
     }
 
-    public void setSelectionModel(SelectionModel< ? super T> selectionModel) {
+    public void setSelectionModel( SelectionModel<? super T> selectionModel ) {
         cellTable.setSelectionModel( selectionModel );
     }
 
-    public void setVisibleRangeAndClearData(Range range,
-                                            boolean forceRangeChangeEvent) {
+    public void setVisibleRangeAndClearData( Range range,
+                                             boolean forceRangeChangeEvent ) {
         cellTable.setVisibleRangeAndClearData( range,
                                                forceRangeChangeEvent );
     }
 
     /**
      * Convenience method to allow data to easily set
-     * 
      * @param values
      */
-    public void setRowData(List< ? extends T> values) {
+    public void setRowData( List<? extends T> values ) {
         setRowCount( values.size() );
         setVisibleRange( 0,
                          values.size() );

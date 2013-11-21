@@ -630,6 +630,22 @@ public class PackageItem extends VersionableItem {
      */
     public AssetItemIterator queryAssets(String fieldPredicates,
                                          boolean seekArchived) {
+        return queryAssets(fieldPredicates,
+                           new SortableColumnsMetaData(),
+                           seekArchived );
+    }
+
+    /**
+     * This will query any assets stored under this package. For example, you
+     * can pass in <code>"drools:format = 'drl'"</code> to get a list of only a
+     * certain type of asset.
+     *
+     * @param fieldPredicates A predicate string (SQL style).
+     * @return A list of matches.
+     */
+    public AssetItemIterator queryAssets(String fieldPredicates,
+                                         SortableColumnsMetaData sortableColumnsMetaData,
+                                         boolean seekArchived) {
         try {
             String sql;
             if (isHistoricalVersion()) {
@@ -648,11 +664,25 @@ public class PackageItem extends VersionableItem {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
-            sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
+            sql += " ORDER BY ";
+            if ( sortableColumnsMetaData == null || sortableColumnsMetaData.getSortListOrder().size() == 0 ) {
+                sql += AssetItem.TITLE_PROPERTY_NAME + ", ";
+            } else {
+                for ( SortableColumnMetaData md : sortableColumnsMetaData.getSortListOrder() ) {
+                    switch ( md.getSortDirection() ) {
+                        case DESCENDING:
+                            sql += md.getColumnName() + " DESC, ";
+                            break;
+                        case ASCENDING:
+                            sql += md.getColumnName() + " ASC, ";
+                            break;
+                    }
+                }
+            }
             
             //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
             //See http://markmail.org/message/mxmk5hkxrdtcc3hl
-            sql += ", jcr:score DESC";
+            sql += "jcr:score DESC";
 
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery(sql,
                     Query.SQL);
@@ -677,18 +707,31 @@ public class PackageItem extends VersionableItem {
         }
     }
 
-    public AssetItemIterator queryAssets(String fieldPredicates) {
-        return queryAssets(fieldPredicates,
-                false);
+    public AssetItemIterator queryAssets( String fieldPredicates,
+                                          SortableColumnsMetaData sortableColumnsMetaData ) {
+        return queryAssets( fieldPredicates,
+                            sortableColumnsMetaData,
+                            false );
+    }
+
+    public AssetItemIterator queryAssets( String fieldPredicates ) {
+        return queryAssets( fieldPredicates,
+                            false );
     }
 
     public AssetItemIterator listArchivedAssets() {
-        return queryAssets(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'",
-                true);
+        return queryAssets( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'",
+                            true );
     }
 
-    public AssetItemIterator listAssetsByFormat(List<String> formatInList) {
-        return listAssetsByFormat(formatInList.toArray(new String[formatInList.size()]));
+    public AssetItemIterator listAssetsByFormat( List<String> formatInList ) {
+        return listAssetsByFormat( formatInList.toArray( new String[ formatInList.size() ] ) );
+    }
+
+    public AssetItemIterator listAssetsByFormat( List<String> formatInList,
+                                                 SortableColumnsMetaData sortableColumnsMetaData ) {
+        return listAssetsByFormat( sortableColumnsMetaData,
+                                   formatInList.toArray( new String[ formatInList.size() ] ) );
     }
 
     /**
@@ -710,19 +753,30 @@ public class PackageItem extends VersionableItem {
      * This will load an iterator for assets of the given format type.
      */
     public AssetItemIterator listAssetsByFormat(String... formats) {
+        return listAssetsByFormat(new SortableColumnsMetaData(),
+                                  formats);
+    }
 
-        if (formats.length == 1) {
-            return queryAssets(FORMAT_PROPERTY_NAME + "='" + formats[0] + "'");
+    /**
+     * This will load an iterator for assets of the given format type.
+     */
+    public AssetItemIterator listAssetsByFormat( SortableColumnsMetaData sortableColumnsMetaData,
+                                                 String... formats ) {
+
+        if ( formats.length == 1 ) {
+            return queryAssets( FORMAT_PROPERTY_NAME + "='" + formats[ 0 ] + "'",
+                                sortableColumnsMetaData );
         } else {
-            StringBuilder predicateBuilder = new StringBuilder(" ( ");
-            for (int i = 0; i < formats.length; i++) {
-                predicateBuilder.append(FORMAT_PROPERTY_NAME).append("='").append(formats[i]).append("'");
-                if (i != formats.length - 1) {
-                    predicateBuilder.append(" OR ");
+            StringBuilder predicateBuilder = new StringBuilder( " ( " );
+            for ( int i = 0; i < formats.length; i++ ) {
+                predicateBuilder.append( FORMAT_PROPERTY_NAME ).append( "='" ).append( formats[ i ] ).append( "'" );
+                if ( i != formats.length - 1 ) {
+                    predicateBuilder.append( " OR " );
                 }
             }
-            predicateBuilder.append(" ) ");
-            return queryAssets(predicateBuilder.toString());
+            predicateBuilder.append( " ) " );
+            return queryAssets( predicateBuilder.toString(),
+                                sortableColumnsMetaData );
         }
     }
 

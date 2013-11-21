@@ -19,8 +19,21 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.ProvidesKey;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.ComparableImage;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -29,35 +42,31 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
-
-import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeader;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeaderGroup;
 
 /**
  * Widget with a table of repository query results.
  */
 public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
-    private static final int    PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
     private final ClientFactory clientFactory;
 
-    public QueryPagedTable(final List<MetaDataQuery> metadata,
-                           final Date createdAfter,
-                           final Date createdBefore,
-                           final Date lastModifiedAfter,
-                           final Date lastModifiedBefore,
-                           final Boolean searchArchived,
-                           ClientFactory clientFactory) {
+    public QueryPagedTable( final List<MetaDataQuery> metadata,
+                            final Date createdAfter,
+                            final Date createdBefore,
+                            final Date lastModifiedAfter,
+                            final Date lastModifiedBefore,
+                            final Boolean searchArchived,
+                            ClientFactory clientFactory ) {
         super( PAGE_SIZE,
-                clientFactory );
+               clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
-            protected void onRangeChanged(HasData<QueryPageRow> display) {
+            protected void onRangeChanged( HasData<QueryPageRow> display ) {
                 QueryMetadataPageRequest request = new QueryMetadataPageRequest();
                 request.setMetadata( metadata );
                 request.setCreatedAfter( createdAfter );
@@ -68,27 +77,27 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
                 repositoryService.queryMetaData( request,
-                                                  new GenericCallback<PageResponse<QueryPageRow>>() {
-                                                      public void onSuccess(PageResponse<QueryPageRow> response) {
-                                                          updateRowCount( response.getTotalRowSize(),
-                                                                          response.isTotalRowSizeExact() );
-                                                          updateRowData( response.getStartRowIndex(),
-                                                                         response.getPageRowList() );
-                                                      }
-                                                  } );
+                                                 new GenericCallback<PageResponse<QueryPageRow>>() {
+                                                     public void onSuccess( PageResponse<QueryPageRow> response ) {
+                                                         updateRowCount( response.getTotalRowSize(),
+                                                                         response.isTotalRowSizeExact() );
+                                                         updateRowData( response.getStartRowIndex(),
+                                                                        response.getPageRowList() );
+                                                     }
+                                                 } );
             }
         } );
     }
 
-    public QueryPagedTable(final String searchText,
-                           final Boolean searchArchived,
-                           ClientFactory clientFactory) {
+    public QueryPagedTable( final String searchText,
+                            final Boolean searchArchived,
+                            ClientFactory clientFactory ) {
         super( PAGE_SIZE,
-                clientFactory );
+               clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
-            protected void onRangeChanged(HasData<QueryPageRow> display) {
+            protected void onRangeChanged( HasData<QueryPageRow> display ) {
                 QueryPageRequest request = new QueryPageRequest();
                 request.setSearchText( searchText );
                 request.setSearchArchived( searchArchived );
@@ -96,7 +105,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 request.setPageSize( pageSize );
                 repositoryService.queryFullText( request,
                                                  new GenericCallback<PageResponse<QueryPageRow>>() {
-                                                     public void onSuccess(PageResponse<QueryPageRow> response) {
+                                                     public void onSuccess( PageResponse<QueryPageRow> response ) {
                                                          updateRowCount( response.getTotalRowSize(),
                                                                          response.isTotalRowSizeExact() );
                                                          updateRowData( response.getStartRowIndex(),
@@ -109,21 +118,20 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
     /**
      * Constructor
-     * 
      * @param searchText
      * @param searchArchived
      * @param isCaseSensitive
      */
-    public QueryPagedTable(final String searchText,
-                           final Boolean searchArchived,
-                           final Boolean isCaseSensitive,
-                           ClientFactory clientFactory) {
+    public QueryPagedTable( final String searchText,
+                            final Boolean searchArchived,
+                            final Boolean isCaseSensitive,
+                            ClientFactory clientFactory ) {
         super( PAGE_SIZE,
-                clientFactory );
+               clientFactory );
         this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
-            protected void onRangeChanged(HasData<QueryPageRow> display) {
+            protected void onRangeChanged( HasData<QueryPageRow> display ) {
                 QueryPageRequest request = new QueryPageRequest();
                 request.setSearchText( searchText );
                 request.setSearchArchived( searchArchived );
@@ -131,91 +139,140 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
                 assetService.quickFindAsset( request,
-                                                  new GenericCallback<PageResponse<QueryPageRow>>() {
-                                                      public void onSuccess(PageResponse<QueryPageRow> response) {
-                                                          updateRowCount( response.getTotalRowSize(),
-                                                                          response.isTotalRowSizeExact() );
-                                                          updateRowData( response.getStartRowIndex(),
-                                                                         response.getPageRowList() );
-                                                      }
-                                                  } );
+                                             new GenericCallback<PageResponse<QueryPageRow>>() {
+                                                 public void onSuccess( PageResponse<QueryPageRow> response ) {
+                                                     updateRowCount( response.getTotalRowSize(),
+                                                                     response.isTotalRowSizeExact() );
+                                                     updateRowData( response.getStartRowIndex(),
+                                                                    response.getPageRowList() );
+                                                 }
+                                             } );
             }
         } );
     }
 
+    /**
+     * Set up table and common columns. Additional columns can be appended
+     * between the "checkbox" and "open" columns by overriding
+     * <code>addAncillaryColumns()</code>
+     */
     @Override
-    protected void addAncillaryColumns(ColumnPicker<QueryPageRow> columnPicker,
-                                       SortableHeaderGroup<QueryPageRow> sortableHeaderGroup) {
+    protected void doCellTable() {
+
+        ProvidesKey<QueryPageRow> providesKey = new ProvidesKey<QueryPageRow>() {
+            public Object getKey( QueryPageRow row ) {
+                return row.getUuid();
+            }
+        };
+
+        cellTable = new CellTable<QueryPageRow>( providesKey );
+        selectionModel = new MultiSelectionModel<QueryPageRow>( providesKey );
+        cellTable.setSelectionModel( selectionModel );
+        SelectionColumn.createAndAddSelectionColumn( cellTable );
+
+        ColumnPicker<QueryPageRow> columnPicker = new ColumnPicker<QueryPageRow>( cellTable );
+        SimpleSortableHeaderGroup<QueryPageRow> sortableHeaderGroup = new SimpleSortableHeaderGroup<QueryPageRow>( cellTable );
+
+        final TextColumn<QueryPageRow> uuidNumberColumn = new TextColumn<QueryPageRow>() {
+            public String getValue( QueryPageRow row ) {
+                return row.getUuid();
+            }
+        };
+        columnPicker.addColumn( uuidNumberColumn,
+                                new SimpleSortableHeader<QueryPageRow, String>( sortableHeaderGroup,
+                                                                                constants.uuid(),
+                                                                                uuidNumberColumn ),
+                                false );
+
+        // Add any additional columns
+        addAncillaryColumns( columnPicker,
+                             sortableHeaderGroup );
+
+        // Add "Open" button column
+        Column<QueryPageRow, String> openColumn = new Column<QueryPageRow, String>( new ButtonCell() ) {
+            public String getValue( QueryPageRow row ) {
+                return constants.Open();
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<QueryPageRow, String>() {
+            public void update( int index,
+                                QueryPageRow row,
+                                String value ) {
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
+            }
+        } );
+        columnPicker.addColumn( openColumn,
+                                new TextHeader( constants.Open() ),
+                                true );
+
+        cellTable.setWidth( "100%" );
+        columnPickerButton = columnPicker.createToggleButton();
+    }
+
+    @Override
+    protected void addAncillaryColumns( ColumnPicker<QueryPageRow> columnPicker,
+                                        AbstractSortableHeaderGroup<QueryPageRow> sortableHeaderGroup ) {
 
         Column<QueryPageRow, ComparableImage> formatColumn = new Column<QueryPageRow, ComparableImage>( new ComparableImageCell() ) {
 
-            public ComparableImage getValue(QueryPageRow row) {
+            public ComparableImage getValue( QueryPageRow row ) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
                 return new ComparableImage( row.getFormat(),
-                                                    factory.getAssetEditorIcon( row.getFormat() ) );
+                                            factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<QueryPageRow, ComparableImage>(
-                                                                                           sortableHeaderGroup,
-                                                                                           constants.Format(),
-                                                                                           formatColumn ),
+                                new SimpleSortableHeader<QueryPageRow, ComparableImage>( sortableHeaderGroup,
+                                                                                         constants.Format(),
+                                                                                         formatColumn ),
                                 true );
 
         TitledTextColumn<QueryPageRow> titleColumn = new TitledTextColumn<QueryPageRow>() {
-            public TitledText getValue(QueryPageRow row) {
+            public TitledText getValue( QueryPageRow row ) {
                 TitledText tt = new TitledText( row.getName(),
                                                 row.getAbbreviatedDescription() );
                 return tt;
             }
         };
         columnPicker.addColumn( titleColumn,
-                                new SortableHeader<QueryPageRow, TitledText>(
-                                                                              sortableHeaderGroup,
-                                                                              constants.Name(),
-                                                                              titleColumn ),
+                                new SimpleSortableHeader<QueryPageRow, TitledText>( sortableHeaderGroup,
+                                                                                    constants.Name(),
+                                                                                    titleColumn ),
                                 true );
 
         TextColumn<QueryPageRow> packageNameColumn = new TextColumn<QueryPageRow>() {
-            public String getValue(QueryPageRow row) {
+            public String getValue( QueryPageRow row ) {
                 return row.getPackageName();
             }
         };
         columnPicker.addColumn( packageNameColumn,
-                                new SortableHeader<QueryPageRow, String>(
-                                                                          sortableHeaderGroup,
-                                                                          constants.PackageName(),
-                                                                          packageNameColumn ),
+                                new SimpleSortableHeader<QueryPageRow, String>( sortableHeaderGroup,
+                                                                                constants.PackageName(),
+                                                                                packageNameColumn ),
                                 false );
 
-        Column<QueryPageRow, Date> createdDateColumn = new Column<QueryPageRow, Date>( new
-                                                                                       DateCell(
-                                                                                                 DateTimeFormat.getFormat(
-                                                                                                         DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            public Date getValue(QueryPageRow row) {
+        Column<QueryPageRow, Date> createdDateColumn = new Column<QueryPageRow, Date>( new DateCell( DateTimeFormat.getFormat(
+                DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+            public Date getValue( QueryPageRow row ) {
                 return row.getCreatedDate();
             }
         };
         columnPicker.addColumn( createdDateColumn,
-                                new SortableHeader<QueryPageRow, Date>(
-                                                                        sortableHeaderGroup,
-                                                                        constants.CreatedDate(),
-                                                                        createdDateColumn ),
+                                new SimpleSortableHeader<QueryPageRow, Date>( sortableHeaderGroup,
+                                                                              constants.CreatedDate(),
+                                                                              createdDateColumn ),
                                 false );
 
-        Column<QueryPageRow, Date> lastModifiedColumn = new Column<QueryPageRow, Date>( new
-                                                                                        DateCell(
-                                                                                                  DateTimeFormat.getFormat(
-                                                                                                          DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            public Date getValue(QueryPageRow row) {
+        Column<QueryPageRow, Date> lastModifiedColumn = new Column<QueryPageRow, Date>( new DateCell( DateTimeFormat.getFormat(
+                DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+            public Date getValue( QueryPageRow row ) {
                 return row.getLastModified();
             }
         };
         columnPicker.addColumn( lastModifiedColumn,
-                                new SortableHeader<QueryPageRow, Date>(
-                                                                        sortableHeaderGroup,
-                                                                        constants.LastModified(),
-                                                                        lastModifiedColumn ),
+                                new SimpleSortableHeader<QueryPageRow, Date>( sortableHeaderGroup,
+                                                                              constants.LastModified(),
+                                                                              lastModifiedColumn ),
                                 true );
 
     }

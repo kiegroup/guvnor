@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
+import org.drools.guvnor.client.rpc.SortableColumnsMetaData;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
@@ -164,12 +165,12 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     public void testQueryFullTextFullResultsWithAnalystPermission() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         CategoryItem rootCategory = impl.getRulesRepository().loadCategory( "/" );
-        CategoryItem cat = rootCategory.addCategory("testQueryFullTextFullResultsWithAnalystPermission", "description");
+        CategoryItem cat = rootCategory.addCategory( "testQueryFullTextFullResultsWithAnalystPermission", "description" );
         cat.addCategory( "testQueryFullTextFullResultsWithAnalystPermissionCat1",
-                         "yeah");
+                         "yeah" );
         cat.addCategory( "testQueryFullTextFullResultsWithAnalystPermissionCat2",
-                         "yeah");
-        
+                         "yeah" );
+
         // Mock up SEAM contexts for role base authorization
         Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -183,7 +184,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                impl );
+                                          impl );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
                                            RoleType.ANALYST.getName(),
@@ -198,58 +199,58 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         testManager.create();
         Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                           testManager );
-        
+
         final int PAGE_SIZE = 2;
 
         PackageItem pkg = impl.getRulesRepository().createPackage( "testQueryFullTextFullResultsWithAnalystPermission",
                                                                    "" );
 
         AssetItem asset = pkg.addAsset( "asset1",
-                "",
-                "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
-                null);
+                                        "",
+                                        "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
+                                        null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset2",
-                "",
-                "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
-                null);
+                              "",
+                              "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset3",
-                "",
-                "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat2",
-                null);
+                              "",
+                              "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat2",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset4",
-                "",
-                "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat2",
-                null);
+                              "",
+                              "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat2",
+                              null );
         asset.updateSubject( "asset4" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset5",
-                "",
-                "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
-                null);
+                              "",
+                              "testQueryFullTextFullResultsWithAnalystPermission/testQueryFullTextFullResultsWithAnalystPermissionCat1",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
-        
+
         QueryPageRequest request = new QueryPageRequest( "asset*",
-                false,
-                0,
-                PAGE_SIZE );
-        
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
+
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
-        repositoryAssetService.setRulesRepository(impl.getRulesRepository());
+        repositoryAssetService.setRulesRepository( impl.getRulesRepository() );
         PageResponse<QueryPageRow> response = impl.queryFullText( request );
 
         assertNotNull( response );
@@ -259,7 +260,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertEquals( PAGE_SIZE,
                       response.getPageRowList().size() );
         assertEquals( false,
-                response.isTotalRowSizeExact());
+                      response.isTotalRowSizeExact() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -272,12 +273,12 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertEquals( 1,
                       response.getPageRowList().size() );
         assertEquals( true,
-                response.isTotalRowSizeExact());
+                      response.isTotalRowSizeExact() );
         assertEquals( 3,
-                response.getTotalRowSize() );
+                      response.getTotalRowSize() );
         assertTrue( response.isLastPage() );
     }
-    
+
     @Test
     public void testQuickFindAssetPagedResults() throws Exception {
 
@@ -393,12 +394,12 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     public void testQuickFindAssetWithAnalystPermission() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         CategoryItem rootCategory = impl.getRulesRepository().loadCategory( "/" );
-        CategoryItem cat = rootCategory.addCategory("testQuickFindAssetWithAnalystPermissionRootCat", "description");
+        CategoryItem cat = rootCategory.addCategory( "testQuickFindAssetWithAnalystPermissionRootCat", "description" );
         cat.addCategory( "testQuickFindAssetWithAnalystPermissionCat1",
-                         "yeah");
+                         "yeah" );
         cat.addCategory( "testQuickFindAssetWithAnalystPermissionCat2",
-                         "yeah");
-        
+                         "yeah" );
+
         // Mock up SEAM contexts for role base authorization
         Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -412,7 +413,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                impl );
+                                          impl );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
                                            RoleType.ANALYST.getName(),
@@ -427,58 +428,58 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         testManager.create();
         Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                           testManager );
-        
+
         final int PAGE_SIZE = 2;
 
         PackageItem pkg = impl.getRulesRepository().createPackage( "testQuickFindAssetWithAnalystPermission",
                                                                    "" );
 
         AssetItem asset = pkg.addAsset( "asset1",
-                "",
-                "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
-                null);
+                                        "",
+                                        "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
+                                        null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset2",
-                "",
-                "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat2",
-                null);
+                              "",
+                              "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat2",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset3",
-                "",
-                "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat2",
-                null);
+                              "",
+                              "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat2",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset4",
-                "",
-                "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
-                null);
+                              "",
+                              "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
+                              null );
         asset.updateSubject( "asset4" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
         asset = pkg.addAsset( "asset5",
-                "",
-                "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
-                null);
+                              "",
+                              "testQuickFindAssetWithAnalystPermissionRootCat/testQuickFindAssetWithAnalystPermissionCat1",
+                              null );
         asset.updateSubject( "testMetaDataSearch" );
-        asset.updateExternalSource( "numberwang");
+        asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
-        
+
         QueryPageRequest request = new QueryPageRequest( "asset*",
-                false,
-                0,
-                PAGE_SIZE );
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
 
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
-        repositoryAssetService.setRulesRepository(impl.getRulesRepository());
+        repositoryAssetService.setRulesRepository( impl.getRulesRepository() );
         PageResponse<QueryPageRow> response = repositoryAssetService.quickFindAsset( request );
 
         assertNotNull( response );
@@ -488,7 +489,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertEquals( PAGE_SIZE,
                       response.getPageRowList().size() );
         assertEquals( false,
-                response.isTotalRowSizeExact());
+                      response.isTotalRowSizeExact() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -501,12 +502,12 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertEquals( 1,
                       response.getPageRowList().size() );
         assertEquals( true,
-                response.isTotalRowSizeExact());
+                      response.isTotalRowSizeExact() );
         assertEquals( 3,
-                response.getTotalRowSize() );
+                      response.getTotalRowSize() );
         assertTrue( response.isLastPage() );
     }
-    
+
     @Test
     public void testQueryMetaDataPagedResults() throws Exception {
 
@@ -516,7 +517,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
                                                                    "" );
 
-        AssetItem[] assets = new AssetItem[3];
+        AssetItem[] assets = new AssetItem[ 3 ];
         for ( int i = 0; i < assets.length; i++ ) {
             AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset" + i,
                                             "" );
@@ -525,13 +526,13 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
             asset.checkin( "" );
         }
 
-        MetaDataQuery[] qr = new MetaDataQuery[2];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
-        qr[0].valueList = "wang, testMetaDataSearch";
-        qr[1] = new MetaDataQuery();
-        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
-        qr[1].valueList = "numberwan*";
+        MetaDataQuery[] qr = new MetaDataQuery[ 2 ];
+        qr[ 0 ] = new MetaDataQuery();
+        qr[ 0 ].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[ 0 ].valueList = "wang, testMetaDataSearch";
+        qr[ 1 ] = new MetaDataQuery();
+        qr[ 1 ].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[ 1 ].valueList = "numberwan*";
 
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
@@ -566,7 +567,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                       response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
-    
+
     @Test
     public void testQueryMetaDataPagedResultsWithAnalystPermission() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -651,13 +652,13 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
 
-        MetaDataQuery[] qr = new MetaDataQuery[2];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
-        qr[0].valueList = "wang, testMetaDataSearch";
-        qr[1] = new MetaDataQuery();
-        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
-        qr[1].valueList = "numberwan*";
+        MetaDataQuery[] qr = new MetaDataQuery[ 2 ];
+        qr[ 0 ] = new MetaDataQuery();
+        qr[ 0 ].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[ 0 ].valueList = "wang, testMetaDataSearch";
+        qr[ 1 ] = new MetaDataQuery();
+        qr[ 1 ].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[ 1 ].valueList = "numberwan*";
 
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
@@ -698,7 +699,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                       response.getTotalRowSize() );
         assertTrue( response.isLastPage() );
     }
-    
+
     @Test
     public void testQueryMetaDataPagedResultsWithAnalystPermissionRootCategory() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -783,13 +784,13 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         asset.updateExternalSource( "numberwang" );
         asset.checkin( "" );
 
-        MetaDataQuery[] qr = new MetaDataQuery[2];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
-        qr[0].valueList = "wang, testMetaDataSearch";
-        qr[1] = new MetaDataQuery();
-        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
-        qr[1].valueList = "numberwan*";
+        MetaDataQuery[] qr = new MetaDataQuery[ 2 ];
+        qr[ 0 ] = new MetaDataQuery();
+        qr[ 0 ].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[ 0 ].valueList = "wang, testMetaDataSearch";
+        qr[ 1 ] = new MetaDataQuery();
+        qr[ 1 ].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[ 1 ].valueList = "numberwan*";
 
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
@@ -831,7 +832,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertTrue( response.isLastPage() );
     }
 
-
     @Test
     public void testQueryMetaDataFullResults() throws Exception {
 
@@ -839,7 +839,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
                                                                    "" );
 
-        AssetItem[] assets = new AssetItem[3];
+        AssetItem[] assets = new AssetItem[ 3 ];
         for ( int i = 0; i < assets.length; i++ ) {
             AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset" + i,
                                             "" );
@@ -848,13 +848,13 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
             asset.checkin( "" );
         }
 
-        MetaDataQuery[] qr = new MetaDataQuery[2];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
-        qr[0].valueList = "wang, testMetaDataSearch";
-        qr[1] = new MetaDataQuery();
-        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
-        qr[1].valueList = "numberwan*";
+        MetaDataQuery[] qr = new MetaDataQuery[ 2 ];
+        qr[ 0 ] = new MetaDataQuery();
+        qr[ 0 ].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[ 0 ].valueList = "wang, testMetaDataSearch";
+        qr[ 1 ] = new MetaDataQuery();
+        qr[ 1 ].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[ 1 ].valueList = "numberwan*";
 
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
@@ -916,7 +916,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          formats,
                                                          null,
                                                          0,
-                                                         PAGE_SIZE );
+                                                         PAGE_SIZE,
+                                                         new SortableColumnsMetaData() );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );
@@ -975,7 +976,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          formats,
                                                          null,
                                                          0,
-                                                         null );
+                                                         null,
+                                                         new SortableColumnsMetaData() );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );
@@ -1012,7 +1014,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          formats,
                                                          null,
                                                          0,
-                                                         null );
+                                                         null,
+                                                         new SortableColumnsMetaData() );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );

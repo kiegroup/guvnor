@@ -18,11 +18,6 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.admin.EventLogPresenter.EventLogView;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.LogPageRow;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.TextCell;
@@ -33,37 +28,46 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.admin.EventLogPresenter.EventLogView;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.LogPageRow;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeader;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeaderGroup;
 
 /**
  * Widget with a table of Log entries.
  */
 public class LogPagedTable extends AbstractPagedTable<LogPageRow>
-    implements
-    EventLogView {
+        implements
+        EventLogView {
 
     // UI
     interface LogPagedTableBinder
-        extends
-        UiBinder<Widget, LogPagedTable> {
+            extends
+            UiBinder<Widget, LogPagedTable> {
+
     }
 
     @UiField()
-    protected Button                   cleanButton;
+    protected Button cleanButton;
 
     @UiField()
-    protected Button                   refreshButton;
+    protected Button refreshButton;
 
-    private static LogPagedTableBinder uiBinder        = GWT.create( LogPagedTableBinder.class );
+    private static LogPagedTableBinder uiBinder = GWT.create( LogPagedTableBinder.class );
 
-    private static Images              images          = (Images) GWT.create( Images.class );
-    private static final String        HTML_ERROR_ICON = makeImage( images.error() );
-    private static final String        HTML_INFO_ICON  = makeImage( images.information() );
+    private static Images images = (Images) GWT.create( Images.class );
+    private static final String HTML_ERROR_ICON = makeImage( images.error() );
+    private static final String HTML_INFO_ICON = makeImage( images.information() );
 
-    private static String makeImage(ImageResource resource) {
+    private static String makeImage( ImageResource resource ) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );
         return prototype.getHTML();
     }
@@ -73,24 +77,37 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow>
 
     /**
      * Constructor
-     * 
-     * @param cleanCommand
      */
     public LogPagedTable() {
         super( PAGE_SIZE );
     }
 
     @Override
-    protected void addAncillaryColumns(ColumnPicker<LogPageRow> columnPicker,
-                                       SortableHeaderGroup<LogPageRow> sortableHeaderGroup) {
+    protected void doCellTable() {
+        cellTable = new CellTable<LogPageRow>();
+
+        ColumnPicker<LogPageRow> columnPicker = new ColumnPicker<LogPageRow>( cellTable );
+        SimpleSortableHeaderGroup<LogPageRow> sortableHeaderGroup = new SimpleSortableHeaderGroup<LogPageRow>( cellTable );
+
+        // Add any additional columns
+        addAncillaryColumns( columnPicker,
+                             sortableHeaderGroup );
+
+        cellTable.setWidth( "100%" );
+        columnPickerButton = columnPicker.createToggleButton();
+    }
+
+    @Override
+    protected void addAncillaryColumns( ColumnPicker<LogPageRow> columnPicker,
+                                        AbstractSortableHeaderGroup<LogPageRow> sortableHeaderGroup ) {
 
         // Things got messy with nested, nested anonymous classes
         AbstractCell<Long> severityCell = new AbstractCell<Long>() {
 
             @Override
-            public void render(Context context,
-                               Long value,
-                               SafeHtmlBuilder sb) {
+            public void render( Context context,
+                                Long value,
+                                SafeHtmlBuilder sb ) {
                 if ( value.intValue() == 0 ) {
                     sb.appendHtmlConstant( HTML_ERROR_ICON );
                 } else if ( value.intValue() == 1 ) {
@@ -100,38 +117,36 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow>
 
         };
         Column<LogPageRow, Long> severityColumn = new Column<LogPageRow, Long>( severityCell ) {
-            public Long getValue(LogPageRow row) {
+            public Long getValue( LogPageRow row ) {
                 return Long.valueOf( row.getSeverity() );
             }
         };
         columnPicker.addColumn( severityColumn,
-                                new SortableHeader<LogPageRow, Long>(
-                                                                      sortableHeaderGroup,
-                                                                      constants.Severity(),
-                                                                      severityColumn ),
+                                new SimpleSortableHeader<LogPageRow, Long>( sortableHeaderGroup,
+                                                                            constants.Severity(),
+                                                                            severityColumn ),
                                 true );
 
         Column<LogPageRow, String> messageColumn = new Column<LogPageRow, String>( new TextCell() ) {
-            public String getValue(LogPageRow row) {
+            public String getValue( LogPageRow row ) {
                 return row.getMessage();
             }
         };
         columnPicker.addColumn( messageColumn,
-                                new SortableHeader<LogPageRow, String>(
-                                                                        sortableHeaderGroup,
-                                                                        constants.Message(),
-                                                                        messageColumn ),
+                                new SimpleSortableHeader<LogPageRow, String>( sortableHeaderGroup,
+                                                                              constants.Message(),
+                                                                              messageColumn ),
                                 true );
 
         Column<LogPageRow, Date> timestampColumn = new Column<LogPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            public Date getValue(LogPageRow row) {
+            public Date getValue( LogPageRow row ) {
                 return row.getTimestamp();
             }
         };
         columnPicker.addColumn( timestampColumn,
-                                new SortableHeader<LogPageRow, Date>( sortableHeaderGroup,
-                                                                      constants.Timestamp(),
-                                                                      timestampColumn ),
+                                new SimpleSortableHeader<LogPageRow, Date>( sortableHeaderGroup,
+                                                                            constants.Timestamp(),
+                                                                            timestampColumn ),
                                 true );
 
     }

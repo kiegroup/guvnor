@@ -16,35 +16,27 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.FieldUpdater;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.ProvidesKey;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Widget that shows rows of paged data where columns "uuid", "name" and
@@ -62,6 +54,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     interface AssetPagedTableBinder
             extends
             UiBinder<Widget, AbstractAssetPagedTable> {
+
     }
 
     protected static final Constants constants = GWT.create( Constants.class );
@@ -78,16 +71,16 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
     private final ClientFactory clientFactory;
 
-    public AbstractAssetPagedTable(int pageSize,
-                                   ClientFactory clientFactory) {
+    public AbstractAssetPagedTable( int pageSize,
+                                    ClientFactory clientFactory ) {
         this( pageSize,
-                null,
-                clientFactory );
+              null,
+              clientFactory );
     }
 
-    public AbstractAssetPagedTable(int pageSize,
-                                   String feedURL,
-                                   ClientFactory clientFactory) {
+    public AbstractAssetPagedTable( int pageSize,
+                                    String feedURL,
+                                    ClientFactory clientFactory ) {
         super( pageSize );
         this.feedURL = feedURL;
         if ( this.feedURL == null
@@ -101,17 +94,15 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     /**
      * Register an UnloadListener used to remove "RSS Feed Listeners" when the
      * table is unloaded
-     *
      * @param unloadListener
      */
-    public void addUnloadListener(Command unloadListener) {
+    public void addUnloadListener( Command unloadListener ) {
         unloadListenerSet.add( unloadListener );
     }
 
     /**
      * Return an array of selected UUIDs. API is maintained for backwards
      * compatibility of legacy code with AssetItemGrid's implementation
-     *
      * @return
      */
     public String[] getSelectedRowUUIDs() {
@@ -123,24 +114,23 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         }
 
         // Create the array of UUIDs
-        String[] uuids = new String[selectedRows.size()];
+        String[] uuids = new String[ selectedRows.size() ];
         int rowCount = 0;
-        for (T row : selectedRows) {
-            uuids[rowCount++] = row.getUuid();
+        for ( T row : selectedRows ) {
+            uuids[ rowCount++ ] = row.getUuid();
         }
         return uuids;
     }
 
     /**
      * Open selected item(s) to a single tab
-     *
      * @param e
      */
     @UiHandler("openSelectedToSingleTabButton")
-    public void openSelectedToSingleTab(ClickEvent e) {
+    public void openSelectedToSingleTab( ClickEvent e ) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
-        for (T selected : selectedSet) {
+        for ( T selected : selectedSet ) {
             multiViewRowList.add(
                     new MultiViewRow(
                             selected.getUuid(),
@@ -157,68 +147,65 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     public void refresh() {
         selectionModel.clear();
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
-                true );
+                                               true );
     }
 
-    /**
-     * Set up table and common columns. Additional columns can be appended
-     * between the "checkbox" and "open" columns by overriding
-     * <code>addAncillaryColumns()</code>
-     */
-    @Override
-    protected void doCellTable() {
-
-        ProvidesKey<T> providesKey = new ProvidesKey<T>() {
-            public Object getKey(T row) {
-                return row.getUuid();
-            }
-        };
-
-        cellTable = new CellTable<T>( providesKey );
-        selectionModel = new MultiSelectionModel<T>( providesKey );
-        cellTable.setSelectionModel( selectionModel );
-        SelectionColumn.createAndAddSelectionColumn( cellTable );
-
-        ColumnPicker<T> columnPicker = new ColumnPicker<T>( cellTable );
-        SortableHeaderGroup<T> sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
-
-        final TextColumn<T> uuidNumberColumn = new TextColumn<T>() {
-            public String getValue(T row) {
-                return row.getUuid();
-            }
-        };
-        columnPicker.addColumn( uuidNumberColumn,
-                new SortableHeader<T, String>(
-                        sortableHeaderGroup,
-                        constants.uuid(),
-                        uuidNumberColumn ),
-                false );
-
-        // Add any additional columns
-        addAncillaryColumns( columnPicker,
-                sortableHeaderGroup );
-
-        // Add "Open" button column
-        Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
-            public String getValue(T row) {
-                return constants.Open();
-            }
-        };
-        openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
-            public void update(int index,
-                               T row,
-                               String value) {
-                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
-            }
-        } );
-        columnPicker.addColumn( openColumn,
-                new TextHeader( constants.Open() ),
-                true );
-
-        cellTable.setWidth( "100%" );
-        columnPickerButton = columnPicker.createToggleButton();
-
-    }
+//    /**
+//     * Set up table and common columns. Additional columns can be appended
+//     * between the "checkbox" and "open" columns by overriding
+//     * <code>addAncillaryColumns()</code>
+//     */
+//    @Override
+//    protected void doCellTable() {
+//
+//        ProvidesKey<T> providesKey = new ProvidesKey<T>() {
+//            public Object getKey( T row ) {
+//                return row.getUuid();
+//            }
+//        };
+//
+//        cellTable = new CellTable<T>( providesKey );
+//        selectionModel = new MultiSelectionModel<T>( providesKey );
+//        cellTable.setSelectionModel( selectionModel );
+//        SelectionColumn.createAndAddSelectionColumn( cellTable );
+//
+//        ColumnPicker<T> columnPicker = new ColumnPicker<T>( cellTable );
+//        sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
+//
+//        final TextColumn<T> uuidNumberColumn = new TextColumn<T>() {
+//            public String getValue( T row ) {
+//                return row.getUuid();
+//            }
+//        };
+//        columnPicker.addColumn( uuidNumberColumn,
+//                                new TextHeader( constants.uuid() ),
+//                                false );
+//
+//        // Add any additional columns
+//        addAncillaryColumns( columnPicker,
+//                             sortableHeaderGroup );
+//
+//        // Add "Open" button column
+//        Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
+//            public String getValue( T row ) {
+//                return constants.Open();
+//            }
+//        };
+//        openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
+//            public void update( int index,
+//                                T row,
+//                                String value ) {
+//                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
+//            }
+//        } );
+//        columnPicker.addColumn( openColumn,
+//                                new TextHeader( constants.Open() ),
+//                                true );
+//
+//        cellTable.setWidth( "100%" );
+//        columnPickerButton = columnPicker.createToggleButton();
+//
+//    }
 
     /**
      * Disconnect all listening consumers
@@ -226,19 +213,9 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     @Override
     protected void onUnload() {
         super.onUnload();
-        for (Command unloadListener : unloadListenerSet) {
+        for ( Command unloadListener : unloadListenerSet ) {
             unloadListener.execute();
         }
-    }
-
-    /**
-     * Link a data provider to the table
-     *
-     * @param dataProvider
-     */
-    public void setDataProvider(AsyncDataProvider<T> dataProvider) {
-        this.dataProvider = dataProvider;
-        this.dataProvider.addDataDisplay( cellTable );
     }
 
     /**
@@ -250,37 +227,35 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     @UiHandler("feedImage")
-    void openFeed(ClickEvent e) {
+    void openFeed( ClickEvent e ) {
         if ( !feedImage.isVisible()
                 || feedURL == null
                 || "".equals( feedURL ) ) {
             return;
         }
         Window.open( feedURL,
-                "_blank",
-                null );
+                     "_blank",
+                     null );
     }
 
     /**
      * Open selected item(s) to separate tabs
-     *
      * @param e
      */
     @UiHandler("openSelectedButton")
-    void openSelected(ClickEvent e) {
+    void openSelected( ClickEvent e ) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
-        for (T selected : selectedSet) {
+        for ( T selected : selectedSet ) {
             clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ) );
         }
     }
 
     /**
      * Refresh table in response to ClickEvent
-     *
      * @param e
      */
     @UiHandler("refreshButton")
-    void refresh(ClickEvent e) {
+    void refresh( ClickEvent e ) {
         refresh();
     }
 }

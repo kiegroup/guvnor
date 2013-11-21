@@ -20,11 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
-import org.drools.guvnor.client.rpc.AbstractPageRow;
-import org.drools.guvnor.client.ruleeditor.PropertyHolder;
-import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable.PropertyHolderAdaptor;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,6 +32,13 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.rpc.AbstractPageRow;
+import org.drools.guvnor.client.ruleeditor.PropertyHolder;
+import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable.PropertyHolderAdaptor;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeader;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeaderGroup;
 
 /**
  * Widget with a table of Properties that can be edited.
@@ -45,31 +47,32 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
 
     // UI
     interface PropertiesEditorSimpleTableBinder
-        extends
-        UiBinder<Widget, PropertiesEditorSimpleTable> {
+            extends
+            UiBinder<Widget, PropertiesEditorSimpleTable> {
+
     }
 
     private MultiSelectionModel<PropertyHolderAdaptor> selectionModel;
 
-    private static PropertiesEditorSimpleTableBinder   uiBinder = GWT.create( PropertiesEditorSimpleTableBinder.class );
+    private static PropertiesEditorSimpleTableBinder uiBinder = GWT.create( PropertiesEditorSimpleTableBinder.class );
 
     @UiField()
-    Button                                             addPropertyButton;
+    Button addPropertyButton;
 
     @UiField()
-    Button                                             deleteSelectedPropertiesButton;
-  
+    Button deleteSelectedPropertiesButton;
+
     // Wrapper class to allow re-use of AbstractSimpleTable. Changing
     // PropertyHolder to extend AbstractPageRow leads to de-serialisation
     // errors of existing assets
     static class PropertyHolderAdaptor extends AbstractPageRow {
 
-        static long            counter = 0;
+        static long counter = 0;
 
-        private long           index;
+        private long index;
         private PropertyHolder ph;
 
-        private PropertyHolderAdaptor(PropertyHolder ph) {
+        private PropertyHolderAdaptor( PropertyHolder ph ) {
             this.ph = ph;
             synchronized ( this ) {
                 index = counter++;
@@ -88,11 +91,11 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
             return this.ph.getValue();
         }
 
-        void setName(String name) {
+        void setName( String name ) {
             this.ph.setName( name );
         }
 
-        void setValue(String value) {
+        void setValue( String value ) {
             this.ph.setValue( value );
         }
 
@@ -103,11 +106,9 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
 
     /**
      * Constructor
-     * 
-     * @param properties
-     *            Properties to include in the UI
+     * @param properties Properties to include in the UI
      */
-    public PropertiesEditorSimpleTable(List<PropertyHolder> properties) {
+    public PropertiesEditorSimpleTable( List<PropertyHolder> properties ) {
         super();
         this.adaptedProperties = adaptPropertyHolders( properties );
         this.setRowData( this.adaptedProperties );
@@ -116,7 +117,6 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
 
     /**
      * Scrape the properties from the UI into a List suitable for persisting
-     * 
      * @return
      */
     public List<PropertyHolder> getPropertyHolders() {
@@ -128,7 +128,7 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         return properties;
     }
 
-    private List<PropertyHolderAdaptor> adaptPropertyHolders(List<PropertyHolder> properties) {
+    private List<PropertyHolderAdaptor> adaptPropertyHolders( List<PropertyHolder> properties ) {
         List<PropertyHolderAdaptor> adaptedProperties = new ArrayList<PropertyHolderAdaptor>();
         for ( PropertyHolder ph : properties ) {
             adaptedProperties.add( new PropertyHolderAdaptor( ph ) );
@@ -137,64 +137,10 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
     }
 
     @Override
-    protected void addAncillaryColumns(ColumnPicker<PropertyHolderAdaptor> columnPicker,
-                                       SortableHeaderGroup<PropertyHolderAdaptor> sortableHeaderGroup) {
-
-        Column<PropertyHolderAdaptor, String> propertyNameColumn = new Column<PropertyHolderAdaptor, String>( new PopupTextEditCell() ) {
-
-            @Override
-            public String getValue(PropertyHolderAdaptor object) {
-                return object.getName();
-            }
-
-        };
-        propertyNameColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
-
-            public void update(int index,
-                               PropertyHolderAdaptor object,
-                               String value) {
-                object.setName( value );
-            }
-
-        } );
-        columnPicker.addColumn( propertyNameColumn,
-                                new SortableHeader<PropertyHolderAdaptor, String>(
-                                                                                   sortableHeaderGroup,
-                                                                                   constants.Item(),
-                                                                                   propertyNameColumn ),
-                                true );
-
-        Column<PropertyHolderAdaptor, String> propertyValueColumn = new Column<PropertyHolderAdaptor, String>( new PopupTextEditCell() ) {
-
-            @Override
-            public String getValue(PropertyHolderAdaptor object) {
-                return object.getValue();
-            }
-
-        };
-        propertyValueColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
-
-            public void update(int index,
-                               PropertyHolderAdaptor object,
-                               String value) {
-                object.setValue( value );
-            }
-
-        } );
-        columnPicker.addColumn( propertyValueColumn,
-                                new SortableHeader<PropertyHolderAdaptor, String>(
-                                                                                   sortableHeaderGroup,
-                                                                                   constants.Value(),
-                                                                                   propertyValueColumn ),
-                                true );
-
-    }
-
-    @Override
     protected void doCellTable() {
 
         ProvidesKey<PropertyHolderAdaptor> providesKey = new ProvidesKey<PropertyHolderAdaptor>() {
-            public Object getKey(PropertyHolderAdaptor row) {
+            public Object getKey( PropertyHolderAdaptor row ) {
                 return row.getIndex();
             }
         };
@@ -205,7 +151,7 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         SelectionColumn.createAndAddSelectionColumn( cellTable );
 
         ColumnPicker<PropertyHolderAdaptor> columnPicker = new ColumnPicker<PropertyHolderAdaptor>( cellTable );
-        SortableHeaderGroup<PropertyHolderAdaptor> sortableHeaderGroup = new SortableHeaderGroup<PropertyHolderAdaptor>( cellTable );
+        SimpleSortableHeaderGroup<PropertyHolderAdaptor> sortableHeaderGroup = new SimpleSortableHeaderGroup<PropertyHolderAdaptor>( cellTable );
 
         // Add any additional columns
         addAncillaryColumns( columnPicker,
@@ -217,12 +163,64 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
     }
 
     @Override
+    protected void addAncillaryColumns( ColumnPicker<PropertyHolderAdaptor> columnPicker,
+                                        AbstractSortableHeaderGroup<PropertyHolderAdaptor> sortableHeaderGroup ) {
+
+        Column<PropertyHolderAdaptor, String> propertyNameColumn = new Column<PropertyHolderAdaptor, String>( new PopupTextEditCell() ) {
+
+            @Override
+            public String getValue( PropertyHolderAdaptor object ) {
+                return object.getName();
+            }
+
+        };
+        propertyNameColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
+
+            public void update( int index,
+                                PropertyHolderAdaptor object,
+                                String value ) {
+                object.setName( value );
+            }
+
+        } );
+        columnPicker.addColumn( propertyNameColumn,
+                                new SimpleSortableHeader<PropertyHolderAdaptor, String>( sortableHeaderGroup,
+                                                                                         constants.Item(),
+                                                                                         propertyNameColumn ),
+                                true );
+
+        Column<PropertyHolderAdaptor, String> propertyValueColumn = new Column<PropertyHolderAdaptor, String>( new PopupTextEditCell() ) {
+
+            @Override
+            public String getValue( PropertyHolderAdaptor object ) {
+                return object.getValue();
+            }
+
+        };
+        propertyValueColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
+
+            public void update( int index,
+                                PropertyHolderAdaptor object,
+                                String value ) {
+                object.setValue( value );
+            }
+
+        } );
+        columnPicker.addColumn( propertyValueColumn,
+                                new SimpleSortableHeader<PropertyHolderAdaptor, String>( sortableHeaderGroup,
+                                                                                         constants.Value(),
+                                                                                         propertyValueColumn ),
+                                true );
+
+    }
+
+    @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
 
     @UiHandler("addPropertyButton")
-    void addProperty(ClickEvent event) {
+    void addProperty( ClickEvent event ) {
         this.adaptedProperties.add( new PropertyHolderAdaptor( new PropertyHolder( "",
                                                                                    "" ) ) );
         cellTable.setRowData( this.adaptedProperties );
@@ -230,7 +228,7 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
     }
 
     @UiHandler("deleteSelectedPropertiesButton")
-    void deleteSelectedProperties(ClickEvent event) {
+    void deleteSelectedProperties( ClickEvent event ) {
         Set<PropertyHolderAdaptor> selectedProperties = selectionModel.getSelectedSet();
         for ( PropertyHolderAdaptor pha : selectedProperties ) {
             this.adaptedProperties.remove( pha );

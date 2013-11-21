@@ -18,12 +18,6 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.AssetEditorPlace;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.resources.ComparableImage;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -39,6 +33,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.resources.ComparableImage;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.widgets.tables.sorting.AbstractSortableHeaderGroup;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeader;
+import org.drools.guvnor.client.widgets.tables.sorting.SimpleSortableHeaderGroup;
 
 /**
  * Widget with a table of Build Package errors.
@@ -49,18 +51,19 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
 
     // UI
     interface BuildPackageErrorsSimpleTableBinder
-        extends
-        UiBinder<Widget, BuildPackageErrorsSimpleTable> {
+            extends
+            UiBinder<Widget, BuildPackageErrorsSimpleTable> {
+
     }
 
     @UiField()
-    protected Button                                   openSelectedButton;
+    protected Button openSelectedButton;
 
     private static BuildPackageErrorsSimpleTableBinder uiBinder = GWT.create( BuildPackageErrorsSimpleTableBinder.class );
 
-    private MultiSelectionModel<BuilderResultLine>     selectionModel;
+    private MultiSelectionModel<BuilderResultLine> selectionModel;
 
-    public BuildPackageErrorsSimpleTable(ClientFactory clientFactory) {
+    public BuildPackageErrorsSimpleTable( ClientFactory clientFactory ) {
         super();
         this.clientFactory = clientFactory;
     }
@@ -69,7 +72,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
     protected void doCellTable() {
 
         ProvidesKey<BuilderResultLine> providesKey = new ProvidesKey<BuilderResultLine>() {
-            public Object getKey(BuilderResultLine row) {
+            public Object getKey( BuilderResultLine row ) {
                 return row.getUuid();
             }
         };
@@ -80,7 +83,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         SelectionColumn.createAndAddSelectionColumn( cellTable );
 
         ColumnPicker<BuilderResultLine> columnPicker = new ColumnPicker<BuilderResultLine>( cellTable );
-        SortableHeaderGroup<BuilderResultLine> sortableHeaderGroup = new SortableHeaderGroup<BuilderResultLine>( cellTable );
+        SimpleSortableHeaderGroup<BuilderResultLine> sortableHeaderGroup = new SimpleSortableHeaderGroup<BuilderResultLine>( cellTable );
 
         // Add any additional columns
         addAncillaryColumns( columnPicker,
@@ -88,72 +91,69 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
 
         cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
-
     }
 
     @Override
-    protected void addAncillaryColumns(ColumnPicker<BuilderResultLine> columnPicker,
-                                       SortableHeaderGroup<BuilderResultLine> sortableHeaderGroup) {
+    protected void addAncillaryColumns( ColumnPicker<BuilderResultLine> columnPicker,
+                                        AbstractSortableHeaderGroup<BuilderResultLine> sortableHeaderGroup ) {
 
         Column<BuilderResultLine, String> uuidColumn = new TextColumn<BuilderResultLine>() {
-            public String getValue(BuilderResultLine row) {
+            public String getValue( BuilderResultLine row ) {
                 return row.getUuid();
             }
         };
         columnPicker.addColumn( uuidColumn,
-                                new SortableHeader<BuilderResultLine, String>(
-                                                                               sortableHeaderGroup,
-                                                                               constants.uuid(),
-                                                                               uuidColumn ),
+                                new SimpleSortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
+                                                                                     constants.uuid(),
+                                                                                     uuidColumn ),
                                 false );
 
         Column<BuilderResultLine, String> assetNameColumn = new TextColumn<BuilderResultLine>() {
-            public String getValue(BuilderResultLine row) {
+            public String getValue( BuilderResultLine row ) {
                 return row.getAssetName();
             }
         };
         columnPicker.addColumn( assetNameColumn,
-                                new SortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
-                                                                               constants.Name(),
-                                                                               assetNameColumn ),
+                                new SimpleSortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
+                                                                                     constants.Name(),
+                                                                                     assetNameColumn ),
                                 true );
 
         Column<BuilderResultLine, ComparableImage> formatColumn = new Column<BuilderResultLine, ComparableImage>( new ComparableImageCell() ) {
 
-            public ComparableImage getValue(BuilderResultLine row) {
+            public ComparableImage getValue( BuilderResultLine row ) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
-                return new ComparableImage(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
+                return new ComparableImage( row.getAssetFormat(), factory.getAssetEditorIcon( row.getAssetFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<BuilderResultLine, ComparableImage>(
-                                                                                                sortableHeaderGroup,
-                                                                                                constants.Format(),
-                                                                                                formatColumn ),
+                                new SimpleSortableHeader<BuilderResultLine, ComparableImage>( sortableHeaderGroup,
+                                                                                              constants.Format(),
+                                                                                              formatColumn ),
                                 true );
 
         Column<BuilderResultLine, String> messageColumn = new TextColumn<BuilderResultLine>() {
-            public String getValue(BuilderResultLine row) {
+            public String getValue( BuilderResultLine row ) {
                 return row.getMessage();
             }
         };
         columnPicker.addColumn( messageColumn,
-                                new SortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
-                                                                               constants.Message1(),
-                                                                               messageColumn ),
+                                new SimpleSortableHeader<BuilderResultLine, String>( sortableHeaderGroup,
+                                                                                     constants.Message1(),
+                                                                                     messageColumn ),
                                 true );
 
         // Add "Open" button column
         Column<BuilderResultLine, String> openColumn = new Column<BuilderResultLine, String>( new ButtonCell() ) {
-            public String getValue(BuilderResultLine row) {
+            public String getValue( BuilderResultLine row ) {
                 return constants.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<BuilderResultLine, String>() {
-            public void update(int index,
-                               BuilderResultLine row,
-                               String value) {
-                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ));
+            public void update( int index,
+                                BuilderResultLine row,
+                                String value ) {
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -168,10 +168,10 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
     }
 
     @UiHandler("openSelectedButton")
-    void openSelected(ClickEvent e) {
+    void openSelected( ClickEvent e ) {
         Set<BuilderResultLine> selectedSet = selectionModel.getSelectedSet();
         for ( BuilderResultLine selected : selectedSet ) {
-            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ));
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ) );
         }
     }
 

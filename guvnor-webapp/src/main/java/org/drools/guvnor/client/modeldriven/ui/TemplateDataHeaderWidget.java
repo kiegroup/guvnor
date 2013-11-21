@@ -23,7 +23,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
-import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.guvnor.client.widgets.tables.sorting.SortDirection;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

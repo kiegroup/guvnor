@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.guvnor.client.widgets.tables.sorting.SortDirection;
 
 /**
  * Container for sort information. Encapsulated in a single class to avoid the
