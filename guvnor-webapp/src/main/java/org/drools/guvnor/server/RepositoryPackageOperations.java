@@ -340,14 +340,14 @@ public class RepositoryPackageOperations {
     // - package.admin:package=p0.sub0 and p0.sub0.sub1.sub3 is being created
     private boolean hasParentPackageAccess( final String packageName,
                                             final List<String> packagePermissions ) {
-        if ( packagePermissions == null || packagePermissions.isEmpty() ) {
+        if ( packagePermissions == null || packagePermissions.size() == 0 ) {
             return false;
         }
         final String[] packageNameComponents = packageName.split( "\\." );
         final List<String> parentPackageNames = new ArrayList<String>();
         String basePackageName = "";
         for ( String packageNameComponent : packageNameComponents ) {
-            final String parentPackageName = basePackageName.isEmpty() ? packageNameComponent : basePackageName + "." + packageNameComponent;
+            final String parentPackageName = "".equals( basePackageName ) ? packageNameComponent : basePackageName + "." + packageNameComponent;
             parentPackageNames.add( parentPackageName );
             basePackageName = parentPackageName;
         }
