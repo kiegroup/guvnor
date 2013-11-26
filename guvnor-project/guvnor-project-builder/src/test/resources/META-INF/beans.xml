@@ -1,7 +1,6 @@
 <beans>
   <alternatives>
     <class>org.guvnor.common.services.builder.TestAppSetup</class>
-    <class>org.guvnor.common.services.builder.TestIdentityFactory</class>
     <class>org.guvnor.common.services.builder.TestExecutorServiceFactoryImpl</class>
   </alternatives>
 </beans>

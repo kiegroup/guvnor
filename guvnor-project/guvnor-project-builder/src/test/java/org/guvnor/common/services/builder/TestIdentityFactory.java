@@ -20,18 +20,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Specializes;
 import javax.inject.Singleton;
 
 import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
+import org.uberfire.security.server.cdi.SecurityFactory;
 
 @Singleton
-@Alternative
-public class TestIdentityFactory {
+@Specializes
+public class TestIdentityFactory extends SecurityFactory {
 
-    private Identity identity;
+    private static Identity identity;
 
     @PostConstruct
     public void onStartup() {
@@ -39,7 +41,7 @@ public class TestIdentityFactory {
 
             @Override
             public String getName() {
-                return "jcr2vfs-migration";
+                return "project-builder";
             }
 
             @Override
@@ -76,7 +78,8 @@ public class TestIdentityFactory {
     }
 
     @Produces
-    public Identity getIdentity() {
+    @RequestScoped
+    public static Identity getIdentity() {
         return identity;
     }
 
