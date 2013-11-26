@@ -185,6 +185,8 @@ public class Builder {
             kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
         }
 
+        fireRuleNameUpdateEvent();
+
         return results;
     }
 
