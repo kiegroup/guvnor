@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
@@ -553,7 +554,7 @@ public class ProjectServiceImpl
             final Path projectConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
             ioService.createFile( Paths.convert( projectConfigPath ) );
             ioService.write( Paths.convert( projectConfigPath ),
-                             projectConfigurationContentHandler.toString( new ProjectImports() ) );
+                             projectConfigurationContentHandler.toString(createProjectImports()) );
 
             //Raise an event for the new project
             final Project project = resolveProject( projectRootPath );
@@ -581,6 +582,12 @@ public class ProjectServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private ProjectImports createProjectImports() {
+        ProjectImports imports = new ProjectImports();
+        imports.getImports().addImport(new Import("java.lang.Number"));
+        return imports;
     }
 
     @Override
