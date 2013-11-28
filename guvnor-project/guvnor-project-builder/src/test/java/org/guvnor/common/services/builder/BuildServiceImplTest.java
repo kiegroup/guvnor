@@ -198,6 +198,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
+        ruleNameUpdateEvent = mock(Event.class);
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
