@@ -19,6 +19,9 @@ package org.guvnor.common.services.builder;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
@@ -66,7 +69,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        ruleNameUpdateEvent = mock(Event.class);
+        ruleNameUpdateEvent = mock( Event.class );
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
@@ -80,7 +83,7 @@ public class BuildServiceImplTest {
     }
 
     @Test
-    @Ignore("//TODO {manstis}")
+//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -89,6 +92,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
+        ruleNameUpdateEvent = mock( Event.class );
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
@@ -109,7 +113,7 @@ public class BuildServiceImplTest {
     }
 
     @Test
-    @Ignore("//TODO {manstis}")
+//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -118,6 +122,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
+        ruleNameUpdateEvent = mock( Event.class );
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
@@ -138,7 +143,7 @@ public class BuildServiceImplTest {
     }
 
     @Test
-    @Ignore("//TODO {manstis}")
+//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -147,6 +152,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
+        ruleNameUpdateEvent = mock( Event.class );
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
@@ -168,13 +174,18 @@ public class BuildServiceImplTest {
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
 
         //Check packages
-        assertEquals( 1,
-                      metaData.getPackages().size() );
-        final String packageName = metaData.getPackages().iterator().next();
-        assertEquals( "org.kie.workbench.common.services.builder.tests.test1",
-                      packageName );
+        final Set<String> packageNames = new HashSet<String>();
+        final Iterator<String> packageNameIterator = metaData.getPackages().iterator();
+        while ( packageNameIterator.hasNext() ) {
+            packageNames.add( packageNameIterator.next() );
+        }
+        assertEquals( 2,
+                      packageNames.size() );
+        assertTrue( packageNames.contains( "defaultpkg" ) );
+        assertTrue( packageNames.contains( "org.kie.workbench.common.services.builder.tests.test1" ) );
 
         //Check classes
+        final String packageName = "org.kie.workbench.common.services.builder.tests.test1";
         assertEquals( 1,
                       metaData.getClasses( packageName ).size() );
         final String className = metaData.getClasses( packageName ).iterator().next();
@@ -198,7 +209,7 @@ public class BuildServiceImplTest {
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        ruleNameUpdateEvent = mock(Event.class);
+        ruleNameUpdateEvent = mock( Event.class );
         final Builder builder = new Builder( path,
                                              new GAV(),
                                              ioService,
