@@ -22,6 +22,29 @@ public class ProjectConfigurationContentHandlerTest {
     }
 
     @Test
+    public void testNullSourceXml() throws Exception {
+        ProjectImports imports = handler.toModel( null );
+        assertNotNull( imports );
+        assertEquals( 0,
+                      imports.getImports().getImports().size() );
+    }
+
+    @Test
+    public void testEmptySourceXml() throws Exception {
+        ProjectImports imports = handler.toModel( "" );
+        assertNotNull( imports );
+        assertEquals( 0,
+                      imports.getImports().getImports().size() );
+    }
+
+    @Test
+    public void testNullModel() throws Exception {
+        String xml = handler.toString( null );
+        assertEquals( "",
+                      xml );
+    }
+
+    @Test
     public void testEmptyImports() throws Exception {
         String xml = handler.toString( new ProjectImports() );
         assertTrue( xml.contains( "<imports>" ) );

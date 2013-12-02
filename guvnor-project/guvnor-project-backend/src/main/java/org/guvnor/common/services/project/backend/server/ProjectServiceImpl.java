@@ -504,6 +504,14 @@ public class ProjectServiceImpl
 
             //Check if path equals pom.xml
             final Project project = resolveProject( resource );
+
+            //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
+            //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
+            //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
+            if ( project == null ) {
+                return false;
+            }
+
             final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
             final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert( project.getPomXMLPath() );
             return path.startsWith( pomFilePath );
@@ -523,6 +531,13 @@ public class ProjectServiceImpl
 
             //Check if path equals kmodule.xml
             final Project project = resolveProject( resource );
+            //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
+            //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
+            //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
+            if ( project == null ) {
+                return false;
+            }
+
             final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
             final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert( project.getKModuleXMLPath() );
             return path.startsWith( kmoduleFilePath );
@@ -554,7 +569,7 @@ public class ProjectServiceImpl
             final Path projectConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
             ioService.createFile( Paths.convert( projectConfigPath ) );
             ioService.write( Paths.convert( projectConfigPath ),
-                             projectConfigurationContentHandler.toString(createProjectImports()) );
+                             projectConfigurationContentHandler.toString( createProjectImports() ) );
 
             //Raise an event for the new project
             final Project project = resolveProject( projectRootPath );
@@ -586,7 +601,7 @@ public class ProjectServiceImpl
 
     private ProjectImports createProjectImports() {
         ProjectImports imports = new ProjectImports();
-        imports.getImports().addImport(new Import("java.lang.Number"));
+        imports.getImports().addImport( new Import( "java.lang.Number" ) );
         return imports;
     }
 
