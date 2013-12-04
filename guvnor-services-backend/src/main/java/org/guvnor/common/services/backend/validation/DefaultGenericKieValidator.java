@@ -34,11 +34,11 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Validator capable of validating generic Kie assets (i.e those that are handled by KieBuilder)
@@ -52,9 +52,14 @@ public class DefaultGenericKieValidator implements GenericValidator {
     @Inject
     private ProjectService projectService;
 
+    //Exclude dot-files
     private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> dotFileFilter = new DotFileFilter();
-    private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> pomFileFilter = new PomFileFilter();
+
+    //Exclude Project's kmodule.xml file (in case it contains errors causing build to fail)
     private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> kmoduleFileFilter = new KModuleFileFilter();
+
+    //Include Project's pom.xml (to ensure dependencies are set-up correctly)
+    private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> pomFileFilter = new PomFileFilter();
 
     public DefaultGenericKieValidator() {
     }
@@ -124,9 +129,9 @@ public class DefaultGenericKieValidator implements GenericValidator {
                                 final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
         if ( dotFileFilter.accept( path ) ) {
             return false;
-        } else if ( pomFileFilter.accept( path ) ) {
-            return true;
         } else if ( kmoduleFileFilter.accept( path ) ) {
+            return false;
+        } else if ( pomFileFilter.accept( path ) ) {
             return true;
         }
         for ( DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter : supportingFileFilters ) {
