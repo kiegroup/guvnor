@@ -119,4 +119,14 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
     void removeRole( final Project project,
                      final String role );
 
+    Path rename( final Path pathToPomXML,
+                 final String newName,
+                 final String comment );
+
+    void delete( final Path pathToPomXML,
+                 final String comment );
+
+    void copy( final Path pathToPomXML,
+               final String newName,
+               final String comment );
 }
