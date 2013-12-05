@@ -32,8 +32,11 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -57,7 +60,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -93,6 +98,11 @@ public class ProjectServiceImpl
     private Event<NewProjectEvent> newProjectEvent;
     private Event<NewPackageEvent> newPackageEvent;
 
+    private Event<RenameProjectEvent> renameProjectEvent;
+    private Event<DeleteProjectEvent> deleteProjectEvent;
+
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache;
+
     private Identity identity;
     private SessionInfo sessionInfo;
 
@@ -110,6 +120,9 @@ public class ProjectServiceImpl
                                final ConfigurationFactory configurationFactory,
                                final Event<NewProjectEvent> newProjectEvent,
                                final Event<NewPackageEvent> newPackageEvent,
+                               final Event<RenameProjectEvent> renameProjectEvent,
+                               final Event<DeleteProjectEvent> deleteProjectEvent,
+                               final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
                                final Identity identity,
                                final SessionInfo sessionInfo ) {
         this.ioService = ioService;
@@ -121,6 +134,9 @@ public class ProjectServiceImpl
         this.configurationFactory = configurationFactory;
         this.newProjectEvent = newProjectEvent;
         this.newPackageEvent = newPackageEvent;
+        this.renameProjectEvent = renameProjectEvent;
+        this.deleteProjectEvent = deleteProjectEvent;
+        this.invalidateDMOCache = invalidateDMOCache;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
     }
@@ -758,6 +774,90 @@ public class ProjectServiceImpl
 
         } else {
             throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
+        }
+    }
+
+    @Override
+    public Path rename( final Path pathToPomXML,
+                        final String newName,
+                        final String comment ) {
+
+        try {
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
+
+            final POM content = pomService.load( pathToPomXML );
+
+            if ( newProjectPath.equals( projectDirectory ) ) {
+                return pathToPomXML;
+            }
+
+            if ( ioService.exists( newProjectPath ) ) {
+                throw new FileAlreadyExistsException( newProjectPath.toString() );
+            }
+
+            final Path oldProjectDir = Paths.convert( projectDirectory );
+            final Project oldProject = resolveProject( oldProjectDir );
+
+            content.setName( newName );
+            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
+            ioService.startBatch();
+            ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+            pomService.save( newPathToPomXML, content, null, comment );
+            ioService.endBatch();
+            final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
+            invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
+            renameProjectEvent.fire( new RenameProjectEvent( oldProject, newProject ) );
+
+            return newPathToPomXML;
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public void delete( final Path pathToPomXML,
+                        final String comment ) {
+        try {
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
+
+            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+            deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public void copy( final Path pathToPomXML,
+                      final String newName,
+                      final String comment ) {
+        try {
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
+
+            final POM content = pomService.load( pathToPomXML );
+
+            if ( newProjectPath.equals( projectDirectory ) ) {
+                return;
+            }
+
+            if ( ioService.exists( newProjectPath ) ) {
+                throw new FileAlreadyExistsException( newProjectPath.toString() );
+            }
+
+            content.setName( newName );
+            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
+            ioService.startBatch();
+            ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+            pomService.save( newPathToPomXML, content, null, comment );
+            ioService.endBatch();
+            final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
+            newProjectEvent.fire( new NewProjectEvent( newProject ) );
+
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
