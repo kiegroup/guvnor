@@ -90,7 +90,7 @@ public class GuvnorM2Repository {
             root.mkdirs();
         }
 
-        Aether.DEFUALT_AETHER.getRepositories().add( getGuvnorM2Repository() );
+        Aether.getAether().getRepositories().add( getGuvnorM2Repository() );
     }
 
     protected String getM2RepositoryRootDir() {
@@ -182,8 +182,8 @@ public class GuvnorM2Repository {
                     .addArtifact( jarArtifact )
                     .addArtifact( pomArtifact );
 
-            Aether.DEFUALT_AETHER.getSystem().install( Aether.DEFUALT_AETHER.getSession(),
-                                                       installRequest );
+            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                    installRequest );
         } catch ( InstallationException e ) {
             throw new RuntimeException( e );
         }
@@ -195,8 +195,8 @@ public class GuvnorM2Repository {
                 .setRepository( getGuvnorM2Repository() );
 
         try {
-            Aether.DEFUALT_AETHER.getSystem().deploy( Aether.DEFUALT_AETHER.getSession(),
-                                                      deployRequest );
+            Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                   deployRequest );
         } catch ( DeploymentException e ) {
             throw new RuntimeException( e );
         }
