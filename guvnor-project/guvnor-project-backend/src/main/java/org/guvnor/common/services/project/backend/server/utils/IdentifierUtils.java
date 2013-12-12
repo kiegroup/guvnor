@@ -38,8 +38,9 @@ public class IdentifierUtils {
             Character c = identifier.charAt( 0 );
             if ( !Character.isJavaIdentifierStart( c ) ) {
                 legalIdentifier.append( "_" );
+            } else {
+                legalIdentifier.append( c );
             }
-            legalIdentifier.append( c );
             for ( int i = 1; i < identifier.length(); i++ ) {
                 c = identifier.charAt( i );
                 if ( Character.isJavaIdentifierPart( c ) ) {
