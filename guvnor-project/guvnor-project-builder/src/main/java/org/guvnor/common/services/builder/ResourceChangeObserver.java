@@ -138,7 +138,8 @@ public class ResourceChangeObserver {
         return path != null && ( path.getFileName().endsWith( ".java" )
                 || path.getFileName().endsWith( ".class" )
                 || path.getFileName().equals( "pom.xml" )
-                || path.getFileName().equals( "kmodule.xml" ));
+                || path.getFileName().equals( "kmodule.xml" )
+                || path.getFileName().endsWith( ".drl" ) );
     }
 
 }
