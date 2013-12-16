@@ -135,11 +135,15 @@ public class ResourceChangeObserver {
     }
 
     private boolean isObservableResource( Path path ) {
-        return path != null && ( path.getFileName().endsWith( ".java" )
-                || path.getFileName().endsWith( ".class" )
-                || path.getFileName().equals( "pom.xml" )
-                || path.getFileName().equals( "kmodule.xml" )
-                || path.getFileName().endsWith( ".drl" ) );
+        return path != null
+                && ( path.getFileName().endsWith( ".java" )
+                    || path.getFileName().endsWith( ".class" )
+                    || path.getFileName().equals( "pom.xml" )
+                    || path.getFileName().equals( "kmodule.xml" )
+                    || path.getFileName().endsWith( ".drl" )
+                    || path.getFileName().endsWith( ".gdst" )
+                    || path.getFileName().endsWith( ".rdrl" )
+                );
     }
 
 }
