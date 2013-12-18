@@ -190,15 +190,7 @@ public class ProjectServiceImpl
 
     private Project makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         final Path projectRootPath = Paths.convert( nioProjectRootPath );
-        final String projectName = projectRootPath.getFileName();
-        final Path pomXMLPath = Paths.convert( nioProjectRootPath.resolve( POM_PATH ) );
-        final Path kmoduleXMLPath = Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) );
-        final Path importsXMLPath = Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) );
-        final Project project = new Project( projectRootPath,
-                                             pomXMLPath,
-                                             kmoduleXMLPath,
-                                             importsXMLPath,
-                                             projectName );
+        final Project project = simpleProjectInstance( nioProjectRootPath );
 
         //Copy in Security Roles required to access this resource
         final ConfigGroup projectConfiguration = findProjectConfig( projectRootPath );
@@ -211,6 +203,16 @@ public class ProjectServiceImpl
             }
         }
         return project;
+    }
+
+    public Project simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
+        final Path projectRootPath = Paths.convert( nioProjectRootPath );
+
+        return new Project( projectRootPath,
+                            Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
+                            Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
+                            Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
+                            projectRootPath.getFileName() );
     }
 
     @Override
