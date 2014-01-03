@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.guvnor</groupId>
     <artifactId>guvnor</artifactId>
-    <version>6.0.1-SNAPSHOT</version>
+    <version>6.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-inbox</artifactId>
