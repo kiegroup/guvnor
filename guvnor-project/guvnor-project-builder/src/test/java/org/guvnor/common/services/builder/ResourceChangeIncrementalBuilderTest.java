@@ -173,11 +173,11 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getRemovedMessages().size() );
 
         assertEquals( "Updated",
-                      ruleNamesService.getRuleNames().get( 0 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 0 ) );
         assertEquals( "Deleted",
-                      ruleNamesService.getRuleNames().get( 1 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 1 ) );
         assertEquals( "Added",
-                      ruleNamesService.getRuleNames().get( 2 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 2 ) );
     }
 
     @Test
@@ -210,11 +210,11 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getRemovedMessages().size() );
 
         assertEquals( "Updated",
-                      ruleNamesService.getRuleNames().get( 0 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 0 ) );
         assertEquals( "Deleted",
-                      ruleNamesService.getRuleNames().get( 1 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 1 ) );
         assertEquals( "Added",
-                      ruleNamesService.getRuleNames().get( 2 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 2 ) );
     }
 
     @Test
@@ -307,9 +307,9 @@ public class ResourceChangeIncrementalBuilderTest {
                       incrementalBuildResults.getRemovedMessages().size() );
 
         assertEquals( "Updated",
-                      ruleNamesService.getRuleNames().get( 0 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 0 ) );
         assertEquals( "Added",
-                      ruleNamesService.getRuleNames().get( 1 ) );
+                      ruleNamesService.getRuleNames( resourcePath ).get( 1 ) );
     }
 
     @Test

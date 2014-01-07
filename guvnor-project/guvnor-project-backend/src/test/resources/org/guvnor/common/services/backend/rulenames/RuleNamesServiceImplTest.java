@@ -4,37 +4,48 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.guvnor.common.services.shared.rulenames.RuleNameUpdateEvent;
+import org.guvnor.common.services.project.events.RuleNameUpdateEvent;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.Test;
+import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class RuleNamesServiceImplTest {
 
     @Test
     public void testBasic() throws Exception {
-        RuleNamesServiceImpl ruleNamesService = new RuleNamesServiceImpl();
 
-        HashMap<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
+        final ProjectService projectService = mock( ProjectService.class );
+        final Project project = mock( Project.class );
+        final Path path = mock( Path.class );
+        when( projectService.resolveProject( any( Path.class ) ) ).thenReturn( project );
 
-        ArrayList<String> rules = new ArrayList<String>();
-        rules.add("Rule 1");
-        rules.add("Rule 2");
-        ruleNames.put("testPackage", rules);
+        final RuleNamesServiceImpl ruleNamesService = new RuleNamesServiceImpl( projectService );
 
-        ruleNamesService.onRuleNamesUpdated(new RuleNameUpdateEvent(ruleNames));
+        final HashMap<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
 
-        assertEquals(2, ruleNamesService.getRuleNames().size());
-        assertEquals("Rule 1", ruleNamesService.getRuleNames().get(0));
-        assertEquals("Rule 2", ruleNamesService.getRuleNames().get(1));
+        final ArrayList<String> rules = new ArrayList<String>();
+        rules.add( "Rule 1" );
+        rules.add( "Rule 2" );
+        ruleNames.put( "testPackage", rules );
 
-        assertEquals(2, ruleNamesService.getRuleNamesForPackage("testPackage").size());
-        assertEquals("Rule 1", ruleNamesService.getRuleNamesForPackage("testPackage").toArray()[0]);
-        assertEquals("Rule 2", ruleNamesService.getRuleNamesForPackage("testPackage").toArray()[1]);
+        ruleNamesService.onRuleNamesUpdated( new RuleNameUpdateEvent( project, ruleNames ) );
 
-        assertEquals(1, ruleNamesService.getRuleNamesMap().keySet().size());
-        assertTrue(ruleNamesService.getRuleNamesMap().keySet().contains("testPackage"));
-        assertEquals("Rule 1", ruleNamesService.getRuleNamesMap().get("testPackage").toArray()[0]);
-        assertEquals("Rule 2", ruleNamesService.getRuleNamesMap().get("testPackage").toArray()[1]);
+        assertEquals( 2, ruleNamesService.getRuleNames( path ).size() );
+        assertEquals( "Rule 1", ruleNamesService.getRuleNames( path ).get( 0 ) );
+        assertEquals( "Rule 2", ruleNamesService.getRuleNames( path ).get( 1 ) );
+
+        assertEquals( 2, ruleNamesService.getRuleNamesForPackage( path, "testPackage" ).size() );
+        assertEquals( "Rule 1", ruleNamesService.getRuleNamesForPackage( path, "testPackage" ).toArray()[ 0 ] );
+        assertEquals( "Rule 2", ruleNamesService.getRuleNamesForPackage( path, "testPackage" ).toArray()[ 1 ] );
+
+        assertEquals( 1, ruleNamesService.getRuleNamesMap( path ).keySet().size() );
+        assertTrue( ruleNamesService.getRuleNamesMap( path ).keySet().contains( "testPackage" ) );
+        assertEquals( "Rule 1", ruleNamesService.getRuleNamesMap( path ).get( "testPackage" ).toArray()[ 0 ] );
+        assertEquals( "Rule 2", ruleNamesService.getRuleNamesMap( path ).get( "testPackage" ).toArray()[ 1 ] );
     }
 }
