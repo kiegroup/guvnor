@@ -37,11 +37,12 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.events.RuleNameUpdateEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.rulenames.RuleNameUpdateEvent;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -78,6 +79,7 @@ public class Builder {
     private final static String DEFAULTPKG = "defaultpkg";
 
     private KieBuilder kieBuilder;
+    private final Project project;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
     private final Path moduleDirectory;
@@ -100,12 +102,14 @@ public class Builder {
 
     private KieContainer kieContainer;
 
-    public Builder( final Path moduleDirectory,
+    public Builder( final Project project,
+                    final Path moduleDirectory,
                     final GAV gav,
                     final IOService ioService,
                     final ProjectService projectService,
                     final Event<RuleNameUpdateEvent> ruleNameUpdateEvent,
                     final List<BuildValidationHelper> buildValidationHelpers ) {
+        this.project = project;
         this.moduleDirectory = moduleDirectory;
         this.gav = gav;
         this.ioService = ioService;
@@ -272,7 +276,7 @@ public class Builder {
 
         ruleNames.put( DEFAULTPKG, kieModuleMetaData.getRuleNamesInPackage( DEFAULTPKG ) );
 
-        ruleNameUpdateEvent.fire( new RuleNameUpdateEvent( ruleNames ) );
+        ruleNameUpdateEvent.fire( new RuleNameUpdateEvent( project, ruleNames ) );
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {

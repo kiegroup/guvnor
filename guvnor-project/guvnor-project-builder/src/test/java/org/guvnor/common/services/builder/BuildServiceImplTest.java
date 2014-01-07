@@ -32,20 +32,18 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.rulenames.RuleNameUpdateEvent;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.scanner.KieModuleMetaData;
-import org.uberfire.backend.server.util.Paths;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class BuildServiceImplTest {
 
@@ -64,13 +62,15 @@ public class BuildServiceImplTest {
     public void testBuilderSimpleKProject() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
+        final Project project = mock( Project.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         ruleNameUpdateEvent = mock( Event.class );
-        final Builder builder = new Builder( path,
+        final Builder builder = new Builder( project,
+                                             path,
                                              new GAV(),
                                              ioService,
                                              projectService,
@@ -87,13 +87,15 @@ public class BuildServiceImplTest {
     public void testBuilderKProjectHasDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
+        final Project project = mock( Project.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         ruleNameUpdateEvent = mock( Event.class );
-        final Builder builder = new Builder( path,
+        final Builder builder = new Builder( project,
+                                             path,
                                              new GAV(),
                                              ioService,
                                              projectService,
@@ -117,13 +119,15 @@ public class BuildServiceImplTest {
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
+        final Project project = mock( Project.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         ruleNameUpdateEvent = mock( Event.class );
-        final Builder builder = new Builder( path,
+        final Builder builder = new Builder( project,
+                                             path,
                                              new GAV(),
                                              ioService,
                                              projectService,
@@ -147,13 +151,15 @@ public class BuildServiceImplTest {
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
+        final Project project = mock( Project.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         ruleNameUpdateEvent = mock( Event.class );
-        final Builder builder = new Builder( path,
+        final Builder builder = new Builder( project,
+                                             path,
                                              new GAV(),
                                              ioService,
                                              projectService,
@@ -204,13 +210,15 @@ public class BuildServiceImplTest {
     public void testKProjectContainsXLS() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
+        final Project project = mock( Project.class );
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
         ruleNameUpdateEvent = mock( Event.class );
-        final Builder builder = new Builder( path,
+        final Builder builder = new Builder( project,
+                                             path,
                                              new GAV(),
                                              ioService,
                                              projectService,
