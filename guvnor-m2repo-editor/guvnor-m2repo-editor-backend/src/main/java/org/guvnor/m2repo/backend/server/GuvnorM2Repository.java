@@ -215,12 +215,12 @@ public class GuvnorM2Repository {
                                          "default",
                                          localRepositoryUrl )
                     .setPolicy( true,
-                                new RepositoryPolicy( false,
-                                                      RepositoryPolicy.UPDATE_POLICY_NEVER,
+                                new RepositoryPolicy( true,
+                                                      RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                       RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
                     .setPolicy( false,
-                                new RepositoryPolicy( false,
-                                                      RepositoryPolicy.UPDATE_POLICY_NEVER,
+                                new RepositoryPolicy( true,
+                                                      RepositoryPolicy.UPDATE_POLICY_ALWAYS,
                                                       RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
 
         } catch ( MalformedURLException e ) {
