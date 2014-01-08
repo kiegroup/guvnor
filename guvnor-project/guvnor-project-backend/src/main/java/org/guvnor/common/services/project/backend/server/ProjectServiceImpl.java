@@ -591,7 +591,7 @@ public class ProjectServiceImpl
 
             //Raise an event for the new project
             final Project project = resolveProject( projectRootPath );
-            newProjectEvent.fire( new NewProjectEvent( project ) );
+            newProjectEvent.fire( new NewProjectEvent( project, sessionInfo ) );
 
             //Create a default workspace based on the GAV
             final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getGroupId().split( "\\.",
@@ -856,7 +856,7 @@ public class ProjectServiceImpl
             pomService.save( newPathToPomXML, content, null, comment );
             ioService.endBatch();
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
-            newProjectEvent.fire( new NewProjectEvent( newProject ) );
+            newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );

@@ -17,6 +17,7 @@ package org.guvnor.common.services.project.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.rpc.SessionInfo;
 
 /**
  * An event representing creation of a new Project
@@ -25,16 +26,22 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class NewProjectEvent {
 
     private Project project;
+    private SessionInfo sessionInfo;
 
     public NewProjectEvent() {
     }
 
-    public NewProjectEvent( final Project project ) {
+    public NewProjectEvent( final Project project,
+                            final SessionInfo sessionInfo ) {
         this.project = project;
+        this.sessionInfo = sessionInfo;
     }
 
     public Project getProject() {
         return project;
     }
 
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
 }
