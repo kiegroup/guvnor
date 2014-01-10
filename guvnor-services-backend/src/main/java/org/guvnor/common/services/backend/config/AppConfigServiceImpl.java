@@ -19,11 +19,13 @@ package org.guvnor.common.services.backend.config;
 import java.util.Date;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.commons.services.cdi.ApplicationStarted;
 
 @Service
 @ApplicationScoped
@@ -33,6 +35,10 @@ public class AppConfigServiceImpl implements AppConfigService {
 
     @Inject
     private ApplicationPreferencesLoader preferencesLoader;
+
+    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
+        loadPreferences();
+    }
 
     @Override
     public Map<String, String> loadPreferences() {
