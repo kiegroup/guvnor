@@ -118,6 +118,7 @@ public class BuildServiceImpl
     }
 
     private BuildResults doBuild( final Project project ) {
+        cache.invalidateCache(project);
         final Builder builder = cache.assertBuilder( project );
         final BuildResults results = builder.build();
         return results;
