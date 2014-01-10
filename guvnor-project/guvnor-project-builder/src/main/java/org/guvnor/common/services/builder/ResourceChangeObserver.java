@@ -143,7 +143,6 @@ public class ResourceChangeObserver {
                     || path.getFileName().endsWith( ".drl" )
                     || path.getFileName().endsWith( ".gdst" )
                     || path.getFileName().endsWith( ".rdrl" )
-                    || path.getFileName().endsWith( ".bpmn2" )
                 );
     }
 
