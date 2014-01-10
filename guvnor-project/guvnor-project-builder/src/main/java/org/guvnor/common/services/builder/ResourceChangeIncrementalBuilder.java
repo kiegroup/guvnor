@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
+import org.uberfire.commons.services.cdi.ApplicationStarted;
 
 /**
  * Listener for changes to project resources to handle incremental builds
@@ -73,6 +75,10 @@ public class ResourceChangeIncrementalBuilder {
     @PostConstruct
     private void setup() {
         executor = executorServiceProducer.getExecutorService();
+        isIncrementalEnabled = isIncrementalBuildEnabled();
+    }
+
+    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
         isIncrementalEnabled = isIncrementalBuildEnabled();
     }
 
