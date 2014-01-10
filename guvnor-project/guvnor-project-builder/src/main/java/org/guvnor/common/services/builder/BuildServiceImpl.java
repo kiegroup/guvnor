@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -80,7 +81,10 @@ public class BuildServiceImpl
         } catch ( Exception e ) {
             logger.error( e.getMessage(),
                           e );
-            throw ExceptionUtilities.handleException( e );
+
+            // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
+            // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
+            return buildExceptionResults(e);
         }
     }
 
@@ -111,10 +115,29 @@ public class BuildServiceImpl
             return results;
 
         } catch ( Exception e ) {
-            logger.error( e.getMessage(),
-                          e );
-            throw ExceptionUtilities.handleException( e );
+            logger.error( e.getMessage(), e );
+
+            // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
+            // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
+            return buildExceptionResults(e);
         }
+    }
+
+    /**
+     * When an exception is produced by the builder service, this method is uses to generate an instance of
+     * <code>org.guvnor.common.services.project.builder.model.BuildResults</code> in generated with the exception details.
+     *
+     * @param e The error exception.
+     * @return An instance of BuildResults with the exception details.
+     */
+    private BuildResults buildExceptionResults(Exception e) {
+        BuildResults exceptionResults = new BuildResults();
+        BuildMessage exceptionMessage = new BuildMessage();
+        exceptionMessage.setLevel(BuildMessage.Level.ERROR);
+        exceptionMessage.setText(e.getMessage());
+        exceptionResults.addBuildMessage(exceptionMessage);
+
+        return exceptionResults;
     }
 
     private BuildResults doBuild( final Project project ) {
