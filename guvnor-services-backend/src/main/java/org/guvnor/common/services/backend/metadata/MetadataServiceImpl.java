@@ -43,6 +43,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreAttributes;
 import org.uberfire.io.attribute.DublinCoreAttributesUtil;
 import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.BasicFileAttributesUtil;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.NoSuchFileException;
@@ -102,7 +103,8 @@ public class MetadataServiceImpl implements MetadataService {
             checkNotNull( "_attrs", _attrs );
             checkNotNull( "metadata", metadata );
 
-            Map<String, Object> attrs = DublinCoreAttributesUtil.cleanup( _attrs );
+            Map<String, Object> attrs = BasicFileAttributesUtil.cleanup( _attrs );
+            attrs = DublinCoreAttributesUtil.cleanup( attrs );
             attrs = DiscussionAttributesUtil.cleanup( attrs );
             attrs = OtherMetaAttributesUtil.cleanup( attrs );
 
