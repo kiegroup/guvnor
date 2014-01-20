@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.guvnor.inbox.client.editor.InboxEditor;
+import org.guvnor.inbox.client.editor.InboxPagedTable;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
 
@@ -41,9 +41,9 @@ public class InboxView
     public void init( final String inboxName,
                       final Caller<InboxService> inboxService,
                       final InboxPresenter presenter ) {
-        final InboxEditor table = new InboxEditor( inboxName,
-                                                   inboxService,
-                                                   presenter );
+        final InboxPagedTable table = new InboxPagedTable( inboxService,
+                                                           inboxName,
+                                                           presenter );
         layout.add( table );
     }
 
