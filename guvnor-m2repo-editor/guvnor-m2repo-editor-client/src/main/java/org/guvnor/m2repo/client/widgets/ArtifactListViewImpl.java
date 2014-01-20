@@ -28,6 +28,7 @@ import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.tables.ResizableHeader;
 
 public class ArtifactListViewImpl
         extends Composite
