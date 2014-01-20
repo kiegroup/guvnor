@@ -22,7 +22,10 @@
 
 
   <gwt:VerticalPanel>
-    <gwt:ToggleButton ui:field="columnPickerButton"/>
+    <gwt:HorizontalPanel>
+      <gwt:Button ui:field="refreshButton" text='Refresh'/>
+      <gwt:ToggleButton ui:field="columnPickerButton"/>
+    </gwt:HorizontalPanel>
     <b:CellTable ui:field="cellTable"/>
     <gb:SimplePager location="LEFT" ui:field="pager"/>
   </gwt:VerticalPanel>

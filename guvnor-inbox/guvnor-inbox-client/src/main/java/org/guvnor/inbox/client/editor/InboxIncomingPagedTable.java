@@ -18,6 +18,7 @@ package org.guvnor.inbox.client.editor;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import org.guvnor.inbox.client.InboxPresenter;
 import org.guvnor.inbox.client.resources.i18n.InboxConstants;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRow;
@@ -33,8 +34,9 @@ import org.uberfire.client.tables.SortableHeaderGroup;
 public class InboxIncomingPagedTable extends InboxPagedTable implements IsInboxIncomingPagedTable {
 
     public InboxIncomingPagedTable( final Caller<InboxService> inboxService,
-                                    final String inboxName ) {
-        super( inboxService, inboxName );
+                                    final String inboxName,
+                                    final InboxPresenter presenter ) {
+        super( inboxService, inboxName, presenter );
     }
 
     @Override

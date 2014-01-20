@@ -18,10 +18,14 @@ package org.guvnor.inbox.client.editor;
 
 import java.util.Date;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
@@ -30,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+import org.guvnor.inbox.client.InboxPresenter;
 import org.guvnor.inbox.client.resources.i18n.InboxConstants;
 import org.guvnor.inbox.client.resources.images.ImageResources;
 import org.guvnor.inbox.model.InboxPageRequest;
@@ -66,8 +71,26 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
     private static final int PAGE_SIZE = 10;
 
     public InboxPagedTable( final Caller<InboxService> inboxService,
-                            final String inboxName ) {
+                            final String inboxName,
+                            final InboxPresenter presenter ) {
+
         super( PAGE_SIZE );
+
+        Column<InboxPageRow, String> openColumn = new Column<InboxPageRow, String>( new ButtonCell() ) {
+            public String getValue( final InboxPageRow row ) {
+                return InboxConstants.INSTANCE.open();
+            }
+        };
+
+        openColumn.setFieldUpdater( new FieldUpdater<InboxPageRow, String>() {
+            public void update( final int index,
+                                final InboxPageRow row,
+                                final String value ) {
+                presenter.open( row );
+            }
+        } );
+
+        addColumn( openColumn, new TextHeader( InboxConstants.INSTANCE.open() ) );
 
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged( HasData<InboxPageRow> display ) {
@@ -149,5 +172,10 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> implements
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
+    }
+
+    @UiHandler("refreshButton")
+    void refresh( ClickEvent e ) {
+        refresh();
     }
 }
