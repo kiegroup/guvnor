@@ -163,15 +163,18 @@ public class Builder {
         final KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
-                final Class clazz = kieModuleMetaData.getClass( packageName, className );
-                final TypeSource typeSource = getClassSource( kieModuleMetaData, clazz );
-                if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
-                    try {
+                try {
+                    final Class clazz = kieModuleMetaData.getClass( packageName,
+                                                                    className );
+                    final TypeSource typeSource = getClassSource( kieModuleMetaData,
+                                                                  clazz );
+                    if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
                         verifyExternalClass( clazz );
-                    } catch ( Throwable e ) {
-                        results.addBuildMessage( makeMessage(
-                                MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON, clazz.getName() ), e ) );
                     }
+                } catch ( Throwable e ) {
+                    results.addBuildMessage( makeMessage( MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
+                                                                                className ),
+                                                          e ) );
                 }
             }
         }
