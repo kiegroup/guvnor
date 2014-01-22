@@ -125,7 +125,7 @@ public class Builder {
         visitPaths( directoryStream );
     }
 
-    public BuildResults build() {
+    public synchronized BuildResults build() {
         //KieBuilder is not re-usable for successive "full" builds
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
         final Results kieResults = kieBuilder.buildAll().getResults();
@@ -199,7 +199,7 @@ public class Builder {
         clazz.getDeclaredAnnotations();
     }
 
-    public IncrementalBuildResults addResource( final Path resource ) {
+    public synchronized IncrementalBuildResults addResource( final Path resource ) {
         checkNotNull( "resource",
                       resource );
 
@@ -279,7 +279,7 @@ public class Builder {
         ruleNameUpdateEvent.fire( new RuleNameUpdateEvent( project, ruleNames ) );
     }
 
-    public IncrementalBuildResults deleteResource( final Path resource ) {
+    public synchronized IncrementalBuildResults deleteResource( final Path resource ) {
         checkNotNull( "resource",
                       resource );
         //The file has already been deleted so we can't check if the Path is a file or folder :(
@@ -319,11 +319,11 @@ public class Builder {
         return results;
     }
 
-    public IncrementalBuildResults updateResource( final Path resource ) {
+    public synchronized IncrementalBuildResults updateResource( final Path resource ) {
         return addResource( resource );
     }
 
-    public IncrementalBuildResults applyBatchResourceChanges( final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes ) {
+    public synchronized IncrementalBuildResults applyBatchResourceChanges( final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes ) {
         checkNotNull( "changes", changes );
 
         //Check a full build has been performed
