@@ -7,17 +7,21 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 
 @Service
 public class CopyServiceImpl implements CopyService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( CopyServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
@@ -37,10 +41,10 @@ public class CopyServiceImpl implements CopyService {
                       final String newName,
                       final String comment ) {
         try {
-            System.out.println( "USER:" + identity.getName() + " COPYING asset [" + path.getFileName() + "] to [" + newName + "]" );
+            LOGGER.info( "User:" + identity.getName() + " copying file [" + path.getFileName() + "] to [" + newName + "]" );
 
             String originalFileName = path.getFileName().substring( path.getFileName().lastIndexOf( "/" ) + 1 );
-            final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+            final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
             final String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName + extension;
             final String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName + extension;
             final Path targetPath = PathFactory.newPath( path.getFileSystem(),

@@ -6,6 +6,8 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -15,6 +17,8 @@ import org.uberfire.security.Identity;
 
 @Service
 public class DeleteServiceImpl implements DeleteService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( DeleteServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
@@ -30,7 +34,7 @@ public class DeleteServiceImpl implements DeleteService {
     public void delete( final Path path,
                         final String comment ) {
         try {
-            System.out.println( "USER:" + identity.getName() + " DELETING asset [" + path.getFileName() + "]" );
+            LOGGER.info( "User:" + identity.getName() + " deleting file [" + path.getFileName() + "]" );
 
             ioService.delete( Paths.convert( path ),
                               new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
