@@ -6,6 +6,8 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -15,6 +17,8 @@ import org.uberfire.security.Identity;
 
 @Service
 public class RenameServiceImpl implements RenameService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( RenameServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
@@ -31,12 +35,12 @@ public class RenameServiceImpl implements RenameService {
                         final String newName,
                         final String comment ) {
         try {
-            System.out.println( "USER:" + identity.getName() + " RENAMING asset [" + path.getFileName() + "] to [" + newName + "]" );
+            LOGGER.info( "User:" + identity.getName() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
 
             final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
             String originalFileName = _path.getFileName().toString();
-            final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+            final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
             final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
 
             ioService.move( _path,
