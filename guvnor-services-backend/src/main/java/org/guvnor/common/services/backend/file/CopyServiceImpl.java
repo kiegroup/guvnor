@@ -1,6 +1,7 @@
 package org.guvnor.common.services.backend.file;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,6 +35,9 @@ public class CopyServiceImpl implements CopyService {
     private SessionInfo sessionInfo;
 
     @Inject
+    private Instance<CopyHelper> helpers;
+
+    @Inject
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
     @Override
@@ -51,9 +55,21 @@ public class CopyServiceImpl implements CopyService {
                                                          targetName,
                                                          targetURI );
 
+            ioService.startBatch();
+
             ioService.copy( Paths.convert( path ),
                             Paths.convert( targetPath ),
                             new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+
+            //Delegate additional changes required for a copy to applicable Helpers
+            for ( CopyHelper helper : helpers ) {
+                if ( helper.supports( targetPath ) ) {
+                    helper.postProcess( path,
+                                        targetPath );
+                }
+            }
+
+            ioService.endBatch();
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
                                                                targetPath,

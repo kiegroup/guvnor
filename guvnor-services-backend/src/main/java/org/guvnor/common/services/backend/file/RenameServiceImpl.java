@@ -1,5 +1,6 @@
 package org.guvnor.common.services.backend.file;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,6 +31,9 @@ public class RenameServiceImpl implements RenameService {
     @Inject
     private SessionInfo sessionInfo;
 
+    @Inject
+    private Instance<RenameHelper> helpers;
+
     @Override
     public Path rename( final Path path,
                         final String newName,
@@ -42,10 +46,26 @@ public class RenameServiceImpl implements RenameService {
             String originalFileName = _path.getFileName().toString();
             final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
             final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
+            final Path targetPath = Paths.convert( _target );
+
+            ioService.startBatch();
 
             ioService.move( _path,
                             _target,
-                            new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                            new CommentedOption( sessionInfo.getId(),
+                                                 identity.getName(),
+                                                 null,
+                                                 comment ) );
+
+            //Delegate additional changes required for a rename to applicable Helpers
+            for ( RenameHelper helper : helpers ) {
+                if ( helper.supports( targetPath ) ) {
+                    helper.postProcess( path,
+                                        targetPath );
+                }
+            }
+
+            ioService.endBatch();
 
             return Paths.convert( _target );
 
