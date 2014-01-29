@@ -169,9 +169,9 @@ public class FileServlet extends HttpServlet {
                 } else {
                     return NO_VALID_POM;
                 }
+                fileData.reset();
             }
 
-            fileData.reset();
             m2RepoService.deployJar( fileData, gav );
             uploadItem.getFile().getInputStream().close();
 
