@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.guvnor.m2repo.client.widgets;
 
 import java.util.Comparator;
@@ -17,7 +32,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -27,7 +41,6 @@ import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.tables.ResizableHeader;
 
 public class ArtifactListViewImpl
@@ -58,8 +71,6 @@ public class ArtifactListViewImpl
     @UiField
     public SimplePanel listContainer;
 
-    protected ColumnSortEvent.ListHandler<JarListPageRow> sortHandler;
-
     protected String currentFilter = "";
 
     @PostConstruct
@@ -79,14 +90,10 @@ public class ArtifactListViewImpl
         emptyTable.setStyleName( "" );
         cellTable.setEmptyTableWidget( emptyTable );
 
-        // Attach a column sort handler to the ListDataProvider to sort the list.
-        sortHandler = new ColumnSortEvent.ListHandler<JarListPageRow>( presenter.getDataProvider().getList() );
-        cellTable.addColumnSortHandler( sortHandler );
-
         // Create a Pager to control the table.
-
+        pager.setRangeLimited( false );
         pager.setDisplay( cellTable );
-        pager.setPageSize( 10 );
+        pager.setPageSize( PAGE_SIZE );
 
         initTableColumns();
 
@@ -96,102 +103,66 @@ public class ArtifactListViewImpl
     public void addColumn( final Column<JarListPageRow, ?> column,
                            final Comparator<JarListPageRow> comparator,
                            final String columnName ) {
-
-        if ( comparator != null ) {
-            sortHandler.setComparator( column, comparator );
-            column.setSortable( true );
-        }
-        cellTable.addColumn( column, new ResizableHeader( columnName, cellTable, column ) );
+        cellTable.addColumn( column, new ResizableHeader( columnName,
+                                                          cellTable,
+                                                          column ) );
     }
 
     private void initTableColumns() {
-        {
-            final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>( new TextCell() ) {
-                @Override
-                public String getValue( JarListPageRow row ) {
-                    return row.getName();
-                }
-            };
-            nameColumn.setSortable( true );
-            sortHandler.setComparator( nameColumn, new Comparator<JarListPageRow>() {
-                @Override
-                public int compare( final JarListPageRow o1,
-                                    final JarListPageRow o2 ) {
-                    return o1.getName().compareTo( o2.getName() );
-                }
-            } );
-            cellTable.addColumn( nameColumn, new ResizableHeader( "Name", cellTable, nameColumn ) );
-        }
-        {
-            final Column<JarListPageRow, String> pathColumn = new Column<JarListPageRow, String>( new TextCell() ) {
-                @Override
-                public String getValue( JarListPageRow row ) {
-                    return row.getPath();
-                }
-            };
-            pathColumn.setSortable( true );
-            sortHandler.setComparator( pathColumn, new Comparator<JarListPageRow>() {
-                @Override
-                public int compare( final JarListPageRow o1,
-                                    final JarListPageRow o2 ) {
-                    return o1.getPath().compareTo( o2.getPath() );
-                }
-            } );
-            cellTable.addColumn( pathColumn, new ResizableHeader( "Path", cellTable, pathColumn ) );
-        }
-        {
-            final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-                @Override
-                public Date getValue( JarListPageRow row ) {
-                    return row.getLastModified();
-                }
-            };
-            lastModifiedColumn.setSortable( true );
-            sortHandler.setComparator( lastModifiedColumn, new Comparator<JarListPageRow>() {
-                @Override
-                public int compare( final JarListPageRow o1,
-                                    final JarListPageRow o2 ) {
-                    return o1.getLastModified().compareTo( o2.getLastModified() );
-                }
-            } );
-            cellTable.addColumn( lastModifiedColumn, new ResizableHeader( "LastModified", cellTable, lastModifiedColumn ) );
-        }
-        {
-            // Add "View kjar detail" button column
-            final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() {{
-                setSize( ButtonSize.MINI );
-            }} ) {
-                public String getValue( JarListPageRow row ) {
-                    return "Open";
-                }
-            };
-            openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-                public void update( int index,
-                                    JarListPageRow row,
-                                    String value ) {
-                    m2RepoService.call( new RemoteCallback<String>() {
-                        @Override
-                        public void callback( final String response ) {
-                            JarDetailPopup popup = new JarDetailPopup( response );
-                            popup.show();
-                        }
-                    } ).loadPOMStringFromJar( row.getPath() );
-                }
-            } );
-            cellTable.addColumn( openColumn, new ResizableHeader( "Open",
-                                                                  cellTable,
-                                                                  openColumn ) );
-        }
-    }
+        final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+            @Override
+            public String getValue( JarListPageRow row ) {
+                return row.getName();
+            }
+        };
+        cellTable.addColumn( nameColumn, new ResizableHeader( "Name",
+                                                              cellTable,
+                                                              nameColumn ) );
 
-    @Override
-    public void showBusyIndicator( String message ) {
-        BusyPopup.showMessage( message );
-    }
+        final Column<JarListPageRow, String> pathColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+            @Override
+            public String getValue( JarListPageRow row ) {
+                return row.getPath();
+            }
+        };
+        cellTable.addColumn( pathColumn, new ResizableHeader( "Path",
+                                                              cellTable,
+                                                              pathColumn ) );
 
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
+        final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+            @Override
+            public Date getValue( JarListPageRow row ) {
+                return row.getLastModified();
+            }
+        };
+        cellTable.addColumn( lastModifiedColumn, new ResizableHeader( "LastModified",
+                                                                      cellTable,
+                                                                      lastModifiedColumn ) );
+
+        // Add "View kjar detail" button column
+        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() {{
+            setSize( ButtonSize.MINI );
+        }} ) {
+            public String getValue( JarListPageRow row ) {
+                return "Open";
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            public void update( int index,
+                                JarListPageRow row,
+                                String value ) {
+                m2RepoService.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( final String response ) {
+                        JarDetailPopup popup = new JarDetailPopup( response );
+                        popup.show();
+                    }
+                } ).loadPOMStringFromJar( row.getPath() );
+            }
+        } );
+        cellTable.addColumn( openColumn, new ResizableHeader( "Open",
+                                                              cellTable,
+                                                              openColumn ) );
     }
 
     @Override
@@ -204,13 +175,4 @@ public class ArtifactListViewImpl
         this.currentFilter = currentFilter;
     }
 
-    @Override
-    public int getPageStart() {
-        return pager.getPageStart();
-    }
-
-    @Override
-    public int getPageSize() {
-        return PAGE_SIZE;
-    }
 }

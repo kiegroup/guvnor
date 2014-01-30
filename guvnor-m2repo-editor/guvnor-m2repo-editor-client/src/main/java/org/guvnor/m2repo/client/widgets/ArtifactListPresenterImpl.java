@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.m2repo.client.widgets;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.Range;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -37,14 +37,21 @@ public class ArtifactListPresenterImpl
     @Inject
     private Caller<M2RepoService> m2RepoService;
 
-    private ListDataProvider<JarListPageRow> dataProvider;
+    private AsyncDataProvider<JarListPageRow> dataProvider;
 
     @PostConstruct
     public void init() {
-        dataProvider = new ListDataProvider<JarListPageRow>() {
+        refresh();
+        view.init( this );
+    }
+
+    @Override
+    public void refresh() {
+        dataProvider = new AsyncDataProvider<JarListPageRow>() {
             protected void onRangeChanged( HasData<JarListPageRow> display ) {
-                PageRequest request = new PageRequest( view.getPageStart(),
-                                                       view.getPageSize() );
+                final Range range = display.getVisibleRange();
+                PageRequest request = new PageRequest( range.getStart(),
+                                                       range.getLength() );
 
                 m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                     @Override
@@ -57,22 +64,6 @@ public class ArtifactListPresenterImpl
                 } ).listJars( request, view.getCurrentFilter() );
             }
         };
-        view.init( this );
-    }
-
-    public void refresh() {
-        m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
-            @Override
-            public void callback( final PageResponse<JarListPageRow> response ) {
-                dataProvider.setList( response.getPageRowList() );
-                dataProvider.refresh();
-            }
-        } ).listJars( new PageRequest( 0, view.getPageSize() ), view.getCurrentFilter() );
-    }
-
-    @Override
-    public ListDataProvider<JarListPageRow> getDataProvider() {
-        return dataProvider;
     }
 
     @Override
