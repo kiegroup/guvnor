@@ -17,9 +17,13 @@
 package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import org.apache.commons.fileupload.FileItem;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -193,5 +197,51 @@ public class M2RepositoryTest {
         
         assertNotNull(pom);
         assertTrue(pom.length() > 0);*/
+    }
+
+    @Test
+    public void testUploadFileWithGAV() throws Exception {
+    	
+    	//Creat a mock FileItem setting an InputStream to test with
+    	@SuppressWarnings("serial") 
+    	class TestFileItem implements FileItem{
+			public InputStream getInputStream() throws IOException {
+				return this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+			}
+			public String getContentType() { return null; }
+			public String getName() { return null; }
+			public boolean isInMemory() { return false; }
+			public long getSize() { return 0; }
+			public byte[] get() { return null;}
+			public String getString(String encoding) throws UnsupportedEncodingException { return null; }
+			public String getString() { return null; }
+			public void write(File file) throws Exception { }
+			public void delete() { }
+			public String getFieldName() { return null; }
+			public void setFieldName(String name) { }
+			public boolean isFormField() { return false; }
+			public void setFormField(boolean state) { }
+			public OutputStream getOutputStream() throws IOException { return null; }
+    	}
+    	//Create a shell M2RepoService and set the M2Repository
+        M2RepoServiceImpl service = new M2RepoServiceImpl();
+        java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField("repository");
+        repositoryField.setAccessible(true);
+        repositoryField.set(service, new GuvnorM2Repository());
+        
+        FileServlet servlet = new FileServlet();
+        
+        //Set the repository service created above in the FileServlet
+        java.lang.reflect.Field m2RepoServiceField = FileServlet.class.getDeclaredField("m2RepoService");
+        m2RepoServiceField.setAccessible(true);
+        m2RepoServiceField.set(servlet, service);
+        
+        FormData uploadItem = new FormData();
+        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
+        uploadItem.setGav(gav);
+        FileItem file = new TestFileItem();
+        uploadItem.setFile(file);
+        
+        assert(servlet.uploadFile(uploadItem).equals("OK"));
     }
 }
