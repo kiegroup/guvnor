@@ -41,7 +41,6 @@ public class ArtifactListPresenterImpl
 
     @PostConstruct
     public void init() {
-        refresh();
         view.init( this );
     }
 
@@ -64,11 +63,7 @@ public class ArtifactListPresenterImpl
                 } ).listJars( request, view.getCurrentFilter() );
             }
         };
-    }
-
-    @Override
-    public void addDataDisplay( final HasData<JarListPageRow> display ) {
-        dataProvider.addDataDisplay( display );
+        dataProvider.addDataDisplay( view.getDisplay() );
     }
 
     public void search( final String filter ) {

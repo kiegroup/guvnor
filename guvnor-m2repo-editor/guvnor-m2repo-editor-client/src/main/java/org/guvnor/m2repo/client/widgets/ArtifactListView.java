@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.model.JarListPageRow;
 
 public interface ArtifactListView extends IsWidget {
@@ -32,4 +33,7 @@ public interface ArtifactListView extends IsWidget {
     void addColumn( final Column<JarListPageRow, ?> column,
                     final Comparator<JarListPageRow> comparable,
                     final String name );
+
+    HasData<JarListPageRow> getDisplay();
+
 }

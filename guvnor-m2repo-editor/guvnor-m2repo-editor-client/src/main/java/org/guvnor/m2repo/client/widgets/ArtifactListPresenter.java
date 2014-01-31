@@ -15,12 +15,7 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
-import com.google.gwt.view.client.HasData;
-import org.guvnor.m2repo.model.JarListPageRow;
-
 public interface ArtifactListPresenter {
-
-    void addDataDisplay( HasData<JarListPageRow> display );
 
     ArtifactListView getView();
 
