@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -91,13 +92,10 @@ public class ArtifactListViewImpl
         cellTable.setEmptyTableWidget( emptyTable );
 
         // Create a Pager to control the table.
-        pager.setRangeLimited( false );
         pager.setDisplay( cellTable );
         pager.setPageSize( PAGE_SIZE );
 
         initTableColumns();
-
-        presenter.addDataDisplay( cellTable );
     }
 
     public void addColumn( final Column<JarListPageRow, ?> column,
@@ -173,6 +171,11 @@ public class ArtifactListViewImpl
     @Override
     public void setCurrentFilter( final String currentFilter ) {
         this.currentFilter = currentFilter;
+    }
+
+    @Override
+    public HasData<JarListPageRow> getDisplay() {
+        return this.cellTable;
     }
 
 }
