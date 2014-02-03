@@ -16,15 +16,9 @@
   <description>Guvnor - Workingset API</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
   </dependencies>
 
