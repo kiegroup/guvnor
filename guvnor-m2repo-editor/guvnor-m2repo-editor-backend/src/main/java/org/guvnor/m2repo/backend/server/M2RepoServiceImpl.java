@@ -17,7 +17,6 @@
 package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +25,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.backend.server.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -72,13 +69,8 @@ public class M2RepoServiceImpl implements M2RepoService,
 
     @Override
     public GAV loadGAVFromJar( String path ) {
-        try {
-            return pomContentHandler.toModel( repository.loadPOMFromJar( path ) ).getGav();
-        } catch ( IOException e ) {
-            throw ExceptionUtilities.handleException( e );
-        } catch ( XmlPullParserException e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        final GAV gav = repository.loadGAVFromJar( path );
+        return gav;
     }
 
     @Override
