@@ -23,10 +23,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -108,9 +110,9 @@ public class GuvnorM2Repository {
 
     public void deployArtifact( final InputStream inputStream,
                                 final GAV gav ) {
+        //Write JAR to temporary file for deployment
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ),
                                  toFileName( gav,
-                                             null,
                                              "jar" ) );
 
         try {
@@ -131,26 +133,46 @@ public class GuvnorM2Repository {
             throw new RuntimeException( e );
         }
 
-        //Prepare pom file
-        String pom = loadPOMFromJarInternal( new File( jarFile.getPath() ) );
-        if ( pom == null ) {
-            pom = generatePOM( gav );
-            jarFile = appendPOMToJar( pom,
+        //Write pom.xml to JAR if it doesn't already exist
+        String pomXML = loadPOMFromJarInternal( new File( jarFile.getPath() ) );
+        if ( pomXML == null ) {
+            pomXML = generatePOM( gav );
+            jarFile = appendPOMToJar( pomXML,
                                       jarFile.getPath(),
                                       gav );
         }
-        File pomFile = new File( System.getProperty( "java.io.tmpdir" ),
-                                 toFileName( gav,
-                                             null,
-                                             "pom" ) );
+
+        //Write pom.properties to JAR if it doesn't already exist
+        String pomProperties = loadGAVFromJarInternal( new File( jarFile.getPath() ) );
+        if ( pomProperties == null ) {
+            pomProperties = generatePomProperties( gav );
+            jarFile = appendPomPropertiesToJar( pomProperties,
+                                                jarFile.getPath(),
+                                                gav );
+        }
+
+        deployArtifact( gav,
+                        pomXML,
+                        jarFile );
+    }
+
+    private void deployArtifact( final GAV gav,
+                                 final String pomXML,
+                                 final File jarFile ) {
+        //Write pom.xml to temporary file for deployment
+        final File pomXMLFile = new File( System.getProperty( "java.io.tmpdir" ),
+                                          toFileName( gav,
+                                                      "pom.xml" ) );
+
         try {
-            if ( !pomFile.exists() ) {
-                pomFile.getParentFile().mkdirs();
-                pomFile.createNewFile();
+            if ( !pomXMLFile.exists() ) {
+                pomXMLFile.getParentFile().mkdirs();
+                pomXMLFile.createNewFile();
             }
 
-            FileOutputStream fos = new FileOutputStream( pomFile );
-            IOUtils.write( pom, fos );
+            FileOutputStream fos = new FileOutputStream( pomXMLFile );
+            IOUtils.write( pomXML,
+                           fos );
 
             fos.flush();
             fos.close();
@@ -158,29 +180,25 @@ public class GuvnorM2Repository {
             throw new RuntimeException( e );
         }
 
-        deployArtifact( gav, jarFile, pomFile );
-    }
-
-    public void deployArtifact( final GAV gav,
-                                final File jarFile,
-                                final File pomfile ) {
+        //JAR Artifact
         Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(),
                                                     gav.getArtifactId(),
                                                     "jar",
                                                     gav.getVersion() );
         jarArtifact = jarArtifact.setFile( jarFile );
 
-        Artifact pomArtifact = new SubArtifact( jarArtifact,
-                                                "",
-                                                "pom" );
-        pomArtifact = pomArtifact.setFile( pomfile );
+        //pom.xml Artifact
+        Artifact pomXMLArtifact = new SubArtifact( jarArtifact,
+                                                   "",
+                                                   "pom" );
+        pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
 
-        // install into local repository as it's preferred when loading kjars into KieContainer
+        //Install into local repository
         try {
-            InstallRequest installRequest = new InstallRequest();
+            final InstallRequest installRequest = new InstallRequest();
             installRequest
                     .addArtifact( jarArtifact )
-                    .addArtifact( pomArtifact );
+                    .addArtifact( pomXMLArtifact );
 
             Aether.getAether().getSystem().install( Aether.getAether().getSession(),
                                                     installRequest );
@@ -188,13 +206,14 @@ public class GuvnorM2Repository {
             throw new RuntimeException( e );
         }
 
-        DeployRequest deployRequest = new DeployRequest();
-        deployRequest
-                .addArtifact( jarArtifact )
-                .addArtifact( pomArtifact )
-                .setRepository( getGuvnorM2Repository() );
-
+        //Deploy into remote repository
         try {
+            DeployRequest deployRequest = new DeployRequest();
+            deployRequest
+                    .addArtifact( jarArtifact )
+                    .addArtifact( pomXMLArtifact )
+                    .setRepository( getGuvnorM2Repository() );
+
             Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
                                                    deployRequest );
         } catch ( DeploymentException e ) {
@@ -279,7 +298,9 @@ public class GuvnorM2Repository {
         return loadPOMFromJarInternal( zip );
     }
 
-    public static String loadPOMFromJarInternal( final File file ) {
+    private static String loadPOMFromJarInternal( final File file ) {
+        InputStream is = null;
+        InputStreamReader isr = null;
         try {
             ZipFile zip = new ZipFile( file );
 
@@ -287,9 +308,8 @@ public class GuvnorM2Repository {
                 ZipEntry entry = (ZipEntry) e.nextElement();
 
                 if ( entry.getName().startsWith( "META-INF/maven" ) && entry.getName().endsWith( "pom.xml" ) ) {
-                    InputStream is = zip.getInputStream( entry );
-
-                    InputStreamReader isr = new InputStreamReader( is, "UTF-8" );
+                    is = zip.getInputStream( entry );
+                    isr = new InputStreamReader( is, "UTF-8" );
                     StringBuilder sb = new StringBuilder();
                     for ( int c = isr.read(); c != -1; c = isr.read() ) {
                         sb.append( (char) c );
@@ -301,6 +321,84 @@ public class GuvnorM2Repository {
             log.error( e.getMessage() );
         } catch ( IOException e ) {
             log.error( e.getMessage() );
+        } finally {
+            if ( isr != null ) {
+                try {
+                    isr.close();
+                } catch ( IOException e ) {
+                }
+            }
+            if ( is != null ) {
+                try {
+                    is.close();
+                } catch ( IOException e ) {
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public GAV loadGAVFromJar( final String jarPath ) {
+        File zip = new File( M2_REPO_DIR,
+                             jarPath );
+
+        try {
+            final String pomProperties = loadGAVFromJarInternal( zip );
+
+            final Properties props = new Properties();
+            props.load( new StringReader( pomProperties ) );
+
+            final String groupId = props.getProperty( "groupId" );
+            final String artifactId = props.getProperty( "artifactId" );
+            final String version = props.getProperty( "version" );
+
+            return new GAV( groupId,
+                            artifactId,
+                            version );
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        }
+
+        return null;
+    }
+
+    private String loadGAVFromJarInternal( final File file ) {
+        InputStream is = null;
+        InputStreamReader isr = null;
+        try {
+            ZipFile zip = new ZipFile( file );
+
+            for ( Enumeration e = zip.entries(); e.hasMoreElements(); ) {
+                ZipEntry entry = (ZipEntry) e.nextElement();
+
+                if ( entry.getName().startsWith( "META-INF/maven" ) && entry.getName().endsWith( "pom.properties" ) ) {
+                    is = zip.getInputStream( entry );
+                    isr = new InputStreamReader( is, "UTF-8" );
+                    StringBuilder sb = new StringBuilder();
+                    for ( int c = isr.read(); c != -1; c = isr.read() ) {
+                        sb.append( (char) c );
+                    }
+                    return sb.toString();
+                }
+            }
+        } catch ( ZipException e ) {
+            log.error( e.getMessage() );
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        } finally {
+            if ( isr != null ) {
+                try {
+                    isr.close();
+                } catch ( IOException e ) {
+                }
+            }
+            if ( is != null ) {
+                try {
+                    is.close();
+                } catch ( IOException e ) {
+                }
+            }
         }
 
         return null;
@@ -336,9 +434,9 @@ public class GuvnorM2Repository {
         return null;
     }
 
-    public File appendPOMToJar( final String pom,
-                                final String jarPath,
-                                final GAV gav ) {
+    private File appendPOMToJar( final String pom,
+                                 final String jarPath,
+                                 final GAV gav ) {
         File originalJarFile = new File( jarPath );
         File appendedJarFile = new File( jarPath + ".tmp" );
 
@@ -359,10 +457,51 @@ public class GuvnorM2Repository {
                 append.closeEntry();
             }
 
-            // append pom.
+            // append pom.xml
             ZipEntry e = new ZipEntry( getPomXmlPath( gav ) );
             append.putNextEntry( e );
             append.write( pom.getBytes() );
+            append.closeEntry();
+
+            // close
+            war.close();
+            append.close();
+        } catch ( ZipException e ) {
+            log.error( e.getMessage() );
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        }
+
+        return appendedJarFile;
+    }
+
+    private File appendPomPropertiesToJar( final String pomProperties,
+                                           final String jarPath,
+                                           final GAV gav ) {
+        File originalJarFile = new File( jarPath );
+        File appendedJarFile = new File( jarPath + ".tmp" );
+
+        try {
+            ZipFile war = new ZipFile( originalJarFile );
+
+            ZipOutputStream append = new ZipOutputStream( new FileOutputStream( appendedJarFile ) );
+
+            // first, copy contents from existing war
+            Enumeration<? extends ZipEntry> entries = war.entries();
+            while ( entries.hasMoreElements() ) {
+                ZipEntry e = entries.nextElement();
+                append.putNextEntry( e );
+                if ( !e.isDirectory() ) {
+                    IOUtil.copy( war.getInputStream( e ),
+                                 append );
+                }
+                append.closeEntry();
+            }
+
+            // append pom.properties
+            ZipEntry e = new ZipEntry( getPomPropertiesPath( gav ) );
+            append.putNextEntry( e );
+            append.write( pomProperties.getBytes() );
             append.closeEntry();
 
             // close
@@ -379,44 +518,9 @@ public class GuvnorM2Repository {
         return appendedJarFile;
     }
 
-    protected String toURL( final String repository,
-                            final GAV gav,
-                            final String classifier ) {
-        final StringBuilder sb = new StringBuilder( repository );
-
-        if ( !repository.endsWith( File.separator ) ) {
-            sb.append( File.separator );
-        }
-
-        return sb.append( gav.getGroupId().replace( ".",
-                                                    File.separator ) )
-                .append( File.separator ).append( gav.getArtifactId() )
-                .append( File.separator ).append( gav.getVersion() )
-                .append( File.separator ).append( toFileName( gav,
-                                                              classifier,
-                                                              "jar" ) ).toString();
-    }
-
     protected String toFileName( final GAV gav,
-                                 final String classifier,
-                                 final String fileType ) {
-        if ( classifier != null ) {
-            return gav.getArtifactId() + "-" + gav.getVersion() + "-" + classifier + "." + getFileExtension( fileType );
-        }
-
-        return gav.getArtifactId() + "-" + gav.getVersion() + "." + getFileExtension( fileType );
-    }
-
-    private String getFileExtension( final String type ) {
-        if ( type.equalsIgnoreCase( "ear" ) ) {
-            return "ear";
-        } else if ( type.equalsIgnoreCase( "pom" ) ) {
-            return "pom";
-        } else if ( type.equalsIgnoreCase( "war" ) ) {
-            return "war";
-        }
-
-        return "jar";
+                                 final String fileName ) {
+        return gav.getArtifactId() + "-" + gav.getVersion() + "." + fileName;
     }
 
     public String generatePOM( final GAV gav ) {
