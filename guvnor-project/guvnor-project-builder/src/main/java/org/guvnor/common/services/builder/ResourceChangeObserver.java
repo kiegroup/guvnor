@@ -30,12 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
-import org.uberfire.workbench.events.ResourceChange;
-import org.uberfire.workbench.events.ResourceChangeType;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
+import org.uberfire.workbench.events.*;
 
 /**
  * Server side component that observes for the different resource add/delete/update events related to
@@ -75,6 +70,21 @@ public class ResourceChangeObserver {
                                resourceUpdatedEvent.getPath(),
                                ResourceChangeType.UPDATE );
         incrementalBuilder.updateResource( resourceUpdatedEvent.getPath() );
+    }
+
+    public void processResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
+        processResourceChange( resourceCopiedEvent.getSessionInfo(),
+                               resourceCopiedEvent.getPath(),
+                               ResourceChangeType.COPY );
+        incrementalBuilder.addResource( resourceCopiedEvent.getPath() ); //¿?
+    }
+
+    public void processResourceRenamed( @Observes final ResourceRenamedEvent resourceRenamedEvent ) {
+        processResourceChange( resourceRenamedEvent.getSessionInfo(),
+                               resourceRenamedEvent.getPath(),
+                               ResourceChangeType.RENAME );
+        incrementalBuilder.deleteResource( resourceRenamedEvent.getPath() );
+        incrementalBuilder.addResource( resourceRenamedEvent.getDestinationPath() );
     }
 
     public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
