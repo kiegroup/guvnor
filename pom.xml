@@ -68,6 +68,29 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
+          <configuration>
+              <includes>
+                  <include>**/*Constants_de.properties</include>
+                  <include>**/*Constants_es.properties</include>
+                  <include>**/*Constants_fr.properties</include>
+                  <include>**/*Constants_ja.properties</include>
+                  <include>**/*Constants_pt_BR.properties</include>
+                  <include>**/*Constants_zh_CN.properties</include>
+              </includes>
+              <excludes>
+                  <exclude>**/ErraiApp.properties</exclude>
+              </excludes>
+              <replacements>
+                  <replacement>
+                      <token>''</token>
+                      <value>'</value>
+                  </replacement>
+                  <replacement>
+                      <token>'</token>
+                      <value>''</value>
+                  </replacement>
+              </replacements>
+          </configuration>
       </plugin>
 
       <!-- Zanata - translations -->
