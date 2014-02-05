@@ -90,4 +90,6 @@ public interface M2RepoEditorConstants
 
     String JarDetails();
 
+    String M2RepositoryContent();
+
 }

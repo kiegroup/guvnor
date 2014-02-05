@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.inbox.client.resources.i18n.InboxConstants;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
@@ -79,11 +80,11 @@ public class InboxPresenter {
     public String getTitle() {
         //TODO: this does not work. 
         if ( INCOMING_ID.equals( inboxName ) ) {
-            return "Incoming Changes";
+            return InboxConstants.INSTANCE.incomingChanges();
         } else if ( RECENT_EDITED_ID.equals( inboxName ) ) {
-            return "Recently Edited";
+            return InboxConstants.INSTANCE.recentlyEdited();
         } else if ( RECENT_VIEWED_ID.equals( inboxName ) ) {
-            return "Recently Opened";
+            return InboxConstants.INSTANCE.recentlyOpened();
         }
 
         return "Incoming Changes";
