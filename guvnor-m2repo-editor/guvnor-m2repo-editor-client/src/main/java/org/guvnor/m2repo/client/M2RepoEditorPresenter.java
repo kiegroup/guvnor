@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.guvnor.m2repo.client.editor.MavenRepositoryPagedJarTable;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -47,7 +48,7 @@ public class M2RepoEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "M2 Repository Content";
+        return M2RepoEditorConstants.INSTANCE.M2RepositoryContent();
     }
 
     public void refreshEvent( @Observes final M2RepoRefreshEvent event ) {
