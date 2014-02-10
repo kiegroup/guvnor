@@ -363,8 +363,8 @@ public class MetadataServiceImpl implements MetadataService {
             if ( metadata != null ) {
                 attributes = configAttrs( attributes, metadata );
             }
-            return attributes;
 
+            return BasicFileAttributesUtil.cleanup( attributes );
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }

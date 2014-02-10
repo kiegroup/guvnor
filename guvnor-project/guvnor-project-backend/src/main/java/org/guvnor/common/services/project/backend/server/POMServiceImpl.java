@@ -12,6 +12,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -68,7 +69,9 @@ public class POMServiceImpl
             final org.uberfire.java.nio.file.Path nioRoot = Paths.convert( projectRoot );
             pathToPOMXML = nioRoot.resolve( "pom.xml" );
 
-            ioService.createFile( pathToPOMXML );
+            if ( ioService.exists( pathToPOMXML ) ) {
+                throw new FileAlreadyExistsException( pathToPOMXML.toString() );
+            }
             ioService.write( pathToPOMXML,
                     pomContentHandler.toString( pomModel ) );
 

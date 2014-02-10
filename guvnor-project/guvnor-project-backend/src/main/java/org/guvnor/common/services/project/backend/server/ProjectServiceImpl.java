@@ -575,6 +575,8 @@ public class ProjectServiceImpl
             final Path fsRoot = repository.getRoot();
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
+            ioService.startBatch( makeCommentedOption( "New project [" + projectName + "]" ) );
+
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
 
@@ -585,7 +587,10 @@ public class ProjectServiceImpl
 
             //Create Project configuration
             final Path projectConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
-            ioService.createFile( Paths.convert( projectConfigPath ) );
+
+            if ( ioService.exists( Paths.convert( projectConfigPath ) ) ) {
+                throw new FileAlreadyExistsException( projectConfigPath.toString() );
+            }
             ioService.write( Paths.convert( projectConfigPath ),
                              projectConfigurationContentHandler.toString( createProjectImports() ) );
 
@@ -605,6 +610,8 @@ public class ProjectServiceImpl
             final Package defaultPackage = resolvePackage( defaultPackagePath );
             final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
                                                                   defaultWorkspacePath );
+
+            ioService.endBatch();
 
             //Raise an event for the new project's default workspace
             newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
