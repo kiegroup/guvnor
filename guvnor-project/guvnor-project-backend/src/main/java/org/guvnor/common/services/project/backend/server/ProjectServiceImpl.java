@@ -611,8 +611,6 @@ public class ProjectServiceImpl
             final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
                                                                   defaultWorkspacePath );
 
-            ioService.endBatch();
-
             //Raise an event for the new project's default workspace
             newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
 
@@ -621,6 +619,8 @@ public class ProjectServiceImpl
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            ioService.endBatch();
         }
     }
 
@@ -810,10 +810,15 @@ public class ProjectServiceImpl
 
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
-            ioService.startBatch();
-            ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
-            pomService.save( newPathToPomXML, content, null, comment );
-            ioService.endBatch();
+            try {
+                ioService.startBatch();
+                ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                pomService.save( newPathToPomXML, content, null, comment );
+            } catch ( final Exception e ) {
+                throw e;
+            } finally {
+                ioService.endBatch();
+            }
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
             renameProjectEvent.fire( new RenameProjectEvent( oldProject, newProject ) );
@@ -858,10 +863,15 @@ public class ProjectServiceImpl
 
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
-            ioService.startBatch();
-            ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
-            pomService.save( newPathToPomXML, content, null, comment );
-            ioService.endBatch();
+            try {
+                ioService.startBatch();
+                ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                pomService.save( newPathToPomXML, content, null, comment );
+            } catch ( final Exception e ) {
+                throw e;
+            } finally {
+                ioService.endBatch();
+            }
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );
 
