@@ -31,6 +31,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -74,7 +75,10 @@ public class KModuleServiceImpl
             ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
 
             final org.uberfire.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
-            ioService.createFile( pathToKModuleXML );
+            if ( ioService.exists( pathToKModuleXML ) ) {
+                throw new FileAlreadyExistsException( pathToKModuleXML.toString() );
+            }
+
             ioService.write( pathToKModuleXML,
                              moduleContentHandler.toString( new KModuleModel() ) );
 
