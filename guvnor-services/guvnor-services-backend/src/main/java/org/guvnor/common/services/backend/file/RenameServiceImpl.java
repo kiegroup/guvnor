@@ -48,24 +48,28 @@ public class RenameServiceImpl implements RenameService {
             final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
             final Path targetPath = Paths.convert( _target );
 
-            ioService.startBatch();
+            try {
+                ioService.startBatch();
 
-            ioService.move( _path,
-                            _target,
-                            new CommentedOption( sessionInfo.getId(),
-                                                 identity.getName(),
-                                                 null,
-                                                 comment ) );
+                ioService.move( _path,
+                                _target,
+                                new CommentedOption( sessionInfo.getId(),
+                                                     identity.getName(),
+                                                     null,
+                                                     comment ) );
 
-            //Delegate additional changes required for a rename to applicable Helpers
-            for ( RenameHelper helper : helpers ) {
-                if ( helper.supports( targetPath ) ) {
-                    helper.postProcess( path,
-                                        targetPath );
+                //Delegate additional changes required for a rename to applicable Helpers
+                for ( RenameHelper helper : helpers ) {
+                    if ( helper.supports( targetPath ) ) {
+                        helper.postProcess( path,
+                                            targetPath );
+                    }
                 }
+            } catch ( final Exception e ) {
+                throw e;
+            } finally {
+                ioService.endBatch();
             }
-
-            ioService.endBatch();
 
             return Paths.convert( _target );
 

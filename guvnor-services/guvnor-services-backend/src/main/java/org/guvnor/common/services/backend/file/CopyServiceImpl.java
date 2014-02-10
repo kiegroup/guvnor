@@ -55,21 +55,25 @@ public class CopyServiceImpl implements CopyService {
                                                          targetName,
                                                          targetURI );
 
-            ioService.startBatch();
+            try {
+                ioService.startBatch();
 
-            ioService.copy( Paths.convert( path ),
-                            Paths.convert( targetPath ),
-                            new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                ioService.copy( Paths.convert( path ),
+                                Paths.convert( targetPath ),
+                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
 
-            //Delegate additional changes required for a copy to applicable Helpers
-            for ( CopyHelper helper : helpers ) {
-                if ( helper.supports( targetPath ) ) {
-                    helper.postProcess( path,
-                                        targetPath );
+                //Delegate additional changes required for a copy to applicable Helpers
+                for ( CopyHelper helper : helpers ) {
+                    if ( helper.supports( targetPath ) ) {
+                        helper.postProcess( path,
+                                            targetPath );
+                    }
                 }
+            } catch ( final Exception e ) {
+                throw e;
+            } finally {
+                ioService.endBatch();
             }
-
-            ioService.endBatch();
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
                                                                targetPath,
