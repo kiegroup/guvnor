@@ -19,11 +19,11 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
              xmlns:gb='urn:import:com.github.gwtbootstrap.client.ui'>
-
+  <ui:with field="i18n" type="org.guvnor.inbox.client.resources.i18n.InboxConstants"/>
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
-      <gwt:Button ui:field="refreshButton" text='Refresh'/>
+      <gwt:Button ui:field="refreshButton" text='{i18n.refresh}'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
     <b:CellTable ui:field="cellTable"/>
