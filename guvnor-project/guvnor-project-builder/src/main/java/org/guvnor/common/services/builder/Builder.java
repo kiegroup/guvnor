@@ -192,7 +192,7 @@ public class Builder {
         }
 
         //It's impossible to retrieve a KieContainer if the KieModule contains errors
-        if ( results.getMessages().isEmpty() ) {
+        if ( results.getErrorMessages().isEmpty() ) {
             kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
         }
 
