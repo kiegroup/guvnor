@@ -37,8 +37,14 @@ public interface InboxConstants
     public String name();
 
     public String createdDate();
+
     public String incomingChanges();
+
     public String recentlyOpened();
+
     public String recentlyEdited();
+
+    public String refresh();
+
 
 }
