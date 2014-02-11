@@ -54,6 +54,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
@@ -70,11 +72,11 @@ public class Builder {
 
     private final static String ERROR_CLASS_NOT_FOUND = "Class not found";
 
+    private static final Logger logger = LoggerFactory.getLogger( Builder.class );
+
     //TODO internationalize error messages?.
-    private final static String ERROR_EXTERNAL_CLASS_VERIFICATON = "An error was found during external classes check.\n" +
-            "The external class {0} did not pass the verification. \n" +
-            "Please check the external .jar files configured as dependencies for this project.\n" +
-            "The low level error is: ";
+    private final static String ERROR_EXTERNAL_CLASS_VERIFICATON = "Verification of class {0} failed and will not be available for authoring.\n" +
+            "Please check the necessary external dependencies for this project are configured correctly.";
 
     private final static String DEFAULTPKG = "defaultpkg";
 
@@ -148,11 +150,14 @@ public class Builder {
             final ProjectImports projectImports = projectService.load( externalImportsPath );
             final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
+                final String fullyQualifiedClassName = item.getType();
                 try {
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                 } catch ( ClassNotFoundException cnfe ) {
-                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
-                                                          cnfe ) );
+                    logger.error( cnfe.getMessage() );
+                    final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                             fullyQualifiedClassName );
+                    results.addBuildMessage( makeErrorMessage( msg ) );
                 }
             }
         }
@@ -163,6 +168,7 @@ public class Builder {
         final KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
+                final String fullyQualifiedClassName = packageName + "." + className;
                 try {
                     final Class clazz = kieModuleMetaData.getClass( packageName,
                                                                     className );
@@ -171,10 +177,16 @@ public class Builder {
                     if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
                         verifyExternalClass( clazz );
                     }
+                } catch ( NoClassDefFoundError e ) {
+                    final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
+                                                             fullyQualifiedClassName );
+                    logger.error( msg );
+                    results.addBuildMessage( makeWarningMessage( msg ) );
                 } catch ( Throwable e ) {
-                    results.addBuildMessage( makeMessage( MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
-                                                                                className ),
-                                                          e ) );
+                    final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
+                                                             fullyQualifiedClassName );
+                    logger.error( msg );
+                    results.addBuildMessage( makeErrorMessage( msg ) );
                 }
             }
         }
@@ -555,11 +567,17 @@ public class Builder {
         return m;
     }
 
-    private BuildMessage makeMessage( final String prefix,
-                                      final Throwable e ) {
+    private BuildMessage makeErrorMessage( final String prefix ) {
         final BuildMessage buildMessage = new BuildMessage();
         buildMessage.setLevel( BuildMessage.Level.ERROR );
-        buildMessage.setText( prefix + ": " + e.getMessage() );
+        buildMessage.setText( prefix );
+        return buildMessage;
+    }
+
+    private BuildMessage makeWarningMessage( final String prefix ) {
+        final BuildMessage buildMessage = new BuildMessage();
+        buildMessage.setLevel( BuildMessage.Level.WARNING );
+        buildMessage.setText( prefix );
         return buildMessage;
     }
 
