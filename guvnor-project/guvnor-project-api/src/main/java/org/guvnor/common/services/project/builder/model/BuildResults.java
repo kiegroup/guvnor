@@ -45,6 +45,28 @@ public class BuildResults {
         return Collections.unmodifiableList( messages );
     }
 
+    public List<BuildMessage> getErrorMessages() {
+        return Collections.unmodifiableList( filterMessages( BuildMessage.Level.ERROR ) );
+    }
+
+    public List<BuildMessage> getWarningMessages() {
+        return Collections.unmodifiableList( filterMessages( BuildMessage.Level.WARNING ) );
+    }
+
+    public List<BuildMessage> getInformationMessages() {
+        return Collections.unmodifiableList( filterMessages( BuildMessage.Level.INFO ) );
+    }
+
+    private List<BuildMessage> filterMessages( final BuildMessage.Level level ) {
+        final List<BuildMessage> filteredMessages = new ArrayList<BuildMessage>();
+        for ( BuildMessage msg : messages ) {
+            if ( msg.getLevel() == level ) {
+                filteredMessages.add( msg );
+            }
+        }
+        return filteredMessages;
+    }
+
     public void addBuildMessage( final BuildMessage message ) {
         this.messages.add( message );
     }
