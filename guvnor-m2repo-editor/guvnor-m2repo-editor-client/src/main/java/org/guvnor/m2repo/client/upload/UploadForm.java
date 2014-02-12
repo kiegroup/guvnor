@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FileUpload;
@@ -61,7 +62,7 @@ public class UploadForm
 
     @PostConstruct
     public void init() {
-        popup.add( new ModalFooter( new Button( "Cancel" ) {{
+        popup.add( new ModalFooter( new Button( M2RepoEditorConstants.INSTANCE.Cancel() ) {{
             addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
@@ -69,7 +70,7 @@ public class UploadForm
                 }
             } );
         }} ) );
-        popup.setTitle( "Artifact Upload" );
+        popup.setTitle(M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
         popup.add( doUploadForm() );
     }
 
@@ -103,7 +104,7 @@ public class UploadForm
                 String fileName = up.getFilename();
                 if ( fileName == null || "".equals( fileName ) ) {
                     BusyPopup.close();
-                    Window.alert( "Please select a file to upload" );
+                    Window.alert( M2RepoEditorConstants.INSTANCE.SelectFileUpload() );
                     event.cancel();
                 }
             }
@@ -113,7 +114,7 @@ public class UploadForm
             public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
-                    Window.alert( "Uploaded successfully" );
+                    Window.alert( M2RepoEditorConstants.INSTANCE.UploadedSuccessfully() );
                     hiddenFieldsPanel.setVisible( false );
                     hiddenArtifactIdField.setText( null );
                     hiddenGroupIdField.setText( null );
@@ -125,12 +126,12 @@ public class UploadForm
                     hide();
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
-                    Window.alert( "The Jar does not contain a valid POM file. Please specify GAV info manually." );
+                    Window.alert( M2RepoEditorConstants.INSTANCE.InvalidJarNotPom());
                     hiddenFieldsPanel.setVisible( true );
 
                 } else {
                     BusyPopup.close();
-                    ErrorPopup.showMessage( "Upload failed:" + event.getResults() );
+                    ErrorPopup.showMessage( M2RepoEditorConstants.INSTANCE.UploadFailed() + event.getResults() );
 
                     hiddenFieldsPanel.setVisible( false );
                     hiddenArtifactIdField.setText( null );

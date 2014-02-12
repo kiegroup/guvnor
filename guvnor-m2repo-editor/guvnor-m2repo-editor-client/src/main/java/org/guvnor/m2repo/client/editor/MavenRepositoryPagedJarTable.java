@@ -12,6 +12,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.uberfire.security.Identity;
@@ -44,7 +45,7 @@ public class MavenRepositoryPagedJarTable
                 setSize( ButtonSize.MINI );
             }} ) {
                 public String getValue( JarListPageRow row ) {
-                    return "Download";
+                    return M2RepoEditorConstants.INSTANCE.Download();
                 }
             };
 
@@ -53,12 +54,12 @@ public class MavenRepositoryPagedJarTable
                                     JarListPageRow row,
                                     String value ) {
                     Window.open( getFileDownloadURL( row.getPath() ),
-                                 "downloading",
+                                 M2RepoEditorConstants.INSTANCE.Downloading(),
                                  "resizable=no,scrollbars=yes,status=no" );
                 }
             } );
 
-            presenter.getView().addColumn( downloadColumn, null, "Download" );
+            presenter.getView().addColumn( downloadColumn, null, M2RepoEditorConstants.INSTANCE.Download() );
         }
 
         initWidget( presenter.getView().asWidget() );
