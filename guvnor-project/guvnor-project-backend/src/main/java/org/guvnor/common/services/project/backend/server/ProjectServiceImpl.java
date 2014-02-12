@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -733,14 +734,30 @@ public class ProjectServiceImpl
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = getIdentityName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+        final CommentedOption co = new CommentedOption( getSessionId(),
                                                         name,
                                                         null,
                                                         commitMessage,
                                                         when );
         return co;
+    }
+
+    protected String getIdentityName() {
+        try {
+            return identity.getName();
+        } catch ( ContextNotActiveException e ) {
+            return "unknown";
+        }
+    }
+
+    protected String getSessionId() {
+        try {
+            return sessionInfo.getId();
+        } catch ( ContextNotActiveException e ) {
+            return "--";
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -836,7 +853,7 @@ public class ProjectServiceImpl
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
             final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
 
-            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( getSessionId(), getIdentityName(), null, comment ) );
             deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
