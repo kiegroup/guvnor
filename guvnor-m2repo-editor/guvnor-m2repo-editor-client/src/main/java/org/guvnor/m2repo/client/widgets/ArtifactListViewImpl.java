@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.client.editor.JarDetailPopup;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -87,7 +88,7 @@ public class ArtifactListViewImpl
         this.presenter = presenter;
 
         // Set the message to display when the table is empty.
-        final Label emptyTable = new Label( "No artifacts available" );
+        final Label emptyTable = new Label( M2RepoEditorConstants.INSTANCE.NoArtifactAvailable() );
         emptyTable.setStyleName( "" );
         cellTable.setEmptyTableWidget( emptyTable );
 
@@ -113,7 +114,7 @@ public class ArtifactListViewImpl
                 return row.getName();
             }
         };
-        cellTable.addColumn( nameColumn, new ResizableHeader( "Name",
+        cellTable.addColumn( nameColumn, new ResizableHeader(M2RepoEditorConstants.INSTANCE.Name(),
                                                               cellTable,
                                                               nameColumn ) );
 
@@ -123,7 +124,7 @@ public class ArtifactListViewImpl
                 return row.getPath();
             }
         };
-        cellTable.addColumn( pathColumn, new ResizableHeader( "Path",
+        cellTable.addColumn( pathColumn, new ResizableHeader( M2RepoEditorConstants.INSTANCE.Path(),
                                                               cellTable,
                                                               pathColumn ) );
 
@@ -133,7 +134,7 @@ public class ArtifactListViewImpl
                 return row.getLastModified();
             }
         };
-        cellTable.addColumn( lastModifiedColumn, new ResizableHeader( "LastModified",
+        cellTable.addColumn( lastModifiedColumn, new ResizableHeader( M2RepoEditorConstants.INSTANCE.LastModified(),
                                                                       cellTable,
                                                                       lastModifiedColumn ) );
 
@@ -142,7 +143,7 @@ public class ArtifactListViewImpl
             setSize( ButtonSize.MINI );
         }} ) {
             public String getValue( JarListPageRow row ) {
-                return "Open";
+                return M2RepoEditorConstants.INSTANCE.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
@@ -158,7 +159,7 @@ public class ArtifactListViewImpl
                 } ).loadPOMStringFromJar( row.getPath() );
             }
         } );
-        cellTable.addColumn( openColumn, new ResizableHeader( "Open",
+        cellTable.addColumn( openColumn, new ResizableHeader( M2RepoEditorConstants.INSTANCE.Open(),
                                                               cellTable,
                                                               openColumn ) );
     }

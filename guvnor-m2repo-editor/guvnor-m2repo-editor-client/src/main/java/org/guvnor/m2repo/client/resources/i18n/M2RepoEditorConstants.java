@@ -92,4 +92,28 @@ public interface M2RepoEditorConstants
 
     String M2RepositoryContent();
 
+    String Path();
+
+    String LastModified();
+
+    String Open();
+
+    String Download();
+
+    String NoArtifactAvailable();
+
+    String Downloading();
+
+    String ArtifactUpload();
+
+    String Cancel();
+
+    String SelectFileUpload();
+
+    String UploadedSuccessfully();
+
+    String InvalidJarNotPom();
+
+    String UploadFailed();
+
 }
