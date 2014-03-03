@@ -73,7 +73,6 @@ public class ProjectServiceImpl
         implements ProjectService {
 
     private static final String SOURCE_FILENAME = "src";
-    private static final String GLOBAL_FILENAME = "global";
 
     private static final String POM_PATH = "pom.xml";
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
@@ -167,7 +166,7 @@ public class ProjectServiceImpl
             if ( hasPom( path ) && hasKModule( path ) ) {
                 return makeProject( path );
             }
-            while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) && !path.getFileName().toString().equals( GLOBAL_FILENAME )) {
+            while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
                 path = path.getParent();
             }
             if ( path.getNameCount() == 0 ) {
