@@ -95,6 +95,7 @@ public class Builder {
 
     private final Event<RuleNameUpdateEvent> ruleNameUpdateEvent;
     private final List<BuildValidationHelper> buildValidationHelpers;
+    private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
     private final Map<Path, List<ValidationMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<ValidationMessage>>();
 
     private final DirectoryStream.Filter<Path> javaResourceFilter = new JavaFileFilter();
@@ -134,8 +135,11 @@ public class Builder {
         final BuildResults results = convertMessages( kieResults );
 
         //Add validate messages from external helpers
-        for ( Map.Entry<Path, List<ValidationMessage>> e : nonKieResourceValidationHelperMessages.entrySet() ) {
-            final List<ValidationMessage> validationMessages = e.getValue();
+        for ( Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet() ) {
+            final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( e.getKey() );
+            final List<ValidationMessage> validationMessages = e.getValue().validate( vfsPath );
+            nonKieResourceValidationHelperMessages.put( e.getKey(),
+                                                        validationMessages );
             if ( !( validationMessages == null || validationMessages.isEmpty() ) ) {
                 for ( ValidationMessage validationMessage : validationMessages ) {
                     results.addBuildMessage( convertValidationMessage( validationMessage ) );
@@ -246,6 +250,8 @@ public class Builder {
                     results.addRemovedMessage( convertValidationMessage( validationMessage ) );
                 }
             }
+            nonKieResourceValidationHelpers.put( resource,
+                                                 validator );
             nonKieResourceValidationHelperMessages.put( resource,
                                                         addedValidationMessages );
         }
@@ -321,6 +327,7 @@ public class Builder {
         //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
         final BuildValidationHelper validator = getBuildValidationHelper( resource );
         if ( validator != null ) {
+            nonKieResourceValidationHelpers.remove( resource );
             final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
             if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
                 for ( ValidationMessage validationMessage : removedValidationMessages ) {
@@ -386,6 +393,8 @@ public class Builder {
                                     nonKieResourceValidatorRemovedMessages.add( validationMessage );
                                 }
                             }
+                            nonKieResourceValidationHelpers.put( resource,
+                                                                 validator );
                             nonKieResourceValidationHelperMessages.put( resource,
                                                                         addedValidationMessages );
                         }
@@ -406,6 +415,7 @@ public class Builder {
                         removeJavaClass( resource );
 
                         //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+                        nonKieResourceValidationHelpers.remove( resource );
                         final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
                         if ( !( removedValidationMessages == null || removedValidationMessages.isEmpty() ) ) {
                             for ( ValidationMessage validationMessage : removedValidationMessages ) {
@@ -480,10 +490,8 @@ public class Builder {
                     //Resource Type might require "external" validation (i.e. it's not covered by Kie)
                     final BuildValidationHelper validator = getBuildValidationHelper( path );
                     if ( validator != null ) {
-                        final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
-                        final List<ValidationMessage> addedValidationMessages = validator.validate( vfsPath );
-                        nonKieResourceValidationHelperMessages.put( path,
-                                                                    addedValidationMessages );
+                        nonKieResourceValidationHelpers.put( path,
+                                                             validator );
                     }
 
                     //Add new resource
