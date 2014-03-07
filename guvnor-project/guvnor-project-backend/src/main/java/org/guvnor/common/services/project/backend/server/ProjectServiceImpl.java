@@ -610,7 +610,8 @@ public class ProjectServiceImpl
             final Path defaultPackagePath = Paths.convert( Paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ) );
             final Package defaultPackage = resolvePackage( defaultPackagePath );
             final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
-                                                                  defaultWorkspacePath );
+                                                                  defaultWorkspacePath,
+                                                                  false );
 
             //Raise an event for the new project's default workspace
             newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
@@ -637,7 +638,8 @@ public class ProjectServiceImpl
         try {
             //Make new Package
             final Package newPackage = doNewPackage( parentPackage,
-                                                     packageName );
+                                                     packageName,
+                                                     true );
 
             //Raise an event for the new package
             newPackageEvent.fire( new NewPackageEvent( newPackage ) );
@@ -651,7 +653,8 @@ public class ProjectServiceImpl
     }
 
     private Package doNewPackage( final Package parentPackage,
-                                  final String packageName ) {
+                                  final String packageName,
+                                  final boolean startBatch ) {
         //If the package name contains separators, create sub-folders
         String newPackageName = packageName.toLowerCase();
         if ( newPackageName.contains( "." ) ) {
@@ -667,31 +670,45 @@ public class ProjectServiceImpl
 
         Path pkgPath = null;
 
-        final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
-        if ( !Files.exists( nioMainSrcPackagePath ) ) {
-            pkgPath = Paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
-        }
-        final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = Paths.convert( testSrcPath ).resolve( newPackageName );
-        if ( !Files.exists( nioTestSrcPackagePath ) ) {
-            pkgPath = Paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
-        }
-        final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = Paths.convert( mainResourcesPath ).resolve( newPackageName );
-        if ( !Files.exists( nioMainResourcesPackagePath ) ) {
-            pkgPath = Paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
-        }
-        final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = Paths.convert( testResourcesPath ).resolve( newPackageName );
-        if ( !Files.exists( nioTestResourcesPackagePath ) ) {
-            pkgPath = Paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
-        }
+        try {
 
-        //If pkgPath is null the package already existed in src/main/java, scr/main/resources, src/test/java and src/test/resources
-        if ( pkgPath == null ) {
-            throw new PackageAlreadyExistsException( packageName );
-        }
+            if ( startBatch ) {
+                ioService.startBatch( makeCommentedOption( "New package [" + packageName + "]" ) );
+            }
 
-        //Return new package
-        final Package newPackage = resolvePackage( pkgPath );
-        return newPackage;
+            final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
+            if ( !Files.exists( nioMainSrcPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
+            }
+            final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = Paths.convert( testSrcPath ).resolve( newPackageName );
+            if ( !Files.exists( nioTestSrcPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
+            }
+            final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = Paths.convert( mainResourcesPath ).resolve( newPackageName );
+            if ( !Files.exists( nioMainResourcesPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
+            }
+            final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = Paths.convert( testResourcesPath ).resolve( newPackageName );
+            if ( !Files.exists( nioTestResourcesPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
+            }
+
+            //If pkgPath is null the package already existed in src/main/java, scr/main/resources, src/test/java and src/test/resources
+            if ( pkgPath == null ) {
+                throw new PackageAlreadyExistsException( packageName );
+            }
+
+            //Return new package
+            final Package newPackage = resolvePackage( pkgPath );
+            return newPackage;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        } finally {
+            if ( startBatch ) {
+                ioService.endBatch();
+            }
+        }
     }
 
     private boolean hasPom( final org.uberfire.java.nio.file.Path path ) {
