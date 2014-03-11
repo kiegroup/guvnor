@@ -36,6 +36,8 @@ import org.apache.commons.io.IOUtils;
 import org.drools.core.util.DateUtils;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -43,6 +45,8 @@ import org.uberfire.backend.vfs.Path;
  */
 //TODO: Basic authentication
 public abstract class AbstractFileServlet extends HttpServlet {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractFileServlet.class);
 
     private static final long serialVersionUID = 510l;
 
@@ -137,16 +141,16 @@ public abstract class AbstractFileServlet extends HttpServlet {
                 if ( !item.isFormField() ) {
                     data.setFile( item );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_PATH ) ) {
-                    System.out.println( "path:" + item.getString() );
+                    log.debug("path:" + item.getString());
                     contextPath = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_NAME ) ) {
-                    System.out.println( "name:" + item.getString() );
+                    log.debug("name:" + item.getString());
                     fileName = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_FULL_PATH ) ) {
-                    System.out.println( "full path:" + item.getString() );
+                    log.debug("full path:" + item.getString());
                     fullPath = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_OPERATION ) ) {
-                    System.out.println( "operation:" + item.getString() );
+                    log.debug("operation:" + item.getString());
                     operation = FileOperation.valueOf( item.getString() );
                 }
             }
