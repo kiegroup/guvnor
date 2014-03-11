@@ -117,9 +117,9 @@ public class MailboxService {
                 //wipe out inbox for mailman here...
 
                 String[] userList = listUsers();
-                System.out.println( "userServices:" + userList.length );
+                log.debug( "userServices:" + userList.length );
                 for ( String toUser : userList ) {
-                    System.out.println( "userServices:" + toUser );
+                    log.debug( "userServices:" + toUser );
                     log.debug( "Processing any inbound messages for " + toUser );
                     if ( toUser.equals( MAIL_MAN ) ) {
                         return;
