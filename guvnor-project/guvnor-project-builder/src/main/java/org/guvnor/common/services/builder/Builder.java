@@ -70,12 +70,13 @@ public class Builder {
 
     private final static String RESOURCE_PATH = "src/main/resources";
 
-    private final static String ERROR_CLASS_NOT_FOUND = "Class not found";
-
     private static final Logger logger = LoggerFactory.getLogger( Builder.class );
 
     //TODO internationalize error messages?.
     private final static String ERROR_EXTERNAL_CLASS_VERIFICATON = "Verification of class {0} failed and will not be available for authoring.\n" +
+            "Please check the necessary external dependencies for this project are configured correctly.";
+
+    private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found.\n" +
             "Please check the necessary external dependencies for this project are configured correctly.";
 
     private final static String DEFAULTPKG = "defaultpkg";
@@ -130,9 +131,32 @@ public class Builder {
 
     public synchronized BuildResults build() {
         //KieBuilder is not re-usable for successive "full" builds
+        kieContainer = null;
         kieBuilder = kieServices.newKieBuilder( kieFileSystem );
-        final Results kieResults = kieBuilder.buildAll().getResults();
-        final BuildResults results = convertMessages( kieResults );
+
+        //Record RTEs from KieBuilder - that can fail if a rule uses an inaccessible class
+        final BuildResults results = new BuildResults( gav );
+        try {
+            final Results kieResults = kieBuilder.buildAll().getResults();
+            for ( final Message message : kieResults.getMessages() ) {
+                results.addBuildMessage( convertMessage( message ) );
+            }
+
+            //It's impossible to retrieve a KieContainer if the KieModule contains errors
+            if ( results.getErrorMessages().isEmpty() ) {
+                kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
+            }
+
+        } catch ( NoClassDefFoundError e ) {
+            final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                     e.getLocalizedMessage() );
+            logger.warn( msg );
+            results.addBuildMessage( makeWarningMessage( msg ) );
+        } catch ( Throwable e ) {
+            final String msg = e.getLocalizedMessage();
+            logger.error( msg );
+            results.addBuildMessage( makeErrorMessage( msg ) );
+        }
 
         //Add validate messages from external helpers
         for ( Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet() ) {
@@ -184,7 +208,7 @@ public class Builder {
                 } catch ( NoClassDefFoundError e ) {
                     final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
                                                              fullyQualifiedClassName );
-                    logger.error( msg );
+                    logger.warn( msg );
                     results.addBuildMessage( makeWarningMessage( msg ) );
                 } catch ( Throwable e ) {
                     final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
@@ -193,11 +217,6 @@ public class Builder {
                     results.addBuildMessage( makeErrorMessage( msg ) );
                 }
             }
-        }
-
-        //It's impossible to retrieve a KieContainer if the KieModule contains errors
-        if ( results.getErrorMessages().isEmpty() ) {
-            kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
         }
 
         fireRuleNameUpdateEvent();
@@ -267,17 +286,29 @@ public class Builder {
                      Paths.convert( resource ) );
 
         //Incremental build
-        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
-        for ( final Message message : incrementalResults.getAddedMessages() ) {
-            results.addAddedMessage( convertMessage( message ) );
-        }
-        for ( final Message message : incrementalResults.getRemovedMessages() ) {
-            results.addRemovedMessage( convertMessage( message ) );
-        }
+        try {
+            final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+            for ( final Message message : incrementalResults.getAddedMessages() ) {
+                results.addAddedMessage( convertMessage( message ) );
+            }
+            for ( final Message message : incrementalResults.getRemovedMessages() ) {
+                results.addRemovedMessage( convertMessage( message ) );
+            }
 
-        //Tidy-up removed message handles
-        for ( Message message : incrementalResults.getRemovedMessages() ) {
-            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+            //Tidy-up removed message handles
+            for ( Message message : incrementalResults.getRemovedMessages() ) {
+                handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+            }
+
+        } catch ( NoClassDefFoundError e ) {
+            final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                     e.getLocalizedMessage() );
+            logger.warn( msg );
+            results.addAddedMessage( makeWarningMessage( msg ) );
+        } catch ( Throwable e ) {
+            final String msg = e.getLocalizedMessage();
+            logger.error( msg );
+            results.addAddedMessage( makeErrorMessage( msg ) );
         }
 
         fireRuleNameUpdateEvent();
@@ -310,21 +341,8 @@ public class Builder {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
         }
 
-        //Delete resource
-        final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
-        kieFileSystem.delete( destinationPath );
-        removeJavaClass( resource );
-
-        //Incremental build
-        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
-        final IncrementalBuildResults results = convertMessages( incrementalResults );
-
-        //Tidy-up removed message handles
-        for ( Message message : incrementalResults.getRemovedMessages() ) {
-            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
-        }
-
         //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+        final IncrementalBuildResults results = new IncrementalBuildResults( gav );
         final BuildValidationHelper validator = getBuildValidationHelper( resource );
         if ( validator != null ) {
             nonKieResourceValidationHelpers.remove( resource );
@@ -334,6 +352,37 @@ public class Builder {
                     results.addRemovedMessage( convertValidationMessage( validationMessage ) );
                 }
             }
+        }
+
+        //Delete resource
+        final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
+        kieFileSystem.delete( destinationPath );
+        removeJavaClass( resource );
+
+        //Incremental build
+        try {
+            final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
+            for ( final Message message : incrementalResults.getAddedMessages() ) {
+                results.addAddedMessage( convertMessage( message ) );
+            }
+            for ( final Message message : incrementalResults.getRemovedMessages() ) {
+                results.addRemovedMessage( convertMessage( message ) );
+            }
+
+            //Tidy-up removed message handles
+            for ( Message message : incrementalResults.getRemovedMessages() ) {
+                handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+            }
+
+        } catch ( NoClassDefFoundError e ) {
+            final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                     e.getLocalizedMessage() );
+            logger.warn( msg );
+            results.addAddedMessage( makeWarningMessage( msg ) );
+        } catch ( Throwable e ) {
+            final String msg = e.getLocalizedMessage();
+            logger.error( msg );
+            results.addAddedMessage( makeErrorMessage( msg ) );
         }
 
         fireRuleNameUpdateEvent();
@@ -410,10 +459,6 @@ public class Builder {
 
                         break;
                     case DELETE:
-                        //The file has already been deleted so we can't check if the Path is a file or folder :(
-                        kieFileSystem.delete( destinationPath );
-                        removeJavaClass( resource );
-
                         //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
                         nonKieResourceValidationHelpers.remove( resource );
                         final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
@@ -422,6 +467,10 @@ public class Builder {
                                 nonKieResourceValidatorRemovedMessages.add( validationMessage );
                             }
                         }
+
+                        //The file has already been deleted so we can't check if the Path is a file or folder :(
+                        kieFileSystem.delete( destinationPath );
+                        removeJavaClass( resource );
                 }
             }
         }
@@ -429,10 +478,34 @@ public class Builder {
         //Perform the Incremental build
         final String[] kieBuilderPaths = new String[ changedFilesKieBuilderPaths.size() ];
         changedFilesKieBuilderPaths.toArray( kieBuilderPaths );
-        final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( kieBuilderPaths ).build();
 
         //Messages from incremental build
-        final IncrementalBuildResults results = convertMessages( incrementalResults );
+
+        final IncrementalBuildResults results = new IncrementalBuildResults( gav );
+        try {
+            final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( kieBuilderPaths ).build();
+            for ( final Message message : incrementalResults.getAddedMessages() ) {
+                results.addAddedMessage( convertMessage( message ) );
+            }
+            for ( final Message message : incrementalResults.getRemovedMessages() ) {
+                results.addRemovedMessage( convertMessage( message ) );
+            }
+
+            //Tidy-up removed message handles
+            for ( Message message : incrementalResults.getRemovedMessages() ) {
+                handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+            }
+
+        } catch ( NoClassDefFoundError e ) {
+            final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                     e.getLocalizedMessage() );
+            logger.warn( msg );
+            results.addAddedMessage( makeWarningMessage( msg ) );
+        } catch ( Throwable e ) {
+            final String msg = e.getLocalizedMessage();
+            logger.error( msg );
+            results.addAddedMessage( makeErrorMessage( msg ) );
+        }
 
         //Copy in BuildMessages for non-KIE resources
         for ( ValidationMessage addedValidationMessage : nonKieResourceValidatorAddedMessages ) {
@@ -440,11 +513,6 @@ public class Builder {
         }
         for ( ValidationMessage removedValidationMessage : nonKieResourceValidatorRemovedMessages ) {
             results.addRemovedMessage( convertValidationMessage( removedValidationMessage ) );
-        }
-
-        //Tidy-up removed message handles
-        for ( Message message : incrementalResults.getRemovedMessages() ) {
-            handles.remove( RESOURCE_PATH + "/" + message.getPath() );
         }
 
         return results;
@@ -508,25 +576,6 @@ public class Builder {
                 }
             }
         }
-    }
-
-    private BuildResults convertMessages( final Results kieBuildResults ) {
-        final BuildResults results = new BuildResults( gav );
-        for ( final Message message : kieBuildResults.getMessages() ) {
-            results.addBuildMessage( convertMessage( message ) );
-        }
-        return results;
-    }
-
-    private IncrementalBuildResults convertMessages( final IncrementalResults kieIncrementalResults ) {
-        final IncrementalBuildResults results = new IncrementalBuildResults( gav );
-        for ( final Message message : kieIncrementalResults.getAddedMessages() ) {
-            results.addAddedMessage( convertMessage( message ) );
-        }
-        for ( final Message message : kieIncrementalResults.getRemovedMessages() ) {
-            results.addRemovedMessage( convertMessage( message ) );
-        }
-        return results;
     }
 
     private BuildMessage convertMessage( final Message message ) {
