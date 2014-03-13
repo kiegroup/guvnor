@@ -17,6 +17,7 @@ package org.guvnor.common.services.backend.validation;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,10 @@ import org.uberfire.java.nio.file.Files;
  * Validator capable of validating generic Kie assets (i.e those that are handled by KieBuilder)
  */
 public class DefaultGenericKieValidator implements GenericValidator {
+
+    //TODO internationalize error messages?.
+    private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found. Consequentially validation cannot be performed.\n" +
+            "Please check the necessary external dependencies for this project are configured correctly.";
 
     @Inject
     @Named("ioStrategy")
@@ -94,10 +99,23 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
         //Validate
         final KieBuilder kieBuilder = kieServices.newKieBuilder( kieFileSystem );
-        final Results kieResults = kieBuilder.buildAll().getResults();
-        final List<ValidationMessage> results = convertMessages( kieResults );
+        final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+        try {
+            final Results kieResults = kieBuilder.buildAll().getResults();
+            for ( final Message message : kieResults.getMessages() ) {
+                validationMessages.add( convertMessage( message ) );
+            }
 
-        return results;
+        } catch ( NoClassDefFoundError e ) {
+            final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
+                                                     e.getLocalizedMessage() );
+            validationMessages.add( makeErrorMessage( msg ) );
+        } catch ( Throwable e ) {
+            final String msg = e.getLocalizedMessage();
+            validationMessages.add( makeErrorMessage( msg ) );
+        }
+
+        return validationMessages;
     }
 
     private void visitPaths( final String projectPrefix,
@@ -142,13 +160,11 @@ public class DefaultGenericKieValidator implements GenericValidator {
         return false;
     }
 
-    private List<ValidationMessage> convertMessages( final Results kieBuildResults ) {
-        final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
-        for ( final Message message : kieBuildResults.getMessages() ) {
-            validationMessages.add( convertMessage( message ) );
-        }
-
-        return validationMessages;
+    private ValidationMessage makeErrorMessage( final String msg ) {
+        final ValidationMessage validationMessage = new ValidationMessage();
+        validationMessage.setLevel( ValidationMessage.Level.ERROR );
+        validationMessage.setText( msg );
+        return validationMessage;
     }
 
     private ValidationMessage convertMessage( final Message message ) {
