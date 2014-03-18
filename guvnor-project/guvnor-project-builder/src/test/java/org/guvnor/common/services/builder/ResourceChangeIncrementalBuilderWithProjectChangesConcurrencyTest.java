@@ -44,7 +44,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
-public class ResourceChangeIncrementalBuilderConcurrencyTest {
+public class ResourceChangeIncrementalBuilderWithProjectChangesConcurrencyTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -147,6 +147,10 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
                                                                                                                                   ResourceChangeIncrementalBuilder.class,
                                                                                                                                   cc );
 
+        final URL pomUrl = this.getClass().getResource( "/BuildChangeListenerRepo/pom.xml" );
+        final org.uberfire.java.nio.file.Path nioPomPath = fs.getPath( pomUrl.toURI() );
+        final Path pomPath = paths.convert( nioPomPath );
+
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -163,13 +167,14 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
         final Result result = new Result();
         ExecutorService es = Executors.newCachedThreadPool();
         for ( int i = 0; i < THREADS; i++ ) {
+            final Path p = ( i % 5 == 0 ) ? pomPath : resourcePath;
             es.execute( new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has started for " + resourcePath.toURI() );
-                        buildChangeListener.updateResource( resourcePath );
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed for " + resourcePath.toURI() );
+                        System.out.println( "Thread " + Thread.currentThread().getName() + " has started for " + p.toURI() );
+                        buildChangeListener.updateResource( p );
+                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed" + p.toURI() );
                     } catch ( Throwable e ) {
                         result.setFailed( true );
                         result.setMessage( e.getMessage() );
