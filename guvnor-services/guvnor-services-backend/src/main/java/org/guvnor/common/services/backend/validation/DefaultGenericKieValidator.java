@@ -24,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.KModuleFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
@@ -38,6 +39,7 @@ import org.kie.api.builder.Results;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
@@ -66,6 +68,23 @@ public class DefaultGenericKieValidator implements GenericValidator {
     //Include Project's pom.xml (to ensure dependencies are set-up correctly)
     private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> pomFileFilter = new PomFileFilter();
 
+    //Filter resource that is being validated
+    private static class ResourceFilter implements DirectoryStream.Filter<org.uberfire.java.nio.file.Path> {
+
+        private org.uberfire.java.nio.file.Path resourcePath;
+
+        ResourceFilter( final Path resourcePath ) {
+            this.resourcePath = Paths.convert( PortablePreconditions.checkNotNull( "resourcePath",
+                                                                                   resourcePath ) );
+        }
+
+        @Override
+        public boolean accept( final org.uberfire.java.nio.file.Path entry ) throws IOException {
+            return entry.equals( resourcePath );
+        }
+
+    }
+
     public DefaultGenericKieValidator() {
     }
 
@@ -82,20 +101,26 @@ public class DefaultGenericKieValidator implements GenericValidator {
         final KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
         final String projectPrefix = project.getRootPath().toURI();
 
-        //Add Java Model files
+        //Add resource to be validated first as:-
+        // - KieBuilder fails fast on some compilation issues
+        // - KieBuilder validates resources in the order they were added
+        // - We want to catch errors for the resource being validated first
+        final String destinationPath = resourcePath.toURI().substring( projectPrefix.length() + 1 );
+        final BufferedInputStream bis = new BufferedInputStream( resource );
+        kieFileSystem.write( destinationPath,
+                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+
+        //Set-up filters ignoring resource being validated
+        final ResourceFilter resourceFilter = new ResourceFilter( resourcePath );
+
+        //Visit other files that may be needed to support validation of required resource
         final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( project.getRootPath() );
         final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( nioProjectRoot );
         visitPaths( projectPrefix,
                     kieFileSystem,
                     directoryStream,
+                    resourceFilter,
                     supportingFileFilters );
-
-        //Add resource to be validated
-        final String destinationPath = resourcePath.toURI().substring( projectPrefix.length() + 1 );
-        final BufferedInputStream bis = new BufferedInputStream( resource );
-
-        kieFileSystem.write( destinationPath,
-                             KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
 
         //Validate
         final KieBuilder kieBuilder = kieServices.newKieBuilder( kieFileSystem );
@@ -103,7 +128,9 @@ public class DefaultGenericKieValidator implements GenericValidator {
         try {
             final Results kieResults = kieBuilder.buildAll().getResults();
             for ( final Message message : kieResults.getMessages() ) {
-                validationMessages.add( convertMessage( message ) );
+                if ( destinationPath.endsWith( message.getPath() ) ) {
+                    validationMessages.add( convertMessage( message ) );
+                }
             }
 
         } catch ( NoClassDefFoundError e ) {
@@ -121,16 +148,19 @@ public class DefaultGenericKieValidator implements GenericValidator {
     private void visitPaths( final String projectPrefix,
                              final KieFileSystem kieFileSystem,
                              final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream,
+                             final ResourceFilter resourceFilter,
                              final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
         for ( final org.uberfire.java.nio.file.Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( projectPrefix,
                             kieFileSystem,
                             Files.newDirectoryStream( path ),
+                            resourceFilter,
                             supportingFileFilters );
 
             } else {
                 if ( acceptPath( path,
+                                 resourceFilter,
                                  supportingFileFilters ) ) {
                     final String destinationPath = path.toUri().toString().substring( projectPrefix.length() + 1 );
                     final InputStream is = ioService.newInputStream( path );
@@ -144,6 +174,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
     }
 
     private boolean acceptPath( final org.uberfire.java.nio.file.Path path,
+                                final ResourceFilter resourceFilter,
                                 final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
         if ( dotFileFilter.accept( path ) ) {
             return false;
@@ -151,7 +182,10 @@ public class DefaultGenericKieValidator implements GenericValidator {
             return false;
         } else if ( pomFileFilter.accept( path ) ) {
             return true;
+        } else if ( resourceFilter.accept( path ) ) {
+            return false;
         }
+
         for ( DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter : supportingFileFilters ) {
             if ( filter.accept( path ) ) {
                 return true;
