@@ -185,7 +185,7 @@ public class Builder {
                     logger.error( cnfe.getMessage() );
                     final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                              fullyQualifiedClassName );
-                    results.addBuildMessage( makeErrorMessage( msg ) );
+                    results.addBuildMessage( makeWarningMessage( msg ) );
                 }
             }
         }
