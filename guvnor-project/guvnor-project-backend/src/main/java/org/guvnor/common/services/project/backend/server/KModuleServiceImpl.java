@@ -16,7 +16,6 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,10 +26,9 @@ import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -111,17 +109,14 @@ public class KModuleServiceImpl
                       final String comment ) {
         try {
             if ( metadata == null ) {
-                ioService.write(
-                        Paths.convert( path ),
-                        moduleContentHandler.toString( content ),
-                        makeCommentedOption( comment ) );
+                ioService.write( Paths.convert( path ),
+                                 moduleContentHandler.toString( content ) );
             } else {
                 ioService.write(
                         Paths.convert( path ),
                         moduleContentHandler.toString( content ),
                         metadataService.setUpAttributes( path,
-                                                         metadata ),
-                        makeCommentedOption( comment ) );
+                                                         metadata ) );
             }
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
@@ -134,17 +129,6 @@ public class KModuleServiceImpl
             e.printStackTrace();
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

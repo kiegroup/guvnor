@@ -736,8 +736,7 @@ public class ProjectServiceImpl
             ioService.write( Paths.convert( resource ),
                              projectConfigurationContentHandler.toString( projectImports ),
                              metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+                                                              metadata ) );
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
             //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once

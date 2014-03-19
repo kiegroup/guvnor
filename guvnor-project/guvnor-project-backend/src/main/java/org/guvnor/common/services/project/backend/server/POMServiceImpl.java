@@ -1,5 +1,9 @@
 package org.guvnor.common.services.project.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Repository;
@@ -8,18 +12,12 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
 
 @Service
 @ApplicationScoped
@@ -73,7 +71,7 @@ public class POMServiceImpl
                 throw new FileAlreadyExistsException( pathToPOMXML.toString() );
             }
             ioService.write( pathToPOMXML,
-                    pomContentHandler.toString( pomModel ) );
+                             pomContentHandler.toString( pomModel ) );
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
@@ -95,7 +93,7 @@ public class POMServiceImpl
         }
     }
 
-    private String loadPomXMLString( Path path ) {
+    private String loadPomXMLString( final Path path ) {
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
         return ioService.readAllString( nioPath );
     }
@@ -109,14 +107,12 @@ public class POMServiceImpl
 
             if ( metadata == null ) {
                 ioService.write( Paths.convert( path ),
-                        pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                        makeCommentedOption( comment ) );
+                                 pomContentHandler.toString( content, loadPomXMLString( path ) ) );
             } else {
                 ioService.write( Paths.convert( path ),
-                        pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                        metadataService.setUpAttributes( path,
-                                metadata ),
-                        makeCommentedOption( comment ) );
+                                 pomContentHandler.toString( content, loadPomXMLString( path ) ),
+                                 metadataService.setUpAttributes( path,
+                                                                  metadata ) );
             }
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
@@ -132,16 +128,6 @@ public class POMServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        return new CommentedOption( sessionInfo.getId(),
-                name,
-                null,
-                commitMessage,
-                when );
     }
 
 }
