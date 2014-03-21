@@ -42,12 +42,19 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.drools.core.io.impl.ReaderInputStream;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.scanner.Aether;
+import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -55,6 +62,7 @@ import org.sonatype.aether.deployment.DeployRequest;
 import org.sonatype.aether.deployment.DeploymentException;
 import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.installation.InstallationException;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.repository.RepositoryPolicy;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -193,8 +201,8 @@ public class GuvnorM2Repository {
                                                    "pom" );
         pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
 
-        //Install into local repository
         try {
+            //Install into local repository
             final InstallRequest installRequest = new InstallRequest();
             installRequest
                     .addArtifact( jarArtifact )
@@ -206,9 +214,9 @@ public class GuvnorM2Repository {
             throw new RuntimeException( e );
         }
 
-        //Deploy into remote repository
+        //Deploy into Workbench's default remote repository
         try {
-            DeployRequest deployRequest = new DeployRequest();
+            final DeployRequest deployRequest = new DeployRequest();
             deployRequest
                     .addArtifact( jarArtifact )
                     .addArtifact( pomXMLArtifact )
@@ -216,8 +224,46 @@ public class GuvnorM2Repository {
 
             Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
                                                    deployRequest );
+
         } catch ( DeploymentException e ) {
             throw new RuntimeException( e );
+        }
+
+        //Deploy into remote repository defined in <distributionManagement>
+        try {
+            final Model model = new MavenXpp3Reader().read( new StringReader( pomXML ) );
+            final DistributionManagement distributionManagement = model.getDistributionManagement();
+
+            if ( distributionManagement != null ) {
+
+                final boolean isSnapshot = pomXMLArtifact.isSnapshot();
+                DeploymentRepository remoteRepository = null;
+                if ( isSnapshot ) {
+                    remoteRepository = distributionManagement.getSnapshotRepository();
+                } else {
+                    remoteRepository = distributionManagement.getRepository();
+                }
+
+                //If the user has configured a distribution management module in the pom then we will attempt to deploy there.
+                //If credentials are required those credentials must be provisioned in the user's settings.xml file
+                if ( remoteRepository != null ) {
+                    DeployRequest remoteRequest = new DeployRequest();
+                    remoteRequest
+                            .addArtifact( jarArtifact )
+                            .addArtifact( pomXMLArtifact )
+                            .setRepository( getRemoteRepoFromDeployment( remoteRepository ) );
+
+                    Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                           remoteRequest );
+                }
+            }
+
+        } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        } catch ( XmlPullParserException xppe ) {
+            throw new RuntimeException( xppe );
+        } catch ( IOException ioe ) {
+            throw new RuntimeException( ioe );
         }
     }
 
@@ -247,6 +293,28 @@ public class GuvnorM2Repository {
                        e );
             throw new RuntimeException( e );
         }
+    }
+
+    private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo ) {
+
+        RemoteRepository remoteRepo = new RemoteRepository( repo.getId(), repo.getLayout(), repo.getUrl() )
+                .setPolicy( true,
+                            new RepositoryPolicy( true,
+                                                  RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                  RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                .setPolicy( false,
+                            new RepositoryPolicy( true,
+                                                  RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                  RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+
+        Settings settings = MavenSettings.getSettings();
+        Server server = settings.getServer( repo.getId() );
+
+        if ( server != null ) {
+            remoteRepo.setAuthentication( new Authentication( server.getUsername(), server.getPassword() ) );
+        }
+
+        return remoteRepo;
     }
 
     /**
