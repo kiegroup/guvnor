@@ -34,6 +34,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -47,6 +48,8 @@ import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
@@ -265,8 +268,68 @@ public class GuvnorM2Repository {
         } catch ( IOException ioe ) {
             throw new RuntimeException( ioe );
         }
+        
+        try{
+        	
+        	//Deploy to repositories configured in active profiles in settings.xml based on configured policies
+        	//Some of this is borrowed from MavenRepository in kie-ci
+        	Settings settings = MavenSettings.getSettings();
+        	if(settings!=null && settings.getProfiles()!=null){
+        		 for (Profile profile : settings.getProfiles()) {
+        	            if (isProfileActive(settings, profile) && profile.getRepositories()!=null) {
+        	                for (Repository repository : profile.getRepositories()) {
+        	                	RemoteRepository remoteRepo = toRemoteRepository(settings, repository) ;
+        	                	if(remoteRepo!=null){
+        	                		
+        	                		final boolean isSnapshot = pomXMLArtifact.isSnapshot();
+        	                		if(remoteRepo.getPolicy(isSnapshot)==null || remoteRepo.getPolicy(isSnapshot).isEnabled()){
+	        	                		DeployRequest settingsRequest = new DeployRequest();
+	        	                		settingsRequest
+	        	                                .addArtifact( jarArtifact )
+	        	                                .addArtifact( pomXMLArtifact )
+	        	                                .setRepository( remoteRepo );
+	
+	        	                        Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),settingsRequest );
+        	                		}
+        	                	}
+        	                }
+        	                
+        	            }
+        	        }
+        	}
+            
+        }catch(DeploymentException de){
+        	throw new RuntimeException( de );
+        }
     }
 
+    //This is borrowed from MavenRepository in kie-ci. Should be synchronized?
+    private static RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
+        RemoteRepository remote = new RemoteRepository( repository.getId(), repository.getLayout(), repository.getUrl() );
+        setPolicy(remote, repository.getSnapshots(), true);
+        setPolicy(remote, repository.getReleases(), false);
+        Server server = settings.getServer( repository.getId() );
+        if (server != null) {
+            remote.setAuthentication( new Authentication(server.getUsername(), server.getPassword()) );
+        }
+        return remote;
+    }
+    
+  //This is borrowed from MavenRepository in kie-ci. Should be synchronized to common utility?
+    private static void setPolicy(RemoteRepository remote, org.apache.maven.settings.RepositoryPolicy policy, boolean snapshot) {
+        if (policy != null) {
+            remote.setPolicy(snapshot,
+                             new org.sonatype.aether.repository.RepositoryPolicy(policy.isEnabled(),
+                                                                                 policy.getUpdatePolicy(),
+                                                                                 policy.getChecksumPolicy()));
+        }
+    }
+    
+    private static boolean isProfileActive(Settings settings, Profile profile) {
+        return settings.getActiveProfiles().contains(profile.getId()) ||
+               (profile.getActivation() != null && profile.getActivation().isActiveByDefault());
+    }
+    
     private RemoteRepository getGuvnorM2Repository() {
         File m2RepoDir = new File( M2_REPO_DIR );
         if ( !m2RepoDir.exists() ) {
