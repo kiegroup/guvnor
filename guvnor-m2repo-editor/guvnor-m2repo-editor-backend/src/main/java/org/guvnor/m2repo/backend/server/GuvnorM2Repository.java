@@ -47,6 +47,8 @@ import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
@@ -265,6 +267,78 @@ public class GuvnorM2Repository {
         } catch ( IOException ioe ) {
             throw new RuntimeException( ioe );
         }
+
+        //Deploy to repositories configured in active profiles in settings.xml based on configured policies
+        try {
+            final Settings settings = MavenSettings.getSettings();
+            if ( settings != null && settings.getProfiles() != null ) {
+                for ( Profile profile : settings.getProfiles() ) {
+                    if ( isProfileActive( settings,
+                                          profile ) && profile.getRepositories() != null ) {
+                        for ( Repository repository : profile.getRepositories() ) {
+                            final RemoteRepository remoteRepo = toRemoteRepository( settings,
+                                                                                    repository );
+                            if ( remoteRepo != null ) {
+                                final boolean isSnapshot = pomXMLArtifact.isSnapshot();
+                                if ( remoteRepo.getPolicy( isSnapshot ).isEnabled() ) {
+                                    DeployRequest settingsRequest = new DeployRequest();
+                                    settingsRequest
+                                            .addArtifact( jarArtifact )
+                                            .addArtifact( pomXMLArtifact )
+                                            .setRepository( remoteRepo );
+
+                                    Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                                           settingsRequest );
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        } catch ( DeploymentException de ) {
+            throw new RuntimeException( de );
+        }
+    }
+
+    //This is borrowed from MavenRepository in kie-ci. Should be synchronized to common utility?
+    private RemoteRepository toRemoteRepository( final Settings settings,
+                                                 final Repository repository ) {
+        final RemoteRepository remote = new RemoteRepository( repository.getId(),
+                                                              repository.getLayout(),
+                                                              repository.getUrl() );
+        setPolicy( remote,
+                   repository.getSnapshots(),
+                   true );
+        setPolicy( remote,
+                   repository.getReleases(),
+                   false );
+        final Server server = settings.getServer( repository.getId() );
+        if ( server != null ) {
+            remote.setAuthentication( new Authentication( server.getUsername(),
+                                                          server.getPassword() ) );
+        }
+        return remote;
+    }
+
+    //This is borrowed from MavenRepository in kie-ci. Should be synchronized to common utility?
+    private void setPolicy( final RemoteRepository remote,
+                            final org.apache.maven.settings.RepositoryPolicy policy,
+                            final boolean snapshot ) {
+        if ( policy != null ) {
+            remote.setPolicy( snapshot,
+                              new org.sonatype.aether.repository.RepositoryPolicy( policy.isEnabled(),
+                                                                                   policy.getUpdatePolicy(),
+                                                                                   policy.getChecksumPolicy() ) );
+        }
+    }
+
+    //This is borrowed from MavenRepository in kie-ci. Should be synchronized to common utility?
+    private static boolean isProfileActive( final Settings settings,
+                                            final Profile profile ) {
+        return settings.getActiveProfiles().contains( profile.getId() ) ||
+                ( profile.getActivation() != null && profile.getActivation().isActiveByDefault() );
     }
 
     private RemoteRepository getGuvnorM2Repository() {
