@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
@@ -47,13 +46,12 @@ public class CopyServiceImpl implements CopyService {
         try {
             LOGGER.info( "User:" + identity.getName() + " copying file [" + path.getFileName() + "] to [" + newName + "]" );
 
-            String originalFileName = path.getFileName().substring( path.getFileName().lastIndexOf( "/" ) + 1 );
+            final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+            String originalFileName = _path.getFileName().toString();
             final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-            final String targetName = path.getFileName().substring( 0, path.getFileName().lastIndexOf( "/" ) + 1 ) + newName + extension;
-            final String targetURI = path.toURI().substring( 0, path.toURI().lastIndexOf( "/" ) + 1 ) + newName + extension;
-            final Path targetPath = PathFactory.newPath( path.getFileSystem(),
-                                                         targetName,
-                                                         targetURI );
+            final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
+            final Path targetPath = Paths.convert( _target );
 
             try {
                 ioService.startBatch();
