@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemHeaders;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -222,7 +223,9 @@ public class M2RepositoryTest {
 			public boolean isFormField() { return false; }
 			public void setFormField(boolean state) { }
 			public OutputStream getOutputStream() throws IOException { return null; }
-    	}
+            public FileItemHeaders getHeaders() { return null; }
+            public void setHeaders(FileItemHeaders fileItemHeaders) { }
+        }
     	//Create a shell M2RepoService and set the M2Repository
         M2RepoServiceImpl service = new M2RepoServiceImpl();
         java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField("repository");
