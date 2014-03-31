@@ -70,17 +70,20 @@ public class M2RepositoryTest {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
 
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
+        repo.deployArtifact( is,
+                             gav );
 
         Collection<File> files = repo.listFiles();
 
         boolean found = false;
         for ( File file : files ) {
             String fileName = file.getName();
-            if ( fileName.startsWith( "guvnor-m2repo-editor-backend-6.0.0" ) && fileName.endsWith( ".jar" ) ) {
+            if ( fileName.startsWith( "guvnor-m2repo-editor-backend-0.0.1" ) && fileName.endsWith( ".jar" ) ) {
                 found = true;
                 String path = file.getPath();
                 String pom = GuvnorM2Repository.loadPOMFromJar( path );
@@ -89,7 +92,8 @@ public class M2RepositoryTest {
             }
         }
 
-        assertTrue( "Did not find expected file after calling M2Repository.addFile()", found );
+        assertTrue( "Did not find expected file after calling M2Repository.addFile()",
+                    found );
     }
 
     @Test
@@ -97,13 +101,20 @@ public class M2RepositoryTest {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
-        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
 
-        gav = new GAV( "org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav );
+
+        gav = new GAV( "org.jboss.arquillian.core",
+                       "arquillian-core-api",
+                       "1.0.2.Final" );
         is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
+        repo.deployArtifact( is,
+                             gav );
 
         Collection<File> files = repo.listFiles();
 
@@ -111,7 +122,7 @@ public class M2RepositoryTest {
         boolean found2 = false;
         for ( File file : files ) {
             String fileName = file.getName();
-            if ( fileName.startsWith( "guvnor-m2repo-editor-backend-6.0.0" ) && fileName.endsWith( ".jar" ) ) {
+            if ( fileName.startsWith( "guvnor-m2repo-editor-backend-0.0.1" ) && fileName.endsWith( ".jar" ) ) {
                 found1 = true;
             }
             if ( fileName.startsWith( "arquillian-core-api-1.0.2.Final" ) && fileName.endsWith( ".jar" ) ) {
@@ -119,8 +130,10 @@ public class M2RepositoryTest {
             }
         }
 
-        assertTrue( "Did not find expected file after calling M2Repository.addFile()", found1 );
-        assertTrue( "Did not find expected file after calling M2Repository.addFile()", found2 );
+        assertTrue( "Did not find expected file after calling M2Repository.addFile()",
+                    found1 );
+        assertTrue( "Did not find expected file after calling M2Repository.addFile()",
+                    found2 );
     }
 
     @Test
@@ -128,13 +141,19 @@ public class M2RepositoryTest {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
+        repo.deployArtifact( is,
+                             gav );
 
-        gav = new GAV( "org.jboss.arquillian.core", "arquillian-core-api", "1.0.2.Final" );
+        gav = new GAV( "org.jboss.arquillian.core",
+                       "arquillian-core-api",
+                       "1.0.2.Final" );
         is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
+        repo.deployArtifact( is,
+                             gav );
 
         //filter with version number
         Collection<File> files = repo.listFiles( "1.0.2" );
@@ -145,7 +164,8 @@ public class M2RepositoryTest {
                 found1 = true;
             }
         }
-        assertTrue( "Did not find expected file after calling M2Repository.addFile()", found1 );
+        assertTrue( "Did not find expected file after calling M2Repository.addFile()",
+                    found1 );
         
 /*        //filter with group id
         files = repo.listFiles("org.kie.guvnor");
@@ -158,7 +178,7 @@ public class M2RepositoryTest {
         }        
         assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);*/
 
-        //fileter with artifact id
+        //filter with artifact id
         files = repo.listFiles( "arquillian-core-api" );
         found1 = false;
         for ( File file : files ) {
@@ -167,8 +187,8 @@ public class M2RepositoryTest {
                 found1 = true;
             }
         }
-        assertTrue( "Did not find expected file after calling M2Repository.addFile()", found1 );
-
+        assertTrue( "Did not find expected file after calling M2Repository.addFile()",
+                    found1 );
     }
 
     @Test
@@ -176,7 +196,9 @@ public class M2RepositoryTest {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is, gav );
         
@@ -191,7 +213,9 @@ public class M2RepositoryTest {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         
 /*        String pom = repo.loadPOM(is);
@@ -202,49 +226,95 @@ public class M2RepositoryTest {
 
     @Test
     public void testUploadFileWithGAV() throws Exception {
-    	
-    	//Creat a mock FileItem setting an InputStream to test with
-    	@SuppressWarnings("serial") 
-    	class TestFileItem implements FileItem{
-			public InputStream getInputStream() throws IOException {
-				return this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-			}
-			public String getContentType() { return null; }
-			public String getName() { return null; }
-			public boolean isInMemory() { return false; }
-			public long getSize() { return 0; }
-			public byte[] get() { return null;}
-			public String getString(String encoding) throws UnsupportedEncodingException { return null; }
-			public String getString() { return null; }
-			public void write(File file) throws Exception { }
-			public void delete() { }
-			public String getFieldName() { return null; }
-			public void setFieldName(String name) { }
-			public boolean isFormField() { return false; }
-			public void setFormField(boolean state) { }
-			public OutputStream getOutputStream() throws IOException { return null; }
-            public FileItemHeaders getHeaders() { return null; }
-            public void setHeaders(FileItemHeaders fileItemHeaders) { }
+
+        //Creat a mock FileItem setting an InputStream to test with
+        @SuppressWarnings("serial")
+        class TestFileItem implements FileItem {
+
+            public InputStream getInputStream() throws IOException {
+                return this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+            }
+
+            public String getContentType() {
+                return null;
+            }
+
+            public String getName() {
+                return null;
+            }
+
+            public boolean isInMemory() {
+                return false;
+            }
+
+            public long getSize() {
+                return 0;
+            }
+
+            public byte[] get() {
+                return null;
+            }
+
+            public String getString( String encoding ) throws UnsupportedEncodingException {
+                return null;
+            }
+
+            public String getString() {
+                return null;
+            }
+
+            public void write( File file ) throws Exception {
+            }
+
+            public void delete() {
+            }
+
+            public String getFieldName() {
+                return null;
+            }
+
+            public void setFieldName( String name ) {
+            }
+
+            public boolean isFormField() {
+                return false;
+            }
+
+            public void setFormField( boolean state ) {
+            }
+
+            public OutputStream getOutputStream() throws IOException {
+                return null;
+            }
+
+            public FileItemHeaders getHeaders() {
+                return null;
+            }
+
+            public void setHeaders( FileItemHeaders fileItemHeaders ) {
+            }
         }
-    	//Create a shell M2RepoService and set the M2Repository
+        //Create a shell M2RepoService and set the M2Repository
         M2RepoServiceImpl service = new M2RepoServiceImpl();
-        java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField("repository");
-        repositoryField.setAccessible(true);
-        repositoryField.set(service, new GuvnorM2Repository());
-        
+        java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField( "repository" );
+        repositoryField.setAccessible( true );
+        repositoryField.set( service, new GuvnorM2Repository() );
+
         FileServlet servlet = new FileServlet();
-        
+
         //Set the repository service created above in the FileServlet
-        java.lang.reflect.Field m2RepoServiceField = FileServlet.class.getDeclaredField("m2RepoService");
-        m2RepoServiceField.setAccessible(true);
-        m2RepoServiceField.set(servlet, service);
-        
+        java.lang.reflect.Field m2RepoServiceField = FileServlet.class.getDeclaredField( "m2RepoService" );
+        m2RepoServiceField.setAccessible( true );
+        m2RepoServiceField.set( servlet, service );
+
         FormData uploadItem = new FormData();
-        GAV gav = new GAV( "org.kie.guvnor", "guvnor-m2repo-editor-backend", "6.0.0-SNAPSHOT" );
-        uploadItem.setGav(gav);
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend",
+                           "0.0.1-SNAPSHOT" );
+        uploadItem.setGav( gav );
         FileItem file = new TestFileItem();
-        uploadItem.setFile(file);
-        
-        assert(servlet.uploadFile(uploadItem).equals("OK"));
+        uploadItem.setFile( file );
+
+        assert ( servlet.uploadFile( uploadItem ).equals( "OK" ) );
     }
 }
