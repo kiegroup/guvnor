@@ -30,17 +30,22 @@
                 <artifactItem>
                   <groupId>org.drools</groupId>
                   <artifactId>knowledge-api</artifactId>
-                  <version>${project.version}</version>
+                  <version>${drools.version}</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.drools</groupId>
                   <artifactId>drools-core</artifactId>
-                  <version>${project.version}</version>
+                  <version>${drools.version}</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.drools</groupId>
                   <artifactId>drools-compiler</artifactId>
-                  <version>${project.version}</version>
+                  <version>${drools.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.jbpm</groupId>
+                  <artifactId>jbpm-bpmn2</artifactId>
+                  <version>${jbpm.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/unpacked</outputDirectory>
