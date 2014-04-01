@@ -174,7 +174,7 @@ public class ResourceChangeIncrementalBuilderWithProjectChangesConcurrencyTest {
                     try {
                         System.out.println( "Thread " + Thread.currentThread().getName() + " has started for " + p.toURI() );
                         buildChangeListener.updateResource( p );
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed" + p.toURI() );
+                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed " + p.toURI() );
                     } catch ( Throwable e ) {
                         result.setFailed( true );
                         result.setMessage( e.getMessage() );
