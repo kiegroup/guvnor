@@ -145,6 +145,8 @@ public class Builder {
                 //It's impossible to retrieve a KieContainer if the KieModule contains errors
                 if ( results.getErrorMessages().isEmpty() ) {
                     kieContainer = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
+                } else {
+                    kieContainer = null;
                 }
 
             } catch ( NoClassDefFoundError e ) {
